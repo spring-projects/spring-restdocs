@@ -1,0 +1,52 @@
+allprojects {
+	ext {
+		springVersion = '4.0.7.RELEASE'
+	}
+	group = 'org.springframework.restdocs'
+}
+
+project(':spring-restdocs-core') {
+	apply plugin: 'java'
+	dependencies {
+		compile 'junit:junit:4.11'
+		compile "org.springframework:spring-test:$springVersion"
+		compile "org.springframework:spring-web:$springVersion"
+		compile 'javax.servlet:javax.servlet-api:3.1.0'
+	}
+}
+
+project(':spring-restdocs-gradle-plugin') {
+	apply plugin: 'groovy'
+
+	dependencies {
+		compile gradleApi()
+		runtime 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.0'
+	}
+}
+
+subprojects {
+	repositories {
+		jcenter()
+	}
+
+	apply plugin: 'eclipse'
+	apply plugin: 'maven'
+
+	task sourcesJar(type: Jar) {
+		classifier = 'sources'
+		from project.sourceSets.main.allSource
+	}
+
+	task javadocJar(type: Jar) {
+		classifier = "javadoc"
+		from javadoc
+	}
+
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
+
+	eclipseJdt.onlyIf { false }
+	cleanEclipseJdt.onlyIf { false }
+}

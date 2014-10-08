@@ -1,0 +1,41 @@
+buildscript {
+	repositories {
+		mavenLocal()
+		jcenter()
+	}
+	dependencies {
+		classpath 'org.springframework.restdocs:spring-restdocs-gradle-plugin:0.1.0.BUILD-SNAPSHOT'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.7.RELEASE'
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.restdocs'
+
+repositories {
+	mavenLocal()
+	jcenter()
+}
+
+group = 'com.example'
+
+dependencies {
+	compile 'org.springframework.boot:spring-boot-starter-data-rest'
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	runtime 'com.h2database:h2'
+
+	documentationCompile 'com.jayway.jsonpath:json-path'
+	documentationCompile 'org.springframework.boot:spring-boot-starter-test'
+	documentationCompile 'org.springframework.restdocs:spring-restdocs-core:0.1.0.BUILD-SNAPSHOT'
+
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.1'
+}
+
+eclipseJdt.onlyIf { false }
+cleanEclipseJdt.onlyIf { false }

@@ -1,0 +1,4 @@
+rootProject.name = 'spring-restdocs'
+
+include 'spring-restdocs-core'
+include 'spring-restdocs-gradle-plugin'
