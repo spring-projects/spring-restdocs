@@ -80,7 +80,7 @@ public class GettingStartedDocumentation {
 }
 ```
 
-`RestDocumentationJUnit4ClassRunner is an extension of Spring Framework's
+`RestDocumentationJUnit4ClassRunner` is an extension of Spring Framework's
 `SpringJUnit4ClassRunner` so all the standard Spring Test Framework functionality is
 available.
 
