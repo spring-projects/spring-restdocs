@@ -16,27 +16,47 @@
 
 package org.springframework.restdocs.core;
 
-import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.util.Stack;
 
 class DocumentationContext {
 
-	private static final InheritableThreadLocal<DocumentationContext> CONTEXTS = new InheritableThreadLocal<DocumentationContext>();
+	private static final InheritableThreadLocal<Stack<DocumentationContext>> CONTEXTS = new InheritableThreadLocal<Stack<DocumentationContext>>() {
 
-	private final DocumentationWriter writer;
+		@Override
+		protected Stack<DocumentationContext> initialValue() {
+			return new Stack<DocumentationContext>();
+		}
 
-	public DocumentationContext(PrintStream printStream) {
-		this.writer = new DocumentationWriter(printStream);
-	}
+	};
 
-	public DocumentationWriter getWriter() {
-		return this.writer;
+	private final Class<?> documentationClass;
+
+	private final Method documentationMethod;
+
+	public DocumentationContext(Class<?> documentationClass, Method documentationMethod) {
+		this.documentationClass = documentationClass;
+		this.documentationMethod = documentationMethod;
 	}
 
 	public static DocumentationContext current() {
-		return CONTEXTS.get();
+		return CONTEXTS.get().peek();
 	}
 
-	static void set(DocumentationContext context) {
-		CONTEXTS.set(context);
+	public Class<?> getDocumentationClass() {
+		return documentationClass;
 	}
+
+	public Method getDocumentationMethod() {
+		return documentationMethod;
+	}
+
+	static void push(DocumentationContext context) {
+		CONTEXTS.get().push(context);
+	}
+
+	static void pop() {
+		CONTEXTS.get().pop();
+	}
+
 }

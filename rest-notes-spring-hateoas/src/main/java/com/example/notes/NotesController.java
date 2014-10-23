@@ -94,6 +94,7 @@ public class NotesController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	void updateNote(@PathVariable("id") long id, @RequestBody NotePatchInput noteInput) {
 		Note note = this.noteRepository.findOne(id);
 		if (noteInput.getTagUris() != null) {

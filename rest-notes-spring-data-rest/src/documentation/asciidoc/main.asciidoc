@@ -42,12 +42,12 @@ $ java -jar build/libs/*.jar
 You can check that the service is up and running by executing a simple request using
 cURL:
 
-include::{generated}/index/access_with_curl_request.asciidoc[]
+include::{generated}/GettingStartedDocumentation/indexRequest.asciidoc[]
 
 This request should yield the following response in the
 http://stateless.co/hal_specification.html[Hypertext Application Language (HAL)] format:
 
-include::{generated}/index/access_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/indexResponse.asciidoc[]
 
 Note the `_links` in the JSON response. They are key to navigating the API.
 
@@ -59,26 +59,26 @@ Now that you've started the service and verified that it works, the next step is
 it to create a new note. As you saw above, the URI for working with notes is included as
 a link when you perform a `GET` request against the root of the service:
 
-include::{generated}/index/access_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/indexResponse.asciidoc[]
 
 To create a note, you need to execute a `POST` request to this URI including a JSON
 payload containing the title and body of the note:
 
-include::{generated}/notes/create_with_curl_request.asciidoc[]
+include::{generated}/GettingStartedDocumentation/createNoteRequest.asciidoc[]
 
 The response from this request should have a status code of `201 Created` and contain a
 `Location` header whose value is the URI of the newly created note:
 
-include::{generated}/notes/create_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/createNoteResponse.asciidoc[]
 
 To work with the newly created note you use the URI in the `Location` header. For example,
 you can access the note's details by performing a `GET` request:
 
-include::{generated}/notes/get_with_curl_request.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getNoteRequest.asciidoc[]
 
 This request will produce a response with the note's details in its body:
 
-include::{generated}/notes/get_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getNoteResponse.asciidoc[]
 
 Note the `tags` link which we'll make use of later.
 
@@ -92,26 +92,26 @@ to tag a note, you must first create the tag.
 Referring back to the response for the service's index, the URI for working with tags is
 include as a link:
 
-include::{generated}/index/access_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/indexResponse.asciidoc[]
 
 To create a tag you need to execute a `POST` request to this URI, including a JSON
 payload containing the name of the tag:
 
-include::{generated}/tags/create_with_curl_request.asciidoc[]
+include::{generated}/GettingStartedDocumentation/createTagRequest.asciidoc[]
 
 The response from this request should have a status code of `201 Created` and contain a
 `Location` header whose value is the URI of the newly created tag:
 
-include::{generated}/tags/create_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/createTagResponse.asciidoc[]
 
 To work with the newly created tag you use the URI in the `Location` header. For example
 you can access the tag's details by performing a `GET` request:
 
-include::{generated}/tags/get_with_curl_request.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getTagRequest.asciidoc[]
 
 This request will produce a response with the tag's details in its body:
 
-include::{generated}/tags/get_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getTagResponse.asciidoc[]
 
 
 
@@ -132,24 +132,24 @@ with it.
 Once again we execute a `POST` request. However, this time, in an array named tags, we
 include the URI of the tag we just created:
 
-include::{generated}/notes/create_tagged_with_curl_request.asciidoc[]
+include::{generated}/GettingStartedDocumentation/createTaggedNoteRequest.asciidoc[]
 
 Once again, the response's `Location` header tells us the URI of the newly created note:
 
-include::{generated}/notes/create_tagged_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/createTaggedNoteResponse.asciidoc[]
 
 As before, a `GET` request executed against this URI will retrieve the note's details:
 
-include::{generated}/notes/get_tagged_with_curl.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getTaggedNoteRequestResponse.asciidoc[]
 
 To verify that the tag has been associated with the note, we can perform a `GET` request
 against the URI from the `tags` link:
 
-include::{generated}/notes/get_tags_for_tagged_with_curl_request.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getTagsRequest.asciidoc[]
 
 The response embeds information about the tag that we've just associated with the note:
 
-include::{generated}/notes/get_tags_for_tagged_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getTagsResponse.asciidoc[]
 
 
 
@@ -159,17 +159,17 @@ An existing note can be tagged by executing a `PATCH` request against the note's
 a body that contains the array of tags to be associated with the note. We'll used the
 URI of the untagged note that we created earlier:
 
-include::{generated}/notes/tag_existing_with_curl_request.asciidoc[]
+include::{generated}/GettingStartedDocumentation/tagExistingNoteRequest.asciidoc[]
 
 This request should produce a `204 No Content` response:
 
-include::{generated}/notes/tag_existing_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/tagExistingNoteResponse.asciidoc[]
 
 When we first created this note, we noted the tags link included in its details:
 
-include::{generated}/notes/get_with_curl_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/createNoteResponse.asciidoc[]
 
 We can use that link now and execute a `GET` request to see that the note now has a
 single tag:
 
-include::{generated}/notes/get_tags_for_existing_with_curl.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getTagsForExistingNoteRequestResponse.asciidoc[]

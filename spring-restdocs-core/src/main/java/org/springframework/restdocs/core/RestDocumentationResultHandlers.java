@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.core;
 
+import static org.springframework.restdocs.core.IterableEnumeration.iterable;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -31,12 +33,10 @@ import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.springframework.restdocs.core.IterableEnumeration.iterable;
-
 public abstract class RestDocumentationResultHandlers {
 
-	public static CurlResultHandler documentCurlRequest(String path) {
-		return new CurlResultHandler(path) {
+	public static CurlResultHandler documentCurlRequest() {
+		return new CurlResultHandler("Request.asciidoc") {
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
@@ -46,8 +46,8 @@ public abstract class RestDocumentationResultHandlers {
 		};
 	}
 
-	public static CurlResultHandler documentCurlResponse(String path) {
-		return new CurlResultHandler(path) {
+	public static CurlResultHandler documentCurlResponse() {
+		return new CurlResultHandler("Response.asciidoc") {
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
@@ -57,8 +57,8 @@ public abstract class RestDocumentationResultHandlers {
 		};
 	}
 
-	public static CurlResultHandler documentCurlRequestAndResponse(String path) {
-		return new CurlResultHandler(path) {
+	public static CurlResultHandler documentCurlRequestAndResponse() {
+		return new CurlResultHandler("RequestResponse.asciidoc") {
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
@@ -68,22 +68,6 @@ public abstract class RestDocumentationResultHandlers {
 						getCurlConfiguration()));
 			}
 		};
-	}
-
-	private static PrintStream createPrintStream(String path)
-			throws FileNotFoundException {
-		File outputFile = new File(path);
-		if (!outputFile.isAbsolute()) {
-			outputFile = makeAbsolute(outputFile);
-		}
-		outputFile.getParentFile().mkdirs();
-
-		return new PrintStream(new FileOutputStream(outputFile));
-	}
-
-	private static File makeAbsolute(File outputFile) {
-		return new File(new DocumentationProperties().getOutputDir(),
-				outputFile.getPath());
 	}
 
 	private static final class CurlRequestDocumentationAction implements
@@ -182,11 +166,11 @@ public abstract class RestDocumentationResultHandlers {
 	public static abstract class CurlResultHandler implements ResultHandler {
 
 		private final CurlConfiguration curlConfiguration = new CurlConfiguration();
-
-		private final String path;
-
-		private CurlResultHandler(String path) {
-			this.path = path;
+		
+		private String suffix;
+		
+		public CurlResultHandler(String suffix) {
+			this.suffix = suffix;
 		}
 
 		CurlConfiguration getCurlConfiguration() {
@@ -200,13 +184,49 @@ public abstract class RestDocumentationResultHandlers {
 
 		@Override
 		public void handle(MvcResult result) throws Exception {
-			PrintStream printStream = createPrintStream(this.path);
+			PrintStream printStream = createPrintStream(this.suffix);
 			try {
 				handle(result, new DocumentationWriter(printStream));
 			}
 			finally {
 				printStream.close();
 			}
+		}
+		
+		private PrintStream createPrintStream(String suffix)
+				throws FileNotFoundException {
+			DocumentationContext context = DocumentationContext.current();
+			if (context == null) {
+				throw new IllegalStateException();
+			}
+
+			String path = resolveOutputPath(context);
+
+			File outputFile = new File(path);
+			if (!outputFile.isAbsolute()) {
+				outputFile = makeAbsolute(outputFile);
+			}
+			outputFile.getParentFile().mkdirs();
+
+			return new PrintStream(new FileOutputStream(outputFile));
+		}
+
+		private static File makeAbsolute(File outputFile) {
+			return new File(new DocumentationProperties().getOutputDir(),
+					outputFile.getPath());
+		}
+
+		private String resolveOutputPath(DocumentationContext context) {
+			String shortClassName = getShortClassName(context.getDocumentationClass());
+			return shortClassName + "/" + context.getDocumentationMethod().getName() + this.suffix;
+		}
+
+		private String getShortClassName(Class<?> clazz) {
+			int index = clazz.getName().lastIndexOf('.');
+			if (index >= 0) {
+				return clazz.getName().substring(index + 1);
+			}
+			return clazz.getName();
 		}
 
 		abstract void handle(MvcResult result, DocumentationWriter writer)

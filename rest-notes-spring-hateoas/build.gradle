@@ -1,11 +1,13 @@
 buildscript {
 	repositories {
 		mavenLocal()
-		jcenter()
+		maven {
+			url "https://repo.spring.io/libs-milestone"
+		}
 	}
 	dependencies {
 		classpath 'org.springframework.restdocs:spring-restdocs-gradle-plugin:0.1.0.BUILD-SNAPSHOT'
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.7.RELEASE'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.0.M2'
 	}
 }
 
@@ -16,7 +18,9 @@ apply plugin: 'org.springframework.restdocs'
 
 repositories {
 	mavenLocal()
-	jcenter()
+	maven {
+		url "https://repo.spring.io/libs-milestone"
+	}
 }
 
 group = 'com.example'
