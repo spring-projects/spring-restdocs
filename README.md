@@ -66,22 +66,54 @@ apply plugin: 'org.springframework.restdocs'
 ### Programatically generated snippets
 
 Spring's MVC Test framework is used to make requests to the service that you are
-documenting and generate documentation snippets from those requests and their responses.
-For example:
+documenting. Through the use of a custom JUnit runner and some MockMvc configuration
+documentation snippets for those request and their responses is automatically generated.
+
+The runner is configured using `@RunWith` on the documentation class. For example:
 
 ```java
-this.mockMvc
-		.perform(get("/").with(port(8080)).accept(MediaType.APPLICATION_JSON))
-		.andDo(documentCurlRequest("root/curl_get_request.asciidoc"))
-		.andDo(documentCurlResponse("root/curl_get_response.asciidoc"));
+@RunWith(RestDocumentationJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = Application.class)
+@WebAppConfiguration
+public class GettingStartedDocumentation {
+	// …
+}
 ```
 
-The code above will perform a `GET` request against the root (`/`) of the service with
-an accept header indicating that a JSON response is required. It will write the cURL
-command for the request to `root/curl_get_request_asciidoc` and the resulting response
-to `root/curl_get_response.asciidoc`. Both files will be written beneath the project's
-`build/generated-documentation` directory. This location is automatically configured
-by the Gradle plugin.
+`RestDocumentationJUnit4ClassRunner is an extension of Spring Framework's
+`SpringJUnit4ClassRunner` so all the standard Spring Test Framework functionality is
+available.
+
+The MockMvc configuration is applied during its creation. This is typically done in
+an `@Before` method, for example:
+
+```java
+@Before
+public void setUp() {
+	this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+			.apply(new RestDocumentationConfiguration()).build();
+}
+```
+
+With this configuration in place any requests made to the REST service using MockMvc
+will have their requests and responses documented. For example:
+
+```java
+public void getIndex() {
+	this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON));
+}
+```
+
+The code above will perform a `GET` request against the index (`/`) of the service with
+an accept header indicating that a JSON response is required. It will automatically
+write the cURL command for the request and the resulting response to files beneath the
+project's `build/generated-documentation` directory. This location is automatically
+configured by the Gradle plugin. The names of the files are determined by the name of
+the class and method from which the call was made. In this example, the files will be
+called:
+
+ - `GettingStartedDocumentation/getIndexRequest.asciidoc`
+ - `GettingStartedDocumentation/getIndexResponse.asciidoc`
 
 ### Documentation written in Asciidoc
 
@@ -97,8 +129,8 @@ that you can use to reference the directory to which the snippets are written. F
 example, to include both the request and response snippets described above:
 
 ```
-include::{generated}/root/curl_get_request.asciidoc[]
-include::{generated}/root/curl_get_response.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getIndexRequest.asciidoc[]
+include::{generated}/GettingStartedDocumentation/getIndexResponse.asciidoc[]
 ```
 
 ## Learning more
@@ -110,7 +142,7 @@ To learn more, take a look at the accompanying sample projects:
 
 
 [1]: http://asciidoctor.org
-[2]: http://docs.spring.io/spring-framework/docs/4.0.7.RELEASE/spring-framework-reference/html/testing.html#spring-mvc-test-framework
+[2]: http://docs.spring.io/spring-framework/docs/4.1.1.RELEASE/spring-framework-reference/html/testing.html#spring-mvc-test-framework
 [3]: https://developer.github.com/v3/
 [4]: http://swagger.io
 [5]: http://plugins.gradle.org/plugin/org.asciidoctor.gradle.asciidoctor
