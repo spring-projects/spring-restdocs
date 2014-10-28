@@ -66,54 +66,46 @@ apply plugin: 'org.springframework.restdocs'
 ### Programatically generated snippets
 
 Spring's MVC Test framework is used to make requests to the service that you are
-documenting. Through the use of a custom JUnit runner and some MockMvc configuration
-documentation snippets for those request and their responses is automatically generated.
+documenting. Any such request wrapped in a call to `RestDocumentation.document` will
+produce individual documentation snippets for its request and its response as well as
+a snippet that contains both its request and its response.
 
-The runner is configured using `@RunWith` on the documentation class. For example:
-
-```java
-@RunWith(RestDocumentationJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
-public class GettingStartedDocumentation {
-	// …
-}
-```
-
-`RestDocumentationJUnit4ClassRunner` is an extension of Spring Framework's
-`SpringJUnit4ClassRunner` so all the standard Spring Test Framework functionality is
-available.
-
-The MockMvc configuration is applied during its creation. This is typically done in
-an `@Before` method, for example:
+You can configure the scheme, host, and port of any URIs that appear in the
+documentation snippets:
 
 ```java
 @Before
-public void setUp() {
-	this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-			.apply(new RestDocumentationConfiguration()).build();
-}
+	public void setUp() {
+		this.mockMvc = MockMvcBuilders
+				.webAppContextSetup(this.context)
+				.apply(new RestDocumentationConfiguration()
+						.withScheme("https")
+						.withHost("localhost")
+						.withPort(8443))
+				.build();
+	}
 ```
 
-With this configuration in place any requests made to the REST service using MockMvc
-will have their requests and responses documented. For example:
+The default values are `http`, `localhost`, and `8080`. You can omit the above
+configuration if these defaults meet your needs.
+
+To document a MockMvc call, wrap it in a call to `RestDocumentation.document`:
 
 ```java
 public void getIndex() {
-	this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON));
+	document("index", this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)));
 }
 ```
 
 The code above will perform a `GET` request against the index (`/`) of the service with
-an accept header indicating that a JSON response is required. It will automatically
-write the cURL command for the request and the resulting response to files beneath the
-project's `build/generated-documentation` directory. This location is automatically
-configured by the Gradle plugin. The names of the files are determined by the name of
-the class and method from which the call was made. In this example, the files will be
-called:
+an accept header indicating that a JSON response is required. It will write the cURL
+command for the request and the resulting response to files in a directory named
+`index` in the project's `build/generated-documentation/` directory. Three files will
+be written:
 
- - `GettingStartedDocumentation/getIndexRequest.asciidoc`
- - `GettingStartedDocumentation/getIndexResponse.asciidoc`
+ - `index/request.asciidoc`
+ - `index/response.asciidoc`
+ - `index/request-response.asciidoc`
 
 ### Documentation written in Asciidoc
 
@@ -129,8 +121,8 @@ that you can use to reference the directory to which the snippets are written. F
 example, to include both the request and response snippets described above:
 
 ```
-include::{generated}/GettingStartedDocumentation/getIndexRequest.asciidoc[]
-include::{generated}/GettingStartedDocumentation/getIndexResponse.asciidoc[]
+include::{generated}/index/request.asciidoc[]
+include::{generated}/index/response.asciidoc[]
 ```
 
 ## Learning more

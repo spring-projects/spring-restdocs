@@ -16,17 +16,13 @@
 
 package org.springframework.restdocs.core;
 
-import static org.springframework.restdocs.core.RestDocumentationResultHandlers.documentCurlRequest;
-import static org.springframework.restdocs.core.RestDocumentationResultHandlers.documentCurlRequestAndResponse;
-import static org.springframework.restdocs.core.RestDocumentationResultHandlers.documentCurlResponse;
-
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
+import org.springframework.test.web.servlet.setup.MockMvcConfigurerAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
-public class RestDocumentationConfiguration implements MockMvcConfigurer {
+public class RestDocumentationConfiguration extends MockMvcConfigurerAdapter {
 
 	private String scheme = "http";
 
@@ -47,13 +43,6 @@ public class RestDocumentationConfiguration implements MockMvcConfigurer {
 	public RestDocumentationConfiguration withPort(int port) {
 		this.port = port;
 		return this;
-	}
-
-	@Override
-	public void afterConfigurerAdded(ConfigurableMockMvcBuilder<?> builder) {
-		builder.alwaysDo(documentCurlRequest().includeResponseHeaders())
-				.alwaysDo(documentCurlResponse().includeResponseHeaders())
-				.alwaysDo(documentCurlRequestAndResponse().includeResponseHeaders());
 	}
 
 	@Override

@@ -35,8 +35,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 public abstract class RestDocumentationResultHandlers {
 
-	public static CurlResultHandler documentCurlRequest() {
-		return new CurlResultHandler("Request.asciidoc") {
+	public static CurlResultHandler documentCurlRequest(String outputDir) {
+		return new CurlResultHandler(outputDir, "request") {
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
@@ -46,8 +46,8 @@ public abstract class RestDocumentationResultHandlers {
 		};
 	}
 
-	public static CurlResultHandler documentCurlResponse() {
-		return new CurlResultHandler("Response.asciidoc") {
+	public static CurlResultHandler documentCurlResponse(String outputDir) {
+		return new CurlResultHandler(outputDir, "response") {
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
@@ -57,8 +57,8 @@ public abstract class RestDocumentationResultHandlers {
 		};
 	}
 
-	public static CurlResultHandler documentCurlRequestAndResponse() {
-		return new CurlResultHandler("RequestResponse.asciidoc") {
+	public static CurlResultHandler documentCurlRequestAndResponse(String outputDir) {
+		return new CurlResultHandler(outputDir, "request-response") {
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
@@ -167,10 +167,13 @@ public abstract class RestDocumentationResultHandlers {
 
 		private final CurlConfiguration curlConfiguration = new CurlConfiguration();
 		
-		private String suffix;
+		private String outputDir;
 		
-		public CurlResultHandler(String suffix) {
-			this.suffix = suffix;
+		private String fileName;
+		
+		public CurlResultHandler(String outputDir, String fileName) {
+			this.outputDir = outputDir;
+			this.fileName = fileName;
 		}
 
 		CurlConfiguration getCurlConfiguration() {
@@ -184,7 +187,7 @@ public abstract class RestDocumentationResultHandlers {
 
 		@Override
 		public void handle(MvcResult result) throws Exception {
-			PrintStream printStream = createPrintStream(this.suffix);
+			PrintStream printStream = createPrintStream();
 			try {
 				handle(result, new DocumentationWriter(printStream));
 			}
@@ -193,16 +196,10 @@ public abstract class RestDocumentationResultHandlers {
 			}
 		}
 		
-		private PrintStream createPrintStream(String suffix)
+		private PrintStream createPrintStream()
 				throws FileNotFoundException {
-			DocumentationContext context = DocumentationContext.current();
-			if (context == null) {
-				throw new IllegalStateException();
-			}
-
-			String path = resolveOutputPath(context);
-
-			File outputFile = new File(path);
+			
+			File outputFile = new File(this.outputDir, this.fileName + ".asciidoc");
 			if (!outputFile.isAbsolute()) {
 				outputFile = makeAbsolute(outputFile);
 			}
@@ -216,21 +213,7 @@ public abstract class RestDocumentationResultHandlers {
 					outputFile.getPath());
 		}
 
-		private String resolveOutputPath(DocumentationContext context) {
-			String shortClassName = getShortClassName(context.getDocumentationClass());
-			return shortClassName + "/" + context.getDocumentationMethod().getName() + this.suffix;
-		}
-
-		private String getShortClassName(Class<?> clazz) {
-			int index = clazz.getName().lastIndexOf('.');
-			if (index >= 0) {
-				return clazz.getName().substring(index + 1);
-			}
-			return clazz.getName();
-		}
-
 		abstract void handle(MvcResult result, DocumentationWriter writer)
 				throws Exception;
-
 	}
 }
