@@ -51,7 +51,7 @@ public abstract class RestDocumentationResultHandlers {
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
-				writer.codeBlock(new CurlResponseDocumentationAction(writer, result,
+				writer.codeBlock("http", new CurlResponseDocumentationAction(writer, result,
 						getCurlConfiguration()));
 			}
 		};
@@ -64,7 +64,7 @@ public abstract class RestDocumentationResultHandlers {
 					throws Exception {
 				writer.shellCommand(new CurlRequestDocumentationAction(writer, result,
 						getCurlConfiguration()));
-				writer.codeBlock(new CurlResponseDocumentationAction(writer, result,
+				writer.codeBlock("http", new CurlResponseDocumentationAction(writer, result,
 						getCurlConfiguration()));
 			}
 		};
@@ -195,7 +195,7 @@ public abstract class RestDocumentationResultHandlers {
 				printStream.close();
 			}
 		}
-		
+
 		private PrintStream createPrintStream()
 				throws FileNotFoundException {
 			

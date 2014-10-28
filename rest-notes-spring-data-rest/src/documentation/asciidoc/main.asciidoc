@@ -3,7 +3,7 @@ Andy Wilkinson;
 :doctype: book
 :toc:
 :toclevels: 4
-:source-highlighter: prettify
+:source-highlighter: highlightjs
 
 [introduction]
 = Introduction

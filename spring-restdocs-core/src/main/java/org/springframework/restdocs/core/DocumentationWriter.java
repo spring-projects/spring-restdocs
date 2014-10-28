@@ -28,7 +28,7 @@ public class DocumentationWriter extends PrintWriter {
 	}
 
 	public void shellCommand(final DocumentationAction... actions) throws Exception {
-		codeBlock(new DocumentationAction() {
+		codeBlock("bash", new DocumentationAction() {
 
 			@Override
 			public void perform() throws Exception {
@@ -54,8 +54,11 @@ public class DocumentationWriter extends PrintWriter {
 		super.write(s);
 	}
 
-	public void codeBlock(DocumentationAction... actions) throws Exception {
+	public void codeBlock(String language, DocumentationAction... actions) throws Exception {
 		println();
+		if (language != null) {
+			println("[source," + language + "]");
+		}
 		println("----");
 		for (DocumentationAction action : actions) {
 			action.perform();
