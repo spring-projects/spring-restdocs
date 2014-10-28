@@ -75,15 +75,15 @@ documentation snippets:
 
 ```java
 @Before
-	public void setUp() {
-		this.mockMvc = MockMvcBuilders
-				.webAppContextSetup(this.context)
-				.apply(new RestDocumentationConfiguration()
-						.withScheme("https")
-						.withHost("localhost")
-						.withPort(8443))
-				.build();
-	}
+public void setUp() {
+	this.mockMvc = MockMvcBuilders
+			.webAppContextSetup(this.context)
+			.apply(new RestDocumentationConfiguration()
+					.withScheme("https")
+					.withHost("localhost")
+					.withPort(8443))
+			.build();
+}
 ```
 
 The default values are `http`, `localhost`, and `8080`. You can omit the above
