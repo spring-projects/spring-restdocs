@@ -46,7 +46,7 @@ public class TagsController {
 		this.resourceAssembler = resourceAssembler;
 	}
 
-	@RequestMapping
+	@RequestMapping(method = RequestMethod.GET)
 	Iterable<TagResource> all() {
 		return this.resourceAssembler.toResources(this.repository.findAll());
 	}
@@ -65,7 +65,7 @@ public class TagsController {
 		return httpHeaders;
 	}
 
-	@RequestMapping("/{id}")
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Resource<Tag> tag(@PathVariable("id") long id) {
 		Tag tag = this.repository.findOne(id);
 		return this.resourceAssembler.toResource(tag);

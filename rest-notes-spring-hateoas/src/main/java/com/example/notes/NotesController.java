@@ -55,7 +55,7 @@ public class NotesController {
 		this.noteResourceAssembler = noteResourceAssembler;
 	}
 
-	@RequestMapping
+	@RequestMapping(method = RequestMethod.GET)
 	Iterable<NoteResource> all() {
 		return this.noteResourceAssembler.toResources(this.noteRepository.findAll());
 	}
