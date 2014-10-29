@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.notes.NoteResourceAssembler.NoteResource;
 import com.example.notes.TagResourceAssembler.TagResource;
 
 @RestController
@@ -38,17 +39,23 @@ public class TagsController {
 
 	private final TagRepository repository;
 
-	private final TagResourceAssembler resourceAssembler;
+	private final NoteResourceAssembler noteResourceAssembler;
+
+	private final TagResourceAssembler tagResourceAssembler;
 
 	@Autowired
-	public TagsController(TagRepository repository, TagResourceAssembler resourceAssembler) {
+	public TagsController(TagRepository repository,
+			NoteResourceAssembler noteResourceAssembler,
+			TagResourceAssembler tagResourceAssembler) {
 		this.repository = repository;
-		this.resourceAssembler = resourceAssembler;
+		this.noteResourceAssembler = noteResourceAssembler;
+		this.tagResourceAssembler = tagResourceAssembler;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	Iterable<TagResource> all() {
-		return this.resourceAssembler.toResources(this.repository.findAll());
+	NestedContentResource<TagResource> all() {
+		return new NestedContentResource<TagResource>(
+				this.tagResourceAssembler.toResources(this.repository.findAll()));
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -68,17 +75,13 @@ public class TagsController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Resource<Tag> tag(@PathVariable("id") long id) {
 		Tag tag = this.repository.findOne(id);
-		return this.resourceAssembler.toResource(tag);
+		return this.tagResourceAssembler.toResource(tag);
 	}
 
 	@RequestMapping(value = "/{id}/notes", method = RequestMethod.GET)
 	ResourceSupport tagNotes(@PathVariable("id") long id) {
-		ResourceSupport resource = new ResourceSupport();
-		Tag tag = this.repository.findOne(id);
-		for (Note note : tag.getNotes()) {
-			resource.add(linkTo(NotesController.class).slash(note.getId())
-					.withRel("note"));
-		}
-		return resource;
+		return new NestedContentResource<NoteResource>(
+				this.noteResourceAssembler.toResources(this.repository.findOne(id)
+						.getNotes()));
 	}
 }

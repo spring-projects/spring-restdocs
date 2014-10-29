@@ -31,6 +31,8 @@ dependencies {
 	compile 'org.springframework.hateoas:spring-hateoas'
 
 	runtime 'com.h2database:h2'
+	runtime 'org.springframework.plugin:spring-plugin-core:1.1.0.RELEASE'
+	runtime 'org.atteo:evo-inflector:1.2'
 
 	documentationCompile 'com.jayway.jsonpath:json-path'
 	documentationCompile 'org.springframework.boot:spring-boot-starter-test'

@@ -16,16 +16,16 @@
 
 package com.example.notes;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.restdocs.core.RestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.restdocs.core.RestDocumentation.document;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -38,7 +38,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.core.RestDocumentationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -74,11 +73,10 @@ public class GettingStartedDocumentation {
 	public void index() throws Exception {
 		document(
 				"index",
-				this.mockMvc
-						.perform(get("/").accept(MediaTypes.HAL_JSON))
+				this.mockMvc.perform(get("/").accept(MediaTypes.HAL_JSON))
 						.andExpect(status().isOk())
-						.andExpect(jsonPath("links[?(@.rel==notes)]", is(notNullValue())))
-						.andExpect(jsonPath("links[?(@.rel==tags)]", is(notNullValue()))));
+						.andExpect(jsonPath("_links.notes", is(notNullValue())))
+						.andExpect(jsonPath("_links.tags", is(notNullValue()))));
 	}
 
 	@Test
@@ -121,7 +119,7 @@ public class GettingStartedDocumentation {
 				this.mockMvc.perform(get(noteLocation)).andExpect(status().isOk())
 						.andExpect(jsonPath("title", is(notNullValue())))
 						.andExpect(jsonPath("body", is(notNullValue())))
-						.andExpect(jsonPath("links[?(@.rel==tags)]", is(notNullValue()))));
+						.andExpect(jsonPath("_links.tags", is(notNullValue()))));
 	}
 
 	String createTag() throws Exception, JsonProcessingException {
@@ -143,11 +141,9 @@ public class GettingStartedDocumentation {
 	void getTag(String tagLocation) throws Exception {
 		document(
 				"get-tag",
-				this.mockMvc
-						.perform(get(tagLocation))
-						.andExpect(status().isOk())
+				this.mockMvc.perform(get(tagLocation)).andExpect(status().isOk())
 						.andExpect(jsonPath("name", is(notNullValue())))
-						.andExpect(jsonPath("links[?(@.rel==notes)]", is(notNullValue()))));
+						.andExpect(jsonPath("_links.notes", is(notNullValue()))));
 	}
 
 	String createTaggedNote(String tag) throws Exception {
@@ -160,8 +156,8 @@ public class GettingStartedDocumentation {
 				"create-tagged-note",
 				this.mockMvc
 						.perform(
-								post("/notes").contentType(MediaType.APPLICATION_JSON)
-										.content(objectMapper.writeValueAsString(note)))
+								post("/notes").contentType(MediaTypes.HAL_JSON).content(
+										objectMapper.writeValueAsString(note)))
 						.andExpect(status().isCreated())
 						.andExpect(header().string("Location", notNullValue())))
 				.andReturn().getResponse().getHeader("Location");
@@ -174,7 +170,7 @@ public class GettingStartedDocumentation {
 				this.mockMvc.perform(get(tagLocation)).andExpect(status().isOk())
 						.andExpect(jsonPath("title", is(notNullValue())))
 						.andExpect(jsonPath("body", is(notNullValue())))
-						.andExpect(jsonPath("links[?(@.rel==tags)]", is(notNullValue()))));
+						.andExpect(jsonPath("_links.tags", is(notNullValue()))));
 	}
 
 	void getTags(String taggedNoteLocation) throws Exception {
@@ -182,7 +178,7 @@ public class GettingStartedDocumentation {
 				.andReturn(), "tags");
 		document("get-tags",
 				this.mockMvc.perform(get(tagsLocation)).andExpect(status().isOk())
-						.andExpect(jsonPath("links[?(@.rel==tag)]", is(notNullValue()))));
+						.andExpect(jsonPath("_embedded.tags", hasSize(1))));
 	}
 
 	void tagExistingNote(String noteLocation, String tagLocation) throws Exception {
@@ -191,12 +187,10 @@ public class GettingStartedDocumentation {
 
 		document(
 				"tag-existing-note",
-				this.mockMvc
-						.perform(
-								patch(noteLocation).contentType(
-										MediaType.APPLICATION_JSON).content(
-										objectMapper.writeValueAsString(update)))
-						.andDo(print()).andExpect(status().isNoContent()));
+				this.mockMvc.perform(
+						patch(noteLocation).contentType(MediaTypes.HAL_JSON).content(
+								objectMapper.writeValueAsString(update))).andExpect(
+						status().isNoContent()));
 
 	}
 
@@ -210,12 +204,12 @@ public class GettingStartedDocumentation {
 				.andReturn(), "tags");
 		document("get-tags-for-existing-note",
 				this.mockMvc.perform(get(tagsLocation)).andExpect(status().isOk())
-						.andExpect(jsonPath("links[?(@.rel==tag)]", is(notNullValue()))));
+						.andExpect(jsonPath("_embedded.tags", hasSize(1))));
 	}
 
-	private String getLink(MvcResult result, String rel)
+	private String getLink(MvcResult result, String href)
 			throws UnsupportedEncodingException {
 		return JsonPath.parse(result.getResponse().getContentAsString()).read(
-				"links[?(@.rel==" + rel + ")][0].href");
+				"_links.tags.href");
 	}
 }

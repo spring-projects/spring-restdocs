@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriTemplate;
 
 import com.example.notes.NoteResourceAssembler.NoteResource;
+import com.example.notes.TagResourceAssembler.TagResource;
 
 @RestController
 @RequestMapping("/notes")
@@ -47,17 +48,21 @@ public class NotesController {
 
 	private final NoteResourceAssembler noteResourceAssembler;
 
+	private final TagResourceAssembler tagResourceAssembler;
+
 	@Autowired
 	public NotesController(NoteRepository noteRepository, TagRepository tagRepository,
-			NoteResourceAssembler noteResourceAssembler) {
+			NoteResourceAssembler noteResourceAssembler, TagResourceAssembler tagResourceAssembler) {
 		this.noteRepository = noteRepository;
 		this.tagRepository = tagRepository;
 		this.noteResourceAssembler = noteResourceAssembler;
+		this.tagResourceAssembler = tagResourceAssembler;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	Iterable<NoteResource> all() {
-		return this.noteResourceAssembler.toResources(this.noteRepository.findAll());
+	NestedContentResource<NoteResource> all() {
+		return new NestedContentResource<NoteResource>(
+				this.noteResourceAssembler.toResources(this.noteRepository.findAll()));
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -85,12 +90,9 @@ public class NotesController {
 
 	@RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
 	ResourceSupport noteTags(@PathVariable("id") long id) {
-		ResourceSupport resource = new ResourceSupport();
-		Note note = this.noteRepository.findOne(id);
-		for (Tag tag : note.getTags()) {
-			resource.add(linkTo(TagsController.class).slash(tag.getId()).withRel("tag"));
-		}
-		return resource;
+		return new NestedContentResource<TagResource>(
+				this.tagResourceAssembler.toResources(this.noteRepository.findOne(id)
+						.getTags()));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
