@@ -35,7 +35,7 @@ public class TagResourceAssembler extends ResourceAssemblerSupport<Tag, TagResou
 	public TagResource toResource(Tag tag) {
 		TagResource resource = createResourceWithId(tag.getId(), tag);
 		resource.add(linkTo(TagsController.class).slash(tag.getId()).slash("notes")
-				.withRel("notes"));
+				.withRel("notes-with-tag"));
 		return resource;
 	}
 
