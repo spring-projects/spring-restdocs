@@ -51,7 +51,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = RestNotesSpringDataRest.class)
 @WebAppConfiguration
 public class GettingStartedDocumentation {
 

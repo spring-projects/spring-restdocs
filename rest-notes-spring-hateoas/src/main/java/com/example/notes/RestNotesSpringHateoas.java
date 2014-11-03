@@ -24,10 +24,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableAutoConfiguration
 @ComponentScan
 @EnableJpaRepositories
-public class Application {
+public class RestNotesSpringHateoas {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(RestNotesSpringHateoas.class, args);
 	}
 
 }
