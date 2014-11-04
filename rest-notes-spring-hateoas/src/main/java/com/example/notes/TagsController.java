@@ -74,14 +74,16 @@ public class TagsController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Resource<Tag> tag(@PathVariable("id") long id) {
-		Tag tag = this.repository.findOne(id);
+		Tag tag = this.repository.findById(id).orElseThrow(
+				() -> new ResourceDoesNotExistException());
 		return this.tagResourceAssembler.toResource(tag);
 	}
 
 	@RequestMapping(value = "/{id}/notes", method = RequestMethod.GET)
 	ResourceSupport tagNotes(@PathVariable("id") long id) {
 		return new NestedContentResource<NoteResource>(
-				this.noteResourceAssembler.toResources(this.repository.findOne(id)
+				this.noteResourceAssembler.toResources(this.repository.findById(id)
+						.orElseThrow(() -> new ResourceDoesNotExistException())
 						.getNotes()));
 	}
 }

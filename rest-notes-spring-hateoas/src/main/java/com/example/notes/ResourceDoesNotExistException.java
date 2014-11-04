@@ -16,15 +16,7 @@
 
 package com.example.notes;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+@SuppressWarnings("serial")
+public class ResourceDoesNotExistException extends RuntimeException {
 
-import org.springframework.data.repository.CrudRepository;
-
-public interface NoteRepository extends CrudRepository<Note, Long> {
-
-	Optional<Note> findById(long id);
-
-	List<Note> findByTagsIn(Collection<Tag> tags);
 }

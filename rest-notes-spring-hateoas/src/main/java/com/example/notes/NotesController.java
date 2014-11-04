@@ -42,6 +42,8 @@ import com.example.notes.TagResourceAssembler.TagResource;
 @RequestMapping("/notes")
 public class NotesController {
 
+	private static final UriTemplate TAG_URI_TEMPLATE = new UriTemplate("/tags/{id}");
+
 	private final NoteRepository noteRepository;
 
 	private final TagRepository tagRepository;
@@ -52,7 +54,8 @@ public class NotesController {
 
 	@Autowired
 	public NotesController(NoteRepository noteRepository, TagRepository tagRepository,
-			NoteResourceAssembler noteResourceAssembler, TagResourceAssembler tagResourceAssembler) {
+			NoteResourceAssembler noteResourceAssembler,
+			TagResourceAssembler tagResourceAssembler) {
 		this.noteRepository = noteRepository;
 		this.tagRepository = tagRepository;
 		this.noteResourceAssembler = noteResourceAssembler;
@@ -84,21 +87,25 @@ public class NotesController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Resource<Note> note(@PathVariable("id") long id) {
-		Note note = this.noteRepository.findOne(id);
+		Note note = this.noteRepository.findById(id).orElseThrow(
+				() -> new ResourceDoesNotExistException());
 		return this.noteResourceAssembler.toResource(note);
 	}
 
 	@RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
 	ResourceSupport noteTags(@PathVariable("id") long id) {
 		return new NestedContentResource<TagResource>(
-				this.tagResourceAssembler.toResources(this.noteRepository.findOne(id)
-						.getTags()));
+				this.tagResourceAssembler
+						.toResources(this.noteRepository.findById(id)
+								.orElseThrow(() -> new ResourceDoesNotExistException())
+								.getTags()));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	void updateNote(@PathVariable("id") long id, @RequestBody NotePatchInput noteInput) {
-		Note note = this.noteRepository.findOne(id);
+		Note note = this.noteRepository.findById(id).orElseThrow(
+				() -> new ResourceDoesNotExistException());
 		if (noteInput.getTagUris() != null) {
 			note.setTags(getTags(noteInput.getTagUris()));
 		}
@@ -112,11 +119,23 @@ public class NotesController {
 	}
 
 	private List<Tag> getTags(List<URI> tagLocations) {
-		UriTemplate template = new UriTemplate("/tags/{id}");
 		return tagLocations
 				.stream()
-				.map(location -> this.tagRepository.findOne(Long.valueOf(template.match(
-						location.toASCIIString()).get("id"))))
+				.map(location -> this.tagRepository.findById(extractTagId(location))
+						.orElseThrow(
+								() -> new IllegalArgumentException("The tag '" + location
+										+ "' does not exist")))
 				.collect(Collectors.toList());
+	}
+
+	private long extractTagId(URI tagLocation) {
+		try {
+			String idString = TAG_URI_TEMPLATE.match(tagLocation.toASCIIString()).get(
+					"id");
+			return Long.valueOf(idString);
+		}
+		catch (RuntimeException ex) {
+			throw new IllegalArgumentException("The tag '" + tagLocation + "' is invalid");
+		}
 	}
 }
