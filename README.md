@@ -27,10 +27,11 @@ $ cd rest-notes-spring-data-rest
 $ ./gradlew restDocumentation
 ```
 
-Once the build is complete, open the generated documentation:
+Once the build is complete, open on of the generated pieces HTML documentation:
 
 ```
-open build/asciidoc/main.html
+open build/asciidoc/getting-started-guide.html
+open build/asciidoc/api-guide.html
 ```
 
 Every example request and response in the documentation is auto-generated using custom

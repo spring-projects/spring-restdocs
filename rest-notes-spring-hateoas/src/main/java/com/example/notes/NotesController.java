@@ -85,6 +85,11 @@ public class NotesController {
 		return httpHeaders;
 	}
 
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	void delete(@PathVariable("id") long id) {
+		this.noteRepository.delete(id);
+	}
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Resource<Note> note(@PathVariable("id") long id) {
 		Note note = this.noteRepository.findById(id).orElseThrow(

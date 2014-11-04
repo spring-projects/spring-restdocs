@@ -1,0 +1,404 @@
+= RESTful Notes API Guide
+Andy Wilkinson;
+:doctype: book
+:toc:
+:sectanchors:
+:sectlinks:
+:toclevels: 4
+:source-highlighter: highlightjs
+
+[[overview]]
+= Overview
+
+[[overview-http-verbs]]
+== HTTP verbs
+
+RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
+use of HTTP verbs.
+
+|===
+| Verb | Usage
+
+| `GET`
+| Used to retrieve a resource
+
+| `POST`
+| Used to create a new resource
+
+| `PATCH`
+| Used to update an existing resource, including partial updates
+
+| `DELETE`
+| Used to delete an existing resource
+|===
+
+[[overview-http-status-codes]]
+== HTTP status codes
+
+RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
+use of HTTP status codes.
+
+|===
+| Status code | Usage
+
+| `200 OK`
+| The request completed successfully
+
+| `201 Created`
+| A new resource has been created successfully. The resource's URI is available from the response's
+`Location` header
+
+| `204 No Content`
+| An update to an existing resource has been applied successfully
+
+| `400 Bad Request`
+| The request was malformed. The response body will include an error providing further information
+
+| `404 Not Found`
+| The requested resource did not exist
+|===
+
+[[overview-errors]]
+== Errors
+
+Whenever an error response (status code >= 400) is returned, the body will contain a JSON object
+that describes the problem. The error object has the following fields:
+
+|===
+| Field | Description
+
+| error
+| The HTTP error that occurred, e.g. `Bad Request`
+
+| message
+| A description of the cause of the error
+
+| path
+| The path to which the request was made
+
+| status
+| The HTTP status code, e.g. `400`
+
+| timestamp
+| The time, in milliseconds, at which the error occurred
+|===
+
+For example, a request that attempts to apply a non-existent tag to a note will produce a
+`400 Bad Request` response:
+
+include::{generated}/error-example/response.asciidoc[]
+
+[[overview-hypermedia]]
+== Hypermedia
+
+RESTful Notes uses hypermedia and resources include links to other resources in their
+responses. Responses are in http://stateless.co/hal_specification.html[Hypertext Application
+Language (HAL)] format. Links can be found benath the `_links` key. Users of the API should
+not created URIs themselves, instead they should use the above-described links to navigate
+from resource to resource.
+
+[[resources]]
+= Resources
+
+
+
+[[resources-index]]
+== Index
+
+The index provides the entry point into the service.
+
+
+
+[[resources-index-access]]
+=== Accessing the index
+
+A `GET` request is used to access the index
+
+==== Response structure
+
+|===
+| JSON path | Description
+
+| `_links`
+| <<resources-index-links,Links>> to other resources
+|===
+
+==== Example response
+
+include::{generated}/index-example/response.asciidoc[]
+
+
+
+[[resources-index-links]]
+==== Links
+
+|===
+| Relation | Description
+
+| notes
+| The <<resources-notes,Notes resource>>
+
+| tags
+| The <<resources-tags,Tags resource>>
+|===
+
+
+
+[[resources-notes]]
+== Notes
+
+The Notes resources is used to create and list notes
+
+
+
+[[resources-notes-list]]
+=== Listing notes
+
+A `GET` request will list all of the service's notes.
+
+==== Response structure
+
+|===
+| JSON path | Description
+
+| `_embedded.notes`
+| An array of <<resources-note,Note resources>>
+|===
+
+==== Example request
+
+include::{generated}/notes-list-example/request.asciidoc[]
+
+==== Example response
+
+include::{generated}/notes-list-example/response.asciidoc[]
+
+
+
+[[resources-notes-create]]
+=== Creating a note
+
+A `POST` request is used to create a note
+
+==== Request structure
+
+|===
+| JSON path | Description
+
+| `title`
+| The title of the note
+
+| `body`
+| The body of the note
+
+| `tags`
+| | The tags of the note as an array of URIs
+|===
+
+==== Example request
+
+include::{generated}/notes-create-example/request.asciidoc[]
+
+==== Example response
+
+include::{generated}/notes-create-example/response.asciidoc[]
+
+
+
+[[resources-tags]]
+== Tags
+
+The Tags resource is used to create and list tags.
+
+
+
+[[resources-tags-list]]
+=== Listing tags
+
+A `GET` request will list all of the service's tags.
+
+==== Response structure
+
+|===
+| JSON path | Description
+
+| `_embedded.tags`
+| An array of <<resources-tag,Tag resources>>
+|===
+
+==== Example request
+
+include::{generated}/tags-list-example/request.asciidoc[]
+
+==== Example response
+
+include::{generated}/tags-list-example/response.asciidoc[]
+
+
+
+[[resources-tags-create]]
+=== Creating a tag
+
+A `POST` request is used to create a note
+
+==== Request structure
+
+|===
+| JSON path | Description
+
+| `name`
+| The name of the tag
+|===
+
+==== Example request
+
+include::{generated}/tags-create-example/request.asciidoc[]
+
+==== Example response
+
+include::{generated}/tags-create-example/response.asciidoc[]
+
+
+
+[[resources-note]]
+== Note
+
+The Note resource is used to retrieve, update, and delete individual notes
+
+
+
+[[resources-note-links]]
+=== Links
+
+|===
+| Relation | Description
+
+| self
+| This <<resources-note,note>>
+
+| note-tags
+| This note's <<resources-tags,tags>>
+|===
+
+
+
+[[resources-note-retrieve]]
+=== Retrieve a note
+
+A `GET` request will retrieve the details of a note
+
+Example response:
+
+include::{generated}/note-get-example/response.asciidoc[]
+
+|===
+| JSON path | Description
+
+| `title`
+| The title of the note
+
+| `body`
+| The body of the note
+
+| `_links`
+| <<resources-note-links,Links>> to other resources
+|===
+
+
+
+[[resources-note-update]]
+=== Update a note
+
+A `PATCH` request is used to update a note
+
+==== Request structure
+
+|===
+| JSON path | Description
+
+| `title`
+| The title of the note
+
+| `body`
+| The body of the note
+
+| `tags`
+| The tags of the note as an array of URIs
+|===
+
+To leave an attribute of a note unchanged, any of the above may be omitted from the request.
+
+==== Example request
+
+include::{generated}/note-update-example/request.asciidoc[]
+
+==== Example response
+
+include::{generated}/note-update-example/response.asciidoc[]
+
+
+[[resources-note]]
+== Tag
+
+The Tag resource is used to retrieve, update, and delete individual tags
+
+
+
+[[resources-tag-links]]
+=== Links
+
+|===
+| Relation | Description
+
+| self
+| This <<resources-tag,tag>>
+
+| notes
+| The <<resources-notes,notes>> that have this tag
+|===
+
+
+
+[[resources-tag-retrieve]]
+=== Retrieve a tag
+
+A `GET` request will retrieve the details of a tag
+
+Example response:
+
+include::{generated}/tag-get-example/response.asciidoc[]
+
+|===
+| JSON path | Description
+
+| `name`
+| The name of the tag
+
+| `_links`
+| <<resources-tag-links,Links>> to other resources
+|===
+
+
+
+[[resources-tag-update]]
+=== Update a tag
+
+A `PATCH` request is used to update a tag
+
+==== Request structure
+
+|===
+| JSON path | Description
+
+| `name`
+| The name of the tag
+
+|===
+
+==== Example request
+
+include::{generated}/tag-update-example/request.asciidoc[]
+
+==== Example response
+
+include::{generated}/tag-update-example/response.asciidoc[]

@@ -72,6 +72,11 @@ public class TagsController {
 		return httpHeaders;
 	}
 
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	void delete(@PathVariable("id") long id) {
+		this.repository.delete(id);
+	}
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Resource<Tag> tag(@PathVariable("id") long id) {
 		Tag tag = this.repository.findById(id).orElseThrow(
@@ -85,5 +90,16 @@ public class TagsController {
 				this.noteResourceAssembler.toResources(this.repository.findById(id)
 						.orElseThrow(() -> new ResourceDoesNotExistException())
 						.getNotes()));
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	void updateTag(@PathVariable("id") long id, @RequestBody TagPatchInput tagInput) {
+		Tag tag = this.repository.findById(id).orElseThrow(
+				() -> new ResourceDoesNotExistException());
+		if (tagInput.getName() != null) {
+			tag.setName(tagInput.getName());
+		}
+		this.repository.save(tag);
 	}
 }

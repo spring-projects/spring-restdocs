@@ -16,15 +16,13 @@
 
 package com.example.notes;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TagInput extends AbstractTagInput {
+public class TagPatchInput extends AbstractTagInput {
 
 	@JsonCreator
-	public TagInput(@NotBlank @JsonProperty("name") String name) {
+	public TagPatchInput(@NullOrNotBlank @JsonProperty("name") String name) {
 		super(name);
 	}
 }

@@ -1,4 +1,4 @@
-= RESTful Notes User Guide
+= RESTful Notes Getting Started Guide
 Andy Wilkinson;
 :doctype: book
 :toc:
