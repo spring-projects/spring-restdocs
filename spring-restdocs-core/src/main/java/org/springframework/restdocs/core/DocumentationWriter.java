@@ -21,8 +21,6 @@ import java.io.PrintWriter;
 
 public class DocumentationWriter extends PrintWriter {
 
-	private boolean escapeNewline = false;
-
 	public DocumentationWriter(OutputStream stream) {
 		super(stream, true);
 	}
@@ -33,25 +31,11 @@ public class DocumentationWriter extends PrintWriter {
 			@Override
 			public void perform() throws Exception {
 				DocumentationWriter.this.print("$ ");
-				DocumentationWriter.this.escapeNewline = true;
-				try {
-					for (DocumentationAction action : actions) {
-						action.perform();
-					}
-				}
-				finally {
-					DocumentationWriter.this.escapeNewline = false;
+				for (DocumentationAction action : actions) {
+					action.perform();
 				}
 			}
 		});
-	}
-
-	@Override
-	public void write(String s) {
-		if (this.escapeNewline) {
-			s = s.replace("\n", "\\\n");
-		}
-		super.write(s);
 	}
 
 	public void codeBlock(String language, DocumentationAction... actions) throws Exception {
