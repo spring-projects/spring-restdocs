@@ -17,6 +17,7 @@
 package org.springframework.restdocs.core;
 
 import static org.springframework.restdocs.core.IterableEnumeration.iterable;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,14 +25,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.core.DocumentationWriter.DocumentationAction;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
+import org.springframework.util.Assert;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class RestDocumentationResultHandlers {
 
@@ -163,27 +173,19 @@ public abstract class RestDocumentationResultHandlers {
 
 	}
 
-	public static abstract class CurlResultHandler implements ResultHandler {
-
-		private final CurlConfiguration curlConfiguration = new CurlConfiguration();
+	public static abstract class RestDocumentationResultHandler implements ResultHandler {
 		
 		private String outputDir;
 		
 		private String fileName;
-		
-		public CurlResultHandler(String outputDir, String fileName) {
+
+		public RestDocumentationResultHandler(String outputDir, String fileName) {
 			this.outputDir = outputDir;
 			this.fileName = fileName;
 		}
-
-		CurlConfiguration getCurlConfiguration() {
-			return this.curlConfiguration;
-		}
-
-		public CurlResultHandler includeResponseHeaders() {
-			this.curlConfiguration.includeResponseHeaders = true;
-			return this;
-		}
+		
+		abstract void handle(MvcResult result, DocumentationWriter writer)
+				throws Exception;
 
 		@Override
 		public void handle(MvcResult result) throws Exception {
@@ -196,7 +198,7 @@ public abstract class RestDocumentationResultHandlers {
 			}
 		}
 
-		private PrintStream createPrintStream()
+		protected PrintStream createPrintStream()
 				throws FileNotFoundException {
 			
 			File outputFile = new File(this.outputDir, this.fileName + ".asciidoc");
@@ -212,8 +214,80 @@ public abstract class RestDocumentationResultHandlers {
 			return new File(new DocumentationProperties().getOutputDir(),
 					outputFile.getPath());
 		}
+	}
 
-		abstract void handle(MvcResult result, DocumentationWriter writer)
-				throws Exception;
+	public static abstract class CurlResultHandler extends RestDocumentationResultHandler {
+
+		private final CurlConfiguration curlConfiguration = new CurlConfiguration();
+
+		public CurlResultHandler(String outputDir, String fileName) {
+			super(outputDir, fileName);
+		}
+
+		CurlConfiguration getCurlConfiguration() {
+			return this.curlConfiguration;
+		}
+
+		public CurlResultHandler includeResponseHeaders() {
+			this.curlConfiguration.includeResponseHeaders = true;
+			return this;
+		}
+	}
+
+	static class LinkDocumentingResultHandler extends RestDocumentationResultHandler {
+
+		private final ObjectMapper objectMapper = new ObjectMapper();
+
+		private final Map<String, LinkDescriptor> descriptorsByRel = new HashMap<String, LinkDescriptor>();
+
+		public LinkDocumentingResultHandler(String outputDir, List<LinkDescriptor> descriptors) {
+			super(outputDir, "links");
+			for (LinkDescriptor descriptor: descriptors) {
+				Assert.hasText(descriptor.getRel());
+				Assert.hasText(descriptor.getDescription());
+				this.descriptorsByRel.put(descriptor.getRel(), descriptor);
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		void handle(MvcResult result, DocumentationWriter writer) throws Exception {
+			Map<String, Object> json = this.objectMapper.readValue(result.getResponse().getContentAsString(), Map.class);
+			Map<String, Object> links = (Map<String, Object>) json.get("_links");
+
+			Set<String> actualRels = links.keySet();
+			Set<String> expectedRels = this.descriptorsByRel.keySet();
+
+			Set<String> undocumentedRels = new HashSet<String>(actualRels);
+			undocumentedRels.removeAll(expectedRels);
+
+			Set<String> missingRels = new HashSet<String>(expectedRels);
+			missingRels.removeAll(actualRels);
+
+			if (!undocumentedRels.isEmpty() || !missingRels.isEmpty()) {
+				String message = "";
+				if (!undocumentedRels.isEmpty()) {
+					message += "Links with the following relations were not documented: " + undocumentedRels;
+				}
+				if (!missingRels.isEmpty()) {
+					message += "Links with the following relations were not found in the response: " + missingRels;
+				}
+				fail(message);
+			}
+
+			Assert.isTrue(actualRels.equals(expectedRels));
+
+			writer.println("|===");
+			writer.println("| Relation | Description");
+
+			for (Entry<String, LinkDescriptor> entry : this.descriptorsByRel.entrySet()) {
+				writer.println();
+				writer.println("| " + entry.getKey());
+				writer.println("| " + entry.getValue().getDescription());
+			}
+
+			writer.println("|===");
+		}
+
 	}
 }

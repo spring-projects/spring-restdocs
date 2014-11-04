@@ -18,8 +18,8 @@ package com.example.notes;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.restdocs.core.RestDocumentation.document;
+import static org.springframework.restdocs.core.RestDocumentation.linkWithRel;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -94,10 +94,14 @@ public class ApiDocumentation {
 	@Test
 	public void indexExample() throws Exception {
 		document("index-example",
-				this.mockMvc.perform(get("/"))
-						.andExpect(status().isOk()))
-						.andExpect(jsonPath("_links.notes", is(notNullValue())))
-						.andExpect(jsonPath("_links.tags", is(notNullValue())));
+				this.mockMvc.perform(get("/")).andExpect(status().isOk()))
+				.andDocumentHalLinks(
+						linkWithRel("notes").description(
+								"The <<resources-notes,Notes resource>>"),
+						linkWithRel("tags").description(
+								"The <<resources-tags,Tags resource>>"),
+						linkWithRel("profile").description(
+								"The ALPS profile for the service"));
 	}
 
 	@Test
@@ -168,7 +172,11 @@ public class ApiDocumentation {
 				.andExpect(jsonPath("title", is(note.get("title"))))
 				.andExpect(jsonPath("body", is(note.get("body"))))
 				.andExpect(jsonPath("_links.self.href", is(noteLocation)))
-				.andExpect(jsonPath("_links.tags", is(notNullValue())));
+				.andExpect(jsonPath("_links.tags", is(notNullValue())))
+				.andDocumentHalLinks(
+						linkWithRel("self").description("This <<resources-note,note>>"),
+						linkWithRel("tags").description(
+								"This note's <<resources-note-tags,tags>>"));
 
 	}
 
@@ -253,8 +261,11 @@ public class ApiDocumentation {
 		document("tag-get-example", this.mockMvc.perform(get(tagLocation)))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("name", is(tag.get("name"))))
-				.andExpect(jsonPath("_links.self.href", is(tagLocation)))
-				.andExpect(jsonPath("_links.notes", is(notNullValue())));
+				.andDocumentHalLinks(
+						linkWithRel("self").description("This <<resources-tag,tag>>"),
+						linkWithRel("notes")
+								.description(
+										"The <<resources-tagged-notes,notes>> that have this tag"));
 
 	}
 

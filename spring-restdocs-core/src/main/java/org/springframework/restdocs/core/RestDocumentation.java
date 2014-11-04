@@ -16,19 +16,23 @@
 
 package org.springframework.restdocs.core;
 
-import org.springframework.test.web.servlet.ResultActions;
-
 import static org.springframework.restdocs.core.RestDocumentationResultHandlers.documentCurlRequest;
 import static org.springframework.restdocs.core.RestDocumentationResultHandlers.documentCurlRequestAndResponse;
 import static org.springframework.restdocs.core.RestDocumentationResultHandlers.documentCurlResponse;
 
+import org.springframework.test.web.servlet.ResultActions;
+
 public class RestDocumentation {
 
-	public static ResultActions document(String outputDir, ResultActions resultActions)
-			throws Exception {
-		return resultActions
+	public static RestDocumentationResultActions document(String outputDir,
+			ResultActions resultActions) throws Exception {
+		return new RestDocumentationResultActions(outputDir, resultActions)
 				.andDo(documentCurlRequest(outputDir).includeResponseHeaders())
 				.andDo(documentCurlResponse(outputDir).includeResponseHeaders())
 				.andDo(documentCurlRequestAndResponse(outputDir).includeResponseHeaders());
+	}
+
+	public static LinkDescriptor linkWithRel(String rel) {
+		return new LinkDescriptor(rel);
 	}
 }

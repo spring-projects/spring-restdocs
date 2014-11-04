@@ -132,15 +132,7 @@ include::{generated}/index-example/response.asciidoc[]
 [[resources-index-links]]
 ==== Links
 
-|===
-| Relation | Description
-
-| notes
-| The <<resources-notes,Notes resource>>
-
-| tags
-| The <<resources-tags,Tags resource>>
-|===
+include::{generated}/index-example/links.asciidoc[]
 
 
 
@@ -270,15 +262,7 @@ The Note resource is used to retrieve, update, and delete individual notes
 [[resources-note-links]]
 === Links
 
-|===
-| Relation | Description
-
-| self
-| This <<resources-note,note>>
-
-| note-tags
-| This note's <<resources-note-tags,tags>>
-|===
+include::{generated}/note-get-example/links.asciidoc[]
 
 
 
@@ -347,15 +331,7 @@ The Tag resource is used to retrieve, update, and delete individual tags
 [[resources-tag-links]]
 === Links
 
-|===
-| Relation | Description
-
-| self
-| This <<resources-tag,tag>>
-
-| tagged-notes
-| The <<resources-tagged-notes,notes>> that have this tag
-|===
+include::{generated}/tag-get-example/links.asciidoc[]
 
 
 
