@@ -95,10 +95,10 @@ public class NotesController {
 	@RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
 	ResourceSupport noteTags(@PathVariable("id") long id) {
 		return new NestedContentResource<TagResource>(
-				this.tagResourceAssembler
-						.toResources(this.noteRepository.findById(id)
-								.orElseThrow(() -> new ResourceDoesNotExistException())
-								.getTags()));
+				this.tagResourceAssembler.toResources(this.noteRepository
+						.findById(id)
+						.orElseThrow(
+								() -> new ResourceDoesNotExistException()).getTags()));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
@@ -122,7 +122,7 @@ public class NotesController {
 		return tagLocations
 				.stream()
 				.map(location -> this.tagRepository.findById(extractTagId(location))
-						.orElseThrow(
+						.<IllegalArgumentException> orElseThrow(
 								() -> new IllegalArgumentException("The tag '" + location
 										+ "' does not exist")))
 				.collect(Collectors.toList());
