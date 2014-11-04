@@ -79,7 +79,7 @@ This request will produce a response with the note's details in its body:
 
 include::{generated}/get-note/response.asciidoc[]
 
-Note the `tags` link which we'll make use of later.
+Note the `note-tags` link which we'll make use of later.
 
 
 
@@ -141,7 +141,8 @@ As before, a `GET` request executed against this URI will retrieve the note's de
 
 include::{generated}/get-tagged-note/request-response.asciidoc[]
 
-To see the note's tags, execute a `GET` request against the URI of the note's tags link:
+To see the note's tags, execute a `GET` request against the URI of the note's
+`note-tags` link:
 
 include::{generated}/get-tags/request.asciidoc[]
 
@@ -163,7 +164,7 @@ This request should produce a `204 No Content` response:
 
 include::{generated}/tag-existing-note/response.asciidoc[]
 
-When we first created this note, we noted the tags link included in its details:
+When we first created this note, we noted the `note-tags` link included in its details:
 
 include::{generated}/get-note/response.asciidoc[]
 

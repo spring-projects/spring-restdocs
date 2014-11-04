@@ -35,7 +35,7 @@ public class NoteResourceAssembler extends ResourceAssemblerSupport<Note, NoteRe
 	public NoteResource toResource(Note note) {
 		NoteResource resource = createResourceWithId(note.getId(), note);
 		resource.add(linkTo(NotesController.class).slash(note.getId()).slash("tags")
-				.withRel("tags-on-note"));
+				.withRel("note-tags"));
 		return resource;
 	}
 
