@@ -53,9 +53,9 @@ public class RestDocumentationResultActions implements ResultActions {
 		return this.delegate.andReturn();
 	}
 
-	public RestDocumentationResultActions andDocumentHalLinks(LinkDescriptor... descriptors)
+	public RestDocumentationResultActions andDocumentLinks(LinkExtractor linkExtractor, LinkDescriptor... descriptors)
 			throws Exception {
-		this.delegate.andDo(new LinkDocumentingResultHandler(this.outputDir, Arrays
+		this.delegate.andDo(new LinkDocumentingResultHandler(this.outputDir, linkExtractor, Arrays
 				.asList(descriptors)));
 		return this;
 	}

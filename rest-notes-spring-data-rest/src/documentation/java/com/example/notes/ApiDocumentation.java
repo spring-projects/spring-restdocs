@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.core.RestDocumentation.document;
 import static org.springframework.restdocs.core.RestDocumentation.linkWithRel;
+import static org.springframework.restdocs.core.RestDocumentation.halLinks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -95,7 +96,8 @@ public class ApiDocumentation {
 	public void indexExample() throws Exception {
 		document("index-example",
 				this.mockMvc.perform(get("/")).andExpect(status().isOk()))
-				.andDocumentHalLinks(
+				.andDocumentLinks(
+						halLinks(),
 						linkWithRel("notes").description(
 								"The <<resources-notes,Notes resource>>"),
 						linkWithRel("tags").description(
@@ -173,7 +175,8 @@ public class ApiDocumentation {
 				.andExpect(jsonPath("body", is(note.get("body"))))
 				.andExpect(jsonPath("_links.self.href", is(noteLocation)))
 				.andExpect(jsonPath("_links.tags", is(notNullValue())))
-				.andDocumentHalLinks(
+				.andDocumentLinks(
+						halLinks(),
 						linkWithRel("self").description("This <<resources-note,note>>"),
 						linkWithRel("tags").description(
 								"This note's <<resources-note-tags,tags>>"));
@@ -261,7 +264,8 @@ public class ApiDocumentation {
 		document("tag-get-example", this.mockMvc.perform(get(tagLocation)))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("name", is(tag.get("name"))))
-				.andDocumentHalLinks(
+				.andDocumentLinks(
+						halLinks(),
 						linkWithRel("self").description("This <<resources-tag,tag>>"),
 						linkWithRel("notes")
 								.description(

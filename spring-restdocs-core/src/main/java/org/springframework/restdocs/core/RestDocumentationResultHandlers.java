@@ -240,8 +240,11 @@ public abstract class RestDocumentationResultHandlers {
 
 		private final Map<String, LinkDescriptor> descriptorsByRel = new HashMap<String, LinkDescriptor>();
 
-		public LinkDocumentingResultHandler(String outputDir, List<LinkDescriptor> descriptors) {
+		private final LinkExtractor extractor;
+
+		public LinkDocumentingResultHandler(String outputDir, LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
 			super(outputDir, "links");
+			this.extractor = linkExtractor;
 			for (LinkDescriptor descriptor: descriptors) {
 				Assert.hasText(descriptor.getRel());
 				Assert.hasText(descriptor.getDescription());
@@ -253,7 +256,7 @@ public abstract class RestDocumentationResultHandlers {
 		@Override
 		void handle(MvcResult result, DocumentationWriter writer) throws Exception {
 			Map<String, Object> json = this.objectMapper.readValue(result.getResponse().getContentAsString(), Map.class);
-			Map<String, Object> links = (Map<String, Object>) json.get("_links");
+			Map<String, Object> links = this.extractor.extractLinks(json);
 
 			Set<String> actualRels = links.keySet();
 			Set<String> expectedRels = this.descriptorsByRel.keySet();
