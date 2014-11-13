@@ -59,7 +59,8 @@ class RestDocumentationPlugin implements Plugin<Project> {
 			sourceDir = project.file 'src/documentation/asciidoc'
 			options = [
 				attributes: [
-					generated: "$project.buildDir/generated-documentation"
+					generated: new File("$project.buildDir/generated-documentation").toURI().toURL(),
+					'allow-uri-read': true
 				]
 			]
 			inputs.files restDocumentationSnippets.outputs.files
