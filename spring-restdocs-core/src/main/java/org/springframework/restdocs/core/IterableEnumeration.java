@@ -41,6 +41,11 @@ public final class IterableEnumeration<T> implements Iterable<T> {
 				return IterableEnumeration.this.enumeration.nextElement();
 			}
 
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+
 		};
 	}
 
