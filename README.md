@@ -1,10 +1,13 @@
 ## Goal
 
-The primary goal of the project is to make it easier to produce accurate documentation
-of a RESTful service using [AsciiDoctor][1] and Spring's [MVC Test Framework][2]. The
-documentation is intended to be an easily read user guide, akin to [GitHub's API
-documentation][3] for example, rather than dense API documentation produced by tools
-like [Swagger][4].
+The primary goal of the project is to make it easy to document RESTful services by
+combining content that's been hand-written using [AsciiDoctor][1] with auto-generated
+examples produced with the [Spring MVC Test][2] framework. The result is intended to
+be an easy-to-read user guide, akin to [GitHub's API documentation][3] for example,
+rather than the fully automated, dense API documentation produced by tools like
+[Swagger][4].
+
+For a broader introduction see the [Documenting RESTful APIs][9] presentation.
 
 ## Quickstart
 
@@ -27,12 +30,10 @@ $ cd rest-notes-spring-data-rest
 $ ./gradlew restDocumentation
 ```
 
-Once the build is complete, open on of the generated pieces HTML documentation:
+Once the build is complete, open one of the following:
 
-```
-open build/asciidoc/getting-started-guide.html
-open build/asciidoc/api-guide.html
-```
+- build/asciidoc/getting-started-guide.html
+- build/asciidoc/api-guide.html
 
 Every example request and response in the documentation is auto-generated using custom
 Spring MVC Test result handlers. This ensures that the examples match the service that
@@ -142,3 +143,4 @@ To learn more, take a look at the accompanying sample projects:
 [6]: http://www.methods.co.nz/asciidoc/userguide.html#_system_macros
 [7]: rest-notes-spring-data-rest
 [8]: rest-notes-spring-hateoas
+[9]: https://speakerdeck.com/ankinson/documenting-restful-apis
