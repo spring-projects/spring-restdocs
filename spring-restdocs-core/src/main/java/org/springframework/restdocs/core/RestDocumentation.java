@@ -16,36 +16,26 @@
 
 package org.springframework.restdocs.core;
 
-import static org.springframework.restdocs.core.RestDocumentationResultHandlers.documentCurlRequest;
-import static org.springframework.restdocs.core.RestDocumentationResultHandlers.documentCurlRequestAndResponse;
-import static org.springframework.restdocs.core.RestDocumentationResultHandlers.documentCurlResponse;
-
 import java.util.Map;
-
-import org.springframework.test.web.servlet.ResultActions;
 
 public class RestDocumentation {
 
-	public static RestDocumentationResultActions document(String outputDir,
-			ResultActions resultActions) throws Exception {
-		return new RestDocumentationResultActions(outputDir, resultActions)
-				.andDo(documentCurlRequest(outputDir).includeResponseHeaders())
-				.andDo(documentCurlResponse(outputDir).includeResponseHeaders())
-				.andDo(documentCurlRequestAndResponse(outputDir).includeResponseHeaders());
-	}
+    public static RestDocumentationResultHandler document(String outputDir) throws Exception {
+        return new RestDocumentationResultHandler(outputDir);
+    }
 
-	public static LinkDescriptor linkWithRel(String rel) {
-		return new LinkDescriptor(rel);
-	}
+    public static LinkDescriptor linkWithRel(String rel) {
+        return new LinkDescriptor(rel);
+    }
 
-	public static LinkExtractor halLinks() {
-		return new LinkExtractor() {
+    public static LinkExtractor halLinks() {
+        return new LinkExtractor() {
 
-			@SuppressWarnings("unchecked")
-			@Override
-			public Map<String, Object> extractLinks(Map<String, Object> responseJson) {
-				return (Map<String, Object>) responseJson.get("_links");
-			}
-		};
-	}
+            @SuppressWarnings("unchecked")
+            @Override
+            public Map<String, Object> extractLinks(Map<String, Object> responseJson) {
+                return (Map<String, Object>) responseJson.get("_links");
+            }
+        };
+    }
 }
