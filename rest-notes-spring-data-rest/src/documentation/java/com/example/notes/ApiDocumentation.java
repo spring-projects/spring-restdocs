@@ -19,8 +19,8 @@ package com.example.notes;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.core.RestDocumentation.document;
-import static org.springframework.restdocs.core.RestDocumentation.linkWithRel;
 import static org.springframework.restdocs.core.RestDocumentation.halLinks;
+import static org.springframework.restdocs.core.RestDocumentation.linkWithRel;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -76,34 +76,33 @@ public class ApiDocumentation {
 
 	@Test
 	public void errorExample() throws Exception {
-		document(
-				"error-example",
-				this.mockMvc
-						.perform(get("/error")
-								.requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 400)
-								.requestAttr(RequestDispatcher.ERROR_REQUEST_URI,
-										"/notes")
-								.requestAttr(RequestDispatcher.ERROR_MESSAGE,
-										"The tag 'http://localhost:8080/tags/123' does not exist")))
+		this.mockMvc
+				.perform(get("/error")
+						.requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 400)
+						.requestAttr(RequestDispatcher.ERROR_REQUEST_URI,
+								"/notes")
+						.requestAttr(RequestDispatcher.ERROR_MESSAGE,
+								"The tag 'http://localhost:8080/tags/123' does not exist"))
 				.andDo(print()).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("error", is("Bad Request")))
 				.andExpect(jsonPath("timestamp", is(notNullValue())))
 				.andExpect(jsonPath("status", is(400)))
-				.andExpect(jsonPath("path", is(notNullValue())));
+				.andExpect(jsonPath("path", is(notNullValue())))
+				.andDo(document("error-example"));
 	}
 
 	@Test
 	public void indexExample() throws Exception {
-		document("index-example",
-				this.mockMvc.perform(get("/")).andExpect(status().isOk()))
-				.andDocumentLinks(
-						halLinks(),
+		this.mockMvc.perform(get("/"))
+			.andExpect(status().isOk())
+			.andDo(document("index-example").withLinks(halLinks(),
 						linkWithRel("notes").description(
 								"The <<resources-notes,Notes resource>>"),
 						linkWithRel("tags").description(
 								"The <<resources-tags,Tags resource>>"),
 						linkWithRel("profile").description(
-								"The ALPS profile for the service"));
+								"The ALPS profile for the service")));
+
 	}
 
 	@Test
@@ -116,8 +115,9 @@ public class ApiDocumentation {
 				"http://stateless.co/hal_specification.html");
 		createNote("Application-Level Profile Semantics (ALPS)", "http://alps.io/spec/");
 
-		document("notes-list-example", this.mockMvc.perform(get("/notes"))).andExpect(
-				status().isOk());
+		this.mockMvc.perform(get("/notes"))
+			.andExpect(status().isOk())
+			.andDo(document("notes-list-example"));
 	}
 
 	@Test
@@ -137,12 +137,11 @@ public class ApiDocumentation {
 		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
-		document(
-				"notes-create-example",
-				this.mockMvc.perform(
-						post("/notes").contentType(MediaTypes.HAL_JSON).content(
-								this.objectMapper.writeValueAsString(note))).andExpect(
-						status().isCreated()));
+		this.mockMvc.perform(
+				post("/notes").contentType(MediaTypes.HAL_JSON).content(
+						this.objectMapper.writeValueAsString(note))).andExpect(
+				status().isCreated())
+				.andDo(document("notes-create-example"));
 	}
 
 	@Test
@@ -169,17 +168,17 @@ public class ApiDocumentation {
 				.andExpect(status().isCreated()).andReturn().getResponse()
 				.getHeader("Location");
 
-		document("note-get-example", this.mockMvc.perform(get(noteLocation)))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("title", is(note.get("title"))))
-				.andExpect(jsonPath("body", is(note.get("body"))))
-				.andExpect(jsonPath("_links.self.href", is(noteLocation)))
-				.andExpect(jsonPath("_links.tags", is(notNullValue())))
-				.andDocumentLinks(
-						halLinks(),
-						linkWithRel("self").description("This <<resources-note,note>>"),
-						linkWithRel("tags").description(
-								"This note's <<resources-note-tags,tags>>"));
+		this.mockMvc.perform(get(noteLocation))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("title", is(note.get("title"))))
+			.andExpect(jsonPath("body", is(note.get("body"))))
+			.andExpect(jsonPath("_links.self.href", is(noteLocation)))
+			.andExpect(jsonPath("_links.tags", is(notNullValue())))
+			.andDo(document("note-get-example")
+					.withLinks(halLinks(),
+							linkWithRel("self").description("This <<resources-note,note>>"),
+							linkWithRel("tags").description(
+									"This note's <<resources-note-tags,tags>>")));
 
 	}
 
@@ -192,8 +191,9 @@ public class ApiDocumentation {
 		createTag("Hypermedia");
 		createTag("HTTP");
 
-		document("tags-list-example", this.mockMvc.perform(get("/tags"))).andExpect(
-				status().isOk());
+		this.mockMvc.perform(get("/tags"))
+			.andExpect(status().isOk())
+			.andDo(document("tags-list-example"));
 	}
 
 	@Test
@@ -201,12 +201,11 @@ public class ApiDocumentation {
 		Map<String, String> tag = new HashMap<String, String>();
 		tag.put("name", "REST");
 
-		document(
-				"tags-create-example",
-				this.mockMvc.perform(
-						post("/tags").contentType(MediaTypes.HAL_JSON).content(
-								this.objectMapper.writeValueAsString(tag))).andExpect(
-						status().isCreated()));
+		this.mockMvc.perform(
+				post("/tags").contentType(MediaTypes.HAL_JSON).content(
+						this.objectMapper.writeValueAsString(tag))).andExpect(
+				status().isCreated())
+				.andDo(document("tags-create-example"));
 	}
 
 	@Test
@@ -241,12 +240,11 @@ public class ApiDocumentation {
 		Map<String, Object> noteUpdate = new HashMap<String, Object>();
 		noteUpdate.put("tags", Arrays.asList(tagLocation));
 
-		document(
-				"note-update-example",
-				this.mockMvc.perform(
-						patch(noteLocation).contentType(MediaTypes.HAL_JSON).content(
-								this.objectMapper.writeValueAsString(noteUpdate)))
-						.andExpect(status().isNoContent()));
+		this.mockMvc.perform(
+				patch(noteLocation).contentType(MediaTypes.HAL_JSON).content(
+						this.objectMapper.writeValueAsString(noteUpdate)))
+				.andExpect(status().isNoContent())
+				.andDo(document("note-update-example"));
 	}
 
 	@Test
@@ -261,16 +259,14 @@ public class ApiDocumentation {
 				.andExpect(status().isCreated()).andReturn().getResponse()
 				.getHeader("Location");
 
-		document("tag-get-example", this.mockMvc.perform(get(tagLocation)))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("name", is(tag.get("name"))))
-				.andDocumentLinks(
-						halLinks(),
+		this.mockMvc.perform(get(tagLocation))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("name", is(tag.get("name"))))
+			.andDo(document("tag-get-example").withLinks(halLinks(),
 						linkWithRel("self").description("This <<resources-tag,tag>>"),
 						linkWithRel("notes")
 								.description(
-										"The <<resources-tagged-notes,notes>> that have this tag"));
-
+										"The <<resources-tagged-notes,notes>> that have this tag")));
 	}
 
 	@Test
@@ -288,12 +284,11 @@ public class ApiDocumentation {
 		Map<String, Object> tagUpdate = new HashMap<String, Object>();
 		tagUpdate.put("name", "RESTful");
 
-		document(
-				"tag-update-example",
-				this.mockMvc.perform(
-						patch(tagLocation).contentType(MediaTypes.HAL_JSON).content(
-								this.objectMapper.writeValueAsString(tagUpdate)))
-						.andExpect(status().isNoContent()));
+		this.mockMvc.perform(
+				patch(tagLocation).contentType(MediaTypes.HAL_JSON).content(
+						this.objectMapper.writeValueAsString(tagUpdate)))
+				.andExpect(status().isNoContent())
+				.andDo(document("tag-update-example"));
 	}
 
 	private void createNote(String title, String body) {
