@@ -91,11 +91,14 @@ public void setUp() {
 The default values are `http`, `localhost`, and `8080`. You can omit the above
 configuration if these defaults meet your needs.
 
-To document a MockMvc call, wrap it in a call to `RestDocumentation.document`:
+To document a MockMvc call, you use MockMvc's `andDo` method, passing it a
+`RestDocumentationResultHandler` that can be easily obtained from
+the static `RestDocumentation.document` method:
 
 ```java
 public void getIndex() {
-	document("index", this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)));
+	this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+			.andDo(document("index"));
 }
 ```
 
