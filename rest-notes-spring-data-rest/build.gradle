@@ -17,6 +17,7 @@ apply plugin: 'eclipse'
 
 repositories {
 	mavenLocal()
+	maven { url 'https://repo.spring.io/snapshot' }
 	mavenCentral()
 }
 

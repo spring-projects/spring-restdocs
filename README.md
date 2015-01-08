@@ -10,13 +10,14 @@ For a broader introduction see the [Documenting RESTful APIs][9] presentation.
 
 ## Quickstart
 
-The project requires Java 7 or later. It's built with Gradle:
+The project requires Java 7 or later. Snapshots are published to
+`https://repo.spring.io/snapshot`. Alternatively, it can be built locally using Gradle:
 
 ```
 $ ./gradlew build install
 ```
 
-Once the main project's built, take a look at one of the two sample projects. Both
+The quickest way to get started is to look at one of the two sample projects. Both
 projects implement a RESTful service for creating tagged notes and illustrate the use
 of Maven or Gradle. The two projects have different implementations:
 `rest-notes-spring-hateoas` is implemented using Spring MVC and Spring Hateoas where as
