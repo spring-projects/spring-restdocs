@@ -1,6 +1,6 @@
-## Goal
+# Spring REST docs [![Build status][10]][11]
 
-The primary goal of the project is to make it easy to document RESTful services by
+The primary goal of this project is to make it easy to document RESTful services by
 combining content that's been hand-written with auto-generated examples produced
 with the [Spring MVC Test][2] framework. The result is intended to be an easy-to-read
 user guide, akin to [GitHub's API documentation][3] for example, rather than the fully
@@ -278,3 +278,5 @@ To learn more, take a look at the accompanying sample projects:
 [7]: rest-notes-spring-data-rest
 [8]: rest-notes-spring-hateoas
 [9]: https://speakerdeck.com/ankinson/documenting-restful-apis
+[10]: https://build.spring.io/plugins/servlet/buildStatusImage/SRD-PUB (Build status)
+[11]: https://build.spring.io/browse/SRD-PUB
