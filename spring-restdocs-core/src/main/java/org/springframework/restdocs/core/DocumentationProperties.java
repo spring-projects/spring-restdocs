@@ -21,13 +21,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.springframework.util.StringUtils;
+
 class DocumentationProperties {
 
 	private final Properties properties = new Properties();
 
 	DocumentationProperties() {
-		this.properties.putAll(System.getProperties());
-
 		InputStream stream = getClass().getClassLoader().getResourceAsStream(
 				"documentation.properties");
 		if (stream != null) {
@@ -47,11 +47,14 @@ class DocumentationProperties {
 				}
 			}
 		}
+		this.properties.putAll(System.getProperties());
 	}
 
 	File getOutputDir() {
-		return new File(this.properties.getProperty(
-				"org.springframework.restdocs.outputDir", "generated-documentation"))
-				.getAbsoluteFile();
+		String outputDir = this.properties.getProperty("org.springframework.restdocs.outputDir");
+		if (StringUtils.hasText(outputDir)) {
+			return new File(outputDir).getAbsoluteFile();
+		}
+		return null;
 	}
 }

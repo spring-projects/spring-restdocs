@@ -205,14 +205,21 @@ public abstract class RestDocumentationResultHandlers {
 			if (!outputFile.isAbsolute()) {
 				outputFile = makeAbsolute(outputFile);
 			}
-			outputFile.getParentFile().mkdirs();
-
-			return new PrintStream(new FileOutputStream(outputFile));
+			
+			if (outputFile != null) {
+				outputFile.getParentFile().mkdirs();
+				return new PrintStream(new FileOutputStream(outputFile));
+			}
+			
+			return System.out;
 		}
 
 		private static File makeAbsolute(File outputFile) {
-			return new File(new DocumentationProperties().getOutputDir(),
-					outputFile.getPath());
+			File outputDir = new DocumentationProperties().getOutputDir();
+			if (outputDir != null) {
+				return new File(outputDir, outputFile.getPath());
+			}
+			return null;
 		}
 	}
 

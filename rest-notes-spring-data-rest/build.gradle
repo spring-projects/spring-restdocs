@@ -1,26 +1,23 @@
 buildscript {
 	repositories {
-		mavenLocal()
-		maven { 
-			url 'https://repo.spring.io/libs-milestone'
-		}
+		mavenCentral()
 	}
 	dependencies {
-		classpath 'org.springframework.restdocs:spring-restdocs-gradle-plugin:0.1.0.BUILD-SNAPSHOT'
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.0.M2'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE'
 	}
+}
+
+plugins {
+	id "org.asciidoctor.convert" version "1.5.2"
 }
 
 apply plugin: 'java'
 apply plugin: 'spring-boot'
 apply plugin: 'eclipse'
-apply plugin: 'org.springframework.restdocs'
 
 repositories {
 	mavenLocal()
-	maven { 
-		url 'https://repo.spring.io/libs-milestone'
-	}
+	mavenCentral()
 }
 
 group = 'com.example'
@@ -31,10 +28,26 @@ dependencies {
 
 	runtime 'com.h2database:h2'
 
-	documentationCompile 'com.jayway.jsonpath:json-path'
-	documentationCompile 'org.springframework.boot:spring-boot-starter-test'
-	documentationCompile 'org.springframework.restdocs:spring-restdocs-core:0.1.0.BUILD-SNAPSHOT'
+	testCompile 'com.jayway.jsonpath:json-path'
+	testCompile 'org.springframework.boot:spring-boot-starter-test'
+	testCompile 'org.springframework.restdocs:spring-restdocs-core:0.1.0.BUILD-SNAPSHOT'
 
+}
+
+ext {
+	generatedDocumentation = file('build/generated-snippets')
+}
+
+test {
+	systemProperty 'org.springframework.restdocs.outputDir', generatedDocumentation
+	outputs.dir generatedDocumentation
+}
+
+asciidoctor {
+	sourceDir 'src/main/asciidoc' // Align with Maven's default location
+	attributes 'generated': generatedDocumentation
+	inputs.dir generatedDocumentation
+	dependsOn test
 }
 
 task wrapper(type: Wrapper) {

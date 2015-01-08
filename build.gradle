@@ -20,15 +20,6 @@ project(':spring-restdocs-core') {
 	}
 }
 
-project(':spring-restdocs-gradle-plugin') {
-	apply plugin: 'groovy'
-
-	dependencies {
-		compile gradleApi()
-		runtime 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.0'
-	}
-}
-
 subprojects {
 	repositories {
 		jcenter()

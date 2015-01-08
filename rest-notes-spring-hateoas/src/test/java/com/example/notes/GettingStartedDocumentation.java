@@ -23,6 +23,7 @@ import static org.springframework.restdocs.core.RestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -172,6 +173,7 @@ public class GettingStartedDocumentation {
 				.andReturn(), "note-tags");
 		this.mockMvc.perform(get(tagsLocation))
 			.andExpect(status().isOk())
+			.andDo(print())
 			.andExpect(jsonPath("_embedded.tags", hasSize(1)))
 			.andDo(document("get-tags"));
 	}
