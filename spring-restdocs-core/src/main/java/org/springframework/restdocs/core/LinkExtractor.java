@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,30 @@
 
 package org.springframework.restdocs.core;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.mock.web.MockHttpServletResponse;
+
+/**
+ * A {@code LinkExtractor} is used to extract {@link Link links} from a JSON response. The
+ * expected format of the links in the response is determined by the implementation.
+ * 
+ * @author Andy Wilkinson
+ *
+ */
 public interface LinkExtractor {
 
-	Map<String, Object> extractLinks(Map<String, Object> responseJson);
+	/**
+	 * Extract the links from the given response, returning a {@code Map} of links where
+	 * the keys are the link rels.
+	 * 
+	 * @param response The response from which the links are to be extracted
+	 * @return The extracted links, keyed by rel
+	 * @throws IOException if link extraction fails
+	 */
+	Map<String, List<Link>> extractLinks(MockHttpServletResponse response)
+			throws IOException;
 
 }

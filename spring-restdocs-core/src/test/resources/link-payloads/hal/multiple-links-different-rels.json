@@ -1,0 +1,6 @@
+{
+	"_links": {
+		"alpha": "http://alpha.example.com",
+		"bravo": "http://bravo.example.com"
+	}
+}

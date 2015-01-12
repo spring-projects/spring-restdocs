@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,6 @@ import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.util.Assert;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class RestDocumentationResultHandlers {
 
@@ -245,8 +243,6 @@ public abstract class RestDocumentationResultHandlers {
 
 	static class LinkDocumentingResultHandler extends RestDocumentationResultHandler {
 
-		private final ObjectMapper objectMapper = new ObjectMapper();
-
 		private final Map<String, LinkDescriptor> descriptorsByRel = new HashMap<String, LinkDescriptor>();
 
 		private final LinkExtractor extractor;
@@ -262,12 +258,10 @@ public abstract class RestDocumentationResultHandlers {
 			}
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		void handle(MvcResult result, DocumentationWriter writer) throws Exception {
-			Map<String, Object> json = this.objectMapper.readValue(result.getResponse()
-					.getContentAsString(), Map.class);
-			Map<String, Object> links = this.extractor.extractLinks(json);
+			Map<String, List<Link>> links = this.extractor.extractLinks(result
+					.getResponse());
 
 			Set<String> actualRels = links.keySet();
 			Set<String> expectedRels = this.descriptorsByRel.keySet();

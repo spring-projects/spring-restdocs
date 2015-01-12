@@ -1,0 +1,9 @@
+{
+	"_links": [ {
+		"rel": "alpha",
+		"href": "http://alpha.example.com/one"
+	}, {
+		"rel": "alpha",
+		"href": "http://alpha.example.com/two"
+	} ]
+}

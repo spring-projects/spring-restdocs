@@ -1,0 +1,6 @@
+{
+	"links": [ {
+		"rel": "alpha",
+		"href": "http://alpha.example.com"
+	} ]
+}
