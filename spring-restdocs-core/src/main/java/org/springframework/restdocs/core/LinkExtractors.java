@@ -24,16 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Static factory methods provided a selection of {@link LinkExtractor link extractors}
+ * Static factory methods providing a selection of {@link LinkExtractor link extractors}
  * for use when documentating a hypermedia-based API.
  *
  * @author Andy Wilkinson
- *
  */
 public class LinkExtractors {
 
@@ -56,6 +56,23 @@ public class LinkExtractors {
 	 */
 	public static LinkExtractor atomLinks() {
 		return new AtomLinkExtractor();
+	}
+
+	/**
+	 * Returns the {@code LinkExtractor} for the given {@code contentType} or {@code null}
+	 * if there is no extractor for the content type.
+	 * 
+	 * @param contentType The content type
+	 * @return The extractor for the content type, or {@code null}
+	 */
+	public static LinkExtractor extractorForContentType(String contentType) {
+		if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
+			return atomLinks();
+		}
+		else if ("application/hal+json".equals(contentType)) {
+			return halLinks();
+		}
+		return null;
 	}
 
 	private static abstract class JsonContentLinkExtractor implements LinkExtractor {

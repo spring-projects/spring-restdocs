@@ -260,8 +260,24 @@ public abstract class RestDocumentationResultHandlers {
 
 		@Override
 		void handle(MvcResult result, DocumentationWriter writer) throws Exception {
-			Map<String, List<Link>> links = this.extractor.extractLinks(result
-					.getResponse());
+			Map<String, List<Link>> links;
+			if (this.extractor != null) {
+				links = this.extractor.extractLinks(result.getResponse());
+			}
+			else {
+				String contentType = result.getResponse().getContentType();
+				LinkExtractor extractorForContentType = LinkExtractors
+						.extractorForContentType(contentType);
+				if (extractorForContentType != null) {
+					links = extractorForContentType.extractLinks(result.getResponse());
+				}
+				else {
+					throw new IllegalStateException(
+							"No LinkExtractor has been provided and one is not available for the content type "
+									+ contentType);
+				}
+
+			}
 
 			Set<String> actualRels = links.keySet();
 			Set<String> expectedRels = this.descriptorsByRel.keySet();

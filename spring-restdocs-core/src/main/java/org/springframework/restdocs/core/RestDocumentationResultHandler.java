@@ -47,6 +47,10 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		}
 	}
 
+	public RestDocumentationResultHandler withLinks(LinkDescriptor... descriptors) {
+		return withLinks(null, descriptors);
+	}
+
 	public RestDocumentationResultHandler withLinks(LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
 		this.linkDocumentingResultHandler = new LinkDocumentingResultHandler(
