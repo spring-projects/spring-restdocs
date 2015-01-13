@@ -20,7 +20,7 @@ import org.springframework.core.style.ToStringCreator;
 
 /**
  * Representation of a link used in a Hypermedia-based API
- * 
+ *
  * @author Andy Wilkinson
  */
 public class Link {
@@ -31,7 +31,7 @@ public class Link {
 
 	/**
 	 * Creates a new {@code Link} with the given {@code rel} and {@code href}
-	 * 
+	 *
 	 * @param rel The link's rel
 	 * @param href The link's href
 	 */
@@ -45,7 +45,7 @@ public class Link {
 	 * @return the link's {@code rel}
 	 */
 	public String getRel() {
-		return rel;
+		return this.rel;
 	}
 
 	/**
@@ -53,15 +53,15 @@ public class Link {
 	 * @return the link's {@code href}
 	 */
 	public String getHref() {
-		return href;
+		return this.href;
 	}
 
 	@Override
 	public int hashCode() {
 		int prime = 31;
 		int result = 1;
-		result = prime * result + href.hashCode();
-		result = prime * result + rel.hashCode();
+		result = prime * result + this.href.hashCode();
+		result = prime * result + this.rel.hashCode();
 		return result;
 	}
 
@@ -77,15 +77,16 @@ public class Link {
 			return false;
 		}
 		Link other = (Link) obj;
-		if (!href.equals(other.href)) {
+		if (!this.href.equals(other.href)) {
 			return false;
 		}
-		if (!rel.equals(other.rel)) {
+		if (!this.rel.equals(other.rel)) {
 			return false;
 		}
 		return true;
 	}
 
+	@Override
 	public String toString() {
 		return new ToStringCreator(this).append("rel", this.rel)
 				.append("href", this.href).toString();

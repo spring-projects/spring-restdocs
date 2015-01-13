@@ -38,18 +38,20 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	@Override
 	public void handle(MvcResult result) throws Exception {
-		documentCurlRequest(outputDir).includeResponseHeaders().handle(result);
-		documentCurlResponse(outputDir).includeResponseHeaders().handle(result);
-		documentCurlRequestAndResponse(outputDir).includeResponseHeaders().handle(result);
-		if (linkDocumentingResultHandler != null) {
-			linkDocumentingResultHandler.handle(result);
+		documentCurlRequest(this.outputDir).includeResponseHeaders().handle(result);
+		documentCurlResponse(this.outputDir).includeResponseHeaders().handle(result);
+		documentCurlRequestAndResponse(this.outputDir).includeResponseHeaders().handle(
+				result);
+		if (this.linkDocumentingResultHandler != null) {
+			this.linkDocumentingResultHandler.handle(result);
 		}
 	}
 
 	public RestDocumentationResultHandler withLinks(LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
-		linkDocumentingResultHandler = new LinkDocumentingResultHandler(outputDir,
-				linkExtractor, Arrays.asList(descriptors));
+		this.linkDocumentingResultHandler = new LinkDocumentingResultHandler(
+				this.outputDir, linkExtractor, Arrays.asList(descriptors));
 		return this;
 	}
+
 }

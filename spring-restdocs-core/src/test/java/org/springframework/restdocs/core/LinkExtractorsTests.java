@@ -38,7 +38,7 @@ import org.springframework.util.FileCopyUtils;
 
 /**
  * Tests for {@link LinkExtractors}.
- * 
+ *
  * @author Andy Wilkinson
  */
 @RunWith(Parameterized.class)
@@ -118,7 +118,7 @@ public class LinkExtractorsTests {
 	}
 
 	private File getPayloadFile(String name) {
-		return new File("src/test/resources/link-payloads/" + linkType + "/" + name
+		return new File("src/test/resources/link-payloads/" + this.linkType + "/" + name
 				+ ".json");
 	}
 }

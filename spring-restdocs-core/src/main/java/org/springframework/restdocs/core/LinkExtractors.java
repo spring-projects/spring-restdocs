@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Static factory methods provided a selection of {@link LinkExtractor link extractors}
  * for use when documentating a hypermedia-based API.
- * 
+ *
  * @author Andy Wilkinson
  *
  */
@@ -41,7 +41,7 @@ public class LinkExtractors {
 	 * Returns a {@code LinkExtractor} capable of extracting links in Hypermedia
 	 * Application Language (HAL) format where the links are found in a map named
 	 * {@code _links}.
-	 * 
+	 *
 	 * @return The extract for HAL-style links
 	 */
 	public static LinkExtractor halLinks() {
@@ -51,7 +51,7 @@ public class LinkExtractors {
 	/**
 	 * Returns a {@code LinkExtractor} capable of extracting links in Atom format where
 	 * the links are found in an array named {@code links}.
-	 * 
+	 *
 	 * @return The extractor for Atom-style links
 	 */
 	public static LinkExtractor atomLinks() {
@@ -62,6 +62,7 @@ public class LinkExtractors {
 
 		private final ObjectMapper objectMapper = new ObjectMapper();
 
+		@Override
 		@SuppressWarnings("unchecked")
 		public Map<String, List<Link>> extractLinks(MockHttpServletResponse response)
 				throws IOException {
@@ -83,7 +84,7 @@ public class LinkExtractors {
 			if (possibleLinks instanceof Map) {
 				Map<String, Object> links = (Map<String, Object>) possibleLinks;
 				for (Entry<String, Object> entry : links.entrySet()) {
-					String rel = (String) entry.getKey();
+					String rel = entry.getKey();
 					extractedLinks.put(rel, convertToLinks(entry.getValue(), rel));
 				}
 			}

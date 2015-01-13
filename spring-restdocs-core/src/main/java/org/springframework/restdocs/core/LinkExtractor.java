@@ -25,7 +25,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * A {@code LinkExtractor} is used to extract {@link Link links} from a JSON response. The
  * expected format of the links in the response is determined by the implementation.
- * 
+ *
  * @author Andy Wilkinson
  *
  */
@@ -34,7 +34,7 @@ public interface LinkExtractor {
 	/**
 	 * Extract the links from the given response, returning a {@code Map} of links where
 	 * the keys are the link rels.
-	 * 
+	 *
 	 * @param response The response from which the links are to be extracted
 	 * @return The extracted links, keyed by rel
 	 * @throws IOException if link extraction fails

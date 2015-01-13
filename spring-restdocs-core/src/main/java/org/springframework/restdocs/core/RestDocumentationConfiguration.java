@@ -53,10 +53,10 @@ public class RestDocumentationConfiguration extends MockMvcConfigurerAdapter {
 			@Override
 			public MockHttpServletRequest postProcessRequest(
 					MockHttpServletRequest request) {
-				request.setScheme(scheme);
-				request.setRemotePort(port);
-				request.setServerPort(port);
-				request.setRemoteHost(host);
+				request.setScheme(RestDocumentationConfiguration.this.scheme);
+				request.setRemotePort(RestDocumentationConfiguration.this.port);
+				request.setServerPort(RestDocumentationConfiguration.this.port);
+				request.setRemoteHost(RestDocumentationConfiguration.this.host);
 				return request;
 			}
 		};

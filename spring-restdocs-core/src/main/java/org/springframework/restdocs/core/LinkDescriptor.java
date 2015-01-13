@@ -32,10 +32,10 @@ public class LinkDescriptor {
 	}
 
 	String getRel() {
-		return rel;
+		return this.rel;
 	}
 
 	String getDescription() {
-		return description;
+		return this.description;
 	}
 }
