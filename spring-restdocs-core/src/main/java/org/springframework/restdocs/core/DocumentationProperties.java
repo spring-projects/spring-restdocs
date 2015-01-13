@@ -51,7 +51,8 @@ class DocumentationProperties {
 	}
 
 	File getOutputDir() {
-		String outputDir = this.properties.getProperty("org.springframework.restdocs.outputDir");
+		String outputDir = this.properties
+				.getProperty("org.springframework.restdocs.outputDir");
 		if (StringUtils.hasText(outputDir)) {
 			return new File(outputDir).getAbsoluteFile();
 		}

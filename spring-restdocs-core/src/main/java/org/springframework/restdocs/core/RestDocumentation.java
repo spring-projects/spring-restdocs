@@ -20,22 +20,23 @@ import java.util.Map;
 
 public class RestDocumentation {
 
-    public static RestDocumentationResultHandler document(String outputDir) throws Exception {
-        return new RestDocumentationResultHandler(outputDir);
-    }
+	public static RestDocumentationResultHandler document(String outputDir)
+			throws Exception {
+		return new RestDocumentationResultHandler(outputDir);
+	}
 
-    public static LinkDescriptor linkWithRel(String rel) {
-        return new LinkDescriptor(rel);
-    }
+	public static LinkDescriptor linkWithRel(String rel) {
+		return new LinkDescriptor(rel);
+	}
 
-    public static LinkExtractor halLinks() {
-        return new LinkExtractor() {
+	public static LinkExtractor halLinks() {
+		return new LinkExtractor() {
 
-            @SuppressWarnings("unchecked")
-            @Override
-            public Map<String, Object> extractLinks(Map<String, Object> responseJson) {
-                return (Map<String, Object>) responseJson.get("_links");
-            }
-        };
-    }
+			@SuppressWarnings("unchecked")
+			@Override
+			public Map<String, Object> extractLinks(Map<String, Object> responseJson) {
+				return (Map<String, Object>) responseJson.get("_links");
+			}
+		};
+	}
 }

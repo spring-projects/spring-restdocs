@@ -38,7 +38,8 @@ public class DocumentationWriter extends PrintWriter {
 		});
 	}
 
-	public void codeBlock(String language, DocumentationAction... actions) throws Exception {
+	public void codeBlock(String language, DocumentationAction... actions)
+			throws Exception {
 		println();
 		if (language != null) {
 			println("[source," + language + "]");
@@ -52,6 +53,7 @@ public class DocumentationWriter extends PrintWriter {
 	}
 
 	public interface DocumentationAction {
+
 		void perform() throws Exception;
 	}
 

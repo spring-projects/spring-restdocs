@@ -16,8 +16,8 @@
 
 package org.springframework.restdocs.core;
 
-import static org.springframework.restdocs.core.IterableEnumeration.iterable;
 import static org.junit.Assert.fail;
+import static org.springframework.restdocs.core.IterableEnumeration.iterable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,6 +47,7 @@ public abstract class RestDocumentationResultHandlers {
 
 	public static CurlResultHandler documentCurlRequest(String outputDir) {
 		return new CurlResultHandler(outputDir, "request") {
+
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
@@ -58,24 +59,26 @@ public abstract class RestDocumentationResultHandlers {
 
 	public static CurlResultHandler documentCurlResponse(String outputDir) {
 		return new CurlResultHandler(outputDir, "response") {
+
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
-				writer.codeBlock("http", new CurlResponseDocumentationAction(writer, result,
-						getCurlConfiguration()));
+				writer.codeBlock("http", new CurlResponseDocumentationAction(writer,
+						result, getCurlConfiguration()));
 			}
 		};
 	}
 
 	public static CurlResultHandler documentCurlRequestAndResponse(String outputDir) {
 		return new CurlResultHandler(outputDir, "request-response") {
+
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
 					throws Exception {
 				writer.shellCommand(new CurlRequestDocumentationAction(writer, result,
 						getCurlConfiguration()));
-				writer.codeBlock("http", new CurlResponseDocumentationAction(writer, result,
-						getCurlConfiguration()));
+				writer.codeBlock("http", new CurlResponseDocumentationAction(writer,
+						result, getCurlConfiguration()));
 			}
 		};
 	}
@@ -174,16 +177,16 @@ public abstract class RestDocumentationResultHandlers {
 	}
 
 	public static abstract class RestDocumentationResultHandler implements ResultHandler {
-		
+
 		private String outputDir;
-		
+
 		private String fileName;
 
 		public RestDocumentationResultHandler(String outputDir, String fileName) {
 			this.outputDir = outputDir;
 			this.fileName = fileName;
 		}
-		
+
 		abstract void handle(MvcResult result, DocumentationWriter writer)
 				throws Exception;
 
@@ -198,19 +201,18 @@ public abstract class RestDocumentationResultHandlers {
 			}
 		}
 
-		protected PrintStream createPrintStream()
-				throws FileNotFoundException {
-			
+		protected PrintStream createPrintStream() throws FileNotFoundException {
+
 			File outputFile = new File(this.outputDir, this.fileName + ".asciidoc");
 			if (!outputFile.isAbsolute()) {
 				outputFile = makeAbsolute(outputFile);
 			}
-			
+
 			if (outputFile != null) {
 				outputFile.getParentFile().mkdirs();
 				return new PrintStream(new FileOutputStream(outputFile));
 			}
-			
+
 			return System.out;
 		}
 
@@ -249,10 +251,11 @@ public abstract class RestDocumentationResultHandlers {
 
 		private final LinkExtractor extractor;
 
-		public LinkDocumentingResultHandler(String outputDir, LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
+		public LinkDocumentingResultHandler(String outputDir,
+				LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
 			super(outputDir, "links");
 			this.extractor = linkExtractor;
-			for (LinkDescriptor descriptor: descriptors) {
+			for (LinkDescriptor descriptor : descriptors) {
 				Assert.hasText(descriptor.getRel());
 				Assert.hasText(descriptor.getDescription());
 				this.descriptorsByRel.put(descriptor.getRel(), descriptor);
@@ -262,7 +265,8 @@ public abstract class RestDocumentationResultHandlers {
 		@SuppressWarnings("unchecked")
 		@Override
 		void handle(MvcResult result, DocumentationWriter writer) throws Exception {
-			Map<String, Object> json = this.objectMapper.readValue(result.getResponse().getContentAsString(), Map.class);
+			Map<String, Object> json = this.objectMapper.readValue(result.getResponse()
+					.getContentAsString(), Map.class);
 			Map<String, Object> links = this.extractor.extractLinks(json);
 
 			Set<String> actualRels = links.keySet();
@@ -277,10 +281,12 @@ public abstract class RestDocumentationResultHandlers {
 			if (!undocumentedRels.isEmpty() || !missingRels.isEmpty()) {
 				String message = "";
 				if (!undocumentedRels.isEmpty()) {
-					message += "Links with the following relations were not documented: " + undocumentedRels;
+					message += "Links with the following relations were not documented: "
+							+ undocumentedRels;
 				}
 				if (!missingRels.isEmpty()) {
-					message += "Links with the following relations were not found in the response: " + missingRels;
+					message += "Links with the following relations were not found in the response: "
+							+ missingRels;
 				}
 				fail(message);
 			}

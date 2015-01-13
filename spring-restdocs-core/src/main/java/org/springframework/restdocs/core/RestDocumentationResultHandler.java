@@ -28,25 +28,28 @@ import org.springframework.test.web.servlet.ResultHandler;
 
 public class RestDocumentationResultHandler implements ResultHandler {
 
-    private final String outputDir;
-    private ResultHandler linkDocumentingResultHandler;
+	private final String outputDir;
 
-    public RestDocumentationResultHandler(String outputDir) {
-        this.outputDir = outputDir;
-    }
+	private ResultHandler linkDocumentingResultHandler;
 
-    @Override
-    public void handle(MvcResult result) throws Exception {
-        documentCurlRequest(outputDir).includeResponseHeaders().handle(result);
-        documentCurlResponse(outputDir).includeResponseHeaders().handle(result);
-        documentCurlRequestAndResponse(outputDir).includeResponseHeaders().handle(result);
-        if(linkDocumentingResultHandler != null) {
-            linkDocumentingResultHandler.handle(result);
-        }
-    }
+	public RestDocumentationResultHandler(String outputDir) {
+		this.outputDir = outputDir;
+	}
 
-    public RestDocumentationResultHandler withLinks(LinkExtractor linkExtractor, LinkDescriptor... descriptors) {
-        linkDocumentingResultHandler = new LinkDocumentingResultHandler(outputDir, linkExtractor, Arrays.asList(descriptors));
-        return this;
-    }
+	@Override
+	public void handle(MvcResult result) throws Exception {
+		documentCurlRequest(outputDir).includeResponseHeaders().handle(result);
+		documentCurlResponse(outputDir).includeResponseHeaders().handle(result);
+		documentCurlRequestAndResponse(outputDir).includeResponseHeaders().handle(result);
+		if (linkDocumentingResultHandler != null) {
+			linkDocumentingResultHandler.handle(result);
+		}
+	}
+
+	public RestDocumentationResultHandler withLinks(LinkExtractor linkExtractor,
+			LinkDescriptor... descriptors) {
+		linkDocumentingResultHandler = new LinkDocumentingResultHandler(outputDir,
+				linkExtractor, Arrays.asList(descriptors));
+		return this;
+	}
 }
