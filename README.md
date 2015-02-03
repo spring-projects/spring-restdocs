@@ -98,10 +98,12 @@ ext {
 Configure the `test` task with a system property to control the location to which the
 snippets are generated:
 
+```groovy
 test {
 	systemProperty 'org.springframework.restdocs.outputDir', generatedDocumentation
 	outputs.dir generatedDocumentation
 }
+```
 
 Configure the `asciidoctor` task. The `generated` attribute is used to provide easy
 access to the generated snippets:
