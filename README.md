@@ -71,7 +71,7 @@ Both Maven and Gradle are supported.
 You can look at either samples' `build.gradle` file to see the required configuration.
 The key parts are described below.
 
-Configure the AsciiDoctor plugin:
+Configure the Asciidoctor plugin:
 
 ```groovy
 plugins {
@@ -151,7 +151,7 @@ the snippets are generated:
 </plugin>
 ```
 
-Configure the AsciiDoctor plugin. The `generated` attribute is used to provide easy
+Configure the Asciidoctor plugin. The `generated` attribute is used to provide easy
 access to the generated snippets:
 
 ```xml
@@ -232,8 +232,8 @@ Producing high-quality, easily readable documentation is difficult and the proce
 only made harder by trying to write the documentation in an ill-suited format such as
 Java annotations. This project addresses this by allowing you to write the bulk of
 your documentation's text using [Asciidoctor][1]. The default location for source files
-depends on whether you're using Maven or Gradle. By default, AsciiDoctor's Maven plugin
-looks in `src/main/asciidoc`, whereas the AsciiDoctor Gradle plugin looks in
+depends on whether you're using Maven or Gradle. By default, Asciidoctor's Maven plugin
+looks in `src/main/asciidoc`, whereas the Asciidoctor Gradle plugin looks in
 `src/docs/asciidoc`
 
 To include the programmatically generated snippets in your documentation, you use
