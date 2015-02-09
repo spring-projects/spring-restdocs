@@ -25,12 +25,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -81,7 +77,10 @@ public abstract class RestDocumentationResultHandlers {
 		};
 	}
 
-	private static final class CurlRequestDocumentationAction implements
+	/**
+	 * package visibility for tests
+	 */
+	static final class CurlRequestDocumentationAction implements
 			DocumentationAction {
 
 		private final DocumentationWriter writer;
@@ -100,9 +99,9 @@ public abstract class RestDocumentationResultHandlers {
 		@Override
 		public void perform() throws Exception {
 			MockHttpServletRequest request = this.result.getRequest();
-			this.writer.print(String.format("curl %s://%s:%d%s", request.getScheme(),
+			this.writer.print(String.format("curl %s://%s:%d%s%s", request.getScheme(),
 					request.getRemoteHost(), request.getRemotePort(),
-					request.getRequestURI()));
+					request.getRequestURI(), queryParamsToString(request)));
 
 			if (this.curlConfiguration.includeResponseHeaders) {
 				this.writer.print(" -i");
@@ -125,6 +124,44 @@ public abstract class RestDocumentationResultHandlers {
 			}
 
 			this.writer.println();
+		}
+
+		/**
+		 * returns query parameter representation in request e.g<br>
+		 * <code>?firstParam=firstValue&secondParam&thirdParam=thirdValue</code>
+		 * <br><br>
+		 * package visibility for tests
+		 */
+		String queryParamsToString(MockHttpServletRequest request) {
+
+			Enumeration<String> parameterNames = request.getParameterNames();
+
+			if(!parameterNames.hasMoreElements()){
+				return "";
+			}
+
+			StringBuilder sb = new StringBuilder("?");
+
+			while (parameterNames.hasMoreElements()){
+
+				String name = parameterNames.nextElement();
+
+				sb.append(name);
+
+				Object value = request.getParameter(name);
+				if(value != null){
+					sb.append("=");
+					sb.append(value);
+				}
+
+				if(parameterNames.hasMoreElements()){
+					sb.append("&");
+				}
+
+			}
+
+			return sb.toString();
+
 		}
 
 		private String getContent(MockHttpServletRequest request) throws IOException {
