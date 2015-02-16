@@ -42,10 +42,10 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 	}
 
 	protected abstract void handle(MvcResult result, DocumentationWriter writer)
-			throws Exception;
+			throws IOException;
 
 	@Override
-	public void handle(MvcResult result) throws Exception {
+	public void handle(MvcResult result) throws IOException {
 		Writer writer = createWriter();
 		try {
 			handle(result, new AsciidoctorWriter(writer));
@@ -62,6 +62,11 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 		}
 
 		if (outputFile != null) {
+			File parent = outputFile.getParentFile();
+			if (!parent.isDirectory() && !parent.mkdirs()) {
+				throw new IllegalStateException("Failed to create directory '" + parent
+						+ "'");
+			}
 			outputFile.getParentFile().mkdirs();
 			return new FileWriter(outputFile);
 		}

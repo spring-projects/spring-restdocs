@@ -18,6 +18,7 @@ package org.springframework.restdocs.hypermedia;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,7 +55,8 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 	}
 
 	@Override
-	protected void handle(MvcResult result, DocumentationWriter writer) throws Exception {
+	protected void handle(MvcResult result, DocumentationWriter writer)
+			throws IOException {
 		Map<String, List<Link>> links;
 		if (this.extractor != null) {
 			links = this.extractor.extractLinks(result.getResponse());

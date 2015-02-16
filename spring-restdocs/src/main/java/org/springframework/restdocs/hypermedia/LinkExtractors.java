@@ -95,9 +95,9 @@ public abstract class LinkExtractors {
 		protected abstract Map<String, List<Link>> extractLinks(Map<String, Object> json);
 	}
 
+	@SuppressWarnings("unchecked")
 	private static class HalLinkExtractor extends JsonContentLinkExtractor {
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public Map<String, List<Link>> extractLinks(Map<String, Object> json) {
 			Map<String, List<Link>> extractedLinks = new HashMap<>();
@@ -112,7 +112,6 @@ public abstract class LinkExtractors {
 			return extractedLinks;
 		}
 
-		@SuppressWarnings("unchecked")
 		private static List<Link> convertToLinks(Object object, String rel) {
 			List<Link> links = new ArrayList<>();
 			if (object instanceof Collection) {
@@ -141,9 +140,9 @@ public abstract class LinkExtractors {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static class AtomLinkExtractor extends JsonContentLinkExtractor {
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public Map<String, List<Link>> extractLinks(Map<String, Object> json) {
 			Map<String, List<Link>> extractedLinks = new HashMap<>();

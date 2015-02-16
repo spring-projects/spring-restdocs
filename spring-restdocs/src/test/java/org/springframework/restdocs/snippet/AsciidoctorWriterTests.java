@@ -18,12 +18,11 @@ package org.springframework.restdocs.snippet;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
 import org.junit.Test;
-import org.springframework.restdocs.snippet.AsciidoctorWriter;
-import org.springframework.restdocs.snippet.DocumentationWriter;
 import org.springframework.restdocs.snippet.DocumentationWriter.DocumentationAction;
 
 /**
@@ -42,7 +41,7 @@ public class AsciidoctorWriterTests {
 		this.documentationWriter.codeBlock("java", new DocumentationAction() {
 
 			@Override
-			public void perform() throws Exception {
+			public void perform() throws IOException {
 				AsciidoctorWriterTests.this.documentationWriter.println("foo");
 			}
 		});
@@ -56,7 +55,7 @@ public class AsciidoctorWriterTests {
 		this.documentationWriter.shellCommand(new DocumentationAction() {
 
 			@Override
-			public void perform() throws Exception {
+			public void perform() throws IOException {
 				AsciidoctorWriterTests.this.documentationWriter.println("foo");
 			}
 		});

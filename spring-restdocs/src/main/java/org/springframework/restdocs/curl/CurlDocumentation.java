@@ -52,7 +52,7 @@ public abstract class CurlDocumentation {
 
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
-					throws Exception {
+					throws IOException {
 				writer.shellCommand(new CurlRequestDocumentationAction(writer, result,
 						getCurlConfiguration()));
 			}
@@ -71,7 +71,7 @@ public abstract class CurlDocumentation {
 
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
-					throws Exception {
+					throws IOException {
 				writer.codeBlock("http", new CurlResponseDocumentationAction(writer,
 						result, getCurlConfiguration()));
 			}
@@ -90,7 +90,7 @@ public abstract class CurlDocumentation {
 
 			@Override
 			public void handle(MvcResult result, DocumentationWriter writer)
-					throws Exception {
+					throws IOException {
 				writer.shellCommand(new CurlRequestDocumentationAction(writer, result,
 						getCurlConfiguration()));
 				writer.codeBlock("http", new CurlResponseDocumentationAction(writer,
@@ -116,7 +116,7 @@ public abstract class CurlDocumentation {
 		}
 
 		@Override
-		public void perform() throws Exception {
+		public void perform() throws IOException {
 			MockHttpServletRequest request = this.result.getRequest();
 			this.writer.print(String.format("curl %s://%s:%d%s", request.getScheme(),
 					request.getRemoteHost(), request.getRemotePort(),
@@ -169,7 +169,7 @@ public abstract class CurlDocumentation {
 		}
 
 		@Override
-		public void perform() throws Exception {
+		public void perform() throws IOException {
 			if (this.curlConfiguration.isIncludeResponseHeaders()) {
 				HttpStatus status = HttpStatus.valueOf(this.result.getResponse()
 						.getStatus());

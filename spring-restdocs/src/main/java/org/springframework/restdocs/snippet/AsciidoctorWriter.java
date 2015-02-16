@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.snippet;
 
+import java.io.IOException;
 import java.io.Writer;
 
 /**
@@ -35,11 +36,11 @@ public class AsciidoctorWriter extends DocumentationWriter {
 	}
 
 	@Override
-	public void shellCommand(final DocumentationAction action) throws Exception {
+	public void shellCommand(final DocumentationAction action) throws IOException {
 		codeBlock("bash", new DocumentationAction() {
 
 			@Override
-			public void perform() throws Exception {
+			public void perform() throws IOException {
 				AsciidoctorWriter.this.print("$ ");
 				action.perform();
 			}
@@ -47,7 +48,7 @@ public class AsciidoctorWriter extends DocumentationWriter {
 	}
 
 	@Override
-	public void codeBlock(String language, DocumentationAction action) throws Exception {
+	public void codeBlock(String language, DocumentationAction action) throws IOException {
 		println();
 		if (language != null) {
 			println("[source," + language + "]");

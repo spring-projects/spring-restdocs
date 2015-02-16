@@ -37,8 +37,15 @@ public abstract class CurlSnippetResultHandler extends SnippetWritingResultHandl
 		return this.curlConfiguration;
 	}
 
-	public CurlSnippetResultHandler includeResponseHeaders() {
-		this.curlConfiguration.setIncludeResponseHeaders(true);
+	/**
+	 * Specify whether or not the generated cURL snippets should have contents as if cURL
+	 * had been invoked with {@code -i, --include}.
+	 * 
+	 * @param include {@code true} to use {@code -i, --include}, otherwise false
+	 * @return {@code this}
+	 */
+	public CurlSnippetResultHandler includeResponseHeaders(boolean include) {
+		this.curlConfiguration.setIncludeResponseHeaders(include);
 		return this;
 	}
 }

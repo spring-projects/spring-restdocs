@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.snippet;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 
@@ -37,9 +38,9 @@ public abstract class DocumentationWriter extends PrintWriter {
 	 * called the action, any necessary suffix is then written.
 	 * 
 	 * @param action the action that will produce the shell command
-	 * @throws Exception if the documentation fails
+	 * @throws IOException if the documentation fails
 	 */
-	public abstract void shellCommand(DocumentationAction action) throws Exception;
+	public abstract void shellCommand(DocumentationAction action) throws IOException;
 
 	/**
 	 * Calls the given {@code action} to document a code block. The code block will be
@@ -49,10 +50,10 @@ public abstract class DocumentationWriter extends PrintWriter {
 	 * 
 	 * @param language the language in which the code is written
 	 * @param action the action that will produce the code
-	 * @throws Exception if the documentation fails
+	 * @throws IOException if the documentation fails
 	 */
 	public abstract void codeBlock(String language, DocumentationAction action)
-			throws Exception;
+			throws IOException;
 
 	/**
 	 * Encapsulates an action that outputs some documentation. Typically implemented as a
@@ -67,8 +68,8 @@ public abstract class DocumentationWriter extends PrintWriter {
 		/**
 		 * Perform the encapsulated action
 		 * 
-		 * @throws Exception if the action fails
+		 * @throws IOException if the action fails
 		 */
-		void perform() throws Exception;
+		void perform() throws IOException;
 	}
 }
