@@ -33,7 +33,7 @@ To see the sample project's documentation, move into its directory and use Gradl
 build it. For example:
 
 ```
-$ cd rest-notes-spring-data-rest
+$ cd samples/rest-notes-spring-data-rest
 $ ./gradlew asciidoctor
 ```
 
@@ -48,7 +48,7 @@ To see the sample project's documentation, move into its directory and use Maven
 it. For example:
 
 ```
-$ cd rest-notes-spring-hateoas
+$ cd samples/rest-notes-spring-hateoas
 $ mvn package
 ```
 
@@ -333,8 +333,8 @@ To learn more, take a look at the accompanying sample projects:
 [4]: http://swagger.io
 [5]: http://plugins.gradle.org/plugin/org.asciidoctor.gradle.asciidoctor
 [6]: http://www.methods.co.nz/asciidoc/userguide.html#_system_macros
-[7]: rest-notes-spring-data-rest
-[8]: rest-notes-spring-hateoas
+[7]: samples/rest-notes-spring-data-rest
+[8]: samples/rest-notes-spring-hateoas
 [9]: https://speakerdeck.com/ankinson/documenting-restful-apis
 [10]: https://build.spring.io/plugins/servlet/buildStatusImage/SRD-PUB (Build status)
 [11]: https://build.spring.io/browse/SRD-PUB
