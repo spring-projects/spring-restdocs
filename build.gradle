@@ -2,6 +2,7 @@ project(':spring-restdocs') {
 
 	ext {
 		jacksonVersion = '2.3.4'
+		jacocoVersion = '0.7.2.201409121644'
 		junitVersion = '4.11'
 		servletApiVersion = '3.1.0'
 		springVersion = '4.1.4.RELEASE'
@@ -12,6 +13,22 @@ project(':spring-restdocs') {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
 	apply plugin: 'maven'
+	apply plugin: 'sonar-runner'
+
+	sonarRunner {
+		sonarProperties {
+			property 'sonar.jacoco.reportPath', "${buildDir.name}/jacoco.exec"
+			property 'sonar.java.coveragePlugin', 'jacoco'
+			property 'sonar.links.ci', 'https://build.spring.io/browse/SRD'
+			property 'sonar.links.homepage', 'https://github.com/spring-projects/spring-restdocs'
+			property 'sonar.links.issue', 'https://github.com/spring-projects/spring-restdocs'
+			property 'sonar.links.scm', 'https://github.com/spring-projects/spring-restdocs'
+		}
+	}
+
+	configurations {
+		jacoco
+	}
 
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
@@ -44,6 +61,11 @@ project(':spring-restdocs') {
 		compile "org.springframework:spring-web:$springVersion"
 		compile "javax.servlet:javax.servlet-api:$servletApiVersion"
 		compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+		jacoco "org.jacoco:org.jacoco.agent:$jacocoVersion:runtime"
+	}
+
+	test {
+		jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*"
 	}
 }
 
