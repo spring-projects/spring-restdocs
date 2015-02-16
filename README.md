@@ -6,7 +6,8 @@ with the [Spring MVC Test][2] framework. The result is intended to be an easy-to
 user guide, akin to [GitHub's API documentation][3] for example, rather than the fully
 automated, dense API documentation produced by tools like [Swagger][4].
 
-For a broader introduction see the [Documenting RESTful APIs][9] presentation.
+For a broader introduction see the Documenting RESTful APIs presentation. Both the
+[slides][9] and a [video recording][13] are available.
 
 ## Quickstart
 
@@ -335,7 +336,8 @@ To learn more, take a look at the accompanying sample projects:
 [6]: http://www.methods.co.nz/asciidoc/userguide.html#_system_macros
 [7]: samples/rest-notes-spring-data-rest
 [8]: samples/rest-notes-spring-hateoas
-[9]: https://speakerdeck.com/ankinson/documenting-restful-apis
+[9]: https://speakerdeck.com/ankinson/documenting-restful-apis-webinar
 [10]: https://build.spring.io/plugins/servlet/buildStatusImage/SRD-PUB (Build status)
 [11]: https://build.spring.io/browse/SRD-PUB
 [12]: http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-spring-mvc-static-content
+[13]: https://www.youtube.com/watch?v=knH5ihPNiUs&feature=youtu.be
