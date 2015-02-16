@@ -117,6 +117,21 @@ asciidoctor {
 
 ```
 
+You may want to include the generated documentation in your project's jar file, for
+example to have it [served as static content by Spring Boot][12]. You can do so by
+configuring the `jar` task to depend on the `asciidoctor` task and to copy the
+generated documentation into the jar's `static` directory:
+
+```groovy
+jar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
+}
+
+```
+
 #### Maven configuration
 
 You can look at either samples' `pom.xml` file to see the required configuration. The key
@@ -176,7 +191,48 @@ access to the generated snippets:
 		</execution>
 	</executions>
 </plugin>
+```
 
+You may want to include the generated documentation in your project's jar file, for
+example to have it [served as static content by Spring Boot][12]. You can do so by
+changing the configuration of the Asciidoctor plugin so that it runs in the
+`prepare-package` phase and then configuring Maven's resources plugin to copy the
+generated documentation into a location where it'll be included in the project's jar:
+
+```xml
+<plugin>
+	<groupId>org.asciidoctor</groupId>
+	<artifactId>asciidoctor-maven-plugin</artifactId>
+	<version>1.5.2</version>
+	<executions>
+		<execution>
+			<id>generate-docs</id>
+			<phase>prepare-package</phase>
+			<!-- … -->
+		</execution>
+	</executions>
+</plugin>
+<plugin>
+	<artifactId>maven-resources-plugin</artifactId>
+	<version>2.7</version>
+	<executions>
+		<execution>
+			<id>copy-resources</id>
+			<phase>prepare-package</phase>
+			<goals>
+				<goal>copy-resources</goal>
+			</goals>
+			<configuration>
+				<outputDirectory>${project.build.outputDirectory}/static/docs</outputDirectory>
+				<resources>
+					<resource>
+						<directory>${project.build.directory}/generated-docs</directory>
+					</resource>
+				</resources>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
 ```
 
 ### Programatically generated snippets
@@ -282,3 +338,4 @@ To learn more, take a look at the accompanying sample projects:
 [9]: https://speakerdeck.com/ankinson/documenting-restful-apis
 [10]: https://build.spring.io/plugins/servlet/buildStatusImage/SRD-PUB (Build status)
 [11]: https://build.spring.io/browse/SRD-PUB
+[12]: http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-spring-mvc-static-content
