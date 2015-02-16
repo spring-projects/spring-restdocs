@@ -1,32 +1,24 @@
-allprojects {
-	ext {
-		springVersion = '4.1.1.RELEASE'
-	}
-	group = 'org.springframework.restdocs'
-}
+project(':spring-restdocs') {
 
-project(':spring-restdocs-core') {
+	ext {
+		jacksonVersion = '2.3.4'
+		junitVersion = '4.11'
+		servletApiVersion = '3.1.0'
+		springVersion = '4.1.4.RELEASE'
+	}
+
+	group = 'org.springframework.restdocs'
+
 	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'maven'
 
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
 
-	dependencies {
-		compile 'junit:junit:4.11'
-		compile "org.springframework:spring-test:$springVersion"
-		compile "org.springframework:spring-web:$springVersion"
-		compile 'javax.servlet:javax.servlet-api:3.1.0'
-		compile 'com.fasterxml.jackson.core:jackson-databind:2.3.4'
-	}
-}
-
-subprojects {
 	repositories {
 		jcenter()
 	}
-
-	apply plugin: 'eclipse'
-	apply plugin: 'maven'
 
 	task sourcesJar(type: Jar) {
 		classifier = 'sources'
@@ -45,4 +37,57 @@ subprojects {
 
 	eclipseJdt.onlyIf { false }
 	cleanEclipseJdt.onlyIf { false }
+
+	dependencies {
+		compile "junit:junit:$junitVersion"
+		compile "org.springframework:spring-test:$springVersion"
+		compile "org.springframework:spring-web:$springVersion"
+		compile "javax.servlet:javax.servlet-api:$servletApiVersion"
+		compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+	}
+}
+
+task buildSamples {
+	description = 'Assembles and tests the sample projects using both Maven and Gradle'
+	group = 'Build'
+	dependsOn 'buildMavenSamples'
+	dependsOn 'buildGradleSamples'
+}
+
+task buildMavenSamples {
+	dependsOn 'buildRestNotesSpringHateoasSampleWithMaven'
+	dependsOn 'buildRestNotesSpringDataRestSampleWithMaven'
+}
+
+task buildGradleSamples {
+	dependsOn 'buildRestNotesSpringHateoasSampleWithGradle'
+	dependsOn 'buildRestNotesSpringDataRestSampleWithGradle'
+}
+
+task buildRestNotesSpringHateoasSampleWithGradle(type: GradleBuild) {
+	dependsOn 'spring-restdocs:install'
+	dir = 'samples/rest-notes-spring-hateoas'
+	tasks = ['clean', 'build']
+}
+
+task buildRestNotesSpringDataRestSampleWithGradle(type: GradleBuild) {
+	dependsOn 'spring-restdocs:install'
+	dir = 'samples/rest-notes-spring-data-rest'
+	tasks = ['clean', 'build']
+}
+
+task buildRestNotesSpringHateoasSampleWithMaven(type: Exec) {
+	dependsOn 'spring-restdocs:install'
+	workingDir 'samples/rest-notes-spring-hateoas'
+	commandLine 'mvn', 'clean', 'package'
+}
+
+task buildRestNotesSpringDataRestSampleWithMaven(type: Exec) {
+	dependsOn 'spring-restdocs:install'
+	workingDir 'samples/rest-notes-spring-data-rest'
+	commandLine 'mvn', 'clean', 'package'
+}
+
+wrapper {
+	gradleVersion = '2.2'
 }
