@@ -26,7 +26,7 @@ import java.util.Iterator;
  *
  * @param <T> the type of the Enumeration's contents
  */
-public class IterableEnumeration<T> implements Iterable<T> {
+public final class IterableEnumeration<T> implements Iterable<T> {
 
 	private final Enumeration<T> enumeration;
 
