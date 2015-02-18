@@ -67,7 +67,6 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 				throw new IllegalStateException("Failed to create directory '" + parent
 						+ "'");
 			}
-			outputFile.getParentFile().mkdirs();
 			return new FileWriter(outputFile);
 		}
 
