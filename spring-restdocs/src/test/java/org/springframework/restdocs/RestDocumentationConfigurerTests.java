@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.core;
+package org.springframework.restdocs;
 
 import static org.junit.Assert.assertEquals;
 
