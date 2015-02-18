@@ -62,6 +62,7 @@ project(':spring-restdocs') {
 		compile "javax.servlet:javax.servlet-api:$servletApiVersion"
 		compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 		jacoco "org.jacoco:org.jacoco.agent:$jacocoVersion:runtime"
+		testCompile "org.springframework:spring-webmvc:$springVersion"
 	}
 
 	test {
