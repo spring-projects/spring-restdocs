@@ -283,6 +283,13 @@ be written:
  - `index/response.asciidoc`
  - `index/request-response.asciidoc`
 
+#### Pretty-printed snippets
+
+To improve the readability of the generated snippets you may want to configure your
+application to produce JSON that has been pretty-printed. If you are a Spring Boot
+user you can do so by setting the `spring.jackson.serialization.indent_output` property
+to `true`.
+
 ### Hand-written documentation
 
 Producing high-quality, easily readable documentation is difficult and the process is
