@@ -80,11 +80,11 @@ plugins {
 }
 ```
 
-Add a dependency on `spring-restdocs-core` in the `testCompile` configuration:
+Add a dependency on `spring-restdocs` in the `testCompile` configuration:
 
 ```groovy
 dependencies {
-	testCompile 'org.springframework.restdocs:spring-restdocs-core:0.1.0.BUILD-SNAPSHOT'
+	testCompile 'org.springframework.restdocs:spring-restdocs:0.1.0.BUILD-SNAPSHOT'
 }
 ```
 
@@ -138,12 +138,12 @@ jar {
 You can look at either samples' `pom.xml` file to see the required configuration. The key
 parts are described below:
 
-Add a dependency on `spring-restdocs-core` in the `test` scope:
+Add a dependency on `spring-restdocs` in the `test` scope:
 
 ```xml
 <dependency>
 	<groupId>org.springframework.restdocs</groupId>
-	<artifactId>spring-restdocs-core</artifactId>
+	<artifactId>spring-restdocs</artifactId>
 	<version>0.1.0.BUILD-SNAPSHOT</version>
 	<scope>test</scope>
 </dependency>
