@@ -1,0 +1,19 @@
+{
+	"alpha": "alpha-value",
+	"bravo": 123,
+	"charlie": {
+		"one": 456,
+		"two": "two-value"
+	},
+	"delta": [
+		"delta-value-1",
+		"delta-value-2"
+	],
+	"echo": [{
+		"one": 789,
+		"two": "two-value"
+		},{
+		"one": 987,
+		"two": "value-two"
+	}]
+}

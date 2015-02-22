@@ -20,6 +20,8 @@ import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRe
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequestAndResponse;
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlResponse;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
+import static org.springframework.restdocs.state.StateDocumentation.documentRequestFields;
+import static org.springframework.restdocs.state.StateDocumentation.documentResponseFields;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,9 @@ import org.springframework.restdocs.hypermedia.HypermediaDocumentation;
 import org.springframework.restdocs.hypermedia.LinkDescriptor;
 import org.springframework.restdocs.hypermedia.LinkExtractor;
 import org.springframework.restdocs.hypermedia.LinkExtractors;
+import org.springframework.restdocs.state.FieldDescriptor;
+import org.springframework.restdocs.state.Path;
+import org.springframework.restdocs.state.StateDocumentation;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
 
@@ -35,6 +40,7 @@ import org.springframework.test.web.servlet.ResultHandler;
  * A Spring MVC Test {@code ResultHandler} for documenting RESTful APIs.
  * 
  * @author Andy Wilkinson
+ * @author Andreas Evers
  * @see RestDocumentation#document(String)
  */
 public class RestDocumentationResultHandler implements ResultHandler {
@@ -94,6 +100,44 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	public RestDocumentationResultHandler withLinks(LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
 		this.delegates.add(documentLinks(this.outputDir, linkExtractor, descriptors));
+		return this;
+	}
+
+	/**
+	 * Document the fields in the response using the given {@code descriptors}. The fields
+	 * are extracted from the response based on its content type.
+	 * <p>
+	 * If a field is present in the response but is not described by one of the
+	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
+	 * field is described but is not present in the response a failure will also occur
+	 * when this handler is invoked.
+	 * 
+	 * @param descriptors the link descriptors
+	 * @return {@code this}
+	 * @see StateDocumentation#fieldWithPath(Path)
+	 */
+	public RestDocumentationResultHandler withRequestFields(
+			FieldDescriptor... descriptors) {
+		this.delegates.add(documentRequestFields(this.outputDir, descriptors));
+		return this;
+	}
+
+	/**
+	 * Document the fields in the response using the given {@code descriptors}. The fields
+	 * are extracted from the response based on its content type.
+	 * <p>
+	 * If a field is present in the response but is not described by one of the
+	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
+	 * field is described but is not present in the response a failure will also occur
+	 * when this handler is invoked.
+	 * 
+	 * @param descriptors the link descriptors
+	 * @return {@code this}
+	 * @see StateDocumentation#fieldWithPath(Path)
+	 */
+	public RestDocumentationResultHandler withResponseFields(
+			FieldDescriptor... descriptors) {
+		this.delegates.add(documentResponseFields(this.outputDir, descriptors));
 		return this;
 	}
 
