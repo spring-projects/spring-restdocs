@@ -21,6 +21,8 @@ import static org.springframework.restdocs.util.IterableEnumeration.iterable;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.snippet.DocumentationWriter;
@@ -102,6 +104,14 @@ public abstract class CurlDocumentation {
 	private static final class CurlRequestDocumentationAction implements
 			DocumentationAction {
 
+		private static final String SCHEME_HTTP = "http";
+
+		private static final String SCHEME_HTTPS = "https";
+
+		private static final int STANDARD_PORT_HTTP = 80;
+
+		private static final int STANDARD_PORT_HTTPS = 443;
+
 		private final DocumentationWriter writer;
 
 		private final MvcResult result;
@@ -118,9 +128,14 @@ public abstract class CurlDocumentation {
 		@Override
 		public void perform() throws IOException {
 			MockHttpServletRequest request = this.result.getRequest();
-			this.writer.print(String.format("curl %s://%s:%d%s", request.getScheme(),
-					request.getRemoteHost(), request.getRemotePort(),
-					getRequestUriWithQueryString(request)));
+			this.writer.print(String.format("curl %s://%s", request.getScheme(),
+					request.getRemoteHost()));
+
+			if (isNonStandardPort(request)) {
+				this.writer.print(String.format(":%d", request.getRemotePort()));
+			}
+
+			this.writer.print(getRequestUriWithQueryString(request));
 
 			if (this.curlConfiguration.isIncludeResponseHeaders()) {
 				this.writer.print(" -i");
@@ -145,7 +160,13 @@ public abstract class CurlDocumentation {
 			this.writer.println();
 		}
 
-		private String getRequestUriWithQueryString(MockHttpServletRequest request) {
+		private boolean isNonStandardPort(HttpServletRequest request) {
+			return (SCHEME_HTTP.equals(request.getScheme()) && request.getRemotePort() != STANDARD_PORT_HTTP)
+					|| (SCHEME_HTTPS.equals(request.getScheme()) && request
+							.getRemotePort() != STANDARD_PORT_HTTPS);
+		}
+
+		private String getRequestUriWithQueryString(HttpServletRequest request) {
 			return request.getQueryString() != null ? request.getRequestURI() + "?"
 					+ request.getQueryString() : request.getRequestURI();
 		}

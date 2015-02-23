@@ -65,7 +65,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("get-request").handle(
 				new StubMvcResult(new MockHttpServletRequest("GET", "/foo"), null));
 		assertThat(requestSnippetLines("get-request"),
-				hasItem("$ curl http://localhost:80/foo -i"));
+				hasItem("$ curl http://localhost/foo -i"));
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("non-get-request").handle(
 				new StubMvcResult(new MockHttpServletRequest("POST", "/foo"), null));
 		assertThat(requestSnippetLines("non-get-request"),
-				hasItem("$ curl http://localhost:80/foo -i -X POST"));
+				hasItem("$ curl http://localhost/foo -i -X POST"));
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class CurlDocumentationTests {
 				.includeResponseHeaders(false)
 				.handle(new StubMvcResult(new MockHttpServletRequest("GET", "/foo"), null));
 		assertThat(requestSnippetLines("request-without-response-header-inclusion"),
-				hasItem("$ curl http://localhost:80/foo"));
+				hasItem("$ curl http://localhost/foo"));
 	}
 
 	@Test
@@ -92,7 +92,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-content").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-content"),
-				hasItem("$ curl http://localhost:80/foo -i -d 'content'"));
+				hasItem("$ curl http://localhost/foo -i -d 'content'"));
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class CurlDocumentationTests {
 				new StubMvcResult(new MockHttpServletRequest("GET", "/foo?param=value"),
 						null));
 		assertThat(requestSnippetLines("request-with-uri-query-string"),
-				hasItem("$ curl http://localhost:80/foo?param=value -i"));
+				hasItem("$ curl http://localhost/foo?param=value -i"));
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-query-string").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-query-string"),
-				hasItem("$ curl http://localhost:80/foo?param=value -i"));
+				hasItem("$ curl http://localhost/foo?param=value -i"));
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class CurlDocumentationTests {
 				new StubMvcResult(request, null));
 		assertThat(
 				requestSnippetLines("request-with-headers"),
-				hasItem("$ curl http://localhost:80/foo -i -H \"Content-Type: application/json\" -H \"a: alpha\""));
+				hasItem("$ curl http://localhost/foo -i -H \"Content-Type: application/json\" -H \"a: alpha\""));
 	}
 
 	@Test
@@ -184,7 +184,39 @@ public class CurlDocumentationTests {
 				new StubMvcResult(new MockHttpServletRequest("GET", "/foo"),
 						new MockHttpServletResponse()));
 		assertThat(requestResponseSnippetLines("request-and-response"),
-				hasItems("$ curl http://localhost:80/foo -i", "HTTP/1.1 200 OK"));
+				hasItems("$ curl http://localhost/foo -i", "HTTP/1.1 200 OK"));
+	}
+
+	@Test
+	public void httpWithNonStandardPort() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.setRemotePort(8080);
+		documentCurlRequest("http-with-non-standard-port").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("http-with-non-standard-port"),
+				hasItem("$ curl http://localhost:8080/foo -i"));
+	}
+
+	@Test
+	public void httpsWithStandardPort() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.setRemotePort(443);
+		request.setScheme("https");
+		documentCurlRequest("https-with-standard-port").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("https-with-standard-port"),
+				hasItem("$ curl https://localhost/foo -i"));
+	}
+
+	@Test
+	public void httpsWithNonStandardPort() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.setRemotePort(8443);
+		request.setScheme("https");
+		documentCurlRequest("https-with-non-standard-port").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("https-with-non-standard-port"),
+				hasItem("$ curl https://localhost:8443/foo -i"));
 	}
 
 	private List<String> requestSnippetLines(String snippetName) throws IOException {
