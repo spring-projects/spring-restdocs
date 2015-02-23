@@ -96,6 +96,24 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
+	public void requestWithQueryParamsSpecifiedInUri() throws IOException {
+		documentCurlRequest("get-request").handle(
+				new StubMvcResult(new MockHttpServletRequest("GET", "/foo?param=value"), null));
+		assertThat(requestSnippetLines("get-request"),
+				hasItem("$ curl http://localhost:80/foo?param=value -i"));
+	}
+
+	@Test
+	public void requestWithQueryParamsSpecifiedInQueryString() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.setQueryString("param=value");
+		documentCurlRequest("get-request").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("get-request"),
+				hasItem("$ curl http://localhost:80/foo?param=value -i"));
+	}
+
+	@Test
 	public void requestWithHeaders() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setContentType(MediaType.APPLICATION_JSON_VALUE);

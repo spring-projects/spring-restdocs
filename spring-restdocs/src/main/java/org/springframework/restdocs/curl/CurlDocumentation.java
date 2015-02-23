@@ -120,7 +120,7 @@ public abstract class CurlDocumentation {
 			MockHttpServletRequest request = this.result.getRequest();
 			this.writer.print(String.format("curl %s://%s:%d%s", request.getScheme(),
 					request.getRemoteHost(), request.getRemotePort(),
-					request.getRequestURI()));
+					getRequestURIWithQueryString(request)));
 
 			if (this.curlConfiguration.isIncludeResponseHeaders()) {
 				this.writer.print(" -i");
@@ -143,6 +143,11 @@ public abstract class CurlDocumentation {
 			}
 
 			this.writer.println();
+		}
+
+		private String getRequestURIWithQueryString(MockHttpServletRequest request) {
+			return request.getQueryString() != null ?
+                    request.getRequestURI() + "?" + request.getQueryString(): request.getRequestURI();
 		}
 
 		private String getContent(MockHttpServletRequest request) throws IOException {
