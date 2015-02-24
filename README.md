@@ -251,7 +251,7 @@ documentation snippets:
 public void setUp() {
 	this.mockMvc = MockMvcBuilders
 			.webAppContextSetup(this.context)
-			.apply(new RestDocumentationConfiguration()
+			.apply(new RestDocumentationConfigurer()
 					.withScheme("https")
 					.withHost("localhost")
 					.withPort(8443))
