@@ -283,6 +283,14 @@ be written:
  - `index/response.asciidoc`
  - `index/request-response.asciidoc`
 
+*TIP:* if you are a Spring Boot user and wish your JSON output to be pretty printed during sample generation, set the `jackson.serialization.indent_output` property to true when you run your tests.  Here is an example snippet from an `application.yml` file:
+
+```
+jackson:
+    serialization:
+        indent_output: true
+```
+
 ### Hand-written documentation
 
 Producing high-quality, easily readable documentation is difficult and the process is
