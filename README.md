@@ -11,7 +11,7 @@ For a broader introduction see the Documenting RESTful APIs presentation. Both t
 
 ## Quickstart
 
-The project requires Java 7 or later. Snapshots are published to
+The project requires Spring Framework 4.1 and Java 7 or later. Snapshots are published to
 `https://repo.spring.io/snapshot`. Alternatively, it can be built locally using Gradle:
 
 ```
