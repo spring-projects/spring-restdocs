@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.restdocs.RestDocumentationConfigurer;
+import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -66,33 +66,33 @@ public class GettingStartedDocumentation {
 	@Before
 	public void setUp() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(new RestDocumentationConfigurer()).build();
+				.apply(new RestDocumentationConfigurer())
+				.alwaysDo(document("{method-name}/{step}/"))
+				.build();
 	}
 
 	@Test
 	public void index() throws Exception {
 		this.mockMvc.perform(get("/").accept(MediaTypes.HAL_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("_links.notes", is(notNullValue())))
-				.andExpect(jsonPath("_links.tags", is(notNullValue())))
-				.andDo(document("index"));
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("_links.notes", is(notNullValue())))
+			.andExpect(jsonPath("_links.tags", is(notNullValue())));
 	}
 
 	@Test
 	public void creatingANote() throws JsonProcessingException, Exception {
 		String noteLocation = createNote();
-		getNote(noteLocation);
+		MvcResult note = getNote(noteLocation);
 
 		String tagLocation = createTag();
 		getTag(tagLocation);
 
 		String taggedNoteLocation = createTaggedNote(tagLocation);
-		getTaggedNote(taggedNoteLocation);
-		getTags(taggedNoteLocation);
+		MvcResult taggedNote = getNote(taggedNoteLocation);
+		getTags(getLink(taggedNote, "tags"));
 
 		tagExistingNote(noteLocation, tagLocation);
-		getTaggedExistingNote(noteLocation);
-		getTagsForExistingNote(noteLocation);
+		getTags(getLink(note, "tags"));
 	}
 
 	String createNote() throws Exception {
@@ -106,18 +106,17 @@ public class GettingStartedDocumentation {
 								objectMapper.writeValueAsString(note)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("Location", notNullValue()))
-				.andDo(document("create-note"))
 				.andReturn().getResponse().getHeader("Location");
 		return noteLocation;
 	}
 
-	void getNote(String noteLocation) throws Exception {
-		this.mockMvc.perform(get(noteLocation))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("title", is(notNullValue())))
-			.andExpect(jsonPath("body", is(notNullValue())))
-			.andExpect(jsonPath("_links.tags", is(notNullValue())))
-			.andDo(document("get-note"));
+	MvcResult getNote(String noteLocation) throws Exception {
+		return this.mockMvc.perform(get(noteLocation))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("title", is(notNullValue())))
+				.andExpect(jsonPath("body", is(notNullValue())))
+				.andExpect(jsonPath("_links.tags", is(notNullValue())))
+				.andReturn();
 	}
 
 	String createTag() throws Exception, JsonProcessingException {
@@ -128,19 +127,16 @@ public class GettingStartedDocumentation {
 				.perform(
 						post("/tags").contentType(MediaTypes.HAL_JSON).content(
 								objectMapper.writeValueAsString(tag)))
-						.andExpect(status().isCreated())
-						.andExpect(header().string("Location", notNullValue()))
-						.andDo(document("create-tag"))
-						.andReturn().getResponse().getHeader("Location");
+				.andExpect(status().isCreated())
+				.andExpect(header().string("Location", notNullValue()))
+				.andReturn().getResponse().getHeader("Location");
 		return tagLocation;
 	}
 
 	void getTag(String tagLocation) throws Exception {
-		this.mockMvc.perform(get(tagLocation))
-			.andExpect(status().isOk())
+		this.mockMvc.perform(get(tagLocation)).andExpect(status().isOk())
 			.andExpect(jsonPath("name", is(notNullValue())))
-			.andExpect(jsonPath("_links.notes", is(notNullValue())))
-			.andDo(document("get-tag"));
+			.andExpect(jsonPath("_links.notes", is(notNullValue())));
 	}
 
 	String createTaggedNote(String tag) throws Exception {
@@ -155,28 +151,14 @@ public class GettingStartedDocumentation {
 								objectMapper.writeValueAsString(note)))
 				.andExpect(status().isCreated())
 				.andExpect(header().string("Location", notNullValue()))
-				.andDo(document("create-tagged-note"))
 				.andReturn().getResponse().getHeader("Location");
 		return noteLocation;
 	}
 
-	void getTaggedNote(String tagLocation) throws Exception {
-		this.mockMvc.perform(get(tagLocation))
+	void getTags(String noteTagsLocation) throws Exception {		
+		this.mockMvc.perform(get(noteTagsLocation))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("title", is(notNullValue())))
-			.andExpect(jsonPath("body", is(notNullValue())))
-			.andExpect(jsonPath("_links.tags", is(notNullValue())))
-			.andDo(document("get-tagged-note"));
-	}
-
-	void getTags(String taggedNoteLocation) throws Exception {
-		String tagsLocation = getLink(this.mockMvc.perform(get(taggedNoteLocation))
-				.andReturn(), "tags");
-
-		this.mockMvc.perform(get(tagsLocation))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("_embedded.tags", hasSize(1)))
-			.andDo(document("get-tags"));
+			.andExpect(jsonPath("_embedded.tags", hasSize(1)));
 	}
 
 	void tagExistingNote(String noteLocation, String tagLocation) throws Exception {
@@ -186,29 +168,24 @@ public class GettingStartedDocumentation {
 		this.mockMvc.perform(
 				patch(noteLocation).contentType(MediaTypes.HAL_JSON).content(
 						objectMapper.writeValueAsString(update)))
-				.andExpect(status().isNoContent())
-				.andDo(document("tag-existing-note"));
-
+				.andExpect(status().isNoContent());
 	}
 
-	void getTaggedExistingNote(String tagLocation) throws Exception {
-		this.mockMvc.perform(get(tagLocation))
+	MvcResult getTaggedExistingNote(String noteLocation) throws Exception {
+		return this.mockMvc.perform(get(noteLocation))
 			.andExpect(status().isOk())
-			.andDo(document("get-tagged-existing-note"));
+			.andReturn();
 	}
 
-	void getTagsForExistingNote(String taggedNoteLocation) throws Exception {
-		String tagsLocation = getLink(this.mockMvc.perform(get(taggedNoteLocation))
-				.andReturn(), "tags");
-		this.mockMvc.perform(get(tagsLocation))
+	void getTagsForExistingNote(String noteTagsLocation) throws Exception {		
+		this.mockMvc.perform(get(noteTagsLocation))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("_embedded.tags", hasSize(1)))
-			.andDo(document("get-tags-for-existing-note"));
+			.andExpect(jsonPath("_embedded.tags", hasSize(1)));
 	}
 
-	private String getLink(MvcResult result, String href)
+	private String getLink(MvcResult result, String rel)
 			throws UnsupportedEncodingException {
 		return JsonPath.parse(result.getResponse().getContentAsString()).read(
-				"_links.tags.href");
+				"_links." + rel + ".href");
 	}
 }

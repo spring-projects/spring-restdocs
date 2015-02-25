@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs;
+package org.springframework.restdocs.config;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -100,6 +100,11 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 			@Override
 			public MockHttpServletRequest postProcessRequest(
 					MockHttpServletRequest request) {
+				RestDocumentationContext currentContext = RestDocumentationContext
+						.currentContext();
+				if (currentContext != null) {
+					currentContext.getAndIncrementStepCount();
+				}
 				request.setScheme(RestDocumentationConfigurer.this.scheme);
 				request.setRemotePort(RestDocumentationConfigurer.this.port);
 				request.setServerPort(RestDocumentationConfigurer.this.port);

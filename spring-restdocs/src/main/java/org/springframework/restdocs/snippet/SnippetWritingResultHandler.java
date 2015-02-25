@@ -56,10 +56,8 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 	}
 
 	private Writer createWriter() throws IOException {
-		File outputFile = new File(this.outputDir, this.fileName + ".asciidoc");
-		if (!outputFile.isAbsolute()) {
-			outputFile = makeRelativeToConfiguredOutputDir(outputFile);
-		}
+		File outputFile = new OutputFileResolver().resolve(this.outputDir, this.fileName
+				+ ".asciidoc");
 
 		if (outputFile != null) {
 			File parent = outputFile.getParentFile();
@@ -69,15 +67,9 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 			}
 			return new FileWriter(outputFile);
 		}
-
-		return new OutputStreamWriter(System.out);
-	}
-
-	private File makeRelativeToConfiguredOutputDir(File outputFile) {
-		File configuredOutputDir = new DocumentationProperties().getOutputDir();
-		if (configuredOutputDir != null) {
-			return new File(configuredOutputDir, outputFile.getPath());
+		else {
+			return new OutputStreamWriter(System.out);
 		}
-		return null;
 	}
+
 }

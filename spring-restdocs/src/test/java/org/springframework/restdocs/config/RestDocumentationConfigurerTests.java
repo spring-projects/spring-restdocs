@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs;
+package org.springframework.restdocs.config;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.restdocs.RestDocumentationConfigurer;
+import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 /**

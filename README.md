@@ -283,6 +283,39 @@ be written:
  - `index/response.asciidoc`
  - `index/request-response.asciidoc`
 
+#### Parameterized output directories
+
+The `document` method supports parameterized output directories. The following parameters
+are supported:
+
+| Parameter     | Description
+| ------------- | -----------
+| {methodName}  | The name of the test method, formatted using camelcase
+| {method-name} | The name of the test method, formatted with dash separators
+| {method_name} | The name of the test method, formatted with underscore separators
+| {step}        | The count of calls to `MockMvc.perform` in the current test
+
+For example, `document("{method-name}")` in a test method named `creatingANote` will
+write snippets into a directory named `creating-a-note`.
+
+The `{step}` parameter is particularly useful in combination with Spring MVC Test's
+`alwaysDo` functionality. It allows documentation to be configured once in a setup method:
+
+```java
+@Before
+public void setUp() {
+	this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+			.apply(new RestDocumentationConfigurer())
+			.alwaysDo(document("{method-name}/{step}/"))
+			.build();
+}
+```
+
+With this configuration in place, every call to `MockMvc.perform` will produce
+documentation snippets without any further configuration. Take a look at the
+`GettingStartedDocumentation` classes in each of the sample applications to see this
+functionality in action.
+
 #### Pretty-printed snippets
 
 To improve the readability of the generated snippets you may want to configure your

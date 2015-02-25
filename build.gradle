@@ -6,6 +6,7 @@ project(':spring-restdocs') {
 		junitVersion = '4.11'
 		servletApiVersion = '3.1.0'
 		springVersion = '4.1.4.RELEASE'
+		mockitoVersion = '1.10.19'
 	}
 
 	group = 'org.springframework.restdocs'
@@ -63,6 +64,7 @@ project(':spring-restdocs') {
 		compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 		jacoco "org.jacoco:org.jacoco.agent:$jacocoVersion:runtime"
 		testCompile "org.springframework:spring-webmvc:$springVersion"
+		testCompile "org.mockito:mockito-core:$mockitoVersion"
 	}
 
 	test {
