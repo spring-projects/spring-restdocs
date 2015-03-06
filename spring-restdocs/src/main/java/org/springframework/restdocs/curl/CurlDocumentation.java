@@ -20,6 +20,9 @@ import static org.springframework.restdocs.util.IterableEnumeration.iterable;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +32,7 @@ import org.springframework.restdocs.snippet.DocumentationWriter;
 import org.springframework.restdocs.snippet.DocumentationWriter.DocumentationAction;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
@@ -36,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * the cURL command-line utility.
  * 
  * @author Andy Wilkinson
+ * @author Yann Le Guern
  */
 public abstract class CurlDocumentation {
 
@@ -141,9 +146,8 @@ public abstract class CurlDocumentation {
 				this.writer.print(" -i");
 			}
 
-			RequestMethod requestMethod = RequestMethod.valueOf(request.getMethod());
-			if (requestMethod != RequestMethod.GET) {
-				this.writer.print(String.format(" -X %s", requestMethod.toString()));
+			if (!isGetRequest(request)) {
+				this.writer.print(String.format(" -X %s", request.getMethod()));
 			}
 
 			for (String headerName : iterable(request.getHeaderNames())) {
@@ -160,6 +164,10 @@ public abstract class CurlDocumentation {
 			this.writer.println();
 		}
 
+		private boolean isGetRequest(HttpServletRequest request) {
+			return RequestMethod.GET == RequestMethod.valueOf(request.getMethod());
+		}
+
 		private boolean isNonStandardPort(HttpServletRequest request) {
 			return (SCHEME_HTTP.equals(request.getScheme()) && request.getRemotePort() != STANDARD_PORT_HTTP)
 					|| (SCHEME_HTTPS.equals(request.getScheme()) && request
@@ -167,8 +175,47 @@ public abstract class CurlDocumentation {
 		}
 
 		private String getRequestUriWithQueryString(HttpServletRequest request) {
-			return request.getQueryString() != null ? request.getRequestURI() + "?"
-					+ request.getQueryString() : request.getRequestURI();
+			StringBuilder sb = new StringBuilder();
+			sb.append(request.getRequestURI());
+			String queryString = getQueryString(request);
+			if (StringUtils.hasText(queryString)) {
+				sb.append('?').append(queryString);
+			}
+			return sb.toString();
+		}
+
+		private String getQueryString(HttpServletRequest request) {
+			if (request.getQueryString() != null) {
+				return request.getQueryString();
+			}
+			if (isGetRequest(request)) {
+				return toQueryString(request.getParameterMap());
+			}
+			return null;
+		}
+
+		private static String toQueryString(Map<String, String[]> map) {
+			StringBuilder sb = new StringBuilder();
+			for (Map.Entry<String, String[]> entry : map.entrySet()) {
+				for (String value : entry.getValue()) {
+					if (sb.length() > 0) {
+						sb.append("&");
+					}
+					sb.append(urlEncodeUTF8(entry.getKey())).append('=')
+							.append(urlEncodeUTF8(value));
+				}
+			}
+			return sb.toString();
+		}
+
+		private static String urlEncodeUTF8(String s) {
+			try {
+				return URLEncoder.encode(s, "UTF-8");
+			}
+			catch (UnsupportedEncodingException ex) {
+				throw new IllegalStateException("Unable to URL encode " + s
+						+ " using UTF-8", ex);
+			}
 		}
 
 		private String getContent(MockHttpServletRequest request) throws IOException {

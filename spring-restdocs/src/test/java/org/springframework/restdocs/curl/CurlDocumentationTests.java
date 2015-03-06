@@ -44,6 +44,7 @@ import org.springframework.restdocs.StubMvcResult;
  * Tests for {@link CurlDocumentation}
  * 
  * @author Andy Wilkinson
+ * @author Yann Le Guern
  */
 public class CurlDocumentationTests {
 
@@ -112,6 +113,38 @@ public class CurlDocumentationTests {
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-query-string"),
 				hasItem("$ curl http://localhost/foo?param=value -i"));
+	}
+
+	@Test
+	public void requestWithOneParameter() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.addParameter("k1", "v1");
+		documentCurlRequest("request-with-one-parameter").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("request-with-one-parameter"),
+				hasItem("$ curl http://localhost/foo?k1=v1 -i"));
+	}
+
+	@Test
+	public void requestWithMultipleParameters() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.addParameter("k1", "v1");
+		request.addParameter("k2", "v2");
+		request.addParameter("k1", "v1-bis");
+		documentCurlRequest("request-with-multiple-parameters").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("request-with-multiple-parameters"),
+				hasItem("$ curl http://localhost/foo?k1=v1&k1=v1-bis&k2=v2 -i"));
+	}
+
+	@Test
+	public void requestWithUrlEncodedParameter() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.addParameter("k1", "foo bar&");
+		documentCurlRequest("request-with-url-encoded-parameter").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("request-with-url-encoded-parameter"),
+				hasItem("$ curl http://localhost/foo?k1=foo+bar%26 -i"));
 	}
 
 	@Test
