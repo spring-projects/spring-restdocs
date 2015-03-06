@@ -20,6 +20,9 @@ import static org.springframework.restdocs.util.IterableEnumeration.iterable;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -134,14 +137,14 @@ public abstract class CurlDocumentation {
 			if (isNonStandardPort(request)) {
 				this.writer.print(String.format(":%d", request.getRemotePort()));
 			}
+            RequestMethod requestMethod = RequestMethod.valueOf(request.getMethod());
 
-			this.writer.print(getRequestUriWithQueryString(request));
+			this.writer.print(getRequestUriWithQueryString(request, requestMethod));
 
 			if (this.curlConfiguration.isIncludeResponseHeaders()) {
 				this.writer.print(" -i");
 			}
 
-			RequestMethod requestMethod = RequestMethod.valueOf(request.getMethod());
 			if (requestMethod != RequestMethod.GET) {
 				this.writer.print(String.format(" -X %s", requestMethod.toString()));
 			}
@@ -156,9 +159,41 @@ public abstract class CurlDocumentation {
 			if (request.getContentLengthLong() > 0) {
 				this.writer.print(String.format(" -d '%s'", getContent(request)));
 			}
+            else if (requestMethod == RequestMethod.POST) {
+                Map<String, String[]> parameters = request.getParameterMap();
+                if (parameters.size() > 0) {
+                    this.writer.print(String.format(" -d '%s'", toQueryString(parameters)));
+                }
+            }
 
 			this.writer.println();
 		}
+
+        private static String urlEncodeUTF8(String s) {
+            try {
+                return URLEncoder.encode(s, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                // Should not happen
+                return s;
+            }
+        }
+
+        private static String toQueryString(Map<String, String[]>  map) {
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, String[]> entry : map.entrySet()) {
+                String key = entry.getKey();
+                for (String value : entry.getValue()) {
+                    if (sb.length() > 0) {
+                        sb.append("&");
+                    }
+                    sb
+                        .append(urlEncodeUTF8(key))
+                        .append('=')
+                        .append(urlEncodeUTF8(value));
+                }
+            }
+            return sb.toString();
+        }
 
 		private boolean isNonStandardPort(HttpServletRequest request) {
 			return (SCHEME_HTTP.equals(request.getScheme()) && request.getRemotePort() != STANDARD_PORT_HTTP)
@@ -166,9 +201,19 @@ public abstract class CurlDocumentation {
 							.getRemotePort() != STANDARD_PORT_HTTPS);
 		}
 
-		private String getRequestUriWithQueryString(HttpServletRequest request) {
-			return request.getQueryString() != null ? request.getRequestURI() + "?"
-					+ request.getQueryString() : request.getRequestURI();
+		private String getRequestUriWithQueryString(HttpServletRequest request, RequestMethod requestMethod) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(request.getRequestURI());
+            if (request.getQueryString() != null) {
+                sb.append('?').append(request.getQueryString());
+            }
+            else if (requestMethod == RequestMethod.GET){
+                Map<String, String[]> parameters = request.getParameterMap();
+                if (parameters.size() > 0) {
+                    sb.append('?').append(toQueryString(parameters));
+                }
+            }
+			return sb.toString();
 		}
 
 		private String getContent(MockHttpServletRequest request) throws IOException {

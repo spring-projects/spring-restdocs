@@ -60,15 +60,58 @@ public class CurlDocumentationTests {
 		System.clearProperty("org.springframework.restdocs.outputDir");
 	}
 
-	@Test
-	public void getRequest() throws IOException {
-		documentCurlRequest("get-request").handle(
-				new StubMvcResult(new MockHttpServletRequest("GET", "/foo"), null));
-		assertThat(requestSnippetLines("get-request"),
-				hasItem("$ curl http://localhost/foo -i"));
-	}
+    @Test
+    public void getRequest() throws IOException {
+        documentCurlRequest("get-request").handle(
+                new StubMvcResult(new MockHttpServletRequest("GET", "/foo"), null));
+        assertThat(requestSnippetLines("get-request"),
+                hasItem("$ curl http://localhost/foo -i"));
+    }
 
-	@Test
+    @Test
+    public void getRequestWithOneParameter() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+        request.addParameter("k1", "v1");
+        documentCurlRequest("get-request").handle(
+                new StubMvcResult(request, null));
+        assertThat(requestSnippetLines("get-request"),
+                hasItem("$ curl http://localhost/foo?k1=v1 -i"));
+    }
+
+    @Test
+    public void getRequestWithManyParameters() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+        request.addParameter("k1", "v1");
+        request.addParameter("k2", "v2");
+        request.addParameter("k1", "v1-bis");
+        documentCurlRequest("get-request").handle(
+                new StubMvcResult(request, null));
+        assertThat(requestSnippetLines("get-request"),
+                hasItem("$ curl http://localhost/foo?k1=v1&k1=v1-bis&k2=v2 -i"));
+    }
+
+    @Test
+    public void postRequestWithOneParameter() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
+        request.addParameter("k1", "v1");
+        documentCurlRequest("get-request").handle(
+                new StubMvcResult(request, null));
+        assertThat(requestSnippetLines("get-request"),
+                hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=v1'"));
+    }
+
+    @Test
+    public void postRequestWithParameterToUrlEncode() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
+        request.addParameter("k1", "a&b");
+        documentCurlRequest("get-request").handle(
+                new StubMvcResult(request, null));
+        assertThat(requestSnippetLines("get-request"),
+                hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=a%26b'"));
+    }
+
+
+    @Test
 	public void nonGetRequest() throws IOException {
 		documentCurlRequest("non-get-request").handle(
 				new StubMvcResult(new MockHttpServletRequest("POST", "/foo"), null));
