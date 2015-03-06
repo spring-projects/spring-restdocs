@@ -46,7 +46,7 @@ public class AsciidoctorWriterTests {
 			}
 		});
 
-		String expectedOutput = String.format("\n[source,java]\n----\nfoo\n----\n\n");
+		String expectedOutput = String.format("%n[source,java]%n----%nfoo%n----%n%n");
 		assertEquals(expectedOutput, this.output.toString());
 	}
 
@@ -60,7 +60,7 @@ public class AsciidoctorWriterTests {
 			}
 		});
 
-		String expectedOutput = String.format("\n[source,bash]\n----\n$ foo\n----\n\n");
+		String expectedOutput = String.format("%n[source,bash]%n----%n$ foo%n----%n%n");
 		assertEquals(expectedOutput, this.output.toString());
 	}
 }
