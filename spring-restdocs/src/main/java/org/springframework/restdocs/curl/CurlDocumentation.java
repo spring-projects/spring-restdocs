@@ -186,7 +186,7 @@ public abstract class CurlDocumentation {
 
 		private String getQueryString(HttpServletRequest request) {
 			if (request.getQueryString() != null) {
-				return request.getQueryString();
+				return request.getQueryString().replace("&", "\\&");
 			}
 			if (isGetRequest(request)) {
 				return toQueryString(request.getParameterMap());
@@ -199,7 +199,7 @@ public abstract class CurlDocumentation {
 			for (Map.Entry<String, String[]> entry : map.entrySet()) {
 				for (String value : entry.getValue()) {
 					if (sb.length() > 0) {
-						sb.append("&");
+						sb.append("\\&");
 					}
 					sb.append(urlEncodeUTF8(entry.getKey())).append('=')
 							.append(urlEncodeUTF8(value));

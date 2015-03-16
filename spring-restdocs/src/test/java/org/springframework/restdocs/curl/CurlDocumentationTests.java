@@ -134,7 +134,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-multiple-parameters").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-multiple-parameters"),
-				hasItem("$ curl http://localhost/foo?k1=v1&k1=v1-bis&k2=v2 -i"));
+				hasItem("$ curl http://localhost/foo?k1=v1\\&k1=v1-bis\\&k2=v2 -i"));
 	}
 
 	@Test
