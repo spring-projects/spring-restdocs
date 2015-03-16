@@ -46,7 +46,8 @@ public abstract class DocumentationWriter extends PrintWriter {
 	 * Calls the given {@code action} to document a code block. The code block will be
 	 * annotated as containing code written in the given {@code language}. Any prefix
 	 * necessary for the documentation format is written prior to calling the
-	 * {@code action}. Having called the action, any necessary suffix is the written.
+	 * {@code action}. Having called the {@code action}, any necessary suffix is then
+	 * written.
 	 * 
 	 * @param language the language in which the code is written
 	 * @param action the action that will produce the code
@@ -56,10 +57,19 @@ public abstract class DocumentationWriter extends PrintWriter {
 			throws IOException;
 
 	/**
+	 * Calls the given {@code action} to document a table. Any prefix necessary for
+	 * documenting a table is written prior to calling the {@code action}. Having called
+	 * the {@code action}, any necessary suffix is then written.
+	 * 
+	 * @param action the action that will produce the table
+	 * @throws IOException if the documentation fails
+	 */
+	public abstract void table(TableAction action) throws IOException;
+
+	/**
 	 * Encapsulates an action that outputs some documentation. Typically implemented as a
 	 * lamda or, pre-Java 8, as an anonymous inner class.
 	 * 
-	 * @author Andy Wilkinson
 	 * @see DocumentationWriter#shellCommand
 	 * @see DocumentationWriter#codeBlock
 	 */
@@ -71,5 +81,45 @@ public abstract class DocumentationWriter extends PrintWriter {
 		 * @throws IOException if the action fails
 		 */
 		void perform() throws IOException;
+
 	}
+
+	/**
+	 * Encapsulates an action that outputs a table.
+	 * 
+	 * @see DocumentationWriter#table(TableAction)
+	 */
+	public interface TableAction {
+
+		/**
+		 * Perform the encapsulated action
+		 * 
+		 * @param tableWriter the writer to be used to write the table
+		 * @throws IOException if the action fails
+		 */
+		void perform(TableWriter tableWriter) throws IOException;
+
+	}
+
+	/**
+	 * A writer for producing a table
+	 */
+	public interface TableWriter {
+
+		/**
+		 * Writes the table's headers
+		 * 
+		 * @param headers the headers
+		 */
+		void headers(String... headers);
+
+		/**
+		 * Writes a row in the table
+		 * 
+		 * @param entries the entries in the row
+		 */
+		void row(String... entries);
+
+	}
+
 }

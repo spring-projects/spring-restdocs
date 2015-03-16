@@ -27,6 +27,12 @@ import java.io.Writer;
  */
 public class AsciidoctorWriter extends DocumentationWriter {
 
+	private static final String DELIMITER_CODE_BLOCK = "----";
+
+	private static final String DELIMITER_TABLE = "|===";
+
+	private final TableWriter tableWriter = new AsciidoctorTableWriter();
+
 	/**
 	 * Creates a new {@code AsciidoctorWriter} that will write to the given {@code writer}
 	 * @param writer The writer to which output will be written
@@ -53,10 +59,43 @@ public class AsciidoctorWriter extends DocumentationWriter {
 		if (language != null) {
 			println("[source," + language + "]");
 		}
-		println("----");
+		println(DELIMITER_CODE_BLOCK);
 		action.perform();
-		println("----");
+		println(DELIMITER_CODE_BLOCK);
 		println();
+	}
+
+	@Override
+	public void table(TableAction action) throws IOException {
+		println();
+		println(DELIMITER_TABLE);
+		action.perform(this.tableWriter);
+		println(DELIMITER_TABLE);
+		println();
+	}
+
+	private final class AsciidoctorTableWriter implements TableWriter {
+
+		@Override
+		public void headers(String... headers) {
+			StringBuilder builder = new StringBuilder();
+			for (String header : headers) {
+				builder.append("|");
+				builder.append(header);
+			}
+			println(builder.toString());
+			println();
+		}
+
+		@Override
+		public void row(String... entries) {
+			for (String entry : entries) {
+				print("|");
+				println(entry);
+			}
+			println();
+		}
+
 	}
 
 }

@@ -24,6 +24,8 @@ import java.io.Writer;
 
 import org.junit.Test;
 import org.springframework.restdocs.snippet.DocumentationWriter.DocumentationAction;
+import org.springframework.restdocs.snippet.DocumentationWriter.TableAction;
+import org.springframework.restdocs.snippet.DocumentationWriter.TableWriter;
 
 /**
  * Tests for {@link AsciidoctorWriter}
@@ -62,5 +64,23 @@ public class AsciidoctorWriterTests {
 
 		String expectedOutput = String.format("%n[source,bash]%n----%n$ foo%n----%n%n");
 		assertEquals(expectedOutput, this.output.toString());
+	}
+
+	@Test
+	public void table() throws Exception {
+		this.documentationWriter.table(new TableAction() {
+
+			@Override
+			public void perform(TableWriter tableWriter) throws IOException {
+				tableWriter.headers("One", "Two", "Three");
+				tableWriter.row("alpha", "bravo", "charlie");
+				tableWriter.row("foo", "bar", "baz");
+			}
+
+		});
+		String expectedOutput = String
+				.format("%n|===%n|One|Two|Three%n%n|alpha%n|bravo%n|charlie%n%n|foo%n|bar%n|baz%n%n|===%n%n");
+		assertEquals(expectedOutput, this.output.toString());
+		System.out.println(this.output.toString());
 	}
 }
