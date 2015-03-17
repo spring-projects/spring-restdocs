@@ -104,13 +104,13 @@ task buildRestNotesSpringDataRestSampleWithGradle(type: GradleBuild) {
 task buildRestNotesSpringHateoasSampleWithMaven(type: Exec) {
 	dependsOn 'spring-restdocs:install'
 	workingDir 'samples/rest-notes-spring-hateoas'
-	commandLine 'mvn', 'clean', 'package'
+	commandLine "${System.env.MAVEN_HOME}/bin/mvn", 'clean', 'package'
 }
 
 task buildRestNotesSpringDataRestSampleWithMaven(type: Exec) {
 	dependsOn 'spring-restdocs:install'
 	workingDir 'samples/rest-notes-spring-data-rest'
-	commandLine 'mvn', 'clean', 'package'
+	commandLine "${System.env.MAVEN_HOME}/bin/mvn", 'clean', 'package'
 }
 
 wrapper {
