@@ -148,6 +148,27 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
+	public void postRequestWithOneParameter() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
+		request.addParameter("k1", "v1");
+		documentCurlRequest("post-request-with-one-parameter").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("post-request-with-one-parameter"),
+				hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=v1'"));
+	}
+
+	@Test
+	public void postRequestWithUrlEncodedParameter() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
+		request.addParameter("k1", "a&b");
+		request.addParameter("k2", "c d");
+		documentCurlRequest("post-request-with-url-encoded-parameter").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("post-request-with-url-encoded-parameter"),
+				hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=a%26b\\&k2=c+d'"));
+    }
+
+    @Test
 	public void requestWithHeaders() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setContentType(MediaType.APPLICATION_JSON_VALUE);
