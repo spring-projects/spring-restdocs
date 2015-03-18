@@ -148,6 +148,39 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
+	public void postRequestWithOneParameter() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
+		request.addParameter("k1", "v1");
+		documentCurlRequest("post-request-with-one-parameter").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("post-request-with-one-parameter"),
+				hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=v1'"));
+	}
+
+	@Test
+	public void postRequestWithMultipleParameters() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
+		request.addParameter("k1", "v1");
+		request.addParameter("k2", "v2");
+		request.addParameter("k1", "v1-bis");
+		documentCurlRequest("post-request-with-multiple-parameters").handle(
+				new StubMvcResult(request, null));
+		assertThat(
+				requestSnippetLines("post-request-with-multiple-parameters"),
+				hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=v1\\&k1=v1-bis\\&k2=v2'"));
+	}
+
+	@Test
+	public void postRequestWithUrlEncodedParameter() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
+		request.addParameter("k1", "a&b");
+		documentCurlRequest("post-request-with-url-encoded-parameter").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("post-request-with-url-encoded-parameter"),
+				hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=a%26b'"));
+	}
+
+	@Test
 	public void requestWithHeaders() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setContentType(MediaType.APPLICATION_JSON_VALUE);
