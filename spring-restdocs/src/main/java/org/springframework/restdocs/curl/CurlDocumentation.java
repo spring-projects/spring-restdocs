@@ -160,12 +160,22 @@ public abstract class CurlDocumentation {
 			if (request.getContentLengthLong() > 0) {
 				this.writer.print(String.format(" -d '%s'", getContent(request)));
 			}
+			else if (isPostRequest(request)) {
+				Map<String, String[]> parameters = request.getParameterMap();
+				if (parameters.size() > 0) {
+					this.writer.print(String.format(" -d '%s'", toQueryString(parameters)));
+				}
+			}
 
 			this.writer.println();
 		}
 
 		private boolean isGetRequest(HttpServletRequest request) {
 			return RequestMethod.GET == RequestMethod.valueOf(request.getMethod());
+		}
+
+		private boolean isPostRequest(HttpServletRequest request) {
+			return RequestMethod.POST == RequestMethod.valueOf(request.getMethod());
 		}
 
 		private boolean isNonStandardPort(HttpServletRequest request) {
