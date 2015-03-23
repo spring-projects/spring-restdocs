@@ -14,61 +14,49 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.state;
+package org.springframework.restdocs.payload;
 
 /**
- * A description of a field found in a hypermedia API
+ * A description of a field found in a request or response payload
  * 
- * @see StateDocumentation#fieldWithPath(Path)
+ * @see PayloadDocumentation#fieldWithPath(String)
  * 
  * @author Andreas Evers
+ * @author Andy Wilkinson
  */
 public class FieldDescriptor {
 
-	private final Path path;
+	private final String path;
 
-	private String type;
+	private FieldType type;
 
-	private boolean required;
-
-	private String constraints;
+	private boolean optional;
 
 	private String description;
 
-	FieldDescriptor(Path path) {
+	FieldDescriptor(String path) {
 		this.path = path;
 	}
 
 	/**
 	 * Specifies the type of the field
 	 * 
-	 * @param type The field's type (could be number, string, boolean, array, object, ...)
+	 * @param type The type of the field
+	 * 
 	 * @return {@code this}
 	 */
-	public FieldDescriptor type(String type) {
+	public FieldDescriptor type(FieldType type) {
 		this.type = type;
 		return this;
 	}
 
 	/**
-	 * Specifies necessity of the field
+	 * Marks the field as optional
 	 * 
-	 * @param required The field's necessity
 	 * @return {@code this}
 	 */
-	public FieldDescriptor required(boolean required) {
-		this.required = required;
-		return this;
-	}
-
-	/**
-	 * Specifies the constraints of the field
-	 * 
-	 * @param constraints The field's constraints
-	 * @return {@code this}
-	 */
-	public FieldDescriptor constraints(String constraints) {
-		this.constraints = constraints;
+	public FieldDescriptor optional() {
+		this.optional = true;
 		return this;
 	}
 
@@ -83,20 +71,16 @@ public class FieldDescriptor {
 		return this;
 	}
 
-	Path getPath() {
+	String getPath() {
 		return this.path;
 	}
 
-	String getType() {
+	FieldType getType() {
 		return this.type;
 	}
 
-	boolean isRequired() {
-		return this.required;
-	}
-
-	String getConstraints() {
-		return this.constraints;
+	boolean isOptional() {
+		return this.optional;
 	}
 
 	String getDescription() {

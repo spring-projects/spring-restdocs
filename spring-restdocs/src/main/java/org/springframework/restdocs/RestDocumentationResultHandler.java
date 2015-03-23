@@ -20,8 +20,8 @@ import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRe
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequestAndResponse;
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlResponse;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
-import static org.springframework.restdocs.state.StateDocumentation.documentRequestFields;
-import static org.springframework.restdocs.state.StateDocumentation.documentResponseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.documentRequestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.documentResponseFields;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,8 @@ import org.springframework.restdocs.hypermedia.HypermediaDocumentation;
 import org.springframework.restdocs.hypermedia.LinkDescriptor;
 import org.springframework.restdocs.hypermedia.LinkExtractor;
 import org.springframework.restdocs.hypermedia.LinkExtractors;
-import org.springframework.restdocs.state.FieldDescriptor;
-import org.springframework.restdocs.state.Path;
-import org.springframework.restdocs.state.StateDocumentation;
+import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
 
@@ -104,17 +103,16 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	}
 
 	/**
-	 * Document the fields in the response using the given {@code descriptors}. The fields
-	 * are extracted from the response based on its content type.
+	 * Document the fields in the request using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the response but is not described by one of the
-	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
-	 * field is described but is not present in the response a failure will also occur
-	 * when this handler is invoked.
+	 * If a field is present in the request but is not described by one of the descriptors
+	 * a failure will occur when this handler is invoked. Similarly, if a field is
+	 * described but is not present in the request a failure will also occur when this
+	 * handler is invoked.
 	 * 
 	 * @param descriptors the link descriptors
 	 * @return {@code this}
-	 * @see StateDocumentation#fieldWithPath(Path)
+	 * @see PayloadDocumentation#fieldWithPath(String)
 	 */
 	public RestDocumentationResultHandler withRequestFields(
 			FieldDescriptor... descriptors) {
@@ -123,8 +121,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	}
 
 	/**
-	 * Document the fields in the response using the given {@code descriptors}. The fields
-	 * are extracted from the response based on its content type.
+	 * Document the fields in the response using the given {@code descriptors}.
 	 * <p>
 	 * If a field is present in the response but is not described by one of the
 	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
@@ -133,7 +130,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 * 
 	 * @param descriptors the link descriptors
 	 * @return {@code this}
-	 * @see StateDocumentation#fieldWithPath(Path)
+	 * @see PayloadDocumentation#fieldWithPath(String)
 	 */
 	public RestDocumentationResultHandler withResponseFields(
 			FieldDescriptor... descriptors) {

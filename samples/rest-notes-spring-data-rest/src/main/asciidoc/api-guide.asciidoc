@@ -62,26 +62,9 @@ use of HTTP status codes.
 == Errors
 
 Whenever an error response (status code >= 400) is returned, the body will contain a JSON object
-that describes the problem. The error object has the following fields:
+that describes the problem. The error object has the following structure:
 
-|===
-| Field | Description
-
-| error
-| The HTTP error that occurred, e.g. `Bad Request`
-
-| message
-| A description of the cause of the error
-
-| path
-| The path to which the request was made
-
-| status
-| The HTTP status code, e.g. `400`
-
-| timestamp
-| The time, in milliseconds, at which the error occurred
-|===
+include::{generated}/error-example/response-fields.asciidoc[]
 
 For example, a request that attempts to apply a non-existent tag to a note will produce a
 `400 Bad Request` response:
@@ -116,12 +99,7 @@ A `GET` request is used to access the index
 
 ==== Response structure
 
-|===
-| JSON path | Description
-
-| `_links`
-| <<resources-index-links,Links>> to other resources
-|===
+include::{generated}/index-example/response-fields.asciidoc[]
 
 ==== Example response
 
@@ -132,15 +110,7 @@ include::{generated}/index-example/response.asciidoc[]
 [[resources-index-links]]
 ==== Links
 
-|===
-| Relation | Description
-
-| notes
-| The <<resources-notes,Notes resource>>
-
-| tags
-| The <<resources-tags,Tags resource>>
-|===
+include::{generated}/index-example/links.asciidoc[]
 
 
 
@@ -158,12 +128,7 @@ A `GET` request will list all of the service's notes.
 
 ==== Response structure
 
-|===
-| JSON path | Description
-
-| `_embedded.notes`
-| An array of <<resources-note,Note resources>>
-|===
+include::{generated}/notes-list-example/response-fields.asciidoc[]
 
 ==== Example request
 
@@ -182,18 +147,7 @@ A `POST` request is used to create a note
 
 ==== Request structure
 
-|===
-| JSON path | Description
-
-| `title`
-| The title of the note
-
-| `body`
-| The body of the note
-
-| `tags`
-| | The tags of the note as an array of URIs
-|===
+include::{generated}/notes-create-example/request-fields.asciidoc[]
 
 ==== Example request
 
@@ -219,12 +173,7 @@ A `GET` request will list all of the service's tags.
 
 ==== Response structure
 
-|===
-| JSON path | Description
-
-| `_embedded.tags`
-| An array of <<resources-tag,Tag resources>>
-|===
+include::{generated}/tags-list-example/response-fields.asciidoc[]
 
 ==== Example request
 
@@ -243,12 +192,7 @@ A `POST` request is used to create a note
 
 ==== Request structure
 
-|===
-| JSON path | Description
-
-| `name`
-| The name of the tag
-|===
+include::{generated}/tags-create-example/request-fields.asciidoc[]
 
 ==== Example request
 
@@ -270,15 +214,7 @@ The Note resource is used to retrieve, update, and delete individual notes
 [[resources-note-links]]
 === Links
 
-|===
-| Relation | Description
-
-| self
-| This <<resources-note,note>>
-
-| note-tags
-| This note's <<resources-tags,tags>>
-|===
+include::{generated}/note-get-example/links.asciidoc[]
 
 
 
@@ -287,22 +223,17 @@ The Note resource is used to retrieve, update, and delete individual notes
 
 A `GET` request will retrieve the details of a note
 
-Example response:
+==== Response structure
+
+include::{generated}/note-get-example/response-fields.asciidoc[]
+
+==== Example request
+
+include::{generated}/note-get-example/request.asciidoc[]
+
+==== Example response
 
 include::{generated}/note-get-example/response.asciidoc[]
-
-|===
-| JSON path | Description
-
-| `title`
-| The title of the note
-
-| `body`
-| The body of the note
-
-| `_links`
-| <<resources-note-links,Links>> to other resources
-|===
 
 
 
@@ -313,18 +244,7 @@ A `PATCH` request is used to update a note
 
 ==== Request structure
 
-|===
-| JSON path | Description
-
-| `title`
-| The title of the note
-
-| `body`
-| The body of the note
-
-| `tags`
-| The tags of the note as an array of URIs
-|===
+include::{generated}/note-update-example/request-fields.asciidoc[]
 
 To leave an attribute of a note unchanged, any of the above may be omitted from the request.
 
@@ -337,7 +257,8 @@ include::{generated}/note-update-example/request.asciidoc[]
 include::{generated}/note-update-example/response.asciidoc[]
 
 
-[[resources-note]]
+
+[[resources-tag]]
 == Tag
 
 The Tag resource is used to retrieve, update, and delete individual tags
@@ -347,15 +268,7 @@ The Tag resource is used to retrieve, update, and delete individual tags
 [[resources-tag-links]]
 === Links
 
-|===
-| Relation | Description
-
-| self
-| This <<resources-tag,tag>>
-
-| notes
-| The <<resources-notes,notes>> that have this tag
-|===
+include:{{generated}/tag-get-example/links.asciidoc
 
 
 
@@ -364,19 +277,17 @@ The Tag resource is used to retrieve, update, and delete individual tags
 
 A `GET` request will retrieve the details of a tag
 
-Example response:
+==== Response structure
+
+include::{generated}/tag-get-example/response-fields.asciidoc[]
+
+==== Example request
+
+include::{generated}/tag-get-example/request.asciidoc[]
+
+==== Example response
 
 include::{generated}/tag-get-example/response.asciidoc[]
-
-|===
-| JSON path | Description
-
-| `name`
-| The name of the tag
-
-| `_links`
-| <<resources-tag-links,Links>> to other resources
-|===
 
 
 
@@ -387,13 +298,7 @@ A `PATCH` request is used to update a tag
 
 ==== Request structure
 
-|===
-| JSON path | Description
-
-| `name`
-| The name of the tag
-
-|===
+include::{generated}/tag-update-example/request-fields.asciidoc[]
 
 ==== Example request
 

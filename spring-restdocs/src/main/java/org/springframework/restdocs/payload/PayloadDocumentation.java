@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.state;
-
-import static org.springframework.restdocs.state.FieldSnippetResultHandler.Type.REQUEST;
-import static org.springframework.restdocs.state.FieldSnippetResultHandler.Type.RESPONSE;
-import static org.springframework.restdocs.state.Path.path;
+package org.springframework.restdocs.payload;
 
 import java.util.Arrays;
 
 import org.springframework.restdocs.RestDocumentationResultHandler;
 
 /**
- * Static factory methods for documenting a RESTful API's state.
+ * Static factory methods for documenting a RESTful API's request and response payloads.
  * 
  * @author Andreas Evers
+ * @author Andy Wilkinson
  */
-public abstract class StateDocumentation {
+public abstract class PayloadDocumentation {
 
-	private StateDocumentation() {
+	private PayloadDocumentation() {
 
 	}
 
@@ -44,21 +41,8 @@ public abstract class StateDocumentation {
 	 * @see RestDocumentationResultHandler#withRequestFields(FieldDescriptor...)
 	 * @see RestDocumentationResultHandler#withResponseFields(FieldDescriptor...)
 	 */
-	public static FieldDescriptor fieldWithPath(Path path) {
+	public static FieldDescriptor fieldWithPath(String path) {
 		return new FieldDescriptor(path);
-	}
-
-	/**
-	 * Creates a {@code FieldDescriptor} that describes a field with the given
-	 * {@code path}, in case the field is at the root of the request or response body
-	 * 
-	 * @param name The name of the field being at the root of the request or response body
-	 * @return a {@code FieldDescriptor} ready for further configuration
-	 * @see RestDocumentationResultHandler#withRequestFields(FieldDescriptor...)
-	 * @see RestDocumentationResultHandler#withResponseFields(FieldDescriptor...)
-	 */
-	public static FieldDescriptor fieldWithPath(String name) {
-		return new FieldDescriptor(path(name));
 	}
 
 	/**
@@ -72,8 +56,7 @@ public abstract class StateDocumentation {
 	 */
 	public static FieldSnippetResultHandler documentRequestFields(String outputDir,
 			FieldDescriptor... descriptors) {
-		return new FieldSnippetResultHandler(outputDir, REQUEST,
-				Arrays.asList(descriptors));
+		return new RequestFieldSnippetResultHandler(outputDir, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -87,7 +70,7 @@ public abstract class StateDocumentation {
 	 */
 	public static FieldSnippetResultHandler documentResponseFields(String outputDir,
 			FieldDescriptor... descriptors) {
-		return new FieldSnippetResultHandler(outputDir, RESPONSE,
+		return new ResponseFieldSnippetResultHandler(outputDir,
 				Arrays.asList(descriptors));
 	}
 
