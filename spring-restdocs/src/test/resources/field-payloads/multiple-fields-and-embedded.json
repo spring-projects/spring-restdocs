@@ -1,0 +1,5 @@
+{
+	"_embedded": "embedded-test",
+	"beta": "beta-value",
+	"charlie": "charlie-value"
+}

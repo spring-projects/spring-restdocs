@@ -59,5 +59,4 @@ public abstract class HypermediaDocumentation {
 		return new LinkSnippetResultHandler(outputDir, linkExtractor,
 				Arrays.asList(descriptors));
 	}
-
 }

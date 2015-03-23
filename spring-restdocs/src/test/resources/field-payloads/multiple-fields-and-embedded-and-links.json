@@ -1,0 +1,9 @@
+{
+	"_links": {
+		"alpha": "http://alpha.example.com",
+		"bravo": "http://bravo.example.com"
+	},
+	"_embedded": "embedded-test",
+	"beta": "beta-value",
+	"charlie": "charlie-value"
+}
