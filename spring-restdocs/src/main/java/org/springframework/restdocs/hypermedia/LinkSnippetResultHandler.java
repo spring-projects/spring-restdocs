@@ -27,6 +27,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.restdocs.snippet.DocumentationWriter;
+import org.springframework.restdocs.snippet.DocumentationWriter.TableAction;
+import org.springframework.restdocs.snippet.DocumentationWriter.TableWriter;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
@@ -100,16 +102,19 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 
 		Assert.isTrue(actualRels.equals(expectedRels));
 
-		writer.println("|===");
-		writer.println("| Relation | Description");
+		writer.table(new TableAction() {
 
-		for (Entry<String, LinkDescriptor> entry : this.descriptorsByRel.entrySet()) {
-			writer.println();
-			writer.println("| " + entry.getKey());
-			writer.println("| " + entry.getValue().getDescription());
-		}
+			@Override
+			public void perform(TableWriter tableWriter) throws IOException {
+				tableWriter.headers("Relation", "Description");
+				for (Entry<String, LinkDescriptor> entry : LinkSnippetResultHandler.this.descriptorsByRel
+						.entrySet()) {
+					tableWriter.row(entry.getKey(), entry.getValue().getDescription());
+				}
+			}
 
-		writer.println("|===");
+		});
+
 	}
 
 }
