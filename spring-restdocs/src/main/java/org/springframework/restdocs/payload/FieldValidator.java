@@ -68,10 +68,9 @@ class FieldValidator {
 		List<String> missingFields = new ArrayList<String>();
 
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-			if (!fieldDescriptor.isOptional()) {
-				if (!this.fieldExtractor.hasField(fieldDescriptor.getPath(), payload)) {
-					missingFields.add(fieldDescriptor.getPath());
-				}
+			if (!fieldDescriptor.isOptional()
+					&& !this.fieldExtractor.hasField(fieldDescriptor.getPath(), payload)) {
+				missingFields.add(fieldDescriptor.getPath());
 			}
 		}
 
