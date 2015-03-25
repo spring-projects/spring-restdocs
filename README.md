@@ -279,9 +279,9 @@ command for the request and the resulting response to files in a directory named
 `index` in the project's `build/generated-snippets/` directory. Three files will
 be written:
 
- - `index/request.asciidoc`
- - `index/response.asciidoc`
- - `index/request-response.asciidoc`
+ - `index/curl-request.asciidoc`
+ - `index/http-request.asciidoc`
+ - `index/http-response.asciidoc`
 
 #### Parameterized output directories
 
@@ -340,8 +340,8 @@ which the snippets are written. For example, to include both the request and res
 snippets described above:
 
 ```
-include::{generated}/index/request.asciidoc[]
-include::{generated}/index/response.asciidoc[]
+include::{generated}/index/curl-request.asciidoc[]
+include::{generated}/index/http-response.asciidoc[]
 ```
 
 ## Generating snippets in your IDE

@@ -16,7 +16,11 @@
 
 package org.springframework.restdocs.config;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 
@@ -70,6 +74,25 @@ public class RestDocumentationConfigurerTests {
 		postProcessor.postProcessRequest(this.request);
 
 		assertUriConfiguration("http", "localhost", 8081);
+	}
+
+	@Test
+	public void noContentLengthHeaderWhenRequestHasNotContent() {
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().withPort(
+				8081).beforeMockMvcCreated(null, null);
+		postProcessor.postProcessRequest(this.request);
+		assertThat(this.request.getHeader("Content-Length"), is(nullValue()));
+	}
+
+	@Test
+	public void contentLengthHeaderIsSetWhenRequestHasContent() {
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().withPort(
+				8081).beforeMockMvcCreated(null, null);
+		byte[] content = "Hello, world".getBytes();
+		this.request.setContent(content);
+		postProcessor.postProcessRequest(this.request);
+		assertThat(this.request.getHeader("Content-Length"),
+				is(equalTo(Integer.toString(content.length))));
 	}
 
 	private void assertUriConfiguration(String scheme, String host, int port) {

@@ -17,12 +17,8 @@
 package org.springframework.restdocs.curl;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequest;
-import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequestAndResponse;
-import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlResponse;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,10 +30,8 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.StubMvcResult;
 
 /**
@@ -75,15 +69,6 @@ public class CurlDocumentationTests {
 				new StubMvcResult(new MockHttpServletRequest("POST", "/foo"), null));
 		assertThat(requestSnippetLines("non-get-request"),
 				hasItem("$ curl http://localhost/foo -i -X POST"));
-	}
-
-	@Test
-	public void requestWithoutResponseHeaderInclusion() throws IOException {
-		documentCurlRequest("request-without-response-header-inclusion")
-				.includeResponseHeaders(false)
-				.handle(new StubMvcResult(new MockHttpServletRequest("GET", "/foo"), null));
-		assertThat(requestSnippetLines("request-without-response-header-inclusion"),
-				hasItem("$ curl http://localhost/foo"));
 	}
 
 	@Test
@@ -193,67 +178,6 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void basicResponse() throws IOException {
-		documentCurlResponse("basic-response").handle(
-				new StubMvcResult(null, new MockHttpServletResponse()));
-		assertThat(responseSnippetLines("basic-response"), hasItem("HTTP/1.1 200 OK"));
-	}
-
-	@Test
-	public void nonOkResponse() throws IOException {
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.setStatus(HttpStatus.BAD_REQUEST.value());
-		documentCurlResponse("non-ok-response").handle(new StubMvcResult(null, response));
-		assertThat(responseSnippetLines("non-ok-response"),
-				hasItem("HTTP/1.1 400 Bad Request"));
-	}
-
-	@Test
-	public void responseWithHeaders() throws IOException {
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		response.setHeader("a", "alpha");
-		documentCurlResponse("non-ok-response").handle(new StubMvcResult(null, response));
-		assertThat(responseSnippetLines("non-ok-response"),
-				hasItems("HTTP/1.1 200 OK", "Content-Type: application/json", "a: alpha"));
-	}
-
-	@Test
-	public void responseWithHeaderInclusionDisabled() throws IOException {
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		response.setHeader("a", "alpha");
-		response.getWriter().append("content");
-		documentCurlResponse("response-with-header-inclusion-disabled")
-				.includeResponseHeaders(false).handle(new StubMvcResult(null, response));
-		List<String> responseSnippetLines = responseSnippetLines("response-with-header-inclusion-disabled");
-		assertThat(
-				responseSnippetLines,
-				not(hasItems("HTTP/1.1 200 OK", "Content-Type: application/json",
-						"a: alpha")));
-		assertThat(responseSnippetLines, hasItem("content"));
-	}
-
-	@Test
-	public void responseWithContent() throws IOException {
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.getWriter().append("content");
-		documentCurlResponse("response-with-content").handle(
-				new StubMvcResult(null, response));
-		assertThat(responseSnippetLines("response-with-content"),
-				hasItems("HTTP/1.1 200 OK", "content"));
-	}
-
-	@Test
-	public void requestAndResponse() throws IOException {
-		documentCurlRequestAndResponse("request-and-response").handle(
-				new StubMvcResult(new MockHttpServletRequest("GET", "/foo"),
-						new MockHttpServletResponse()));
-		assertThat(requestResponseSnippetLines("request-and-response"),
-				hasItems("$ curl http://localhost/foo -i", "HTTP/1.1 200 OK"));
-	}
-
-	@Test
 	public void httpWithNonStandardPort() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(8080);
@@ -296,16 +220,7 @@ public class CurlDocumentationTests {
 	}
 
 	private List<String> requestSnippetLines(String snippetName) throws IOException {
-		return snippetLines(snippetName, "request");
-	}
-
-	private List<String> responseSnippetLines(String snippetName) throws IOException {
-		return snippetLines(snippetName, "response");
-	}
-
-	private List<String> requestResponseSnippetLines(String snippetName)
-			throws IOException {
-		return snippetLines(snippetName, "request-response");
+		return snippetLines(snippetName, "curl-request");
 	}
 
 	private List<String> snippetLines(String snippetName, String snippetType)

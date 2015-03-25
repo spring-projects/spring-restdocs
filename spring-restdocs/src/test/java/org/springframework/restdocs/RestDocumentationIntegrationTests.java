@@ -84,7 +84,8 @@ public class RestDocumentationIntegrationTests {
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(document("basic"));
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/basic"),
-				"request.asciidoc", "response.asciidoc", "request-response.asciidoc");
+				"http-request.asciidoc", "http-response.asciidoc",
+				"curl-request.asciidoc");
 	}
 
 	@Test
@@ -96,7 +97,8 @@ public class RestDocumentationIntegrationTests {
 				.andExpect(status().isOk()).andDo(document("{method-name}"));
 		assertExpectedSnippetFilesExist(new File(
 				"build/generated-snippets/parameterized-output-directory"),
-				"request.asciidoc", "response.asciidoc", "request-response.asciidoc");
+				"http-request.asciidoc", "http-response.asciidoc",
+				"curl-request.asciidoc");
 	}
 
 	@Test
@@ -108,20 +110,23 @@ public class RestDocumentationIntegrationTests {
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andExpect(
 				status().isOk());
 		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/multi-step-1/"), "request.asciidoc",
-				"response.asciidoc", "request-response.asciidoc");
+				new File("build/generated-snippets/multi-step-1/"),
+				"http-request.asciidoc", "http-response.asciidoc",
+				"curl-request.asciidoc");
 
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andExpect(
 				status().isOk());
 		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/multi-step-2/"), "request.asciidoc",
-				"response.asciidoc", "request-response.asciidoc");
+				new File("build/generated-snippets/multi-step-2/"),
+				"http-request.asciidoc", "http-response.asciidoc",
+				"curl-request.asciidoc");
 
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andExpect(
 				status().isOk());
 		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/multi-step-3/"), "request.asciidoc",
-				"response.asciidoc", "request-response.asciidoc");
+				new File("build/generated-snippets/multi-step-3/"),
+				"http-request.asciidoc", "http-response.asciidoc",
+				"curl-request.asciidoc");
 
 	}
 

@@ -69,7 +69,7 @@ include::{generated}/error-example/response-fields.asciidoc[]
 For example, a request that attempts to apply a non-existent tag to a note will produce a
 `400 Bad Request` response:
 
-include::{generated}/error-example/response.asciidoc[]
+include::{generated}/error-example/http-response.asciidoc[]
 
 [[overview-hypermedia]]
 == Hypermedia
@@ -103,7 +103,7 @@ include::{generated}/index-example/response-fields.asciidoc[]
 
 ==== Example response
 
-include::{generated}/index-example/response.asciidoc[]
+include::{generated}/index-example/http-response.asciidoc[]
 
 
 
@@ -132,11 +132,11 @@ include::{generated}/notes-list-example/response-fields.asciidoc[]
 
 ==== Example request
 
-include::{generated}/notes-list-example/request.asciidoc[]
+include::{generated}/notes-list-example/curl-request.asciidoc[]
 
 ==== Example response
 
-include::{generated}/notes-list-example/response.asciidoc[]
+include::{generated}/notes-list-example/http-response.asciidoc[]
 
 
 
@@ -151,11 +151,11 @@ include::{generated}/notes-create-example/request-fields.asciidoc[]
 
 ==== Example request
 
-include::{generated}/notes-create-example/request.asciidoc[]
+include::{generated}/notes-create-example/curl-request.asciidoc[]
 
 ==== Example response
 
-include::{generated}/notes-create-example/response.asciidoc[]
+include::{generated}/notes-create-example/http-response.asciidoc[]
 
 
 
@@ -177,11 +177,11 @@ include::{generated}/tags-list-example/response-fields.asciidoc[]
 
 ==== Example request
 
-include::{generated}/tags-list-example/request.asciidoc[]
+include::{generated}/tags-list-example/curl-request.asciidoc[]
 
 ==== Example response
 
-include::{generated}/tags-list-example/response.asciidoc[]
+include::{generated}/tags-list-example/http-response.asciidoc[]
 
 
 
@@ -196,11 +196,11 @@ include::{generated}/tags-create-example/request-fields.asciidoc[]
 
 ==== Example request
 
-include::{generated}/tags-create-example/request.asciidoc[]
+include::{generated}/tags-create-example/curl-request.asciidoc[]
 
 ==== Example response
 
-include::{generated}/tags-create-example/response.asciidoc[]
+include::{generated}/tags-create-example/http-response.asciidoc[]
 
 
 
@@ -229,11 +229,11 @@ include::{generated}/note-get-example/response-fields.asciidoc[]
 
 ==== Example request
 
-include::{generated}/note-get-example/request.asciidoc[]
+include::{generated}/note-get-example/curl-request.asciidoc[]
 
 ==== Example response
 
-include::{generated}/note-get-example/response.asciidoc[]
+include::{generated}/note-get-example/http-response.asciidoc[]
 
 
 
@@ -250,11 +250,11 @@ To leave an attribute of a note unchanged, any of the above may be omitted from 
 
 ==== Example request
 
-include::{generated}/note-update-example/request.asciidoc[]
+include::{generated}/note-update-example/curl-request.asciidoc[]
 
 ==== Example response
 
-include::{generated}/note-update-example/response.asciidoc[]
+include::{generated}/note-update-example/http-response.asciidoc[]
 
 
 
@@ -283,11 +283,11 @@ include::{generated}/tag-get-example/response-fields.asciidoc[]
 
 ==== Example request
 
-include::{generated}/tag-get-example/request.asciidoc[]
+include::{generated}/tag-get-example/curl-request.asciidoc[]
 
 ==== Example response
 
-include::{generated}/tag-get-example/response.asciidoc[]
+include::{generated}/tag-get-example/http-response.asciidoc[]
 
 
 
@@ -302,8 +302,8 @@ include::{generated}/tag-update-example/request-fields.asciidoc[]
 
 ==== Example request
 
-include::{generated}/tag-update-example/request.asciidoc[]
+include::{generated}/tag-update-example/curl-request.asciidoc[]
 
 ==== Example response
 
-include::{generated}/tag-update-example/response.asciidoc[]
+include::{generated}/tag-update-example/http-response.asciidoc[]

@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurerAdapter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -108,8 +109,19 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 				request.setScheme(RestDocumentationConfigurer.this.scheme);
 				request.setServerPort(RestDocumentationConfigurer.this.port);
 				request.setServerName(RestDocumentationConfigurer.this.host);
+				configureContentLengthHeaderIfAppropriate(request);
 				return request;
 			}
+
+			private void configureContentLengthHeaderIfAppropriate(
+					MockHttpServletRequest request) {
+				long contentLength = request.getContentLengthLong();
+				if (contentLength > 0
+						&& !StringUtils.hasText(request.getHeader("Content-Length"))) {
+					request.addHeader("Content-Length", request.getContentLengthLong());
+				}
+			}
+
 		};
 	}
 
