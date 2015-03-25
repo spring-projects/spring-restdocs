@@ -256,7 +256,7 @@ public class CurlDocumentationTests {
 	@Test
 	public void httpWithNonStandardPort() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.setRemotePort(8080);
+		request.setServerPort(8080);
 		documentCurlRequest("http-with-non-standard-port").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("http-with-non-standard-port"),
@@ -266,7 +266,7 @@ public class CurlDocumentationTests {
 	@Test
 	public void httpsWithStandardPort() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.setRemotePort(443);
+		request.setServerPort(443);
 		request.setScheme("https");
 		documentCurlRequest("https-with-standard-port").handle(
 				new StubMvcResult(request, null));
@@ -277,12 +277,22 @@ public class CurlDocumentationTests {
 	@Test
 	public void httpsWithNonStandardPort() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.setRemotePort(8443);
+		request.setServerPort(8443);
 		request.setScheme("https");
 		documentCurlRequest("https-with-non-standard-port").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("https-with-non-standard-port"),
 				hasItem("$ curl https://localhost:8443/foo -i"));
+	}
+
+	@Test
+	public void requestWithCustomHost() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.setServerName("api.example.com");
+		documentCurlRequest("request-with-custom-host").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("request-with-custom-host"),
+				hasItem("$ curl http://api.example.com/foo -i"));
 	}
 
 	private List<String> requestSnippetLines(String snippetName) throws IOException {

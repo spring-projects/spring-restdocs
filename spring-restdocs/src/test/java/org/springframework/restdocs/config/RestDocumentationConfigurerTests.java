@@ -18,10 +18,14 @@ package org.springframework.restdocs.config;
 
 import static org.junit.Assert.assertEquals;
 
+import java.net.URI;
+
 import org.junit.Test;
+import org.springframework.hateoas.mvc.BasicLinkBuilder;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Tests for {@link RestDocumentationConfigurer}.
@@ -70,9 +74,19 @@ public class RestDocumentationConfigurerTests {
 
 	private void assertUriConfiguration(String scheme, String host, int port) {
 		assertEquals(scheme, this.request.getScheme());
-		assertEquals(host, this.request.getRemoteHost());
-		assertEquals(port, this.request.getRemotePort());
+		assertEquals(host, this.request.getServerName());
 		assertEquals(port, this.request.getServerPort());
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(
+				this.request));
+		try {
+			URI uri = BasicLinkBuilder.linkToCurrentMapping().toUri();
+			assertEquals(scheme, uri.getScheme());
+			assertEquals(host, uri.getHost());
+			assertEquals(port, uri.getPort());
+		}
+		finally {
+			RequestContextHolder.resetRequestAttributes();
+		}
 	}
 
 }

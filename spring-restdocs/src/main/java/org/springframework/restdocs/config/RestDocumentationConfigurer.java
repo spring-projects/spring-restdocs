@@ -106,9 +106,8 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 					currentContext.getAndIncrementStepCount();
 				}
 				request.setScheme(RestDocumentationConfigurer.this.scheme);
-				request.setRemotePort(RestDocumentationConfigurer.this.port);
 				request.setServerPort(RestDocumentationConfigurer.this.port);
-				request.setRemoteHost(RestDocumentationConfigurer.this.host);
+				request.setServerName(RestDocumentationConfigurer.this.host);
 				return request;
 			}
 		};

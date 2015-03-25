@@ -134,10 +134,10 @@ public abstract class CurlDocumentation {
 		public void perform() throws IOException {
 			MockHttpServletRequest request = this.result.getRequest();
 			this.writer.print(String.format("curl %s://%s", request.getScheme(),
-					request.getRemoteHost()));
+					request.getServerName()));
 
 			if (isNonStandardPort(request)) {
-				this.writer.print(String.format(":%d", request.getRemotePort()));
+				this.writer.print(String.format(":%d", request.getServerPort()));
 			}
 
 			this.writer.print(getRequestUriWithQueryString(request));
@@ -180,9 +180,9 @@ public abstract class CurlDocumentation {
 		}
 
 		private boolean isNonStandardPort(HttpServletRequest request) {
-			return (SCHEME_HTTP.equals(request.getScheme()) && request.getRemotePort() != STANDARD_PORT_HTTP)
+			return (SCHEME_HTTP.equals(request.getScheme()) && request.getServerPort() != STANDARD_PORT_HTTP)
 					|| (SCHEME_HTTPS.equals(request.getScheme()) && request
-							.getRemotePort() != STANDARD_PORT_HTTPS);
+							.getServerPort() != STANDARD_PORT_HTTPS);
 		}
 
 		private String getRequestUriWithQueryString(HttpServletRequest request) {

@@ -5,6 +5,7 @@ project(':spring-restdocs') {
 		jacocoVersion = '0.7.2.201409121644'
 		junitVersion = '4.11'
 		servletApiVersion = '3.1.0'
+		springHateoasVersion = '0.17.0.RELEASE'
 		springVersion = '4.1.4.RELEASE'
 		mockitoVersion = '1.10.19'
 	}
@@ -64,6 +65,7 @@ project(':spring-restdocs') {
 		compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 		jacoco "org.jacoco:org.jacoco.agent:$jacocoVersion:runtime"
 		testCompile "org.springframework:spring-webmvc:$springVersion"
+		testCompile "org.springframework.hateoas:spring-hateoas:$springHateoasVersion"
 		testCompile "org.mockito:mockito-core:$mockitoVersion"
 	}
 
