@@ -140,6 +140,10 @@ public abstract class CurlDocumentation {
 				this.writer.print(String.format(":%d", request.getServerPort()));
 			}
 
+			if (StringUtils.hasText(request.getContextPath())) {
+				this.writer.print(String.format("/%s", request.getContextPath()));
+			}
+
 			this.writer.print(getRequestUriWithQueryString(request));
 
 			if (this.curlConfiguration.isIncludeResponseHeaders()) {

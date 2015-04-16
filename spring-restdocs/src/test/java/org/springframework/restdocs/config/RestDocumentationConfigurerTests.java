@@ -16,7 +16,9 @@
 
 package org.springframework.restdocs.config;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 
@@ -70,6 +72,17 @@ public class RestDocumentationConfigurerTests {
 		postProcessor.postProcessRequest(this.request);
 
 		assertUriConfiguration("http", "localhost", 8081);
+	}
+
+	@Test
+	public void withContextPath() {
+		String contextPath = "context-path";
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().withContextPath(contextPath)
+				.beforeMockMvcCreated(null, null);
+		postProcessor.postProcessRequest(this.request);
+
+		assertUriConfiguration("http", "localhost", 8080);
+		assertThat(this.request.getContextPath(), equalTo(contextPath));
 	}
 
 	private void assertUriConfiguration(String scheme, String host, int port) {

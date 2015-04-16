@@ -56,6 +56,8 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 	private int port = DEFAULT_PORT;
 
+	private String contextPath = "";
+
 	/**
 	 * Configures any documented URIs to use the given {@code scheme}. The default is
 	 * {@code http}.
@@ -92,6 +94,16 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 		return this;
 	}
 
+	/**
+	 * Configures any documented URIs to have a {@code contextPath} that is usually setup during servlet configuration.
+	 * Default is {@ code ""}
+	 * @return {@code this}
+	 */
+	public RestDocumentationConfigurer withContextPath(String contextPath) {
+		this.contextPath = contextPath;
+		return this;
+	}
+
 	@Override
 	public RequestPostProcessor beforeMockMvcCreated(
 			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
@@ -108,9 +120,9 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 				request.setScheme(RestDocumentationConfigurer.this.scheme);
 				request.setServerPort(RestDocumentationConfigurer.this.port);
 				request.setServerName(RestDocumentationConfigurer.this.host);
+				request.setContextPath(RestDocumentationConfigurer.this.contextPath);
 				return request;
 			}
 		};
 	}
-
 }
