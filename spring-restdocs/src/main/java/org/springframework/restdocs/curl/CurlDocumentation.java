@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
  *
  * @author Andy Wilkinson
  * @author Yann Le Guern
+ * @author Dmitriy Mayboroda
  */
 public abstract class CurlDocumentation {
 
@@ -86,6 +87,10 @@ public abstract class CurlDocumentation {
 
 			if (isNonStandardPort(request)) {
 				this.writer.print(String.format(":%d", request.getPort()));
+			}
+
+			if (StringUtils.hasText(request.getContextPath())) {
+				this.writer.print(String.format("/%s", request.getContextPath()));
 			}
 
 			this.writer.print(request.getRequestUriWithQueryString().replace("&", "\\&"));

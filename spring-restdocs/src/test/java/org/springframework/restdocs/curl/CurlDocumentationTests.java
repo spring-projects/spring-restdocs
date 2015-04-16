@@ -39,6 +39,7 @@ import org.springframework.restdocs.StubMvcResult;
  * 
  * @author Andy Wilkinson
  * @author Yann Le Guern
+ * @author Dmitriy Mayboroda
  */
 public class CurlDocumentationTests {
 
@@ -217,6 +218,17 @@ public class CurlDocumentationTests {
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-custom-host"),
 				hasItem("$ curl http://api.example.com/foo -i"));
+	}
+
+	@Test
+	public void requestWithContextPath() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.setServerName("api.example.com");
+		request.setContextPath("v3");
+		documentCurlRequest("request-with-custom-context").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("request-with-custom-context"),
+				hasItem("$ curl http://api.example.com/v3/foo -i"));
 	}
 
 	private List<String> requestSnippetLines(String snippetName) throws IOException {

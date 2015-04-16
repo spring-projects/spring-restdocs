@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * to help in the documentation of the request.
  * 
  * @author Andy Wilkinson
+ * @author Dmitriy Mayboroda
  *
  */
 public class DocumentableHttpServletRequest {
@@ -184,6 +185,15 @@ public class DocumentableHttpServletRequest {
 	 */
 	public String getParameterMapAsQueryString() {
 		return toQueryString(this.delegate.getParameterMap());
+	}
+
+	/**
+	 * Returns the context path of the servlet
+	 *
+	 * @return the context path
+	 */
+	public String getContextPath() {
+		return this.delegate.getContextPath();
 	}
 
 	private String getQueryString() {

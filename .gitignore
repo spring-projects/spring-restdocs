@@ -5,3 +5,7 @@
 bin
 build
 target
+
+# idea files
+.idea/
+*.iml
