@@ -186,6 +186,16 @@ public class DocumentableHttpServletRequest {
 		return toQueryString(this.delegate.getParameterMap());
 	}
 
+	/**
+	 * Returns the request's context path
+	 * 
+	 * @return The context path of the request
+	 * @see HttpServletRequest#getContextPath()
+	 */
+	public String getContextPath() {
+		return this.delegate.getContextPath();
+	}
+
 	private String getQueryString() {
 		if (this.delegate.getQueryString() != null) {
 			return this.delegate.getQueryString();

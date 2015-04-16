@@ -28,8 +28,8 @@ import org.springframework.web.context.WebApplicationContext;
  * A {@link MockMvcConfigurer} that can be used to configure the documentation
  * 
  * @author Andy Wilkinson
+ * @author Dmitriy Mayboroda
  * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
- *
  */
 public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
@@ -51,11 +51,19 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 	 */
 	public static final int DEFAULT_PORT = 8080;
 
+	/**
+	 * The default context path for documented URIs
+	 * @see #withContextPath(String)
+	 */
+	public static final String DEFAULT_CONTEXT_PATH = "";
+
 	private String scheme = DEFAULT_SCHEME;
 
 	private String host = DEFAULT_HOST;
 
 	private int port = DEFAULT_PORT;
+
+	private String contextPath = DEFAULT_CONTEXT_PATH;
 
 	/**
 	 * Configures any documented URIs to use the given {@code scheme}. The default is
@@ -93,6 +101,18 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 		return this;
 	}
 
+	/**
+	 * Configures any documented URIs to use the given {@code contextPath}. The default is
+	 * an empty string.
+	 * 
+	 * @param The context path
+	 * @return {@code this}
+	 */
+	public RestDocumentationConfigurer withContextPath(String contextPath) {
+		this.contextPath = contextPath;
+		return this;
+	}
+
 	@Override
 	public RequestPostProcessor beforeMockMvcCreated(
 			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
@@ -109,6 +129,7 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 				request.setScheme(RestDocumentationConfigurer.this.scheme);
 				request.setServerPort(RestDocumentationConfigurer.this.port);
 				request.setServerName(RestDocumentationConfigurer.this.host);
+				request.setContextPath(RestDocumentationConfigurer.this.contextPath);
 				configureContentLengthHeaderIfAppropriate(request);
 				return request;
 			}
@@ -124,5 +145,4 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 		};
 	}
-
 }
