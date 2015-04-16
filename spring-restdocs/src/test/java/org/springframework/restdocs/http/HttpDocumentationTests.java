@@ -158,7 +158,7 @@ public class HttpDocumentationTests {
 	private List<String> snippetLines(String snippetName, String snippetType)
 			throws IOException {
 		File snippetDir = new File(this.outputDir, snippetName);
-		File snippetFile = new File(snippetDir, snippetType + ".asciidoc");
+		File snippetFile = new File(snippetDir, snippetType + ".adoc");
 		String line = null;
 		List<String> lines = new ArrayList<String>();
 		BufferedReader reader = new BufferedReader(new FileReader(snippetFile));

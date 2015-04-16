@@ -84,8 +84,7 @@ public class RestDocumentationIntegrationTests {
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(document("basic"));
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/basic"),
-				"http-request.asciidoc", "http-response.asciidoc",
-				"curl-request.asciidoc");
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc");
 	}
 
 	@Test
@@ -97,8 +96,7 @@ public class RestDocumentationIntegrationTests {
 				.andExpect(status().isOk()).andDo(document("{method-name}"));
 		assertExpectedSnippetFilesExist(new File(
 				"build/generated-snippets/parameterized-output-directory"),
-				"http-request.asciidoc", "http-response.asciidoc",
-				"curl-request.asciidoc");
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc");
 	}
 
 	@Test
@@ -110,23 +108,20 @@ public class RestDocumentationIntegrationTests {
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andExpect(
 				status().isOk());
 		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/multi-step-1/"),
-				"http-request.asciidoc", "http-response.asciidoc",
-				"curl-request.asciidoc");
+				new File("build/generated-snippets/multi-step-1/"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc");
 
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andExpect(
 				status().isOk());
 		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/multi-step-2/"),
-				"http-request.asciidoc", "http-response.asciidoc",
-				"curl-request.asciidoc");
+				new File("build/generated-snippets/multi-step-2/"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc");
 
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andExpect(
 				status().isOk());
 		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/multi-step-3/"),
-				"http-request.asciidoc", "http-response.asciidoc",
-				"curl-request.asciidoc");
+				new File("build/generated-snippets/multi-step-3/"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc");
 
 	}
 

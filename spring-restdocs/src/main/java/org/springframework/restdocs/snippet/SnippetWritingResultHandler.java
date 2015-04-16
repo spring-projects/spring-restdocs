@@ -57,7 +57,7 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 
 	private Writer createWriter() throws IOException {
 		File outputFile = new OutputFileResolver().resolve(this.outputDir, this.fileName
-				+ ".asciidoc");
+				+ ".adoc");
 
 		if (outputFile != null) {
 			File parent = outputFile.getParentFile();
