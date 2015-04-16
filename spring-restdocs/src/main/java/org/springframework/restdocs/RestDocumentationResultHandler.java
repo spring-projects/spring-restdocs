@@ -17,8 +17,8 @@
 package org.springframework.restdocs;
 
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequest;
-import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequestAndResponse;
-import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlResponse;
+import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRequest;
+import static org.springframework.restdocs.http.HttpDocumentation.documentHttpResponse;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentRequestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentResponseFields;
@@ -53,8 +53,8 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 		this.delegates = new ArrayList<ResultHandler>();
 		this.delegates.add(documentCurlRequest(this.outputDir));
-		this.delegates.add(documentCurlResponse(this.outputDir));
-		this.delegates.add(documentCurlRequestAndResponse(this.outputDir));
+		this.delegates.add(documentHttpRequest(this.outputDir));
+		this.delegates.add(documentHttpResponse(this.outputDir));
 	}
 
 	@Override
