@@ -59,7 +59,7 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.1'
+	gradleVersion = '2.3'
 }
 
 eclipseJdt.onlyIf { false }

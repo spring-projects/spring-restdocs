@@ -118,5 +118,5 @@ task buildRestNotesSpringDataRestSampleWithMaven(type: Exec) {
 }
 
 wrapper {
-	gradleVersion = '2.2'
+	gradleVersion = '2.3'
 }
