@@ -33,6 +33,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * Tests for {@link RestDocumentationConfigurer}.
  *
  * @author Andy Wilkinson
+ * @author Dmitriy Mayboroda
  */
 public class RestDocumentationConfigurerTests {
 

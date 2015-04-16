@@ -27,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
  * A {@link MockMvcConfigurer} that can be used to configure the documentation
  * 
  * @author Andy Wilkinson
+ * @author Dmitriy Mayboroda
  * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
  *
  */
@@ -96,7 +97,7 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 	/**
 	 * Configures any documented URIs to have a {@code contextPath} that is usually setup during servlet configuration.
-	 * Default is {@ code ""}
+	 * Default is an empty string.
 	 * @return {@code this}
 	 */
 	public RestDocumentationConfigurer withContextPath(String contextPath) {

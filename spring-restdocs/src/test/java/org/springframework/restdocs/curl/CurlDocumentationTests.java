@@ -45,6 +45,7 @@ import org.springframework.restdocs.StubMvcResult;
  * 
  * @author Andy Wilkinson
  * @author Yann Le Guern
+ * @author Dmitriy Mayboroda
  */
 public class CurlDocumentationTests {
 
@@ -289,9 +290,9 @@ public class CurlDocumentationTests {
 	public void requestWithCustomHost() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
-		documentCurlRequest("request-with-custom-context").handle(
+		documentCurlRequest("request-with-custom-host").handle(
 				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-custom-context"),
+		assertThat(requestSnippetLines("request-with-custom-host"),
 				hasItem("$ curl http://api.example.com/foo -i"));
 	}
 
@@ -300,9 +301,9 @@ public class CurlDocumentationTests {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
 		request.setContextPath("v3");
-		documentCurlRequest("request-with-custom-host").handle(
+		documentCurlRequest("request-with-custom-context").handle(
 				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-custom-host"),
+		assertThat(requestSnippetLines("request-with-custom-context"),
 				hasItem("$ curl http://api.example.com/v3/foo -i"));
 	}
 

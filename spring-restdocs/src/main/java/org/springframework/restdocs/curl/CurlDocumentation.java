@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * 
  * @author Andy Wilkinson
  * @author Yann Le Guern
+ * @author Dmitriy Mayboroda
  */
 public abstract class CurlDocumentation {
 
