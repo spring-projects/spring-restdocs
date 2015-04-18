@@ -61,7 +61,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("get-request").handle(
 				new StubMvcResult(new MockHttpServletRequest("GET", "/foo"), null));
 		assertThat(requestSnippetLines("get-request"),
-				hasItem("$ curl http://localhost/foo -i"));
+				hasItem("$ curl 'http://localhost/foo' -i"));
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("non-get-request").handle(
 				new StubMvcResult(new MockHttpServletRequest("POST", "/foo"), null));
 		assertThat(requestSnippetLines("non-get-request"),
-				hasItem("$ curl http://localhost/foo -i -X POST"));
+				hasItem("$ curl 'http://localhost/foo' -i -X POST"));
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-content").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-content"),
-				hasItem("$ curl http://localhost/foo -i -d 'content'"));
+				hasItem("$ curl 'http://localhost/foo' -i -d 'content'"));
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class CurlDocumentationTests {
 				new StubMvcResult(new MockHttpServletRequest("GET", "/foo?param=value"),
 						null));
 		assertThat(requestSnippetLines("request-with-uri-query-string"),
-				hasItem("$ curl http://localhost/foo?param=value -i"));
+				hasItem("$ curl 'http://localhost/foo?param=value' -i"));
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-query-string").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-query-string"),
-				hasItem("$ curl http://localhost/foo?param=value -i"));
+				hasItem("$ curl 'http://localhost/foo?param=value' -i"));
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-one-parameter").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-one-parameter"),
-				hasItem("$ curl http://localhost/foo?k1=v1 -i"));
+				hasItem("$ curl 'http://localhost/foo?k1=v1' -i"));
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-multiple-parameters").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-multiple-parameters"),
-				hasItem("$ curl http://localhost/foo?k1=v1\\&k1=v1-bis\\&k2=v2 -i"));
+				hasItem("$ curl 'http://localhost/foo?k1=v1&k1=v1-bis&k2=v2' -i"));
 	}
 
 	@Test
@@ -130,7 +130,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-url-encoded-parameter").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-url-encoded-parameter"),
-				hasItem("$ curl http://localhost/foo?k1=foo+bar%26 -i"));
+				hasItem("$ curl 'http://localhost/foo?k1=foo+bar%26' -i"));
 	}
 
 	@Test
@@ -140,7 +140,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("post-request-with-one-parameter").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("post-request-with-one-parameter"),
-				hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=v1'"));
+				hasItem("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
 	}
 
 	@Test
@@ -153,7 +153,7 @@ public class CurlDocumentationTests {
 				new StubMvcResult(request, null));
 		assertThat(
 				requestSnippetLines("post-request-with-multiple-parameters"),
-				hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=v1\\&k1=v1-bis\\&k2=v2'"));
+				hasItem("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1&k1=v1-bis&k2=v2'"));
 	}
 
 	@Test
@@ -163,7 +163,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("post-request-with-url-encoded-parameter").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("post-request-with-url-encoded-parameter"),
-				hasItem("$ curl http://localhost/foo -i -X POST -d 'k1=a%26b'"));
+				hasItem("$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
 	}
 
 	@Test
@@ -175,7 +175,7 @@ public class CurlDocumentationTests {
 				new StubMvcResult(request, null));
 		assertThat(
 				requestSnippetLines("request-with-headers"),
-				hasItem("$ curl http://localhost/foo -i -H \"Content-Type: application/json\" -H \"a: alpha\""));
+				hasItem("$ curl 'http://localhost/foo' -i -H 'Content-Type: application/json' -H 'a: alpha'"));
 	}
 
 	@Test
@@ -185,7 +185,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("http-with-non-standard-port").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("http-with-non-standard-port"),
-				hasItem("$ curl http://localhost:8080/foo -i"));
+				hasItem("$ curl 'http://localhost:8080/foo' -i"));
 	}
 
 	@Test
@@ -196,7 +196,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("https-with-standard-port").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("https-with-standard-port"),
-				hasItem("$ curl https://localhost/foo -i"));
+				hasItem("$ curl 'https://localhost/foo' -i"));
 	}
 
 	@Test
@@ -207,7 +207,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("https-with-non-standard-port").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("https-with-non-standard-port"),
-				hasItem("$ curl https://localhost:8443/foo -i"));
+				hasItem("$ curl 'https://localhost:8443/foo' -i"));
 	}
 
 	@Test
@@ -217,7 +217,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-custom-host").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-custom-host"),
-				hasItem("$ curl http://api.example.com/foo -i"));
+				hasItem("$ curl 'http://api.example.com/foo' -i"));
 	}
 
 	@Test
@@ -228,7 +228,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-custom-context-with-slash").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-custom-context-with-slash"),
-				hasItem("$ curl http://api.example.com/v3/foo -i"));
+				hasItem("$ curl 'http://api.example.com/v3/foo' -i"));
 	}
 
 	@Test
@@ -239,7 +239,7 @@ public class CurlDocumentationTests {
 		documentCurlRequest("request-with-custom-context-without-slash").handle(
 				new StubMvcResult(request, null));
 		assertThat(requestSnippetLines("request-with-custom-context-without-slash"),
-				hasItem("$ curl http://api.example.com/v3/foo -i"));
+				hasItem("$ curl 'http://api.example.com/v3/foo' -i"));
 	}
 
 	private List<String> requestSnippetLines(String snippetName) throws IOException {
