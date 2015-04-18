@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -79,6 +82,29 @@ public abstract class HttpDocumentation {
 		};
 	}
 
+	/**
+	 * Produces a documentation snippet containing the response formatted as the HTTP
+	 * response sent by the server. If the response is a JSON object, format it using
+	 * the supplied {@link ObjectMapper} and {$link ObjectWriter}.
+	 *
+	 * @param objectMapper Mapper to read JSON objects with
+	 * @param objectWriter Writer to format JSON objects with. Can be simply
+	 *                     {@code objectMapper.writerWithDefaultPrettyPrinter()}
+	 * @return {@code this}
+	 */
+	public static SnippetWritingResultHandler documentHttpResponseWithPrettyJson(
+			String outputDir, final ObjectMapper objectMapper, final ObjectWriter objectWriter) {
+		return new SnippetWritingResultHandler(outputDir, "http-response-pretty-json") {
+
+			@Override
+			public void handle(MvcResult result, DocumentationWriter writer)
+					throws IOException {
+				writer.codeBlock("http", new HttpResponseWithPrettyJsonDocumentationAction(
+						writer, result, objectMapper, objectWriter));
+			}
+		};
+	}
+
 	private static class HttpRequestDocumentationAction implements DocumentationAction {
 
 		private final DocumentationWriter writer;
@@ -125,12 +151,12 @@ public abstract class HttpDocumentation {
 		}
 	}
 
-	private static final class HttpResponseDocumentationAction implements
+	private static class HttpResponseDocumentationAction implements
 			DocumentationAction {
 
-		private final DocumentationWriter writer;
+		final DocumentationWriter writer;
 
-		private final MvcResult result;
+		final MvcResult result;
 
 		HttpResponseDocumentationAction(DocumentationWriter writer, MvcResult result) {
 			this.writer = writer;
@@ -139,17 +165,56 @@ public abstract class HttpDocumentation {
 
 		@Override
 		public void perform() throws IOException {
-			HttpStatus status = HttpStatus.valueOf(this.result.getResponse().getStatus());
-			this.writer.println(String.format("HTTP/1.1 %d %s", status.value(),
-					status.getReasonPhrase()));
-			for (String headerName : this.result.getResponse().getHeaderNames()) {
-				for (String header : this.result.getResponse().getHeaders(headerName)) {
-					this.writer.println(String.format("%s: %s", headerName, header));
-				}
-			}
-			this.writer.println();
+			writeHttpResponseHeaders();
 			this.writer.println(this.result.getResponse().getContentAsString());
 		}
+
+		void writeHttpResponseHeaders() {
+			HttpStatus status = HttpStatus.valueOf(result.getResponse().getStatus());
+			writer.println(String.format("HTTP/1.1 %d %s", status.value(),
+					status.getReasonPhrase()));
+			for (String headerName : result.getResponse().getHeaderNames()) {
+				for (String header : result.getResponse().getHeaders(headerName)) {
+					writer.println(String.format("%s: %s", headerName, header));
+				}
+			}
+			writer.println();
+		}
+	}
+
+	private static class HttpResponseWithPrettyJsonDocumentationAction
+			extends HttpResponseDocumentationAction {
+
+		private final ObjectMapper objectMapper;
+
+		private final ObjectWriter objectWriter;
+
+		HttpResponseWithPrettyJsonDocumentationAction(
+				DocumentationWriter writer, MvcResult result,
+				ObjectMapper objectMapper, ObjectWriter objectWriter) {
+			super(writer, result);
+			this.objectMapper = objectMapper;
+			this.objectWriter = objectWriter;
+		}
+
+		@Override
+		public void perform() throws IOException {
+			writeHttpResponseHeaders();
+			String contentType = this.result.getResponse().getContentType();
+			String contentAsString = result.getResponse().getContentAsString();
+			if (objectMapper != null && objectWriter != null
+					&& contentType != null && contentType.startsWith("application/json")) {
+				try {
+					this.writer.println(objectWriter.writeValueAsString(
+							objectMapper.readValue(contentAsString, Object.class)));
+				} catch (JsonMappingException e) {
+					this.writer.println(contentAsString);
+				}
+			} else {
+				this.writer.println(contentAsString);
+			}
+		}
+
 	}
 
 }
