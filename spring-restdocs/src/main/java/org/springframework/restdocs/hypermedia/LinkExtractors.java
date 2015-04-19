@@ -17,17 +17,12 @@
 package org.springframework.restdocs.hypermedia;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Static factory methods providing a selection of {@link LinkExtractor link extractors}
@@ -70,10 +65,13 @@ public abstract class LinkExtractors {
 	 * @return The extractor for the content type, or {@code null}
 	 */
 	public static LinkExtractor extractorForContentType(String contentType) {
-		if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
+		if (null == contentType) {
+			return null;
+		}
+		if (contentType.startsWith(MediaType.APPLICATION_JSON_VALUE)) {
 			return atomLinks();
 		}
-		else if ("application/hal+json".equals(contentType)) {
+		else if (contentType.startsWith("application/hal+json")) {
 			return halLinks();
 		}
 		return null;

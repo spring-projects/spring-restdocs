@@ -16,27 +16,19 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.core.IsNull.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.restdocs.hypermedia.Link;
-import org.springframework.restdocs.hypermedia.LinkExtractor;
-import org.springframework.restdocs.hypermedia.LinkExtractors;
 import org.springframework.util.FileCopyUtils;
 
 /**
@@ -61,6 +53,13 @@ public class LinkExtractorsTests {
 		this.linkExtractor = linkExtractor;
 		this.linkType = linkType;
 	}
+
+	@Test
+	public void combinedContentTypeMatches() {
+		LinkExtractor linkExtractor = LinkExtractors.extractorForContentType("application/json;charset=UTF-8");
+		assertThat(linkExtractor, notNullValue());
+	}
+
 
 	@Test
 	public void singleLink() throws IOException {
