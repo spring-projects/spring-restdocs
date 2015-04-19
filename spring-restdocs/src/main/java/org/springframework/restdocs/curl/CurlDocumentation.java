@@ -81,16 +81,16 @@ public abstract class CurlDocumentation {
 		public void perform() throws IOException {
 			DocumentableHttpServletRequest request = new DocumentableHttpServletRequest(
 					this.result.getRequest());
-			this.writer.print(String.format("curl %s://%s", request.getScheme(),
+			this.writer.print(String.format("curl '%s://%s", request.getScheme(),
 					request.getHost()));
 
 			if (isNonStandardPort(request)) {
 				this.writer.print(String.format(":%d", request.getPort()));
 			}
 
-			this.writer.print(request.getRequestUriWithQueryString().replace("&", "\\&"));
+			this.writer.print(request.getRequestUriWithQueryString());
 
-			this.writer.print(" -i");
+			this.writer.print("' -i");
 
 			if (!request.isGetRequest()) {
 				this.writer.print(String.format(" -X %s", request.getMethod()));
@@ -98,7 +98,7 @@ public abstract class CurlDocumentation {
 
 			for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
 				for (String header : entry.getValue()) {
-					this.writer.print(String.format(" -H \"%s: %s\"", entry.getKey(),
+					this.writer.print(String.format(" -H '%s: %s'", entry.getKey(),
 							header));
 				}
 			}
@@ -110,8 +110,7 @@ public abstract class CurlDocumentation {
 			else if (request.isPostRequest()) {
 				String queryString = request.getParameterMapAsQueryString();
 				if (StringUtils.hasText(queryString)) {
-					this.writer.print(String.format(" -d '%s'",
-							queryString.replace("&", "\\&")));
+					this.writer.print(String.format(" -d '%s'", queryString));
 				}
 			}
 
