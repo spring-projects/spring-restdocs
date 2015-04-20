@@ -16,18 +16,26 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import static org.hamcrest.core.IsNull.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.util.FileCopyUtils;
 
@@ -54,12 +62,22 @@ public class LinkExtractorsTests {
 		this.linkType = linkType;
 	}
 
+	@Test(expected = InvalidMediaTypeException.class)
+	public void emptyContentType() {
+		LinkExtractors.extractorForContentType(null);
+	}
+
 	@Test
 	public void combinedContentTypeMatches() {
 		LinkExtractor linkExtractor = LinkExtractors.extractorForContentType("application/json;charset=UTF-8");
 		assertThat(linkExtractor, notNullValue());
 	}
 
+	@Test
+	public void notDefinedMediaTypesMatches() {
+		LinkExtractor linkExtractor = LinkExtractors.extractorForContentType("application/hal+json;charset=UTF-8");
+		assertThat(linkExtractor, notNullValue());
+	}
 
 	@Test
 	public void singleLink() throws IOException {
