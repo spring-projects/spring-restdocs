@@ -74,47 +74,18 @@ project(':spring-restdocs') {
 	}
 }
 
-task buildSamples {
-	description = 'Assembles and tests the sample projects using both Maven and Gradle'
-	group = 'Build'
-	dependsOn 'buildMavenSamples'
-	dependsOn 'buildGradleSamples'
-}
+apply plugin: 'samples'
 
-task buildMavenSamples {
-	dependsOn 'buildRestNotesSpringHateoasSampleWithMaven'
-	dependsOn 'buildRestNotesSpringDataRestSampleWithMaven'
-}
+samples {
+	dependOn 'spring-restdocs:install'
 
-task buildGradleSamples {
-	dependsOn 'buildRestNotesSpringHateoasSampleWithGradle'
-	dependsOn 'buildRestNotesSpringDataRestSampleWithGradle'
-}
+	restNotesSpringHateoas {
+		workingDir 'samples/rest-notes-spring-hateoas'
+	}
 
-task buildRestNotesSpringHateoasSampleWithGradle(type: GradleBuild) {
-	dependsOn 'spring-restdocs:install'
-	dir = 'samples/rest-notes-spring-hateoas'
-	tasks = ['clean', 'build']
-}
-
-task buildRestNotesSpringDataRestSampleWithGradle(type: GradleBuild) {
-	dependsOn 'spring-restdocs:install'
-	dir = 'samples/rest-notes-spring-data-rest'
-	tasks = ['clean', 'build']
-}
-
-task buildRestNotesSpringHateoasSampleWithMaven(type: Exec) {
-	dependsOn 'spring-restdocs:install'
-	workingDir 'samples/rest-notes-spring-hateoas'
-	def suffix = File.separatorChar == '/' ? '' : '.bat'
-	commandLine "${System.env.MAVEN_HOME}/bin/mvn${suffix}", 'clean', 'package'
-}
-
-task buildRestNotesSpringDataRestSampleWithMaven(type: Exec) {
-	dependsOn 'spring-restdocs:install'
-	workingDir 'samples/rest-notes-spring-data-rest'
-	def suffix = File.separatorChar == '/' ? '' : '.bat'
-	commandLine "${System.env.MAVEN_HOME}/bin/mvn${suffix}", 'clean', 'package'
+	restNotesSpringDataRest {
+		workingDir 'samples/rest-notes-spring-data-rest'
+	}
 }
 
 wrapper {
