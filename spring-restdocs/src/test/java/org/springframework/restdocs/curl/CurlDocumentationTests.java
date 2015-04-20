@@ -221,13 +221,24 @@ public class CurlDocumentationTests {
 	}
 
 	@Test
-	public void requestWithContextPath() throws IOException {
+	public void requestWithContextPathWithSlash() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.setServerName("api.example.com");
+		request.setContextPath("/v3");
+		documentCurlRequest("request-with-custom-context-with-slash").handle(
+				new StubMvcResult(request, null));
+		assertThat(requestSnippetLines("request-with-custom-context-with-slash"),
+				hasItem("$ curl http://api.example.com/v3/foo -i"));
+	}
+
+	@Test
+	public void requestWithContextPathWithoutSlash() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
 		request.setContextPath("v3");
-		documentCurlRequest("request-with-custom-context").handle(
+		documentCurlRequest("request-with-custom-context-without-slash").handle(
 				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-custom-context"),
+		assertThat(requestSnippetLines("request-with-custom-context-without-slash"),
 				hasItem("$ curl http://api.example.com/v3/foo -i"));
 	}
 

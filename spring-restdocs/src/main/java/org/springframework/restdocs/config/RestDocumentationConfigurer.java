@@ -109,7 +109,8 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 	 * @return {@code this}
 	 */
 	public RestDocumentationConfigurer withContextPath(String contextPath) {
-		this.contextPath = contextPath;
+		this.contextPath = (StringUtils.hasText(contextPath) && !contextPath
+				.startsWith("/")) ? "/" + contextPath : contextPath;
 		return this;
 	}
 

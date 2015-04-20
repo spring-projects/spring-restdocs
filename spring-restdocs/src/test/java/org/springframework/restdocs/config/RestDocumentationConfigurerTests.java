@@ -78,8 +78,19 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customContextPath() {
+	public void customContextPathWithoutSlash() {
 		String contextPath = "context-path";
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer()
+				.withContextPath(contextPath).beforeMockMvcCreated(null, null);
+		postProcessor.postProcessRequest(this.request);
+
+		assertUriConfiguration("http", "localhost", 8080);
+		assertThat(this.request.getContextPath(), equalTo("/" + contextPath));
+	}
+
+	@Test
+	public void customContextPathWithSlash() {
+		String contextPath = "/context-path";
 		RequestPostProcessor postProcessor = new RestDocumentationConfigurer()
 				.withContextPath(contextPath).beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);

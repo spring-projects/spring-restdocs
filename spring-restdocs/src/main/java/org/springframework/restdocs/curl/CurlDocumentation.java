@@ -90,7 +90,9 @@ public abstract class CurlDocumentation {
 			}
 
 			if (StringUtils.hasText(request.getContextPath())) {
-				this.writer.print(String.format("/%s", request.getContextPath()));
+				this.writer.print(String.format(
+						request.getContextPath().startsWith("/") ? "%s" : "/%s",
+						request.getContextPath()));
 			}
 
 			this.writer.print(request.getRequestUriWithQueryString().replace("&", "\\&"));
