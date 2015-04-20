@@ -35,6 +35,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * Tests for {@link RestDocumentationConfigurer}.
  *
  * @author Andy Wilkinson
+ * @author Dmitriy Mayboroda
  */
 public class RestDocumentationConfigurerTests {
 
@@ -74,6 +75,28 @@ public class RestDocumentationConfigurerTests {
 		postProcessor.postProcessRequest(this.request);
 
 		assertUriConfiguration("http", "localhost", 8081);
+	}
+
+	@Test
+	public void customContextPathWithoutSlash() {
+		String contextPath = "context-path";
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer()
+				.withContextPath(contextPath).beforeMockMvcCreated(null, null);
+		postProcessor.postProcessRequest(this.request);
+
+		assertUriConfiguration("http", "localhost", 8080);
+		assertThat(this.request.getContextPath(), equalTo("/" + contextPath));
+	}
+
+	@Test
+	public void customContextPathWithSlash() {
+		String contextPath = "/context-path";
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer()
+				.withContextPath(contextPath).beforeMockMvcCreated(null, null);
+		postProcessor.postProcessRequest(this.request);
+
+		assertUriConfiguration("http", "localhost", 8080);
+		assertThat(this.request.getContextPath(), equalTo(contextPath));
 	}
 
 	@Test
