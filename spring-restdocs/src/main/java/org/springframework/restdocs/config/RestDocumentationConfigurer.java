@@ -105,7 +105,7 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 	 * Configures any documented URIs to use the given {@code contextPath}. The default is
 	 * an empty string.
 	 * 
-	 * @param The context path
+	 * @param contextPath The context path
 	 * @return {@code this}
 	 */
 	public RestDocumentationConfigurer withContextPath(String contextPath) {
