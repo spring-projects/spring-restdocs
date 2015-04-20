@@ -1,0 +1,6 @@
+language: java
+script:
+  - jdk_switcher use oraclejdk7
+  - "./gradlew build"
+  - jdk_switcher use oraclejdk8
+  - "./gradlew buildSamples"
