@@ -16,129 +16,50 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.springframework.http.InvalidMediaTypeException;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.restdocs.hypermedia.LinkExtractors.AtomLinkExtractor;
+import org.springframework.restdocs.hypermedia.LinkExtractors.HalLinkExtractor;
 
 /**
  * Tests for {@link LinkExtractors}.
- *
+ * 
  * @author Andy Wilkinson
  */
-@RunWith(Parameterized.class)
 public class LinkExtractorsTests {
 
-	private final LinkExtractor linkExtractor;
-
-	private final String linkType;
-
-	@Parameters
-	public static Collection<Object[]> data() {
-		return Arrays.asList(new Object[] { LinkExtractors.halLinks(), "hal" },
-				new Object[] { LinkExtractors.atomLinks(), "atom" });
-	}
-
-	public LinkExtractorsTests(LinkExtractor linkExtractor, String linkType) {
-		this.linkExtractor = linkExtractor;
-		this.linkType = linkType;
-	}
-
-	@Test(expected = InvalidMediaTypeException.class)
-	public void emptyContentType() {
-		LinkExtractors.extractorForContentType(null);
+	@Test
+	public void nullContentTypeYieldsNullExtractor() {
+		assertThat(LinkExtractors.extractorForContentType(null), nullValue());
 	}
 
 	@Test
-	public void combinedContentTypeMatches() {
-		LinkExtractor linkExtractor = LinkExtractors.extractorForContentType("application/json;charset=UTF-8");
-		assertThat(linkExtractor, notNullValue());
+	public void emptyContentTypeYieldsNullExtractor() {
+		assertThat(LinkExtractors.extractorForContentType(""), nullValue());
 	}
 
 	@Test
-	public void notDefinedMediaTypesMatches() {
-		LinkExtractor linkExtractor = LinkExtractors.extractorForContentType("application/hal+json;charset=UTF-8");
-		assertThat(linkExtractor, notNullValue());
+	public void applicationJsonContentTypeYieldsAtomExtractor() {
+		LinkExtractor linkExtractor = LinkExtractors
+				.extractorForContentType("application/json");
+		assertThat(linkExtractor, instanceOf(AtomLinkExtractor.class));
 	}
 
 	@Test
-	public void singleLink() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("single-link"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com")), links);
+	public void applicationHalJsonContentTypeYieldsHalExtractor() {
+		LinkExtractor linkExtractor = LinkExtractors
+				.extractorForContentType("application/hal+json");
+		assertThat(linkExtractor, instanceOf(HalLinkExtractor.class));
 	}
 
 	@Test
-	public void multipleLinksWithDifferentRels() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("multiple-links-different-rels"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com"),
-				new Link("bravo", "http://bravo.example.com")), links);
+	public void contentTypeWithParameterYieldsExtractor() {
+		LinkExtractor linkExtractor = LinkExtractors
+				.extractorForContentType("application/json;foo=bar");
+		assertThat(linkExtractor, instanceOf(AtomLinkExtractor.class));
 	}
 
-	@Test
-	public void multipleLinksWithSameRels() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("multiple-links-same-rels"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com/one"),
-				new Link("alpha", "http://alpha.example.com/two")), links);
-	}
-
-	@Test
-	public void noLinks() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("no-links"));
-		assertLinks(Collections.<Link> emptyList(), links);
-	}
-
-	@Test
-	public void linksInTheWrongFormat() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("wrong-format"));
-		assertLinks(Collections.<Link> emptyList(), links);
-	}
-
-	private void assertLinks(List<Link> expectedLinks, Map<String, List<Link>> actualLinks) {
-		Map<String, List<Link>> expectedLinksByRel = new HashMap<>();
-		for (Link expectedLink : expectedLinks) {
-			List<Link> expectedlinksWithRel = expectedLinksByRel.get(expectedLink
-					.getRel());
-			if (expectedlinksWithRel == null) {
-				expectedlinksWithRel = new ArrayList<>();
-				expectedLinksByRel.put(expectedLink.getRel(), expectedlinksWithRel);
-			}
-			expectedlinksWithRel.add(expectedLink);
-		}
-		assertEquals(expectedLinksByRel, actualLinks);
-	}
-
-	private MockHttpServletResponse createResponse(String contentName) throws IOException {
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		FileCopyUtils.copy(new FileReader(getPayloadFile(contentName)),
-				response.getWriter());
-		return response;
-	}
-
-	private File getPayloadFile(String name) {
-		return new File("src/test/resources/link-payloads/" + this.linkType + "/" + name
-				+ ".json");
-	}
 }
