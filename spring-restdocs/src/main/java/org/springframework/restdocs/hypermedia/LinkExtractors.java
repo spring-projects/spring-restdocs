@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -65,16 +66,19 @@ public abstract class LinkExtractors {
 	/**
 	 * Returns the {@code LinkExtractor} for the given {@code contentType} or {@code null}
 	 * if there is no extractor for the content type.
-	 * 
-	 * @param contentType The content type
+	 *
+	 * @param contentType The content type, may include parameters
 	 * @return The extractor for the content type, or {@code null}
 	 */
 	public static LinkExtractor extractorForContentType(String contentType) {
-		if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
-			return atomLinks();
-		}
-		else if ("application/hal+json".equals(contentType)) {
-			return halLinks();
+		if (StringUtils.hasText(contentType)) {
+			MediaType mediaType = MediaType.parseMediaType(contentType);
+			if (mediaType.isCompatibleWith(MediaType.APPLICATION_JSON)) {
+				return atomLinks();
+			}
+			if (mediaType.isCompatibleWith(HalLinkExtractor.HAL_MEDIA_TYPE)) {
+				return halLinks();
+			}
 		}
 		return null;
 	}
@@ -96,7 +100,10 @@ public abstract class LinkExtractors {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static class HalLinkExtractor extends JsonContentLinkExtractor {
+	static class HalLinkExtractor extends JsonContentLinkExtractor {
+
+		private static final MediaType HAL_MEDIA_TYPE = new MediaType("application",
+				"hal+json");
 
 		@Override
 		public Map<String, List<Link>> extractLinks(Map<String, Object> json) {
@@ -141,7 +148,7 @@ public abstract class LinkExtractors {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static class AtomLinkExtractor extends JsonContentLinkExtractor {
+	static class AtomLinkExtractor extends JsonContentLinkExtractor {
 
 		@Override
 		public Map<String, List<Link>> extractLinks(Map<String, Object> json) {
