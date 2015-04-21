@@ -268,7 +268,7 @@ The Tag resource is used to retrieve, update, and delete individual tags
 [[resources-tag-links]]
 === Links
 
-include:{{generated}/tag-get-example/links.adoc
+include::{generated}/tag-get-example/links.adoc[]
 
 
 

@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.build
 
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Exec
@@ -38,10 +39,12 @@ public class SampleBuildConfigurer {
 	Task createTask(Project project, Object... dependencies) {
 		Task mavenBuild = mavenBuild(project, dependencies)
 		Task gradleBuild = gradleBuild(project, dependencies)
+		Task verifyIncludes = verifyIncludes(project)
+		verifyIncludes.dependsOn mavenBuild, gradleBuild
 		Task sampleBuild = project.tasks.create name
 		sampleBuild.description = "Builds the ${name} sample"
 		sampleBuild.group = "Build"
-		sampleBuild.dependsOn mavenBuild, gradleBuild
+		sampleBuild.dependsOn mavenBuild, gradleBuild, verifyIncludes
 		return sampleBuild
 	}
 
@@ -68,4 +71,34 @@ public class SampleBuildConfigurer {
 		return gradleBuild
 	}
 
+	private Task verifyIncludes(Project project) {
+		Task verifyIncludes = project.tasks.create("${name}VerifyIncludes")
+		verifyIncludes.description = "Verifies the includes in the ${name} sample"
+		verifyIncludes << {
+			Map unprocessedIncludes = [:]
+			[new File(this.workingDir, "build/asciidoc"),
+					new File(this.workingDir, "target/generated-docs")].each { buildDir ->
+				buildDir.eachFileRecurse { file ->
+					if (file.name.endsWith('.html')) {
+						file.eachLine { line ->
+							if (line.contains(new File(this.workingDir).absolutePath)) {
+								unprocessedIncludes.get(file, []).add(line)
+							}
+						}
+					}
+				}
+			}
+			if (unprocessedIncludes) {
+				StringWriter message = new StringWriter()
+				PrintWriter writer = new PrintWriter(message)
+				writer.println 'Found unprocessed includes:'
+				unprocessedIncludes.each { file, lines ->
+					writer.println "    ${file}:"
+					lines.each { line -> writer.println "        ${line}" }
+				}
+				throw new GradleException(message.toString())
+			}
+		}
+		return verifyIncludes
+	}
 }
