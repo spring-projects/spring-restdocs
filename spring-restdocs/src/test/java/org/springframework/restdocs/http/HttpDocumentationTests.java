@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertThat;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRequest;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpResponse;
+import static org.springframework.restdocs.http.HttpDocumentation.documentHttpResponseWithPrettyJson;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -147,6 +149,22 @@ public class HttpDocumentationTests {
 				hasItems("HTTP/1.1 200 OK", "content"));
 	}
 
+	@Test
+	public void responseWithJsonPayload() throws IOException {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.getWriter().append("{\"id\":3,\"name\":\"payload\"}");
+		ObjectMapper objectMapper = new ObjectMapper();
+		documentHttpResponseWithPrettyJson("response-with-json-payload",
+				objectMapper, objectMapper.writerWithDefaultPrettyPrinter()).handle(
+				new StubMvcResult(null, response));
+		assertThat(responsePrettyJsonSnippetLines("response-with-json-payload"), hasItems(
+				"{",
+				"  \"id\" : 3,",
+				"  \"name\" : \"payload\"",
+				"}"));
+	}
+
 	private List<String> requestSnippetLines(String snippetName) throws IOException {
 		return snippetLines(snippetName, "http-request");
 	}
@@ -155,20 +173,20 @@ public class HttpDocumentationTests {
 		return snippetLines(snippetName, "http-response");
 	}
 
+	private List<String> responsePrettyJsonSnippetLines(String snippetName) throws IOException {
+		return snippetLines(snippetName, "http-response-pretty-json");
+	}
+
 	private List<String> snippetLines(String snippetName, String snippetType)
 			throws IOException {
 		File snippetDir = new File(this.outputDir, snippetName);
 		File snippetFile = new File(snippetDir, snippetType + ".adoc");
 		String line = null;
 		List<String> lines = new ArrayList<String>();
-		BufferedReader reader = new BufferedReader(new FileReader(snippetFile));
-		try {
+		try (BufferedReader reader = new BufferedReader(new FileReader(snippetFile))) {
 			while ((line = reader.readLine()) != null) {
 				lines.add(line);
 			}
-		}
-		finally {
-			reader.close();
 		}
 		return lines;
 	}

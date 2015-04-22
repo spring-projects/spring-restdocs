@@ -19,6 +19,7 @@ package org.springframework.restdocs;
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequest;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRequest;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpResponse;
+import static org.springframework.restdocs.http.HttpDocumentation.documentHttpResponseWithPrettyJson;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentRequestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentResponseFields;
@@ -26,6 +27,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.document
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.restdocs.hypermedia.HypermediaDocumentation;
 import org.springframework.restdocs.hypermedia.LinkDescriptor;
 import org.springframework.restdocs.hypermedia.LinkExtractor;
@@ -135,6 +138,23 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	public RestDocumentationResultHandler withResponseFields(
 			FieldDescriptor... descriptors) {
 		this.delegates.add(documentResponseFields(this.outputDir, descriptors));
+		return this;
+	}
+
+	/**
+	 * Produces a documentation snippet containing the response formatted as the HTTP
+	 * response sent by the server. If the response is a JSON object, format it using
+	 * the supplied {@link ObjectMapper} and {$link ObjectWriter}.
+	 *
+	 * @param objectMapper Mapper to read JSON objects with
+	 * @param objectWriter Writer to format JSON objects with. Can be simply
+	 *                     {@code objectMapper.writerWithDefaultPrettyPrinter()}
+	 * @return {@code this}
+	 */
+	public RestDocumentationResultHandler withJsonObjectWriter(
+			ObjectMapper objectMapper, ObjectWriter objectWriter) {
+		this.delegates.add(documentHttpResponseWithPrettyJson(
+				this.outputDir, objectMapper, objectWriter));
 		return this;
 	}
 
