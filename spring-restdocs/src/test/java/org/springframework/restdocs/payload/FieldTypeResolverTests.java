@@ -78,6 +78,20 @@ public class FieldTypeResolverTests {
 	}
 
 	@Test
+	public void multipleFieldsWithSameType() throws IOException {
+		assertThat(this.fieldTypeResolver.resolveFieldType("a[].id",
+				createPayload("{\"a\":[{\"id\":1},{\"id\":2}]}")),
+				equalTo(FieldType.NUMBER));
+	}
+
+	@Test
+	public void multipleFieldsWithDifferentTypes() throws IOException {
+		assertThat(this.fieldTypeResolver.resolveFieldType("a[].id",
+				createPayload("{\"a\":[{\"id\":1},{\"id\":true}]}")),
+				equalTo(FieldType.VARIES));
+	}
+
+	@Test
 	public void nonExistentFieldProducesIllegalArgumentException() throws IOException {
 		this.thrownException.expect(IllegalArgumentException.class);
 		this.thrownException

@@ -27,7 +27,7 @@ import org.springframework.util.StringUtils;
  */
 public enum FieldType {
 
-	ARRAY, BOOLEAN, OBJECT, NUMBER, NULL, STRING;
+	ARRAY, BOOLEAN, OBJECT, NUMBER, NULL, STRING, VARIES;
 
 	@Override
 	public String toString() {

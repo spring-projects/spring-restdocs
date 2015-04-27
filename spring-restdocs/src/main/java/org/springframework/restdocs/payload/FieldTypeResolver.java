@@ -26,10 +26,25 @@ import java.util.Map;
  */
 class FieldTypeResolver {
 
-	private final FieldExtractor fieldExtractor = new FieldExtractor();
+	private final FieldProcessor fieldProcessor = new FieldProcessor();
 
 	FieldType resolveFieldType(String path, Map<String, Object> payload) {
-		return determineFieldType(this.fieldExtractor.extractField(path, payload));
+		FieldPath fieldPath = FieldPath.compile(path);
+		Object field = this.fieldProcessor.extract(fieldPath, payload);
+		if (field instanceof Collection && !fieldPath.isPrecise()) {
+			FieldType commonType = null;
+			for (Object item : (Collection<?>) field) {
+				FieldType fieldType = determineFieldType(item);
+				if (commonType == null) {
+					commonType = fieldType;
+				}
+				else if (fieldType != commonType) {
+					return FieldType.VARIES;
+				}
+			}
+			return commonType;
+		}
+		return determineFieldType(this.fieldProcessor.extract(fieldPath, payload));
 	}
 
 	private FieldType determineFieldType(Object fieldValue) {

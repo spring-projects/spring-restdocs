@@ -38,26 +38,28 @@ public class FieldValidatorTests {
 	@Rule
 	public ExpectedException thrownException = ExpectedException.none();
 
-	private StringReader payload = new StringReader("{\"a\":{\"b\":{}, \"c\":true}}");
+	private StringReader payload = new StringReader(
+			"{\"a\":{\"b\":{},\"c\":true,\"d\":[{\"e\":1},{\"e\":2}]}}");
 
 	@Test
 	public void noMissingFieldsAllFieldsDocumented() throws IOException {
-		this.fieldValidator.validate(this.payload, Arrays.asList(
-				new FieldDescriptor("a"), new FieldDescriptor("a.b"),
-				new FieldDescriptor("a.c")));
+		this.fieldValidator.validate(this.payload, Arrays.asList(new FieldDescriptor(
+				"a.b"), new FieldDescriptor("a.c"), new FieldDescriptor("a.d[].e"),
+				new FieldDescriptor("a.d"), new FieldDescriptor("a")));
 	}
 
 	@Test
 	public void optionalFieldsAreNotReportedMissing() throws IOException {
 		this.fieldValidator.validate(this.payload, Arrays.asList(
 				new FieldDescriptor("a"), new FieldDescriptor("a.b"),
-				new FieldDescriptor("a.c"), new FieldDescriptor("y").optional()));
+				new FieldDescriptor("a.c"), new FieldDescriptor("a.d"),
+				new FieldDescriptor("y").optional()));
 	}
 
 	@Test
 	public void parentIsDocumentedWhenAllChildrenAreDocumented() throws IOException {
-		this.fieldValidator.validate(this.payload,
-				Arrays.asList(new FieldDescriptor("a.b"), new FieldDescriptor("a.c")));
+		this.fieldValidator.validate(this.payload, Arrays.asList(new FieldDescriptor(
+				"a.b"), new FieldDescriptor("a.c"), new FieldDescriptor("a.d[].e")));
 	}
 
 	@Test
@@ -83,6 +85,6 @@ public class FieldValidatorTests {
 				.expectMessage(equalTo(String
 						.format("Portions of the payload were not documented:%n{%n  \"a\" : {%n    \"c\" : true%n  }%n}")));
 		this.fieldValidator.validate(this.payload,
-				Arrays.asList(new FieldDescriptor("a.b")));
+				Arrays.asList(new FieldDescriptor("a.b"), new FieldDescriptor("a.d")));
 	}
 }

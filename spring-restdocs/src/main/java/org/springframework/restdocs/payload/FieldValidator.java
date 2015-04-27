@@ -19,7 +19,6 @@ package org.springframework.restdocs.payload;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 class FieldValidator {
 
-	private final FieldExtractor fieldExtractor = new FieldExtractor();
+	private final FieldProcessor fieldProcessor = new FieldProcessor();
 
 	private final ObjectMapper objectMapper = new ObjectMapper()
 			.enable(SerializationFeature.INDENT_OUTPUT);
@@ -69,7 +68,8 @@ class FieldValidator {
 
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
 			if (!fieldDescriptor.isOptional()
-					&& !this.fieldExtractor.hasField(fieldDescriptor.getPath(), payload)) {
+					&& !this.fieldProcessor.hasField(
+							FieldPath.compile(fieldDescriptor.getPath()), payload)) {
 				missingFields.add(fieldDescriptor.getPath());
 			}
 		}
@@ -80,31 +80,10 @@ class FieldValidator {
 	private Map<String, Object> findUndocumentedFields(Map<String, Object> payload,
 			List<FieldDescriptor> fieldDescriptors) {
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-			String path = fieldDescriptor.getPath();
-			List<String> segments = path.indexOf('.') > -1 ? Arrays.asList(path
-					.split("\\.")) : Arrays.asList(path);
-			removeField(segments, 0, payload);
+			FieldPath path = FieldPath.compile(fieldDescriptor.getPath());
+			this.fieldProcessor.remove(path, payload);
 		}
 		return payload;
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void removeField(List<String> segments, int depth,
-			Map<String, Object> payloadPortion) {
-		String key = segments.get(depth);
-		if (depth == segments.size() - 1) {
-			payloadPortion.remove(key);
-		}
-		else {
-			Object candidate = payloadPortion.get(key);
-			if (candidate instanceof Map) {
-				Map map = (Map<?, ?>) candidate;
-				removeField(segments, depth + 1, map);
-				if (map.isEmpty()) {
-					payloadPortion.remove(key);
-				}
-			}
-		}
 	}
 
 	@SuppressWarnings("serial")

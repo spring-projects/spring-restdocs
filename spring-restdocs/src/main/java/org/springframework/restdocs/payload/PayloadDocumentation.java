@@ -35,6 +35,56 @@ public abstract class PayloadDocumentation {
 	/**
 	 * Creates a {@code FieldDescriptor} that describes a field with the given
 	 * {@code path}.
+	 * <p>
+	 * The {@code path} uses '.' to descend into a child object and ' {@code []}' to
+	 * descend into an array. For example, with this JSON payload:
+	 * 
+	 * <pre>
+	 * {
+     *    "a":{
+     *        "b":[
+     *            {
+     *                "c":"one"
+     *            },
+     *            {
+     *                "c":"two"
+     *            },
+     *            {
+     *                "d":"three"
+     *            }
+     *        ]
+     *    }
+     * }
+	 * </pre>
+	 * 
+	 * The following paths are all present:
+	 * 
+	 * <table summary="Paths and their values">
+	 * <tr>
+	 * <th>Path</th>
+	 * <th>Value</th>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a}</td>
+	 * <td>An object containing "b"</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a.b}</td>
+	 * <td>An array containing three objects</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a.b[]}</td>
+	 * <td>An array containing three objects</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a.b[].c}</td>
+	 * <td>An array containing the strings "one" and "two"</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a.b[].d}</td>
+	 * <td>The string "three"</td>
+	 * </tr>
+	 * </table>
 	 * 
 	 * @param path The path of the field
 	 * @return a {@code FieldDescriptor} ready for further configuration

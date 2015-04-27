@@ -18,7 +18,6 @@ package org.springframework.restdocs.payload;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +45,6 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 
 	private final FieldTypeResolver fieldTypeResolver = new FieldTypeResolver();
 
-	private final FieldExtractor fieldExtractor = new FieldExtractor();
-
 	private final FieldValidator fieldValidator = new FieldValidator();
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
@@ -72,18 +69,6 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 		this.fieldValidator.validate(getPayloadReader(result), this.fieldDescriptors);
 
 		final Map<String, Object> payload = extractPayload(result);
-
-		List<String> missingFields = new ArrayList<String>();
-
-		for (FieldDescriptor fieldDescriptor : this.fieldDescriptors) {
-			if (!fieldDescriptor.isOptional()) {
-				Object field = this.fieldExtractor.extractField(
-						fieldDescriptor.getPath(), payload);
-				if (field == null) {
-					missingFields.add(fieldDescriptor.getPath());
-				}
-			}
-		}
 
 		writer.table(new TableAction() {
 
