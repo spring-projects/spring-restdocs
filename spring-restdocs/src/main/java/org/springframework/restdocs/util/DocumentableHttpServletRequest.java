@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * An {@link HttpServletRequest} wrapper that provides a limited set of methods intended
  * to help in the documentation of the request.
- * 
+ *
  * @author Andy Wilkinson
  *
  */
@@ -46,7 +46,7 @@ public class DocumentableHttpServletRequest {
 	/**
 	 * Creates a new {@link DocumentableHttpServletRequest} to document the given
 	 * {@code request}.
-	 * 
+	 *
 	 * @param request the request that is to be documented
 	 */
 	public DocumentableHttpServletRequest(MockHttpServletRequest request) {
@@ -55,7 +55,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Whether or not this request is a {@code GET} request.
-	 * 
+	 *
 	 * @return {@code true} if it is a {@code GET} request, otherwise {@code false}
 	 * @see HttpServletRequest#getMethod()
 	 */
@@ -65,7 +65,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Whether or not this request is a {@code POST} request.
-	 * 
+	 *
 	 * @return {@code true} if it is a {@code POST} request, otherwise {@code false}
 	 * @see HttpServletRequest#getMethod()
 	 */
@@ -74,10 +74,20 @@ public class DocumentableHttpServletRequest {
 	}
 
 	/**
+	 * Whether or not this request is a {@code PUT} request.
+	 *
+	 * @return {@code true} if it is a {@code PUT} request, otherwise {@code false}
+	 * @see HttpServletRequest#getMethod()
+	 */
+	public boolean isPutRequest() {
+		return RequestMethod.PUT == RequestMethod.valueOf(this.delegate.getMethod());
+	}
+
+	/**
 	 * Returns the request's headers. The headers are ordered based on the ordering of
 	 * {@link HttpServletRequest#getHeaderNames()} and
 	 * {@link HttpServletRequest#getHeaders(String)}.
-	 * 
+	 *
 	 * @return the request's headers
 	 * @see HttpServletRequest#getHeaderNames()
 	 * @see HttpServletRequest#getHeaders(String)
@@ -94,7 +104,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Returns the request's scheme.
-	 * 
+	 *
 	 * @return the request's scheme
 	 * @see HttpServletRequest#getScheme()
 	 */
@@ -104,7 +114,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Returns the name of the host to which the request was sent.
-	 * 
+	 *
 	 * @return the host's name
 	 * @see HttpServletRequest#getServerName()
 	 */
@@ -114,7 +124,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Returns the port to which the request was sent.
-	 * 
+	 *
 	 * @return the port
 	 * @see HttpServletRequest#getServerPort()
 	 */
@@ -124,7 +134,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Returns the request's method.
-	 * 
+	 *
 	 * @return the request's method
 	 * @see HttpServletRequest#getMethod()
 	 */
@@ -134,7 +144,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Returns the length of the request's content
-	 * 
+	 *
 	 * @return the content length
 	 * @see HttpServletRequest#getContentLength()
 	 */
@@ -144,7 +154,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Returns a {@code String} of the request's content
-	 * 
+	 *
 	 * @return the request's content
 	 * @throws IOException if the content cannot be read
 	 */
@@ -159,7 +169,7 @@ public class DocumentableHttpServletRequest {
 	 * determined by calling {@link HttpServletRequest#getQueryString()}. If it's
 	 * {@code null} and it is a {@code GET} request, the query string is then constructed
 	 * from the request's {@link HttpServletRequest#getParameterMap()} parameter map.
-	 * 
+	 *
 	 * @return the URI of the request, including its query string
 	 */
 	public String getRequestUriWithQueryString() {
@@ -174,7 +184,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Returns the request's parameter map formatted as a query string
-	 * 
+	 *
 	 * @return The query string derived from the request's parameter map
 	 * @see HttpServletRequest#getParameterMap()
 	 */
@@ -184,7 +194,7 @@ public class DocumentableHttpServletRequest {
 
 	/**
 	 * Returns the request's context path
-	 * 
+	 *
 	 * @return The context path of the request
 	 * @see HttpServletRequest#getContextPath()
 	 */
