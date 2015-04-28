@@ -21,6 +21,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.StubMvcResult.result;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.io.IOException;
 
@@ -32,7 +33,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Tests for {@link CurlDocumentation}
- * 
+ *
  * @author Andy Wilkinson
  * @author Yann Le Guern
  * @author Dmitriy Mayboroda
@@ -132,6 +133,36 @@ public class CurlDocumentationTests {
 								"$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
 		documentCurlRequest("post-request-with-url-encoded-parameter").handle(
 				result(post("/foo").param("k1", "a&b")));
+	}
+
+	@Test
+	public void putRequestWithOneParameter() throws IOException {
+		this.snippet.expectCurlRequest("put-request-with-one-parameter").withContents(
+				codeBlock("bash").content(
+						"$ curl 'http://localhost/foo' -i -X PUT -d 'k1=v1'"));
+		documentCurlRequest("put-request-with-one-parameter").handle(
+				result(put("/foo").param("k1", "v1")));
+	}
+
+	@Test
+	public void putRequestWithMultipleParameters() throws IOException {
+		this.snippet.expectCurlRequest("put-request-with-multiple-parameters")
+				.withContents(
+						codeBlock("bash").content(
+								"$ curl 'http://localhost/foo' -i -X PUT"
+										+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
+		documentCurlRequest("put-request-with-multiple-parameters").handle(
+				result(put("/foo").param("k1", "v1", "v1-bis").param("k2", "v2")));
+	}
+
+	@Test
+	public void putRequestWithUrlEncodedParameter() throws IOException {
+		this.snippet.expectCurlRequest("put-request-with-url-encoded-parameter")
+				.withContents(
+						codeBlock("bash").content(
+								"$ curl 'http://localhost/foo' -i -X PUT -d 'k1=a%26b'"));
+		documentCurlRequest("put-request-with-url-encoded-parameter").handle(
+				result(put("/foo").param("k1", "a&b")));
 	}
 
 	@Test

@@ -25,8 +25,10 @@ import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.StubMvcResult.result;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.io.IOException;
 
@@ -38,7 +40,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Tests for {@link HttpDocumentation}
- * 
+ *
  * @author Andy Wilkinson
  */
 public class HttpDocumentationTests {
@@ -92,6 +94,27 @@ public class HttpDocumentationTests {
 
 		documentHttpRequest("post-request-with-parameter").handle(
 				result(post("/foo").param("b&r", "baz").param("a", "alpha")));
+	}
+
+	@Test
+	public void putRequestWithContent() throws IOException {
+		this.snippet.expectHttpRequest("put-request-with-content").withContents(
+				httpRequest(PUT, "/foo") //
+						.content("Hello, world"));
+
+		documentHttpRequest("put-request-with-content").handle(
+				result(put("/foo").content("Hello, world")));
+	}
+
+	@Test
+	public void putRequestWithParameter() throws IOException {
+		this.snippet.expectHttpRequest("put-request-with-parameter").withContents(
+				httpRequest(PUT, "/foo") //
+						.header("Content-Type", "application/x-www-form-urlencoded") //
+						.content("b%26r=baz&a=alpha"));
+
+		documentHttpRequest("put-request-with-parameter").handle(
+				result(put("/foo").param("b&r", "baz").param("a", "alpha")));
 	}
 
 	@Test
