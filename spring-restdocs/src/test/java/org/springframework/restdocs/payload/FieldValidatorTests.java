@@ -24,7 +24,7 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.springframework.restdocs.payload.FieldValidator.FieldValidationException;
+import org.springframework.restdocs.RestDocumentationException;
 
 /**
  * Tests for {@link FieldValidator}
@@ -70,9 +70,10 @@ public class FieldValidatorTests {
 
 	@Test
 	public void missingField() throws IOException {
-		this.thrownException.expect(FieldValidationException.class);
+		this.thrownException.expect(RestDocumentationException.class);
 		this.thrownException
-				.expectMessage(equalTo("Fields with the following paths were not found in the payload: [y, z]"));
+				.expectMessage(equalTo("Fields with the following paths were not found"
+						+ " in the payload: [y, z]"));
 		this.fieldValidator.validate(this.payload, Arrays.asList(
 				new FieldDescriptor("a"), new FieldDescriptor("a.b"),
 				new FieldDescriptor("y"), new FieldDescriptor("z")));
@@ -80,10 +81,10 @@ public class FieldValidatorTests {
 
 	@Test
 	public void undocumentedField() throws IOException {
-		this.thrownException.expect(FieldValidationException.class);
-		this.thrownException
-				.expectMessage(equalTo(String
-						.format("Portions of the payload were not documented:%n{%n  \"a\" : {%n    \"c\" : true%n  }%n}")));
+		this.thrownException.expect(RestDocumentationException.class);
+		this.thrownException.expectMessage(equalTo(String
+				.format("The following parts of the payload were not"
+						+ " documented:%n{%n  \"a\" : {%n    \"c\" : true%n  }%n}")));
 		this.fieldValidator.validate(this.payload,
 				Arrays.asList(new FieldDescriptor("a.b"), new FieldDescriptor("a.d")));
 	}

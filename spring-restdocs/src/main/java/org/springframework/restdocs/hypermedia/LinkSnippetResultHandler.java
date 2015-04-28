@@ -16,8 +16,6 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.springframework.restdocs.RestDocumentationException;
 import org.springframework.restdocs.snippet.DocumentationWriter;
 import org.springframework.restdocs.snippet.DocumentationWriter.TableAction;
 import org.springframework.restdocs.snippet.DocumentationWriter.TableWriter;
@@ -94,10 +93,13 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 						+ undocumentedRels;
 			}
 			if (!missingRels.isEmpty()) {
+				if (message.length() > 0) {
+					message += ". ";
+				}
 				message += "Links with the following relations were not found in the response: "
 						+ missingRels;
 			}
-			fail(message);
+			throw new RestDocumentationException(message);
 		}
 
 		Assert.isTrue(actualRels.equals(expectedRels));

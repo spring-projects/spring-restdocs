@@ -16,23 +16,19 @@
 
 package org.springframework.restdocs.curl;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertThat;
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequest;
+import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
+import static org.springframework.restdocs.test.StubMvcResult.result;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.restdocs.StubMvcResult;
+import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Tests for {@link CurlDocumentation}
@@ -43,224 +39,174 @@ import org.springframework.restdocs.StubMvcResult;
  */
 public class CurlDocumentationTests {
 
-	private final File outputDir = new File("build/curl-documentation-tests");
-
-	@Before
-	public void setup() {
-		System.setProperty("org.springframework.restdocs.outputDir",
-				this.outputDir.getAbsolutePath());
-	}
-
-	@After
-	public void cleanup() {
-		System.clearProperty("org.springframework.restdocs.outputDir");
-	}
+	@Rule
+	public ExpectedSnippet snippet = new ExpectedSnippet();
 
 	@Test
 	public void getRequest() throws IOException {
-		documentCurlRequest("get-request").handle(
-				new StubMvcResult(new MockHttpServletRequest("GET", "/foo"), null));
-		assertThat(requestSnippetLines("get-request"),
-				hasItem("$ curl 'http://localhost/foo' -i"));
+		this.snippet.expectCurlRequest("get-request").withContents(
+				codeBlock("bash").content("$ curl 'http://localhost/foo' -i"));
+		documentCurlRequest("get-request").handle(result(get("/foo")));
 	}
 
 	@Test
 	public void nonGetRequest() throws IOException {
-		documentCurlRequest("non-get-request").handle(
-				new StubMvcResult(new MockHttpServletRequest("POST", "/foo"), null));
-		assertThat(requestSnippetLines("non-get-request"),
-				hasItem("$ curl 'http://localhost/foo' -i -X POST"));
+		this.snippet.expectCurlRequest("non-get-request").withContents(
+				codeBlock("bash").content("$ curl 'http://localhost/foo' -i -X POST"));
+		documentCurlRequest("non-get-request").handle(result(post("/foo")));
 	}
 
 	@Test
 	public void requestWithContent() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.setContent("content".getBytes());
+		this.snippet.expectCurlRequest("request-with-content").withContents(
+				codeBlock("bash")
+						.content("$ curl 'http://localhost/foo' -i -d 'content'"));
 		documentCurlRequest("request-with-content").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-content"),
-				hasItem("$ curl 'http://localhost/foo' -i -d 'content'"));
-	}
-
-	@Test
-	public void requestWitUriQueryString() throws IOException {
-		documentCurlRequest("request-with-uri-query-string").handle(
-				new StubMvcResult(new MockHttpServletRequest("GET", "/foo?param=value"),
-						null));
-		assertThat(requestSnippetLines("request-with-uri-query-string"),
-				hasItem("$ curl 'http://localhost/foo?param=value' -i"));
+				result(get("/foo").content("content")));
 	}
 
 	@Test
 	public void requestWithQueryString() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.setQueryString("param=value");
+		this.snippet.expectCurlRequest("request-with-query-string")
+				.withContents(
+						codeBlock("bash").content(
+								"$ curl 'http://localhost/foo?param=value' -i"));
 		documentCurlRequest("request-with-query-string").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-query-string"),
-				hasItem("$ curl 'http://localhost/foo?param=value' -i"));
+				result(get("/foo?param=value")));
 	}
 
 	@Test
 	public void requestWithOneParameter() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.addParameter("k1", "v1");
+		this.snippet.expectCurlRequest("request-with-one-parameter").withContents(
+				codeBlock("bash").content("$ curl 'http://localhost/foo?k1=v1' -i"));
 		documentCurlRequest("request-with-one-parameter").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-one-parameter"),
-				hasItem("$ curl 'http://localhost/foo?k1=v1' -i"));
+				result(get("/foo").param("k1", "v1")));
 	}
 
 	@Test
 	public void requestWithMultipleParameters() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.addParameter("k1", "v1");
-		request.addParameter("k2", "v2");
-		request.addParameter("k1", "v1-bis");
+		this.snippet.expectCurlRequest("request-with-multiple-parameters").withContents(
+				codeBlock("bash").content(
+						"$ curl 'http://localhost/foo?k1=v1&k1=v1-bis&k2=v2' -i"));
 		documentCurlRequest("request-with-multiple-parameters").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-multiple-parameters"),
-				hasItem("$ curl 'http://localhost/foo?k1=v1&k1=v1-bis&k2=v2' -i"));
+				result(get("/foo").param("k1", "v1").param("k2", "v2")
+						.param("k1", "v1-bis")));
 	}
 
 	@Test
 	public void requestWithUrlEncodedParameter() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.addParameter("k1", "foo bar&");
+		this.snippet.expectCurlRequest("request-with-url-encoded-parameter")
+				.withContents(
+						codeBlock("bash").content(
+								"$ curl 'http://localhost/foo?k1=foo+bar%26' -i"));
 		documentCurlRequest("request-with-url-encoded-parameter").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-url-encoded-parameter"),
-				hasItem("$ curl 'http://localhost/foo?k1=foo+bar%26' -i"));
+				result(get("/foo").param("k1", "foo bar&")));
 	}
 
 	@Test
 	public void postRequestWithOneParameter() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
-		request.addParameter("k1", "v1");
+		this.snippet.expectCurlRequest("post-request-with-one-parameter").withContents(
+				codeBlock("bash").content(
+						"$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
 		documentCurlRequest("post-request-with-one-parameter").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("post-request-with-one-parameter"),
-				hasItem("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
+				result(post("/foo").param("k1", "v1")));
 	}
 
 	@Test
 	public void postRequestWithMultipleParameters() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
-		request.addParameter("k1", "v1");
-		request.addParameter("k2", "v2");
-		request.addParameter("k1", "v1-bis");
+		this.snippet.expectCurlRequest("post-request-with-multiple-parameters")
+				.withContents(
+						codeBlock("bash").content(
+								"$ curl 'http://localhost/foo' -i -X POST"
+										+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
 		documentCurlRequest("post-request-with-multiple-parameters").handle(
-				new StubMvcResult(request, null));
-		assertThat(
-				requestSnippetLines("post-request-with-multiple-parameters"),
-				hasItem("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1&k1=v1-bis&k2=v2'"));
+				result(post("/foo").param("k1", "v1", "v1-bis").param("k2", "v2")));
 	}
 
 	@Test
 	public void postRequestWithUrlEncodedParameter() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
-		request.addParameter("k1", "a&b");
+		this.snippet
+				.expectCurlRequest("post-request-with-url-encoded-parameter")
+				.withContents(
+						codeBlock("bash").content(
+								"$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
 		documentCurlRequest("post-request-with-url-encoded-parameter").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("post-request-with-url-encoded-parameter"),
-				hasItem("$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
+				result(post("/foo").param("k1", "a&b")));
 	}
 
 	@Test
 	public void requestWithHeaders() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		request.addHeader("a", "alpha");
+		this.snippet.expectCurlRequest("request-with-headers").withContents(
+				codeBlock("bash").content(
+						"$ curl 'http://localhost/foo' -i"
+								+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
 		documentCurlRequest("request-with-headers").handle(
-				new StubMvcResult(request, null));
-		assertThat(
-				requestSnippetLines("request-with-headers"),
-				hasItem("$ curl 'http://localhost/foo' -i -H 'Content-Type: application/json' -H 'a: alpha'"));
+				result(get("/foo").contentType(MediaType.APPLICATION_JSON).header("a",
+						"alpha")));
 	}
 
 	@Test
 	public void httpWithNonStandardPort() throws IOException {
+		this.snippet.expectCurlRequest("http-with-non-standard-port").withContents(
+				codeBlock("bash").content("$ curl 'http://localhost:8080/foo' -i"));
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(8080);
-		documentCurlRequest("http-with-non-standard-port").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("http-with-non-standard-port"),
-				hasItem("$ curl 'http://localhost:8080/foo' -i"));
+		documentCurlRequest("http-with-non-standard-port").handle(result(request));
 	}
 
 	@Test
 	public void httpsWithStandardPort() throws IOException {
+		this.snippet.expectCurlRequest("https-with-standard-port").withContents(
+				codeBlock("bash").content("$ curl 'https://localhost/foo' -i"));
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(443);
 		request.setScheme("https");
-		documentCurlRequest("https-with-standard-port").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("https-with-standard-port"),
-				hasItem("$ curl 'https://localhost/foo' -i"));
+		documentCurlRequest("https-with-standard-port").handle(result(request));
 	}
 
 	@Test
 	public void httpsWithNonStandardPort() throws IOException {
+		this.snippet.expectCurlRequest("https-with-non-standard-port").withContents(
+				codeBlock("bash").content("$ curl 'https://localhost:8443/foo' -i"));
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(8443);
 		request.setScheme("https");
-		documentCurlRequest("https-with-non-standard-port").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("https-with-non-standard-port"),
-				hasItem("$ curl 'https://localhost:8443/foo' -i"));
+		documentCurlRequest("https-with-non-standard-port").handle(result(request));
 	}
 
 	@Test
 	public void requestWithCustomHost() throws IOException {
+		this.snippet.expectCurlRequest("request-with-custom-host").withContents(
+				codeBlock("bash").content("$ curl 'http://api.example.com/foo' -i"));
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
-		documentCurlRequest("request-with-custom-host").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-custom-host"),
-				hasItem("$ curl 'http://api.example.com/foo' -i"));
+		documentCurlRequest("request-with-custom-host").handle(result(request));
 	}
 
 	@Test
 	public void requestWithContextPathWithSlash() throws IOException {
+		this.snippet.expectCurlRequest("request-with-custom-context-with-slash")
+				.withContents(
+						codeBlock("bash").content(
+								"$ curl 'http://api.example.com/v3/foo' -i"));
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
 		request.setContextPath("/v3");
 		documentCurlRequest("request-with-custom-context-with-slash").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-custom-context-with-slash"),
-				hasItem("$ curl 'http://api.example.com/v3/foo' -i"));
+				result(request));
 	}
 
 	@Test
 	public void requestWithContextPathWithoutSlash() throws IOException {
+		this.snippet.expectCurlRequest("request-with-custom-context-without-slash")
+				.withContents(
+						codeBlock("bash").content(
+								"$ curl 'http://api.example.com/v3/foo' -i"));
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
 		request.setContextPath("v3");
 		documentCurlRequest("request-with-custom-context-without-slash").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("request-with-custom-context-without-slash"),
-				hasItem("$ curl 'http://api.example.com/v3/foo' -i"));
+				result(request));
 	}
 
-	private List<String> requestSnippetLines(String snippetName) throws IOException {
-		return snippetLines(snippetName, "curl-request");
-	}
-
-	private List<String> snippetLines(String snippetName, String snippetType)
-			throws IOException {
-		File snippetDir = new File(this.outputDir, snippetName);
-		File snippetFile = new File(snippetDir, snippetType + ".adoc");
-		String line = null;
-		List<String> lines = new ArrayList<String>();
-		BufferedReader reader = new BufferedReader(new FileReader(snippetFile));
-		try {
-			while ((line = reader.readLine()) != null) {
-				lines.add(line);
-			}
-		}
-		finally {
-			reader.close();
-		}
-		return lines;
-	}
 }

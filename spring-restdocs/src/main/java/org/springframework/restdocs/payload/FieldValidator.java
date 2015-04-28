@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.restdocs.RestDocumentationException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -51,14 +53,17 @@ class FieldValidator {
 			String message = "";
 			if (!undocumentedPayload.isEmpty()) {
 				message += String.format(
-						"Portions of the payload were not documented:%n%s",
+						"The following parts of the payload were not documented:%n%s",
 						this.objectMapper.writeValueAsString(undocumentedPayload));
 			}
 			if (!missingFields.isEmpty()) {
+				if (message.length() > 0) {
+					message += String.format("%n");
+				}
 				message += "Fields with the following paths were not found in the payload: "
 						+ missingFields;
 			}
-			throw new FieldValidationException(message);
+			throw new RestDocumentationException(message);
 		}
 	}
 
@@ -84,14 +89,6 @@ class FieldValidator {
 			this.fieldProcessor.remove(path, payload);
 		}
 		return payload;
-	}
-
-	@SuppressWarnings("serial")
-	static class FieldValidationException extends RuntimeException {
-
-		FieldValidationException(String message) {
-			super(message);
-		}
 	}
 
 }

@@ -16,27 +16,25 @@
 
 package org.springframework.restdocs.http;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.junit.Assert.assertThat;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRequest;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpResponse;
+import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
+import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
+import static org.springframework.restdocs.test.StubMvcResult.result;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.restdocs.StubMvcResult;
+import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Tests for {@link HttpDocumentation}
@@ -45,131 +43,93 @@ import org.springframework.restdocs.StubMvcResult;
  */
 public class HttpDocumentationTests {
 
-	private final File outputDir = new File("build/http-documentation-tests");
-
-	@Before
-	public void setup() {
-		System.setProperty("org.springframework.restdocs.outputDir",
-				this.outputDir.getAbsolutePath());
-	}
-
-	@After
-	public void cleanup() {
-		System.clearProperty("org.springframework.restdocs.outputDir");
-	}
+	@Rule
+	public final ExpectedSnippet snippet = new ExpectedSnippet();
 
 	@Test
 	public void getRequest() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.addHeader("Alpha", "a");
-		documentHttpRequest("get-request").handle(new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("get-request"),
-				hasItems("GET /foo HTTP/1.1", "Alpha: a"));
+		this.snippet.expectHttpRequest("get-request").withContents(
+				httpRequest(GET, "/foo").header("Alpha", "a"));
+
+		documentHttpRequest("get-request").handle(
+				result(get("/foo").header("Alpha", "a")));
 	}
 
 	@Test
 	public void getRequestWithQueryString() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo?bar=baz");
+		this.snippet.expectHttpRequest("get-request-with-query-string").withContents(
+				httpRequest(GET, "/foo?bar=baz"));
+
 		documentHttpRequest("get-request-with-query-string").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("get-request-with-query-string"),
-				hasItems("GET /foo?bar=baz HTTP/1.1"));
+				result(get("/foo?bar=baz")));
 	}
 
 	@Test
 	public void getRequestWithParameter() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
-		request.addParameter("b&r", "baz");
+		this.snippet.expectHttpRequest("get-request-with-parameter").withContents(
+				httpRequest(GET, "/foo?b%26r=baz"));
+
 		documentHttpRequest("get-request-with-parameter").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("get-request-with-parameter"),
-				hasItems("GET /foo?b%26r=baz HTTP/1.1"));
+				result(get("/foo").param("b&r", "baz")));
 	}
 
 	@Test
 	public void postRequestWithContent() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
-		byte[] content = "Hello, world".getBytes();
-		request.setContent(content);
+		this.snippet.expectHttpRequest("post-request-with-content").withContents(
+				httpRequest(POST, "/foo") //
+						.content("Hello, world"));
+
 		documentHttpRequest("post-request-with-content").handle(
-				new StubMvcResult(request, null));
-		assertThat(requestSnippetLines("post-request-with-content"),
-				hasItems("POST /foo HTTP/1.1", "Hello, world"));
+				result(post("/foo").content("Hello, world")));
 	}
 
 	@Test
 	public void postRequestWithParameter() throws IOException {
-		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/foo");
-		request.addParameter("b&r", "baz");
-		request.addParameter("a", "alpha");
+		this.snippet.expectHttpRequest("post-request-with-parameter").withContents(
+				httpRequest(POST, "/foo") //
+						.header("Content-Type", "application/x-www-form-urlencoded") //
+						.content("b%26r=baz&a=alpha"));
+
 		documentHttpRequest("post-request-with-parameter").handle(
-				new StubMvcResult(request, null));
-		assertThat(
-				requestSnippetLines("post-request-with-parameter"),
-				hasItems("POST /foo HTTP/1.1",
-						"Content-Type: application/x-www-form-urlencoded",
-						"b%26r=baz&a=alpha"));
+				result(post("/foo").param("b&r", "baz").param("a", "alpha")));
 	}
 
 	@Test
 	public void basicResponse() throws IOException {
-		documentHttpResponse("basic-response").handle(
-				new StubMvcResult(null, new MockHttpServletResponse()));
-		assertThat(responseSnippetLines("basic-response"), hasItem("HTTP/1.1 200 OK"));
+		this.snippet.expectHttpResponse("basic-response").withContents(httpResponse(OK));
+		documentHttpResponse("basic-response").handle(result());
 	}
 
 	@Test
 	public void nonOkResponse() throws IOException {
+		this.snippet.expectHttpResponse("non-ok-response").withContents(
+				httpResponse(BAD_REQUEST));
+
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.setStatus(HttpStatus.BAD_REQUEST.value());
-		documentHttpResponse("non-ok-response").handle(new StubMvcResult(null, response));
-		assertThat(responseSnippetLines("non-ok-response"),
-				hasItem("HTTP/1.1 400 Bad Request"));
+		response.setStatus(BAD_REQUEST.value());
+		documentHttpResponse("non-ok-response").handle(result(response));
 	}
 
 	@Test
 	public void responseWithHeaders() throws IOException {
+		this.snippet.expectHttpResponse("response-with-headers").withContents(
+				httpResponse(OK) //
+						.header("Content-Type", "application/json") //
+						.header("a", "alpha"));
+
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setHeader("a", "alpha");
-		documentHttpResponse("non-ok-response").handle(new StubMvcResult(null, response));
-		assertThat(responseSnippetLines("non-ok-response"),
-				hasItems("HTTP/1.1 200 OK", "Content-Type: application/json", "a: alpha"));
+		documentHttpResponse("response-with-headers").handle(result(response));
 	}
 
 	@Test
 	public void responseWithContent() throws IOException {
+		this.snippet.expectHttpResponse("response-with-content").withContents(
+				httpResponse(OK).content("content"));
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.getWriter().append("content");
-		documentHttpResponse("response-with-content").handle(
-				new StubMvcResult(null, response));
-		assertThat(responseSnippetLines("response-with-content"),
-				hasItems("HTTP/1.1 200 OK", "content"));
+		documentHttpResponse("response-with-content").handle(result(response));
 	}
 
-	private List<String> requestSnippetLines(String snippetName) throws IOException {
-		return snippetLines(snippetName, "http-request");
-	}
-
-	private List<String> responseSnippetLines(String snippetName) throws IOException {
-		return snippetLines(snippetName, "http-response");
-	}
-
-	private List<String> snippetLines(String snippetName, String snippetType)
-			throws IOException {
-		File snippetDir = new File(this.outputDir, snippetName);
-		File snippetFile = new File(snippetDir, snippetType + ".adoc");
-		String line = null;
-		List<String> lines = new ArrayList<String>();
-		BufferedReader reader = new BufferedReader(new FileReader(snippetFile));
-		try {
-			while ((line = reader.readLine()) != null) {
-				lines.add(line);
-			}
-		}
-		finally {
-			reader.close();
-		}
-		return lines;
-	}
 }

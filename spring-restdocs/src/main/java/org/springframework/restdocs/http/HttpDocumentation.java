@@ -148,7 +148,10 @@ public abstract class HttpDocumentation {
 				}
 			}
 			this.writer.println();
-			this.writer.println(this.result.getResponse().getContentAsString());
+			String content = this.result.getResponse().getContentAsString();
+			if (StringUtils.hasText(content)) {
+				this.writer.println(content);
+			}
 		}
 	}
 

@@ -121,7 +121,6 @@ class FieldProcessor {
 						.getParentMatch()))) {
 					return false;
 				}
-				;
 			}
 			return true;
 		}

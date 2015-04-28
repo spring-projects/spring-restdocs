@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs;
+package org.springframework.restdocs.test;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,9 +37,41 @@ public class StubMvcResult implements MvcResult {
 
 	private final MockHttpServletResponse response;
 
-	public StubMvcResult(MockHttpServletRequest request, MockHttpServletResponse response) {
+	public static StubMvcResult result() {
+		return new StubMvcResult();
+	}
+
+	public static StubMvcResult result(RequestBuilder requestBuilder) {
+		return new StubMvcResult(requestBuilder);
+	}
+
+	public static StubMvcResult result(MockHttpServletRequest request) {
+		return new StubMvcResult(request);
+	}
+
+	public static StubMvcResult result(MockHttpServletResponse response) {
+		return new StubMvcResult(response);
+	}
+
+	private StubMvcResult() {
+		this(new MockHttpServletRequest(), new MockHttpServletResponse());
+	}
+
+	private StubMvcResult(MockHttpServletRequest request) {
+		this(request, new MockHttpServletResponse());
+	}
+
+	private StubMvcResult(MockHttpServletResponse response) {
+		this(new MockHttpServletRequest(), response);
+	}
+
+	private StubMvcResult(MockHttpServletRequest request, MockHttpServletResponse response) {
 		this.request = request;
 		this.response = response;
+	}
+
+	private StubMvcResult(RequestBuilder requestBuilder) {
+		this(requestBuilder.buildRequest(new MockServletContext()));
 	}
 
 	@Override
