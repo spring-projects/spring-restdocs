@@ -34,6 +34,7 @@ import org.springframework.util.StringUtils;
  * @author Andy Wilkinson
  * @author Yann Le Guern
  * @author Dmitriy Mayboroda
+ * @author Jonathan Pearlin
  */
 public abstract class CurlDocumentation {
 
@@ -114,7 +115,7 @@ public abstract class CurlDocumentation {
 				this.writer
 						.print(String.format(" -d '%s'", request.getContentAsString()));
 			}
-			else if (request.isPostRequest()) {
+			else if (request.isPostRequest() || request.isPutRequest()) {
 				String queryString = request.getParameterMapAsQueryString();
 				if (StringUtils.hasText(queryString)) {
 					this.writer.print(String.format(" -d '%s'", queryString));

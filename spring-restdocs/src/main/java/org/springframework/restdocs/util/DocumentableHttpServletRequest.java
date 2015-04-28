@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * to help in the documentation of the request.
  * 
  * @author Andy Wilkinson
- *
+ * @author Jonathan Pearlin
  */
 public class DocumentableHttpServletRequest {
 
@@ -71,6 +71,16 @@ public class DocumentableHttpServletRequest {
 	 */
 	public boolean isPostRequest() {
 		return RequestMethod.POST == RequestMethod.valueOf(this.delegate.getMethod());
+	}
+
+	/**
+	 * Whether or not this request is a {@code PUT} request.
+	 *
+	 * @return {@code true} if it is a {@code PUT} request, otherwise {@code false}
+	 * @see HttpServletRequest#getMethod()
+	 */
+	public boolean isPutRequest() {
+		return RequestMethod.PUT == RequestMethod.valueOf(this.delegate.getMethod());
 	}
 
 	/**

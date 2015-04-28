@@ -34,6 +34,7 @@ import org.springframework.util.StringUtils;
  * Static factory methods for documenting a RESTful API's HTTP requests.
  * 
  * @author Andy Wilkinson
+ * @author Jonathan Pearlin
  */
 public abstract class HttpDocumentation {
 
@@ -109,7 +110,7 @@ public abstract class HttpDocumentation {
 			if (request.getContentLength() > 0) {
 				this.writer.println(request.getContentAsString());
 			}
-			else if (request.isPostRequest()) {
+			else if (request.isPostRequest() || request.isPutRequest()) {
 				String queryString = request.getParameterMapAsQueryString();
 				if (StringUtils.hasText(queryString)) {
 					this.writer.println(queryString);
@@ -120,7 +121,7 @@ public abstract class HttpDocumentation {
 		private boolean requiresFormEncodingContentType(
 				DocumentableHttpServletRequest request) {
 			return request.getHeaders().getContentType() == null
-					&& request.isPostRequest()
+					&& (request.isPostRequest() || request.isPutRequest())
 					&& StringUtils.hasText(request.getParameterMapAsQueryString());
 		}
 	}
