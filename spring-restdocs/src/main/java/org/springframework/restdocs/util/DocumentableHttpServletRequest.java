@@ -22,13 +22,11 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
@@ -76,24 +74,22 @@ public class DocumentableHttpServletRequest {
 	}
 
 	/**
-	 * Returns a Map of the request's headers. The entries are ordered based on the
-	 * ordering of {@link HttpServletRequest#getHeaderNames()} and
+	 * Returns the request's headers. The headers are ordered based on the ordering of
+	 * {@link HttpServletRequest#getHeaderNames()} and
 	 * {@link HttpServletRequest#getHeaders(String)}.
 	 * 
-	 * @return the request's headers, keyed by name
+	 * @return the request's headers
 	 * @see HttpServletRequest#getHeaderNames()
 	 * @see HttpServletRequest#getHeaders(String)
 	 */
-	public Map<String, List<String>> getHeaders() {
-		Map<String, List<String>> headersByName = new LinkedHashMap<String, List<String>>();
+	public HttpHeaders getHeaders() {
+		HttpHeaders httpHeaders = new HttpHeaders();
 		for (String headerName : iterable(this.delegate.getHeaderNames())) {
-			List<String> headers = new ArrayList<String>();
-			headersByName.put(headerName, headers);
 			for (String header : iterable(this.delegate.getHeaders(headerName))) {
-				headers.add(header);
+				httpHeaders.add(headerName, header);
 			}
 		}
-		return headersByName;
+		return httpHeaders;
 	}
 
 	/**

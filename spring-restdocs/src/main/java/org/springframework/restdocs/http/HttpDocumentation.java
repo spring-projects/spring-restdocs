@@ -119,7 +119,7 @@ public abstract class HttpDocumentation {
 
 		private boolean requiresFormEncodingContentType(
 				DocumentableHttpServletRequest request) {
-			return request.getHeaders().get(HttpHeaders.CONTENT_TYPE) == null
+			return request.getHeaders().getContentType() == null
 					&& request.isPostRequest()
 					&& StringUtils.hasText(request.getParameterMapAsQueryString());
 		}
