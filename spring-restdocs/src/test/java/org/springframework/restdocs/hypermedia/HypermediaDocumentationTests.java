@@ -22,10 +22,6 @@ import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 import static org.springframework.restdocs.test.StubMvcResult.result;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,6 +29,8 @@ import org.junit.rules.ExpectedException;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.RestDocumentationException;
 import org.springframework.restdocs.test.ExpectedSnippet;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * Tests for {@link HypermediaDocumentation}
@@ -92,22 +90,17 @@ public class HypermediaDocumentationTests {
 
 	private static class StubLinkExtractor implements LinkExtractor {
 
-		private Map<String, List<Link>> linksByRel = new HashMap<String, List<Link>>();
+		private MultiValueMap<String, Link> linksByRel = new LinkedMultiValueMap<String, Link>();
 
 		@Override
-		public Map<String, List<Link>> extractLinks(MockHttpServletResponse response)
+		public MultiValueMap<String, Link> extractLinks(MockHttpServletResponse response)
 				throws IOException {
 			return this.linksByRel;
 		}
 
 		private StubLinkExtractor withLinks(Link... links) {
 			for (Link link : links) {
-				List<Link> linksWithRel = this.linksByRel.get(link.getRel());
-				if (linksWithRel == null) {
-					linksWithRel = new ArrayList<Link>();
-					this.linksByRel.put(link.getRel(), linksWithRel);
-				}
-				linksWithRel.add(link);
+				this.linksByRel.add(link.getRel(), link);
 			}
 			return this;
 		}

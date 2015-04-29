@@ -19,13 +19,15 @@ package org.springframework.restdocs.hypermedia;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -107,7 +109,7 @@ public abstract class LinkExtractors {
 
 		@Override
 		public Map<String, List<Link>> extractLinks(Map<String, Object> json) {
-			Map<String, List<Link>> extractedLinks = new HashMap<>();
+			Map<String, List<Link>> extractedLinks = new LinkedHashMap<>();
 			Object possibleLinks = json.get("_links");
 			if (possibleLinks instanceof Map) {
 				Map<String, Object> links = (Map<String, Object>) possibleLinks;
@@ -152,7 +154,7 @@ public abstract class LinkExtractors {
 
 		@Override
 		public Map<String, List<Link>> extractLinks(Map<String, Object> json) {
-			Map<String, List<Link>> extractedLinks = new HashMap<>();
+			MultiValueMap<String, Link> extractedLinks = new LinkedMultiValueMap<>();
 			Object possibleLinks = json.get("links");
 			if (possibleLinks instanceof Collection) {
 				Collection<Object> linksCollection = (Collection<Object>) possibleLinks;
@@ -176,14 +178,9 @@ public abstract class LinkExtractors {
 		}
 
 		private static void maybeStoreLink(Link link,
-				Map<String, List<Link>> extractedLinks) {
+				MultiValueMap<String, Link> extractedLinks) {
 			if (link != null) {
-				List<Link> linksForRel = extractedLinks.get(link.getRel());
-				if (linksForRel == null) {
-					linksForRel = new ArrayList<Link>();
-					extractedLinks.put(link.getRel(), linksForRel);
-				}
-				linksForRel.add(link);
+				extractedLinks.add(link.getRel(), link);
 			}
 		}
 	}

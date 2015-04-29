@@ -21,11 +21,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +33,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * Parameterized tests for {@link LinkExtractors} with various payloads.
@@ -97,15 +97,9 @@ public class LinkExtractorsPayloadTests {
 	}
 
 	private void assertLinks(List<Link> expectedLinks, Map<String, List<Link>> actualLinks) {
-		Map<String, List<Link>> expectedLinksByRel = new HashMap<>();
+		MultiValueMap<String, Link> expectedLinksByRel = new LinkedMultiValueMap<>();
 		for (Link expectedLink : expectedLinks) {
-			List<Link> expectedlinksWithRel = expectedLinksByRel.get(expectedLink
-					.getRel());
-			if (expectedlinksWithRel == null) {
-				expectedlinksWithRel = new ArrayList<>();
-				expectedLinksByRel.put(expectedLink.getRel(), expectedlinksWithRel);
-			}
-			expectedlinksWithRel.add(expectedLink);
+			expectedLinksByRel.add(expectedLink.getRel(), expectedLink);
 		}
 		assertEquals(expectedLinksByRel, actualLinks);
 	}
