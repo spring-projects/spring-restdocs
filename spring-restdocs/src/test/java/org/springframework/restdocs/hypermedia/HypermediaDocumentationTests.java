@@ -27,7 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.restdocs.RestDocumentationException;
+import org.springframework.restdocs.snippet.SnippetGenerationException;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -47,7 +47,7 @@ public class HypermediaDocumentationTests {
 
 	@Test
 	public void undocumentedLink() throws IOException {
-		this.thrown.expect(RestDocumentationException.class);
+		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " documented: [foo]"));
 		documentLinks("undocumented-link",
@@ -57,7 +57,7 @@ public class HypermediaDocumentationTests {
 
 	@Test
 	public void missingLink() throws IOException {
-		this.thrown.expect(RestDocumentationException.class);
+		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " found in the response: [foo]"));
 		documentLinks("undocumented-link", new StubLinkExtractor(),
@@ -66,7 +66,7 @@ public class HypermediaDocumentationTests {
 
 	@Test
 	public void undocumentedLinkAndMissingLink() throws IOException {
-		this.thrown.expect(RestDocumentationException.class);
+		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " documented: [a]. Links with the following relations were not"
 				+ " found in the response: [foo]"));

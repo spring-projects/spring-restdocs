@@ -31,7 +31,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.restdocs.RestDocumentationException;
+import org.springframework.restdocs.snippet.SnippetGenerationException;
 import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
@@ -89,7 +89,7 @@ public class PayloadDocumentationTests {
 
 	@Test
 	public void undocumentedRequestField() throws IOException {
-		this.thrown.expect(RestDocumentationException.class);
+		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown
 				.expectMessage(startsWith("The following parts of the payload were not"
 						+ " documented:"));
@@ -99,7 +99,7 @@ public class PayloadDocumentationTests {
 
 	@Test
 	public void missingRequestField() throws IOException {
-		this.thrown.expect(RestDocumentationException.class);
+		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown
 				.expectMessage(equalTo("Fields with the following paths were not found"
 						+ " in the payload: [a.b]"));
@@ -110,7 +110,7 @@ public class PayloadDocumentationTests {
 
 	@Test
 	public void undocumentedRequestFieldAndMissingRequestField() throws IOException {
-		this.thrown.expect(RestDocumentationException.class);
+		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown
 				.expectMessage(startsWith("The following parts of the payload were not"
 						+ " documented:"));

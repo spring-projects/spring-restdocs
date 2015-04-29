@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.springframework.restdocs.RestDocumentationException;
 import org.springframework.restdocs.snippet.DocumentationWriter;
+import org.springframework.restdocs.snippet.SnippetGenerationException;
 import org.springframework.restdocs.snippet.DocumentationWriter.TableAction;
 import org.springframework.restdocs.snippet.DocumentationWriter.TableWriter;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
@@ -99,7 +99,7 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 				message += "Links with the following relations were not found in the response: "
 						+ missingRels;
 			}
-			throw new RestDocumentationException(message);
+			throw new SnippetGenerationException(message);
 		}
 
 		Assert.isTrue(actualRels.equals(expectedRels));

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs;
+package org.springframework.restdocs.snippet;
 
 /**
- * A {@link RuntimeException} thrown to indicate a problem with a RESTful resource's
- * documentation.
+ * A {@link RuntimeException} thrown to indicate a problem with the generation of a
+ * documentation snippet.
  * 
  * @author Andy Wilkinson
  */
 @SuppressWarnings("serial")
-public class RestDocumentationException extends RuntimeException {
+public class SnippetGenerationException extends RuntimeException {
 
 	/**
-	 * Creates a new {@code RestDocumentationException} described by the given
+	 * Creates a new {@code SnippetGenerationException} described by the given
 	 * {@code message}
-	 * @param message the message that describes the documentation problem
+	 * @param message the message that describes the problem
 	 */
-	public RestDocumentationException(String message) {
+	public SnippetGenerationException(String message) {
 		super(message);
 	}
 

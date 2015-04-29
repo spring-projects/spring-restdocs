@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.restdocs.RestDocumentationException;
+import org.springframework.restdocs.snippet.SnippetGenerationException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -63,7 +63,7 @@ class FieldValidator {
 				message += "Fields with the following paths were not found in the payload: "
 						+ missingFields;
 			}
-			throw new RestDocumentationException(message);
+			throw new SnippetGenerationException(message);
 		}
 	}
 
