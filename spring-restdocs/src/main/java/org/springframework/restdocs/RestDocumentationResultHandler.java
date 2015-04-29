@@ -22,6 +22,7 @@ import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRe
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentRequestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentResponseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.documentQueryParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,8 @@ import org.springframework.restdocs.hypermedia.LinkExtractor;
 import org.springframework.restdocs.hypermedia.LinkExtractors;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.request.ParameterDescriptor;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
 
@@ -138,4 +141,22 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		return this;
 	}
 
+	/**
+	 * Documents the parameters in the request's query string using the given
+	 * {@code descriptors}.
+	 * <p>
+	 * If a parameter is present in the query string but is not described by one of the
+	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
+	 * parameter is described but is not present in the request a failure will also occur
+	 * when this handler is invoked.
+	 * 
+	 * @param descriptors the parameter descriptors
+	 * @return {@code this}
+	 * @see RequestDocumentation#parameterWithName(String)
+	 */
+	public RestDocumentationResultHandler withQueryParameters(
+			ParameterDescriptor... descriptors) {
+		this.delegates.add(documentQueryParameters(this.outputDir, descriptors));
+		return this;
+	}
 }

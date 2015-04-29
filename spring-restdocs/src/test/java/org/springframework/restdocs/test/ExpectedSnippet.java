@@ -142,6 +142,11 @@ public class ExpectedSnippet implements TestRule {
 		return this;
 	}
 
+	public ExpectedSnippet expectQueryParameters(String name) {
+		expect(name, "query-parameters");
+		return this;
+	}
+
 	private ExpectedSnippet expect(String name, String type) {
 		this.expectedName = name;
 		this.expectedType = type;
