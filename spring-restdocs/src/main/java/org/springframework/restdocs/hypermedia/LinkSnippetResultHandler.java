@@ -17,17 +17,17 @@
 package org.springframework.restdocs.hypermedia;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.restdocs.snippet.DocumentationWriter;
-import org.springframework.restdocs.snippet.SnippetGenerationException;
 import org.springframework.restdocs.snippet.DocumentationWriter.TableAction;
 import org.springframework.restdocs.snippet.DocumentationWriter.TableWriter;
+import org.springframework.restdocs.snippet.SnippetGenerationException;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
@@ -40,7 +40,7 @@ import org.springframework.util.Assert;
  */
 public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 
-	private final Map<String, LinkDescriptor> descriptorsByRel = new HashMap<String, LinkDescriptor>();
+	private final Map<String, LinkDescriptor> descriptorsByRel = new LinkedHashMap<>();
 
 	private final LinkExtractor extractor;
 
