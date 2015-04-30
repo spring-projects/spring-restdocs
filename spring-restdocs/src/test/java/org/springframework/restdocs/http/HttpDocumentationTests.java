@@ -40,7 +40,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Tests for {@link HttpDocumentation}
- * 
+ *
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
  */

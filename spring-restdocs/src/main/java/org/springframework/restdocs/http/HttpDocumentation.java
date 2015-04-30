@@ -32,7 +32,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Static factory methods for documenting a RESTful API's HTTP requests.
- * 
+ *
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
  */
@@ -45,7 +45,7 @@ public abstract class HttpDocumentation {
 	/**
 	 * Produces a documentation snippet containing the request formatted as an HTTP
 	 * request
-	 * 
+	 *
 	 * @param outputDir The directory to which snippet should be written
 	 * @return the handler that will produce the snippet
 	 */
@@ -64,7 +64,7 @@ public abstract class HttpDocumentation {
 	/**
 	 * Produces a documentation snippet containing the response formatted as the HTTP
 	 * response sent by the server
-	 * 
+	 *
 	 * @param outputDir The directory to which snippet should be written
 	 * @return the handler that will produce the snippet
 	 */

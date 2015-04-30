@@ -33,7 +33,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Tests for {@link CurlDocumentation}
- * 
+ *
  * @author Andy Wilkinson
  * @author Yann Le Guern
  * @author Dmitriy Mayboroda
