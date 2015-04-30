@@ -16,40 +16,21 @@
 
 package org.springframework.restdocs.response;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class LinkMaskingResponsePostProcessor extends ContentModifyingReponsePostProcessor {
+class LinkMaskingResponsePostProcessor extends PatternReplacingResponsePostProcessor {
 
 	private static final String DEFAULT_MASK = "...";
 
 	private static final Pattern LINK_HREF = Pattern.compile(
 			"\"href\"\\s*:\\s*\"(.*?)\"", Pattern.DOTALL);
 
-	private final String mask;
-
 	LinkMaskingResponsePostProcessor() {
-		this(DEFAULT_MASK);
+		super(LINK_HREF, DEFAULT_MASK);
 	}
 
 	LinkMaskingResponsePostProcessor(String mask) {
-		this.mask = mask;
-	}
-
-	@Override
-	protected String modifyContent(String originalContent) {
-		Matcher matcher = LINK_HREF.matcher(originalContent);
-		StringBuilder buffer = new StringBuilder();
-		int previous = 0;
-		while (matcher.find()) {
-			buffer.append(originalContent.substring(previous, matcher.start(1)));
-			buffer.append(this.mask);
-			previous = matcher.end(1);
-		}
-		if (previous < originalContent.length()) {
-			buffer.append(originalContent.substring(previous));
-		}
-		return buffer.toString();
+		super(LINK_HREF, mask);
 	}
 
 }
