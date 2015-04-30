@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.response;
 
+import java.util.regex.Pattern;
+
 /**
  * Static factory methods for accessing various {@link ResponsePostProcessor
  * ResponsePostProcessors}.
@@ -71,4 +73,17 @@ public abstract class ResponsePostProcessors {
 	public static ResponsePostProcessor maskLinksWith(String mask) {
 		return new LinkMaskingResponsePostProcessor(mask);
 	}
+
+	/**
+	 * Returns a {@link ResponsePostProcessor} that will replace any occurrences of
+	 * the given pattern with a replacement string in the response.
+	 *
+	 * @param pattern the pattern to match
+	 * @param replacement the string to replace it with
+	 * @return the response post-processor
+	 */
+	public static ResponsePostProcessor replacePattern(Pattern pattern, String replacement) {
+		return new PatternReplacingResponsePostProcessor(pattern, replacement);
+	}
+
 }
