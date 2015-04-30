@@ -24,6 +24,7 @@ import static org.springframework.restdocs.RestDocumentation.modifyResponseTo;
 import static org.springframework.restdocs.response.ResponsePostProcessors.maskLinks;
 import static org.springframework.restdocs.response.ResponsePostProcessors.prettyPrintContent;
 import static org.springframework.restdocs.response.ResponsePostProcessors.removeHeaders;
+import static org.springframework.restdocs.response.ResponsePostProcessors.replacePattern;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.SnippetMatchers.snippet;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Before;
@@ -64,6 +66,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * Integration tests for Spring REST Docs
  * 
  * @author Andy Wilkinson
+ * @author Dewet Diener
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -155,17 +158,19 @@ public class RestDocumentationIntegrationTests {
 										"{\"a\":\"alpha\",\"links\":[{\"rel\":\"rel\","
 												+ "\"href\":\"href\"}]}"))));
 
+		Pattern pattern = Pattern.compile("(\"alpha\")");
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(modifyResponseTo(prettyPrintContent(), removeHeaders("a"),
-						maskLinks()).andDocument("post-processed"));
+						replacePattern(pattern, "\"<<beta>>\""), maskLinks())
+						.andDocument("post-processed"));
 
 		assertThat(
 				new File("build/generated-snippets/post-processed/http-response.adoc"),
 				is(snippet().withContents(
 						httpResponse(HttpStatus.OK).header("Content-Type",
 								"application/json").content(
-								String.format("{%n  \"a\" : \"alpha\",%n  \"links\" :"
+								String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" :"
 										+ " [ {%n    \"rel\" : \"rel\",%n    \"href\" :"
 										+ " \"...\"%n  } ]%n}")))));
 	}
