@@ -45,6 +45,11 @@ public class StubMvcResult implements MvcResult {
 		return new StubMvcResult(requestBuilder);
 	}
 
+	public static StubMvcResult result(RequestBuilder requestBuilder,
+			MockHttpServletResponse response) {
+		return new StubMvcResult(requestBuilder, response);
+	}
+
 	public static StubMvcResult result(MockHttpServletRequest request) {
 		return new StubMvcResult(request);
 	}
@@ -63,6 +68,10 @@ public class StubMvcResult implements MvcResult {
 
 	private StubMvcResult(MockHttpServletResponse response) {
 		this(new MockHttpServletRequest(), response);
+	}
+
+	private StubMvcResult(RequestBuilder requestBuilder, MockHttpServletResponse response) {
+		this(requestBuilder.buildRequest(new MockServletContext()), response);
 	}
 
 	private StubMvcResult(MockHttpServletRequest request, MockHttpServletResponse response) {

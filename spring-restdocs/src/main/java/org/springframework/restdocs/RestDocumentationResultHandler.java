@@ -49,7 +49,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	private final String outputDir;
 
-	private List<ResultHandler> delegates;
+	private List<ResultHandler> delegates = new ArrayList<>();
 
 	RestDocumentationResultHandler(String outputDir) {
 		this.outputDir = outputDir;
@@ -58,13 +58,6 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		this.delegates.add(documentCurlRequest(this.outputDir));
 		this.delegates.add(documentHttpRequest(this.outputDir));
 		this.delegates.add(documentHttpResponse(this.outputDir));
-	}
-
-	@Override
-	public void handle(MvcResult result) throws Exception {
-		for (ResultHandler delegate : this.delegates) {
-			delegate.handle(result);
-		}
 	}
 
 	/**
@@ -159,4 +152,12 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		this.delegates.add(documentQueryParameters(this.outputDir, descriptors));
 		return this;
 	}
+
+	@Override
+	public void handle(MvcResult result) throws Exception {
+		for (ResultHandler delegate : this.delegates) {
+			delegate.handle(result);
+		}
+	}
+
 }

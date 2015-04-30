@@ -16,12 +16,21 @@
 
 package org.springframework.restdocs;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.restdocs.RestDocumentation.document;
+import static org.springframework.restdocs.RestDocumentation.modifyResponseTo;
+import static org.springframework.restdocs.response.ResponsePostProcessors.maskLinks;
+import static org.springframework.restdocs.response.ResponsePostProcessors.prettyPrintContent;
+import static org.springframework.restdocs.response.ResponsePostProcessors.removeHeaders;
+import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
+import static org.springframework.restdocs.test.SnippetMatchers.snippet;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,9 +41,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.RestDocumentationIntegrationTests.TestConfiguration;
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
+import org.springframework.restdocs.hypermedia.Link;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -122,7 +135,39 @@ public class RestDocumentationIntegrationTests {
 		assertExpectedSnippetFilesExist(
 				new File("build/generated-snippets/multi-step-3/"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc");
+	}
 
+	@Test
+	public void postProcessedResponse() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(new RestDocumentationConfigurer()).build();
+
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(document("original"));
+
+		assertThat(
+				new File("build/generated-snippets/original/http-response.adoc"),
+				is(snippet().withContents(
+						httpResponse(HttpStatus.OK)
+								.header("a", "alpha")
+								.header("Content-Type", "application/json")
+								.content(
+										"{\"a\":\"alpha\",\"links\":[{\"rel\":\"rel\","
+												+ "\"href\":\"href\"}]}"))));
+
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(modifyResponseTo(prettyPrintContent(), removeHeaders("a"),
+						maskLinks()).andDocument("post-processed"));
+
+		assertThat(
+				new File("build/generated-snippets/post-processed/http-response.adoc"),
+				is(snippet().withContents(
+						httpResponse(HttpStatus.OK).header("Content-Type",
+								"application/json").content(
+								String.format("{%n  \"a\" : \"alpha\",%n  \"links\" :"
+										+ " [ {%n    \"rel\" : \"rel\",%n    \"href\" :"
+										+ " \"...\"%n  } ]%n}")))));
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
@@ -146,12 +191,15 @@ public class RestDocumentationIntegrationTests {
 	static class TestController {
 
 		@RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-		public Map<String, String> foo() {
-			Map<String, String> response = new HashMap<String, String>();
+		public ResponseEntity<Map<String, Object>> foo() {
+			Map<String, Object> response = new HashMap<>();
 			response.put("a", "alpha");
-			return response;
+			response.put("links", Arrays.asList(new Link("rel", "href")));
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("a", "alpha");
+			return new ResponseEntity<Map<String, Object>>(response, headers,
+					HttpStatus.OK);
 		}
-
 	}
 
 }

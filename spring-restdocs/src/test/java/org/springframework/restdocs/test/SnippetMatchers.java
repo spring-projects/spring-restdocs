@@ -16,6 +16,9 @@
 
 package org.springframework.restdocs.test;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +28,7 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -34,6 +38,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author Andy Wilkinson
  */
 public class SnippetMatchers {
+
+	public static SnippetMatcher snippet() {
+		return new SnippetMatcher();
+	}
 
 	public static AsciidoctorTableMatcher tableWithHeader(String... headers) {
 		return new AsciidoctorTableMatcher(headers);
@@ -52,7 +60,8 @@ public class SnippetMatchers {
 		return new AsciidoctorCodeBlockMatcher(language);
 	}
 
-	private static abstract class AbstractSnippetMatcher extends BaseMatcher<String> {
+	private static abstract class AbstractSnippetContentMatcher extends
+			BaseMatcher<String> {
 
 		private List<String> lines = new ArrayList<String>();
 
@@ -99,7 +108,7 @@ public class SnippetMatchers {
 	}
 
 	public static class AsciidoctorCodeBlockMatcher<T extends AsciidoctorCodeBlockMatcher<T>>
-			extends AbstractSnippetMatcher {
+			extends AbstractSnippetContentMatcher {
 
 		protected AsciidoctorCodeBlockMatcher(String language) {
 			this.addLine("");
@@ -152,7 +161,7 @@ public class SnippetMatchers {
 
 	}
 
-	public static class AsciidoctorTableMatcher extends AbstractSnippetMatcher {
+	public static class AsciidoctorTableMatcher extends AbstractSnippetContentMatcher {
 
 		private AsciidoctorTableMatcher(String... columns) {
 			this.addLine("");
@@ -173,5 +182,67 @@ public class SnippetMatchers {
 			this.addLine(-2, "");
 			return this;
 		}
+	}
+
+	public static class SnippetMatcher extends BaseMatcher<File> {
+
+		private Matcher<String> expectedContents;
+
+		@Override
+		public boolean matches(Object item) {
+			if (snippetFileExists(item)) {
+				if (this.expectedContents != null) {
+					try {
+						return this.expectedContents.matches(read((File) item));
+					}
+					catch (IOException e) {
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+
+		private boolean snippetFileExists(Object item) {
+			return item instanceof File && ((File) item).isFile();
+		}
+
+		private String read(File snippetFile) throws IOException {
+			return FileCopyUtils.copyToString(new FileReader(snippetFile));
+		}
+
+		@Override
+		public void describeMismatch(Object item, Description description) {
+			if (!snippetFileExists(item)) {
+				description.appendText("The file " + item + " does not exist");
+			}
+			else if (this.expectedContents != null) {
+				try {
+					this.expectedContents
+							.describeMismatch(read((File) item), description);
+				}
+				catch (IOException e) {
+					description.appendText("The contents of " + item
+							+ " cound not be read");
+				}
+			}
+		}
+
+		@Override
+		public void describeTo(Description description) {
+			if (this.expectedContents != null) {
+				this.expectedContents.describeTo(description);
+			}
+			else {
+				description.appendText("Asciidoctor snippet");
+			}
+		}
+
+		public SnippetMatcher withContents(Matcher<String> matcher) {
+			this.expectedContents = matcher;
+			return this;
+		}
+
 	}
 }

@@ -16,7 +16,10 @@
 
 package org.springframework.restdocs;
 
+import org.springframework.restdocs.response.ResponsePostProcessor;
+import org.springframework.restdocs.response.ResponsePostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 /**
@@ -40,6 +43,20 @@ public abstract class RestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String outputDir) {
 		return new RestDocumentationResultHandler(outputDir);
+	}
+
+	/**
+	 * Enables the modification of the response in a {@link MvcResult} prior to it being
+	 * documented. The modification is performed using the given
+	 * {@code responsePostProcessors}.
+	 * 
+	 * @param responsePostProcessors the post-processors to use to modify the response
+	 * @return the response modifier
+	 * @see ResponsePostProcessors
+	 */
+	public static ResponseModifier modifyResponseTo(
+			ResponsePostProcessor... responsePostProcessors) {
+		return new ResponseModifier(responsePostProcessors);
 	}
 
 }

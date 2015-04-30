@@ -59,13 +59,13 @@ project(':spring-restdocs') {
 	cleanEclipseJdt.onlyIf { false }
 
 	dependencies {
+		compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 		compile "junit:junit:$junitVersion"
 		compile "org.springframework:spring-test:$springVersion"
 		compile "org.springframework:spring-web:$springVersion"
+		compile "org.springframework:spring-webmvc:$springVersion"
 		compile "javax.servlet:javax.servlet-api:$servletApiVersion"
-		compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 		jacoco "org.jacoco:org.jacoco.agent:$jacocoVersion:runtime"
-		testCompile "org.springframework:spring-webmvc:$springVersion"
 		testCompile "org.springframework.hateoas:spring-hateoas:$springHateoasVersion"
 		testCompile "org.mockito:mockito-core:$mockitoVersion"
 		testCompile "org.hamcrest:hamcrest-core:$hamcrestVersion"

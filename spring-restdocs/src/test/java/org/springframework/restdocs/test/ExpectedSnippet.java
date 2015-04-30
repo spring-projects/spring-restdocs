@@ -16,26 +16,18 @@
 
 package org.springframework.restdocs.test;
 
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.restdocs.test.SnippetMatchers.SnippetMatcher;
 
 /**
  * The {@code ExpectedSnippet} rule is used to verify that a
@@ -49,7 +41,7 @@ public class ExpectedSnippet implements TestRule {
 
 	private String expectedType;
 
-	private Matcher<String> expectedContents;
+	private SnippetMatcher snippet = SnippetMatchers.snippet();
 
 	private File outputDir;
 
@@ -104,11 +96,7 @@ public class ExpectedSnippet implements TestRule {
 		if (this.outputDir != null && this.expectedName != null) {
 			File snippetDir = new File(this.outputDir, this.expectedName);
 			File snippetFile = new File(snippetDir, this.expectedType + ".adoc");
-			assertTrue("The file " + snippetFile + " does not exist or is not a file",
-					snippetFile.isFile());
-			if (this.expectedContents != null) {
-				assertThat(read(snippetFile), this.expectedContents);
-			}
+			assertThat(snippetFile, is(this.snippet));
 		}
 	}
 
@@ -154,45 +142,7 @@ public class ExpectedSnippet implements TestRule {
 	}
 
 	public void withContents(Matcher<String> matcher) {
-		this.expectedContents = matcher;
-	}
-
-	private String read(File snippetFile) throws IOException {
-		return FileCopyUtils.copyToString(new FileReader(snippetFile));
-	}
-
-	public Matcher<Iterable<? extends String>> asciidoctorTableWith(String[] header,
-			String[]... rows) {
-		Collection<Matcher<? super String>> matchers = new ArrayList<Matcher<? super String>>();
-		for (String headerItem : header) {
-			matchers.add(equalTo(headerItem));
-		}
-
-		for (String[] row : rows) {
-			for (String rowItem : row) {
-				matchers.add(equalTo(rowItem));
-			}
-		}
-
-		matchers.add(equalTo("|==="));
-		matchers.add(equalTo(""));
-
-		return new IsIterableContainingInAnyOrder<String>(matchers);
-	}
-
-	public String[] header(String... columns) {
-		String header = "|"
-				+ StringUtils.collectionToDelimitedString(Arrays.asList(columns), "|");
-		return new String[] { "", "|===", header, "" };
-	}
-
-	public String[] row(String... entries) {
-		List<String> lines = new ArrayList<String>();
-		for (String entry : entries) {
-			lines.add("|" + entry);
-		}
-		lines.add("");
-		return lines.toArray(new String[lines.size()]);
+		this.snippet.withContents(matcher);
 	}
 
 }
