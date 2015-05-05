@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package com.example.notes;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
@@ -92,25 +92,19 @@ public class NotesController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Resource<Note> note(@PathVariable("id") long id) {
-		Note note = this.noteRepository.findById(id).orElseThrow(
-				() -> new ResourceDoesNotExistException());
-		return this.noteResourceAssembler.toResource(note);
+		return this.noteResourceAssembler.toResource(findNoteById(id));
 	}
 
 	@RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
 	ResourceSupport noteTags(@PathVariable("id") long id) {
 		return new NestedContentResource<TagResource>(
-				this.tagResourceAssembler.toResources(this.noteRepository
-						.findById(id)
-						.orElseThrow(
-								() -> new ResourceDoesNotExistException()).getTags()));
+				this.tagResourceAssembler.toResources(findNoteById(id).getTags()));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	void updateNote(@PathVariable("id") long id, @RequestBody NotePatchInput noteInput) {
-		Note note = this.noteRepository.findById(id).orElseThrow(
-				() -> new ResourceDoesNotExistException());
+		Note note = findNoteById(id);
 		if (noteInput.getTagUris() != null) {
 			note.setTags(getTags(noteInput.getTagUris()));
 		}
@@ -123,14 +117,25 @@ public class NotesController {
 		this.noteRepository.save(note);
 	}
 
+	private Note findNoteById(long id) {
+		Note note = this.noteRepository.findById(id);
+		if (note == null) {
+			throw new ResourceDoesNotExistException();
+		}
+		return note;
+	}
+
 	private List<Tag> getTags(List<URI> tagLocations) {
-		return tagLocations
-				.stream()
-				.map(location -> this.tagRepository.findById(extractTagId(location))
-						.<IllegalArgumentException> orElseThrow(
-								() -> new IllegalArgumentException("The tag '" + location
-										+ "' does not exist")))
-				.collect(Collectors.toList());
+		List<Tag> tags = new ArrayList<>(tagLocations.size());
+		for (URI tagLocation: tagLocations) {
+			Tag tag = this.tagRepository.findById(extractTagId(tagLocation));
+			if (tag == null) {
+				throw new IllegalArgumentException("The tag '" + tagLocation
+										+ "' does not exist");
+			}
+			tags.add(tag);
+		}
+		return tags;
 	}
 
 	private long extractTagId(URI tagLocation) {

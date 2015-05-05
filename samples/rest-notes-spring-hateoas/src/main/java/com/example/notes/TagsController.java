@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,24 +79,29 @@ public class TagsController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Resource<Tag> tag(@PathVariable("id") long id) {
-		Tag tag = this.repository.findById(id).orElseThrow(
-				() -> new ResourceDoesNotExistException());
+		Tag tag = findTagById(id);
 		return this.tagResourceAssembler.toResource(tag);
 	}
 
 	@RequestMapping(value = "/{id}/notes", method = RequestMethod.GET)
 	ResourceSupport tagNotes(@PathVariable("id") long id) {
+		Tag tag = findTagById(id);
 		return new NestedContentResource<NoteResource>(
-				this.noteResourceAssembler.toResources(this.repository.findById(id)
-						.orElseThrow(() -> new ResourceDoesNotExistException())
-						.getNotes()));
+				this.noteResourceAssembler.toResources(tag.getNotes()));
+	}
+
+	private Tag findTagById(long id) {
+		Tag tag = this.repository.findById(id);
+		if (tag == null) {
+			throw new ResourceDoesNotExistException();
+		}
+		return tag;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	void updateTag(@PathVariable("id") long id, @RequestBody TagPatchInput tagInput) {
-		Tag tag = this.repository.findById(id).orElseThrow(
-				() -> new ResourceDoesNotExistException());
+		Tag tag = findTagById(id);
 		if (tagInput.getName() != null) {
 			tag.setName(tagInput.getName());
 		}

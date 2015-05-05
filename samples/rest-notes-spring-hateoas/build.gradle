@@ -23,6 +23,9 @@ repositories {
 
 group = 'com.example'
 
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
