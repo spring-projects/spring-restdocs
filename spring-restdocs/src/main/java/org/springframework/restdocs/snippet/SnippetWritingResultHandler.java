@@ -17,11 +17,13 @@
 package org.springframework.restdocs.snippet;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import org.springframework.restdocs.config.RestDocumentationContext;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
 
@@ -65,7 +67,12 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 				throw new IllegalStateException("Failed to create directory '" + parent
 						+ "'");
 			}
-			return new FileWriter(outputFile);
+			RestDocumentationContext context = RestDocumentationContext.currentContext();
+			if (context == null || context.getSnippetEncoding() == null) {
+				return new FileWriter(outputFile);
+			}
+			return new OutputStreamWriter(new FileOutputStream(outputFile),
+					context.getSnippetEncoding());
 		}
 		else {
 			return new OutputStreamWriter(System.out);

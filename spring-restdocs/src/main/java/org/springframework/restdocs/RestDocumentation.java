@@ -16,11 +16,14 @@
 
 package org.springframework.restdocs;
 
+import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.restdocs.response.ResponsePostProcessor;
 import org.springframework.restdocs.response.ResponsePostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
 
 /**
  * Static factory methods for documenting RESTful APIs using Spring MVC Test
@@ -31,6 +34,16 @@ public abstract class RestDocumentation {
 
 	private RestDocumentation() {
 
+	}
+
+	/**
+	 * Provides access to a {@link MockMvcConfigurer} that can be used to configure the
+	 * REST documentation when building a {@link MockMvc} instance.
+	 * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
+	 * @return the configurer
+	 */
+	public static RestDocumentationConfigurer documentationConfiguration() {
+		return new RestDocumentationConfigurer();
 	}
 
 	/**

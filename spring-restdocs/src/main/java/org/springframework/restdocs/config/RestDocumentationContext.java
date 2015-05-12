@@ -33,6 +33,8 @@ public class RestDocumentationContext {
 
 	private final Method testMethod;
 
+	private String snippetEncoding;
+
 	private RestDocumentationContext() {
 		this(null);
 	}
@@ -66,6 +68,19 @@ public class RestDocumentationContext {
 	 */
 	public int getStepCount() {
 		return this.stepCount.get();
+	}
+
+	void setSnippetEncoding(String snippetEncoding) {
+		this.snippetEncoding = snippetEncoding;
+	}
+
+	/**
+	 * Gets the encoding to be used when writing snippets
+	 * 
+	 * @return The snippet encoding
+	 */
+	public String getSnippetEncoding() {
+		return this.snippetEncoding;
 	}
 
 	static void establishContext(Method testMethod) {

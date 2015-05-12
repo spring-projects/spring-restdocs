@@ -16,7 +16,11 @@
 
 package org.springframework.restdocs.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.restdocs.RestDocumentation;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
@@ -30,120 +34,84 @@ import org.springframework.web.context.WebApplicationContext;
  * @author Andy Wilkinson
  * @author Dmitriy Mayboroda
  * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
+ * @see RestDocumentation#documentationConfiguration()
  */
 public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
-	/**
-	 * The default scheme for documented URIs
-	 * @see #withScheme(String)
-	 */
-	public static final String DEFAULT_SCHEME = "http";
+	private final UriConfigurer uriConfigurer = new UriConfigurer(this);
+
+	private final SnippetConfigurer snippetConfigurer = new SnippetConfigurer(this);
+
+	private final RequestPostProcessor requestPostProcessor;
 
 	/**
-	 * The defalt host for documented URIs
-	 * @see #withHost(String)
+	 * Creates a new {@link RestDocumentationConfigurer}.
+	 * @see RestDocumentation#documentationConfiguration()
 	 */
-	public static final String DEFAULT_HOST = "localhost";
-
-	/**
-	 * The default port for documented URIs
-	 * @see #withPort(int)
-	 */
-	public static final int DEFAULT_PORT = 8080;
-
-	/**
-	 * The default context path for documented URIs
-	 * @see #withContextPath(String)
-	 */
-	public static final String DEFAULT_CONTEXT_PATH = "";
-
-	private String scheme = DEFAULT_SCHEME;
-
-	private String host = DEFAULT_HOST;
-
-	private int port = DEFAULT_PORT;
-
-	private String contextPath = DEFAULT_CONTEXT_PATH;
-
-	/**
-	 * Configures any documented URIs to use the given {@code scheme}. The default is
-	 * {@code http}.
-	 * 
-	 * @param scheme The URI scheme
-	 * @return {@code this}
-	 */
-	public RestDocumentationConfigurer withScheme(String scheme) {
-		this.scheme = scheme;
-		return this;
+	public RestDocumentationConfigurer() {
+		this.requestPostProcessor = new ConfigurerApplyingRequestPostProcessor(
+				Arrays.<AbstractConfigurer> asList(this.uriConfigurer,
+						this.snippetConfigurer, new StepCountConfigurer(),
+						new ContentLengthHeaderConfigurer()));
 	}
 
-	/**
-	 * Configures any documented URIs to use the given {@code host}. The default is
-	 * {@code localhost}.
-	 * 
-	 * @param host The URI host
-	 * @return {@code this}
-	 */
-	public RestDocumentationConfigurer withHost(String host) {
-		this.host = host;
-		return this;
+	public UriConfigurer uris() {
+		return this.uriConfigurer;
 	}
 
-	/**
-	 * Configures any documented URIs to use the given {@code port}. The default is
-	 * {@code 8080}.
-	 * 
-	 * @param port The URI port
-	 * @return {@code this}
-	 */
-	public RestDocumentationConfigurer withPort(int port) {
-		this.port = port;
-		return this;
-	}
-
-	/**
-	 * Configures any documented URIs to use the given {@code contextPath}. The default is
-	 * an empty string.
-	 * 
-	 * @param contextPath The context path
-	 * @return {@code this}
-	 */
-	public RestDocumentationConfigurer withContextPath(String contextPath) {
-		this.contextPath = (StringUtils.hasText(contextPath) && !contextPath
-				.startsWith("/")) ? "/" + contextPath : contextPath;
-		return this;
+	public SnippetConfigurer snippets() {
+		return this.snippetConfigurer;
 	}
 
 	@Override
 	public RequestPostProcessor beforeMockMvcCreated(
 			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
-		return new RequestPostProcessor() {
+		return this.requestPostProcessor;
+	}
 
-			@Override
-			public MockHttpServletRequest postProcessRequest(
-					MockHttpServletRequest request) {
-				RestDocumentationContext currentContext = RestDocumentationContext
-						.currentContext();
-				if (currentContext != null) {
-					currentContext.getAndIncrementStepCount();
-				}
-				request.setScheme(RestDocumentationConfigurer.this.scheme);
-				request.setServerPort(RestDocumentationConfigurer.this.port);
-				request.setServerName(RestDocumentationConfigurer.this.host);
-				request.setContextPath(RestDocumentationConfigurer.this.contextPath);
-				configureContentLengthHeaderIfAppropriate(request);
-				return request;
+	private static class StepCountConfigurer extends AbstractConfigurer {
+
+		@Override
+		void apply(MockHttpServletRequest request) {
+			RestDocumentationContext currentContext = RestDocumentationContext
+					.currentContext();
+			if (currentContext != null) {
+				currentContext.getAndIncrementStepCount();
 			}
+		}
 
-			private void configureContentLengthHeaderIfAppropriate(
-					MockHttpServletRequest request) {
-				long contentLength = request.getContentLengthLong();
-				if (contentLength > 0
-						&& !StringUtils.hasText(request.getHeader("Content-Length"))) {
-					request.addHeader("Content-Length", request.getContentLengthLong());
-				}
+	}
+
+	private static class ContentLengthHeaderConfigurer extends AbstractConfigurer {
+
+		@Override
+		void apply(MockHttpServletRequest request) {
+			long contentLength = request.getContentLengthLong();
+			if (contentLength > 0
+					&& !StringUtils.hasText(request.getHeader("Content-Length"))) {
+				request.addHeader("Content-Length", request.getContentLengthLong());
 			}
+		}
 
-		};
+	}
+
+	private static class ConfigurerApplyingRequestPostProcessor implements
+			RequestPostProcessor {
+
+		private final List<AbstractConfigurer> configurers;
+
+		private ConfigurerApplyingRequestPostProcessor(
+				List<AbstractConfigurer> configurers) {
+			this.configurers = configurers;
+		}
+
+		@Override
+		public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+			for (AbstractConfigurer configurer : this.configurers) {
+				configurer.apply(request);
+			}
+			return request;
+		}
+
 	}
 }

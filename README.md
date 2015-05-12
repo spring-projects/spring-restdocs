@@ -243,24 +243,48 @@ documenting. A custom `ResultHandler` is used to produce individual documentatio
 snippets for its request and its response as well as a snippet that contains both its
 request and its response.
 
-You can configure the scheme, host, and port of any URIs that appear in the
-documentation snippets:
+The first step is to create a `MockMvc` instance using `MockMvcBuilders`, configuring
+it by applying a `RestDocumentationConfigurer` that can be obtained from the static
+`RestDocumentation.documentationConfiguration` method:
 
 ```java
 @Before
 public void setUp() {
 	this.mockMvc = MockMvcBuilders
 			.webAppContextSetup(this.context)
-			.apply(new RestDocumentationConfigurer()
-					.withScheme("https")
-					.withHost("localhost")
-					.withPort(8443))
+			.apply(documentationConfiguration())
 			.build();
 }
 ```
 
-The default values are `http`, `localhost`, and `8080`. You can omit the above
-configuration if these defaults meet your needs.
+This will apply the default REST documentation configuration:
+
+| Setting          | Default value
+| ---------------- | -------------
+| Scheme           | http
+| Host             | localhost
+| Port             | 8080
+| Context path     | Empty string
+| Snippet encoding | UTF-8
+
+One or more of these settings can be overridden:
+
+```java
+@Before
+public void setUp() {
+	this.mockMvc = MockMvcBuilders
+			.webAppContextSetup(this.context)
+			.apply(documentationConfiguration()
+					.uris()
+							.withScheme("https")
+							.withHost("api.example.com")
+							.withPort(443)
+							.withContextPath("/v3")
+					.and().snippets()
+							.withEncoding("ISO-8859-1"))
+			.build();
+}
+```
 
 To document a MockMvc call, you use MockMvc's `andDo` method, passing it a
 `RestDocumentationResultHandler` that can be easily obtained from

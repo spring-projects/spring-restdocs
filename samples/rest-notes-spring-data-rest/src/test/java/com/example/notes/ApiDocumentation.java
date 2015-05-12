@@ -18,6 +18,7 @@ package com.example.notes;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.restdocs.RestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -40,7 +41,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.restdocs.payload.FieldType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -72,7 +72,18 @@ public class ApiDocumentation {
 	@Before
 	public void setUp() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(new RestDocumentationConfigurer()).build();
+				.apply(documentationConfiguration()).build();
+		this.mockMvc = MockMvcBuilders
+				.webAppContextSetup(this.context)
+				.apply(documentationConfiguration()
+					.uris()
+						.withScheme("https")
+						.withHost("localhost")
+						.withPort(8443)
+					.and().snippets()
+						.withEncoding("ISO-8859-1"))
+				.build();
+
 	}
 
 	@Test

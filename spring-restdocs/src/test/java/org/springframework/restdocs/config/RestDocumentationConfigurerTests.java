@@ -52,7 +52,7 @@ public class RestDocumentationConfigurerTests {
 
 	@Test
 	public void customScheme() {
-		RequestPostProcessor postProcessor = new RestDocumentationConfigurer()
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().uris()
 				.withScheme("https").beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 
@@ -61,8 +61,8 @@ public class RestDocumentationConfigurerTests {
 
 	@Test
 	public void customHost() {
-		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().withHost(
-				"api.example.com").beforeMockMvcCreated(null, null);
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().uris()
+				.withHost("api.example.com").beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 
 		assertUriConfiguration("http", "api.example.com", 8080);
@@ -70,8 +70,8 @@ public class RestDocumentationConfigurerTests {
 
 	@Test
 	public void customPort() {
-		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().withPort(
-				8081).beforeMockMvcCreated(null, null);
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().uris()
+				.withPort(8081).beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 
 		assertUriConfiguration("http", "localhost", 8081);
@@ -80,7 +80,7 @@ public class RestDocumentationConfigurerTests {
 	@Test
 	public void customContextPathWithoutSlash() {
 		String contextPath = "context-path";
-		RequestPostProcessor postProcessor = new RestDocumentationConfigurer()
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().uris()
 				.withContextPath(contextPath).beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 
@@ -91,7 +91,7 @@ public class RestDocumentationConfigurerTests {
 	@Test
 	public void customContextPathWithSlash() {
 		String contextPath = "/context-path";
-		RequestPostProcessor postProcessor = new RestDocumentationConfigurer()
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().uris()
 				.withContextPath(contextPath).beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 
@@ -101,21 +101,53 @@ public class RestDocumentationConfigurerTests {
 
 	@Test
 	public void noContentLengthHeaderWhenRequestHasNotContent() {
-		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().withPort(
-				8081).beforeMockMvcCreated(null, null);
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().uris()
+				.withPort(8081).beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 		assertThat(this.request.getHeader("Content-Length"), is(nullValue()));
 	}
 
 	@Test
 	public void contentLengthHeaderIsSetWhenRequestHasContent() {
-		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().withPort(
-				8081).beforeMockMvcCreated(null, null);
+		RequestPostProcessor postProcessor = new RestDocumentationConfigurer()
+				.beforeMockMvcCreated(null, null);
 		byte[] content = "Hello, world".getBytes();
 		this.request.setContent(content);
 		postProcessor.postProcessRequest(this.request);
 		assertThat(this.request.getHeader("Content-Length"),
 				is(equalTo(Integer.toString(content.length))));
+	}
+
+	@Test
+	public void defaultSnippetEncodingIsAppliedToTheContext() {
+		RestDocumentationContext.establishContext(null);
+		try {
+			assertThat(RestDocumentationContext.currentContext().getSnippetEncoding(),
+					is(nullValue()));
+			new RestDocumentationConfigurer().beforeMockMvcCreated(null, null)
+					.postProcessRequest(this.request);
+			assertThat(RestDocumentationContext.currentContext().getSnippetEncoding(),
+					is(equalTo("UTF-8")));
+		}
+		finally {
+			RestDocumentationContext.clearContext();
+		}
+	}
+
+	@Test
+	public void customSnippetEncodingIsAppliedToTheContext() {
+		RestDocumentationContext.establishContext(null);
+		try {
+			assertThat(RestDocumentationContext.currentContext().getSnippetEncoding(),
+					is(nullValue()));
+			new RestDocumentationConfigurer().snippets().withEncoding("foo")
+					.beforeMockMvcCreated(null, null).postProcessRequest(this.request);
+			assertThat(RestDocumentationContext.currentContext().getSnippetEncoding(),
+					is(equalTo("foo")));
+		}
+		finally {
+			RestDocumentationContext.clearContext();
+		}
 	}
 
 	private void assertUriConfiguration(String scheme, String host, int port) {
