@@ -28,7 +28,7 @@ class FieldTypeResolver {
 
 	private final FieldProcessor fieldProcessor = new FieldProcessor();
 
-	FieldType resolveFieldType(String path, Map<String, Object> payload) {
+	FieldType resolveFieldType(String path, Object payload) {
 		FieldPath fieldPath = FieldPath.compile(path);
 		Object field = this.fieldProcessor.extract(fieldPath, payload);
 		if (field instanceof Collection && !fieldPath.isPrecise()) {

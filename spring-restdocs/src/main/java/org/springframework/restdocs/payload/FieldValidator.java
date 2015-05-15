@@ -40,18 +40,15 @@ class FieldValidator {
 	private final ObjectMapper objectMapper = new ObjectMapper()
 			.enable(SerializationFeature.INDENT_OUTPUT);
 
-	@SuppressWarnings("unchecked")
 	void validate(Reader payloadReader, List<FieldDescriptor> fieldDescriptors)
 			throws IOException {
-		Map<String, Object> payload = this.objectMapper.readValue(payloadReader,
-				Map.class);
+		Object payload = this.objectMapper.readValue(payloadReader, Object.class);
 		List<String> missingFields = findMissingFields(payload, fieldDescriptors);
-		Map<String, Object> undocumentedPayload = findUndocumentedFields(payload,
-				fieldDescriptors);
+		Object undocumentedPayload = findUndocumentedFields(payload, fieldDescriptors);
 
-		if (!missingFields.isEmpty() || !undocumentedPayload.isEmpty()) {
+		if (!missingFields.isEmpty() || !isEmpty(undocumentedPayload)) {
 			String message = "";
-			if (!undocumentedPayload.isEmpty()) {
+			if (!isEmpty(undocumentedPayload)) {
 				message += String.format(
 						"The following parts of the payload were not documented:%n%s",
 						this.objectMapper.writeValueAsString(undocumentedPayload));
@@ -67,7 +64,14 @@ class FieldValidator {
 		}
 	}
 
-	private List<String> findMissingFields(Map<String, Object> payload,
+	private boolean isEmpty(Object object) {
+		if (object instanceof Map) {
+			return ((Map<?, ?>) object).isEmpty();
+		}
+		return ((List<?>) object).isEmpty();
+	}
+
+	private List<String> findMissingFields(Object payload,
 			List<FieldDescriptor> fieldDescriptors) {
 		List<String> missingFields = new ArrayList<String>();
 
@@ -82,7 +86,7 @@ class FieldValidator {
 		return missingFields;
 	}
 
-	private Map<String, Object> findUndocumentedFields(Map<String, Object> payload,
+	private Object findUndocumentedFields(Object payload,
 			List<FieldDescriptor> fieldDescriptors) {
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
 			FieldPath path = FieldPath.compile(fieldDescriptor.getPath());

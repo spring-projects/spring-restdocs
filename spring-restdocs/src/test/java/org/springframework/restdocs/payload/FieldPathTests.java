@@ -16,7 +16,9 @@
 
 package org.springframework.restdocs.payload;
 
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -39,6 +41,16 @@ public class FieldPathTests {
 	}
 
 	@Test
+	public void topLevelArrayIsNotPrecise() {
+		assertFalse(FieldPath.compile("[]").isPrecise());
+	}
+
+	@Test
+	public void fieldBeneathTopLevelArrayIsNotPrecise() {
+		assertFalse(FieldPath.compile("[]a").isPrecise());
+	}
+
+	@Test
 	public void arrayIsNotPrecise() {
 		assertFalse(FieldPath.compile("a[]").isPrecise());
 	}
@@ -56,6 +68,46 @@ public class FieldPathTests {
 	@Test
 	public void fieldBeneathAnArrayIsNotPrecise() {
 		assertFalse(FieldPath.compile("a[].b").isPrecise());
+	}
+
+	@Test
+	public void compilationOfSingleElementPath() {
+		assertThat(FieldPath.compile("a").getSegments(), contains("a"));
+	}
+
+	@Test
+	public void compilationOfMultipleElementPath() {
+		assertThat(FieldPath.compile("a.b.c").getSegments(), contains("a", "b", "c"));
+	}
+
+	@Test
+	public void compilationOfPathWithArraysWithNoDotSeparators() {
+		assertThat(FieldPath.compile("a[]b[]c").getSegments(),
+				contains("a", "[]", "b", "[]", "c"));
+	}
+
+	@Test
+	public void compilationOfPathWithArraysWithPreAndPostDotSeparators() {
+		assertThat(FieldPath.compile("a.[].b.[].c").getSegments(),
+				contains("a", "[]", "b", "[]", "c"));
+	}
+
+	@Test
+	public void compilationOfPathWithArraysWithPreDotSeparators() {
+		assertThat(FieldPath.compile("a.[]b.[]c").getSegments(),
+				contains("a", "[]", "b", "[]", "c"));
+	}
+
+	@Test
+	public void compilationOfPathWithArraysWithPostDotSeparators() {
+		assertThat(FieldPath.compile("a[].b[].c").getSegments(),
+				contains("a", "[]", "b", "[]", "c"));
+	}
+
+	@Test
+	public void compilationOfPathStartingWithAnArray() {
+		assertThat(FieldPath.compile("[]a.b.c").getSegments(),
+				contains("[]", "a", "b", "c"));
 	}
 
 }

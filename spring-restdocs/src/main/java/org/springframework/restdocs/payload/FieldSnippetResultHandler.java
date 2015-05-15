@@ -68,7 +68,7 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 
 		this.fieldValidator.validate(getPayloadReader(result), this.fieldDescriptors);
 
-		final Map<String, Object> payload = extractPayload(result);
+		final Object payload = extractPayload(result);
 
 		writer.table(new TableAction() {
 
@@ -91,15 +91,8 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 
 	}
 
-	@SuppressWarnings("unchecked")
-	private Map<String, Object> extractPayload(MvcResult result) throws IOException {
-		Reader payloadReader = getPayloadReader(result);
-		try {
-			return this.objectMapper.readValue(payloadReader, Map.class);
-		}
-		finally {
-			payloadReader.close();
-		}
+	private Object extractPayload(MvcResult result) throws IOException {
+		return this.objectMapper.readValue(getPayloadReader(result), Object.class);
 	}
 
 	protected abstract Reader getPayloadReader(MvcResult result) throws IOException;

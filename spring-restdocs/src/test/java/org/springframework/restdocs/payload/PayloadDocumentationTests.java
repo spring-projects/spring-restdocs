@@ -48,14 +48,14 @@ public class PayloadDocumentationTests {
 	public final ExpectedSnippet snippet = new ExpectedSnippet();
 
 	@Test
-	public void requestWithFields() throws IOException {
-		this.snippet.expectRequestFields("request-with-fields").withContents( //
+	public void mapRequestWithFields() throws IOException {
+		this.snippet.expectRequestFields("map-request-with-fields").withContents( //
 				tableWithHeader("Path", "Type", "Description") //
 						.row("a.b", "Number", "one") //
 						.row("a.c", "String", "two") //
 						.row("a", "Object", "three"));
 
-		documentRequestFields("request-with-fields",
+		documentRequestFields("map-request-with-fields",
 				fieldWithPath("a.b").description("one"),
 				fieldWithPath("a.c").description("two"),
 				fieldWithPath("a").description("three")).handle(
@@ -63,8 +63,24 @@ public class PayloadDocumentationTests {
 	}
 
 	@Test
-	public void responseWithFields() throws IOException {
-		this.snippet.expectResponseFields("response-with-fields").withContents(//
+	public void arrayRequestWithFields() throws IOException {
+		this.snippet.expectRequestFields("array-request-with-fields").withContents( //
+				tableWithHeader("Path", "Type", "Description") //
+						.row("[]a.b", "Number", "one") //
+						.row("[]a.c", "String", "two") //
+						.row("[]a", "Object", "three"));
+
+		documentRequestFields("array-request-with-fields",
+				fieldWithPath("[]a.b").description("one"),
+				fieldWithPath("[]a.c").description("two"),
+				fieldWithPath("[]a").description("three")).handle(
+				result(get("/foo").content(
+						"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")));
+	}
+
+	@Test
+	public void mapResponseWithFields() throws IOException {
+		this.snippet.expectResponseFields("map-response-with-fields").withContents(//
 				tableWithHeader("Path", "Type", "Description") //
 						.row("id", "Number", "one") //
 						.row("date", "String", "two") //
@@ -77,7 +93,7 @@ public class PayloadDocumentationTests {
 		response.getWriter().append(
 				"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
 						+ " [{\"id\":356,\"name\": \"sample\"}]}");
-		documentResponseFields("response-with-fields",
+		documentResponseFields("map-response-with-fields",
 				fieldWithPath("id").description("one"),
 				fieldWithPath("date").description("two"),
 				fieldWithPath("assets").description("three"),
@@ -85,6 +101,23 @@ public class PayloadDocumentationTests {
 				fieldWithPath("assets[].id").description("five"),
 				fieldWithPath("assets[].name").description("six")).handle(
 				result(response));
+	}
+
+	@Test
+	public void arrayResponseWithFields() throws IOException {
+		this.snippet.expectResponseFields("array-response-with-fields").withContents( //
+				tableWithHeader("Path", "Type", "Description") //
+						.row("[]a.b", "Number", "one") //
+						.row("[]a.c", "String", "two") //
+						.row("[]a", "Object", "three"));
+
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.getWriter()
+				.append("[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]");
+		documentResponseFields("array-response-with-fields",
+				fieldWithPath("[]a.b").description("one"),
+				fieldWithPath("[]a.c").description("two"),
+				fieldWithPath("[]a").description("three")).handle(result(response));
 	}
 
 	@Test

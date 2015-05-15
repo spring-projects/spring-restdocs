@@ -75,24 +75,32 @@ class FieldPath {
 		return true;
 	}
 
-	static List<String> extractSegments(String path) {
+	private static List<String> extractSegments(String path) {
 		Matcher matcher = ARRAY_INDEX_PATTERN.matcher(path);
-		String processedPath;
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
+		int previous = 0;
 		while (matcher.find()) {
-			matcher.appendReplacement(buffer, ".[$1]");
+			appendWithSeparatorIfNecessary(buffer,
+					path.substring(previous, matcher.start(0)));
+			appendWithSeparatorIfNecessary(buffer, matcher.group());
+			previous = matcher.end(0);
 		}
-		matcher.appendTail(buffer);
+		if (previous < path.length()) {
+			appendWithSeparatorIfNecessary(buffer, path.substring(previous));
+		}
 
-		if (buffer.length() > 0) {
-			processedPath = buffer.toString();
-		}
-		else {
-			processedPath = path;
-		}
+		String processedPath = buffer.toString();
 
 		return Arrays.asList(processedPath.indexOf('.') > -1 ? processedPath.split("\\.")
 				: new String[] { processedPath });
 	}
 
+	private static void appendWithSeparatorIfNecessary(StringBuilder buffer,
+			String toAppend) {
+		if (buffer.length() > 0 && (buffer.lastIndexOf(".") != buffer.length() - 1)
+				&& !toAppend.startsWith(".")) {
+			buffer.append(".");
+		}
+		buffer.append(toAppend);
+	}
 }

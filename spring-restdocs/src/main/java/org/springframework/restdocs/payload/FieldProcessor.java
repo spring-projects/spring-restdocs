@@ -31,38 +31,26 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 class FieldProcessor {
 
-	boolean hasField(FieldPath fieldPath, Map<String, Object> payload) {
+	boolean hasField(FieldPath fieldPath, Object payload) {
 		final AtomicReference<Boolean> hasField = new AtomicReference<Boolean>(false);
 		traverse(new ProcessingContext(payload, fieldPath), new MatchCallback() {
 
 			@Override
-			public boolean foundMatch(Match match) {
+			public void foundMatch(Match match) {
 				hasField.set(true);
-				return false;
-			}
-
-			@Override
-			public boolean matchNotFound() {
-				return false;
 			}
 
 		});
 		return hasField.get();
 	}
 
-	Object extract(final FieldPath path, Map<String, Object> payload) {
+	Object extract(FieldPath path, Object payload) {
 		final List<Object> matches = new ArrayList<Object>();
 		traverse(new ProcessingContext(payload, path), new MatchCallback() {
 
 			@Override
-			public boolean foundMatch(Match match) {
+			public void foundMatch(Match match) {
 				matches.add(match.getValue());
-				return true;
-			}
-
-			@Override
-			public boolean matchNotFound() {
-				return false;
 			}
 
 		});
@@ -78,75 +66,59 @@ class FieldProcessor {
 		}
 	}
 
-	void remove(final FieldPath path, final Map<String, Object> payload) {
+	void remove(final FieldPath path, Object payload) {
 		traverse(new ProcessingContext(payload, path), new MatchCallback() {
 
 			@Override
-			public boolean foundMatch(Match match) {
+			public void foundMatch(Match match) {
 				match.remove();
-				return true;
-			}
-
-			@Override
-			public boolean matchNotFound() {
-				return true;
 			}
 
 		});
 	}
 
-	private boolean traverse(ProcessingContext context, MatchCallback matchCallback) {
+	private void traverse(ProcessingContext context, MatchCallback matchCallback) {
 		final String segment = context.getSegment();
 		if (FieldPath.isArraySegment(segment)) {
 			if (context.getPayload() instanceof List) {
-				return handleListPayload(context, matchCallback);
+				handleListPayload(context, matchCallback);
 			}
 		}
 		else if (context.getPayload() instanceof Map
 				&& ((Map<?, ?>) context.getPayload()).containsKey(segment)) {
-			return handleMapPayload(context, matchCallback);
+			handleMapPayload(context, matchCallback);
 		}
-
-		return matchCallback.matchNotFound();
 	}
 
-	private boolean handleListPayload(ProcessingContext context,
-			MatchCallback matchCallback) {
+	private void handleListPayload(ProcessingContext context, MatchCallback matchCallback) {
 		List<?> list = context.getPayload();
 		final Iterator<?> items = list.iterator();
 		if (context.isLeaf()) {
 			while (items.hasNext()) {
 				Object item = items.next();
-				if (!matchCallback.foundMatch(new ListMatch(items, list, item, context
-						.getParentMatch()))) {
-					return false;
-				}
+				matchCallback.foundMatch(new ListMatch(items, list, item, context
+						.getParentMatch()));
 			}
-			return true;
 		}
 		else {
-			boolean result = true;
-			while (items.hasNext() && result) {
+			while (items.hasNext()) {
 				Object item = items.next();
-				result = result
-						&& traverse(context.descend(item, new ListMatch(items, list,
-								item, context.parent)), matchCallback);
+				traverse(context.descend(item, new ListMatch(items, list, item,
+						context.parent)), matchCallback);
 			}
-			return result;
 		}
 	}
 
-	private boolean handleMapPayload(ProcessingContext context,
-			MatchCallback matchCallback) {
+	private void handleMapPayload(ProcessingContext context, MatchCallback matchCallback) {
 		Map<?, ?> map = context.getPayload();
-		final Object item = map.get(context.getSegment());
+		Object item = map.get(context.getSegment());
 		MapMatch mapMatch = new MapMatch(item, map, context.getSegment(),
 				context.getParentMatch());
 		if (context.isLeaf()) {
-			return matchCallback.foundMatch(mapMatch);
+			matchCallback.foundMatch(mapMatch);
 		}
 		else {
-			return traverse(context.descend(item, mapMatch), matchCallback);
+			traverse(context.descend(item, mapMatch), matchCallback);
 		}
 	}
 
@@ -216,9 +188,8 @@ class FieldProcessor {
 
 	private interface MatchCallback {
 
-		boolean foundMatch(Match match);
+		void foundMatch(Match match);
 
-		boolean matchNotFound();
 	}
 
 	private interface Match {

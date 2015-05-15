@@ -38,6 +38,9 @@ public class FieldValidatorTests {
 	@Rule
 	public ExpectedException thrownException = ExpectedException.none();
 
+	private StringReader listPayload = new StringReader(
+			"[{\"a\":1},{\"a\":2},{\"b\":{\"c\":3}}]");
+
 	private StringReader payload = new StringReader(
 			"{\"a\":{\"b\":{},\"c\":true,\"d\":[{\"e\":1},{\"e\":2}]}}");
 
@@ -87,5 +90,25 @@ public class FieldValidatorTests {
 						+ " documented:%n{%n  \"a\" : {%n    \"c\" : true%n  }%n}")));
 		this.fieldValidator.validate(this.payload,
 				Arrays.asList(new FieldDescriptor("a.b"), new FieldDescriptor("a.d")));
+	}
+
+	@Test
+	public void listPayloadNoMissingFieldsAllFieldsDocumented() throws IOException {
+		this.fieldValidator.validate(this.listPayload, Arrays.asList(new FieldDescriptor(
+				"[]b.c"), new FieldDescriptor("[]b"), new FieldDescriptor("[]a"),
+				new FieldDescriptor("[]")));
+	}
+
+	@Test
+	public void listPayloadParentIsDocumentedWhenAllChildrenAreDocumented()
+			throws IOException {
+		this.fieldValidator.validate(this.listPayload,
+				Arrays.asList(new FieldDescriptor("[]b.c"), new FieldDescriptor("[]a")));
+	}
+
+	@Test
+	public void listPayloadChildIsDocumentedWhenParentIsDocumented() throws IOException {
+		this.fieldValidator.validate(this.listPayload,
+				Arrays.asList(new FieldDescriptor("[]")));
 	}
 }
