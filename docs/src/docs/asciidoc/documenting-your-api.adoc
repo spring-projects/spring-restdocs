@@ -1,0 +1,263 @@
+[[documenting-your-api]]
+== Documenting your API
+
+This section provides more details about using Spring REST Docs to document your API.
+
+
+
+[[documenting-your-api-hypermedia]]
+=== Hypermedia
+
+Spring REST Docs provides support for documenting the links in a
+https://en.wikipedia.org/wiki/HATEOAS[Hypermedia-based] API:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Hypermedia.java[tag=links]
+----
+<1> `withLinks` is used to describe the expected links
+<2> Expects a link whose rel is `alpha`. Uses the static `linkWithRel` method on
+`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<3> Expects a link whose rel is `bravo`
+
+The result is a snippet named `links.adoc` that contains a table describing the resource's
+links.
+
+When documenting links, the test will fail if an undocumented link is found in the
+response. Similarly, the test will also fail if a documented link is not found in the
+response.
+
+
+
+[[documenting-your-api-hypermedia-link-formats]]
+==== Hypermedia link formats
+
+Two link formats are understood by default:
+
+ * Atom – links are expected to be in an array named `links`. Used by default when the
+   content type of the response is compatible with `application/json`.
+ * HAL – links are expected to be in a map named `_links`. Used by default when the
+   content type of the response is compatible with `application/hal+json`.
+
+If you are using Atom or HAL-format links but with a different content type you can
+provide one of the built-in `LinkExtractor` implementations to `withLinks`. For example:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Hypermedia.java[tag=explicit-extractor]
+----
+<1> Indicate that the links are in HAL format using the `halLinks` static method on
+`org.springframework.restdocs.hypermedia.LinkExtractors`.
+
+If your API represents its links in a format other than Atom or HAL you can provide your
+own implementation of the `LinkExtractor` interface to extract the links from the
+response.
+
+[[documenting-your-api-request-response-payloads]]
+=== Request and response payloads
+
+In addition to the Hypermedia-specific support <<documenting-your-api-hypermedia,described
+above>>, support for general documentation of request and response payloads is also
+provided:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Payload.java[tags=response]
+----
+<1> `withResponseFields` is used to describe the expected fields in the response payload.
+To document a request `withRequestFields` can be used.
+<2> Expects a field with the path `contact`. Uses the static `fieldWithPath` method on
+`org.springframework.restdocs.payload.PayloadDocumentation`.
+<3> Expects a field with the path `contact.email`
+
+The result is a snippet that contains a table describing the fields. For requests this
+snippet is named `request-fields.adoc`. For responses this snippet is named
+`response-fields.adoc`.
+
+When documenting fields, the test will fail if an undocumented field is found in the
+payload. Similarly, the test will also fail if a documented field is not found in the
+payload and the field has not be marked as optional. For payloads with a hierarchical
+structure, when a point in the hierarchy is documented any fields beneath that point are
+also deemed to have been documented. This means that you do not have to document the
+entire hierarchy, but you may do so if you wish.
+
+
+
+[[documenting-your-api-request-response-payloads-field-paths]]
+==== Field paths
+
+When documenting request and response payloads, fields are identified using a path. Paths
+use `.` to descend into a child object and `[]` to identify an array. For example, with
+this JSON payload:
+
+[source,json,indent=0]
+----
+	{
+		"a":{
+			"b":[
+				{
+					"c":"one"
+				},
+				{
+					"c":"two"
+				},
+				{
+					"d":"three"
+				}
+			]
+		}
+	}
+----
+
+The following paths are all present:
+
+[cols="1,3"]
+|===
+|Path | Value
+
+|`a`
+|An object containing `b`
+
+|`a.b`
+|An array containing three objects
+
+|`a.b[]`
+|An array containing three objects
+
+|`a.b[].c`
+|An array containing the strings `one` and `two`
+
+|`a.b[].d`
+|The string `three`
+|===
+
+
+
+[[documenting-your-api-request-response-payloads-field-types]]
+==== Field types
+
+When a field is documented, Spring REST docs will attempt to determine its type by
+examining the payload. Seven different types are supported:
+
+[cols="1,3"]
+|===
+| Type | Description
+
+| array
+| The value of each occurrence of the field is an array
+
+| boolean
+| The value of each occurrence of the field is a boolean (`true` or `false`)
+
+| object
+| The value of each occurrence of the field is an object
+
+| number
+| The value of each occurrence of the field is a number
+
+| null
+| The value of each occurrence of the field is `null`
+
+| string
+| The value of each occurrence of the field is a string
+
+| varies
+| The field occurs multiple times in the payload with a variety of different types
+|===
+
+The type can also be set explicitly using the `type(FieldType)` method on
+`FieldDescriptor`:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Payload.java[tags=explicit-type]
+----
+<1> Set the field's type to `string`.
+
+
+
+[[documenting-your-api-query-parameters]]
+=== Query parameters
+
+A request's query parameters can be documented using `withQueryParameters`
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/QueryParameters.java[tags=query-parameters]
+----
+<1> `withQueryParameters` is used to describe the query parameters
+<2> Documents a parameter named `page`. Uses the static `parameterWithName` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
+<3> Documents a parameter named `per_page`
+
+The result is a snippet named `query-parameters.adoc` that contains a table describing
+the query parameters that are supported by the resource.
+
+When documenting query parameters, the test will fail if an undocumented query parameter
+is used in the request. Similarly, the test will also fail if a documented query parameter
+is not found in the request.
+
+
+
+[[documenting-your-api-default-snippets]]
+=== Default snippets
+
+A number of snippets are produced automatically when you document a call to
+`MockMvc.perform`:
+
+[cols="1,3"]
+|===
+|Snippet | Description
+
+| `curl-request.adoc`
+| Contains the http://curl.haxx.se[`curl`] command that is equivalent to the `MockMvc`
+call that is being documented
+
+| `http-request.adoc`
+| Contains the HTTP request that is equivalent to the `MockMvc` call that is being
+documented
+
+| `http-response.adoc`
+| Contains the HTTP response that was returned
+|===
+
+
+
+[[documentating-your-api-parameterized-output-directories]]
+=== Using parameterized output directories
+
+The output directory used by `document` can be parameterized. The following parameters
+are supported:
+
+[cols="1,3"]
+|===
+| Parameter | Description
+
+| {methodName}
+| The name of the test method, formatted using camelCase
+
+| {method-name}
+| The name of the test method, formatted using kebab-case
+
+| {method_name}
+| The name of the test method, formatted using snake_case
+
+| {step}
+| The count of calls to MockMvc.perform in the current test
+|===
+
+For example, `document("{method-name}")` in a test method named `creatingANote` will write
+snippets into a directory named `creating-a-note`.
+
+The `{step}` parameter is particularly useful in combination with Spring MVC Test's
+`alwaysDo` functionality. It allows documentation to be configured once in a setup method:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/AlwaysDo.java[tags=always-do]
+----
+
+With this configuration in place, every call to `MockMvc.perform` will produce
+the <<documenting-your-api-default-snippets,default snippets>> without any further
+configuration. Take a look at the `GettingStartedDocumentation` classes in each of the
+sample applications to see this functionality in action.

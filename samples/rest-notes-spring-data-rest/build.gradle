@@ -39,18 +39,18 @@ dependencies {
 }
 
 ext {
-	generatedDocumentation = file('build/generated-snippets')
+	snippetsDir = file('build/generated-snippets')
 }
 
 test {
-	systemProperty 'org.springframework.restdocs.outputDir', generatedDocumentation
-	outputs.dir generatedDocumentation
+	systemProperty 'org.springframework.restdocs.outputDir', snippetsDir
+	outputs.dir snippetsDir
 }
 
 asciidoctor {
 	sourceDir 'src/main/asciidoc' // Align with Maven's default location
-	attributes 'generated': generatedDocumentation
-	inputs.dir generatedDocumentation
+	attributes 'snippets': snippetsDir
+	inputs.dir snippetsDir
 	dependsOn test
 }
 

@@ -1,0 +1,67 @@
+[[configuration]]
+== Configuration
+
+
+
+[[configuration-uris]]
+=== Documented URIs
+
+The default configuration for URIs documented by Spring REST docs is:
+
+|===
+|Setting |Default
+
+|Scheme
+|`http`
+
+|Host
+|`localhost`
+
+|Port
+|`8080`
+
+|Context path
+|Empty string
+|===
+
+This configuration is applied by `RestDocumentationConfigurer`. You can use its API to
+change one or more of the defaults to suit your needs:
+
+[source,java,indent=0]
+----
+include::{examples-dir}com/example/CustomUriConfiguration.java[tags=custom-uri-configuration]
+----
+
+
+
+[[configuration-snippet-encoding]]
+=== Snippet encoding
+
+The default encoding used by Asciidoc is `UTF-8`. Spring REST docs adopts the same
+default for the snippets that it generated. If you require an encoding other than `UTF-8`,
+use `RestDocumentationConfigurer` to configure it:
+
+[source,java,indent=0]
+----
+include::{examples-dir}com/example/CustomEncoding.java[tags=custom-encoding]
+----
+
+
+
+[[configuration-output-directory]]
+=== Snippet output directory
+
+As described in <<getting-started-build-configuration>> the snippet output directory is
+configured in your `pom.xml` or `build.gradle` file. This configuration applies to builds
+on the command line, but it may not apply when running your tests in your IDE. In the
+absence of the property, Spring REST Docs will write the generated snippets to standard
+out.
+
+If you'd prefer that your IDE writes the snippets to disk you can use a file in
+`src/test/resources` named `documentation.properties` to specify the output directory that
+should be used:
+
+[source,properties]
+----
+org.springframework.restdocs.outputDir: target/generated-snippets
+----

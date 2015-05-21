@@ -1,86 +1,39 @@
-project(':spring-restdocs') {
-
-	ext {
-		hamcrestVersion = '1.3'
-		jacksonVersion = '2.3.4'
-		jacocoVersion = '0.7.2.201409121644'
-		junitVersion = '4.11'
-		servletApiVersion = '3.1.0'
-		springHateoasVersion = '0.17.0.RELEASE'
-		springVersion = '4.1.4.RELEASE'
-		mockitoVersion = '1.10.19'
-	}
-
-	group = 'org.springframework.restdocs'
-
-	apply plugin: 'java'
-	apply plugin: 'eclipse'
-	apply plugin: 'maven'
-	apply plugin: 'sonar-runner'
-
-	sonarRunner {
-		sonarProperties {
-			property 'sonar.jacoco.reportPath', "${buildDir.name}/jacoco.exec"
-			property 'sonar.java.coveragePlugin', 'jacoco'
-			property 'sonar.links.ci', 'https://build.spring.io/browse/SRD'
-			property 'sonar.links.homepage', 'https://github.com/spring-projects/spring-restdocs'
-			property 'sonar.links.issue', 'https://github.com/spring-projects/spring-restdocs'
-			property 'sonar.links.scm', 'https://github.com/spring-projects/spring-restdocs'
-		}
-	}
-
-	configurations {
-		jacoco
-	}
-
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
-
+buildscript {
 	repositories {
 		jcenter()
 	}
-
-	task sourcesJar(type: Jar) {
-		classifier = 'sources'
-		from project.sourceSets.main.allSource
-	}
-
-	task javadocJar(type: Jar) {
-		classifier = "javadoc"
-		from javadoc
-	}
-
-	artifacts {
-		archives sourcesJar
-		archives javadocJar
-	}
-
-	eclipseJdt.onlyIf { false }
-	cleanEclipseJdt.onlyIf { false }
-
 	dependencies {
-		compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-		compile "junit:junit:$junitVersion"
-		compile "org.springframework:spring-test:$springVersion"
-		compile "org.springframework:spring-web:$springVersion"
-		compile "org.springframework:spring-webmvc:$springVersion"
-		compile "javax.servlet:javax.servlet-api:$servletApiVersion"
-		jacoco "org.jacoco:org.jacoco.agent:$jacocoVersion:runtime"
-		testCompile "org.springframework.hateoas:spring-hateoas:$springHateoasVersion"
-		testCompile "org.mockito:mockito-core:$mockitoVersion"
-		testCompile "org.hamcrest:hamcrest-core:$hamcrestVersion"
-		testCompile "org.hamcrest:hamcrest-library:$hamcrestVersion"
-	}
-
-	test {
-		jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*"
-		testLogging {
-			exceptionFormat "full"
-		}
+		classpath 'io.spring.gradle:dependency-management-plugin:0.5.1.RELEASE'
 	}
 }
 
 apply plugin: 'samples'
+
+ext {
+	springVersion = '4.1.5.RELEASE'
+}
+
+subprojects {
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework:spring-framework-bom:$springVersion"
+		}
+		dependencies {
+			dependency 'com.fasterxml.jackson.core:jackson-databind:2.4.6'
+			dependency 'javax.servlet:javax.servlet-api:3.1.0'
+			dependency 'junit:junit:4.12'
+			dependency 'org.hamcrest:hamcrest-core:1.3'
+			dependency 'org.hamcrest:hamcrest-library:1.3'
+			dependency 'org.mockito:mockito-core:1.10.19'
+			dependency 'org.springframework.hateoas:spring-hateoas:0.17.0.RELEASE'
+			dependency 'org.jacoco:org.jacoco.agent:0.7.2.201409121644'
+		}
+	}
+}
 
 samples {
 	dependOn 'spring-restdocs:install'
@@ -94,6 +47,26 @@ samples {
 	}
 }
 
-wrapper {
-	gradleVersion = '2.3'
+task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':spring-restdocs:javadoc']) {
+	group = 'Distribution'
+	baseName = 'spring-restdocs'
+	classifier = 'docs'
+	description = 'Builds -${classifier} archive containing API and reference documentation'
+	destinationDir = file("${project.buildDir}/distributions")
+
+	from (project.tasks.findByPath(':docs:asciidoctor')) {
+		into 'reference'
+	}
+
+	from (project.tasks.findByPath(':spring-restdocs:javadoc')) {
+		into 'api'
+	}
+}
+
+configurations {
+	archives
+}
+
+artifacts {
+	archives docsZip
 }

@@ -1,0 +1,23 @@
+[[introduction]]
+== Introduction
+
+The aim of Spring REST Docs is to help you to produce documentation for your RESTful
+services that is accurate and readable.
+
+Writing high-quality documentation is difficult. One way to ease that difficulty is to use
+tools that are well-suited to the job. To this end, Spring REST Docs uses
+http://asciidoctor.org[Asciidoctor]. Asciidoctor processes plain text and produces
+HTML styled and layed out to suit your needs.
+
+Spring REST Docs makes use of snippets produced by tests written with
+{spring-mvc-test-docs}[Spring MVC Test]. This test-driven approach helps to guarantee the
+accuracy of your service's documentation. If a snippet is incorrect the test that
+produces it will fail.
+
+Documenting a RESTful service is largely about describing its resources. Two key parts
+of each resource's description are the details of the HTTP requests that it consumes
+and the HTTP responses that it produces. Spring REST Docs allows you to work with these
+resources and the HTTP requests and responses, shielding your documentation
+from the inner-details of your service's implementation. This separation helps you to
+document your service's API rather than its implementation. It also frees you to evolve
+the implementation without having to rework the documentation.

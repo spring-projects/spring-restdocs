@@ -1,0 +1,19 @@
+plugins {
+	id 'org.asciidoctor.convert' version '1.5.2'
+}
+
+dependencies {
+	compile 'org.springframework:spring-webmvc'
+
+	testCompile project(':spring-restdocs')
+	testCompile 'junit:junit'
+	testCompile 'org.springframework:spring-test'
+}
+
+tasks.findByPath("artifactoryPublish")?.enabled = false
+
+asciidoctor {
+	sources {
+		include 'index.adoc'
+	}
+}

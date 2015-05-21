@@ -42,11 +42,11 @@ $ java -jar build/libs/*.jar
 You can check that the service is up and running by executing a simple request using
 cURL:
 
-include::{generated}/index/1/curl-request.adoc[]
+include::{snippets}/index/1/curl-request.adoc[]
 
 This request should yield the following response:
 
-include::{generated}/index/1/http-response.adoc[]
+include::{snippets}/index/1/http-response.adoc[]
 
 Note the `_links` in the JSON response. They are key to navigating the API.
 
@@ -58,26 +58,26 @@ Now that you've started the service and verified that it works, the next step is
 it to create a new note. As you saw above, the URI for working with notes is included as
 a link when you perform a `GET` request against the root of the service:
 
-include::{generated}/index/1/http-response.adoc[]
+include::{snippets}/index/1/http-response.adoc[]
 
 To create a note you need to execute a `POST` request to this URI, including a JSON
 payload containing the title and body of the note:
 
-include::{generated}/creating-a-note/1/curl-request.adoc[]
+include::{snippets}/creating-a-note/1/curl-request.adoc[]
 
 The response from this request should have a status code of `201 Created` and contain a
 `Location` header whose value is the URI of the newly created note:
 
-include::{generated}/creating-a-note/1/http-response.adoc[]
+include::{snippets}/creating-a-note/1/http-response.adoc[]
 
 To work with the newly created note you use the URI in the `Location` header. For example
 you can access the note's details by performing a `GET` request:
 
-include::{generated}/creating-a-note/2/curl-request.adoc[]
+include::{snippets}/creating-a-note/2/curl-request.adoc[]
 
 This request will produce a response with the note's details in its body:
 
-include::{generated}/creating-a-note/2/http-response.adoc[]
+include::{snippets}/creating-a-note/2/http-response.adoc[]
 
 Note the `note-tags` link which we'll make use of later.
 
@@ -91,26 +91,26 @@ to tag a note, you must first create the tag.
 Referring back to the response for the service's index, the URI for working with tags is
 include as a link:
 
-include::{generated}/index/1/http-response.adoc[]
+include::{snippets}/index/1/http-response.adoc[]
 
 To create a tag you need to execute a `POST` request to this URI, including a JSON
 payload containing the name of the tag:
 
-include::{generated}/creating-a-note/3/curl-request.adoc[]
+include::{snippets}/creating-a-note/3/curl-request.adoc[]
 
 The response from this request should have a status code of `201 Created` and contain a
 `Location` header whose value is the URI of the newly created tag:
 
-include::{generated}/creating-a-note/3/http-response.adoc[]
+include::{snippets}/creating-a-note/3/http-response.adoc[]
 
 To work with the newly created tag you use the URI in the `Location` header. For example
 you can access the tag's details by performing a `GET` request:
 
-include::{generated}/creating-a-note/4/curl-request.adoc[]
+include::{snippets}/creating-a-note/4/curl-request.adoc[]
 
 This request will produce a response with the tag's details in its body:
 
-include::{generated}/creating-a-note/4/http-response.adoc[]
+include::{snippets}/creating-a-note/4/http-response.adoc[]
 
 
 
@@ -131,25 +131,25 @@ with it.
 Once again we execute a `POST` request, but this time, in an array named tags, we include
 the URI of the tag we just created:
 
-include::{generated}/creating-a-note/5/curl-request.adoc[]
+include::{snippets}/creating-a-note/5/curl-request.adoc[]
 
 Once again, the response's `Location` header tells use the URI of the newly created note:
 
-include::{generated}/creating-a-note/5/http-response.adoc[]
+include::{snippets}/creating-a-note/5/http-response.adoc[]
 
 As before, a `GET` request executed against this URI will retrieve the note's details:
 
-include::{generated}/creating-a-note/6/curl-request.adoc[]
-include::{generated}/creating-a-note/6/http-response.adoc[]
+include::{snippets}/creating-a-note/6/curl-request.adoc[]
+include::{snippets}/creating-a-note/6/http-response.adoc[]
 
 To see the note's tags, execute a `GET` request against the URI of the note's
 `note-tags` link:
 
-include::{generated}/creating-a-note/7/curl-request.adoc[]
+include::{snippets}/creating-a-note/7/curl-request.adoc[]
 
 The response shows that, as expected, the note has a single tag:
 
-include::{generated}/creating-a-note/7/http-response.adoc[]
+include::{snippets}/creating-a-note/7/http-response.adoc[]
 
 
 
@@ -159,18 +159,18 @@ An existing note can be tagged by executing a `PATCH` request against the note's
 a body that contains the array of tags to be associated with the note. We'll use the
 URI of the untagged note that we created earlier:
 
-include::{generated}/creating-a-note/8/curl-request.adoc[]
+include::{snippets}/creating-a-note/8/curl-request.adoc[]
 
 This request should produce a `204 No Content` response:
 
-include::{generated}/creating-a-note/8/http-response.adoc[]
+include::{snippets}/creating-a-note/8/http-response.adoc[]
 
 When we first created this note, we noted the `note-tags` link included in its details:
 
-include::{generated}/creating-a-note/2/http-response.adoc[]
+include::{snippets}/creating-a-note/2/http-response.adoc[]
 
 We can use that link now and execute a `GET` request to see that the note now has a
 single tag:
 
-include::{generated}/creating-a-note/9/curl-request.adoc[]
-include::{generated}/creating-a-note/9/http-response.adoc[]
+include::{snippets}/creating-a-note/9/curl-request.adoc[]
+include::{snippets}/creating-a-note/9/http-response.adoc[]

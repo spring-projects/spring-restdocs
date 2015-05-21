@@ -18,6 +18,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.7</java.version>
+		<snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
 	</properties>
 
 	<dependencies>
@@ -84,7 +85,7 @@
 						<include>**/*Documentation.java</include>
 					</includes>
 					<systemPropertyVariables>
-						<org.springframework.restdocs.outputDir>${project.build.directory}/generated-snippets</org.springframework.restdocs.outputDir>
+						<org.springframework.restdocs.outputDir>${snippetsDirectory}</org.springframework.restdocs.outputDir>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
@@ -103,7 +104,7 @@
 							<backend>html</backend>
 							<doctype>book</doctype>
 							<attributes>
-								<generated>${project.build.directory}/generated-snippets</generated>
+								<snippets>${snippetsDirectory}</snippets>
 							</attributes>
 						</configuration>
 					</execution>

@@ -64,12 +64,12 @@ use of HTTP status codes.
 Whenever an error response (status code >= 400) is returned, the body will contain a JSON object
 that describes the problem. The error object has the following structure:
 
-include::{generated}/error-example/response-fields.adoc[]
+include::{snippets}/error-example/response-fields.adoc[]
 
 For example, a request that attempts to apply a non-existent tag to a note will produce a
 `400 Bad Request` response:
 
-include::{generated}/error-example/http-response.adoc[]
+include::{snippets}/error-example/http-response.adoc[]
 
 [[overview-hypermedia]]
 == Hypermedia
@@ -99,18 +99,18 @@ A `GET` request is used to access the index
 
 ==== Response structure
 
-include::{generated}/index-example/response-fields.adoc[]
+include::{snippets}/index-example/response-fields.adoc[]
 
 ==== Example response
 
-include::{generated}/index-example/http-response.adoc[]
+include::{snippets}/index-example/http-response.adoc[]
 
 
 
 [[resources-index-links]]
 ==== Links
 
-include::{generated}/index-example/links.adoc[]
+include::{snippets}/index-example/links.adoc[]
 
 
 
@@ -128,15 +128,15 @@ A `GET` request will list all of the service's notes.
 
 ==== Response structure
 
-include::{generated}/notes-list-example/response-fields.adoc[]
+include::{snippets}/notes-list-example/response-fields.adoc[]
 
 ==== Example request
 
-include::{generated}/notes-list-example/curl-request.adoc[]
+include::{snippets}/notes-list-example/curl-request.adoc[]
 
 ==== Example response
 
-include::{generated}/notes-list-example/http-response.adoc[]
+include::{snippets}/notes-list-example/http-response.adoc[]
 
 
 
@@ -147,15 +147,15 @@ A `POST` request is used to create a note
 
 ==== Request structure
 
-include::{generated}/notes-create-example/request-fields.adoc[]
+include::{snippets}/notes-create-example/request-fields.adoc[]
 
 ==== Example request
 
-include::{generated}/notes-create-example/curl-request.adoc[]
+include::{snippets}/notes-create-example/curl-request.adoc[]
 
 ==== Example response
 
-include::{generated}/notes-create-example/http-response.adoc[]
+include::{snippets}/notes-create-example/http-response.adoc[]
 
 
 
@@ -173,15 +173,15 @@ A `GET` request will list all of the service's tags.
 
 ==== Response structure
 
-include::{generated}/tags-list-example/response-fields.adoc[]
+include::{snippets}/tags-list-example/response-fields.adoc[]
 
 ==== Example request
 
-include::{generated}/tags-list-example/curl-request.adoc[]
+include::{snippets}/tags-list-example/curl-request.adoc[]
 
 ==== Example response
 
-include::{generated}/tags-list-example/http-response.adoc[]
+include::{snippets}/tags-list-example/http-response.adoc[]
 
 
 
@@ -192,15 +192,15 @@ A `POST` request is used to create a note
 
 ==== Request structure
 
-include::{generated}/tags-create-example/request-fields.adoc[]
+include::{snippets}/tags-create-example/request-fields.adoc[]
 
 ==== Example request
 
-include::{generated}/tags-create-example/curl-request.adoc[]
+include::{snippets}/tags-create-example/curl-request.adoc[]
 
 ==== Example response
 
-include::{generated}/tags-create-example/http-response.adoc[]
+include::{snippets}/tags-create-example/http-response.adoc[]
 
 
 
@@ -214,7 +214,7 @@ The Note resource is used to retrieve, update, and delete individual notes
 [[resources-note-links]]
 === Links
 
-include::{generated}/note-get-example/links.adoc[]
+include::{snippets}/note-get-example/links.adoc[]
 
 
 
@@ -225,15 +225,15 @@ A `GET` request will retrieve the details of a note
 
 ==== Response structure
 
-include::{generated}/note-get-example/response-fields.adoc[]
+include::{snippets}/note-get-example/response-fields.adoc[]
 
 ==== Example request
 
-include::{generated}/note-get-example/curl-request.adoc[]
+include::{snippets}/note-get-example/curl-request.adoc[]
 
 ==== Example response
 
-include::{generated}/note-get-example/http-response.adoc[]
+include::{snippets}/note-get-example/http-response.adoc[]
 
 
 
@@ -244,17 +244,17 @@ A `PATCH` request is used to update a note
 
 ==== Request structure
 
-include::{generated}/note-update-example/request-fields.adoc[]
+include::{snippets}/note-update-example/request-fields.adoc[]
 
 To leave an attribute of a note unchanged, any of the above may be omitted from the request.
 
 ==== Example request
 
-include::{generated}/note-update-example/curl-request.adoc[]
+include::{snippets}/note-update-example/curl-request.adoc[]
 
 ==== Example response
 
-include::{generated}/note-update-example/http-response.adoc[]
+include::{snippets}/note-update-example/http-response.adoc[]
 
 
 [[resources-tag]]
@@ -267,7 +267,7 @@ The Tag resource is used to retrieve, update, and delete individual tags
 [[resources-tag-links]]
 === Links
 
-include::{generated}/tag-get-example/links.adoc[]
+include::{snippets}/tag-get-example/links.adoc[]
 
 
 
@@ -278,15 +278,15 @@ A `GET` request will retrieve the details of a tag
 
 ==== Response structure
 
-include::{generated}/tag-get-example/response-fields.adoc[]
+include::{snippets}/tag-get-example/response-fields.adoc[]
 
 ==== Example request
 
-include::{generated}/tag-get-example/curl-request.adoc[]
+include::{snippets}/tag-get-example/curl-request.adoc[]
 
 ==== Example response
 
-include::{generated}/tag-get-example/http-response.adoc[]
+include::{snippets}/tag-get-example/http-response.adoc[]
 
 
 
@@ -297,12 +297,12 @@ A `PATCH` request is used to update a tag
 
 ==== Request structure
 
-include::{generated}/tag-update-example/request-fields.adoc[]
+include::{snippets}/tag-update-example/request-fields.adoc[]
 
 ==== Example request
 
-include::{generated}/tag-update-example/curl-request.adoc[]
+include::{snippets}/tag-update-example/curl-request.adoc[]
 
 ==== Example response
 
-include::{generated}/tag-update-example/http-response.adoc[]
+include::{snippets}/tag-update-example/http-response.adoc[]
