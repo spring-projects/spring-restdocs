@@ -29,8 +29,20 @@ public class LinkDescriptor {
 
 	private String description;
 
+	private boolean optional;
+
 	LinkDescriptor(String rel) {
 		this.rel = rel;
+	}
+
+	/**
+	 * Marks the link as optional
+	 *
+	 * @return {@code this}
+	 */
+	public LinkDescriptor optional() {
+		this.optional = true;
+		return this;
 	}
 
 	/**
@@ -50,5 +62,9 @@ public class LinkDescriptor {
 
 	String getDescription() {
 		return this.description;
+	}
+
+	boolean isOptional() {
+		return this.optional;
 	}
 }
