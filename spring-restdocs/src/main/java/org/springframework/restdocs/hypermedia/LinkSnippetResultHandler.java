@@ -42,6 +42,8 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 
 	private final Map<String, LinkDescriptor> descriptorsByRel = new LinkedHashMap<>();
 
+	private final Set<String> requiredRels = new HashSet<String>();
+
 	private final LinkExtractor extractor;
 
 	LinkSnippetResultHandler(String outputDir, LinkExtractor linkExtractor,
@@ -52,6 +54,9 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 			Assert.hasText(descriptor.getRel());
 			Assert.hasText(descriptor.getDescription());
 			this.descriptorsByRel.put(descriptor.getRel(), descriptor);
+			if (!descriptor.isOptional()) {
+				this.requiredRels.add(descriptor.getRel());
+			}
 		}
 	}
 
@@ -78,12 +83,11 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 		}
 
 		Set<String> actualRels = links.keySet();
-		Set<String> expectedRels = this.descriptorsByRel.keySet();
 
 		Set<String> undocumentedRels = new HashSet<String>(actualRels);
-		undocumentedRels.removeAll(expectedRels);
+		undocumentedRels.removeAll(this.descriptorsByRel.keySet());
 
-		Set<String> missingRels = new HashSet<String>(expectedRels);
+		Set<String> missingRels = new HashSet<String>(this.requiredRels);
 		missingRels.removeAll(actualRels);
 
 		if (!undocumentedRels.isEmpty() || !missingRels.isEmpty()) {
@@ -101,8 +105,6 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 			}
 			throw new SnippetGenerationException(message);
 		}
-
-		Assert.isTrue(actualRels.equals(expectedRels));
 
 		writer.table(new TableAction() {
 
