@@ -3,8 +3,6 @@ ext {
 	jacocoVersion = '0.7.2.201409121644'
 }
 
-group = 'org.springframework.restdocs'
-
 apply plugin: 'maven'
 apply plugin: 'sonar-runner'
 
