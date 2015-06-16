@@ -26,9 +26,9 @@ import org.springframework.restdocs.payload.FieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 public class Payload {
-	
+
 private MockMvc mockMvc;
-	
+
 	public void response() throws Exception {
 		// tag::response[]
 		this.mockMvc.perform(get("/user/5").accept(MediaType.APPLICATION_JSON))
@@ -38,7 +38,7 @@ private MockMvc mockMvc;
 					fieldWithPath("contact.email").description("The user's email address"))); // <3>
 		// end::response[]
 	}
-	
+
 	public void explicitType() throws Exception {
 		this.mockMvc.perform(get("/user/5").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

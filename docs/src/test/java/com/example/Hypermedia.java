@@ -26,9 +26,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 public class Hypermedia {
-	
+
 	private MockMvc mockMvc;
-	
+
 	public void links() throws Exception {
 		// tag::links[]
 		this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
@@ -38,16 +38,16 @@ public class Hypermedia {
 					linkWithRel("bravo").description("Link to the bravo resource"))); // <3>
 		// end::links[]
 	}
-	
+
 	public void explicitExtractor() throws Exception {
 		this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			//tag::explicit-extractor[]
 			.andDo(document("index").withLinks(halLinks(), // <1>
-					linkWithRel("alpha").description("Link to the alpha resource"), 
+					linkWithRel("alpha").description("Link to the alpha resource"),
 					linkWithRel("bravo").description("Link to the bravo resource")));
 			// end::explicit-extractor[]
 	}
-	
+
 
 }

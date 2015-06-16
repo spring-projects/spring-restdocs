@@ -25,12 +25,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 public class CustomEncoding {
-	
+
 	@Autowired
 	private WebApplicationContext context;
-	
+
 	private MockMvc mockMvc;
-	
+
 	@Before
 	public void setUp() {
 		// tag::custom-encoding[]

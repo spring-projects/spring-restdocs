@@ -25,13 +25,13 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.restdocs.RestDocumentation.documentationConfiguration;
 
 public class ExampleApplicationTests {
-	
+
 	// tag::mock-mvc-setup[]
 	@Autowired
 	private WebApplicationContext context;
-	
+
 	private MockMvc mockMvc;
-	
+
 	@Before
 	public void setUp() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)

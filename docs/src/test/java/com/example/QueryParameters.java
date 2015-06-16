@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 public class QueryParameters {
 
 	private MockMvc mockMvc;
-	
+
 	public void queryParameters() throws Exception {
 		// tag::query-parameters[]
 		this.mockMvc.perform(get("/users?page=2&per_page=100"))
@@ -37,5 +37,5 @@ public class QueryParameters {
 			));
 		// end::query-parameters[]
 	}
-	
+
 }

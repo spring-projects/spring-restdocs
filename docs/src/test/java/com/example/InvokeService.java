@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 public class InvokeService {
 
 	private MockMvc mockMvc;
-	
+
 	public void invokeService() throws Exception {
 		// tag::invoke-service[]
 		this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)) // <1>
@@ -34,5 +34,5 @@ public class InvokeService {
 			.andDo(document("index")); // <3>
 		// end::invoke-service[]
 	}
-	
+
 }

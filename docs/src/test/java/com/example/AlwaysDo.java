@@ -25,18 +25,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 public class AlwaysDo {
-	
+
 	private MockMvc mockMvc;
-	
+
 	private WebApplicationContext context;
 
 	// tag::always-do[]
 	@Before
 	public void setUp() {
-	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-	            .apply(documentationConfiguration())
-	            .alwaysDo(document("{method-name}/{step}/"))
-	            .build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration())
+				.alwaysDo(document("{method-name}/{step}/"))
+				.build();
 	}
 	// end::always-do[]
 }

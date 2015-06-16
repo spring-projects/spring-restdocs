@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 public class ResponsePostProcessing {
 
 	private MockMvc mockMvc;
-	
+
 	public void general() throws Exception {
 		// tag::general[]
 		this.mockMvc.perform(get("/"))
@@ -34,5 +34,5 @@ public class ResponsePostProcessing {
 					.andDocument("index")); // <2>
 		// end::general[]
 	}
-	
+
 }
