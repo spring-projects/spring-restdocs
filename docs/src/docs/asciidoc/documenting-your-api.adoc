@@ -25,7 +25,7 @@ links.
 
 When documenting links, the test will fail if an undocumented link is found in the
 response. Similarly, the test will also fail if a documented link is not found in the
-response.
+response and the link has not be marked as optional.
 
 
 
