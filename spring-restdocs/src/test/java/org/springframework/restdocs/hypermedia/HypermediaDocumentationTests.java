@@ -65,6 +65,25 @@ public class HypermediaDocumentationTests {
 	}
 
 	@Test
+	public void optionalLink() throws IOException {
+		this.snippet.expectLinks("documented-optional-link").withContents( //
+				tableWithHeader("Relation", "Description") //
+						.row("foo", "bar"));
+		documentLinks("documented-optional-link",
+				new StubLinkExtractor().withLinks(new Link("foo", "blah")),
+				new LinkDescriptor("foo").description("bar").optional()).handle(result());
+	}
+
+	@Test
+	public void optionalMissingLink() throws IOException {
+		this.snippet.expectLinks("documented-optional-missing-link").withContents( //
+				tableWithHeader("Relation", "Description") //
+						.row("foo", "bar"));
+		documentLinks("documented-optional-missing-link", new StubLinkExtractor(),
+				new LinkDescriptor("foo").description("bar").optional()).handle(result());
+	}
+
+	@Test
 	public void undocumentedLinkAndMissingLink() throws IOException {
 		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
