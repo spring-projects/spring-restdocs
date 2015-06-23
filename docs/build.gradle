@@ -16,4 +16,5 @@ asciidoctor {
 	sources {
 		include 'index.adoc'
 	}
+	attributes 'revnumber': project.version
 }
