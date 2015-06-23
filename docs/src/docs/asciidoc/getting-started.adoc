@@ -211,9 +211,6 @@ The `snippets` attribute specified in the <<getting-started-build-configuration,
 configuration>> can be used to reference the snippets output directory, for example:
 
 [source,adoc,indent=0]
-....
-[source,bash]
 ----
 \include::{snippets}/index/curl-request.adoc[]
 ----
-....
