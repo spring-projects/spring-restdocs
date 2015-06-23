@@ -37,7 +37,7 @@ dependencies {
 
 	testCompile 'com.jayway.jsonpath:json-path'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	testCompile 'org.springframework.restdocs:spring-restdocs:0.1.0.BUILD-SNAPSHOT'
+	testCompile 'org.springframework.restdocs:spring-restdocs:1.0.0.BUILD-SNAPSHOT'
 }
 
 ext {
