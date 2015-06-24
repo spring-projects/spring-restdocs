@@ -16,5 +16,6 @@ asciidoctor {
 	sources {
 		include 'index.adoc'
 	}
-	attributes 'revnumber': project.version
+	attributes	'revnumber': project.version,
+				'branch-or-tag': project.version.endsWith('SNAPSHOT') ? 'master': "v${project.version}"
 }

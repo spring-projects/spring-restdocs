@@ -1,15 +1,17 @@
 = Spring REST Docs
 Andy Wilkinson
 :doctype: book
+:icons: font
+:source-highlighter: highlightjs
 :toc: left
 :toclevels: 3
-:source-highlighter: highlightjs
-:spring-mvc-test-docs: http://docs.spring.io/spring/docs/current/spring-framework-reference/html/testing.html#spring-mvc-test-framework
-:samples: https://github.com/spring-projects/spring-restdocs/tree/master/samples
-:hateoas-sample: https://github.com/spring-projects/spring-restdocs/tree/master/samples/rest-notes-spring-hateoas
-:data-rest-sample: https://github.com/spring-projects/spring-restdocs/tree/master/samples/rest-notes-spring-data-rest
-:examples-dir: ../../test/java/
-:icons: font
+:sectlinks:
+
+:examples-dir: ../../test/java
+:github: https://github.com/spring-projects/spring-restdocs
+:samples: {github}/tree/{branch-or-tag}/samples
+:spring-boot-docs: http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle
+:spring-framework-docs: http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle
 
 [[abstract]]
 
@@ -22,3 +24,4 @@ include::documenting-your-api.adoc[]
 include::customizing-responses.adoc[]
 include::configuration.adoc[]
 include::working-with-asciidoctor.adoc[]
+include::contributing.adoc[]

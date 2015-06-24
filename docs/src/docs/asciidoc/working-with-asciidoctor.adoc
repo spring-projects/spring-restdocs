@@ -41,9 +41,9 @@ included.
 [[working-with-asciidoctor-customizing-tables-formatting-columns]]
 ==== Formatting columns
 
-Asciidoctor has rich support for http://asciidoctor.org/docs/user-manual/#cols-format
-[formatting a table's columns]. For example, the widths of a table's columns can be
-specified using the `cols` attribute:
+Asciidoctor has rich support for
+http://asciidoctor.org/docs/user-manual/#cols-format[formatting a table's columns]. For
+example, the widths of a table's columns can be specified using the `cols` attribute:
 
 [source,adoc,indent=0]
 ----

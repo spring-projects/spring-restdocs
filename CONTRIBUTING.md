@@ -1,6 +1,6 @@
 # Contributing to Spring REST Docs
 
-Spring REST docs is released under the Apache 2.0 license. If you would like to
+Spring REST Docs is released under the Apache 2.0 license. If you would like to
 contribute something, or simply want to work with the code, this document should help you
 to get started.
 
@@ -36,10 +36,7 @@ None of these is essential for a pull request, but they will all help
 
 ### Building from source
 
-To build the source you will need to use Java 8 – the main project only requires Java 7
-but the sample projects use Java 8.
-
-The code can be built with Gradle:
+To build the source you will need Java 7 or later. The code is built with Gradle:
 
 ```
 $ ./gradlew build

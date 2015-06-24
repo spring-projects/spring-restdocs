@@ -29,7 +29,7 @@ change one or more of the defaults to suit your needs:
 
 [source,java,indent=0]
 ----
-include::{examples-dir}com/example/CustomUriConfiguration.java[tags=custom-uri-configuration]
+include::{examples-dir}/com/example/CustomUriConfiguration.java[tags=custom-uri-configuration]
 ----
 
 
@@ -43,7 +43,7 @@ use `RestDocumentationConfigurer` to configure it:
 
 [source,java,indent=0]
 ----
-include::{examples-dir}com/example/CustomEncoding.java[tags=custom-encoding]
+include::{examples-dir}/com/example/CustomEncoding.java[tags=custom-encoding]
 ----
 
 

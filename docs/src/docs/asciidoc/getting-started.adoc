@@ -9,9 +9,12 @@ This section describes how to get started with Spring REST docs.
 === Sample applications
 
 If you want to jump straight in, there are two sample applications available.
-{hateoas-sample}[One sample uses Spring HATEOAS] and {data-rest-sample}[the other uses
-Spring Data REST]. Both samples use Spring REST Docs to produce a detailed API guide
-and a getting started walkthrough. You can use either Gradle or Maven to build them.
+{samples}/rest-notes-spring-hateoas[One sample] uses
+http://projects.spring.io/spring-hateoas/[Spring HATEOAS] and
+{samples}/rest-notes-spring-data-rest[the other] uses
+http://projects.spring.io/spring-data-rest/[Spring Data REST]. Both samples use
+Spring REST Docs to produce a detailed API guide and a getting started walkthrough. You
+can use either Gradle or Maven to build them.
 
 In each sample the source for the documentation can be found in `src/main/asciidoc`.
 `api-guide.adoc` produces an API guide for the service. `getting-started-guide.adoc`
@@ -73,6 +76,26 @@ snippets that it generates.
 then use this attribute when including the generated snippets in your documentation.
 
 
+[[getting-started-build-configuration-gradle-packaging-the-documentation]]
+==== Packaging the documentation
+
+You may want to package the generated documentation in your project's jar file, for
+example to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
+static content] by Spring Boot. You can do so by configuring the `jar` task to depend on
+the `asciidoctor` task and to copy the generated documentation into the jar's static
+directory:
+
+[source,groovy,indent=0]
+----
+	jar {
+		dependsOn asciidoctor
+		from ("${asciidoctor.outputDir}/html5") {
+			into 'static/docs'
+		}
+	}
+----
+
+
 
 [[getting-started-build-configuration-maven]]
 ==== Maven build configuration
@@ -118,7 +141,7 @@ use as a reference. The key parts of the configuration are described below.
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<phase>package</phase>
+						<phase>package</phase> <5>
 						<goals>
 							<goal>process-asciidoc</goal>
 						</goals>
@@ -144,13 +167,66 @@ snippets that it generates. The plugin is also configured to include files whose
 with `Documentation.java`:
 <4> Configure the Asciidoctor plugin and define an attribute named `snippets`. You can
 then use this attribute when including the generated snippets in your documentation.
+<5> [[getting-started-build-configuration-maven-plugin-phase]] If you want to
+<<getting-started-build-configuration-maven-packaging, package the documentation>> in your
+project's jar you should use the `prepare-package` phase.
+
+[[getting-started-build-configuration-maven-packaging]]
+==== Packaging the documentation
+
+You may want to package the generated documentation in your project's jar file, for
+example to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
+static content] by Spring Boot.
+
+First, configure the Asciidoctor plugin so that it runs in the `prepare-package` phase, as
+<<getting-started-build-configuration-maven-plugin-phase, described above>>. Now configure
+Maven's resources plugin to copy the generated documentation into a location where it'll
+be included in the project's jar:
+
+[source,xml,indent=0]
+----
+	<plugin> <1>
+		<groupId>org.asciidoctor</groupId>
+		<artifactId>asciidoctor-maven-plugin</artifactId>
+		<!-- … -->
+	</plugin>
+	<plugin> <2>
+		<artifactId>maven-resources-plugin</artifactId>
+		<version>2.7</version>
+		<executions>
+			<execution>
+				<id>copy-resources</id>
+				<phase>prepare-package</phase>
+				<goals>
+					<goal>copy-resources</goal>
+				</goals>
+            	<configuration>
+					<outputDirectory>
+						${project.build.outputDirectory}/static/docs
+					</outputDirectory>
+					<resources>
+						<resource>
+							<directory>
+								${project.build.directory}/generated-docs
+							</directory>
+						</resource>
+					</resources>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>
+----
+<1> The existing declaration for the Asciidoctor plugin
+<2> The resource plugin must be declared after the Asciidoctor plugin as they are bound
+to the same phase and the resource plugin must run after the Asciidoctor plugin.
+
 
 
 [[getting-started-documentation-snippets]]
 === Generating documentation snippets
-Spring REST Docs uses {spring-mvc-test-docs}[Spring's MVC Test] to make requests to the
-service that you are documenting. It then produces documentation snippets for the
-result's request and response.
+Spring REST Docs uses {spring-framework-docs}/#spring-mvc-test-framework[Spring's MVC Test
+framework] to make requests to the service that you are documenting. It then produces
+documentation snippets for the result's request and response.
 
 
 
@@ -162,7 +238,7 @@ that creates a `MockMvc` instance:
 
 [source,java,indent=0]
 ----
-include::{examples-dir}com/example/ExampleApplicationTests.java[tags=mock-mvc-setup]
+include::{examples-dir}/com/example/ExampleApplicationTests.java[tags=mock-mvc-setup]
 ----
 
 The `MockMvc` instance is configured using a `RestDocumentationConfigurer`. An instance
@@ -173,7 +249,7 @@ sensible defaults and also provides an API for customizing the configuration. Re
 
 
 
-[[getting-started-documentation-snippets-setup]]
+[[getting-started-documentation-snippets-invoking-the-service]]
 ==== Invoking the RESTful service
 
 Now that a `MockMvc` instance has been created, it can be used to invoke the RESTful
@@ -181,7 +257,7 @@ service and document the request and response.
 
 [source,java,indent=0]
 ----
-include::{examples-dir}com/example/InvokeService.java[tags=invoke-service]
+include::{examples-dir}/com/example/InvokeService.java[tags=invoke-service]
 ----
 <1> Invoke the root (`/`) of the service an indicate that an `application/json` response
 is required

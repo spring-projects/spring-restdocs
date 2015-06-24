@@ -1,0 +1,36 @@
+[[contributing]]
+== Contributing
+
+Spring REST Docs is intended to make is easy for you to produce high-quality documentation
+for your RESTful services. However, we can't achieve that goal without your contributions.
+
+
+
+[[contributing-questions]]
+=== Questions
+
+You can ask questions about Spring REST Docs on http://stackoverflow.com[StackOverflow]
+using the `spring-restdocs` tag. Similarly, we encourage you to help your fellow
+Spring REST Docs users by answering questions.
+
+
+
+[[contributing-bugs]]
+=== Bugs
+
+If you believe you have found a bug, please take a moment to search the
+{github}/issues?is%3Aissue[existing issues]. If no one else has reported the problem,
+please {github}/issues/new[open a new issue] that describes the problem in detail and,
+ideally, includes a test that reproduces it.
+
+
+
+[[contributing-enhancements]]
+=== Enhancements
+
+If you'd like an enhancement to be made to Spring REST Docs, pull requests are most
+welcome. The source code is on {github}[GitHub]. You may want to search the
+{github}/issues?is%3Aissue[existing issues] and {github}/pulls?q=is%3Apr[pull requests] to
+see if the enhancement is already being worked on. You may also want to
+{github}/issues/new[open a new issue] to discuss a possible enhancement before work on it
+begins.
