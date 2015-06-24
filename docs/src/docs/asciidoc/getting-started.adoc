@@ -38,14 +38,14 @@ use as a reference. The key parts of the configuration are described below.
 
 
 
-[source,groovy,indent=0]
+[source,groovy,indent=0,subs="verbatim,attributes"]
 ----
 	plugins { <1>
 		id "org.asciidoctor.convert" version "1.5.2"
 	}
 
 	dependencies { <2>
-		testCompile 'org.springframework.restdocs:spring-restdocs:0.1.0.BUILD-SNAPSHOT'
+		testCompile 'org.springframework.restdocs:spring-restdocs:{project-version}'
 	}
 
 	ext { <3>
@@ -82,12 +82,12 @@ use as a reference. The key parts of the configuration are described below.
 
 
 
-[source,xml,indent=0]
+[source,xml,indent=0,subs="verbatim,attributes"]
 ----
 	<dependency> <1>
 		<groupId>org.springframework.restdocs</groupId>
 		<artifactId>spring-restdocs</artifactId>
-		<version>0.1.0.BUILD-SNAPSHOT</version>
+		<version>{project-version}</version>
 		<scope>test</scope>
 	</dependency>
 
