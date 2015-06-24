@@ -3,7 +3,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.4.RELEASE'
 	}
 }
 
@@ -35,7 +35,6 @@ dependencies {
 	testCompile 'com.jayway.jsonpath:json-path'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	testCompile 'org.springframework.restdocs:spring-restdocs:1.0.0.BUILD-SNAPSHOT'
-
 }
 
 ext {
