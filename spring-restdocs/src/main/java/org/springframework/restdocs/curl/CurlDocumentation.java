@@ -83,13 +83,37 @@ public abstract class CurlDocumentation {
 		public void perform() throws IOException {
 			DocumentableHttpServletRequest request = new DocumentableHttpServletRequest(
 					this.result.getRequest());
-			this.writer.print(String.format("curl '%s://%s", request.getScheme(),
+
+			this.writer.print("curl '");
+
+			writeAuthority(request);
+			writePathAndQueryString(request);
+
+			this.writer.print("'");
+
+			writeOptionToIncludeHeadersInOutput();
+			writeHttpMethodIfNecessary(request);
+			writeHeaders(request);
+			writeContent(request);
+
+			this.writer.println();
+		}
+
+		private void writeAuthority(DocumentableHttpServletRequest request) {
+			this.writer.print(String.format("%s://%s", request.getScheme(),
 					request.getHost()));
 
 			if (isNonStandardPort(request)) {
 				this.writer.print(String.format(":%d", request.getPort()));
 			}
+		}
 
+		private boolean isNonStandardPort(DocumentableHttpServletRequest request) {
+			return (SCHEME_HTTP.equals(request.getScheme()) && request.getPort() != STANDARD_PORT_HTTP)
+					|| (SCHEME_HTTPS.equals(request.getScheme()) && request.getPort() != STANDARD_PORT_HTTPS);
+		}
+
+		private void writePathAndQueryString(DocumentableHttpServletRequest request) {
 			if (StringUtils.hasText(request.getContextPath())) {
 				this.writer.print(String.format(
 						request.getContextPath().startsWith("/") ? "%s" : "/%s",
@@ -97,20 +121,29 @@ public abstract class CurlDocumentation {
 			}
 
 			this.writer.print(request.getRequestUriWithQueryString());
+		}
 
-			this.writer.print("' -i");
+		private void writeOptionToIncludeHeadersInOutput() {
+			this.writer.print(" -i");
+		}
 
+		private void writeHttpMethodIfNecessary(DocumentableHttpServletRequest request) {
 			if (!request.isGetRequest()) {
 				this.writer.print(String.format(" -X %s", request.getMethod()));
 			}
+		}
 
+		private void writeHeaders(DocumentableHttpServletRequest request) {
 			for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
 				for (String header : entry.getValue()) {
 					this.writer.print(String.format(" -H '%s: %s'", entry.getKey(),
 							header));
 				}
 			}
+		}
 
+		private void writeContent(DocumentableHttpServletRequest request)
+				throws IOException {
 			if (request.getContentLength() > 0) {
 				this.writer
 						.print(String.format(" -d '%s'", request.getContentAsString()));
@@ -121,13 +154,6 @@ public abstract class CurlDocumentation {
 					this.writer.print(String.format(" -d '%s'", queryString));
 				}
 			}
-
-			this.writer.println();
-		}
-
-		private boolean isNonStandardPort(DocumentableHttpServletRequest request) {
-			return (SCHEME_HTTP.equals(request.getScheme()) && request.getPort() != STANDARD_PORT_HTTP)
-					|| (SCHEME_HTTPS.equals(request.getScheme()) && request.getPort() != STANDARD_PORT_HTTPS);
 		}
 	}
 

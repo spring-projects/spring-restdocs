@@ -28,25 +28,16 @@ class DocumentationProperties {
 	private final Properties properties = new Properties();
 
 	DocumentationProperties() {
-		InputStream stream = getClass().getClassLoader().getResourceAsStream(
-				"documentation.properties");
-		if (stream != null) {
-			try {
+		try (InputStream stream = getClass().getClassLoader().getResourceAsStream(
+				"documentation.properties")) {
+			if (stream != null) {
 				this.properties.load(stream);
 			}
-			catch (IOException ex) {
-				throw new IllegalStateException(
-						"Failed to read documentation.properties", ex);
-			}
-			finally {
-				try {
-					stream.close();
-				}
-				catch (IOException e) {
-					// Continue
-				}
-			}
 		}
+		catch (IOException ex) {
+			throw new IllegalStateException("Failed to read documentation.properties", ex);
+		}
+
 		this.properties.putAll(System.getProperties());
 	}
 

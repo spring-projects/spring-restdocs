@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Andy Wilkinson
  *
  */
-class FieldProcessor {
+final class FieldProcessor {
 
 	boolean hasField(FieldPath fieldPath, Object payload) {
 		final AtomicReference<Boolean> hasField = new AtomicReference<Boolean>(false);
@@ -122,7 +122,7 @@ class FieldProcessor {
 		}
 	}
 
-	private final class MapMatch implements Match {
+	private static final class MapMatch implements Match {
 
 		private final Object item;
 
@@ -154,7 +154,7 @@ class FieldProcessor {
 
 	}
 
-	private final class ListMatch implements Match {
+	private static final class ListMatch implements Match {
 
 		private final Iterator<?> items;
 
@@ -199,7 +199,7 @@ class FieldProcessor {
 		void remove();
 	}
 
-	private static class ProcessingContext {
+	private static final class ProcessingContext {
 
 		private final Object payload;
 

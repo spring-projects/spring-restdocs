@@ -48,12 +48,8 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 
 	@Override
 	public void handle(MvcResult result) throws IOException {
-		Writer writer = createWriter();
-		try {
+		try (Writer writer = createWriter()) {
 			handle(result, new AsciidoctorWriter(writer));
-		}
-		finally {
-			writer.close();
 		}
 	}
 

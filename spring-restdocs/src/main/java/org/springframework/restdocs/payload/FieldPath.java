@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * @author Andy Wilkinson
  *
  */
-class FieldPath {
+final class FieldPath {
 
 	private static final Pattern ARRAY_INDEX_PATTERN = Pattern
 			.compile("\\[([0-9]+|\\*){0,1}\\]");

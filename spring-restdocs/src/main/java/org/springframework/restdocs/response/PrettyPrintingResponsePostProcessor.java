@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.transform.OutputKeys;
@@ -35,13 +36,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 class PrettyPrintingResponsePostProcessor extends ContentModifyingReponsePostProcessor {
 
-	private static final List<PrettyPrinter> prettyPrinters = Arrays.asList(
-			new JsonPrettyPrinter(), new XmlPrettyPrinter());
+	private static final List<PrettyPrinter> PRETTY_PRINTERS = Collections
+			.unmodifiableList(Arrays.asList(new JsonPrettyPrinter(),
+					new XmlPrettyPrinter()));
 
 	@Override
 	protected String modifyContent(String originalContent) {
 		if (StringUtils.hasText(originalContent)) {
-			for (PrettyPrinter prettyPrinter : prettyPrinters) {
+			for (PrettyPrinter prettyPrinter : PRETTY_PRINTERS) {
 				try {
 					return prettyPrinter.prettyPrint(originalContent);
 				}

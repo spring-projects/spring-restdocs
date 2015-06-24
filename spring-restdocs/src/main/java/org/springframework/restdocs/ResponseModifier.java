@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.springframework.util.ReflectionUtils;
  * @see RestDocumentation#modifyResponseTo(ResponsePostProcessor...)
  * @author Andy Wilkinson
  */
-public class ResponseModifier {
+public final class ResponseModifier {
 
 	private final List<ResponsePostProcessor> postProcessors;
 
@@ -98,7 +99,8 @@ public class ResponseModifier {
 
 			@Override
 			public Object intercept(Object proxy, Method method, Object[] args,
-					MethodProxy methodProxy) throws Throwable {
+					MethodProxy methodProxy) throws IllegalAccessException,
+					InvocationTargetException {
 				if (this.getResponseMethod.equals(method)) {
 					return this.response;
 				}

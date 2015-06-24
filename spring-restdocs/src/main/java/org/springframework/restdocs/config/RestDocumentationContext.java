@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * @author Andy Wilkinson
  */
-public class RestDocumentationContext {
+public final class RestDocumentationContext {
 
 	private static final ThreadLocal<RestDocumentationContext> CONTEXTS = new InheritableThreadLocal<RestDocumentationContext>();
 

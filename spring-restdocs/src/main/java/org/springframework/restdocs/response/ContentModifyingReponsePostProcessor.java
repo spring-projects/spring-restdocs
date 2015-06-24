@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.response;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.springframework.cglib.proxy.Enhancer;
@@ -74,7 +75,8 @@ public abstract class ContentModifyingReponsePostProcessor implements
 
 		@Override
 		public Object intercept(Object proxy, Method method, Object[] args,
-				MethodProxy methodProxy) throws Throwable {
+				MethodProxy methodProxy) throws IllegalAccessException,
+				InvocationTargetException {
 			if (this.getContentAsStringMethod.equals(method)) {
 				return this.modifiedContent;
 			}

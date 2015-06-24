@@ -63,25 +63,29 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 	@Override
 	protected void handle(MvcResult result, DocumentationWriter writer)
 			throws IOException {
-		Map<String, List<Link>> links;
+		validate(extractLinks(result));
+		writeDocumentationSnippet(writer);
+	}
+
+	private Map<String, List<Link>> extractLinks(MvcResult result) throws IOException {
 		if (this.extractor != null) {
-			links = this.extractor.extractLinks(result.getResponse());
+			return this.extractor.extractLinks(result.getResponse());
 		}
 		else {
 			String contentType = result.getResponse().getContentType();
 			LinkExtractor extractorForContentType = LinkExtractors
 					.extractorForContentType(contentType);
 			if (extractorForContentType != null) {
-				links = extractorForContentType.extractLinks(result.getResponse());
+				return extractorForContentType.extractLinks(result.getResponse());
 			}
-			else {
-				throw new IllegalStateException(
-						"No LinkExtractor has been provided and one is not available for the content type "
-								+ contentType);
-			}
+			throw new IllegalStateException(
+					"No LinkExtractor has been provided and one is not available for the content type "
+							+ contentType);
 
 		}
+	}
 
+	private void validate(Map<String, List<Link>> links) {
 		Set<String> actualRels = links.keySet();
 
 		Set<String> undocumentedRels = new HashSet<String>(actualRels);
@@ -105,7 +109,9 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 			}
 			throw new SnippetGenerationException(message);
 		}
+	}
 
+	private void writeDocumentationSnippet(DocumentationWriter writer) throws IOException {
 		writer.table(new TableAction() {
 
 			@Override
@@ -118,7 +124,6 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 			}
 
 		});
-
 	}
 
 }

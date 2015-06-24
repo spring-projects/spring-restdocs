@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.response;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,7 +79,8 @@ class HeaderRemovingResponsePostProcessor implements ResponsePostProcessor {
 
 		@Override
 		public Object intercept(Object proxy, Method method, Object[] args,
-				MethodProxy methodProxy) throws Throwable {
+				MethodProxy methodProxy) throws IllegalAccessException,
+				InvocationTargetException {
 			if (this.getHeaderNamesMethod.equals(method)) {
 				List<String> headerNames = new ArrayList<>();
 				for (String candidate : this.response.getHeaderNames()) {
