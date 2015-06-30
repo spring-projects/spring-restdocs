@@ -16,37 +16,32 @@
 
 package org.springframework.restdocs.snippet;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.restdocs.config.RestDocumentationContext;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
 
 /**
  * Base class for a {@link ResultHandler} that writes a documentation snippet
- * 
+ *
  * @author Andy Wilkinson
  */
 public abstract class SnippetWritingResultHandler implements ResultHandler {
 
 	private final Map<String, Object> attributes = new HashMap<>();
 
-	private final String outputDir;
+	private final String identifier;
 
-	private final String fileName;
+	private final String snippetName;
 
-	protected SnippetWritingResultHandler(String outputDir, String fileName,
+	protected SnippetWritingResultHandler(String identifier, String snippetName,
 			Map<String, Object> attributes) {
-		this.outputDir = outputDir;
-		this.fileName = fileName;
+		this.identifier = identifier;
+		this.snippetName = snippetName;
 		if (attributes != null) {
 			this.attributes.putAll(attributes);
 		}
@@ -57,35 +52,15 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 
 	@Override
 	public void handle(MvcResult result) throws IOException {
-		try (Writer writer = createWriter()) {
+		WriterResolver writerResolver = (WriterResolver) result.getRequest()
+				.getAttribute(WriterResolver.class.getName());
+		try (Writer writer = writerResolver.resolve(this.identifier, this.snippetName)) {
 			handle(result, new PrintWriter(writer));
 		}
 	}
 
 	protected Map<String, Object> getAttributes() {
 		return this.attributes;
-	}
-
-	private Writer createWriter() throws IOException {
-		File outputFile = new OutputFileResolver().resolve(this.outputDir, this.fileName
-				+ ".adoc");
-
-		if (outputFile != null) {
-			File parent = outputFile.getParentFile();
-			if (!parent.isDirectory() && !parent.mkdirs()) {
-				throw new IllegalStateException("Failed to create directory '" + parent
-						+ "'");
-			}
-			RestDocumentationContext context = RestDocumentationContext.currentContext();
-			if (context == null || context.getSnippetEncoding() == null) {
-				return new FileWriter(outputFile);
-			}
-			return new OutputStreamWriter(new FileOutputStream(outputFile),
-					context.getSnippetEncoding());
-		}
-		else {
-			return new OutputStreamWriter(System.out);
-		}
 	}
 
 }

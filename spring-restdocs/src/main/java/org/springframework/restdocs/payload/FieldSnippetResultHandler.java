@@ -54,9 +54,9 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 
 	private List<FieldDescriptor> fieldDescriptors;
 
-	FieldSnippetResultHandler(String outputDir, String type,
+	FieldSnippetResultHandler(String identifier, String type,
 			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
-		super(outputDir, type + "-fields", attributes);
+		super(identifier, type + "-fields", attributes);
 		this.templateName = type + "-fields";
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath());

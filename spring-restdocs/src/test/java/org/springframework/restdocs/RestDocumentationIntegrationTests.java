@@ -20,6 +20,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.restdocs.Attributes.attributes;
+import static org.springframework.restdocs.Attributes.key;
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.RestDocumentation.modifyResponseTo;
 import static org.springframework.restdocs.response.ResponsePostProcessors.maskLinks;
@@ -199,6 +201,10 @@ public class RestDocumentationIntegrationTests {
 		assertThat(new File(
 				"build/generated-snippets/custom-snippet-template/curl-request.adoc"),
 				is(snippet().withContents(equalTo("Custom curl request"))));
+
+		mockMvc.perform(get("/")).andDo(
+				document("index").withCurlRequest(
+						attributes(key("title").value("Access the index using curl"))));
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {

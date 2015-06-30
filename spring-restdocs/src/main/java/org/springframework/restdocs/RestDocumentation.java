@@ -47,15 +47,15 @@ public abstract class RestDocumentation {
 	}
 
 	/**
-	 * Documents the API call to the given {@code outputDir}.
+	 * Documents the API call using the given {@code identifier}.
 	 * 
-	 * @param outputDir The directory to which the documentation will be written
+	 * @param identifier An identifier for the API call that is being documented
 	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
 	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
 	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
 	 */
-	public static RestDocumentationResultHandler document(String outputDir) {
-		return new RestDocumentationResultHandler(outputDir);
+	public static RestDocumentationResultHandler document(String identifier) {
+		return new RestDocumentationResultHandler(identifier);
 	}
 
 	/**

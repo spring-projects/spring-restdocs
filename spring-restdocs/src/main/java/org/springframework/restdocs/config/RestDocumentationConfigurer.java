@@ -21,6 +21,9 @@ import java.util.List;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
+import org.springframework.restdocs.snippet.StandardWriterResolver;
+import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
@@ -49,6 +52,8 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 	private TemplateEngineConfigurer templateEngineConfigurer = new TemplateEngineConfigurer();
 
+	private WriterResolverConfigurer writerResolverConfigurer = new WriterResolverConfigurer();
+
 	/**
 	 * Creates a new {@link RestDocumentationConfigurer}.
 	 * @see RestDocumentation#documentationConfiguration()
@@ -56,9 +61,9 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 	public RestDocumentationConfigurer() {
 		this.requestPostProcessor = new ConfigurerApplyingRequestPostProcessor(
 				Arrays.<AbstractConfigurer> asList(this.uriConfigurer,
-						this.snippetConfigurer, new StepCountConfigurer(),
-						new ContentLengthHeaderConfigurer(),
-						new TemplateEngineConfigurer()));
+						this.writerResolverConfigurer, this.snippetConfigurer,
+						new StepCountConfigurer(), new ContentLengthHeaderConfigurer(),
+						this.templateEngineConfigurer));
 	}
 
 	public UriConfigurer uris() {
@@ -74,6 +79,11 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 		return this;
 	}
 
+	public RestDocumentationConfigurer writerResolver(WriterResolver writerResolver) {
+		this.writerResolverConfigurer.setWriterResolver(writerResolver);
+		return this;
+	}
+
 	@Override
 	public RequestPostProcessor beforeMockMvcCreated(
 			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
@@ -84,10 +94,10 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 		@Override
 		void apply(MockHttpServletRequest request) {
-			RestDocumentationContext currentContext = RestDocumentationContext
-					.currentContext();
-			if (currentContext != null) {
-				currentContext.getAndIncrementStepCount();
+			RestDocumentationContext context = (RestDocumentationContext) request
+					.getAttribute(RestDocumentationContext.class.getName());
+			if (context != null) {
+				context.getAndIncrementStepCount();
 			}
 		}
 
@@ -122,6 +132,29 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 	}
 
+	private static class WriterResolverConfigurer extends AbstractConfigurer {
+
+		private WriterResolver writerResolver;
+
+		@Override
+		void apply(MockHttpServletRequest request) {
+			WriterResolver resolverToUse = this.writerResolver;
+			if (resolverToUse == null) {
+				resolverToUse = new StandardWriterResolver(
+						new RestDocumentationContextPlaceholderResolver(
+								(RestDocumentationContext) request
+										.getAttribute(RestDocumentationContext.class
+												.getName())));
+			}
+			request.setAttribute(WriterResolver.class.getName(), resolverToUse);
+		}
+
+		void setWriterResolver(WriterResolver writerResolver) {
+			this.writerResolver = writerResolver;
+		}
+
+	}
+
 	private static class ConfigurerApplyingRequestPostProcessor implements
 			RequestPostProcessor {
 
@@ -134,6 +167,8 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 		@Override
 		public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+			request.setAttribute(RestDocumentationContext.class.getName(),
+					RestDocumentationContextHolder.getCurrentContext());
 			for (AbstractConfigurer configurer : this.configurers) {
 				configurer.apply(request);
 			}

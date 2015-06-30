@@ -24,6 +24,8 @@ import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.hateoas.mvc.BasicLinkBuilder;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -40,6 +42,18 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class RestDocumentationConfigurerTests {
 
 	private MockHttpServletRequest request = new MockHttpServletRequest();
+
+	private RestDocumentationContext context = new RestDocumentationContext();
+
+	@Before
+	public void establishContext() {
+		RestDocumentationContextHolder.setCurrentContext(this.context);
+	}
+
+	@After
+	public void clearContext() {
+		RestDocumentationContextHolder.removeCurrentContext();
+	}
 
 	@Test
 	public void defaultConfiguration() {
@@ -116,38 +130,6 @@ public class RestDocumentationConfigurerTests {
 		postProcessor.postProcessRequest(this.request);
 		assertThat(this.request.getHeader("Content-Length"),
 				is(equalTo(Integer.toString(content.length))));
-	}
-
-	@Test
-	public void defaultSnippetEncodingIsAppliedToTheContext() {
-		RestDocumentationContext.establishContext(null);
-		try {
-			assertThat(RestDocumentationContext.currentContext().getSnippetEncoding(),
-					is(nullValue()));
-			new RestDocumentationConfigurer().beforeMockMvcCreated(null, null)
-					.postProcessRequest(this.request);
-			assertThat(RestDocumentationContext.currentContext().getSnippetEncoding(),
-					is(equalTo("UTF-8")));
-		}
-		finally {
-			RestDocumentationContext.clearContext();
-		}
-	}
-
-	@Test
-	public void customSnippetEncodingIsAppliedToTheContext() {
-		RestDocumentationContext.establishContext(null);
-		try {
-			assertThat(RestDocumentationContext.currentContext().getSnippetEncoding(),
-					is(nullValue()));
-			new RestDocumentationConfigurer().snippets().withEncoding("foo")
-					.beforeMockMvcCreated(null, null).postProcessRequest(this.request);
-			assertThat(RestDocumentationContext.currentContext().getSnippetEncoding(),
-					is(equalTo("foo")));
-		}
-		finally {
-			RestDocumentationContext.clearContext();
-		}
 	}
 
 	private void assertUriConfiguration(String scheme, String host, int port) {

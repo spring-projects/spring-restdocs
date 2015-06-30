@@ -17,6 +17,7 @@
 package org.springframework.restdocs.config;
 
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.restdocs.snippet.WriterResolver;
 
 /**
  * A configurer that can be used to configure the generated documentation snippets.
@@ -52,10 +53,7 @@ public class SnippetConfigurer extends
 
 	@Override
 	void apply(MockHttpServletRequest request) {
-		RestDocumentationContext context = RestDocumentationContext.currentContext();
-		if (context != null) {
-			context.setSnippetEncoding(this.snippetEncoding);
-		}
+		((WriterResolver) request.getAttribute(WriterResolver.class.getName()))
+				.setEncoding(this.snippetEncoding);
 	}
-
 }

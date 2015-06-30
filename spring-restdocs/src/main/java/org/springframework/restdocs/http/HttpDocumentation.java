@@ -53,37 +53,37 @@ public abstract class HttpDocumentation {
 	 * Produces a documentation snippet containing the request formatted as an HTTP
 	 * request
 	 * 
-	 * @param outputDir The directory to which snippet should be written
+	 * @param identifier An identifier for the API call that is being documented
 	 * @param attributes Attributes made available during rendering of the HTTP requst
 	 * snippet
 	 * @return the handler that will produce the snippet
 	 */
-	public static SnippetWritingResultHandler documentHttpRequest(String outputDir,
+	public static SnippetWritingResultHandler documentHttpRequest(String identifier,
 			Map<String, Object> attributes) {
-		return new HttpRequestWritingResultHandler(outputDir, attributes);
+		return new HttpRequestWritingResultHandler(identifier, attributes);
 	}
 
 	/**
 	 * Produces a documentation snippet containing the response formatted as the HTTP
 	 * response sent by the server
 	 * 
-	 * @param outputDir The directory to which snippet should be written
+	 * @param identifier An identifier for the API call that is being documented
 	 * @param attributes Attributes made available during rendering of the HTTP response
 	 * snippet
 	 * @return the handler that will produce the snippet
 	 */
-	public static SnippetWritingResultHandler documentHttpResponse(String outputDir,
+	public static SnippetWritingResultHandler documentHttpResponse(String identifier,
 			Map<String, Object> attributes) {
-		return new HttpResponseWritingResultHandler(outputDir, attributes);
+		return new HttpResponseWritingResultHandler(identifier, attributes);
 
 	}
 
 	private static final class HttpRequestWritingResultHandler extends
 			SnippetWritingResultHandler {
 
-		private HttpRequestWritingResultHandler(String outputDir,
+		private HttpRequestWritingResultHandler(String identifier,
 				Map<String, Object> attributes) {
-			super(outputDir, "http-request", attributes);
+			super(identifier, "http-request", attributes);
 		}
 
 		@Override
@@ -219,9 +219,9 @@ public abstract class HttpDocumentation {
 	private static final class HttpResponseWritingResultHandler extends
 			SnippetWritingResultHandler {
 
-		private HttpResponseWritingResultHandler(String outputDir,
+		private HttpResponseWritingResultHandler(String identifier,
 				Map<String, Object> attributes) {
-			super(outputDir, "http-response", attributes);
+			super(identifier, "http-response", attributes);
 		}
 
 		@Override

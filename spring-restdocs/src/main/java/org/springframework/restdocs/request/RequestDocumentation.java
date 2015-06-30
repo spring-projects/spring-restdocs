@@ -36,16 +36,17 @@ public abstract class RequestDocumentation {
 	 * Creates a {@link SnippetWritingResultHandler} that will produce a snippet
 	 * documenting a request's query parameters
 	 * 
-	 * @param outputDir The directory to which the snippet should be written
+	 * @param identifier An identifier for the API call that is being documented
 	 * @param attributes Attributes made available during rendering of the query
 	 * parameters snippet
 	 * @param descriptors The descriptions of the parameters in the request's query string
 	 * @return the result handler
 	 * @see RestDocumentationResultHandler#withQueryParameters(ParameterDescriptor...)
 	 */
-	public static SnippetWritingResultHandler documentQueryParameters(String outputDir,
+	public static SnippetWritingResultHandler documentQueryParameters(String identifier,
 			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		return new QueryParametersSnippetResultHandler(outputDir, attributes, descriptors);
+		return new QueryParametersSnippetResultHandler(identifier, attributes,
+				descriptors);
 	}
 
 	/**

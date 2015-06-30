@@ -49,14 +49,14 @@ public abstract class CurlDocumentation {
 	/**
 	 * Produces a documentation snippet containing the request formatted as a cURL command
 	 *
-	 * @param outputDir The directory to which snippet should be written
+	 * @param identifier An identifier for the API call that is being documented
 	 * @param attributes Attributes made available during rendering of the curl request
 	 * snippet
 	 * @return the handler that will produce the snippet
 	 */
-	public static SnippetWritingResultHandler documentCurlRequest(String outputDir,
+	public static SnippetWritingResultHandler documentCurlRequest(String identifier,
 			Map<String, Object> attributes) {
-		return new CurlRequestWritingResultHandler(outputDir, attributes);
+		return new CurlRequestWritingResultHandler(identifier, attributes);
 	}
 
 	private static final class CurlRequestWritingResultHandler extends
@@ -70,9 +70,9 @@ public abstract class CurlDocumentation {
 
 		private static final int STANDARD_PORT_HTTPS = 443;
 
-		private CurlRequestWritingResultHandler(String outputDir,
+		private CurlRequestWritingResultHandler(String identifier,
 				Map<String, Object> attributes) {
-			super(outputDir, "curl-request", attributes);
+			super(identifier, "curl-request", attributes);
 		}
 
 		@Override

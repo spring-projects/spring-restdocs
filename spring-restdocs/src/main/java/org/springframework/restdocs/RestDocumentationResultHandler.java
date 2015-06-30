@@ -49,7 +49,7 @@ import org.springframework.test.web.servlet.ResultHandler;
  */
 public class RestDocumentationResultHandler implements ResultHandler {
 
-	private final String outputDir;
+	private final String identifier;
 
 	private SnippetWritingResultHandler curlRequest;
 
@@ -59,11 +59,11 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	private List<SnippetWritingResultHandler> delegates = new ArrayList<>();
 
-	RestDocumentationResultHandler(String outputDir) {
-		this.outputDir = outputDir;
-		this.curlRequest = documentCurlRequest(this.outputDir, null);
-		this.httpRequest = documentHttpRequest(this.outputDir, null);
-		this.httpResponse = documentHttpResponse(this.outputDir, null);
+	RestDocumentationResultHandler(String identifier) {
+		this.identifier = identifier;
+		this.curlRequest = documentCurlRequest(this.identifier, null);
+		this.httpRequest = documentHttpRequest(this.identifier, null);
+		this.httpResponse = documentHttpResponse(this.identifier, null);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 * @return {@code this}
 	 */
 	public RestDocumentationResultHandler withCurlRequest(Map<String, Object> attributes) {
-		this.curlRequest = documentCurlRequest(this.outputDir, attributes);
+		this.curlRequest = documentCurlRequest(this.identifier, attributes);
 		return this;
 	}
 
@@ -86,7 +86,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 * @return {@code this}
 	 */
 	public RestDocumentationResultHandler withHttpRequest(Map<String, Object> attributes) {
-		this.httpRequest = documentHttpRequest(this.outputDir, attributes);
+		this.httpRequest = documentHttpRequest(this.identifier, attributes);
 		return this;
 	}
 
@@ -98,7 +98,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 * @return {@code this}
 	 */
 	public RestDocumentationResultHandler withHttpResponse(Map<String, Object> attributes) {
-		this.httpResponse = documentHttpResponse(this.outputDir, attributes);
+		this.httpResponse = documentHttpResponse(this.identifier, attributes);
 		return this;
 	}
 
@@ -178,7 +178,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 */
 	public RestDocumentationResultHandler withLinks(Map<String, Object> attributes,
 			LinkExtractor linkExtractor, LinkDescriptor... descriptors) {
-		this.delegates.add(documentLinks(this.outputDir, attributes, linkExtractor,
+		this.delegates.add(documentLinks(this.identifier, attributes, linkExtractor,
 				descriptors));
 		return this;
 	}
@@ -222,7 +222,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	public RestDocumentationResultHandler withRequestFields(
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
 		this.delegates
-				.add(documentRequestFields(this.outputDir, attributes, descriptors));
+				.add(documentRequestFields(this.identifier, attributes, descriptors));
 		return this;
 	}
 
@@ -264,8 +264,8 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 */
 	public RestDocumentationResultHandler withResponseFields(
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
-		this.delegates
-				.add(documentResponseFields(this.outputDir, attributes, descriptors));
+		this.delegates.add(documentResponseFields(this.identifier, attributes,
+				descriptors));
 		return this;
 	}
 
@@ -304,7 +304,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 */
 	public RestDocumentationResultHandler withQueryParameters(
 			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		this.delegates.add(documentQueryParameters(this.outputDir, attributes,
+		this.delegates.add(documentQueryParameters(this.identifier, attributes,
 				descriptors));
 		return this;
 	}

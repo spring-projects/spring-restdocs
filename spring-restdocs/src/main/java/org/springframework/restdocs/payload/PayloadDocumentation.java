@@ -107,16 +107,16 @@ public abstract class PayloadDocumentation {
 	 * field is sufficient for all of its descendants to also be treated as having been
 	 * documented.
 	 * 
-	 * @param outputDir The directory to which the snippet should be written
+	 * @param identifier An identifier for the API call that is being documented
 	 * @param attributes Attributes made available during rendering of the links snippet
 	 * @param descriptors The descriptions of the request's fields
 	 * @return the handler
 	 * @see RestDocumentationResultHandler#withRequestFields(FieldDescriptor...)
 	 * @see #fieldWithPath(String)
 	 */
-	public static FieldSnippetResultHandler documentRequestFields(String outputDir,
+	public static FieldSnippetResultHandler documentRequestFields(String identifier,
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
-		return new RequestFieldSnippetResultHandler(outputDir, attributes,
+		return new RequestFieldSnippetResultHandler(identifier, attributes,
 				Arrays.asList(descriptors));
 	}
 
@@ -131,15 +131,15 @@ public abstract class PayloadDocumentation {
 	 * field is sufficient for all of its descendants to also be treated as having been
 	 * documented.
 	 * 
-	 * @param outputDir The directory to which the snippet should be written
+	 * @param identifier An identifier for the API call that is being documented
 	 * @param attributes Attributes made available during rendering of the links snippet
 	 * @param descriptors The descriptions of the response's fields
 	 * @return the handler
 	 * @see RestDocumentationResultHandler#withResponseFields(FieldDescriptor...)
 	 */
-	public static FieldSnippetResultHandler documentResponseFields(String outputDir,
+	public static FieldSnippetResultHandler documentResponseFields(String identifier,
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
-		return new ResponseFieldSnippetResultHandler(outputDir, attributes,
+		return new ResponseFieldSnippetResultHandler(identifier, attributes,
 				Arrays.asList(descriptors));
 	}
 

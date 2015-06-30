@@ -48,7 +48,7 @@ public abstract class HypermediaDocumentation {
 	 * Creates a {@code LinkSnippetResultHandler} that will produce a documentation
 	 * snippet for a response's links.
 	 * 
-	 * @param outputDir The directory to which the snippet should be written
+	 * @param identifier An identifier for the API call that is being documented
 	 * @param attributes Attributes made available during rendering of the links snippet
 	 * @param linkExtractor Used to extract the links from the response
 	 * @param descriptors The descriptions of the response's links
@@ -56,10 +56,10 @@ public abstract class HypermediaDocumentation {
 	 * @see RestDocumentationResultHandler#withLinks(LinkDescriptor...)
 	 * @see RestDocumentationResultHandler#withLinks(LinkExtractor, LinkDescriptor...)
 	 */
-	public static LinkSnippetResultHandler documentLinks(String outputDir,
+	public static LinkSnippetResultHandler documentLinks(String identifier,
 			Map<String, Object> attributes, LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
-		return new LinkSnippetResultHandler(outputDir, attributes, linkExtractor,
+		return new LinkSnippetResultHandler(identifier, attributes, linkExtractor,
 				Arrays.asList(descriptors));
 	}
 }

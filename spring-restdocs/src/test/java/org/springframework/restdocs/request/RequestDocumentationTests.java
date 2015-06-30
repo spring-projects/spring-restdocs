@@ -24,9 +24,9 @@ import static org.springframework.restdocs.Attributes.attributes;
 import static org.springframework.restdocs.Attributes.key;
 import static org.springframework.restdocs.request.RequestDocumentation.documentQueryParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.test.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 import static org.springframework.restdocs.test.StubMvcResult.result;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.io.IOException;
 
@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.restdocs.config.RestDocumentationContext;
 import org.springframework.restdocs.snippet.SnippetGenerationException;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
@@ -43,7 +44,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Requests for {@link RequestDocumentation}
- * 
+ *
  * @author Andy Wilkinson
  */
 public class RequestDocumentationTests {
@@ -107,7 +108,9 @@ public class RequestDocumentationTests {
 		documentQueryParameters("parameter-snippet-request-uri-query-string", null,
 				parameterWithName("a").description("one"),
 				parameterWithName("b").description("two")).handle(
-				result(get("/?a=alpha&b=bravo")));
+				result(get("/?a=alpha&b=bravo").requestAttr(
+						RestDocumentationContext.class.getName(),
+						new RestDocumentationContext())));
 	}
 
 	@Test

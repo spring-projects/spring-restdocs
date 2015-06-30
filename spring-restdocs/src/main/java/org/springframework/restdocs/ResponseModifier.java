@@ -48,18 +48,18 @@ public final class ResponseModifier {
 	/**
 	 * Provides a {@link RestDocumentationResultHandler} that can be used to document the
 	 * request and modified result.
-	 * @param outputDir The directory to which the documentation will be written
+	 * @param identifier An identifier for the API call that is being documented
 	 * @return the result handler that will produce the documentation
 	 */
-	public RestDocumentationResultHandler andDocument(String outputDir) {
-		return new ResponseModifyingRestDocumentationResultHandler(outputDir);
+	public RestDocumentationResultHandler andDocument(String identifier) {
+		return new ResponseModifyingRestDocumentationResultHandler(identifier);
 	}
 
 	class ResponseModifyingRestDocumentationResultHandler extends
 			RestDocumentationResultHandler {
 
-		public ResponseModifyingRestDocumentationResultHandler(String outputDir) {
-			super(outputDir);
+		public ResponseModifyingRestDocumentationResultHandler(String identifier) {
+			super(identifier);
 		}
 
 		@Override

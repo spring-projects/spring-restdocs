@@ -19,6 +19,10 @@ package org.springframework.restdocs.test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.restdocs.config.RestDocumentationContext;
+import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
+import org.springframework.restdocs.snippet.StandardWriterResolver;
+import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
@@ -30,7 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * A minimal stub implementation of {@link MvcResult}
- * 
+ *
  * @author Andy Wilkinson
  *
  */
@@ -87,6 +91,13 @@ public class StubMvcResult implements MvcResult {
 		if (this.request.getAttribute(TemplateEngine.class.getName()) == null) {
 			this.request.setAttribute(TemplateEngine.class.getName(),
 					new MustacheTemplateEngine(new StandardTemplateResourceResolver()));
+		}
+		RestDocumentationContext context = new RestDocumentationContext();
+		this.request.setAttribute(RestDocumentationContext.class.getName(), context);
+		if (this.request.getAttribute(WriterResolver.class.getName()) == null) {
+			this.request.setAttribute(WriterResolver.class.getName(),
+					new StandardWriterResolver(
+							new RestDocumentationContextPlaceholderResolver(context)));
 		}
 		this.response = response;
 	}

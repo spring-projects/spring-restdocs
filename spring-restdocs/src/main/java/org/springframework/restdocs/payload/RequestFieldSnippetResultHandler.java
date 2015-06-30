@@ -29,9 +29,9 @@ import org.springframework.test.web.servlet.MvcResult;
  */
 public class RequestFieldSnippetResultHandler extends FieldSnippetResultHandler {
 
-	RequestFieldSnippetResultHandler(String outputDir, Map<String, Object> attributes,
+	RequestFieldSnippetResultHandler(String identifier, Map<String, Object> attributes,
 			List<FieldDescriptor> descriptors) {
-		super(outputDir, "request", attributes, descriptors);
+		super(identifier, "request", attributes, descriptors);
 	}
 
 	@Override

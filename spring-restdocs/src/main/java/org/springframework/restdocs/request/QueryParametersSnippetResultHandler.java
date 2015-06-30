@@ -43,9 +43,9 @@ public class QueryParametersSnippetResultHandler extends SnippetWritingResultHan
 
 	private final Map<String, ParameterDescriptor> descriptorsByName = new LinkedHashMap<>();
 
-	protected QueryParametersSnippetResultHandler(String outputDir,
+	protected QueryParametersSnippetResultHandler(String identifier,
 			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		super(outputDir, "query-parameters", attributes);
+		super(identifier, "query-parameters", attributes);
 		for (ParameterDescriptor descriptor : descriptors) {
 			Assert.hasText(descriptor.getName());
 			Assert.hasText(descriptor.getDescription());

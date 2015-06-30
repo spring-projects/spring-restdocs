@@ -30,11 +30,12 @@ public class RestDocumentationTestExecutionListener extends AbstractTestExecutio
 
 	@Override
 	public void beforeTestMethod(TestContext testContext) throws Exception {
-		RestDocumentationContext.establishContext(testContext.getTestMethod());
+		RestDocumentationContextHolder.setCurrentContext(new RestDocumentationContext(
+				testContext));
 	}
 
 	@Override
 	public void afterTestMethod(TestContext testContext) throws Exception {
-		RestDocumentationContext.clearContext();
+		RestDocumentationContextHolder.removeCurrentContext();
 	}
 }

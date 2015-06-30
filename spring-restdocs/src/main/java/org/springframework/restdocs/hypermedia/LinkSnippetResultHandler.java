@@ -47,9 +47,9 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 
 	private final LinkExtractor extractor;
 
-	LinkSnippetResultHandler(String outputDir, Map<String, Object> attributes,
+	LinkSnippetResultHandler(String identifier, Map<String, Object> attributes,
 			LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
-		super(outputDir, "links", attributes);
+		super(identifier, "links", attributes);
 		this.extractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {
 			Assert.hasText(descriptor.getRel());
