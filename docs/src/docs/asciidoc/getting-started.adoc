@@ -81,13 +81,13 @@ then use this attribute when including the generated snippets in your documentat
 
 You may want to package the generated documentation in your project's jar file, for
 example to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
-static content] by Spring Boot. You can do so by configuring the `jar` task to depend on
-the `asciidoctor` task and to copy the generated documentation into the jar's static
-directory:
+static content] by Spring Boot. You can do so by configuring the `processResources` task to depend on
+the `asciidoctor` task and add the generated documentation to the jar file as
+resources in `static/docs`.
 
 [source,groovy,indent=0]
 ----
-	jar {
+	processResources {
 		dependsOn asciidoctor
 		from ("${asciidoctor.outputDir}/html5") {
 			into 'static/docs'
