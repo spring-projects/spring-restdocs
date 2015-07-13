@@ -100,13 +100,15 @@ public abstract class HttpDocumentation {
 					this.result.getRequest());
 			this.writer.printf("%s %s HTTP/1.1%n", request.getMethod(),
 					request.getRequestUriWithQueryString());
-
+			if (requiresHostHeader(request)) {
+				writeHeader(HttpHeaders.HOST, request.getHost());
+			}
 			for (Entry<String, List<String>> header : request.getHeaders().entrySet()) {
 				for (String value : header.getValue()) {
 					if (header.getKey() == HttpHeaders.CONTENT_TYPE
 							&& request.isMultipartRequest()) {
-						this.writer.printf("%s: %s; boundary=%s%n", header.getKey(),
-								value, MULTIPART_BOUNDARY);
+						writeHeader(header.getKey(), String.format("%s; boundary=%s",
+								value, MULTIPART_BOUNDARY));
 					}
 					else {
 						this.writer.printf("%s: %s%n", header.getKey(), value);
@@ -115,7 +117,7 @@ public abstract class HttpDocumentation {
 				}
 			}
 			if (requiresFormEncodingContentType(request)) {
-				this.writer.printf("%s: %s%n", HttpHeaders.CONTENT_TYPE,
+				writeHeader(HttpHeaders.CONTENT_TYPE,
 						MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 			}
 			this.writer.println();
@@ -133,11 +135,19 @@ public abstract class HttpDocumentation {
 			}
 		}
 
+		private boolean requiresHostHeader(DocumentableHttpServletRequest request) {
+			return request.getHeaders().get(HttpHeaders.HOST) == null;
+		}
+
 		private boolean requiresFormEncodingContentType(
 				DocumentableHttpServletRequest request) {
 			return request.getHeaders().getContentType() == null
 					&& (request.isPostRequest() || request.isPutRequest())
 					&& StringUtils.hasText(request.getParameterMapAsQueryString());
+		}
+
+		private void writeHeader(String name, String value) {
+			this.writer.printf("%s: %s%n", name, value);
 		}
 
 		private void writeParts(DocumentableHttpServletRequest request)

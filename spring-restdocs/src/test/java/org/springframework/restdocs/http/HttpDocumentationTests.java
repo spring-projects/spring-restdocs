@@ -35,7 +35,9 @@ import java.io.IOException;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.test.ExpectedSnippet;
@@ -54,7 +56,8 @@ public class HttpDocumentationTests {
 	@Test
 	public void getRequest() throws IOException {
 		this.snippet.expectHttpRequest("get-request").withContents(
-				httpRequest(GET, "/foo").header("Alpha", "a"));
+				httpRequest(GET, "/foo").header(HttpHeaders.HOST, "localhost").header(
+						"Alpha", "a"));
 
 		documentHttpRequest("get-request").handle(
 				result(get("/foo").header("Alpha", "a")));
@@ -63,7 +66,7 @@ public class HttpDocumentationTests {
 	@Test
 	public void getRequestWithQueryString() throws IOException {
 		this.snippet.expectHttpRequest("get-request-with-query-string").withContents(
-				httpRequest(GET, "/foo?bar=baz"));
+				httpRequest(GET, "/foo?bar=baz").header(HttpHeaders.HOST, "localhost"));
 
 		documentHttpRequest("get-request-with-query-string").handle(
 				result(get("/foo?bar=baz")));
@@ -72,7 +75,7 @@ public class HttpDocumentationTests {
 	@Test
 	public void getRequestWithParameter() throws IOException {
 		this.snippet.expectHttpRequest("get-request-with-parameter").withContents(
-				httpRequest(GET, "/foo?b%26r=baz"));
+				httpRequest(GET, "/foo?b%26r=baz").header(HttpHeaders.HOST, "localhost"));
 
 		documentHttpRequest("get-request-with-parameter").handle(
 				result(get("/foo").param("b&r", "baz")));
@@ -81,8 +84,8 @@ public class HttpDocumentationTests {
 	@Test
 	public void postRequestWithContent() throws IOException {
 		this.snippet.expectHttpRequest("post-request-with-content").withContents(
-				httpRequest(POST, "/foo") //
-						.content("Hello, world"));
+				httpRequest(POST, "/foo").header(HttpHeaders.HOST, "localhost").content(
+						"Hello, world"));
 
 		documentHttpRequest("post-request-with-content").handle(
 				result(post("/foo").content("Hello, world")));
@@ -91,8 +94,8 @@ public class HttpDocumentationTests {
 	@Test
 	public void postRequestWithParameter() throws IOException {
 		this.snippet.expectHttpRequest("post-request-with-parameter").withContents(
-				httpRequest(POST, "/foo") //
-						.header("Content-Type", "application/x-www-form-urlencoded") //
+				httpRequest(POST, "/foo").header(HttpHeaders.HOST, "localhost")
+						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
 		documentHttpRequest("post-request-with-parameter").handle(
@@ -102,8 +105,8 @@ public class HttpDocumentationTests {
 	@Test
 	public void putRequestWithContent() throws IOException {
 		this.snippet.expectHttpRequest("put-request-with-content").withContents(
-				httpRequest(PUT, "/foo") //
-						.content("Hello, world"));
+				httpRequest(PUT, "/foo").header(HttpHeaders.HOST, "localhost").content(
+						"Hello, world"));
 
 		documentHttpRequest("put-request-with-content").handle(
 				result(put("/foo").content("Hello, world")));
@@ -112,8 +115,8 @@ public class HttpDocumentationTests {
 	@Test
 	public void putRequestWithParameter() throws IOException {
 		this.snippet.expectHttpRequest("put-request-with-parameter").withContents(
-				httpRequest(PUT, "/foo") //
-						.header("Content-Type", "application/x-www-form-urlencoded") //
+				httpRequest(PUT, "/foo").header(HttpHeaders.HOST, "localhost")
+						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
 		documentHttpRequest("put-request-with-parameter").handle(
@@ -164,9 +167,11 @@ public class HttpDocumentationTests {
 		String expectedContent = String.format("--%s%nContent-Disposition: form-data; "
 				+ "name=image%n%n<< data >>%n--%s--", boundary, boundary);
 		this.snippet.expectHttpRequest("multipart-post").withContents(
-				httpRequest(POST, "/upload").header("Content-Type",
-						"multipart/form-data; boundary=" + boundary).content(
-						expectedContent));
+				httpRequest(POST, "/upload")
+						.header(HttpHeaders.HOST, "localhost")
+						.header("Content-Type",
+								"multipart/form-data; boundary=" + boundary)
+						.content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", null, "<< data >>".getBytes());
 		documentHttpRequest("multipart-post").handle(
@@ -180,13 +185,35 @@ public class HttpDocumentationTests {
 				+ "name=image%nContent-Type: image/png%n%n<< data >>%n--%s--", boundary,
 				boundary);
 		this.snippet.expectHttpRequest("multipart-post-with-content-type").withContents(
-				httpRequest(POST, "/upload").header("Content-Type",
-						"multipart/form-data; boundary=" + boundary).content(
-						expectedContent));
+				httpRequest(POST, "/upload")
+						.header(HttpHeaders.HOST, "localhost")
+						.header("Content-Type",
+								"multipart/form-data; boundary=" + boundary)
+						.content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", MediaType.IMAGE_PNG_VALUE,
 				"<< data >>".getBytes());
 		documentHttpRequest("multipart-post-with-content-type").handle(
 				result(fileUpload("/upload").file(multipartFile)));
+	}
+
+	@Test
+	public void getRequestWithCustomServerName() throws IOException {
+		this.snippet.expectHttpRequest("get-request-custom-server-name").withContents(
+				httpRequest(GET, "/foo").header(HttpHeaders.HOST, "api.example.com"));
+
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		request.setServerName("api.example.com");
+
+		documentHttpRequest("get-request-custom-server-name").handle(result(request));
+	}
+
+	@Test
+	public void getRequestWithCustomHost() throws IOException {
+		this.snippet.expectHttpRequest("get-request-custom-host").withContents(
+				httpRequest(GET, "/foo").header(HttpHeaders.HOST, "api.example.com"));
+
+		documentHttpRequest("get-request-custom-host").handle(
+				result(get("/foo").header(HttpHeaders.HOST, "api.example.com")));
 	}
 }
