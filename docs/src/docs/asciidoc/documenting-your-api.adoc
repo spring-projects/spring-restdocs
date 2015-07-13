@@ -77,11 +77,8 @@ snippet is named `request-fields.adoc`. For responses this snippet is named
 When documenting fields, the test will fail if an undocumented field is found in the
 payload. Similarly, the test will also fail if a documented field is not found in the
 payload and the field has not be marked as optional. For payloads with a hierarchical
-structure, when a point in the hierarchy is documented any fields beneath that point are
-also deemed to have been documented. This means that you do not have to document the
-entire hierarchy, but you may do so if you wish.
-
-
+structure, documenting a field is sufficient for all of its descendants to also be
+treated as having been documented.
 
 [[documenting-your-api-request-response-payloads-field-paths]]
 ==== Field paths

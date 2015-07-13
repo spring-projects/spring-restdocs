@@ -101,10 +101,12 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	/**
 	 * Document the fields in the request using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the request but is not described by one of the descriptors
-	 * a failure will occur when this handler is invoked. Similarly, if a field is
-	 * described but is not present in the request a failure will also occur when this
-	 * handler is invoked.
+	 * If a field is present in the request but is not documented by one of the
+	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request a
+	 * failure will also occur. For payloads with a hierarchical structure, documenting a
+	 * field is sufficient for all of its descendants to also be treated as having been
+	 * documented.
 	 * 
 	 * @param descriptors the link descriptors
 	 * @return {@code this}
@@ -119,10 +121,12 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	/**
 	 * Document the fields in the response using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the response but is not described by one of the
+	 * If a field is present in the response but is not documented by one of the
 	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
-	 * field is described but is not present in the response a failure will also occur
-	 * when this handler is invoked.
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field is sufficient for all of its descendants to also be treated as having been
+	 * documented.
 	 * 
 	 * @param descriptors the link descriptors
 	 * @return {@code this}

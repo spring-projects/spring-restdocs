@@ -98,11 +98,19 @@ public abstract class PayloadDocumentation {
 	/**
 	 * Creates a {@code RequestFieldsSnippetResultHandler} that will produce a
 	 * documentation snippet for a request's fields.
+	 * <p>
+	 * If a field is present in the request but is not documented by one of the
+	 * descriptors a failure will occur when the handler is invoked. Similarly, if a field
+	 * is documented, is not marked as optional, and is not present in the request a
+	 * failure will also occur. For payloads with a hierarchical structure, documenting a
+	 * field is sufficient for all of its descendants to also be treated as having been
+	 * documented.
 	 * 
 	 * @param outputDir The directory to which the snippet should be written
 	 * @param descriptors The descriptions of the request's fields
 	 * @return the handler
 	 * @see RestDocumentationResultHandler#withRequestFields(FieldDescriptor...)
+	 * @see #fieldWithPath(String)
 	 */
 	public static FieldSnippetResultHandler documentRequestFields(String outputDir,
 			FieldDescriptor... descriptors) {
@@ -112,6 +120,13 @@ public abstract class PayloadDocumentation {
 	/**
 	 * Creates a {@code ResponseFieldsSnippetResultHandler} that will produce a
 	 * documentation snippet for a response's fields.
+	 * <p>
+	 * If a field is present in the response but is not documented by one of the
+	 * descriptors a failure will occur when the handler is invoked. Similarly, if a field
+	 * is documented, is not marked as optional, and is not present in the response a
+	 * failure will also occur. For payloads with a hierarchical structure, documenting a
+	 * field is sufficient for all of its descendants to also be treated as having been
+	 * documented.
 	 * 
 	 * @param outputDir The directory to which the snippet should be written
 	 * @param descriptors The descriptions of the response's fields
