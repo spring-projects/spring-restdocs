@@ -93,7 +93,7 @@ public class FieldTypeResolverTests {
 
 	@Test
 	public void nonExistentFieldProducesIllegalArgumentException() throws IOException {
-		this.thrownException.expect(IllegalArgumentException.class);
+		this.thrownException.expect(FieldDoesNotExistException.class);
 		this.thrownException
 				.expectMessage("The payload does not contain a field with the path 'a.b'");
 		this.fieldTypeResolver.resolveFieldType("a.b", createPayload("{\"a\":{}}"));

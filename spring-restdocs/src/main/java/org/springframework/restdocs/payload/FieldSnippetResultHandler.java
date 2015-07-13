@@ -78,13 +78,30 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 				for (Entry<String, FieldDescriptor> entry : FieldSnippetResultHandler.this.descriptorsByPath
 						.entrySet()) {
 					FieldDescriptor descriptor = entry.getValue();
-					FieldType type = descriptor.getType() != null ? descriptor.getType()
-							: FieldSnippetResultHandler.this.fieldTypeResolver
-									.resolveFieldType(descriptor.getPath(), payload);
+					FieldType type = getFieldType(descriptor, payload);
 					tableWriter.row(entry.getKey().toString(), type.toString(), entry
 							.getValue().getDescription());
 				}
 
+			}
+
+			private FieldType getFieldType(FieldDescriptor descriptor, Object payload) {
+				if (descriptor.getType() != null) {
+					return descriptor.getType();
+				}
+				else {
+					try {
+						return FieldSnippetResultHandler.this.fieldTypeResolver
+								.resolveFieldType(descriptor.getPath(), payload);
+					}
+					catch (FieldDoesNotExistException ex) {
+						String message = "Cannot determine the type of the field '"
+								+ descriptor.getPath() + "' as it is not present in the"
+								+ " payload. Please provide a type using"
+								+ " FieldDescriptor.type(FieldType).";
+						throw new FieldTypeRequiredException(message);
+					}
+				}
 			}
 
 		});

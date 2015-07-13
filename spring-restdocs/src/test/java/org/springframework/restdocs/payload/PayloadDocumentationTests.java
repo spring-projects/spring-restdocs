@@ -142,6 +142,14 @@ public class PayloadDocumentationTests {
 	}
 
 	@Test
+	public void missingOptionalRequestFieldWithNoTypeProvided() throws IOException {
+		this.thrown.expect(FieldTypeRequiredException.class);
+		documentRequestFields("missing-optional-request-field-with-no-type",
+				fieldWithPath("a.b").description("one").optional()).handle(
+				result(get("/foo").content("{ }")));
+	}
+
+	@Test
 	public void undocumentedRequestFieldAndMissingRequestField() throws IOException {
 		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown

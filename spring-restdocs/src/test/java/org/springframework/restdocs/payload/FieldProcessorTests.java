@@ -129,27 +129,27 @@ public class FieldProcessorTests {
 						Arrays.asList(4))));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentTopLevelField() {
 		this.fieldProcessor
 				.extract(FieldPath.compile("a"), new HashMap<String, Object>());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentNestedField() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
 		payload.put("a", new HashMap<String, Object>());
 		this.fieldProcessor.extract(FieldPath.compile("a.b"), payload);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentNestedFieldWhenParentIsNotAMap() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
 		payload.put("a", 5);
 		this.fieldProcessor.extract(FieldPath.compile("a.b"), payload);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentFieldWhenParentIsAnArray() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
 		HashMap<String, Object> alpha = new HashMap<String, Object>();
@@ -158,20 +158,20 @@ public class FieldProcessorTests {
 		this.fieldProcessor.extract(FieldPath.compile("a.b.c"), payload);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentArrayField() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
 		this.fieldProcessor.extract(FieldPath.compile("a[]"), payload);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentArrayFieldAsTypeDoesNotMatch() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
 		payload.put("a", 5);
 		this.fieldProcessor.extract(FieldPath.compile("a[]"), payload);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentFieldBeneathAnArray() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
 		HashMap<String, Object> alpha = new HashMap<String, Object>();

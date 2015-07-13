@@ -55,8 +55,7 @@ final class FieldProcessor {
 
 		});
 		if (matches.isEmpty()) {
-			throw new IllegalArgumentException(
-					"The payload does not contain a field with the path '" + path + "'");
+			throw new FieldDoesNotExistException(path);
 		}
 		if (path.isPrecise()) {
 			return matches.get(0);
