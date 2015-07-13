@@ -29,6 +29,7 @@ import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
 import org.springframework.restdocs.util.DocumentableHttpServletRequest;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Static factory methods for documenting a RESTful API's HTTP requests.
@@ -82,6 +83,8 @@ public abstract class HttpDocumentation {
 
 	private static class HttpRequestDocumentationAction implements DocumentationAction {
 
+		private static final String MULTIPART_BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
+
 		private final DocumentationWriter writer;
 
 		private final MvcResult result;
@@ -97,9 +100,18 @@ public abstract class HttpDocumentation {
 					this.result.getRequest());
 			this.writer.printf("%s %s HTTP/1.1%n", request.getMethod(),
 					request.getRequestUriWithQueryString());
+
 			for (Entry<String, List<String>> header : request.getHeaders().entrySet()) {
 				for (String value : header.getValue()) {
-					this.writer.printf("%s: %s%n", header.getKey(), value);
+					if (header.getKey() == HttpHeaders.CONTENT_TYPE
+							&& request.isMultipartRequest()) {
+						this.writer.printf("%s: %s; boundary=%s%n", header.getKey(),
+								value, MULTIPART_BOUNDARY);
+					}
+					else {
+						this.writer.printf("%s: %s%n", header.getKey(), value);
+					}
+
 				}
 			}
 			if (requiresFormEncodingContentType(request)) {
@@ -115,6 +127,9 @@ public abstract class HttpDocumentation {
 				if (StringUtils.hasText(queryString)) {
 					this.writer.println(queryString);
 				}
+				if (request.isMultipartRequest()) {
+					writeParts(request);
+				}
 			}
 		}
 
@@ -123,6 +138,37 @@ public abstract class HttpDocumentation {
 			return request.getHeaders().getContentType() == null
 					&& (request.isPostRequest() || request.isPutRequest())
 					&& StringUtils.hasText(request.getParameterMapAsQueryString());
+		}
+
+		private void writeParts(DocumentableHttpServletRequest request)
+				throws IOException {
+			for (Entry<String, List<MultipartFile>> entry : request.getMultipartFiles()
+					.entrySet()) {
+				for (MultipartFile file : entry.getValue()) {
+					writePartBoundary();
+					writePart(file);
+					this.writer.println();
+				}
+			}
+			writeMultipartEnd();
+		}
+
+		private void writePartBoundary() {
+			this.writer.printf("--%s%n", MULTIPART_BOUNDARY);
+		}
+
+		private void writePart(MultipartFile part) throws IOException {
+			this.writer.printf("Content-Disposition: form-data; name=%s%n",
+					part.getName());
+			if (StringUtils.hasText(part.getContentType())) {
+				this.writer.printf("Content-Type: %s%n", part.getContentType());
+			}
+			this.writer.println();
+			this.writer.print(new String(part.getBytes()));
+		}
+
+		private void writeMultipartEnd() {
+			this.writer.printf("--%s--%n", MULTIPART_BOUNDARY);
 		}
 	}
 

@@ -28,9 +28,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * An {@link HttpServletRequest} wrapper that provides a limited set of methods intended
@@ -81,6 +84,31 @@ public class DocumentableHttpServletRequest {
 	 */
 	public boolean isPutRequest() {
 		return RequestMethod.PUT == RequestMethod.valueOf(this.delegate.getMethod());
+	}
+
+	/**
+	 * Whether or not this is a multipart request.
+	 * 
+	 * @return {@code true} if it is a multipart request, otherwise {@code false}.
+	 * @see MockMultipartHttpServletRequest
+	 */
+	public boolean isMultipartRequest() {
+		return this.delegate instanceof MockMultipartHttpServletRequest;
+	}
+
+	/**
+	 * Returns a {@code Map} of the request's multipart files, or {@code null} if this
+	 * request is not a multipart request.
+	 * 
+	 * @return a {@code Map} of the multipart files contained in the request, or
+	 * {@code null}
+	 * @see #isMultipartRequest()
+	 */
+	public MultiValueMap<String, MultipartFile> getMultipartFiles() {
+		if (!isMultipartRequest()) {
+			return null;
+		}
+		return ((MockMultipartHttpServletRequest) this.delegate).getMultiFileMap();
 	}
 
 	/**

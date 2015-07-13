@@ -23,6 +23,7 @@ import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRe
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.StubMvcResult.result;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -36,6 +37,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
@@ -156,4 +158,35 @@ public class HttpDocumentationTests {
 		documentHttpResponse("response-with-content").handle(result(response));
 	}
 
+	@Test
+	public void multipartPost() throws IOException {
+		String boundary = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
+		String expectedContent = String.format("--%s%nContent-Disposition: form-data; "
+				+ "name=image%n%n<< data >>%n--%s--", boundary, boundary);
+		this.snippet.expectHttpRequest("multipart-post").withContents(
+				httpRequest(POST, "/upload").header("Content-Type",
+						"multipart/form-data; boundary=" + boundary).content(
+						expectedContent));
+		MockMultipartFile multipartFile = new MockMultipartFile("image",
+				"documents/images/example.png", null, "<< data >>".getBytes());
+		documentHttpRequest("multipart-post").handle(
+				result(fileUpload("/upload").file(multipartFile)));
+	}
+
+	@Test
+	public void multipartPostWithContentType() throws IOException {
+		String boundary = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
+		String expectedContent = String.format("--%s%nContent-Disposition: form-data; "
+				+ "name=image%nContent-Type: image/png%n%n<< data >>%n--%s--", boundary,
+				boundary);
+		this.snippet.expectHttpRequest("multipart-post-with-content-type").withContents(
+				httpRequest(POST, "/upload").header("Content-Type",
+						"multipart/form-data; boundary=" + boundary).content(
+						expectedContent));
+		MockMultipartFile multipartFile = new MockMultipartFile("image",
+				"documents/images/example.png", MediaType.IMAGE_PNG_VALUE,
+				"<< data >>".getBytes());
+		documentHttpRequest("multipart-post-with-content-type").handle(
+				result(fileUpload("/upload").file(multipartFile)));
+	}
 }

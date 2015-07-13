@@ -26,6 +26,7 @@ import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
 import org.springframework.restdocs.util.DocumentableHttpServletRequest;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Static factory methods for documenting a RESTful API as if it were being driven using
@@ -94,6 +95,11 @@ public abstract class CurlDocumentation {
 			writeOptionToIncludeHeadersInOutput();
 			writeHttpMethodIfNecessary(request);
 			writeHeaders(request);
+
+			if (request.isMultipartRequest()) {
+				writeParts(request);
+			}
+
 			writeContent(request);
 
 			this.writer.println();
@@ -140,6 +146,28 @@ public abstract class CurlDocumentation {
 							header));
 				}
 			}
+		}
+
+		private void writeParts(DocumentableHttpServletRequest request)
+				throws IOException {
+			for (Entry<String, List<MultipartFile>> entry : request.getMultipartFiles()
+					.entrySet()) {
+				for (MultipartFile file : entry.getValue()) {
+					this.writer.printf(" -F '%s=", file.getName());
+					if (!StringUtils.hasText(file.getOriginalFilename())) {
+						this.writer.append(new String(file.getBytes()));
+					}
+					else {
+						this.writer.printf("@%s", file.getOriginalFilename());
+					}
+
+					if (StringUtils.hasText(file.getContentType())) {
+						this.writer.append(";type=").append(file.getContentType());
+					}
+					this.writer.append("'");
+				}
+			}
+
 		}
 
 		private void writeContent(DocumentableHttpServletRequest request)

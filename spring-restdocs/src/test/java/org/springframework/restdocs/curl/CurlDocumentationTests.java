@@ -19,6 +19,7 @@ package org.springframework.restdocs.curl;
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.StubMvcResult.result;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -27,8 +28,10 @@ import java.io.IOException;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
@@ -43,6 +46,9 @@ public class CurlDocumentationTests {
 
 	@Rule
 	public ExpectedSnippet snippet = new ExpectedSnippet();
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void getRequest() throws IOException {
@@ -239,6 +245,46 @@ public class CurlDocumentationTests {
 		request.setContextPath("v3");
 		documentCurlRequest("request-with-custom-context-without-slash").handle(
 				result(request));
+	}
+
+	@Test
+	public void multipartPostWithNoOriginalFilename() throws IOException {
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F "
+				+ "'metadata={\"description\": \"foo\"}'";
+		this.snippet.expectCurlRequest("multipart-post-no-original-filename")
+				.withContents(codeBlock("bash").content(expectedContent));
+		MockMultipartFile multipartFile = new MockMultipartFile("metadata",
+				"{\"description\": \"foo\"}".getBytes());
+		documentCurlRequest("multipart-post-no-original-filename").handle(
+				result(fileUpload("/upload").file(multipartFile)));
+	}
+
+	@Test
+	public void multipartPostWithContentType() throws IOException {
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F "
+				+ "'image=@documents/images/example.png;type=image/png'";
+		this.snippet.expectCurlRequest("multipart-post-with-content-type").withContents(
+				codeBlock("bash").content(expectedContent));
+		MockMultipartFile multipartFile = new MockMultipartFile("image",
+				"documents/images/example.png", MediaType.IMAGE_PNG_VALUE,
+				"bytes".getBytes());
+		documentCurlRequest("multipart-post-with-content-type").handle(
+				result(fileUpload("/upload").file(multipartFile)));
+	}
+
+	@Test
+	public void multipartPost() throws IOException {
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F "
+				+ "'image=@documents/images/example.png'";
+		this.snippet.expectCurlRequest("multipart-post").withContents(
+				codeBlock("bash").content(expectedContent));
+		MockMultipartFile multipartFile = new MockMultipartFile("image",
+				"documents/images/example.png", null, "bytes".getBytes());
+		documentCurlRequest("multipart-post").handle(
+				result(fileUpload("/upload").file(multipartFile)));
 	}
 
 }
