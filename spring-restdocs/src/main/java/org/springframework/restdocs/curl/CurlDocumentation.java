@@ -176,6 +176,14 @@ public abstract class CurlDocumentation {
 				this.writer
 						.print(String.format(" -d '%s'", request.getContentAsString()));
 			}
+			else if (request.isMultipartRequest()) {
+				for (Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+					for (String value : entry.getValue()) {
+						this.writer.print(String.format(" -F '%s=%s'", entry.getKey(),
+								value));
+					}
+				}
+			}
 			else if (request.isPostRequest() || request.isPutRequest()) {
 				String queryString = request.getParameterMapAsQueryString();
 				if (StringUtils.hasText(queryString)) {

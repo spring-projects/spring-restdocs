@@ -230,6 +230,15 @@ public class DocumentableHttpServletRequest {
 		return this.delegate.getContextPath();
 	}
 
+	/**
+	 * Returns a map of the request's parameters
+	 * @return The map of parameters
+	 * @see HttpServletRequest#getParameterMap()
+	 */
+	public Map<String, String[]> getParameterMap() {
+		return this.delegate.getParameterMap();
+	}
+
 	private String getQueryString() {
 		if (this.delegate.getQueryString() != null) {
 			return this.delegate.getQueryString();

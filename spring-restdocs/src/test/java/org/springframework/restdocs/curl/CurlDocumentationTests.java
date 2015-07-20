@@ -287,4 +287,19 @@ public class CurlDocumentationTests {
 				result(fileUpload("/upload").file(multipartFile)));
 	}
 
+	@Test
+	public void multipartPostWithParameters() throws IOException {
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F "
+				+ "'image=@documents/images/example.png' -F 'a=apple' -F 'a=avocado' "
+				+ "-F 'b=banana'";
+		this.snippet.expectCurlRequest("multipart-post").withContents(
+				codeBlock("bash").content(expectedContent));
+		MockMultipartFile multipartFile = new MockMultipartFile("image",
+				"documents/images/example.png", null, "bytes".getBytes());
+		documentCurlRequest("multipart-post").handle(
+				result(fileUpload("/upload").file(multipartFile)
+						.param("a", "apple", "avocado").param("b", "banana")));
+	}
+
 }
