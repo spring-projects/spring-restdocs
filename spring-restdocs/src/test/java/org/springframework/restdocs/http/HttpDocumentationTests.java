@@ -50,6 +50,8 @@ import org.springframework.restdocs.test.ExpectedSnippet;
  */
 public class HttpDocumentationTests {
 
+	private static final String BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
+
 	@Rule
 	public final ExpectedSnippet snippet = new ExpectedSnippet();
 
@@ -163,14 +165,13 @@ public class HttpDocumentationTests {
 
 	@Test
 	public void multipartPost() throws IOException {
-		String boundary = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
-		String expectedContent = String.format("--%s%nContent-Disposition: form-data; "
-				+ "name=image%n%n<< data >>%n--%s--", boundary, boundary);
+		String expectedContent = createPart(String.format("Content-Disposition: "
+				+ "form-data; " + "name=image%n%n<< data >>"));
 		this.snippet.expectHttpRequest("multipart-post").withContents(
 				httpRequest(POST, "/upload")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type",
-								"multipart/form-data; boundary=" + boundary)
+								"multipart/form-data; boundary=" + BOUNDARY)
 						.content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", null, "<< data >>".getBytes());
@@ -179,16 +180,39 @@ public class HttpDocumentationTests {
 	}
 
 	@Test
+	public void multipartPostWithParameters() throws IOException {
+		String param1Part = createPart(String.format("Content-Disposition: form-data; "
+				+ "name=a%n%napple"), false);
+		String param2Part = createPart(String.format("Content-Disposition: form-data; "
+				+ "name=a%n%navocado"), false);
+		String param3Part = createPart(String.format("Content-Disposition: form-data; "
+				+ "name=b%n%nbanana"), false);
+		String filePart = createPart(String.format("Content-Disposition: form-data; "
+				+ "name=image%n%n<< data >>"));
+		String expectedContent = param1Part + param2Part + param3Part + filePart;
+		this.snippet.expectHttpRequest("multipart-post").withContents(
+				httpRequest(POST, "/upload")
+						.header(HttpHeaders.HOST, "localhost")
+						.header("Content-Type",
+								"multipart/form-data; boundary=" + BOUNDARY)
+						.content(expectedContent));
+		MockMultipartFile multipartFile = new MockMultipartFile("image",
+				"documents/images/example.png", null, "<< data >>".getBytes());
+		documentHttpRequest("multipart-post").handle(
+				result(fileUpload("/upload").file(multipartFile)
+						.param("a", "apple", "avocado").param("b", "banana")));
+	}
+
+	@Test
 	public void multipartPostWithContentType() throws IOException {
-		String boundary = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
-		String expectedContent = String.format("--%s%nContent-Disposition: form-data; "
-				+ "name=image%nContent-Type: image/png%n%n<< data >>%n--%s--", boundary,
-				boundary);
+		String expectedContent = createPart(String
+				.format("Content-Disposition: form-data; name=image%nContent-Type: "
+						+ "image/png%n%n<< data >>"));
 		this.snippet.expectHttpRequest("multipart-post-with-content-type").withContents(
 				httpRequest(POST, "/upload")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type",
-								"multipart/form-data; boundary=" + boundary)
+								"multipart/form-data; boundary=" + BOUNDARY)
 						.content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", MediaType.IMAGE_PNG_VALUE,
@@ -215,5 +239,19 @@ public class HttpDocumentationTests {
 
 		documentHttpRequest("get-request-custom-host").handle(
 				result(get("/foo").header(HttpHeaders.HOST, "api.example.com")));
+	}
+
+	private String createPart(String content) {
+		return this.createPart(content, true);
+	}
+
+	private String createPart(String content, boolean last) {
+		String boundary = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
+		StringBuilder part = new StringBuilder();
+		part.append(String.format("--%s%n%s%n", boundary, content));
+		if (last) {
+			part.append(String.format("--%s--", boundary));
+		}
+		return part.toString();
 	}
 }

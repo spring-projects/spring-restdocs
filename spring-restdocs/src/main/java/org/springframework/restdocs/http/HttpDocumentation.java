@@ -125,12 +125,14 @@ public abstract class HttpDocumentation {
 				this.writer.println(request.getContentAsString());
 			}
 			else if (request.isPostRequest() || request.isPutRequest()) {
-				String queryString = request.getParameterMapAsQueryString();
-				if (StringUtils.hasText(queryString)) {
-					this.writer.println(queryString);
-				}
 				if (request.isMultipartRequest()) {
 					writeParts(request);
+				}
+				else {
+					String queryString = request.getParameterMapAsQueryString();
+					if (StringUtils.hasText(queryString)) {
+						this.writer.println(queryString);
+					}
 				}
 			}
 		}
@@ -152,6 +154,13 @@ public abstract class HttpDocumentation {
 
 		private void writeParts(DocumentableHttpServletRequest request)
 				throws IOException {
+			for (Entry<String, String[]> parameter : request.getParameterMap().entrySet()) {
+				for (String value : parameter.getValue()) {
+					writePartBoundary();
+					writePart(parameter.getKey(), value, null);
+					this.writer.println();
+				}
+			}
 			for (Entry<String, List<MultipartFile>> entry : request.getMultipartFiles()
 					.entrySet()) {
 				for (MultipartFile file : entry.getValue()) {
@@ -167,14 +176,17 @@ public abstract class HttpDocumentation {
 			this.writer.printf("--%s%n", MULTIPART_BOUNDARY);
 		}
 
-		private void writePart(MultipartFile part) throws IOException {
-			this.writer.printf("Content-Disposition: form-data; name=%s%n",
-					part.getName());
-			if (StringUtils.hasText(part.getContentType())) {
-				this.writer.printf("Content-Type: %s%n", part.getContentType());
+		private void writePart(String name, String value, String contentType) {
+			this.writer.printf("Content-Disposition: form-data; name=%s%n", name);
+			if (StringUtils.hasText(contentType)) {
+				this.writer.printf("Content-Type: %s%n", contentType);
 			}
 			this.writer.println();
-			this.writer.print(new String(part.getBytes()));
+			this.writer.print(value);
+		}
+
+		private void writePart(MultipartFile part) throws IOException {
+			writePart(part.getName(), new String(part.getBytes()), part.getContentType());
 		}
 
 		private void writeMultipartEnd() {
