@@ -15,6 +15,7 @@ apply plugin: 'samples'
 
 ext {
 	springVersion = '4.1.5.RELEASE'
+	jmustacheVersion = '1.10'
 }
 
 subprojects {
@@ -28,6 +29,7 @@ subprojects {
 		}
 		dependencies {
 			dependency 'com.fasterxml.jackson.core:jackson-databind:2.4.6'
+			dependency "com.samskivert:jmustache:$jmustacheVersion"
 			dependency 'javax.servlet:javax.servlet-api:3.1.0'
 			dependency 'junit:junit:4.12'
 			dependency 'org.hamcrest:hamcrest-core:1.3'

@@ -33,8 +33,8 @@ can be used to reference the snippets output directory, for example:
 === Customizing tables
 
 Many of the snippets contain a table in its default configuration. The appearance of the
-table can be customized by providing some additional configuration when the snippet is
-included.
+table can be customized, either by providing some additional configuration when the
+snippet is included or by using a custom snippet template.
 
 
 

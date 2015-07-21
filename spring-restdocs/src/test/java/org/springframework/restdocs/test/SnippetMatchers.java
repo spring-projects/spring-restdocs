@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hamcrest.BaseMatcher;
@@ -100,8 +101,12 @@ public class SnippetMatchers {
 
 		private String getLinesAsString() {
 			StringWriter writer = new StringWriter();
-			for (String line : this.lines) {
-				writer.append(String.format("%s%n", line));
+			Iterator<String> iterator = this.lines.iterator();
+			while (iterator.hasNext()) {
+				writer.append(String.format("%s", iterator.next()));
+				if (iterator.hasNext()) {
+					writer.append(String.format("%n"));
+				}
 			}
 			return writer.toString();
 		}
@@ -111,16 +116,14 @@ public class SnippetMatchers {
 			extends AbstractSnippetContentMatcher {
 
 		protected AsciidoctorCodeBlockMatcher(String language) {
-			this.addLine("");
 			this.addLine("[source," + language + "]");
 			this.addLine("----");
 			this.addLine("----");
-			this.addLine("");
 		}
 
 		@SuppressWarnings("unchecked")
 		public T content(String content) {
-			this.addLine(-2, content);
+			this.addLine(-1, content);
 			return (T) this;
 		}
 
@@ -129,7 +132,7 @@ public class SnippetMatchers {
 	public static abstract class HttpMatcher<T extends HttpMatcher<T>> extends
 			AsciidoctorCodeBlockMatcher<HttpMatcher<T>> {
 
-		private int headerOffset = 4;
+		private int headerOffset = 3;
 
 		protected HttpMatcher() {
 			super("http");
@@ -164,7 +167,6 @@ public class SnippetMatchers {
 	public static class AsciidoctorTableMatcher extends AbstractSnippetContentMatcher {
 
 		private AsciidoctorTableMatcher(String... columns) {
-			this.addLine("");
 			this.addLine("|===");
 			String header = "|"
 					+ StringUtils
@@ -172,14 +174,13 @@ public class SnippetMatchers {
 			this.addLine(header);
 			this.addLine("");
 			this.addLine("|===");
-			this.addLine("");
 		}
 
 		public AsciidoctorTableMatcher row(String... entries) {
 			for (String entry : entries) {
-				this.addLine(-2, "|" + entry);
+				this.addLine(-1, "|" + entry);
 			}
-			this.addLine(-2, "");
+			this.addLine(-1, "");
 			return this;
 		}
 	}

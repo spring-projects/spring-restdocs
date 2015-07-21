@@ -17,18 +17,17 @@
 package org.springframework.restdocs.hypermedia;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
-import org.springframework.restdocs.snippet.DocumentationWriter;
-import org.springframework.restdocs.snippet.DocumentationWriter.TableAction;
-import org.springframework.restdocs.snippet.DocumentationWriter.TableWriter;
 import org.springframework.restdocs.snippet.SnippetGenerationException;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
@@ -61,10 +60,9 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 	}
 
 	@Override
-	protected void handle(MvcResult result, DocumentationWriter writer)
-			throws IOException {
+	protected void handle(MvcResult result, PrintWriter writer) throws IOException {
 		validate(extractLinks(result));
-		writeDocumentationSnippet(writer);
+		writeDocumentationSnippet(result, writer);
 	}
 
 	private Map<String, List<Link>> extractLinks(MvcResult result) throws IOException {
@@ -111,19 +109,13 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 		}
 	}
 
-	private void writeDocumentationSnippet(DocumentationWriter writer) throws IOException {
-		writer.table(new TableAction() {
-
-			@Override
-			public void perform(TableWriter tableWriter) throws IOException {
-				tableWriter.headers("Relation", "Description");
-				for (Entry<String, LinkDescriptor> entry : LinkSnippetResultHandler.this.descriptorsByRel
-						.entrySet()) {
-					tableWriter.row(entry.getKey(), entry.getValue().getDescription());
-				}
-			}
-
-		});
+	private void writeDocumentationSnippet(MvcResult result, PrintWriter writer)
+			throws IOException {
+		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
+				.getAttribute(TemplateEngine.class.getName());
+		Map<String, Object> context = new HashMap<>();
+		context.put("links", this.descriptorsByRel.values());
+		writer.print(templateEngine.compileTemplate("links").render(context));
 	}
 
 }

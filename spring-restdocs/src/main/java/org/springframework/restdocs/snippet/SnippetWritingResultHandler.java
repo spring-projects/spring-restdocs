@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.springframework.restdocs.config.RestDocumentationContext;
@@ -43,13 +44,13 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 		this.fileName = fileName;
 	}
 
-	protected abstract void handle(MvcResult result, DocumentationWriter writer)
+	protected abstract void handle(MvcResult result, PrintWriter writer)
 			throws IOException;
 
 	@Override
 	public void handle(MvcResult result) throws IOException {
 		try (Writer writer = createWriter()) {
-			handle(result, new AsciidoctorWriter(writer));
+			handle(result, new PrintWriter(writer));
 		}
 	}
 

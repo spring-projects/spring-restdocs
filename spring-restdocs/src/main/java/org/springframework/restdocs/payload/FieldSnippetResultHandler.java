@@ -17,16 +17,17 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.springframework.restdocs.snippet.DocumentationWriter;
-import org.springframework.restdocs.snippet.DocumentationWriter.TableAction;
-import org.springframework.restdocs.snippet.DocumentationWriter.TableWriter;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
@@ -35,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * A {@link SnippetWritingResultHandler} that produces a snippet documenting a RESTful
  * resource's request or response fields.
- * 
+ *
  * @author Andreas Evers
  * @author Andy Wilkinson
  */
@@ -49,11 +50,14 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
+	private final String templateName;
+
 	private List<FieldDescriptor> fieldDescriptors;
 
-	FieldSnippetResultHandler(String outputDir, String filename,
+	FieldSnippetResultHandler(String outputDir, String type,
 			List<FieldDescriptor> descriptors) {
-		super(outputDir, filename + "-fields");
+		super(outputDir, type + "-fields");
+		this.templateName = type + "-fields";
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath());
 			Assert.hasText(descriptor.getDescription());
@@ -63,49 +67,46 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 	}
 
 	@Override
-	protected void handle(MvcResult result, DocumentationWriter writer)
-			throws IOException {
+	protected void handle(MvcResult result, PrintWriter writer) throws IOException {
 
 		this.fieldValidator.validate(getPayloadReader(result), this.fieldDescriptors);
 
-		final Object payload = extractPayload(result);
+		Object payload = extractPayload(result);
 
-		writer.table(new TableAction() {
+		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
+				.getAttribute(TemplateEngine.class.getName());
+		Map<String, Object> context = new HashMap<>();
+		List<Map<String, String>> fields = new ArrayList<>();
+		context.put("fields", fields);
+		for (Entry<String, FieldDescriptor> entry : this.descriptorsByPath.entrySet()) {
+			FieldDescriptor descriptor = entry.getValue();
+			FieldType type = getFieldType(descriptor, payload);
+			Map<String, String> fieldModel = new HashMap<>();
+			fieldModel.put("path", entry.getKey());
+			fieldModel.put("type", type.toString());
+			fieldModel.put("description", descriptor.getDescription());
+			fields.add(fieldModel);
+		}
+		writer.print(templateEngine.compileTemplate(this.templateName).render(context));
+	}
 
-			@Override
-			public void perform(TableWriter tableWriter) throws IOException {
-				tableWriter.headers("Path", "Type", "Description");
-				for (Entry<String, FieldDescriptor> entry : FieldSnippetResultHandler.this.descriptorsByPath
-						.entrySet()) {
-					FieldDescriptor descriptor = entry.getValue();
-					FieldType type = getFieldType(descriptor, payload);
-					tableWriter.row(entry.getKey().toString(), type.toString(), entry
-							.getValue().getDescription());
-				}
-
+	private FieldType getFieldType(FieldDescriptor descriptor, Object payload) {
+		if (descriptor.getType() != null) {
+			return descriptor.getType();
+		}
+		else {
+			try {
+				return FieldSnippetResultHandler.this.fieldTypeResolver.resolveFieldType(
+						descriptor.getPath(), payload);
 			}
-
-			private FieldType getFieldType(FieldDescriptor descriptor, Object payload) {
-				if (descriptor.getType() != null) {
-					return descriptor.getType();
-				}
-				else {
-					try {
-						return FieldSnippetResultHandler.this.fieldTypeResolver
-								.resolveFieldType(descriptor.getPath(), payload);
-					}
-					catch (FieldDoesNotExistException ex) {
-						String message = "Cannot determine the type of the field '"
-								+ descriptor.getPath() + "' as it is not present in the"
-								+ " payload. Please provide a type using"
-								+ " FieldDescriptor.type(FieldType).";
-						throw new FieldTypeRequiredException(message);
-					}
-				}
+			catch (FieldDoesNotExistException ex) {
+				String message = "Cannot determine the type of the field '"
+						+ descriptor.getPath() + "' as it is not present in the"
+						+ " payload. Please provide a type using"
+						+ " FieldDescriptor.type(FieldType).";
+				throw new FieldTypeRequiredException(message);
 			}
-
-		});
-
+		}
 	}
 
 	private Object extractPayload(MvcResult result) throws IOException {

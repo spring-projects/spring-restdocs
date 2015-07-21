@@ -9,7 +9,9 @@ Andy Wilkinson
 
 :examples-dir: ../../test/java
 :github: https://github.com/spring-projects/spring-restdocs
-:samples: {github}/tree/{branch-or-tag}/samples
+:source: {github}/tree/{branch-or-tag}/
+:samples: {source}/samples
+:templates: {source}/spring-restdocs/src/main/resources/org/springframework/restdocs/templates
 :spring-boot-docs: http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle
 :spring-framework-docs: http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle
 
@@ -22,6 +24,7 @@ include::introduction.adoc[]
 include::getting-started.adoc[]
 include::documenting-your-api.adoc[]
 include::customizing-responses.adoc[]
+include::customizing-snippets.adoc[]
 include::configuration.adoc[]
 include::working-with-asciidoctor.adoc[]
 include::contributing.adoc[]

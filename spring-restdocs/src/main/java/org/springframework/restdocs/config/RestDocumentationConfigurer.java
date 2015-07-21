@@ -21,6 +21,9 @@ import java.util.List;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
+import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
@@ -44,6 +47,8 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 	private final RequestPostProcessor requestPostProcessor;
 
+	private TemplateEngineConfigurer templateEngineConfigurer = new TemplateEngineConfigurer();
+
 	/**
 	 * Creates a new {@link RestDocumentationConfigurer}.
 	 * @see RestDocumentation#documentationConfiguration()
@@ -52,7 +57,8 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 		this.requestPostProcessor = new ConfigurerApplyingRequestPostProcessor(
 				Arrays.<AbstractConfigurer> asList(this.uriConfigurer,
 						this.snippetConfigurer, new StepCountConfigurer(),
-						new ContentLengthHeaderConfigurer()));
+						new ContentLengthHeaderConfigurer(),
+						new TemplateEngineConfigurer()));
 	}
 
 	public UriConfigurer uris() {
@@ -61,6 +67,11 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 	public SnippetConfigurer snippets() {
 		return this.snippetConfigurer;
+	}
+
+	public RestDocumentationConfigurer templateEngine(TemplateEngine templateEngine) {
+		this.templateEngineConfigurer.setTemplateEngine(templateEngine);
+		return this;
 	}
 
 	@Override
@@ -91,6 +102,22 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 					&& !StringUtils.hasText(request.getHeader("Content-Length"))) {
 				request.addHeader("Content-Length", request.getContentLengthLong());
 			}
+		}
+
+	}
+
+	private static class TemplateEngineConfigurer extends AbstractConfigurer {
+
+		private TemplateEngine templateEngine = new MustacheTemplateEngine(
+				new StandardTemplateResourceResolver());
+
+		@Override
+		void apply(MockHttpServletRequest request) {
+			request.setAttribute(TemplateEngine.class.getName(), this.templateEngine);
+		}
+
+		void setTemplateEngine(TemplateEngine templateEngine) {
+			this.templateEngine = templateEngine;
 		}
 
 	}

@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -31,6 +32,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -173,6 +176,29 @@ public class RestDocumentationIntegrationTests {
 								String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" :"
 										+ " [ {%n    \"rel\" : \"rel\",%n    \"href\" :"
 										+ " \"...\"%n  } ]%n}")))));
+	}
+
+	@Test
+	public void customSnippetTemplate() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(new RestDocumentationConfigurer()).build();
+
+		ClassLoader classLoader = new URLClassLoader(new URL[] { new File(
+				"src/test/resources/custom-snippet-templates").toURI().toURL() },
+				getClass().getClassLoader());
+		ClassLoader previous = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
+		try {
+			mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+					.andExpect(status().isOk())
+					.andDo(document("custom-snippet-template"));
+		}
+		finally {
+			Thread.currentThread().setContextClassLoader(previous);
+		}
+		assertThat(new File(
+				"build/generated-snippets/custom-snippet-template/curl-request.adoc"),
+				is(snippet().withContents(equalTo("Custom curl request"))));
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {

@@ -17,15 +17,19 @@
 package org.springframework.restdocs.http;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.snippet.DocumentationWriter;
-import org.springframework.restdocs.snippet.DocumentationWriter.DocumentationAction;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.util.DocumentableHttpServletRequest;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.StringUtils;
@@ -39,6 +43,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public abstract class HttpDocumentation {
 
+	private static final String MULTIPART_BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
+
 	private HttpDocumentation() {
 
 	}
@@ -51,15 +57,7 @@ public abstract class HttpDocumentation {
 	 * @return the handler that will produce the snippet
 	 */
 	public static SnippetWritingResultHandler documentHttpRequest(String outputDir) {
-		return new SnippetWritingResultHandler(outputDir, "http-request") {
-
-			@Override
-			public void handle(MvcResult result, DocumentationWriter writer)
-					throws IOException {
-				writer.codeBlock("http", new HttpRequestDocumentationAction(writer,
-						result));
-			}
-		};
+		return new HttpRequestWritingResultHandler(outputDir);
 	}
 
 	/**
@@ -70,71 +68,126 @@ public abstract class HttpDocumentation {
 	 * @return the handler that will produce the snippet
 	 */
 	public static SnippetWritingResultHandler documentHttpResponse(String outputDir) {
-		return new SnippetWritingResultHandler(outputDir, "http-response") {
+		return new HttpResponseWritingResultHandler(outputDir);
 
-			@Override
-			public void handle(MvcResult result, DocumentationWriter writer)
-					throws IOException {
-				writer.codeBlock("http", new HttpResponseDocumentationAction(writer,
-						result));
-			}
-		};
 	}
 
-	private static class HttpRequestDocumentationAction implements DocumentationAction {
+	private static final class HttpRequestWritingResultHandler extends
+			SnippetWritingResultHandler {
 
-		private static final String MULTIPART_BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
-
-		private final DocumentationWriter writer;
-
-		private final MvcResult result;
-
-		HttpRequestDocumentationAction(DocumentationWriter writer, MvcResult result) {
-			this.writer = writer;
-			this.result = result;
+		private HttpRequestWritingResultHandler(String outputDir) {
+			super(outputDir, "http-request");
 		}
 
 		@Override
-		public void perform() throws IOException {
+		public void handle(MvcResult result, PrintWriter writer) throws IOException {
 			DocumentableHttpServletRequest request = new DocumentableHttpServletRequest(
-					this.result.getRequest());
-			this.writer.printf("%s %s HTTP/1.1%n", request.getMethod(),
-					request.getRequestUriWithQueryString());
+					result.getRequest());
+			Map<String, Object> context = new HashMap<String, Object>();
+			context.put("language", "http");
+			context.put("method", result.getRequest().getMethod());
+			context.put("path", request.getRequestUriWithQueryString());
+			context.put("headers", getHeaders(request));
+			context.put("requestBody", getRequestBody(request));
+
+			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
+					.getAttribute(TemplateEngine.class.getName());
+
+			writer.print(templateEngine.compileTemplate("http-request").render(context));
+		}
+
+		private List<Map<String, String>> getHeaders(
+				DocumentableHttpServletRequest request) {
+			List<Map<String, String>> headers = new ArrayList<>();
 			if (requiresHostHeader(request)) {
-				writeHeader(HttpHeaders.HOST, request.getHost());
+				headers.add(header(HttpHeaders.HOST, request.getHost()));
 			}
+
 			for (Entry<String, List<String>> header : request.getHeaders().entrySet()) {
 				for (String value : header.getValue()) {
 					if (header.getKey() == HttpHeaders.CONTENT_TYPE
 							&& request.isMultipartRequest()) {
-						writeHeader(header.getKey(), String.format("%s; boundary=%s",
-								value, MULTIPART_BOUNDARY));
+						headers.add(header(header.getKey(), String.format(
+								"%s; boundary=%s", value, MULTIPART_BOUNDARY)));
 					}
 					else {
-						this.writer.printf("%s: %s%n", header.getKey(), value);
+						headers.add(header(header.getKey(), value));
 					}
 
 				}
 			}
 			if (requiresFormEncodingContentType(request)) {
-				writeHeader(HttpHeaders.CONTENT_TYPE,
-						MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+				headers.add(header(HttpHeaders.CONTENT_TYPE,
+						MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 			}
-			this.writer.println();
+			return headers;
+		}
+
+		private String getRequestBody(DocumentableHttpServletRequest request)
+				throws IOException {
+			StringWriter httpRequest = new StringWriter();
+			PrintWriter writer = new PrintWriter(httpRequest);
 			if (request.getContentLength() > 0) {
-				this.writer.println(request.getContentAsString());
+				writer.println();
+				writer.print(request.getContentAsString());
 			}
 			else if (request.isPostRequest() || request.isPutRequest()) {
 				if (request.isMultipartRequest()) {
-					writeParts(request);
+					writeParts(request, writer);
 				}
 				else {
 					String queryString = request.getParameterMapAsQueryString();
 					if (StringUtils.hasText(queryString)) {
-						this.writer.println(queryString);
+						writer.println();
+						writer.print(queryString);
 					}
 				}
 			}
+			return httpRequest.toString();
+		}
+
+		private void writeParts(DocumentableHttpServletRequest request, PrintWriter writer)
+				throws IOException {
+			writer.println();
+			for (Entry<String, String[]> parameter : request.getParameterMap().entrySet()) {
+				for (String value : parameter.getValue()) {
+					writePartBoundary(writer);
+					writePart(parameter.getKey(), value, null, writer);
+					writer.println();
+				}
+			}
+			for (Entry<String, List<MultipartFile>> entry : request.getMultipartFiles()
+					.entrySet()) {
+				for (MultipartFile file : entry.getValue()) {
+					writePartBoundary(writer);
+					writePart(file, writer);
+					writer.println();
+				}
+			}
+			writeMultipartEnd(writer);
+		}
+
+		private void writePartBoundary(PrintWriter writer) {
+			writer.printf("--%s%n", MULTIPART_BOUNDARY);
+		}
+
+		private void writePart(String name, String value, String contentType,
+				PrintWriter writer) {
+			writer.printf("Content-Disposition: form-data; name=%s%n", name);
+			if (StringUtils.hasText(contentType)) {
+				writer.printf("Content-Type: %s%n", contentType);
+			}
+			writer.println();
+			writer.print(value);
+		}
+
+		private void writePart(MultipartFile part, PrintWriter writer) throws IOException {
+			writePart(part.getName(), new String(part.getBytes()), part.getContentType(),
+					writer);
+		}
+
+		private void writeMultipartEnd(PrintWriter writer) {
+			writer.printf("--%s--", MULTIPART_BOUNDARY);
 		}
 
 		private boolean requiresHostHeader(DocumentableHttpServletRequest request) {
@@ -148,79 +201,55 @@ public abstract class HttpDocumentation {
 					&& StringUtils.hasText(request.getParameterMapAsQueryString());
 		}
 
-		private void writeHeader(String name, String value) {
-			this.writer.printf("%s: %s%n", name, value);
-		}
-
-		private void writeParts(DocumentableHttpServletRequest request)
-				throws IOException {
-			for (Entry<String, String[]> parameter : request.getParameterMap().entrySet()) {
-				for (String value : parameter.getValue()) {
-					writePartBoundary();
-					writePart(parameter.getKey(), value, null);
-					this.writer.println();
-				}
-			}
-			for (Entry<String, List<MultipartFile>> entry : request.getMultipartFiles()
-					.entrySet()) {
-				for (MultipartFile file : entry.getValue()) {
-					writePartBoundary();
-					writePart(file);
-					this.writer.println();
-				}
-			}
-			writeMultipartEnd();
-		}
-
-		private void writePartBoundary() {
-			this.writer.printf("--%s%n", MULTIPART_BOUNDARY);
-		}
-
-		private void writePart(String name, String value, String contentType) {
-			this.writer.printf("Content-Disposition: form-data; name=%s%n", name);
-			if (StringUtils.hasText(contentType)) {
-				this.writer.printf("Content-Type: %s%n", contentType);
-			}
-			this.writer.println();
-			this.writer.print(value);
-		}
-
-		private void writePart(MultipartFile part) throws IOException {
-			writePart(part.getName(), new String(part.getBytes()), part.getContentType());
-		}
-
-		private void writeMultipartEnd() {
-			this.writer.printf("--%s--%n", MULTIPART_BOUNDARY);
+		private Map<String, String> header(String name, String value) {
+			Map<String, String> header = new HashMap<>();
+			header.put("name", name);
+			header.put("value", value);
+			return header;
 		}
 	}
 
-	private static final class HttpResponseDocumentationAction implements
-			DocumentationAction {
+	private static final class HttpResponseWritingResultHandler extends
+			SnippetWritingResultHandler {
 
-		private final DocumentationWriter writer;
-
-		private final MvcResult result;
-
-		HttpResponseDocumentationAction(DocumentationWriter writer, MvcResult result) {
-			this.writer = writer;
-			this.result = result;
+		private HttpResponseWritingResultHandler(String outputDir) {
+			super(outputDir, "http-response");
 		}
 
 		@Override
-		public void perform() throws IOException {
-			HttpStatus status = HttpStatus.valueOf(this.result.getResponse().getStatus());
-			this.writer.println(String.format("HTTP/1.1 %d %s", status.value(),
-					status.getReasonPhrase()));
-			for (String headerName : this.result.getResponse().getHeaderNames()) {
-				for (String header : this.result.getResponse().getHeaders(headerName)) {
-					this.writer.println(String.format("%s: %s", headerName, header));
+		public void handle(MvcResult result, PrintWriter writer) throws IOException {
+			HttpStatus status = HttpStatus.valueOf(result.getResponse().getStatus());
+			Map<String, Object> context = new HashMap<String, Object>();
+			context.put(
+					"responseBody",
+					StringUtils.hasLength(result.getResponse().getContentAsString()) ? String
+							.format("%n%s", result.getResponse().getContentAsString())
+							: "");
+			context.put("language", "http");
+			context.put("statusCode", status.value());
+			context.put("statusReason", status.getReasonPhrase());
+
+			List<Map<String, String>> headers = new ArrayList<>();
+			context.put("headers", headers);
+
+			for (String headerName : result.getResponse().getHeaderNames()) {
+				for (String header : result.getResponse().getHeaders(headerName)) {
+					headers.add(header(headerName, header));
 				}
 			}
-			this.writer.println();
-			String content = this.result.getResponse().getContentAsString();
-			if (StringUtils.hasText(content)) {
-				this.writer.println(content);
-			}
+
+			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
+					.getAttribute(TemplateEngine.class.getName());
+
+			writer.print(templateEngine.compileTemplate("http-response").render(context));
+
+		}
+
+		private Map<String, String> header(String name, String value) {
+			Map<String, String> header = new HashMap<>();
+			header.put("name", name);
+			header.put("value", value);
+			return header;
 		}
 	}
 

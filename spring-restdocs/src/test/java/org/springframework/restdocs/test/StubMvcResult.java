@@ -19,6 +19,9 @@ package org.springframework.restdocs.test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
+import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.web.servlet.FlashMap;
@@ -76,6 +79,8 @@ public class StubMvcResult implements MvcResult {
 
 	private StubMvcResult(MockHttpServletRequest request, MockHttpServletResponse response) {
 		this.request = request;
+		this.request.setAttribute(TemplateEngine.class.getName(),
+				new MustacheTemplateEngine(new StandardTemplateResourceResolver()));
 		this.response = response;
 	}
 
