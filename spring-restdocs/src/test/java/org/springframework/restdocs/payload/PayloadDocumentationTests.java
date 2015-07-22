@@ -121,6 +121,18 @@ public class PayloadDocumentationTests {
 	}
 
 	@Test
+	public void arrayResponse() throws IOException {
+		this.snippet.expectResponseFields("array-response").withContents( //
+				tableWithHeader("Path", "Type", "Description") //
+						.row("[]", "String", "one"));
+
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.getWriter().append("[\"a\", \"b\", \"c\"]");
+		documentResponseFields("array-response", fieldWithPath("[]").description("one"))
+				.handle(result(response));
+	}
+
+	@Test
 	public void undocumentedRequestField() throws IOException {
 		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown
