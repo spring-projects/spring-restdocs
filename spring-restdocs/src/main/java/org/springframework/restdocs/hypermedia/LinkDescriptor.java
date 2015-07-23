@@ -16,6 +16,11 @@
 
 package org.springframework.restdocs.hypermedia;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.restdocs.AbstractDescriptor;
+
 /**
  * A description of a link found in a hypermedia API
  * 
@@ -23,7 +28,7 @@ package org.springframework.restdocs.hypermedia;
  * 
  * @author Andy Wilkinson
  */
-public class LinkDescriptor {
+public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 
 	private final String rel;
 
@@ -66,5 +71,14 @@ public class LinkDescriptor {
 
 	boolean isOptional() {
 		return this.optional;
+	}
+
+	Map<String, Object> toModel() {
+		Map<String, Object> model = new HashMap<>();
+		model.put("rel", this.rel);
+		model.put("description", this.description);
+		model.put("optional", this.optional);
+		model.putAll(getAttributes());
+		return model;
 	}
 }

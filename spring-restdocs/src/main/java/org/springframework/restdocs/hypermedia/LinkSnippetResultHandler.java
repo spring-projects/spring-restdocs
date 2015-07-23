@@ -18,11 +18,13 @@ package org.springframework.restdocs.hypermedia;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.restdocs.snippet.SnippetGenerationException;
@@ -34,7 +36,7 @@ import org.springframework.util.Assert;
 /**
  * A {@link SnippetWritingResultHandler} that produces a snippet documenting a RESTful
  * resource's links.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
@@ -114,8 +116,16 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
 				.getAttribute(TemplateEngine.class.getName());
 		Map<String, Object> context = new HashMap<>();
-		context.put("links", this.descriptorsByRel.values());
+		context.put("links", createLinksModel());
 		writer.print(templateEngine.compileTemplate("links").render(context));
+	}
+
+	private List<Map<String, Object>> createLinksModel() {
+		List<Map<String, Object>> model = new ArrayList<>();
+		for (Entry<String, LinkDescriptor> entry : this.descriptorsByRel.entrySet()) {
+			model.add(entry.getValue().toModel());
+		}
+		return model;
 	}
 
 }

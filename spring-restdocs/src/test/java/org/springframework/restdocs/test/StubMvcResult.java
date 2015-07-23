@@ -61,6 +61,11 @@ public class StubMvcResult implements MvcResult {
 		return new StubMvcResult(response);
 	}
 
+	public static StubMvcResult result(MockHttpServletRequest request,
+			MockHttpServletResponse response) {
+		return new StubMvcResult(request, response);
+	}
+
 	private StubMvcResult() {
 		this(new MockHttpServletRequest(), new MockHttpServletResponse());
 	}
@@ -79,8 +84,10 @@ public class StubMvcResult implements MvcResult {
 
 	private StubMvcResult(MockHttpServletRequest request, MockHttpServletResponse response) {
 		this.request = request;
-		this.request.setAttribute(TemplateEngine.class.getName(),
-				new MustacheTemplateEngine(new StandardTemplateResourceResolver()));
+		if (this.request.getAttribute(TemplateEngine.class.getName()) == null) {
+			this.request.setAttribute(TemplateEngine.class.getName(),
+					new MustacheTemplateEngine(new StandardTemplateResourceResolver()));
+		}
 		this.response = response;
 	}
 

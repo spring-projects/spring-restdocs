@@ -17,6 +17,8 @@
 package org.springframework.restdocs.request;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.request.RequestDocumentation.documentQueryParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
@@ -28,7 +30,12 @@ import java.io.IOException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.snippet.SnippetGenerationException;
+import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateResourceResolver;
+import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
@@ -100,4 +107,26 @@ public class RequestDocumentationTests {
 				result(get("/?a=alpha&b=bravo")));
 	}
 
+	@Test
+	public void parametersWithCustomAttributes() throws IOException {
+		this.snippet.expectQueryParameters("parameters-with-custom-attributes")
+				.withContents(
+						tableWithHeader("Parameter", "Description", "Foo").row("a",
+								"one", "alpha").row("b", "two", "bravo"));
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("query-parameters"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/query-parameters-with-extra-column.snippet"));
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		request.addParameter("a", "bravo");
+		request.addParameter("b", "bravo");
+		documentQueryParameters("parameters-with-custom-attributes",
+				parameterWithName("a").description("one").attribute("foo", "alpha"),
+				parameterWithName("b").description("two").attribute("foo", "bravo"))
+				.handle(result(request));
+
+	}
 }

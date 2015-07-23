@@ -16,6 +16,11 @@
 
 package org.springframework.restdocs.payload;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.restdocs.AbstractDescriptor;
+
 /**
  * A description of a field found in a request or response payload
  * 
@@ -24,7 +29,7 @@ package org.springframework.restdocs.payload;
  * @author Andreas Evers
  * @author Andy Wilkinson
  */
-public class FieldDescriptor {
+public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 
 	private final String path;
 
@@ -85,5 +90,15 @@ public class FieldDescriptor {
 
 	String getDescription() {
 		return this.description;
+	}
+
+	Map<String, Object> toModel() {
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("path", this.path);
+		model.put("type", this.type.toString());
+		model.put("description", this.description);
+		model.put("optional", this.optional);
+		model.putAll(this.getAttributes());
+		return model;
 	}
 }

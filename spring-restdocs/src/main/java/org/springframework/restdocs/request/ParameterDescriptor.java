@@ -16,6 +16,11 @@
 
 package org.springframework.restdocs.request;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.restdocs.AbstractDescriptor;
+
 /**
  * A descriptor of a parameter in a query string
  * 
@@ -23,7 +28,7 @@ package org.springframework.restdocs.request;
  * @see RequestDocumentation#parameterWithName
  *
  */
-public class ParameterDescriptor {
+public class ParameterDescriptor extends AbstractDescriptor<ParameterDescriptor> {
 
 	private final String name;
 
@@ -50,6 +55,14 @@ public class ParameterDescriptor {
 
 	String getDescription() {
 		return this.description;
+	}
+
+	Map<String, Object> toModel() {
+		Map<String, Object> model = new HashMap<>();
+		model.put("name", this.name);
+		model.put("description", this.description);
+		model.putAll(getAttributes());
+		return model;
 	}
 
 }

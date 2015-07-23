@@ -258,3 +258,64 @@ With this configuration in place, every call to `MockMvc.perform` will produce
 the <<documenting-your-api-default-snippets,default snippets>> without any further
 configuration. Take a look at the `GettingStartedDocumentation` classes in each of the
 sample applications to see this functionality in action.
+
+
+
+[[documenting-your-api-customizing]]
+=== Customizing the output
+
+
+
+[[documenting-your-api-customizing-snippets]]
+==== Customizing the generated snippets
+Spring REST Docs uses https://mustache.github.io[Mustache] templates to produce the
+generated snippets.
+{source}spring-restdocs/src/main/resources/org/springframework/restdocs/templates[Default
+templates] are provided for each of the snippets that Spring REST Docs can produce. To
+customize a snippet's content, you can provide your own template.
+
+Templates are loaded from the classpath in the `org.springframework.restdocs.templates`
+package and each template is named after the snippet that it will produce. For example, to
+override the template for the `curl-request.adoc` snippet, create a template named
+`curl-request.snippet` in `src/test/resources/org/springframework/restdocs/templates`.
+
+
+
+[[documenting-your-api-customizing-including-extra-information]]
+==== Including extra information
+The descriptors for fields, links, and query parameters all have an `attribute` method
+that can be used to associate one or more key-value pairs with the descriptor. These
+attributes are made available during the template rendering process. Coupled with
+a custom snippet template, this makes it possible to include extra information in a
+generated snippet.
+
+A concrete example of the above is the addition of a constraints column when documenting
+request fields. The first step is to provide a `constraints` attribute for each field that
+you are documenting:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Payload.java[tags=constraints]
+----
+
+The second step is to provide a custom template named `request-fields.snippet` that
+includes the information about the fields' constraints in the generated snippet's table:
+
+[source,indent=0]
+----
+	|===
+	|Path|Type|Description|Constraints <1>
+
+	{{#fields}}
+	|{{path}}
+	|{{type}}
+	|{{description}}
+	|{{constraints}} <2>
+
+	{{/fields}}
+	|===
+----
+<1> Add a new column named "Constraints"
+<2> Include the descriptors' `constraints` attribute in each row of the table
+
+

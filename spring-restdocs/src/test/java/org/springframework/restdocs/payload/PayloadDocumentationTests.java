@@ -18,6 +18,8 @@ package org.springframework.restdocs.payload;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentRequestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -30,8 +32,13 @@ import java.io.IOException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.snippet.SnippetGenerationException;
+import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateResourceResolver;
+import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
@@ -173,5 +180,54 @@ public class PayloadDocumentationTests {
 		documentRequestFields("undocumented-request-field-and-missing-request-field",
 				fieldWithPath("a.b").description("one")).handle(
 				result(get("/foo").content("{ \"a\": { \"c\": 5 }}")));
+	}
+
+	@Test
+	public void requestFieldsWithCustomAttributes() throws IOException {
+		this.snippet.expectRequestFields("request-fields-with-custom-attributes")
+				.withContents( //
+						tableWithHeader("Path", "Type", "Description", "Foo") //
+								.row("a.b", "Number", "one", "alpha") //
+								.row("a.c", "String", "two", "bravo") //
+								.row("a", "Object", "three", "charlie"));
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("fields"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/request-fields-with-extra-column.snippet"));
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		request.setContent("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes());
+		documentRequestFields("request-fields-with-custom-attributes",
+				fieldWithPath("a.b").description("one").attribute("foo", "alpha"),
+				fieldWithPath("a.c").description("two").attribute("foo", "bravo"),
+				fieldWithPath("a").description("three").attribute("foo", "charlie"))
+				.handle(result(request));
+	}
+
+	@Test
+	public void responseFieldsWithCustomAttributes() throws IOException {
+		this.snippet.expectResponseFields("response-fields-with-custom-attributes")
+				.withContents( //
+						tableWithHeader("Path", "Type", "Description", "Foo") //
+								.row("a.b", "Number", "one", "alpha") //
+								.row("a.c", "String", "two", "bravo") //
+								.row("a", "Object", "three", "charlie"));
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("fields"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/response-fields-with-extra-column.snippet"));
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.getOutputStream().print("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}");
+		documentResponseFields("response-fields-with-custom-attributes",
+				fieldWithPath("a.b").description("one").attribute("foo", "alpha"),
+				fieldWithPath("a.c").description("two").attribute("foo", "bravo"),
+				fieldWithPath("a").description("three").attribute("foo", "charlie"))
+				.handle(result(request, response));
 	}
 }

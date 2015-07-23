@@ -18,10 +18,13 @@ package org.springframework.restdocs.request;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.restdocs.snippet.SnippetGenerationException;
@@ -33,7 +36,7 @@ import org.springframework.util.Assert;
 /**
  * A {@link SnippetWritingResultHandler} that produces a snippet documenting the query
  * parameters supported by a RESTful resource.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class QueryParametersSnippetResultHandler extends SnippetWritingResultHandler {
@@ -90,7 +93,11 @@ public class QueryParametersSnippetResultHandler extends SnippetWritingResultHan
 		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
 				.getAttribute(TemplateEngine.class.getName());
 		Map<String, Object> context = new HashMap<>();
-		context.put("parameters", this.descriptorsByName.values());
+		List<Map<String, Object>> parameters = new ArrayList<>();
+		for (Entry<String, ParameterDescriptor> entry : this.descriptorsByName.entrySet()) {
+			parameters.add(entry.getValue().toModel());
+		}
+		context.put("parameters", parameters);
 		writer.print(templateEngine.compileTemplate("query-parameters").render(context));
 	}
 

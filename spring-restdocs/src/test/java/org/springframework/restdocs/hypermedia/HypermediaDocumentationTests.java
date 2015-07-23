@@ -17,6 +17,8 @@
 package org.springframework.restdocs.hypermedia;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 import static org.springframework.restdocs.test.StubMvcResult.result;
@@ -26,8 +28,13 @@ import java.io.IOException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.snippet.SnippetGenerationException;
+import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateResourceResolver;
+import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -105,6 +112,29 @@ public class HypermediaDocumentationTests {
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b",
 						"bravo")), new LinkDescriptor("a").description("one"),
 				new LinkDescriptor("b").description("two")).handle(result());
+	}
+
+	@Test
+	public void linksWithCustomAttributes() throws IOException {
+		this.snippet.expectLinks("documented-links").withContents( //
+				tableWithHeader("Relation", "Description", "Foo") //
+						.row("a", "one", "alpha") //
+						.row("b", "two", "bravo"));
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("links"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/links-with-extra-column.snippet"));
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		documentLinks(
+				"documented-links",
+				new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b",
+						"bravo")),
+				new LinkDescriptor("a").description("one").attribute("foo", "alpha"),
+				new LinkDescriptor("b").description("two").attribute("foo", "bravo"))
+				.handle(result(request));
 	}
 
 	private static class StubLinkExtractor implements LinkExtractor {

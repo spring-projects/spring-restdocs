@@ -19,6 +19,7 @@ package com.example;
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.springframework.http.MediaType;
@@ -49,6 +50,20 @@ private MockMvc mockMvc;
 							.optional()
 							.description("The user's email address")));
 			// end::explicit-type[]
+	}
+
+	public void constraints() throws Exception {
+		this.mockMvc.perform(post("/users/").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			// tag::constraints[]
+			.andDo(document("create-user").withRequestFields(
+					fieldWithPath("name")
+							.description("The user's name")
+							.attribute("constraints", "Must not be null. Must not be empty"),
+					fieldWithPath("email")
+							.description("The user's email address")
+							.attribute("constrains", "Must be a valid email address")));
+			// end::constraints[]
 	}
 
 }

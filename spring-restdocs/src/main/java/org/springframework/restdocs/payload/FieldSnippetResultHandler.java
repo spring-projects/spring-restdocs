@@ -73,39 +73,32 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 
 		Object payload = extractPayload(result);
 
-		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
-				.getAttribute(TemplateEngine.class.getName());
 		Map<String, Object> context = new HashMap<>();
-		List<Map<String, String>> fields = new ArrayList<>();
+		List<Map<String, Object>> fields = new ArrayList<>();
 		context.put("fields", fields);
 		for (Entry<String, FieldDescriptor> entry : this.descriptorsByPath.entrySet()) {
 			FieldDescriptor descriptor = entry.getValue();
-			FieldType type = getFieldType(descriptor, payload);
-			Map<String, String> fieldModel = new HashMap<>();
-			fieldModel.put("path", entry.getKey());
-			fieldModel.put("type", type.toString());
-			fieldModel.put("description", descriptor.getDescription());
-			fields.add(fieldModel);
+			if (descriptor.getType() == null) {
+				descriptor.type(getFieldType(descriptor, payload));
+			}
+			fields.add(descriptor.toModel());
 		}
+		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
+				.getAttribute(TemplateEngine.class.getName());
 		writer.print(templateEngine.compileTemplate(this.templateName).render(context));
 	}
 
 	private FieldType getFieldType(FieldDescriptor descriptor, Object payload) {
-		if (descriptor.getType() != null) {
-			return descriptor.getType();
+		try {
+			return FieldSnippetResultHandler.this.fieldTypeResolver.resolveFieldType(
+					descriptor.getPath(), payload);
 		}
-		else {
-			try {
-				return FieldSnippetResultHandler.this.fieldTypeResolver.resolveFieldType(
-						descriptor.getPath(), payload);
-			}
-			catch (FieldDoesNotExistException ex) {
-				String message = "Cannot determine the type of the field '"
-						+ descriptor.getPath() + "' as it is not present in the"
-						+ " payload. Please provide a type using"
-						+ " FieldDescriptor.type(FieldType).";
-				throw new FieldTypeRequiredException(message);
-			}
+		catch (FieldDoesNotExistException ex) {
+			String message = "Cannot determine the type of the field '"
+					+ descriptor.getPath() + "' as it is not present in the"
+					+ " payload. Please provide a type using"
+					+ " FieldDescriptor.type(FieldType).";
+			throw new FieldTypeRequiredException(message);
 		}
 	}
 
