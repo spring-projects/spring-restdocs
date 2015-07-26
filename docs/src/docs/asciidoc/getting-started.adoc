@@ -1,7 +1,7 @@
 [[getting-started]]
 == Getting started
 
-This section describes how to get started with Spring REST docs.
+This section describes how to get started with Spring REST Docs.
 
 
 
@@ -66,13 +66,13 @@ use as a reference. The key parts of the configuration are described below.
 		dependsOn test
 	}
 ----
-<1> Apply the Asciidoctor plugin
-<2> Add a dependency on spring-restdocs in the `testCompile` configuration:
-<3> Configure a property to define the output location for generated snippets:
-<4> Configure the `test` task with the `org.springframework.restdocs.outputDir` system
+<1> Applies the Asciidoctor plugin.
+<2> Adds a dependency on spring-restdocs in the `testCompile` configuration.
+<3> Configures a property to define the output location for generated snippets.
+<4> Configures the `test` task with the `org.springframework.restdocs.outputDir` system
 property. This property controls the location into which Spring REST Docs will write the
 snippets that it generates.
-<5> Configure the `asciidoctor` task and define an attribute named `snippets`. You can
+<5> Configures the `asciidoctor` task and define an attribute named `snippets`. You can
 then use this attribute when including the generated snippets in your documentation.
 
 
@@ -159,13 +159,13 @@ use as a reference. The key parts of the configuration are described below.
 	</build>
 
 ----
-<1> Add a dependency on `spring-restdocs` in the `test` scope
-<2> Configure a property to define the output location for generated snippets
-<3> Configure the SureFire plugin with the `org.springframework.restdocs.outputDir` system
-property. This property controls the location into which Spring REST docs will write the
+<1> Adds a dependency on `spring-restdocs` in the `test` scope.
+<2> Configures a property to define the output location for generated snippets.
+<3> Configures the SureFire plugin with the `org.springframework.restdocs.outputDir` system
+property. This property controls the location into which Spring REST Docs will write the
 snippets that it generates. The plugin is also configured to include files whose names end
-with `Documentation.java`:
-<4> Configure the Asciidoctor plugin and define an attribute named `snippets`. You can
+with `Documentation.java`.
+<4> Configures the Asciidoctor plugin and define an attribute named `snippets`. You can
 then use this attribute when including the generated snippets in your documentation.
 <5> [[getting-started-build-configuration-maven-plugin-phase]] If you want to
 <<getting-started-build-configuration-maven-packaging, package the documentation>> in your
@@ -216,7 +216,7 @@ be included in the project's jar:
 		</executions>
 	</plugin>
 ----
-<1> The existing declaration for the Asciidoctor plugin
+<1> The existing declaration for the Asciidoctor plugin.
 <2> The resource plugin must be declared after the Asciidoctor plugin as they are bound
 to the same phase and the resource plugin must run after the Asciidoctor plugin.
 
@@ -259,10 +259,10 @@ service and document the request and response.
 ----
 include::{examples-dir}/com/example/InvokeService.java[tags=invoke-service]
 ----
-<1> Invoke the root (`/`) of the service an indicate that an `application/json` response
-is required
-<2> Assert that the service is produced the expected response
-<3> Document the call to the service, writing the snippets into a directory named `index`
+<1> Invokes the root (`/`) of the service an indicate that an `application/json` response
+is required.
+<2> Asserts that the service is produced the expected response.
+<3> Documents the call to the service, writing the snippets into a directory named `index`
 that will be located beneath the configured output directory. The snippets are written by
 a `RestDocumentationResultHandler`. An instance of this class can be obtained from the
 static `document` method on `org.springframework.restdocs.RestDocumentation`.

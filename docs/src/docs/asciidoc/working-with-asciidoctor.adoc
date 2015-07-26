@@ -48,7 +48,7 @@ example, the widths of a table's columns can be specified using the `cols` attri
 [source,adoc,indent=0]
 ----
 [cols=1,3] <1>
-\include::{snippets}index/links.adoc[]
+\include::{snippets}/index/links.adoc[]
 ----
 <1> The table's width will be split across its two columns with the second column being
 three times as wide as the first.
@@ -63,7 +63,7 @@ The title of a table can be specified using a line prefixed by a `.`:
 [source,adoc,indent=0]
 ----
 .Links <1>
-\include::{snippets}index/links.adoc[]
+\include::{snippets}/index/links.adoc[]
 ----
 <1> The table's title will be `Links`.
 
