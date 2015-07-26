@@ -1,7 +1,7 @@
 [[contributing]]
 == Contributing
 
-Spring REST Docs is intended to make is easy for you to produce high-quality documentation
+Spring REST Docs is intended to make it easy for you to produce high-quality documentation
 for your RESTful services. However, we can't achieve that goal without your contributions.
 
 

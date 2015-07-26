@@ -15,17 +15,17 @@ https://en.wikipedia.org/wiki/HATEOAS[Hypermedia-based] API:
 ----
 include::{examples-dir}/com/example/Hypermedia.java[tag=links]
 ----
-<1> `withLinks` is used to describe the expected links
-<2> Expects a link whose rel is `alpha`. Uses the static `linkWithRel` method on
+<1> Use `withLinks` is to describe the expected links.
+<2> Expect a link whose rel is `alpha`. Uses the static `linkWithRel` method on
 `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
-<3> Expects a link whose rel is `bravo`
+<3> Expect a link whose rel is `bravo`.
 
 The result is a snippet named `links.adoc` that contains a table describing the resource's
 links.
 
 When documenting links, the test will fail if an undocumented link is found in the
 response. Similarly, the test will also fail if a documented link is not found in the
-response and the link has not be marked as optional.
+response and the link has not been marked as optional.
 
 
 
@@ -46,7 +46,7 @@ provide one of the built-in `LinkExtractor` implementations to `withLinks`. For 
 ----
 include::{examples-dir}/com/example/Hypermedia.java[tag=explicit-extractor]
 ----
-<1> Indicate that the links are in HAL format using the `halLinks` static method on
+<1> Indicate that the links are in HAL format. Uses the static `halLinks` method on
 `org.springframework.restdocs.hypermedia.LinkExtractors`.
 
 If your API represents its links in a format other than Atom or HAL you can provide your
@@ -64,11 +64,11 @@ provided:
 ----
 include::{examples-dir}/com/example/Payload.java[tags=response]
 ----
-<1> `withResponseFields` is used to describe the expected fields in the response payload.
+<1> Use `withResponseFields` to describe the expected fields in the response payload.
 To document a request `withRequestFields` can be used.
-<2> Expects a field with the path `contact`. Uses the static `fieldWithPath` method on
+<2> Expect a field with the path `contact`. Uses the static `fieldWithPath` method on
 `org.springframework.restdocs.payload.PayloadDocumentation`.
-<3> Expects a field with the path `contact.email`
+<3> Expect a field with the path `contact.email`.
 
 The result is a snippet that contains a table describing the fields. For requests this
 snippet is named `request-fields.adoc`. For responses this snippet is named
@@ -76,7 +76,7 @@ snippet is named `request-fields.adoc`. For responses this snippet is named
 
 When documenting fields, the test will fail if an undocumented field is found in the
 payload. Similarly, the test will also fail if a documented field is not found in the
-payload and the field has not be marked as optional. For payloads with a hierarchical
+payload and the field has not been marked as optional. For payloads with a hierarchical
 structure, documenting a field is sufficient for all of its descendants to also be
 treated as having been documented.
 
@@ -133,7 +133,7 @@ The following paths are all present:
 [[documenting-your-api-request-response-payloads-field-types]]
 ==== Field types
 
-When a field is documented, Spring REST docs will attempt to determine its type by
+When a field is documented, Spring REST Docs will attempt to determine its type by
 examining the payload. Seven different types are supported:
 
 [cols="1,3"]
@@ -182,10 +182,10 @@ A request's query parameters can be documented using `withQueryParameters`
 ----
 include::{examples-dir}/com/example/QueryParameters.java[tags=query-parameters]
 ----
-<1> `withQueryParameters` is used to describe the query parameters
-<2> Documents a parameter named `page`. Uses the static `parameterWithName` method on
+<1> Use `withQueryParameters` to describe the query parameters.
+<2> Document a parameter named `page`. Uses the static `parameterWithName` method on
 `org.springframework.restdocs.request.RequestDocumentation`.
-<3> Documents a parameter named `per_page`
+<3> Document a parameter named `per_page`.
 
 The result is a snippet named `query-parameters.adoc` that contains a table describing
 the query parameters that are supported by the resource.
