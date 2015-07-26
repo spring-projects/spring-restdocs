@@ -14,9 +14,9 @@ via the `andDocument` method:
 ----
 include::{examples-dir}/com/example/ResponsePostProcessing.java[tags=general]
 ----
-<1> Call `modifyResponseTo` to configure response modifications, passing in one or more
+<1> Calls `modifyResponseTo` to configure response modifications, passing in one or more
 `ResponsePostProcessor` implementations.
-<2> Proceed with documenting the call
+<2> Proceeds with documenting the call.
 
 
 [[customizing-responses-pretty-printing]]
