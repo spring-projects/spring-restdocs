@@ -17,12 +17,16 @@
 package com.example;
 
 import static org.springframework.restdocs.RestDocumentation.document;
+import static org.springframework.restdocs.Attributes.attributes;
+import static org.springframework.restdocs.Attributes.key;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.Attributes.key;
 
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.Attributes;
 import org.springframework.restdocs.payload.FieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -57,12 +61,16 @@ private MockMvc mockMvc;
 			.andExpect(status().isOk())
 			// tag::constraints[]
 			.andDo(document("create-user").withRequestFields(
+					attributes(
+							key("title").value("Fields for user creation")), // <1>
 					fieldWithPath("name")
 							.description("The user's name")
-							.attribute("constraints", "Must not be null. Must not be empty"),
+							.attributes(
+									key("constraints").value("Must not be null. Must not be empty")), // <2>
 					fieldWithPath("email")
 							.description("The user's email address")
-							.attribute("constrains", "Must be a valid email address")));
+							.attributes(
+									key("constraints").value("Must be a valid email address")))); // <3>
 			// end::constraints[]
 	}
 

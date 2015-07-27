@@ -17,8 +17,11 @@
 package org.springframework.restdocs.hypermedia;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.Attributes.attributes;
+import static org.springframework.restdocs.Attributes.key;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 import static org.springframework.restdocs.test.StubMvcResult.result;
@@ -57,7 +60,7 @@ public class HypermediaDocumentationTests {
 		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " documented: [foo]"));
-		documentLinks("undocumented-link",
+		documentLinks("undocumented-link", null,
 				new StubLinkExtractor().withLinks(new Link("foo", "bar"))).handle(
 				result());
 	}
@@ -67,7 +70,7 @@ public class HypermediaDocumentationTests {
 		this.thrown.expect(SnippetGenerationException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " found in the response: [foo]"));
-		documentLinks("missing-link", new StubLinkExtractor(),
+		documentLinks("missing-link", null, new StubLinkExtractor(),
 				new LinkDescriptor("foo").description("bar")).handle(result());
 	}
 
@@ -76,7 +79,7 @@ public class HypermediaDocumentationTests {
 		this.snippet.expectLinks("documented-optional-link").withContents( //
 				tableWithHeader("Relation", "Description") //
 						.row("foo", "bar"));
-		documentLinks("documented-optional-link",
+		documentLinks("documented-optional-link", null,
 				new StubLinkExtractor().withLinks(new Link("foo", "blah")),
 				new LinkDescriptor("foo").description("bar").optional()).handle(result());
 	}
@@ -86,7 +89,7 @@ public class HypermediaDocumentationTests {
 		this.snippet.expectLinks("missing-optional-link").withContents( //
 				tableWithHeader("Relation", "Description") //
 						.row("foo", "bar"));
-		documentLinks("missing-optional-link", new StubLinkExtractor(),
+		documentLinks("missing-optional-link", null, new StubLinkExtractor(),
 				new LinkDescriptor("foo").description("bar").optional()).handle(result());
 	}
 
@@ -96,7 +99,7 @@ public class HypermediaDocumentationTests {
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " documented: [a]. Links with the following relations were not"
 				+ " found in the response: [foo]"));
-		documentLinks("undocumented-link-and-missing-link",
+		documentLinks("undocumented-link-and-missing-link", null,
 				new StubLinkExtractor().withLinks(new Link("a", "alpha")),
 				new LinkDescriptor("foo").description("bar")).handle(result());
 	}
@@ -109,14 +112,15 @@ public class HypermediaDocumentationTests {
 						.row("b", "two"));
 		documentLinks(
 				"documented-links",
+				null,
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b",
 						"bravo")), new LinkDescriptor("a").description("one"),
 				new LinkDescriptor("b").description("two")).handle(result());
 	}
 
 	@Test
-	public void linksWithCustomAttributes() throws IOException {
-		this.snippet.expectLinks("documented-links").withContents( //
+	public void linksWithCustomDescriptorAttributes() throws IOException {
+		this.snippet.expectLinks("links-with-custom-descriptor-attributes").withContents( //
 				tableWithHeader("Relation", "Description", "Foo") //
 						.row("a", "one", "alpha") //
 						.row("b", "two", "bravo"));
@@ -129,12 +133,34 @@ public class HypermediaDocumentationTests {
 		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
 				resolver));
 		documentLinks(
-				"documented-links",
+				"links-with-custom-descriptor-attributes",
+				null,
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b",
 						"bravo")),
-				new LinkDescriptor("a").description("one").attribute("foo", "alpha"),
-				new LinkDescriptor("b").description("two").attribute("foo", "bravo"))
-				.handle(result(request));
+				new LinkDescriptor("a").description("one").attributes(
+						key("foo").value("alpha")),
+				new LinkDescriptor("b").description("two").attributes(
+						key("foo").value("bravo"))).handle(result(request));
+	}
+
+	@Test
+	public void linksWithCustomAttribute() throws IOException {
+		this.snippet.expectLinks("links-with-custom-attribute").withContents(
+				startsWith(".Title for the links"));
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("links"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/links-with-title.snippet"));
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		documentLinks(
+				"links-with-custom-attribute",
+				attributes(key("title").value("Title for the links")),
+				new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b",
+						"bravo")), new LinkDescriptor("a").description("one"),
+				new LinkDescriptor("b").description("two")).handle(result(request));
 	}
 
 	private static class StubLinkExtractor implements LinkExtractor {

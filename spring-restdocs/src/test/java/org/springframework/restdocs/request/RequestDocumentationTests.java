@@ -17,8 +17,11 @@
 package org.springframework.restdocs.request;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.Attributes.attributes;
+import static org.springframework.restdocs.Attributes.key;
 import static org.springframework.restdocs.request.RequestDocumentation.documentQueryParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
@@ -57,7 +60,7 @@ public class RequestDocumentationTests {
 		this.thrown
 				.expectMessage(equalTo("Query parameters with the following names were"
 						+ " not documented: [a]"));
-		documentQueryParameters("undocumented-parameter").handle(
+		documentQueryParameters("undocumented-parameter", null).handle(
 				result(get("/").param("a", "alpha")));
 	}
 
@@ -67,7 +70,7 @@ public class RequestDocumentationTests {
 		this.thrown
 				.expectMessage(equalTo("Query parameters with the following names were"
 						+ " not found in the request: [a]"));
-		documentQueryParameters("missing-parameter",
+		documentQueryParameters("missing-parameter", null,
 				parameterWithName("a").description("one")).handle(result(get("/")));
 	}
 
@@ -78,7 +81,7 @@ public class RequestDocumentationTests {
 				.expectMessage(equalTo("Query parameters with the following names were"
 						+ " not documented: [b]. Query parameters with the following"
 						+ " names were not found in the request: [a]"));
-		documentQueryParameters("undocumented-parameter-missing-parameter",
+		documentQueryParameters("undocumented-parameter-missing-parameter", null,
 				parameterWithName("a").description("one")).handle(
 				result(get("/").param("b", "bravo")));
 	}
@@ -89,7 +92,7 @@ public class RequestDocumentationTests {
 				.withContents(
 						tableWithHeader("Parameter", "Description").row("a", "one").row(
 								"b", "two"));
-		documentQueryParameters("parameter-snippet-request-parameters",
+		documentQueryParameters("parameter-snippet-request-parameters", null,
 				parameterWithName("a").description("one"),
 				parameterWithName("b").description("two")).handle(
 				result(get("/").param("a", "bravo").param("b", "bravo")));
@@ -101,15 +104,16 @@ public class RequestDocumentationTests {
 				.withContents(
 						tableWithHeader("Parameter", "Description").row("a", "one").row(
 								"b", "two"));
-		documentQueryParameters("parameter-snippet-request-uri-query-string",
+		documentQueryParameters("parameter-snippet-request-uri-query-string", null,
 				parameterWithName("a").description("one"),
 				parameterWithName("b").description("two")).handle(
 				result(get("/?a=alpha&b=bravo")));
 	}
 
 	@Test
-	public void parametersWithCustomAttributes() throws IOException {
-		this.snippet.expectQueryParameters("parameters-with-custom-attributes")
+	public void parametersWithCustomDescriptorAttributes() throws IOException {
+		this.snippet
+				.expectQueryParameters("parameters-with-custom-descriptor-attributes")
 				.withContents(
 						tableWithHeader("Parameter", "Description", "Foo").row("a",
 								"one", "alpha").row("b", "two", "bravo"));
@@ -123,10 +127,36 @@ public class RequestDocumentationTests {
 				resolver));
 		request.addParameter("a", "bravo");
 		request.addParameter("b", "bravo");
-		documentQueryParameters("parameters-with-custom-attributes",
-				parameterWithName("a").description("one").attribute("foo", "alpha"),
-				parameterWithName("b").description("two").attribute("foo", "bravo"))
-				.handle(result(request));
+		documentQueryParameters(
+				"parameters-with-custom-descriptor-attributes",
+				null,
+				parameterWithName("a").description("one").attributes(
+						key("foo").value("alpha")),
+				parameterWithName("b").description("two").attributes(
+						key("foo").value("bravo"))).handle(result(request));
+	}
+
+	@Test
+	public void parametersWithCustomAttributes() throws IOException {
+		this.snippet.expectQueryParameters("parameters-with-custom-attributes")
+				.withContents(startsWith(".The title"));
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("query-parameters"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/query-parameters-with-title.snippet"));
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		request.addParameter("a", "bravo");
+		request.addParameter("b", "bravo");
+		documentQueryParameters(
+				"parameters-with-custom-attributes",
+				attributes(key("title").value("The title")),
+				parameterWithName("a").description("one").attributes(
+						key("foo").value("alpha")),
+				parameterWithName("b").description("two").attributes(
+						key("foo").value("bravo"))).handle(result(request));
 
 	}
 }

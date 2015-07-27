@@ -18,6 +18,7 @@ package org.springframework.restdocs.payload;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -28,8 +29,9 @@ import org.springframework.test.web.servlet.MvcResult;
  */
 public class RequestFieldSnippetResultHandler extends FieldSnippetResultHandler {
 
-	RequestFieldSnippetResultHandler(String outputDir, List<FieldDescriptor> descriptors) {
-		super(outputDir, "request", descriptors);
+	RequestFieldSnippetResultHandler(String outputDir, Map<String, Object> attributes,
+			List<FieldDescriptor> descriptors) {
+		super(outputDir, "request", attributes, descriptors);
 	}
 
 	@Override

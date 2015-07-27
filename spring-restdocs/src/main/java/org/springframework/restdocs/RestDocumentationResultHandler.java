@@ -26,6 +26,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.document
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.restdocs.hypermedia.HypermediaDocumentation;
 import org.springframework.restdocs.hypermedia.LinkDescriptor;
@@ -35,6 +36,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.request.ParameterDescriptor;
 import org.springframework.restdocs.request.RequestDocumentation;
+import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
 
@@ -49,15 +51,55 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	private final String outputDir;
 
-	private List<ResultHandler> delegates = new ArrayList<>();
+	private SnippetWritingResultHandler curlRequest;
+
+	private SnippetWritingResultHandler httpRequest;
+
+	private SnippetWritingResultHandler httpResponse;
+
+	private List<SnippetWritingResultHandler> delegates = new ArrayList<>();
 
 	RestDocumentationResultHandler(String outputDir) {
 		this.outputDir = outputDir;
+		this.curlRequest = documentCurlRequest(this.outputDir, null);
+		this.httpRequest = documentHttpRequest(this.outputDir, null);
+		this.httpResponse = documentHttpResponse(this.outputDir, null);
+	}
 
-		this.delegates = new ArrayList<ResultHandler>();
-		this.delegates.add(documentCurlRequest(this.outputDir));
-		this.delegates.add(documentHttpRequest(this.outputDir));
-		this.delegates.add(documentHttpResponse(this.outputDir));
+	/**
+	 * Customizes the default curl request snippet generation to make the given attributes
+	 * available.
+	 * 
+	 * @param attributes the attributes
+	 * @return {@code this}
+	 */
+	public RestDocumentationResultHandler withCurlRequest(Map<String, Object> attributes) {
+		this.curlRequest = documentCurlRequest(this.outputDir, attributes);
+		return this;
+	}
+
+	/**
+	 * Customizes the default HTTP request snippet generation to make the given attributes
+	 * available.
+	 * 
+	 * @param attributes the attributes
+	 * @return {@code this}
+	 */
+	public RestDocumentationResultHandler withHttpRequest(Map<String, Object> attributes) {
+		this.httpRequest = documentHttpRequest(this.outputDir, attributes);
+		return this;
+	}
+
+	/**
+	 * Customizes the default HTTP response snippet generation to make the given
+	 * attributes available.
+	 * 
+	 * @param attributes the attributes
+	 * @return {@code this}
+	 */
+	public RestDocumentationResultHandler withHttpResponse(Map<String, Object> attributes) {
+		this.httpResponse = documentHttpResponse(this.outputDir, attributes);
+		return this;
 	}
 
 	/**
@@ -75,7 +117,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 * @see LinkExtractors#extractorForContentType(String)
 	 */
 	public RestDocumentationResultHandler withLinks(LinkDescriptor... descriptors) {
-		return withLinks(null, descriptors);
+		return withLinks(null, null, descriptors);
 	}
 
 	/**
@@ -94,7 +136,50 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 */
 	public RestDocumentationResultHandler withLinks(LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
-		this.delegates.add(documentLinks(this.outputDir, linkExtractor, descriptors));
+		return this.withLinks(null, linkExtractor, descriptors);
+	}
+
+	/**
+	 * Document the links in the response using the given {@code descriptors}. The links
+	 * are extracted from the response based on its content type. The given
+	 * {@code attributes} are made available during the generation of the links snippet.
+	 * <p>
+	 * If a link is present in the response but is not described by one of the descriptors
+	 * a failure will occur when this handler is invoked. Similarly, if a link is
+	 * described but is not present in the response a failure will also occur when this
+	 * handler is invoked.
+	 * 
+	 * @param attributes the attributes
+	 * @param descriptors the link descriptors
+	 * @return {@code this}
+	 * @see HypermediaDocumentation#linkWithRel(String)
+	 * @see LinkExtractors#extractorForContentType(String)
+	 */
+	public RestDocumentationResultHandler withLinks(Map<String, Object> attributes,
+			LinkDescriptor... descriptors) {
+		return withLinks(attributes, null, descriptors);
+	}
+
+	/**
+	 * Document the links in the response using the given {@code descriptors}. The links
+	 * are extracted from the response using the given {@code linkExtractor}. The given
+	 * {@code attributes} are made available during the generation of the links snippet.
+	 * <p>
+	 * If a link is present in the response but is not described by one of the descriptors
+	 * a failure will occur when this handler is invoked. Similarly, if a link is
+	 * described but is not present in the response a failure will also occur when this
+	 * handler is invoked.
+	 * 
+	 * @param attributes the attributes
+	 * @param linkExtractor used to extract the links from the response
+	 * @param descriptors the link descriptors
+	 * @return {@code this}
+	 * @see HypermediaDocumentation#linkWithRel(String)
+	 */
+	public RestDocumentationResultHandler withLinks(Map<String, Object> attributes,
+			LinkExtractor linkExtractor, LinkDescriptor... descriptors) {
+		this.delegates.add(documentLinks(this.outputDir, attributes, linkExtractor,
+				descriptors));
 		return this;
 	}
 
@@ -114,7 +199,30 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 */
 	public RestDocumentationResultHandler withRequestFields(
 			FieldDescriptor... descriptors) {
-		this.delegates.add(documentRequestFields(this.outputDir, descriptors));
+		return this.withRequestFields(null, descriptors);
+	}
+
+	/**
+	 * Document the fields in the request using the given {@code descriptors}. The given
+	 * {@code attributes} are made available during the generation of the request fields
+	 * snippet.
+	 * <p>
+	 * If a field is present in the request but is not documented by one of the
+	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request a
+	 * failure will also occur. For payloads with a hierarchical structure, documenting a
+	 * field is sufficient for all of its descendants to also be treated as having been
+	 * documented.
+	 * 
+	 * @param descriptors the link descriptors
+	 * @param attributes the attributes
+	 * @return {@code this}
+	 * @see PayloadDocumentation#fieldWithPath(String)
+	 */
+	public RestDocumentationResultHandler withRequestFields(
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		this.delegates
+				.add(documentRequestFields(this.outputDir, attributes, descriptors));
 		return this;
 	}
 
@@ -134,7 +242,30 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 */
 	public RestDocumentationResultHandler withResponseFields(
 			FieldDescriptor... descriptors) {
-		this.delegates.add(documentResponseFields(this.outputDir, descriptors));
+		return this.withResponseFields(null, descriptors);
+	}
+
+	/**
+	 * Document the fields in the response using the given {@code descriptors}. The given
+	 * {@code attributes} are made available during the generation of the request fields
+	 * snippet.
+	 * <p>
+	 * If a field is present in the response but is not documented by one of the
+	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field is sufficient for all of its descendants to also be treated as having been
+	 * documented.
+	 * 
+	 * @param descriptors the link descriptors
+	 * @param attributes the attributes
+	 * @return {@code this}
+	 * @see PayloadDocumentation#fieldWithPath(String)
+	 */
+	public RestDocumentationResultHandler withResponseFields(
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		this.delegates
+				.add(documentResponseFields(this.outputDir, attributes, descriptors));
 		return this;
 	}
 
@@ -153,12 +284,36 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 */
 	public RestDocumentationResultHandler withQueryParameters(
 			ParameterDescriptor... descriptors) {
-		this.delegates.add(documentQueryParameters(this.outputDir, descriptors));
+		return this.withQueryParameters(null, descriptors);
+	}
+
+	/**
+	 * Documents the parameters in the request's query string using the given
+	 * {@code descriptors}. The given {@code attributes} are made available during the
+	 * generation of the query parameters snippet.
+	 * <p>
+	 * If a parameter is present in the query string but is not described by one of the
+	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
+	 * parameter is described but is not present in the request a failure will also occur
+	 * when this handler is invoked.
+	 * 
+	 * @param descriptors the parameter descriptors
+	 * @param attributes the attributes
+	 * @return {@code this}
+	 * @see RequestDocumentation#parameterWithName(String)
+	 */
+	public RestDocumentationResultHandler withQueryParameters(
+			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
+		this.delegates.add(documentQueryParameters(this.outputDir, attributes,
+				descriptors));
 		return this;
 	}
 
 	@Override
 	public void handle(MvcResult result) throws Exception {
+		this.curlRequest.handle(result);
+		this.httpRequest.handle(result);
+		this.httpResponse.handle(result);
 		for (ResultHandler delegate : this.delegates) {
 			delegate.handle(result);
 		}

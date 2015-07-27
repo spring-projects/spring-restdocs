@@ -16,6 +16,11 @@
 
 package org.springframework.restdocs.curl;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.Attributes.attributes;
+import static org.springframework.restdocs.Attributes.key;
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.StubMvcResult.result;
@@ -29,9 +34,13 @@ import java.io.IOException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateResourceResolver;
+import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
@@ -54,14 +63,14 @@ public class CurlDocumentationTests {
 	public void getRequest() throws IOException {
 		this.snippet.expectCurlRequest("get-request").withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo' -i"));
-		documentCurlRequest("get-request").handle(result(get("/foo")));
+		documentCurlRequest("get-request", null).handle(result(get("/foo")));
 	}
 
 	@Test
 	public void nonGetRequest() throws IOException {
 		this.snippet.expectCurlRequest("non-get-request").withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo' -i -X POST"));
-		documentCurlRequest("non-get-request").handle(result(post("/foo")));
+		documentCurlRequest("non-get-request", null).handle(result(post("/foo")));
 	}
 
 	@Test
@@ -69,7 +78,7 @@ public class CurlDocumentationTests {
 		this.snippet.expectCurlRequest("request-with-content").withContents(
 				codeBlock("bash")
 						.content("$ curl 'http://localhost/foo' -i -d 'content'"));
-		documentCurlRequest("request-with-content").handle(
+		documentCurlRequest("request-with-content", null).handle(
 				result(get("/foo").content("content")));
 	}
 
@@ -79,7 +88,7 @@ public class CurlDocumentationTests {
 				.withContents(
 						codeBlock("bash").content(
 								"$ curl 'http://localhost/foo?param=value' -i"));
-		documentCurlRequest("request-with-query-string").handle(
+		documentCurlRequest("request-with-query-string", null).handle(
 				result(get("/foo?param=value")));
 	}
 
@@ -87,7 +96,7 @@ public class CurlDocumentationTests {
 	public void requestWithOneParameter() throws IOException {
 		this.snippet.expectCurlRequest("request-with-one-parameter").withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo?k1=v1' -i"));
-		documentCurlRequest("request-with-one-parameter").handle(
+		documentCurlRequest("request-with-one-parameter", null).handle(
 				result(get("/foo").param("k1", "v1")));
 	}
 
@@ -96,7 +105,7 @@ public class CurlDocumentationTests {
 		this.snippet.expectCurlRequest("request-with-multiple-parameters").withContents(
 				codeBlock("bash").content(
 						"$ curl 'http://localhost/foo?k1=v1&k1=v1-bis&k2=v2' -i"));
-		documentCurlRequest("request-with-multiple-parameters").handle(
+		documentCurlRequest("request-with-multiple-parameters", null).handle(
 				result(get("/foo").param("k1", "v1").param("k2", "v2")
 						.param("k1", "v1-bis")));
 	}
@@ -107,7 +116,7 @@ public class CurlDocumentationTests {
 				.withContents(
 						codeBlock("bash").content(
 								"$ curl 'http://localhost/foo?k1=foo+bar%26' -i"));
-		documentCurlRequest("request-with-url-encoded-parameter").handle(
+		documentCurlRequest("request-with-url-encoded-parameter", null).handle(
 				result(get("/foo").param("k1", "foo bar&")));
 	}
 
@@ -116,7 +125,7 @@ public class CurlDocumentationTests {
 		this.snippet.expectCurlRequest("post-request-with-one-parameter").withContents(
 				codeBlock("bash").content(
 						"$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
-		documentCurlRequest("post-request-with-one-parameter").handle(
+		documentCurlRequest("post-request-with-one-parameter", null).handle(
 				result(post("/foo").param("k1", "v1")));
 	}
 
@@ -127,7 +136,7 @@ public class CurlDocumentationTests {
 						codeBlock("bash").content(
 								"$ curl 'http://localhost/foo' -i -X POST"
 										+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
-		documentCurlRequest("post-request-with-multiple-parameters").handle(
+		documentCurlRequest("post-request-with-multiple-parameters", null).handle(
 				result(post("/foo").param("k1", "v1", "v1-bis").param("k2", "v2")));
 	}
 
@@ -138,7 +147,7 @@ public class CurlDocumentationTests {
 				.withContents(
 						codeBlock("bash").content(
 								"$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
-		documentCurlRequest("post-request-with-url-encoded-parameter").handle(
+		documentCurlRequest("post-request-with-url-encoded-parameter", null).handle(
 				result(post("/foo").param("k1", "a&b")));
 	}
 
@@ -147,7 +156,7 @@ public class CurlDocumentationTests {
 		this.snippet.expectCurlRequest("put-request-with-one-parameter").withContents(
 				codeBlock("bash").content(
 						"$ curl 'http://localhost/foo' -i -X PUT -d 'k1=v1'"));
-		documentCurlRequest("put-request-with-one-parameter").handle(
+		documentCurlRequest("put-request-with-one-parameter", null).handle(
 				result(put("/foo").param("k1", "v1")));
 	}
 
@@ -158,7 +167,7 @@ public class CurlDocumentationTests {
 						codeBlock("bash").content(
 								"$ curl 'http://localhost/foo' -i -X PUT"
 										+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
-		documentCurlRequest("put-request-with-multiple-parameters").handle(
+		documentCurlRequest("put-request-with-multiple-parameters", null).handle(
 				result(put("/foo").param("k1", "v1", "v1-bis").param("k2", "v2")));
 	}
 
@@ -168,7 +177,7 @@ public class CurlDocumentationTests {
 				.withContents(
 						codeBlock("bash").content(
 								"$ curl 'http://localhost/foo' -i -X PUT -d 'k1=a%26b'"));
-		documentCurlRequest("put-request-with-url-encoded-parameter").handle(
+		documentCurlRequest("put-request-with-url-encoded-parameter", null).handle(
 				result(put("/foo").param("k1", "a&b")));
 	}
 
@@ -178,7 +187,7 @@ public class CurlDocumentationTests {
 				codeBlock("bash").content(
 						"$ curl 'http://localhost/foo' -i"
 								+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
-		documentCurlRequest("request-with-headers").handle(
+		documentCurlRequest("request-with-headers", null).handle(
 				result(get("/foo").contentType(MediaType.APPLICATION_JSON).header("a",
 						"alpha")));
 	}
@@ -189,7 +198,7 @@ public class CurlDocumentationTests {
 				codeBlock("bash").content("$ curl 'http://localhost:8080/foo' -i"));
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(8080);
-		documentCurlRequest("http-with-non-standard-port").handle(result(request));
+		documentCurlRequest("http-with-non-standard-port", null).handle(result(request));
 	}
 
 	@Test
@@ -199,7 +208,7 @@ public class CurlDocumentationTests {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(443);
 		request.setScheme("https");
-		documentCurlRequest("https-with-standard-port").handle(result(request));
+		documentCurlRequest("https-with-standard-port", null).handle(result(request));
 	}
 
 	@Test
@@ -209,7 +218,7 @@ public class CurlDocumentationTests {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerPort(8443);
 		request.setScheme("https");
-		documentCurlRequest("https-with-non-standard-port").handle(result(request));
+		documentCurlRequest("https-with-non-standard-port", null).handle(result(request));
 	}
 
 	@Test
@@ -218,7 +227,7 @@ public class CurlDocumentationTests {
 				codeBlock("bash").content("$ curl 'http://api.example.com/foo' -i"));
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
-		documentCurlRequest("request-with-custom-host").handle(result(request));
+		documentCurlRequest("request-with-custom-host", null).handle(result(request));
 	}
 
 	@Test
@@ -230,7 +239,7 @@ public class CurlDocumentationTests {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
 		request.setContextPath("/v3");
-		documentCurlRequest("request-with-custom-context-with-slash").handle(
+		documentCurlRequest("request-with-custom-context-with-slash", null).handle(
 				result(request));
 	}
 
@@ -243,7 +252,7 @@ public class CurlDocumentationTests {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
 		request.setContextPath("v3");
-		documentCurlRequest("request-with-custom-context-without-slash").handle(
+		documentCurlRequest("request-with-custom-context-without-slash", null).handle(
 				result(request));
 	}
 
@@ -256,7 +265,7 @@ public class CurlDocumentationTests {
 				.withContents(codeBlock("bash").content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("metadata",
 				"{\"description\": \"foo\"}".getBytes());
-		documentCurlRequest("multipart-post-no-original-filename").handle(
+		documentCurlRequest("multipart-post-no-original-filename", null).handle(
 				result(fileUpload("/upload").file(multipartFile)));
 	}
 
@@ -270,7 +279,7 @@ public class CurlDocumentationTests {
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", MediaType.IMAGE_PNG_VALUE,
 				"bytes".getBytes());
-		documentCurlRequest("multipart-post-with-content-type").handle(
+		documentCurlRequest("multipart-post-with-content-type", null).handle(
 				result(fileUpload("/upload").file(multipartFile)));
 	}
 
@@ -283,7 +292,7 @@ public class CurlDocumentationTests {
 				codeBlock("bash").content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", null, "bytes".getBytes());
-		documentCurlRequest("multipart-post").handle(
+		documentCurlRequest("multipart-post", null).handle(
 				result(fileUpload("/upload").file(multipartFile)));
 	}
 
@@ -297,9 +306,26 @@ public class CurlDocumentationTests {
 				codeBlock("bash").content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", null, "bytes".getBytes());
-		documentCurlRequest("multipart-post").handle(
+		documentCurlRequest("multipart-post", null).handle(
 				result(fileUpload("/upload").file(multipartFile)
 						.param("a", "apple", "avocado").param("b", "banana")));
+	}
+
+	@Test
+	public void customAttributes() throws IOException {
+		this.snippet.expectCurlRequest("custom-attributes").withContents(
+				containsString("curl request title"));
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("curl-request"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/curl-request-with-title.snippet"));
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		documentCurlRequest("custom-attributes",
+				attributes(key("title").value("curl request title"))).handle(
+				result(request));
 	}
 
 }

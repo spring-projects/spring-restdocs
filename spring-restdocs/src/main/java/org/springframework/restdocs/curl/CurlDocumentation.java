@@ -50,10 +50,13 @@ public abstract class CurlDocumentation {
 	 * Produces a documentation snippet containing the request formatted as a cURL command
 	 *
 	 * @param outputDir The directory to which snippet should be written
+	 * @param attributes Attributes made available during rendering of the curl request
+	 * snippet
 	 * @return the handler that will produce the snippet
 	 */
-	public static SnippetWritingResultHandler documentCurlRequest(String outputDir) {
-		return new CurlRequestWritingResultHandler(outputDir);
+	public static SnippetWritingResultHandler documentCurlRequest(String outputDir,
+			Map<String, Object> attributes) {
+		return new CurlRequestWritingResultHandler(outputDir, attributes);
 	}
 
 	private static final class CurlRequestWritingResultHandler extends
@@ -67,15 +70,16 @@ public abstract class CurlDocumentation {
 
 		private static final int STANDARD_PORT_HTTPS = 443;
 
-		private CurlRequestWritingResultHandler(String outputDir) {
-			super(outputDir, "curl-request");
+		private CurlRequestWritingResultHandler(String outputDir,
+				Map<String, Object> attributes) {
+			super(outputDir, "curl-request", attributes);
 		}
 
 		@Override
 		public void handle(MvcResult result, PrintWriter writer) throws IOException {
 			Map<String, Object> context = new HashMap<String, Object>();
-			context.put("language", "bash");
 			context.put("arguments", getCurlCommandArguments(result));
+			context.putAll(getAttributes());
 
 			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
 					.getAttribute(TemplateEngine.class.getName());

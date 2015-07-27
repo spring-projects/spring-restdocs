@@ -3,6 +3,8 @@ package org.springframework.restdocs;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.restdocs.Attributes.Attribute;
+
 /**
  * Base class for descriptors. Provides the ability to associate arbitrary attributes with
  * a descriptor.
@@ -13,17 +15,19 @@ import java.util.Map;
  */
 public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 
-	private final Map<String, Object> attributes = new HashMap<>();
+	private Map<String, Object> attributes = new HashMap<>();
 
 	/**
-	 * Sets an attribute with the given {@code name} and {@code value}.
+	 * Sets the descriptor's attributes
 	 * 
-	 * @param name The name of the attribute
-	 * @param value The value of the attribute
+	 * @param attributes the attributes
+	 * @return the descriptor
 	 */
 	@SuppressWarnings("unchecked")
-	public T attribute(String name, Object value) {
-		this.attributes.put(name, value);
+	public T attributes(Attribute... attributes) {
+		for (Attribute attribute : attributes) {
+			this.attributes.put(attribute.getKey(), attribute.getValue());
+		}
 		return (T) this;
 	}
 

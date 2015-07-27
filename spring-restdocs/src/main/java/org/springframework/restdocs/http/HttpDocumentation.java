@@ -54,10 +54,13 @@ public abstract class HttpDocumentation {
 	 * request
 	 * 
 	 * @param outputDir The directory to which snippet should be written
+	 * @param attributes Attributes made available during rendering of the HTTP requst
+	 * snippet
 	 * @return the handler that will produce the snippet
 	 */
-	public static SnippetWritingResultHandler documentHttpRequest(String outputDir) {
-		return new HttpRequestWritingResultHandler(outputDir);
+	public static SnippetWritingResultHandler documentHttpRequest(String outputDir,
+			Map<String, Object> attributes) {
+		return new HttpRequestWritingResultHandler(outputDir, attributes);
 	}
 
 	/**
@@ -65,18 +68,22 @@ public abstract class HttpDocumentation {
 	 * response sent by the server
 	 * 
 	 * @param outputDir The directory to which snippet should be written
+	 * @param attributes Attributes made available during rendering of the HTTP response
+	 * snippet
 	 * @return the handler that will produce the snippet
 	 */
-	public static SnippetWritingResultHandler documentHttpResponse(String outputDir) {
-		return new HttpResponseWritingResultHandler(outputDir);
+	public static SnippetWritingResultHandler documentHttpResponse(String outputDir,
+			Map<String, Object> attributes) {
+		return new HttpResponseWritingResultHandler(outputDir, attributes);
 
 	}
 
 	private static final class HttpRequestWritingResultHandler extends
 			SnippetWritingResultHandler {
 
-		private HttpRequestWritingResultHandler(String outputDir) {
-			super(outputDir, "http-request");
+		private HttpRequestWritingResultHandler(String outputDir,
+				Map<String, Object> attributes) {
+			super(outputDir, "http-request", attributes);
 		}
 
 		@Override
@@ -84,11 +91,11 @@ public abstract class HttpDocumentation {
 			DocumentableHttpServletRequest request = new DocumentableHttpServletRequest(
 					result.getRequest());
 			Map<String, Object> context = new HashMap<String, Object>();
-			context.put("language", "http");
 			context.put("method", result.getRequest().getMethod());
 			context.put("path", request.getRequestUriWithQueryString());
 			context.put("headers", getHeaders(request));
 			context.put("requestBody", getRequestBody(request));
+			context.putAll(getAttributes());
 
 			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
 					.getAttribute(TemplateEngine.class.getName());
@@ -212,8 +219,9 @@ public abstract class HttpDocumentation {
 	private static final class HttpResponseWritingResultHandler extends
 			SnippetWritingResultHandler {
 
-		private HttpResponseWritingResultHandler(String outputDir) {
-			super(outputDir, "http-response");
+		private HttpResponseWritingResultHandler(String outputDir,
+				Map<String, Object> attributes) {
+			super(outputDir, "http-response", attributes);
 		}
 
 		@Override
@@ -225,7 +233,6 @@ public abstract class HttpDocumentation {
 					StringUtils.hasLength(result.getResponse().getContentAsString()) ? String
 							.format("%n%s", result.getResponse().getContentAsString())
 							: "");
-			context.put("language", "http");
 			context.put("statusCode", status.value());
 			context.put("statusReason", status.getReasonPhrase());
 
@@ -237,6 +244,8 @@ public abstract class HttpDocumentation {
 					headers.add(header(headerName, header));
 				}
 			}
+
+			context.putAll(getAttributes());
 
 			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
 					.getAttribute(TemplateEngine.class.getName());

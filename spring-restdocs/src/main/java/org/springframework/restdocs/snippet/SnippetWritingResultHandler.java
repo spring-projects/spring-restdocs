@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.restdocs.config.RestDocumentationContext;
 import org.springframework.test.web.servlet.MvcResult;
@@ -35,13 +37,19 @@ import org.springframework.test.web.servlet.ResultHandler;
  */
 public abstract class SnippetWritingResultHandler implements ResultHandler {
 
-	private String outputDir;
+	private final Map<String, Object> attributes = new HashMap<>();
 
-	private String fileName;
+	private final String outputDir;
 
-	protected SnippetWritingResultHandler(String outputDir, String fileName) {
+	private final String fileName;
+
+	protected SnippetWritingResultHandler(String outputDir, String fileName,
+			Map<String, Object> attributes) {
 		this.outputDir = outputDir;
 		this.fileName = fileName;
+		if (attributes != null) {
+			this.attributes.putAll(attributes);
+		}
 	}
 
 	protected abstract void handle(MvcResult result, PrintWriter writer)
@@ -52,6 +60,10 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 		try (Writer writer = createWriter()) {
 			handle(result, new PrintWriter(writer));
 		}
+	}
+
+	protected Map<String, Object> getAttributes() {
+		return this.attributes;
 	}
 
 	private Writer createWriter() throws IOException {

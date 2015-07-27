@@ -283,39 +283,52 @@ override the template for the `curl-request.adoc` snippet, create a template nam
 
 [[documenting-your-api-customizing-including-extra-information]]
 ==== Including extra information
-The descriptors for fields, links, and query parameters all have an `attribute` method
-that can be used to associate one or more key-value pairs with the descriptor. These
-attributes are made available during the template rendering process. Coupled with
-a custom snippet template, this makes it possible to include extra information in a
-generated snippet.
 
-A concrete example of the above is the addition of a constraints column when documenting
-request fields. The first step is to provide a `constraints` attribute for each field that
-you are documenting:
+There are two ways to provide extra information for inclusion in a generated snippet:
+
+. Use the `attributes` method on a field, link or query parameter descriptor to add one or
+  more attributes to an individual descriptor
+. Pass in some attributes when calling `withCurlRequest`, `withHttpRequest`,
+  `withHttpResponse`, etc on `RestDocumentationResultHandler`. Such attributes will be
+  associated with the snippet as a whole.
+
+Any additional attributes are made available during the template rendering process.
+Coupled with a custom snippet template, this makes it possible to include extra
+information in a generated snippet.
+
+A concrete example of the above is the addition of a constraints column and a title when
+documenting request fields. The first step is to provide a `constraints` attribute for
+each field that you are documenting and to provide a `title` attribute:
 
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/Payload.java[tags=constraints]
 ----
+<1> Configure the `title` attribute for the request fields snippet
+<2> Set the `constraints` attribute for the `name` field
+<3> Set the `constraints` attribute for the `email` field
 
 The second step is to provide a custom template named `request-fields.snippet` that
-includes the information about the fields' constraints in the generated snippet's table:
+includes the information about the fields' constraints in the generated snippet's table
+and adds a title:
 
 [source,indent=0]
 ----
+	.{{title}} <1>
 	|===
-	|Path|Type|Description|Constraints <1>
+	|Path|Type|Description|Constraints <2>
 
 	{{#fields}}
 	|{{path}}
 	|{{type}}
 	|{{description}}
-	|{{constraints}} <2>
+	|{{constraints}} <3>
 
 	{{/fields}}
 	|===
 ----
-<1> Add a new column named "Constraints"
-<2> Include the descriptors' `constraints` attribute in each row of the table
+<1> Add a title to the table
+<2> Add a new column named "Constraints"
+<3> Include the descriptors' `constraints` attribute in each row of the table
 
 

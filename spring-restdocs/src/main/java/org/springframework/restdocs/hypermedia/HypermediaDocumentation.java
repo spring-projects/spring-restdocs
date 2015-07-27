@@ -17,6 +17,7 @@
 package org.springframework.restdocs.hypermedia;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationResultHandler;
 
@@ -48,6 +49,7 @@ public abstract class HypermediaDocumentation {
 	 * snippet for a response's links.
 	 * 
 	 * @param outputDir The directory to which the snippet should be written
+	 * @param attributes Attributes made available during rendering of the links snippet
 	 * @param linkExtractor Used to extract the links from the response
 	 * @param descriptors The descriptions of the response's links
 	 * @return the handler
@@ -55,8 +57,9 @@ public abstract class HypermediaDocumentation {
 	 * @see RestDocumentationResultHandler#withLinks(LinkExtractor, LinkDescriptor...)
 	 */
 	public static LinkSnippetResultHandler documentLinks(String outputDir,
-			LinkExtractor linkExtractor, LinkDescriptor... descriptors) {
-		return new LinkSnippetResultHandler(outputDir, linkExtractor,
+			Map<String, Object> attributes, LinkExtractor linkExtractor,
+			LinkDescriptor... descriptors) {
+		return new LinkSnippetResultHandler(outputDir, attributes, linkExtractor,
 				Arrays.asList(descriptors));
 	}
 }

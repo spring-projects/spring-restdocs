@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.request;
 
+import java.util.Map;
+
 import org.springframework.restdocs.RestDocumentationResultHandler;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
 
@@ -35,13 +37,15 @@ public abstract class RequestDocumentation {
 	 * documenting a request's query parameters
 	 * 
 	 * @param outputDir The directory to which the snippet should be written
+	 * @param attributes Attributes made available during rendering of the query
+	 * parameters snippet
 	 * @param descriptors The descriptions of the parameters in the request's query string
 	 * @return the result handler
 	 * @see RestDocumentationResultHandler#withQueryParameters(ParameterDescriptor...)
 	 */
 	public static SnippetWritingResultHandler documentQueryParameters(String outputDir,
-			ParameterDescriptor... descriptors) {
-		return new QueryParametersSnippetResultHandler(outputDir, descriptors);
+			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
+		return new QueryParametersSnippetResultHandler(outputDir, attributes, descriptors);
 	}
 
 	/**

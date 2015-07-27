@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -29,8 +30,9 @@ import org.springframework.test.web.servlet.MvcResult;
  */
 public class ResponseFieldSnippetResultHandler extends FieldSnippetResultHandler {
 
-	ResponseFieldSnippetResultHandler(String outputDir, List<FieldDescriptor> descriptors) {
-		super(outputDir, "response", descriptors);
+	ResponseFieldSnippetResultHandler(String outputDir, Map<String, Object> attributes,
+			List<FieldDescriptor> descriptors) {
+		super(outputDir, "response", attributes, descriptors);
 	}
 
 	@Override

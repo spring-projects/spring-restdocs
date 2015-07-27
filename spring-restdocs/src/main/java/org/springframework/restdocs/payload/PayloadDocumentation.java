@@ -17,6 +17,7 @@
 package org.springframework.restdocs.payload;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationResultHandler;
 
@@ -107,14 +108,16 @@ public abstract class PayloadDocumentation {
 	 * documented.
 	 * 
 	 * @param outputDir The directory to which the snippet should be written
+	 * @param attributes Attributes made available during rendering of the links snippet
 	 * @param descriptors The descriptions of the request's fields
 	 * @return the handler
 	 * @see RestDocumentationResultHandler#withRequestFields(FieldDescriptor...)
 	 * @see #fieldWithPath(String)
 	 */
 	public static FieldSnippetResultHandler documentRequestFields(String outputDir,
-			FieldDescriptor... descriptors) {
-		return new RequestFieldSnippetResultHandler(outputDir, Arrays.asList(descriptors));
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		return new RequestFieldSnippetResultHandler(outputDir, attributes,
+				Arrays.asList(descriptors));
 	}
 
 	/**
@@ -129,13 +132,14 @@ public abstract class PayloadDocumentation {
 	 * documented.
 	 * 
 	 * @param outputDir The directory to which the snippet should be written
+	 * @param attributes Attributes made available during rendering of the links snippet
 	 * @param descriptors The descriptions of the response's fields
 	 * @return the handler
 	 * @see RestDocumentationResultHandler#withResponseFields(FieldDescriptor...)
 	 */
 	public static FieldSnippetResultHandler documentResponseFields(String outputDir,
-			FieldDescriptor... descriptors) {
-		return new ResponseFieldSnippetResultHandler(outputDir,
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		return new ResponseFieldSnippetResultHandler(outputDir, attributes,
 				Arrays.asList(descriptors));
 	}
 

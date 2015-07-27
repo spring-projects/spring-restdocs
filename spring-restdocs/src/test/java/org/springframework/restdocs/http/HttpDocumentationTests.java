@@ -16,8 +16,13 @@
 
 package org.springframework.restdocs.http;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.restdocs.Attributes.attributes;
+import static org.springframework.restdocs.Attributes.key;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRequest;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpResponse;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
@@ -35,11 +40,15 @@ import java.io.IOException;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateResourceResolver;
+import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
@@ -61,7 +70,7 @@ public class HttpDocumentationTests {
 				httpRequest(GET, "/foo").header(HttpHeaders.HOST, "localhost").header(
 						"Alpha", "a"));
 
-		documentHttpRequest("get-request").handle(
+		documentHttpRequest("get-request", null).handle(
 				result(get("/foo").header("Alpha", "a")));
 	}
 
@@ -70,7 +79,7 @@ public class HttpDocumentationTests {
 		this.snippet.expectHttpRequest("get-request-with-query-string").withContents(
 				httpRequest(GET, "/foo?bar=baz").header(HttpHeaders.HOST, "localhost"));
 
-		documentHttpRequest("get-request-with-query-string").handle(
+		documentHttpRequest("get-request-with-query-string", null).handle(
 				result(get("/foo?bar=baz")));
 	}
 
@@ -79,7 +88,7 @@ public class HttpDocumentationTests {
 		this.snippet.expectHttpRequest("get-request-with-parameter").withContents(
 				httpRequest(GET, "/foo?b%26r=baz").header(HttpHeaders.HOST, "localhost"));
 
-		documentHttpRequest("get-request-with-parameter").handle(
+		documentHttpRequest("get-request-with-parameter", null).handle(
 				result(get("/foo").param("b&r", "baz")));
 	}
 
@@ -89,7 +98,7 @@ public class HttpDocumentationTests {
 				httpRequest(POST, "/foo").header(HttpHeaders.HOST, "localhost").content(
 						"Hello, world"));
 
-		documentHttpRequest("post-request-with-content").handle(
+		documentHttpRequest("post-request-with-content", null).handle(
 				result(post("/foo").content("Hello, world")));
 	}
 
@@ -100,7 +109,7 @@ public class HttpDocumentationTests {
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
-		documentHttpRequest("post-request-with-parameter").handle(
+		documentHttpRequest("post-request-with-parameter", null).handle(
 				result(post("/foo").param("b&r", "baz").param("a", "alpha")));
 	}
 
@@ -110,7 +119,7 @@ public class HttpDocumentationTests {
 				httpRequest(PUT, "/foo").header(HttpHeaders.HOST, "localhost").content(
 						"Hello, world"));
 
-		documentHttpRequest("put-request-with-content").handle(
+		documentHttpRequest("put-request-with-content", null).handle(
 				result(put("/foo").content("Hello, world")));
 	}
 
@@ -121,14 +130,14 @@ public class HttpDocumentationTests {
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
-		documentHttpRequest("put-request-with-parameter").handle(
+		documentHttpRequest("put-request-with-parameter", null).handle(
 				result(put("/foo").param("b&r", "baz").param("a", "alpha")));
 	}
 
 	@Test
 	public void basicResponse() throws IOException {
 		this.snippet.expectHttpResponse("basic-response").withContents(httpResponse(OK));
-		documentHttpResponse("basic-response").handle(result());
+		documentHttpResponse("basic-response", null).handle(result());
 	}
 
 	@Test
@@ -138,7 +147,7 @@ public class HttpDocumentationTests {
 
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setStatus(BAD_REQUEST.value());
-		documentHttpResponse("non-ok-response").handle(result(response));
+		documentHttpResponse("non-ok-response", null).handle(result(response));
 	}
 
 	@Test
@@ -151,7 +160,7 @@ public class HttpDocumentationTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setHeader("a", "alpha");
-		documentHttpResponse("response-with-headers").handle(result(response));
+		documentHttpResponse("response-with-headers", null).handle(result(response));
 	}
 
 	@Test
@@ -160,7 +169,7 @@ public class HttpDocumentationTests {
 				httpResponse(OK).content("content"));
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.getWriter().append("content");
-		documentHttpResponse("response-with-content").handle(result(response));
+		documentHttpResponse("response-with-content", null).handle(result(response));
 	}
 
 	@Test
@@ -175,7 +184,7 @@ public class HttpDocumentationTests {
 						.content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", null, "<< data >>".getBytes());
-		documentHttpRequest("multipart-post").handle(
+		documentHttpRequest("multipart-post", null).handle(
 				result(fileUpload("/upload").file(multipartFile)));
 	}
 
@@ -198,7 +207,7 @@ public class HttpDocumentationTests {
 						.content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", null, "<< data >>".getBytes());
-		documentHttpRequest("multipart-post").handle(
+		documentHttpRequest("multipart-post", null).handle(
 				result(fileUpload("/upload").file(multipartFile)
 						.param("a", "apple", "avocado").param("b", "banana")));
 	}
@@ -217,7 +226,7 @@ public class HttpDocumentationTests {
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", MediaType.IMAGE_PNG_VALUE,
 				"<< data >>".getBytes());
-		documentHttpRequest("multipart-post-with-content-type").handle(
+		documentHttpRequest("multipart-post-with-content-type", null).handle(
 				result(fileUpload("/upload").file(multipartFile)));
 	}
 
@@ -229,7 +238,8 @@ public class HttpDocumentationTests {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
 
-		documentHttpRequest("get-request-custom-server-name").handle(result(request));
+		documentHttpRequest("get-request-custom-server-name", null).handle(
+				result(request));
 	}
 
 	@Test
@@ -237,8 +247,42 @@ public class HttpDocumentationTests {
 		this.snippet.expectHttpRequest("get-request-custom-host").withContents(
 				httpRequest(GET, "/foo").header(HttpHeaders.HOST, "api.example.com"));
 
-		documentHttpRequest("get-request-custom-host").handle(
+		documentHttpRequest("get-request-custom-host", null).handle(
 				result(get("/foo").header(HttpHeaders.HOST, "api.example.com")));
+	}
+
+	@Test
+	public void requestWithCustomSnippetAttributes() throws IOException {
+		this.snippet.expectHttpRequest("request-with-snippet-attributes").withContents(
+				containsString("Title for the request"));
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("http-request"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/http-request-with-title.snippet"));
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		documentHttpRequest("request-with-snippet-attributes",
+				attributes(key("title").value("Title for the request"))).handle(
+				result(request));
+	}
+
+	@Test
+	public void responseWithCustomSnippetAttributes() throws IOException {
+		this.snippet.expectHttpResponse("response-with-snippet-attributes").withContents(
+				containsString("Title for the response"));
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("http-response"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/http-response-with-title.snippet"));
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		documentHttpResponse("response-with-snippet-attributes",
+				attributes(key("title").value("Title for the response"))).handle(
+				result(request));
 	}
 
 	private String createPart(String content) {

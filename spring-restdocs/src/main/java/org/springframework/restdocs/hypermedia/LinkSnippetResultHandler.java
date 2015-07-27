@@ -43,13 +43,13 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 
 	private final Map<String, LinkDescriptor> descriptorsByRel = new LinkedHashMap<>();
 
-	private final Set<String> requiredRels = new HashSet<String>();
+	private final Set<String> requiredRels = new HashSet<>();
 
 	private final LinkExtractor extractor;
 
-	LinkSnippetResultHandler(String outputDir, LinkExtractor linkExtractor,
-			List<LinkDescriptor> descriptors) {
-		super(outputDir, "links");
+	LinkSnippetResultHandler(String outputDir, Map<String, Object> attributes,
+			LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
+		super(outputDir, "links", attributes);
 		this.extractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {
 			Assert.hasText(descriptor.getRel());
@@ -117,6 +117,7 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 				.getAttribute(TemplateEngine.class.getName());
 		Map<String, Object> context = new HashMap<>();
 		context.put("links", createLinksModel());
+		context.putAll(getAttributes());
 		writer.print(templateEngine.compileTemplate("links").render(context));
 	}
 

@@ -55,8 +55,8 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 	private List<FieldDescriptor> fieldDescriptors;
 
 	FieldSnippetResultHandler(String outputDir, String type,
-			List<FieldDescriptor> descriptors) {
-		super(outputDir, type + "-fields");
+			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
+		super(outputDir, type + "-fields", attributes);
 		this.templateName = type + "-fields";
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath());
@@ -83,6 +83,7 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 			}
 			fields.add(descriptor.toModel());
 		}
+		context.putAll(getAttributes());
 		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
 				.getAttribute(TemplateEngine.class.getName());
 		writer.print(templateEngine.compileTemplate(this.templateName).render(context));

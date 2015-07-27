@@ -20,6 +20,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.Attributes.attributes;
+import static org.springframework.restdocs.Attributes.key;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentRequestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -62,7 +64,7 @@ public class PayloadDocumentationTests {
 						.row("a.c", "String", "two") //
 						.row("a", "Object", "three"));
 
-		documentRequestFields("map-request-with-fields",
+		documentRequestFields("map-request-with-fields", null,
 				fieldWithPath("a.b").description("one"),
 				fieldWithPath("a.c").description("two"),
 				fieldWithPath("a").description("three")).handle(
@@ -77,7 +79,7 @@ public class PayloadDocumentationTests {
 						.row("[]a.c", "String", "two") //
 						.row("[]a", "Object", "three"));
 
-		documentRequestFields("array-request-with-fields",
+		documentRequestFields("array-request-with-fields", null,
 				fieldWithPath("[]a.b").description("one"),
 				fieldWithPath("[]a.c").description("two"),
 				fieldWithPath("[]a").description("three")).handle(
@@ -100,7 +102,7 @@ public class PayloadDocumentationTests {
 		response.getWriter().append(
 				"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
 						+ " [{\"id\":356,\"name\": \"sample\"}]}");
-		documentResponseFields("map-response-with-fields",
+		documentResponseFields("map-response-with-fields", null,
 				fieldWithPath("id").description("one"),
 				fieldWithPath("date").description("two"),
 				fieldWithPath("assets").description("three"),
@@ -121,7 +123,7 @@ public class PayloadDocumentationTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.getWriter()
 				.append("[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]");
-		documentResponseFields("array-response-with-fields",
+		documentResponseFields("array-response-with-fields", null,
 				fieldWithPath("[]a.b").description("one"),
 				fieldWithPath("[]a.c").description("two"),
 				fieldWithPath("[]a").description("three")).handle(result(response));
@@ -145,7 +147,7 @@ public class PayloadDocumentationTests {
 		this.thrown
 				.expectMessage(startsWith("The following parts of the payload were not"
 						+ " documented:"));
-		documentRequestFields("undocumented-request-fields").handle(
+		documentRequestFields("undocumented-request-fields", null).handle(
 				result(get("/foo").content("{\"a\": 5}")));
 	}
 
@@ -155,7 +157,7 @@ public class PayloadDocumentationTests {
 		this.thrown
 				.expectMessage(equalTo("Fields with the following paths were not found"
 						+ " in the payload: [a.b]"));
-		documentRequestFields("missing-request-fields",
+		documentRequestFields("missing-request-fields", null,
 				fieldWithPath("a.b").description("one")).handle(
 				result(get("/foo").content("{}")));
 	}
@@ -163,7 +165,7 @@ public class PayloadDocumentationTests {
 	@Test
 	public void missingOptionalRequestFieldWithNoTypeProvided() throws IOException {
 		this.thrown.expect(FieldTypeRequiredException.class);
-		documentRequestFields("missing-optional-request-field-with-no-type",
+		documentRequestFields("missing-optional-request-field-with-no-type", null,
 				fieldWithPath("a.b").description("one").optional()).handle(
 				result(get("/foo").content("{ }")));
 	}
@@ -178,20 +180,20 @@ public class PayloadDocumentationTests {
 				.expectMessage(endsWith("Fields with the following paths were not found"
 						+ " in the payload: [a.b]"));
 		documentRequestFields("undocumented-request-field-and-missing-request-field",
-				fieldWithPath("a.b").description("one")).handle(
+				null, fieldWithPath("a.b").description("one")).handle(
 				result(get("/foo").content("{ \"a\": { \"c\": 5 }}")));
 	}
 
 	@Test
-	public void requestFieldsWithCustomAttributes() throws IOException {
-		this.snippet.expectRequestFields("request-fields-with-custom-attributes")
-				.withContents( //
-						tableWithHeader("Path", "Type", "Description", "Foo") //
-								.row("a.b", "Number", "one", "alpha") //
-								.row("a.c", "String", "two", "bravo") //
-								.row("a", "Object", "three", "charlie"));
+	public void requestFieldsWithCustomDescriptorAttributes() throws IOException {
+		this.snippet.expectRequestFields(
+				"request-fields-with-custom-descriptor-attributes").withContents( //
+				tableWithHeader("Path", "Type", "Description", "Foo") //
+						.row("a.b", "Number", "one", "alpha") //
+						.row("a.c", "String", "two", "bravo") //
+						.row("a", "Object", "three", "charlie"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("fields"))
+		when(resolver.resolveTemplateResource("request-fields"))
 				.thenReturn(
 						new FileSystemResource(
 								"src/test/resources/custom-snippet-templates/request-fields-with-extra-column.snippet"));
@@ -199,15 +201,19 @@ public class PayloadDocumentationTests {
 		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
 				resolver));
 		request.setContent("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes());
-		documentRequestFields("request-fields-with-custom-attributes",
-				fieldWithPath("a.b").description("one").attribute("foo", "alpha"),
-				fieldWithPath("a.c").description("two").attribute("foo", "bravo"),
-				fieldWithPath("a").description("three").attribute("foo", "charlie"))
-				.handle(result(request));
+		documentRequestFields(
+				"request-fields-with-custom-descriptor-attributes",
+				null,
+				fieldWithPath("a.b").description("one").attributes(
+						key("foo").value("alpha")),
+				fieldWithPath("a.c").description("two").attributes(
+						key("foo").value("bravo")),
+				fieldWithPath("a").description("three").attributes(
+						key("foo").value("charlie"))).handle(result(request));
 	}
 
 	@Test
-	public void responseFieldsWithCustomAttributes() throws IOException {
+	public void responseFieldsWithCustomDescriptorAttributes() throws IOException {
 		this.snippet.expectResponseFields("response-fields-with-custom-attributes")
 				.withContents( //
 						tableWithHeader("Path", "Type", "Description", "Foo") //
@@ -215,7 +221,7 @@ public class PayloadDocumentationTests {
 								.row("a.c", "String", "two", "bravo") //
 								.row("a", "Object", "three", "charlie"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("fields"))
+		when(resolver.resolveTemplateResource("response-fields"))
 				.thenReturn(
 						new FileSystemResource(
 								"src/test/resources/custom-snippet-templates/response-fields-with-extra-column.snippet"));
@@ -224,10 +230,53 @@ public class PayloadDocumentationTests {
 				resolver));
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.getOutputStream().print("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}");
-		documentResponseFields("response-fields-with-custom-attributes",
-				fieldWithPath("a.b").description("one").attribute("foo", "alpha"),
-				fieldWithPath("a.c").description("two").attribute("foo", "bravo"),
-				fieldWithPath("a").description("three").attribute("foo", "charlie"))
-				.handle(result(request, response));
+		documentResponseFields(
+				"response-fields-with-custom-attributes",
+				null,
+				fieldWithPath("a.b").description("one").attributes(
+						key("foo").value("alpha")),
+				fieldWithPath("a.c").description("two").attributes(
+						key("foo").value("bravo")),
+				fieldWithPath("a").description("three").attributes(
+						key("foo").value("charlie"))).handle(result(request, response));
 	}
+
+	@Test
+	public void requestFieldsWithCustomAttributes() throws IOException {
+		this.snippet.expectRequestFields("request-fields-with-custom-attributes")
+				.withContents(startsWith(".Custom title"));
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("request-fields"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/request-fields-with-title.snippet"));
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		request.setContent("{\"a\": \"foo\"}".getBytes());
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		documentRequestFields("request-fields-with-custom-attributes",
+				attributes(key("title").value("Custom title")),
+				fieldWithPath("a").description("one")).handle(result(request, response));
+	}
+
+	@Test
+	public void responseFieldsWithCustomAttributes() throws IOException {
+		this.snippet.expectResponseFields("response-fields-with-custom-attributes")
+				.withContents(startsWith(".Custom title"));
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("response-fields"))
+				.thenReturn(
+						new FileSystemResource(
+								"src/test/resources/custom-snippet-templates/response-fields-with-title.snippet"));
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
+				resolver));
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.getOutputStream().print("{\"a\": \"foo\"}");
+		documentResponseFields("response-fields-with-custom-attributes",
+				attributes(key("title").value("Custom title")),
+				fieldWithPath("a").description("one")).handle(result(request, response));
+	}
+
 }
