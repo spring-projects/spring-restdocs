@@ -17,7 +17,6 @@
 package org.springframework.restdocs.hypermedia;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +28,6 @@ import java.util.Set;
 
 import org.springframework.restdocs.snippet.SnippetGenerationException;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
-import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
@@ -62,9 +60,11 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 	}
 
 	@Override
-	protected void handle(MvcResult result, PrintWriter writer) throws IOException {
+	protected Map<String, Object> doHandle(MvcResult result) throws IOException {
 		validate(extractLinks(result));
-		writeDocumentationSnippet(result, writer);
+		Map<String, Object> model = new HashMap<>();
+		model.put("links", createLinksModel());
+		return model;
 	}
 
 	private Map<String, List<Link>> extractLinks(MvcResult result) throws IOException {
@@ -109,16 +109,6 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 			}
 			throw new SnippetGenerationException(message);
 		}
-	}
-
-	private void writeDocumentationSnippet(MvcResult result, PrintWriter writer)
-			throws IOException {
-		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
-				.getAttribute(TemplateEngine.class.getName());
-		Map<String, Object> context = new HashMap<>();
-		context.put("links", createLinksModel());
-		context.putAll(getAttributes());
-		writer.print(templateEngine.compileTemplate("links").render(context));
 	}
 
 	private List<Map<String, Object>> createLinksModel() {

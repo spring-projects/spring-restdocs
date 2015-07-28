@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
-import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.util.DocumentableHttpServletRequest;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.StringUtils;
@@ -76,15 +75,10 @@ public abstract class CurlDocumentation {
 		}
 
 		@Override
-		public void handle(MvcResult result, PrintWriter writer) throws IOException {
-			Map<String, Object> context = new HashMap<String, Object>();
-			context.put("arguments", getCurlCommandArguments(result));
-			context.putAll(getAttributes());
-
-			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
-					.getAttribute(TemplateEngine.class.getName());
-
-			writer.print(templateEngine.compileTemplate("curl-request").render(context));
+		public Map<String, Object> doHandle(MvcResult result) throws IOException {
+			Map<String, Object> model = new HashMap<String, Object>();
+			model.put("arguments", getCurlCommandArguments(result));
+			return model;
 		}
 
 		private String getCurlCommandArguments(MvcResult result) throws IOException {

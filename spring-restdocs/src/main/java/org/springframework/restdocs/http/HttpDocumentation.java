@@ -29,7 +29,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
-import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.util.DocumentableHttpServletRequest;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.StringUtils;
@@ -87,20 +86,15 @@ public abstract class HttpDocumentation {
 		}
 
 		@Override
-		public void handle(MvcResult result, PrintWriter writer) throws IOException {
+		public Map<String, Object> doHandle(MvcResult result) throws IOException {
 			DocumentableHttpServletRequest request = new DocumentableHttpServletRequest(
 					result.getRequest());
-			Map<String, Object> context = new HashMap<String, Object>();
-			context.put("method", result.getRequest().getMethod());
-			context.put("path", request.getRequestUriWithQueryString());
-			context.put("headers", getHeaders(request));
-			context.put("requestBody", getRequestBody(request));
-			context.putAll(getAttributes());
-
-			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
-					.getAttribute(TemplateEngine.class.getName());
-
-			writer.print(templateEngine.compileTemplate("http-request").render(context));
+			Map<String, Object> model = new HashMap<String, Object>();
+			model.put("method", result.getRequest().getMethod());
+			model.put("path", request.getRequestUriWithQueryString());
+			model.put("headers", getHeaders(request));
+			model.put("requestBody", getRequestBody(request));
+			return model;
 		}
 
 		private List<Map<String, String>> getHeaders(
@@ -225,33 +219,28 @@ public abstract class HttpDocumentation {
 		}
 
 		@Override
-		public void handle(MvcResult result, PrintWriter writer) throws IOException {
+		public Map<String, Object> doHandle(MvcResult result) throws IOException {
 			HttpStatus status = HttpStatus.valueOf(result.getResponse().getStatus());
-			Map<String, Object> context = new HashMap<String, Object>();
-			context.put(
+			Map<String, Object> model = new HashMap<String, Object>();
+			model.put(
 					"responseBody",
 					StringUtils.hasLength(result.getResponse().getContentAsString()) ? String
 							.format("%n%s", result.getResponse().getContentAsString())
 							: "");
-			context.put("statusCode", status.value());
-			context.put("statusReason", status.getReasonPhrase());
+			model.put("statusCode", status.value());
+			model.put("statusReason", status.getReasonPhrase());
+			model.put("headers", headers(result));
+			return model;
+		}
 
+		private List<Map<String, String>> headers(MvcResult result) {
 			List<Map<String, String>> headers = new ArrayList<>();
-			context.put("headers", headers);
-
 			for (String headerName : result.getResponse().getHeaderNames()) {
 				for (String header : result.getResponse().getHeaders(headerName)) {
 					headers.add(header(headerName, header));
 				}
 			}
-
-			context.putAll(getAttributes());
-
-			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
-					.getAttribute(TemplateEngine.class.getName());
-
-			writer.print(templateEngine.compileTemplate("http-response").render(context));
-
+			return headers;
 		}
 
 		private Map<String, String> header(String name, String value) {

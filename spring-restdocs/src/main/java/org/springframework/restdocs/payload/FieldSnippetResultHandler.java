@@ -17,7 +17,6 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
-import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
@@ -50,14 +48,11 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-	private final String templateName;
-
 	private List<FieldDescriptor> fieldDescriptors;
 
 	FieldSnippetResultHandler(String identifier, String type,
 			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
 		super(identifier, type + "-fields", attributes);
-		this.templateName = type + "-fields";
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath());
 			Assert.hasText(descriptor.getDescription());
@@ -67,15 +62,12 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 	}
 
 	@Override
-	protected void handle(MvcResult result, PrintWriter writer) throws IOException {
-
+	protected Map<String, Object> doHandle(MvcResult result) throws IOException {
 		this.fieldValidator.validate(getPayloadReader(result), this.fieldDescriptors);
-
 		Object payload = extractPayload(result);
-
-		Map<String, Object> context = new HashMap<>();
+		Map<String, Object> model = new HashMap<>();
 		List<Map<String, Object>> fields = new ArrayList<>();
-		context.put("fields", fields);
+		model.put("fields", fields);
 		for (Entry<String, FieldDescriptor> entry : this.descriptorsByPath.entrySet()) {
 			FieldDescriptor descriptor = entry.getValue();
 			if (descriptor.getType() == null) {
@@ -83,10 +75,7 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 			}
 			fields.add(descriptor.toModel());
 		}
-		context.putAll(getAttributes());
-		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
-				.getAttribute(TemplateEngine.class.getName());
-		writer.print(templateEngine.compileTemplate(this.templateName).render(context));
+		return model;
 	}
 
 	private FieldType getFieldType(FieldDescriptor descriptor, Object payload) {

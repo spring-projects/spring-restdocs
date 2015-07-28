@@ -17,11 +17,11 @@
 package org.springframework.restdocs.snippet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
 
@@ -47,20 +47,19 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 		}
 	}
 
-	protected abstract void handle(MvcResult result, PrintWriter writer)
-			throws IOException;
-
 	@Override
 	public void handle(MvcResult result) throws IOException {
 		WriterResolver writerResolver = (WriterResolver) result.getRequest()
 				.getAttribute(WriterResolver.class.getName());
 		try (Writer writer = writerResolver.resolve(this.identifier, this.snippetName)) {
-			handle(result, new PrintWriter(writer));
+			Map<String, Object> model = doHandle(result);
+			model.putAll(this.attributes);
+			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
+					.getAttribute(TemplateEngine.class.getName());
+			writer.append(templateEngine.compileTemplate(this.snippetName).render(model));
 		}
 	}
 
-	protected Map<String, Object> getAttributes() {
-		return this.attributes;
-	}
+	protected abstract Map<String, Object> doHandle(MvcResult result) throws IOException;
 
 }

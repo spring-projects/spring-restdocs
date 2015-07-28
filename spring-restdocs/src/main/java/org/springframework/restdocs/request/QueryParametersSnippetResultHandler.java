@@ -17,7 +17,6 @@
 package org.springframework.restdocs.request;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +28,6 @@ import java.util.Set;
 
 import org.springframework.restdocs.snippet.SnippetGenerationException;
 import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
-import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
@@ -54,9 +52,16 @@ public class QueryParametersSnippetResultHandler extends SnippetWritingResultHan
 	}
 
 	@Override
-	protected void handle(MvcResult result, PrintWriter writer) throws IOException {
+	protected Map<String, Object> doHandle(MvcResult result) throws IOException {
 		verifyParameterDescriptors(result);
-		documentParameters(result, writer);
+
+		Map<String, Object> model = new HashMap<>();
+		List<Map<String, Object>> parameters = new ArrayList<>();
+		for (Entry<String, ParameterDescriptor> entry : this.descriptorsByName.entrySet()) {
+			parameters.add(entry.getValue().toModel());
+		}
+		model.put("parameters", parameters);
+		return model;
 	}
 
 	private void verifyParameterDescriptors(MvcResult result) {
@@ -86,20 +91,6 @@ public class QueryParametersSnippetResultHandler extends SnippetWritingResultHan
 		}
 
 		Assert.isTrue(actualParameters.equals(expectedParameters));
-	}
-
-	private void documentParameters(MvcResult result, PrintWriter writer)
-			throws IOException {
-		TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
-				.getAttribute(TemplateEngine.class.getName());
-		Map<String, Object> context = new HashMap<>();
-		List<Map<String, Object>> parameters = new ArrayList<>();
-		for (Entry<String, ParameterDescriptor> entry : this.descriptorsByName.entrySet()) {
-			parameters.add(entry.getValue().toModel());
-		}
-		context.put("parameters", parameters);
-		context.putAll(getAttributes());
-		writer.print(templateEngine.compileTemplate("query-parameters").render(context));
 	}
 
 }
