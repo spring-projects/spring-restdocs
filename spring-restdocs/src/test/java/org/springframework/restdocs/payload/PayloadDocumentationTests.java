@@ -137,8 +137,8 @@ public class PayloadDocumentationTests {
 
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.getWriter().append("[\"a\", \"b\", \"c\"]");
-		documentResponseFields("array-response", fieldWithPath("[]").description("one"))
-				.handle(result(response));
+		documentResponseFields("array-response", null,
+				fieldWithPath("[]").description("one")).handle(result(response));
 	}
 
 	@Test
