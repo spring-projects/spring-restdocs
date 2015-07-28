@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.util;
+package org.springframework.restdocs.snippet;
 
 import static org.springframework.restdocs.util.IterableEnumeration.iterable;
 

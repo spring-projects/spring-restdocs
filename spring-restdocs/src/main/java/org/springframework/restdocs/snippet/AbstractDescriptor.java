@@ -1,9 +1,9 @@
-package org.springframework.restdocs;
+package org.springframework.restdocs.snippet;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.restdocs.Attributes.Attribute;
+import org.springframework.restdocs.snippet.Attributes.Attribute;
 
 /**
  * Base class for descriptors. Provides the ability to associate arbitrary attributes with

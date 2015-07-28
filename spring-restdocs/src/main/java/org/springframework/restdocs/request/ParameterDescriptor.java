@@ -19,7 +19,7 @@ package org.springframework.restdocs.request;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.restdocs.AbstractDescriptor;
+import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
  * A descriptor of a parameter in a query string

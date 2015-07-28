@@ -19,7 +19,7 @@ package org.springframework.restdocs.hypermedia;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.restdocs.AbstractDescriptor;
+import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
  * A description of a link found in a hypermedia API

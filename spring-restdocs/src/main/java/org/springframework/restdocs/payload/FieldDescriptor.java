@@ -19,7 +19,7 @@ package org.springframework.restdocs.payload;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.restdocs.AbstractDescriptor;
+import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
  * A description of a field found in a request or response payload

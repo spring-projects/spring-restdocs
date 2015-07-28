@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.RestDocumentation;
-import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.StandardTemplateResourceResolver;

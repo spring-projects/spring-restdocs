@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.snippet;
+package org.springframework.restdocs.config;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.restdocs.config.RestDocumentationContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
 /**

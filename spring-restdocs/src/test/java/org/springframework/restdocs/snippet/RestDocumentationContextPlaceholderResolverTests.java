@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 import org.springframework.restdocs.config.RestDocumentationContext;
+import org.springframework.restdocs.config.RestDocumentationContextPlaceholderResolver;
 import org.springframework.test.context.TestContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
