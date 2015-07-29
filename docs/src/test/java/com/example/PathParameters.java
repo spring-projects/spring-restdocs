@@ -17,37 +17,25 @@
 package com.example;
 
 import static org.springframework.restdocs.RestDocumentation.document;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.LinkExtractors.halLinks;
 
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-public class Hypermedia {
+public class PathParameters {
 
 	private MockMvc mockMvc;
 
-	public void links() throws Exception {
-		// tag::links[]
-		this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+	public void pathParameters() throws Exception {
+		// tag::path-parameters[]
+		this.mockMvc.perform(get("/locations/{latitude}/{longitude}", 51.5072, 0.1275)) // <1>
 			.andExpect(status().isOk())
-			.andDo(document("index").withLinks( // <1>
-					linkWithRel("alpha").description("Link to the alpha resource"), // <2>
-					linkWithRel("bravo").description("Link to the bravo resource"))); // <3>
-		// end::links[]
+			.andDo(document("locations").withPathParameters( // <2>
+					parameterWithName("latitude").description("The location's latitude"), // <3>
+					parameterWithName("longitude").description("The location's longitude") // <4>
+			));
+		// end::path-parameters[]
 	}
-
-	public void explicitExtractor() throws Exception {
-		this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			//tag::explicit-extractor[]
-			.andDo(document("index").withLinks(halLinks(), // <1>
-					linkWithRel("alpha").description("Link to the alpha resource"),
-					linkWithRel("bravo").description("Link to the bravo resource")));
-			// end::explicit-extractor[]
-	}
-
 
 }

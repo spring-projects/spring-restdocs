@@ -22,9 +22,9 @@ import static org.springframework.restdocs.RestDocumentation.documentationConfig
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -279,7 +279,7 @@ public class ApiDocumentation {
 								fieldWithPath("title").description("The title of the note").type(FieldType.STRING).optional(),
 								fieldWithPath("body").description("The body of the note").type(FieldType.STRING).optional(),
 								fieldWithPath("tags").description("An array of tag resource URIs").optional()));
-		
+
 	}
 
 	@Test

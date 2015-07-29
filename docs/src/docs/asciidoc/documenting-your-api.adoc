@@ -196,6 +196,32 @@ is not found in the request.
 
 
 
+[[documenting-your-api-path-parameters]]
+=== Path parameters
+
+A request's path parameters can be documented using `withPathParameters`
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/PathParameters.java[tags=path-parameters]
+----
+<1> Build the request. Uses the static `get` method on `RestDocumentationRequestBuilders`.
+<2> Use `withPathParameters` to describe the path parameters.
+<3> Document a parameter named `longitude`. Uses the static `parameterWithName` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
+<4> Document a parameter named `latitude`.
+
+The result is a snippet named `path-parameters.adoc` that contains a table describing
+the path parameters that are supported by the resource.
+
+When documenting path parameters, the test will fail if an undocumented path parameter
+is used in the request. Similarly, the test will also fail if a documented path parameter
+is not found in the request.
+
+TIP: To make the path parameters available for documentation, the request must be
+built using one of the methods on `RestDocumentationRequestBuilders` rather than
+`MockMvcRequestBuilders`.
+
 [[documenting-your-api-default-snippets]]
 === Default snippets
 
@@ -286,8 +312,8 @@ override the template for the `curl-request.adoc` snippet, create a template nam
 
 There are two ways to provide extra information for inclusion in a generated snippet:
 
-. Use the `attributes` method on a field, link or query parameter descriptor to add one or
-  more attributes to an individual descriptor
+. Use the `attributes` method on a field, link or parameter descriptor to add one or more
+  attributes to an individual descriptor.
 . Pass in some attributes when calling `withCurlRequest`, `withHttpRequest`,
   `withHttpResponse`, etc on `RestDocumentationResultHandler`. Such attributes will be
   associated with the snippet as a whole.

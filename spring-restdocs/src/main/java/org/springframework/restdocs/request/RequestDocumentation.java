@@ -34,6 +34,22 @@ public abstract class RequestDocumentation {
 
 	/**
 	 * Creates a {@link SnippetWritingResultHandler} that will produce a snippet
+	 * documenting a request's path parameters.
+	 * 
+	 * @param identifier An identifier for the API call that is being documented
+	 * @param attributes Attributes made available during rendering of the path parameters
+	 * snippet
+	 * @param descriptors The descriptions of the parameters in the request's path
+	 * @return the result handler
+	 * @see RestDocumentationResultHandler#withPathParameters(ParameterDescriptor...)
+	 */
+	public static SnippetWritingResultHandler documentPathParameters(String identifier,
+			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
+		return new PathParametersSnippetResultHandler(identifier, attributes, descriptors);
+	}
+
+	/**
+	 * Creates a {@link SnippetWritingResultHandler} that will produce a snippet
 	 * documenting a request's query parameters
 	 * 
 	 * @param identifier An identifier for the API call that is being documented

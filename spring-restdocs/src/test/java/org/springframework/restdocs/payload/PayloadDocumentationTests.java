@@ -20,6 +20,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentRequestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -27,7 +28,6 @@ import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 import static org.springframework.restdocs.test.StubMvcResult.result;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.io.IOException;
 
@@ -45,7 +45,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Tests for {@link PayloadDocumentation}
- * 
+ *
  * @author Andy Wilkinson
  */
 public class PayloadDocumentationTests {

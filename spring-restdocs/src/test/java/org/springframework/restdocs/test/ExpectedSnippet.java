@@ -135,6 +135,11 @@ public class ExpectedSnippet implements TestRule {
 		return this;
 	}
 
+	public ExpectedSnippet expectPathParameters(String name) {
+		expect(name, "path-parameters");
+		return this;
+	}
+
 	private ExpectedSnippet expect(String name, String type) {
 		this.expectedName = name;
 		this.expectedType = type;

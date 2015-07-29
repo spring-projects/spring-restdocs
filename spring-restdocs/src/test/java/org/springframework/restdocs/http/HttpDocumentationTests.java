@@ -21,6 +21,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.fileUpload;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRequest;
 import static org.springframework.restdocs.http.HttpDocumentation.documentHttpResponse;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
@@ -28,10 +32,6 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.StubMvcResult.result;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -53,7 +53,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Tests for {@link HttpDocumentation}
- * 
+ *
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
  */

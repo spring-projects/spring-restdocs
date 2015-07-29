@@ -22,6 +22,7 @@ import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRe
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.documentLinks;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentRequestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.documentResponseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.documentPathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.documentQueryParameters;
 
 import java.util.ArrayList;
@@ -305,6 +306,45 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	public RestDocumentationResultHandler withQueryParameters(
 			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
 		this.delegates.add(documentQueryParameters(this.identifier, attributes,
+				descriptors));
+		return this;
+	}
+
+	/**
+	 * Documents the parameters in the request's path using the given {@code descriptors}.
+	 * <p>
+	 * If a parameter is present in the path but is not described by one of the
+	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
+	 * parameter is described but is not present in the request a failure will also occur
+	 * when this handler is invoked.
+	 * 
+	 * @param descriptors the parameter descriptors
+	 * @return {@code this}
+	 * @see RequestDocumentation#parameterWithName(String)
+	 */
+	public RestDocumentationResultHandler withPathParameters(
+			ParameterDescriptor... descriptors) {
+		return this.withQueryParameters(null, descriptors);
+	}
+
+	/**
+	 * Documents the parameters in the request's path using the given {@code descriptors}.
+	 * The given {@code attributes} are made available during the generation of the path
+	 * parameters snippet.
+	 * <p>
+	 * If a parameter is present in the path but is not described by one of the
+	 * descriptors a failure will occur when this handler is invoked. Similarly, if a
+	 * parameter is described but is not present in the request a failure will also occur
+	 * when this handler is invoked.
+	 * 
+	 * @param descriptors the parameter descriptors
+	 * @param attributes the attributes
+	 * @return {@code this}
+	 * @see RequestDocumentation#parameterWithName(String)
+	 */
+	public RestDocumentationResultHandler withPathParameters(
+			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
+		this.delegates.add(documentPathParameters(this.identifier, attributes,
 				descriptors));
 		return this;
 	}

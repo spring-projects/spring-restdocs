@@ -19,15 +19,15 @@ package org.springframework.restdocs.curl;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.fileUpload;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.curl.CurlDocumentation.documentCurlRequest;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.StubMvcResult.result;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.io.IOException;
 
@@ -45,7 +45,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
  * Tests for {@link CurlDocumentation}
- * 
+ *
  * @author Andy Wilkinson
  * @author Yann Le Guern
  * @author Dmitriy Mayboroda

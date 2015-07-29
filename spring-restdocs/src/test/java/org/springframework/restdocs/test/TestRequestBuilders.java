@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package com.example;
+package org.springframework.restdocs.test;
 
-import static org.springframework.restdocs.RestDocumentation.modifyResponseTo;
-import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.restdocs.config.RestDocumentationContext;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import org.springframework.test.web.servlet.MockMvc;
+public class TestRequestBuilders {
 
-public class ResponsePostProcessing {
+	private TestRequestBuilders() {
 
-	private MockMvc mockMvc;
+	}
 
-	public void general() throws Exception {
-		// tag::general[]
-		this.mockMvc.perform(get("/"))
-			.andExpect(status().isOk())
-			.andDo(modifyResponseTo(/* ... */) // <1>
-					.andDocument("index")); // <2>
-		// end::general[]
+	public static MockHttpServletRequestBuilder get(String urlTemplate,
+			Object... urlVariables) {
+		return org.springframework.restdocs.RestDocumentationRequestBuilders.get(
+				urlTemplate, urlVariables).requestAttr(
+				RestDocumentationContext.class.getName(), new RestDocumentationContext());
 	}
 
 }

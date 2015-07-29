@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.RestDocumentation.modifyResponseTo;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.response.ResponsePostProcessors.maskLinks;
 import static org.springframework.restdocs.response.ResponsePostProcessors.prettyPrintContent;
 import static org.springframework.restdocs.response.ResponsePostProcessors.removeHeaders;
@@ -30,7 +31,6 @@ import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.SnippetMatchers.snippet;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;

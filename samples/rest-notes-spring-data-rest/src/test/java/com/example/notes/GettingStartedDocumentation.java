@@ -21,9 +21,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.RestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -155,7 +155,7 @@ public class GettingStartedDocumentation {
 		return noteLocation;
 	}
 
-	void getTags(String noteTagsLocation) throws Exception {		
+	void getTags(String noteTagsLocation) throws Exception {
 		this.mockMvc.perform(get(noteTagsLocation))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("_embedded.tags", hasSize(1)));
@@ -177,7 +177,7 @@ public class GettingStartedDocumentation {
 			.andReturn();
 	}
 
-	void getTagsForExistingNote(String noteTagsLocation) throws Exception {		
+	void getTagsForExistingNote(String noteTagsLocation) throws Exception {
 		this.mockMvc.perform(get(noteTagsLocation))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("_embedded.tags", hasSize(1)));
