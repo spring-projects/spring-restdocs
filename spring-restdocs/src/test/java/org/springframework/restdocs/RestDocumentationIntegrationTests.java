@@ -23,6 +23,9 @@ import static org.junit.Assert.assertTrue;
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.RestDocumentation.modifyResponseTo;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.response.ResponsePostProcessors.maskLinks;
 import static org.springframework.restdocs.response.ResponsePostProcessors.prettyPrintContent;
 import static org.springframework.restdocs.response.ResponsePostProcessors.removeHeaders;
@@ -106,6 +109,84 @@ public class RestDocumentationIntegrationTests {
 				.andExpect(status().isOk()).andDo(document("basic"));
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/basic"),
 				"http-request.adoc", "http-response.adoc", "curl-request.adoc");
+	}
+
+	@Test
+	public void links() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(new RestDocumentationConfigurer()).build();
+
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("links").withLinks(
+						linkWithRel("rel").description("The description")));
+
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
+				"links.adoc");
+	}
+
+	@Test
+	public void pathParameters() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(new RestDocumentationConfigurer()).build();
+
+		mockMvc.perform(get("{foo}", "/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("links").withPathParameters(
+						parameterWithName("foo").description("The description")));
+
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
+				"path-parameters.adoc");
+	}
+
+	@Test
+	public void queryParameters() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(new RestDocumentationConfigurer()).build();
+
+		mockMvc.perform(get("/").param("foo", "bar").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("links").withQueryParameters(
+						parameterWithName("foo").description("The description")));
+
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
+				"query-parameters.adoc");
+	}
+
+	@Test
+	public void requestFields() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(new RestDocumentationConfigurer()).build();
+
+		mockMvc.perform(
+				get("/").param("foo", "bar").content("{\"a\":\"alpha\"}")
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("links").withRequestFields(
+						fieldWithPath("a").description("The description")));
+
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
+				"request-fields.adoc");
+	}
+
+	@Test
+	public void responseFields() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(new RestDocumentationConfigurer()).build();
+
+		mockMvc.perform(get("/").param("foo", "bar").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("links").withResponseFields(
+						fieldWithPath("a").description("The description"),
+						fieldWithPath("links").description("Links to other resources")));
+
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
+				"response-fields.adoc");
 	}
 
 	@Test
