@@ -65,8 +65,8 @@ public class PathParametersSnippetResultHandler extends
 	}
 
 	private static String getParameterName(String match) {
-		int colonIdx = match.indexOf(':');
-		return (colonIdx != -1 ? match.substring(0, colonIdx) : match);
+		int colonIndex = match.indexOf(':');
+		return colonIndex != -1 ? match.substring(0, colonIndex) : match;
 	}
 
 	@Override
