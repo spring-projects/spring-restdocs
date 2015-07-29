@@ -324,7 +324,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 */
 	public RestDocumentationResultHandler withPathParameters(
 			ParameterDescriptor... descriptors) {
-		return this.withQueryParameters(null, descriptors);
+		return this.withPathParameters(null, descriptors);
 	}
 
 	/**
