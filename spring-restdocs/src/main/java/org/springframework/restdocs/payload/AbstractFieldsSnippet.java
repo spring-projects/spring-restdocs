@@ -25,20 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * A {@link SnippetWritingResultHandler} that produces a snippet documenting a RESTful
- * resource's request or response fields.
+ * A {@link TemplatedSnippet} that produces a snippet documenting a
+ * RESTful resource's request or response fields.
  *
  * @author Andreas Evers
  * @author Andy Wilkinson
  */
-public abstract class FieldSnippetResultHandler extends SnippetWritingResultHandler {
+public abstract class AbstractFieldsSnippet extends
+		TemplatedSnippet {
 
 	private final Map<String, FieldDescriptor> descriptorsByPath = new LinkedHashMap<String, FieldDescriptor>();
 
@@ -50,9 +51,9 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 
 	private List<FieldDescriptor> fieldDescriptors;
 
-	FieldSnippetResultHandler(String identifier, String type,
-			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
-		super(identifier, type + "-fields", attributes);
+	AbstractFieldsSnippet(String type, Map<String, Object> attributes,
+			List<FieldDescriptor> descriptors) {
+		super(type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath());
 			Assert.hasText(descriptor.getDescription());
@@ -62,7 +63,7 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 	}
 
 	@Override
-	protected Map<String, Object> doHandle(MvcResult result) throws IOException {
+	protected Map<String, Object> document(MvcResult result) throws IOException {
 		this.fieldValidator.validate(getPayloadReader(result), this.fieldDescriptors);
 		Object payload = extractPayload(result);
 		Map<String, Object> model = new HashMap<>();
@@ -80,8 +81,8 @@ public abstract class FieldSnippetResultHandler extends SnippetWritingResultHand
 
 	private FieldType getFieldType(FieldDescriptor descriptor, Object payload) {
 		try {
-			return FieldSnippetResultHandler.this.fieldTypeResolver.resolveFieldType(
-					descriptor.getPath(), payload);
+			return AbstractFieldsSnippet.this.fieldTypeResolver
+					.resolveFieldType(descriptor.getPath(), payload);
 		}
 		catch (FieldDoesNotExistException ex) {
 			String message = "Cannot determine the type of the field '"

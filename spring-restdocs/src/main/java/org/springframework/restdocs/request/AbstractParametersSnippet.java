@@ -10,19 +10,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
-public abstract class AbstractParametersSnippetResultHandler extends
-		SnippetWritingResultHandler {
+abstract class AbstractParametersSnippet extends
+		TemplatedSnippet {
 
 	private final Map<String, ParameterDescriptor> descriptorsByName = new LinkedHashMap<>();
 
-	protected AbstractParametersSnippetResultHandler(String identifier,
-			String snippetName, Map<String, Object> attributes,
-			ParameterDescriptor... descriptors) {
-		super(identifier, snippetName, attributes);
+	protected AbstractParametersSnippet(String snippetName,
+			Map<String, Object> attributes, List<ParameterDescriptor> descriptors) {
+		super(snippetName, attributes);
 		for (ParameterDescriptor descriptor : descriptors) {
 			Assert.hasText(descriptor.getName());
 			Assert.hasText(descriptor.getDescription());
@@ -31,7 +30,7 @@ public abstract class AbstractParametersSnippetResultHandler extends
 	}
 
 	@Override
-	protected Map<String, Object> doHandle(MvcResult result) throws IOException {
+	protected Map<String, Object> document(MvcResult result) throws IOException {
 		verifyParameterDescriptors(result);
 
 		Map<String, Object> model = new HashMap<>();

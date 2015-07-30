@@ -26,29 +26,33 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.springframework.restdocs.snippet.SnippetGenerationException;
-import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
 /**
- * A {@link SnippetWritingResultHandler} that produces a snippet documenting a RESTful
- * resource's links.
+ * A {@link Snippet} that documents a RESTful resource's links.
  *
  * @author Andy Wilkinson
  */
-public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
+class LinksSnippet extends TemplatedSnippet {
 
 	private final Map<String, LinkDescriptor> descriptorsByRel = new LinkedHashMap<>();
 
 	private final Set<String> requiredRels = new HashSet<>();
 
-	private final LinkExtractor extractor;
+	private final LinkExtractor linkExtractor;
 
-	LinkSnippetResultHandler(String identifier, Map<String, Object> attributes,
-			LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
-		super(identifier, "links", attributes);
-		this.extractor = linkExtractor;
+	LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
+		this(linkExtractor, null, descriptors);
+	}
+
+	LinksSnippet(LinkExtractor linkExtractor, Map<String, Object> attributes,
+			List<LinkDescriptor> descriptors) {
+		super("links", attributes);
+		this.linkExtractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {
 			Assert.hasText(descriptor.getRel());
 			Assert.hasText(descriptor.getDescription());
@@ -60,29 +64,11 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 	}
 
 	@Override
-	protected Map<String, Object> doHandle(MvcResult result) throws IOException {
-		validate(extractLinks(result));
+	protected Map<String, Object> document(MvcResult result) throws IOException {
+		validate(this.linkExtractor.extractLinks(result.getResponse()));
 		Map<String, Object> model = new HashMap<>();
 		model.put("links", createLinksModel());
 		return model;
-	}
-
-	private Map<String, List<Link>> extractLinks(MvcResult result) throws IOException {
-		if (this.extractor != null) {
-			return this.extractor.extractLinks(result.getResponse());
-		}
-		else {
-			String contentType = result.getResponse().getContentType();
-			LinkExtractor extractorForContentType = LinkExtractors
-					.extractorForContentType(contentType);
-			if (extractorForContentType != null) {
-				return extractorForContentType.extractLinks(result.getResponse());
-			}
-			throw new IllegalStateException(
-					"No LinkExtractor has been provided and one is not available for the content type "
-							+ contentType);
-
-		}
 	}
 
 	private void validate(Map<String, List<Link>> links) {
@@ -104,10 +90,10 @@ public class LinkSnippetResultHandler extends SnippetWritingResultHandler {
 				if (message.length() > 0) {
 					message += ". ";
 				}
-				message += "Links with the following relations were not found in the response: "
-						+ missingRels;
+				message += "Links with the following relations were not found in the "
+						+ "response: " + missingRels;
 			}
-			throw new SnippetGenerationException(message);
+			throw new SnippetException(message);
 		}
 	}
 

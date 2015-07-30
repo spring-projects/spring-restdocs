@@ -16,10 +16,10 @@
 
 package org.springframework.restdocs.request;
 
+import java.util.Arrays;
 import java.util.Map;
 
-import org.springframework.restdocs.RestDocumentationResultHandler;
-import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * Static factory methods for documenting aspects of a request sent to a RESTful API.
@@ -33,48 +33,68 @@ public abstract class RequestDocumentation {
 	}
 
 	/**
-	 * Creates a {@link SnippetWritingResultHandler} that will produce a snippet
-	 * documenting a request's path parameters.
-	 * 
-	 * @param identifier An identifier for the API call that is being documented
-	 * @param attributes Attributes made available during rendering of the path parameters
-	 * snippet
-	 * @param descriptors The descriptions of the parameters in the request's path
-	 * @return the result handler
-	 * @see RestDocumentationResultHandler#withPathParameters(ParameterDescriptor...)
-	 */
-	public static SnippetWritingResultHandler documentPathParameters(String identifier,
-			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		return new PathParametersSnippetResultHandler(identifier, attributes, descriptors);
-	}
-
-	/**
-	 * Creates a {@link SnippetWritingResultHandler} that will produce a snippet
-	 * documenting a request's query parameters
-	 * 
-	 * @param identifier An identifier for the API call that is being documented
-	 * @param attributes Attributes made available during rendering of the query
-	 * parameters snippet
-	 * @param descriptors The descriptions of the parameters in the request's query string
-	 * @return the result handler
-	 * @see RestDocumentationResultHandler#withQueryParameters(ParameterDescriptor...)
-	 */
-	public static SnippetWritingResultHandler documentQueryParameters(String identifier,
-			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		return new QueryParametersSnippetResultHandler(identifier, attributes,
-				descriptors);
-	}
-
-	/**
 	 * Creates a {@link ParameterDescriptor} that describes a query string parameter with
 	 * the given {@code name}.
 	 * 
 	 * @param name The name of the parameter
 	 * @return a {@link ParameterDescriptor} ready for further configuration
-	 * @see RestDocumentationResultHandler#withQueryParameters(ParameterDescriptor...)
 	 */
 	public static ParameterDescriptor parameterWithName(String name) {
 		return new ParameterDescriptor(name);
+	}
+
+	/**
+	 * Returns a handler that will produce a snippet documenting the path parameters from
+	 * the API call's request.
+	 * 
+	 * @param descriptors The descriptions of the parameters in the request's path
+	 * @return the handler
+	 */
+	public static Snippet pathParameters(ParameterDescriptor... descriptors) {
+		return new PathParametersSnippet(Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a handler that will produce a snippet documenting the path parameters from
+	 * the API call's request. The given {@code attributes} will be available during
+	 * snippet generation.
+	 * 
+	 * @param attributes Attributes made available during rendering of the path parameters
+	 * snippet
+	 * @param descriptors The descriptions of the parameters in the request's path
+	 * @return the handler
+	 */
+	public static Snippet pathParameters(Map<String, Object> attributes,
+			ParameterDescriptor... descriptors) {
+		return new PathParametersSnippet(attributes,
+				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a handler that will produce a snippet documenting the query parameters from
+	 * the API call's request.
+	 * 
+	 * @param descriptors The descriptions of the request's query parameters
+	 * @return the handler
+	 */
+	public static Snippet queryParameters(ParameterDescriptor... descriptors) {
+		return new QueryParametersSnippet(Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a handler that will produce a snippet documenting the query parameters from
+	 * the API call's request. The given {@code attributes} will be available during
+	 * snippet generation.
+	 * 
+	 * @param attributes Attributes made available during rendering of the query
+	 * parameters snippet
+	 * @param descriptors The descriptions of the request's query parameters
+	 * @return the handler
+	 */
+	public static Snippet queryParameters(Map<String, Object> attributes,
+			ParameterDescriptor... descriptors) {
+		return new QueryParametersSnippet(attributes,
+				Arrays.asList(descriptors));
 	}
 
 }

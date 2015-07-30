@@ -16,22 +16,25 @@
 
 package org.springframework.restdocs.snippet;
 
+import java.io.IOException;
+
+import org.springframework.test.web.servlet.MvcResult;
+
 /**
- * A {@link RuntimeException} thrown to indicate a problem with the generation of a
- * documentation snippet.
+ * A {@link Snippet} is used to document aspects of a call to a RESTful API.
  * 
  * @author Andy Wilkinson
  */
-@SuppressWarnings("serial")
-public class SnippetGenerationException extends RuntimeException {
+public interface Snippet {
 
 	/**
-	 * Creates a new {@code SnippetGenerationException} described by the given
-	 * {@code message}
-	 * @param message the message that describes the problem
+	 * Documents the call to the RESTful API described by the given {@code result}. The
+	 * call is identified by the given {@code operation}.
+	 * 
+	 * @param operation the API operation
+	 * @param result the result of the operation
+	 * @throws IOException if a failure occurs will documenting the result
 	 */
-	public SnippetGenerationException(String message) {
-		super(message);
-	}
+	void document(String operation, MvcResult result) throws IOException;
 
 }

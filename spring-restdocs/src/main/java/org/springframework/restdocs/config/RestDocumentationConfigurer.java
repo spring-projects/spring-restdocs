@@ -49,9 +49,9 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 
 	private final RequestPostProcessor requestPostProcessor;
 
-	private TemplateEngineConfigurer templateEngineConfigurer = new TemplateEngineConfigurer();
+	private final TemplateEngineConfigurer templateEngineConfigurer = new TemplateEngineConfigurer();
 
-	private WriterResolverConfigurer writerResolverConfigurer = new WriterResolverConfigurer();
+	private final WriterResolverConfigurer writerResolverConfigurer = new WriterResolverConfigurer();
 
 	/**
 	 * Creates a new {@link RestDocumentationConfigurer}.
@@ -65,19 +65,44 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 						this.templateEngineConfigurer));
 	}
 
+	/**
+	 * Returns a {@link UriConfigurer} that can be used to configure the request URIs that
+	 * will be documented.
+	 * 
+	 * @return the URI configurer
+	 */
 	public UriConfigurer uris() {
 		return this.uriConfigurer;
 	}
 
+	/**
+	 * Returns a {@link SnippetConfigurer} that can be used to configure the snippets that
+	 * will be generated.
+	 * 
+	 * @return the snippet configurer
+	 */
 	public SnippetConfigurer snippets() {
 		return this.snippetConfigurer;
 	}
 
+	/**
+	 * Configures the {@link TemplateEngine} that will be used for snippet rendering.
+	 * 
+	 * @param templateEngine the template engine to use
+	 * @return {@code this}
+	 */
 	public RestDocumentationConfigurer templateEngine(TemplateEngine templateEngine) {
 		this.templateEngineConfigurer.setTemplateEngine(templateEngine);
 		return this;
 	}
 
+	/**
+	 * Configures the {@link WriterResolver} that will be used to resolve a writer for a
+	 * snippet.
+	 * 
+	 * @param writerResolver The writer resolver to use
+	 * @return {@code this}
+	 */
 	public RestDocumentationConfigurer writerResolver(WriterResolver writerResolver) {
 		this.writerResolverConfigurer.setWriterResolver(writerResolver);
 		return this;
@@ -175,4 +200,5 @@ public class RestDocumentationConfigurer extends MockMvcConfigurerAdapter {
 		}
 
 	}
+
 }

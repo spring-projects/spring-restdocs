@@ -42,7 +42,7 @@ class HeaderRemovingResponsePostProcessor implements ResponsePostProcessor {
 
 	private final Set<String> headersToRemove;
 
-	public HeaderRemovingResponsePostProcessor(String... headersToRemove) {
+	HeaderRemovingResponsePostProcessor(String... headersToRemove) {
 		this.headersToRemove = new HashSet<>(Arrays.asList(headersToRemove));
 	}
 

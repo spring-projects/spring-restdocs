@@ -33,10 +33,12 @@ public final class RestDocumentationContext {
 
 	private final TestContext testContext;
 
-	public RestDocumentationContext() {
-		this(null);
-	}
-
+	/**
+	 * Creates a new {@code RestDocumentationContext} backed by the given
+	 * {@code testContext}.
+	 * 
+	 * @param testContext the test context
+	 */
 	public RestDocumentationContext(TestContext testContext) {
 		this.testContext = testContext;
 	}

@@ -18,6 +18,8 @@ package com.example;
 
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
@@ -26,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldType;
-import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.web.servlet.MockMvc;
 
 public class Payload {
@@ -37,9 +38,9 @@ private MockMvc mockMvc;
 		// tag::response[]
 		this.mockMvc.perform(get("/user/5").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andDo(document("index").withResponseFields( // <1>
+			.andDo(document("index", responseFields( // <1>
 					fieldWithPath("contact").description("The user's contact details"), // <2>
-					fieldWithPath("contact.email").description("The user's email address"))); // <3>
+					fieldWithPath("contact.email").description("The user's email address")))); // <3>
 		// end::response[]
 	}
 
@@ -47,11 +48,11 @@ private MockMvc mockMvc;
 		this.mockMvc.perform(get("/user/5").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			// tag::explicit-type[]
-			.andDo(document("index").withResponseFields(
+			.andDo(document("index", responseFields(
 					fieldWithPath("contact.email")
 							.type(FieldType.STRING) // <1>
 							.optional()
-							.description("The user's email address")));
+							.description("The user's email address"))));
 			// end::explicit-type[]
 	}
 
@@ -59,7 +60,7 @@ private MockMvc mockMvc;
 		this.mockMvc.perform(post("/users/").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			// tag::constraints[]
-			.andDo(document("create-user").withRequestFields(
+			.andDo(document("create-user", requestFields(
 					attributes(
 							key("title").value("Fields for user creation")), // <1>
 					fieldWithPath("name")
@@ -69,7 +70,7 @@ private MockMvc mockMvc;
 					fieldWithPath("email")
 							.description("The user's email address")
 							.attributes(
-									key("constraints").value("Must be a valid email address")))); // <3>
+									key("constraints").value("Must be a valid email address"))))); // <3>
 			// end::constraints[]
 	}
 

@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.config;
-
-import org.springframework.mock.web.MockHttpServletRequest;
+package org.springframework.restdocs.snippet;
 
 /**
- * Abstract configurer that declares methods that are internal to the documentation
- * configuration implementation.
+ * A {@link RuntimeException} thrown to indicate a problem with the generation of a
+ * documentation snippet.
  * 
  * @author Andy Wilkinson
  */
-abstract class AbstractConfigurer {
+@SuppressWarnings("serial")
+public class SnippetException extends RuntimeException {
 
 	/**
-	 * Applies the configuration, possibly by modifying the given {@code request}
-	 * @param request the request that may be modified
+	 * Creates a new {@code SnippetException} described by the given {@code message}
+	 * @param message the message that describes the problem
 	 */
-	abstract void apply(MockHttpServletRequest request);
+	public SnippetException(String message) {
+		super(message);
+	}
 
 }

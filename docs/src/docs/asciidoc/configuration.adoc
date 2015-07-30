@@ -48,6 +48,26 @@ include::{examples-dir}/com/example/CustomEncoding.java[tags=custom-encoding]
 
 
 
+[[configuration-default-snippets]]
+=== Default snippets
+
+Three snippets are produced by default:
+
+- `curl-request`
+- `http-request`
+- `http-response`
+
+This default configuration is applied by `RestDocumentationConfigurer`. You can use its
+API to change the configuration. For example, to only produce the `curl-request` snippet
+by default:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/CustomDefaultSnippetsConfiguration.java[tags=custom-default-snippets]
+----
+
+
+
 [[configuration-output-directory]]
 === Snippet output directory
 

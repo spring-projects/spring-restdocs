@@ -75,12 +75,11 @@ public abstract class Attributes {
 		public Attribute value(Object value) {
 			return new Attribute(this.key, value);
 		}
+
 	}
 
 	/**
 	 * An attribute (key-value pair).
-	 * 
-	 * @author Andy Wilkinson
 	 */
 	public static class Attribute {
 
@@ -88,18 +87,32 @@ public abstract class Attributes {
 
 		private final Object value;
 
+		/**
+		 * Creates a new attribute with the given {@code key} and {@code value}.
+		 * @param key the key
+		 * @param value the value
+		 */
 		public Attribute(String key, Object value) {
 			this.key = key;
 			this.value = value;
 		}
 
+		/**
+		 * Returns the attribute's key
+		 * @return the key
+		 */
 		public String getKey() {
 			return this.key;
 		}
 
+		/**
+		 * Returns the attribute's value
+		 * @return the value
+		 */
 		public Object getValue() {
 			return this.value;
 		}
 
 	}
+
 }

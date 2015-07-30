@@ -67,7 +67,7 @@ public abstract class ContentModifyingReponsePostProcessor implements
 
 		private final MockHttpServletResponse delegate;
 
-		public ContentModifyingMethodInterceptor(String modifiedContent,
+		private ContentModifyingMethodInterceptor(String modifiedContent,
 				MockHttpServletResponse delegate) {
 			this.modifiedContent = modifiedContent;
 			this.delegate = delegate;

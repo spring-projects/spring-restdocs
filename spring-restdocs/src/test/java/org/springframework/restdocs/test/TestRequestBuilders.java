@@ -29,7 +29,8 @@ public class TestRequestBuilders {
 			Object... urlVariables) {
 		return org.springframework.restdocs.RestDocumentationRequestBuilders.get(
 				urlTemplate, urlVariables).requestAttr(
-				RestDocumentationContext.class.getName(), new RestDocumentationContext());
+				RestDocumentationContext.class.getName(),
+				new RestDocumentationContext(null));
 	}
 
 }

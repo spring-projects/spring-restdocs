@@ -21,26 +21,23 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.restdocs.templates.Template;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultHandler;
 
 /**
- * Base class for a {@link ResultHandler} that writes a documentation snippet
+ * Base class for a {@link Snippet} that is produced using a {@link Template} and
+ * {@link TemplateEngine}.
  *
  * @author Andy Wilkinson
  */
-public abstract class SnippetWritingResultHandler implements ResultHandler {
+public abstract class TemplatedSnippet implements Snippet {
 
 	private final Map<String, Object> attributes = new HashMap<>();
 
-	private final String identifier;
-
 	private final String snippetName;
 
-	protected SnippetWritingResultHandler(String identifier, String snippetName,
-			Map<String, Object> attributes) {
-		this.identifier = identifier;
+	protected TemplatedSnippet(String snippetName, Map<String, Object> attributes) {
 		this.snippetName = snippetName;
 		if (attributes != null) {
 			this.attributes.putAll(attributes);
@@ -48,11 +45,11 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 	}
 
 	@Override
-	public void handle(MvcResult result) throws IOException {
+	public void document(String operation, MvcResult result) throws IOException {
 		WriterResolver writerResolver = (WriterResolver) result.getRequest()
 				.getAttribute(WriterResolver.class.getName());
-		try (Writer writer = writerResolver.resolve(this.identifier, this.snippetName)) {
-			Map<String, Object> model = doHandle(result);
+		try (Writer writer = writerResolver.resolve(operation, this.snippetName)) {
+			Map<String, Object> model = document(result);
 			model.putAll(this.attributes);
 			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
 					.getAttribute(TemplateEngine.class.getName());
@@ -60,6 +57,6 @@ public abstract class SnippetWritingResultHandler implements ResultHandler {
 		}
 	}
 
-	protected abstract Map<String, Object> doHandle(MvcResult result) throws IOException;
+	protected abstract Map<String, Object> document(MvcResult result) throws IOException;
 
 }

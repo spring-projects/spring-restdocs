@@ -17,26 +17,32 @@ package org.springframework.restdocs.payload;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
 
 /**
- * A {@link FieldSnippetResultHandler} for documenting a request's fields
+ * A {@link Snippet} the documents the fields in a response.
  * 
  * @author Andy Wilkinson
  */
-public class RequestFieldSnippetResultHandler extends FieldSnippetResultHandler {
+class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 
-	RequestFieldSnippetResultHandler(String identifier, Map<String, Object> attributes,
+	ResponseFieldsSnippet(List<FieldDescriptor> descriptors) {
+		this(null, descriptors);
+	}
+
+	ResponseFieldsSnippet(Map<String, Object> attributes,
 			List<FieldDescriptor> descriptors) {
-		super(identifier, "request", attributes, descriptors);
+		super("response", attributes, descriptors);
 	}
 
 	@Override
 	protected Reader getPayloadReader(MvcResult result) throws IOException {
-		return result.getRequest().getReader();
+		return new StringReader(result.getResponse().getContentAsString());
 	}
 
 }

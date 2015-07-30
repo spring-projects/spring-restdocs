@@ -20,7 +20,8 @@ import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.LinkExtractors.halLinks;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.halLinks;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,13 +30,13 @@ public class Hypermedia {
 
 	private MockMvc mockMvc;
 
-	public void links() throws Exception {
+	public void defaultExtractor() throws Exception {
 		// tag::links[]
 		this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andDo(document("index").withLinks( // <1>
+			.andDo(document("index", links( // <1>
 					linkWithRel("alpha").description("Link to the alpha resource"), // <2>
-					linkWithRel("bravo").description("Link to the bravo resource"))); // <3>
+					linkWithRel("bravo").description("Link to the bravo resource")))); // <3>
 		// end::links[]
 	}
 
@@ -43,9 +44,9 @@ public class Hypermedia {
 		this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			//tag::explicit-extractor[]
-			.andDo(document("index").withLinks(halLinks(), // <1>
+			.andDo(document("index", links(halLinks(), // <1>
 					linkWithRel("alpha").description("Link to the alpha resource"),
-					linkWithRel("bravo").description("Link to the bravo resource")));
+					linkWithRel("bravo").description("Link to the bravo resource"))));
 			// end::explicit-extractor[]
 	}
 

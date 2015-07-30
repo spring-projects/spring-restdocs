@@ -46,6 +46,12 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 
 	private final RestDocumentationContext context;
 
+	/**
+	 * Creates a new placeholder resolver that will resolve placeholders using the given
+	 * {@code context}.
+	 * 
+	 * @param context the context to use
+	 */
 	public RestDocumentationContextPlaceholderResolver(RestDocumentationContext context) {
 		this.context = context;
 	}

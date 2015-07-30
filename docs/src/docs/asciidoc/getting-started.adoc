@@ -200,7 +200,7 @@ be included in the project's jar:
 				<goals>
 					<goal>copy-resources</goal>
 				</goals>
-            	<configuration>
+				<configuration>
 					<outputDirectory>
 						${project.build.outputDirectory}/static/docs
 					</outputDirectory>
@@ -245,7 +245,7 @@ The `MockMvc` instance is configured using a `RestDocumentationConfigurer`. An i
 of this class can be obtained from the static `documentationConfiguration()` method on
 `org.springframework.restdocs.RestDocumentation`. `RestDocumentationConfigurer` applies
 sensible defaults and also provides an API for customizing the configuration. Refer to the
-<<configuration, Configuration section>> for more information.
+<<configuration, configuration section>> for more information.
 
 
 

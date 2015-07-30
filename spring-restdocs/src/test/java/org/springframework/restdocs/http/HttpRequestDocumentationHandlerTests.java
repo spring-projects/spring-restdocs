@@ -19,18 +19,13 @@ package org.springframework.restdocs.http;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.fileUpload;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.put;
-import static org.springframework.restdocs.http.HttpDocumentation.documentHttpRequest;
-import static org.springframework.restdocs.http.HttpDocumentation.documentHttpResponse;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
-import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.StubMvcResult.result;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -44,7 +39,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
@@ -52,12 +46,13 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
- * Tests for {@link HttpDocumentation}
- *
+ * Tests for {@link HttpRequestSnippet}
+ * 
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
+ *
  */
-public class HttpDocumentationTests {
+public class HttpRequestDocumentationHandlerTests {
 
 	private static final String BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
 
@@ -70,8 +65,8 @@ public class HttpDocumentationTests {
 				httpRequest(GET, "/foo").header(HttpHeaders.HOST, "localhost").header(
 						"Alpha", "a"));
 
-		documentHttpRequest("get-request", null).handle(
-				result(get("/foo").header("Alpha", "a")));
+		new HttpRequestSnippet().document("get-request", result(get("/foo")
+				.header("Alpha", "a")));
 	}
 
 	@Test
@@ -79,7 +74,7 @@ public class HttpDocumentationTests {
 		this.snippet.expectHttpRequest("get-request-with-query-string").withContents(
 				httpRequest(GET, "/foo?bar=baz").header(HttpHeaders.HOST, "localhost"));
 
-		documentHttpRequest("get-request-with-query-string", null).handle(
+		new HttpRequestSnippet().document("get-request-with-query-string",
 				result(get("/foo?bar=baz")));
 	}
 
@@ -88,7 +83,7 @@ public class HttpDocumentationTests {
 		this.snippet.expectHttpRequest("get-request-with-parameter").withContents(
 				httpRequest(GET, "/foo?b%26r=baz").header(HttpHeaders.HOST, "localhost"));
 
-		documentHttpRequest("get-request-with-parameter", null).handle(
+		new HttpRequestSnippet().document("get-request-with-parameter",
 				result(get("/foo").param("b&r", "baz")));
 	}
 
@@ -98,7 +93,7 @@ public class HttpDocumentationTests {
 				httpRequest(POST, "/foo").header(HttpHeaders.HOST, "localhost").content(
 						"Hello, world"));
 
-		documentHttpRequest("post-request-with-content", null).handle(
+		new HttpRequestSnippet().document("post-request-with-content",
 				result(post("/foo").content("Hello, world")));
 	}
 
@@ -109,7 +104,7 @@ public class HttpDocumentationTests {
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
-		documentHttpRequest("post-request-with-parameter", null).handle(
+		new HttpRequestSnippet().document("post-request-with-parameter",
 				result(post("/foo").param("b&r", "baz").param("a", "alpha")));
 	}
 
@@ -119,7 +114,7 @@ public class HttpDocumentationTests {
 				httpRequest(PUT, "/foo").header(HttpHeaders.HOST, "localhost").content(
 						"Hello, world"));
 
-		documentHttpRequest("put-request-with-content", null).handle(
+		new HttpRequestSnippet().document("put-request-with-content",
 				result(put("/foo").content("Hello, world")));
 	}
 
@@ -130,46 +125,8 @@ public class HttpDocumentationTests {
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
-		documentHttpRequest("put-request-with-parameter", null).handle(
+		new HttpRequestSnippet().document("put-request-with-parameter",
 				result(put("/foo").param("b&r", "baz").param("a", "alpha")));
-	}
-
-	@Test
-	public void basicResponse() throws IOException {
-		this.snippet.expectHttpResponse("basic-response").withContents(httpResponse(OK));
-		documentHttpResponse("basic-response", null).handle(result());
-	}
-
-	@Test
-	public void nonOkResponse() throws IOException {
-		this.snippet.expectHttpResponse("non-ok-response").withContents(
-				httpResponse(BAD_REQUEST));
-
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.setStatus(BAD_REQUEST.value());
-		documentHttpResponse("non-ok-response", null).handle(result(response));
-	}
-
-	@Test
-	public void responseWithHeaders() throws IOException {
-		this.snippet.expectHttpResponse("response-with-headers").withContents(
-				httpResponse(OK) //
-						.header("Content-Type", "application/json") //
-						.header("a", "alpha"));
-
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		response.setHeader("a", "alpha");
-		documentHttpResponse("response-with-headers", null).handle(result(response));
-	}
-
-	@Test
-	public void responseWithContent() throws IOException {
-		this.snippet.expectHttpResponse("response-with-content").withContents(
-				httpResponse(OK).content("content"));
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.getWriter().append("content");
-		documentHttpResponse("response-with-content", null).handle(result(response));
 	}
 
 	@Test
@@ -184,7 +141,7 @@ public class HttpDocumentationTests {
 						.content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", null, "<< data >>".getBytes());
-		documentHttpRequest("multipart-post", null).handle(
+		new HttpRequestSnippet().document("multipart-post",
 				result(fileUpload("/upload").file(multipartFile)));
 	}
 
@@ -207,7 +164,8 @@ public class HttpDocumentationTests {
 						.content(expectedContent));
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", null, "<< data >>".getBytes());
-		documentHttpRequest("multipart-post", null).handle(
+		new HttpRequestSnippet().document(
+				"multipart-post",
 				result(fileUpload("/upload").file(multipartFile)
 						.param("a", "apple", "avocado").param("b", "banana")));
 	}
@@ -226,7 +184,8 @@ public class HttpDocumentationTests {
 		MockMultipartFile multipartFile = new MockMultipartFile("image",
 				"documents/images/example.png", MediaType.IMAGE_PNG_VALUE,
 				"<< data >>".getBytes());
-		documentHttpRequest("multipart-post-with-content-type", null).handle(
+		new HttpRequestSnippet().document(
+				"multipart-post-with-content-type",
 				result(fileUpload("/upload").file(multipartFile)));
 	}
 
@@ -238,7 +197,7 @@ public class HttpDocumentationTests {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo");
 		request.setServerName("api.example.com");
 
-		documentHttpRequest("get-request-custom-server-name", null).handle(
+		new HttpRequestSnippet().document("get-request-custom-server-name",
 				result(request));
 	}
 
@@ -247,7 +206,7 @@ public class HttpDocumentationTests {
 		this.snippet.expectHttpRequest("get-request-custom-host").withContents(
 				httpRequest(GET, "/foo").header(HttpHeaders.HOST, "api.example.com"));
 
-		documentHttpRequest("get-request-custom-host", null).handle(
+		new HttpRequestSnippet().document("get-request-custom-host",
 				result(get("/foo").header(HttpHeaders.HOST, "api.example.com")));
 	}
 
@@ -263,25 +222,8 @@ public class HttpDocumentationTests {
 								"src/test/resources/custom-snippet-templates/http-request-with-title.snippet"));
 		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
 				resolver));
-		documentHttpRequest("request-with-snippet-attributes",
-				attributes(key("title").value("Title for the request"))).handle(
-				result(request));
-	}
-
-	@Test
-	public void responseWithCustomSnippetAttributes() throws IOException {
-		this.snippet.expectHttpResponse("response-with-snippet-attributes").withContents(
-				containsString("Title for the response"));
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("http-response"))
-				.thenReturn(
-						new FileSystemResource(
-								"src/test/resources/custom-snippet-templates/http-response-with-title.snippet"));
-		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
-				resolver));
-		documentHttpResponse("response-with-snippet-attributes",
-				attributes(key("title").value("Title for the response"))).handle(
+		new HttpRequestSnippet(attributes(key("title").value(
+				"Title for the request"))).document("request-with-snippet-attributes",
 				result(request));
 	}
 
@@ -290,12 +232,12 @@ public class HttpDocumentationTests {
 	}
 
 	private String createPart(String content, boolean last) {
-		String boundary = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
 		StringBuilder part = new StringBuilder();
-		part.append(String.format("--%s%n%s%n", boundary, content));
+		part.append(String.format("--%s%n%s%n", BOUNDARY, content));
 		if (last) {
-			part.append(String.format("--%s--", boundary));
+			part.append(String.format("--%s--", BOUNDARY));
 		}
 		return part.toString();
 	}
+
 }

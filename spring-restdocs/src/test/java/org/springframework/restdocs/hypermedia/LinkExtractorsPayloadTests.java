@@ -37,7 +37,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
- * Parameterized tests for {@link LinkExtractors} with various payloads.
+ * Parameterized tests for {@link HalLinkExtractor} and {@link AtomLinkExtractor} with
+ * various payloads.
  *
  * @author Andy Wilkinson
  */
@@ -50,8 +51,8 @@ public class LinkExtractorsPayloadTests {
 
 	@Parameters
 	public static Collection<Object[]> data() {
-		return Arrays.asList(new Object[] { LinkExtractors.halLinks(), "hal" },
-				new Object[] { LinkExtractors.atomLinks(), "atom" });
+		return Arrays.asList(new Object[] { new HalLinkExtractor(), "hal" },
+				new Object[] { new AtomLinkExtractor(), "atom" });
 	}
 
 	public LinkExtractorsPayloadTests(LinkExtractor linkExtractor, String linkType) {

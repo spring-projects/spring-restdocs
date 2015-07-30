@@ -27,6 +27,7 @@ import org.springframework.cglib.proxy.MethodProxy;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.response.ResponsePostProcessor;
+import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.ReflectionUtils;
 
@@ -47,19 +48,22 @@ public final class ResponseModifier {
 
 	/**
 	 * Provides a {@link RestDocumentationResultHandler} that can be used to document the
-	 * request and modified result.
-	 * @param identifier An identifier for the API call that is being documented
+	 * request and modified response.
+	 * @param identifier an identifier for the API call that is being documented
+	 * @param snippets the snippets to use to document the call
 	 * @return the result handler that will produce the documentation
 	 */
-	public RestDocumentationResultHandler andDocument(String identifier) {
-		return new ResponseModifyingRestDocumentationResultHandler(identifier);
+	public RestDocumentationResultHandler andDocument(String identifier,
+			Snippet... snippets) {
+		return new ResponseModifyingRestDocumentationResultHandler(identifier, snippets);
 	}
 
 	class ResponseModifyingRestDocumentationResultHandler extends
 			RestDocumentationResultHandler {
 
-		public ResponseModifyingRestDocumentationResultHandler(String identifier) {
-			super(identifier);
+		private ResponseModifyingRestDocumentationResultHandler(String identifier,
+				Snippet... snippets) {
+			super(identifier, snippets);
 		}
 
 		@Override

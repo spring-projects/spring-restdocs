@@ -18,6 +18,7 @@ package com.example;
 
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,14 +28,14 @@ public class PathParameters {
 
 	private MockMvc mockMvc;
 
-	public void pathParameters() throws Exception {
+	public void pathParametersSnippet() throws Exception {
 		// tag::path-parameters[]
 		this.mockMvc.perform(get("/locations/{latitude}/{longitude}", 51.5072, 0.1275)) // <1>
 			.andExpect(status().isOk())
-			.andDo(document("locations").withPathParameters( // <2>
+			.andDo(document("locations", pathParameters( // <2>
 					parameterWithName("latitude").description("The location's latitude"), // <3>
 					parameterWithName("longitude").description("The location's longitude") // <4>
-			));
+			)));
 		// end::path-parameters[]
 	}
 

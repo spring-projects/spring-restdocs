@@ -17,30 +17,33 @@
 package org.springframework.restdocs.request;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.restdocs.snippet.SnippetGenerationException;
-import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
 /**
- * A {@link SnippetWritingResultHandler} that produces a snippet documenting the path
- * parameters supported by a RESTful resource.
+ * A {@link Snippet} that documents the path parameters supported by a RESTful resource.
  *
  * @author Andy Wilkinson
  */
-public class PathParametersSnippetResultHandler extends
-		AbstractParametersSnippetResultHandler {
+class PathParametersSnippet extends AbstractParametersSnippet {
 
 	private static final Pattern NAMES_PATTERN = Pattern.compile("\\{([^/]+?)\\}");
 
-	protected PathParametersSnippetResultHandler(String identifier,
-			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		super(identifier, "path-parameters", attributes, descriptors);
+	PathParametersSnippet(List<ParameterDescriptor> descriptors) {
+		this(null, descriptors);
+	}
+
+	PathParametersSnippet(Map<String, Object> attributes,
+			List<ParameterDescriptor> descriptors) {
+		super("path-parameters", attributes, descriptors);
 	}
 
 	@Override
@@ -84,7 +87,7 @@ public class PathParametersSnippetResultHandler extends
 			message += "Path parameters with the following names were not found in "
 					+ "the request: " + missingParameters;
 		}
-		throw new SnippetGenerationException(message);
+		throw new SnippetException(message);
 	}
 
 }

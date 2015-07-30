@@ -13,31 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.restdocs.payload;
+
+package org.springframework.restdocs.hypermedia;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * A {@link FieldSnippetResultHandler} for documenting a response's fields
+ * Abstract base class for a {@link LinkExtractor} that extracts links from JSON
  * 
  * @author Andy Wilkinson
  */
-public class ResponseFieldSnippetResultHandler extends FieldSnippetResultHandler {
+abstract class AbstractJsonLinkExtractor implements LinkExtractor {
 
-	ResponseFieldSnippetResultHandler(String identifier, Map<String, Object> attributes,
-			List<FieldDescriptor> descriptors) {
-		super(identifier, "response", attributes, descriptors);
-	}
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
-	protected Reader getPayloadReader(MvcResult result) throws IOException {
-		return new StringReader(result.getResponse().getContentAsString());
+	@SuppressWarnings("unchecked")
+	public Map<String, List<Link>> extractLinks(MockHttpServletResponse response)
+			throws IOException {
+		Map<String, Object> jsonContent = this.objectMapper.readValue(
+				response.getContentAsString(), Map.class);
+		return extractLinks(jsonContent);
 	}
 
+	protected abstract Map<String, List<Link>> extractLinks(Map<String, Object> json);
 }

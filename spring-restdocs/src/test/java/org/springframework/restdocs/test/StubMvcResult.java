@@ -92,7 +92,7 @@ public class StubMvcResult implements MvcResult {
 			this.request.setAttribute(TemplateEngine.class.getName(),
 					new MustacheTemplateEngine(new StandardTemplateResourceResolver()));
 		}
-		RestDocumentationContext context = new RestDocumentationContext();
+		RestDocumentationContext context = new RestDocumentationContext(null);
 		this.request.setAttribute(RestDocumentationContext.class.getName(), context);
 		if (this.request.getAttribute(WriterResolver.class.getName()) == null) {
 			this.request.setAttribute(WriterResolver.class.getName(),

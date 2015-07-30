@@ -26,12 +26,12 @@ import org.hamcrest.Matcher;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.restdocs.test.SnippetMatchers.SnippetMatcher;
 
 /**
  * The {@code ExpectedSnippet} rule is used to verify that a
- * {@link SnippetWritingResultHandler} has generated the expected snippet.
+ * {@link TemplatedSnippet} has generated the expected snippet.
  * 
  * @author Andy Wilkinson
  */

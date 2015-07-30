@@ -43,7 +43,7 @@ public class RestDocumentationConfigurerTests {
 
 	private MockHttpServletRequest request = new MockHttpServletRequest();
 
-	private RestDocumentationContext context = new RestDocumentationContext();
+	private RestDocumentationContext context = new RestDocumentationContext(null);
 
 	@Before
 	public void establishContext() {

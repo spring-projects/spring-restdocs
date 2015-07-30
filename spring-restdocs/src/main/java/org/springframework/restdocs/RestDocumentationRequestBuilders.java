@@ -19,6 +19,7 @@ package org.springframework.restdocs;
 import java.net.URI;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,13 +27,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 /**
  * A drop-in replacement for {@link MockMvcRequestBuilders} that captures a request's URL
  * template and makes it available for documentation. Required when
- * {@link RestDocumentationResultHandler#withPathParameters(org.springframework.restdocs .request.ParameterDescriptor...)
- * documenting path parameters} and recommended for general usage.
+ * {@link RequestDocumentation#pathParameters(org.springframework.restdocs.request.ParameterDescriptor...)
+ * ) documenting path parameters} and recommended for general usage.
  * 
  * @author Andy Wilkinson
  * @see MockMvcRequestBuilders
- * @see RestDocumentationResultHandler#withPathParameters(org.springframework.restdocs.request.ParameterDescriptor...)
- * @see RestDocumentationResultHandler#withPathParameters(java.util.Map,
+ * @see RequestDocumentation#pathParameters(org.springframework.restdocs.request.ParameterDescriptor...)
+ * @see RequestDocumentation#pathParameters(java.util.Map,
  * org.springframework.restdocs.request.ParameterDescriptor...)
  */
 public abstract class RestDocumentationRequestBuilders {

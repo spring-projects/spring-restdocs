@@ -19,10 +19,10 @@ package org.springframework.restdocs.hypermedia;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.springframework.restdocs.RestDocumentationResultHandler;
+import org.springframework.restdocs.snippet.Snippet;
 
 /**
- * Static factory methods for documenting a RESTful API that utilises Hypermedia.
+ * Static factory methods for documenting a RESTful API that utilizes Hypermedia.
  * 
  * @author Andy Wilkinson
  */
@@ -37,29 +37,89 @@ public abstract class HypermediaDocumentation {
 	 * 
 	 * @param rel The rel of the link
 	 * @return a {@code LinkDescriptor} ready for further configuration
-	 * @see RestDocumentationResultHandler#withLinks(LinkDescriptor...)
-	 * @see RestDocumentationResultHandler#withLinks(LinkExtractor, LinkDescriptor...)
 	 */
 	public static LinkDescriptor linkWithRel(String rel) {
 		return new LinkDescriptor(rel);
 	}
 
 	/**
-	 * Creates a {@code LinkSnippetResultHandler} that will produce a documentation
-	 * snippet for a response's links.
+	 * Returns a handler that will produce a snippet documenting the links in the API
+	 * call's response. Links will be extracted from the response automatically based on
+	 * its content type.
 	 * 
-	 * @param identifier An identifier for the API call that is being documented
+	 * @param descriptors The descriptions of the response's links
+	 * @return the handler
+	 */
+	public static Snippet links(LinkDescriptor... descriptors) {
+		return new LinksSnippet(new ContentTypeLinkExtractor(),
+				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a handler that will produce a snippet documenting the links in the API
+	 * call's response. The given {@code attributes} will be available during snippet
+	 * generation. Links will be extracted from the response automatically based on its
+	 * content type.
+	 * 
+	 * @param attributes Attributes made available during rendering of the links snippet
+	 * @param descriptors The descriptions of the response's links
+	 * @return the handler
+	 */
+	public static Snippet links(Map<String, Object> attributes,
+			LinkDescriptor... descriptors) {
+		return new LinksSnippet(new ContentTypeLinkExtractor(), attributes,
+				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a handler that will produce a snippet documenting the links in the API
+	 * call's response. Links will be extracted from the response using the given
+	 * {@code linkExtractor}.
+	 * 
+	 * @param linkExtractor Used to extract the links from the response
+	 * @param descriptors The descriptions of the response's links
+	 * @return the handler
+	 */
+	public static Snippet links(LinkExtractor linkExtractor,
+			LinkDescriptor... descriptors) {
+		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a handler that will produce a snippet documenting the links in the API
+	 * call's response. The given {@code attributes} will be available during snippet
+	 * generation. Links will be extracted from the response using the given
+	 * {@code linkExtractor}.
+	 * 
 	 * @param attributes Attributes made available during rendering of the links snippet
 	 * @param linkExtractor Used to extract the links from the response
 	 * @param descriptors The descriptions of the response's links
 	 * @return the handler
-	 * @see RestDocumentationResultHandler#withLinks(LinkDescriptor...)
-	 * @see RestDocumentationResultHandler#withLinks(LinkExtractor, LinkDescriptor...)
 	 */
-	public static LinkSnippetResultHandler documentLinks(String identifier,
-			Map<String, Object> attributes, LinkExtractor linkExtractor,
-			LinkDescriptor... descriptors) {
-		return new LinkSnippetResultHandler(identifier, attributes, linkExtractor,
+	public static Snippet links(LinkExtractor linkExtractor,
+			Map<String, Object> attributes, LinkDescriptor... descriptors) {
+		return new LinksSnippet(linkExtractor, attributes,
 				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code LinkExtractor} capable of extracting links in Hypermedia
+	 * Application Language (HAL) format where the links are found in a map named
+	 * {@code _links}.
+	 *
+	 * @return The extract for HAL-style links
+	 */
+	public static LinkExtractor halLinks() {
+		return new HalLinkExtractor();
+	}
+
+	/**
+	 * Returns a {@code LinkExtractor} capable of extracting links in Atom format where
+	 * the links are found in an array named {@code links}.
+	 *
+	 * @return The extractor for Atom-style links
+	 */
+	public static LinkExtractor atomLinks() {
+		return new AtomLinkExtractor();
 	}
 }

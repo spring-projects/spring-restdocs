@@ -18,6 +18,7 @@ package com.example;
 
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,14 +28,14 @@ public class QueryParameters {
 
 	private MockMvc mockMvc;
 
-	public void queryParameters() throws Exception {
+	public void queryParametersSnippet() throws Exception {
 		// tag::query-parameters[]
 		this.mockMvc.perform(get("/users?page=2&per_page=100"))
 			.andExpect(status().isOk())
-			.andDo(document("users").withQueryParameters( // <1>
+			.andDo(document("users", queryParameters( // <1>
 					parameterWithName("page").description("The page to retrieve"), // <2>
 					parameterWithName("per_page").description("Entries per page") // <3>
-			));
+			)));
 		// end::query-parameters[]
 	}
 

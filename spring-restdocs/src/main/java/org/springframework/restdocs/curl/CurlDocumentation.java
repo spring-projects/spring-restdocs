@@ -16,19 +16,9 @@
 
 package org.springframework.restdocs.curl;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.springframework.restdocs.snippet.DocumentableHttpServletRequest;
-import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * Static factory methods for documenting a RESTful API as if it were being driven using
@@ -46,151 +36,25 @@ public abstract class CurlDocumentation {
 	}
 
 	/**
-	 * Produces a documentation snippet containing the request formatted as a cURL command
+	 * Returns a handler that will produce a snippet containing the curl request for the
+	 * API call.
 	 *
-	 * @param identifier An identifier for the API call that is being documented
+	 * @return the handler that will produce the snippet
+	 */
+	public static Snippet curlRequest() {
+		return new CurlRequestSnippet();
+	}
+
+	/**
+	 * Returns a handler that will produce a snippet containing the curl request for the
+	 * API call. The given {@code attributes} will be available during snippet generation.
+	 *
 	 * @param attributes Attributes made available during rendering of the curl request
 	 * snippet
 	 * @return the handler that will produce the snippet
 	 */
-	public static SnippetWritingResultHandler documentCurlRequest(String identifier,
-			Map<String, Object> attributes) {
-		return new CurlRequestWritingResultHandler(identifier, attributes);
-	}
-
-	private static final class CurlRequestWritingResultHandler extends
-			SnippetWritingResultHandler {
-
-		private static final String SCHEME_HTTP = "http";
-
-		private static final String SCHEME_HTTPS = "https";
-
-		private static final int STANDARD_PORT_HTTP = 80;
-
-		private static final int STANDARD_PORT_HTTPS = 443;
-
-		private CurlRequestWritingResultHandler(String identifier,
-				Map<String, Object> attributes) {
-			super(identifier, "curl-request", attributes);
-		}
-
-		@Override
-		public Map<String, Object> doHandle(MvcResult result) throws IOException {
-			Map<String, Object> model = new HashMap<String, Object>();
-			model.put("arguments", getCurlCommandArguments(result));
-			return model;
-		}
-
-		private String getCurlCommandArguments(MvcResult result) throws IOException {
-			StringWriter command = new StringWriter();
-			PrintWriter printer = new PrintWriter(command);
-			DocumentableHttpServletRequest request = new DocumentableHttpServletRequest(
-					result.getRequest());
-
-			printer.print("'");
-			writeAuthority(request, printer);
-			writePathAndQueryString(request, printer);
-			printer.print("'");
-
-			writeOptionToIncludeHeadersInOutput(printer);
-			writeHttpMethodIfNecessary(request, printer);
-			writeHeaders(request, printer);
-
-			if (request.isMultipartRequest()) {
-				writeParts(request, printer);
-			}
-
-			writeContent(request, printer);
-
-			return command.toString();
-		}
-
-		private void writeAuthority(DocumentableHttpServletRequest request,
-				PrintWriter writer) {
-			writer.print(String.format("%s://%s", request.getScheme(), request.getHost()));
-
-			if (isNonStandardPort(request)) {
-				writer.print(String.format(":%d", request.getPort()));
-			}
-		}
-
-		private boolean isNonStandardPort(DocumentableHttpServletRequest request) {
-			return (SCHEME_HTTP.equals(request.getScheme()) && request.getPort() != STANDARD_PORT_HTTP)
-					|| (SCHEME_HTTPS.equals(request.getScheme()) && request.getPort() != STANDARD_PORT_HTTPS);
-		}
-
-		private void writePathAndQueryString(DocumentableHttpServletRequest request,
-				PrintWriter writer) {
-			if (StringUtils.hasText(request.getContextPath())) {
-				writer.print(String.format(
-						request.getContextPath().startsWith("/") ? "%s" : "/%s",
-						request.getContextPath()));
-			}
-
-			writer.print(request.getRequestUriWithQueryString());
-		}
-
-		private void writeOptionToIncludeHeadersInOutput(PrintWriter writer) {
-			writer.print(" -i");
-		}
-
-		private void writeHttpMethodIfNecessary(DocumentableHttpServletRequest request,
-				PrintWriter writer) {
-			if (!request.isGetRequest()) {
-				writer.print(String.format(" -X %s", request.getMethod()));
-			}
-		}
-
-		private void writeHeaders(DocumentableHttpServletRequest request,
-				PrintWriter writer) {
-			for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
-				for (String header : entry.getValue()) {
-					writer.print(String.format(" -H '%s: %s'", entry.getKey(), header));
-				}
-			}
-		}
-
-		private void writeParts(DocumentableHttpServletRequest request, PrintWriter writer)
-				throws IOException {
-			for (Entry<String, List<MultipartFile>> entry : request.getMultipartFiles()
-					.entrySet()) {
-				for (MultipartFile file : entry.getValue()) {
-					writer.printf(" -F '%s=", file.getName());
-					if (!StringUtils.hasText(file.getOriginalFilename())) {
-						writer.append(new String(file.getBytes()));
-					}
-					else {
-						writer.printf("@%s", file.getOriginalFilename());
-					}
-
-					if (StringUtils.hasText(file.getContentType())) {
-						writer.append(";type=").append(file.getContentType());
-					}
-					writer.append("'");
-				}
-			}
-
-		}
-
-		private void writeContent(DocumentableHttpServletRequest request,
-				PrintWriter writer) throws IOException {
-			if (request.getContentLength() > 0) {
-				writer.print(String.format(" -d '%s'", request.getContentAsString()));
-			}
-			else if (request.isMultipartRequest()) {
-				for (Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-					for (String value : entry.getValue()) {
-						writer.print(String.format(" -F '%s=%s'", entry.getKey(), value));
-					}
-				}
-			}
-			else if (request.isPostRequest() || request.isPutRequest()) {
-				String queryString = request.getParameterMapAsQueryString();
-				if (StringUtils.hasText(queryString)) {
-					writer.print(String.format(" -d '%s'", queryString));
-				}
-			}
-		}
+	public static Snippet curlRequest(Map<String, Object> attributes) {
+		return new CurlRequestSnippet(attributes);
 	}
 
 }

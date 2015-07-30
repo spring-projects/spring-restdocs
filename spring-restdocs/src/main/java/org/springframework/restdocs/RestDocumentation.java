@@ -19,6 +19,7 @@ package org.springframework.restdocs;
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.restdocs.response.ResponsePostProcessor;
 import org.springframework.restdocs.response.ResponsePostProcessors;
+import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -39,6 +40,7 @@ public abstract class RestDocumentation {
 	/**
 	 * Provides access to a {@link MockMvcConfigurer} that can be used to configure the
 	 * REST documentation when building a {@link MockMvc} instance.
+	 * 
 	 * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
 	 * @return the configurer
 	 */
@@ -47,15 +49,18 @@ public abstract class RestDocumentation {
 	}
 
 	/**
-	 * Documents the API call using the given {@code identifier}.
+	 * Documents the API call with the given {@code identifier} using the given
+	 * {@code handlers}.
 	 * 
-	 * @param identifier An identifier for the API call that is being documented
+	 * @param identifier an identifier for the API call that is being documented
+	 * @param snippets the snippets that will document the API call
 	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
 	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
 	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
 	 */
-	public static RestDocumentationResultHandler document(String identifier) {
-		return new RestDocumentationResultHandler(identifier);
+	public static RestDocumentationResultHandler document(String identifier,
+			Snippet... snippets) {
+		return new RestDocumentationResultHandler(identifier, snippets);
 	}
 
 	/**

@@ -21,7 +21,10 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.RestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
@@ -100,26 +103,26 @@ public class ApiDocumentation {
 				.andExpect(jsonPath("timestamp", is(notNullValue())))
 				.andExpect(jsonPath("status", is(400)))
 				.andExpect(jsonPath("path", is(notNullValue())))
-				.andDo(document("error-example")
-						.withResponseFields(
+				.andDo(document("error-example",
+						responseFields(
 								fieldWithPath("error").description("The HTTP error that occurred, e.g. `Bad Request`"),
 								fieldWithPath("message").description("A description of the cause of the error"),
 								fieldWithPath("path").description("The path to which the request was made"),
 								fieldWithPath("status").description("The HTTP status code, e.g. `400`"),
-								fieldWithPath("timestamp").description("The time, in milliseconds, at which the error occurred")));
+								fieldWithPath("timestamp").description("The time, in milliseconds, at which the error occurred"))));
 	}
 
 	@Test
 	public void indexExample() throws Exception {
 		this.mockMvc.perform(get("/"))
 			.andExpect(status().isOk())
-			.andDo(document("index-example")
-					.withLinks(
+			.andDo(document("index-example",
+					links(
 							linkWithRel("notes").description("The <<resources-notes,Notes resource>>"),
 							linkWithRel("tags").description("The <<resources-tags,Tags resource>>"),
-							linkWithRel("profile").description("The ALPS profile for the service"))
-					.withResponseFields(
-							fieldWithPath("_links").description("<<resources-index-links,Links>> to other resources")));
+							linkWithRel("profile").description("The ALPS profile for the service")),
+					responseFields(
+							fieldWithPath("_links").description("<<resources-index-links,Links>> to other resources"))));
 
 	}
 
@@ -135,9 +138,9 @@ public class ApiDocumentation {
 
 		this.mockMvc.perform(get("/notes"))
 			.andExpect(status().isOk())
-			.andDo(document("notes-list-example")
-					.withResponseFields(
-							fieldWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>")));
+			.andDo(document("notes-list-example",
+					responseFields(
+							fieldWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"))));
 	}
 
 	@Test
@@ -161,11 +164,11 @@ public class ApiDocumentation {
 				post("/notes").contentType(MediaTypes.HAL_JSON).content(
 						this.objectMapper.writeValueAsString(note))).andExpect(
 				status().isCreated())
-				.andDo(document("notes-create-example")
-						.withRequestFields(
+				.andDo(document("notes-create-example",
+						requestFields(
 									fieldWithPath("title").description("The title of the note"),
 									fieldWithPath("body").description("The body of the note"),
-									fieldWithPath("tags").description("An array of tag resource URIs")));
+									fieldWithPath("tags").description("An array of tag resource URIs"))));
 	}
 
 	@Test
@@ -198,14 +201,14 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("body", is(note.get("body"))))
 			.andExpect(jsonPath("_links.self.href", is(noteLocation)))
 			.andExpect(jsonPath("_links.tags", is(notNullValue())))
-			.andDo(document("note-get-example")
-					.withLinks(
+			.andDo(document("note-get-example",
+					links(
 							linkWithRel("self").description("This <<resources-note,note>>"),
-							linkWithRel("tags").description("This note's tags"))
-					.withResponseFields(
+							linkWithRel("tags").description("This note's tags")),
+					responseFields(
 							fieldWithPath("title").description("The title of the note"),
 							fieldWithPath("body").description("The body of the note"),
-							fieldWithPath("_links").description("<<resources-note-links,Links>> to other resources")));
+							fieldWithPath("_links").description("<<resources-note-links,Links>> to other resources"))));
 	}
 
 	@Test
@@ -219,9 +222,9 @@ public class ApiDocumentation {
 
 		this.mockMvc.perform(get("/tags"))
 			.andExpect(status().isOk())
-			.andDo(document("tags-list-example")
-					.withResponseFields(
-							fieldWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>")));
+			.andDo(document("tags-list-example",
+					responseFields(
+							fieldWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"))));
 	}
 
 	@Test
@@ -233,9 +236,9 @@ public class ApiDocumentation {
 				post("/tags").contentType(MediaTypes.HAL_JSON).content(
 						this.objectMapper.writeValueAsString(tag)))
 				.andExpect(status().isCreated())
-				.andDo(document("tags-create-example")
-						.withRequestFields(
-								fieldWithPath("name").description("The name of the tag")));
+				.andDo(document("tags-create-example",
+						requestFields(
+								fieldWithPath("name").description("The name of the tag"))));
 	}
 
 	@Test
@@ -274,12 +277,11 @@ public class ApiDocumentation {
 				patch(noteLocation).contentType(MediaTypes.HAL_JSON).content(
 						this.objectMapper.writeValueAsString(noteUpdate)))
 				.andExpect(status().isNoContent())
-				.andDo(document("note-update-example")
-						.withRequestFields(
+				.andDo(document("note-update-example",
+						requestFields(
 								fieldWithPath("title").description("The title of the note").type(FieldType.STRING).optional(),
 								fieldWithPath("body").description("The body of the note").type(FieldType.STRING).optional(),
-								fieldWithPath("tags").description("An array of tag resource URIs").optional()));
-
+								fieldWithPath("tags").description("An array of tag resource URIs").optional())));
 	}
 
 	@Test
@@ -297,13 +299,13 @@ public class ApiDocumentation {
 		this.mockMvc.perform(get(tagLocation))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("name", is(tag.get("name"))))
-			.andDo(document("tag-get-example")
-					.withLinks(
+			.andDo(document("tag-get-example",
+					links(
 							linkWithRel("self").description("This <<resources-tag,tag>>"),
-							linkWithRel("notes").description("The <<resources-tagged-notes,notes>> that have this tag"))
-					.withResponseFields(
+							linkWithRel("notes").description("The <<resources-tagged-notes,notes>> that have this tag")),
+					responseFields(
 							fieldWithPath("name").description("The name of the tag"),
-							fieldWithPath("_links").description("<<resources-tag-links,Links>> to other resources")));
+							fieldWithPath("_links").description("<<resources-tag-links,Links>> to other resources"))));
 	}
 
 	@Test
@@ -325,9 +327,9 @@ public class ApiDocumentation {
 				patch(tagLocation).contentType(MediaTypes.HAL_JSON).content(
 						this.objectMapper.writeValueAsString(tagUpdate)))
 				.andExpect(status().isNoContent())
-				.andDo(document("tag-update-example")
-						.withRequestFields(
-								fieldWithPath("name").description("The name of the tag")));
+				.andDo(document("tag-update-example",
+						requestFields(
+								fieldWithPath("name").description("The name of the tag"))));
 	}
 
 	private void createNote(String title, String body) {

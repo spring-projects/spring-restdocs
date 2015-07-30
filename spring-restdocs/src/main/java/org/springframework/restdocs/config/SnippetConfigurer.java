@@ -16,7 +16,13 @@
 
 package org.springframework.restdocs.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.restdocs.curl.CurlDocumentation;
+import org.springframework.restdocs.http.HttpDocumentation;
+import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.WriterResolver;
 
 /**
@@ -27,6 +33,10 @@ import org.springframework.restdocs.snippet.WriterResolver;
  */
 public class SnippetConfigurer extends
 		AbstractNestedConfigurer<RestDocumentationConfigurer> {
+
+	private List<Snippet> defaultSnippets = Arrays.asList(
+			CurlDocumentation.curlRequest(), HttpDocumentation.httpRequest(),
+			HttpDocumentation.httpResponse());
 
 	/**
 	 * The default encoding for documentation snippets
@@ -43,7 +53,7 @@ public class SnippetConfigurer extends
 	/**
 	 * Configures any documentation snippets to be written using the given
 	 * {@code encoding}. The default is UTF-8.
-	 * @param encoding The encoding
+	 * @param encoding the encoding
 	 * @return {@code this}
 	 */
 	public SnippetConfigurer withEncoding(String encoding) {
@@ -55,5 +65,18 @@ public class SnippetConfigurer extends
 	void apply(MockHttpServletRequest request) {
 		((WriterResolver) request.getAttribute(WriterResolver.class.getName()))
 				.setEncoding(this.snippetEncoding);
+		request.setAttribute("org.springframework.restdocs.defaultSnippets",
+				this.defaultSnippets);
+	}
+
+	/**
+	 * Configures the documentation snippets that will be produced by default.
+	 * 
+	 * @param defaultSnippets the default snippets
+	 * @return {@code this}
+	 */
+	public SnippetConfigurer withDefaults(Snippet... defaultSnippets) {
+		this.defaultSnippets = Arrays.asList(defaultSnippets);
+		return this;
 	}
 }

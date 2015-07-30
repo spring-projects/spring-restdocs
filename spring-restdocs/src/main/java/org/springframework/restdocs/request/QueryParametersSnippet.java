@@ -16,25 +16,28 @@
 
 package org.springframework.restdocs.request;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.restdocs.snippet.SnippetGenerationException;
-import org.springframework.restdocs.snippet.SnippetWritingResultHandler;
+import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.test.web.servlet.MvcResult;
 
 /**
- * A {@link SnippetWritingResultHandler} that produces a snippet documenting the query
- * parameters supported by a RESTful resource.
+ * A {@link Snippet} that documents the query parameters supported by a RESTful resource.
  *
  * @author Andy Wilkinson
  */
-public class QueryParametersSnippetResultHandler extends
-		AbstractParametersSnippetResultHandler {
+class QueryParametersSnippet extends AbstractParametersSnippet {
 
-	protected QueryParametersSnippetResultHandler(String identifier,
-			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		super(identifier, "query-parameters", attributes, descriptors);
+	QueryParametersSnippet(List<ParameterDescriptor> descriptors) {
+		this(null, descriptors);
+	}
+
+	QueryParametersSnippet(Map<String, Object> attributes,
+			List<ParameterDescriptor> descriptors) {
+		super("query-parameters", attributes, descriptors);
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class QueryParametersSnippetResultHandler extends
 			message += "Query parameters with the following names were not found in the request: "
 					+ missingParameters;
 		}
-		throw new SnippetGenerationException(message);
+		throw new SnippetException(message);
 	}
 
 	@Override
