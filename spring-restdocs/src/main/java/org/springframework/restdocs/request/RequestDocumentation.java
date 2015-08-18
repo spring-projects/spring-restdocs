@@ -19,7 +19,11 @@ package org.springframework.restdocs.request;
 import java.util.Arrays;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
+
 import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Static factory methods for documenting aspects of a request sent to a RESTful API.
@@ -33,8 +37,8 @@ public abstract class RequestDocumentation {
 	}
 
 	/**
-	 * Creates a {@link ParameterDescriptor} that describes a query string parameter with
-	 * the given {@code name}.
+	 * Creates a {@link ParameterDescriptor} that describes a request or path parameter
+	 * with the given {@code name}.
 	 * 
 	 * @param name The name of the parameter
 	 * @return a {@link ParameterDescriptor} ready for further configuration
@@ -44,57 +48,59 @@ public abstract class RequestDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the path parameters from
-	 * the API call's request.
+	 * Returns a snippet that will document the path parameters from the API call's
+	 * request.
 	 * 
 	 * @param descriptors The descriptions of the parameters in the request's path
-	 * @return the handler
+	 * @return the snippet
+	 * @see PathVariable
 	 */
 	public static Snippet pathParameters(ParameterDescriptor... descriptors) {
 		return new PathParametersSnippet(Arrays.asList(descriptors));
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the path parameters from
-	 * the API call's request. The given {@code attributes} will be available during
-	 * snippet generation.
+	 * Returns a snippet that will document the path parameters from the API call's
+	 * request. The given {@code attributes} will be available during snippet rendering.
 	 * 
 	 * @param attributes Attributes made available during rendering of the path parameters
 	 * snippet
 	 * @param descriptors The descriptions of the parameters in the request's path
-	 * @return the handler
+	 * @return the snippet
+	 * @see PathVariable
 	 */
 	public static Snippet pathParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {
-		return new PathParametersSnippet(attributes,
-				Arrays.asList(descriptors));
+		return new PathParametersSnippet(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the query parameters from
-	 * the API call's request.
+	 * Returns a snippet that will document the request parameters from the API call's
+	 * request.
 	 * 
-	 * @param descriptors The descriptions of the request's query parameters
-	 * @return the handler
+	 * @param descriptors The descriptions of the request's parameters
+	 * @return the snippet
+	 * @see RequestParam
+	 * @see ServletRequest#getParameterMap()
 	 */
-	public static Snippet queryParameters(ParameterDescriptor... descriptors) {
-		return new QueryParametersSnippet(Arrays.asList(descriptors));
+	public static Snippet requestParameters(ParameterDescriptor... descriptors) {
+		return new RequestParametersSnippet(Arrays.asList(descriptors));
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the query parameters from
-	 * the API call's request. The given {@code attributes} will be available during
-	 * snippet generation.
+	 * Returns a snippet that will document the request parameters from the API call's
+	 * request. The given {@code attributes} will be available during snippet rendering.
 	 * 
-	 * @param attributes Attributes made available during rendering of the query
+	 * @param attributes Attributes made available during rendering of the request
 	 * parameters snippet
-	 * @param descriptors The descriptions of the request's query parameters
-	 * @return the handler
+	 * @param descriptors The descriptions of the request's parameters
+	 * @return the snippet
+	 * @see RequestParam
+	 * @see ServletRequest#getParameterMap()
 	 */
-	public static Snippet queryParameters(Map<String, Object> attributes,
+	public static Snippet requestParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {
-		return new QueryParametersSnippet(attributes,
-				Arrays.asList(descriptors));
+		return new RequestParametersSnippet(attributes, Arrays.asList(descriptors));
 	}
 
 }

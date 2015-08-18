@@ -20,24 +20,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletRequest;
+
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * A {@link Snippet} that documents the query parameters supported by a RESTful resource.
+ * A {@link Snippet} that documents the request parameters supported by a RESTful
+ * resource.
+ * <p>
+ * Request parameters are sent as part of the query string or as posted from data.
  *
  * @author Andy Wilkinson
+ * @see ServletRequest#getParameterMap()
+ * @see RequestParam
  */
-class QueryParametersSnippet extends AbstractParametersSnippet {
+class RequestParametersSnippet extends AbstractParametersSnippet {
 
-	QueryParametersSnippet(List<ParameterDescriptor> descriptors) {
+	RequestParametersSnippet(List<ParameterDescriptor> descriptors) {
 		this(null, descriptors);
 	}
 
-	QueryParametersSnippet(Map<String, Object> attributes,
+	RequestParametersSnippet(Map<String, Object> attributes,
 			List<ParameterDescriptor> descriptors) {
-		super("query-parameters", attributes, descriptors);
+		super("request-parameters", attributes, descriptors);
 	}
 
 	@Override
@@ -45,14 +53,14 @@ class QueryParametersSnippet extends AbstractParametersSnippet {
 			Set<String> missingParameters) {
 		String message = "";
 		if (!undocumentedParameters.isEmpty()) {
-			message += "Query parameters with the following names were not documented: "
+			message += "Request parameters with the following names were not documented: "
 					+ undocumentedParameters;
 		}
 		if (!missingParameters.isEmpty()) {
 			if (message.length() > 0) {
 				message += ". ";
 			}
-			message += "Query parameters with the following names were not found in the request: "
+			message += "Request parameters with the following names were not found in the request: "
 					+ missingParameters;
 		}
 		throw new SnippetException(message);

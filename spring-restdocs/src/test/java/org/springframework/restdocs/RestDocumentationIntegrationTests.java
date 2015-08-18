@@ -31,7 +31,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.response.ResponsePostProcessors.maskLinks;
 import static org.springframework.restdocs.response.ResponsePostProcessors.prettyPrintContent;
 import static org.springframework.restdocs.response.ResponsePostProcessors.removeHeaders;
@@ -148,18 +148,18 @@ public class RestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void queryParametersSnippet() throws Exception {
+	public void requestParametersSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(new RestDocumentationConfigurer()).build();
 
 		mockMvc.perform(get("/").param("foo", "bar").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andDo(document("links", queryParameters(parameterWithName("foo")
+				.andDo(document("links", requestParameters(parameterWithName("foo")
 						.description("The description"))));
 
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
 				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
-				"query-parameters.adoc");
+				"request-parameters.adoc");
 	}
 
 	@Test

@@ -18,25 +18,36 @@ package com.example;
 
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.springframework.test.web.servlet.MockMvc;
 
-public class QueryParameters {
+public class RequestParameters {
 
 	private MockMvc mockMvc;
 
-	public void queryParametersSnippet() throws Exception {
-		// tag::query-parameters[]
-		this.mockMvc.perform(get("/users?page=2&per_page=100"))
+	public void getQueryStringSnippet() throws Exception {
+		// tag::request-parameters-query-string[]
+		this.mockMvc.perform(get("/users?page=2&per_page=100")) // <1>
 			.andExpect(status().isOk())
-			.andDo(document("users", queryParameters( // <1>
-					parameterWithName("page").description("The page to retrieve"), // <2>
-					parameterWithName("per_page").description("Entries per page") // <3>
+			.andDo(document("users", requestParameters( // <2>
+					parameterWithName("page").description("The page to retrieve"), // <3>
+					parameterWithName("per_page").description("Entries per page") // <4>
 			)));
-		// end::query-parameters[]
+		// end::request-parameters-query-string[]
+	}
+	
+	public void postFormDataSnippet() throws Exception {
+		// tag::request-parameters-form-data[]
+		this.mockMvc.perform(post("/users").param("username", "Tester")) // <1>
+			.andExpect(status().isCreated())
+			.andDo(document("create-user", requestParameters(
+					parameterWithName("username").description("The user's username")
+			)));
+		// end::request-parameters-form-data[]
 	}
 
 }

@@ -30,8 +30,8 @@ import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.restdocs.test.SnippetMatchers.SnippetMatcher;
 
 /**
- * The {@code ExpectedSnippet} rule is used to verify that a
- * {@link TemplatedSnippet} has generated the expected snippet.
+ * The {@code ExpectedSnippet} rule is used to verify that a {@link TemplatedSnippet} has
+ * generated the expected snippet.
  * 
  * @author Andy Wilkinson
  */
@@ -130,8 +130,8 @@ public class ExpectedSnippet implements TestRule {
 		return this;
 	}
 
-	public ExpectedSnippet expectQueryParameters(String name) {
-		expect(name, "query-parameters");
+	public ExpectedSnippet expectRequestParameters(String name) {
+		expect(name, "request-parameters");
 		return this;
 	}
 

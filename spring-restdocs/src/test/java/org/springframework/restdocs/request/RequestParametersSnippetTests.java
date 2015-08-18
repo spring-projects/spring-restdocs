@@ -44,11 +44,11 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 
 /**
- * Tests for {@link QueryParametersSnippet}
+ * Tests for {@link RequestParametersSnippet}
  *
  * @author Andy Wilkinson
  */
-public class QueryParametersSnippetTests {
+public class RequestParametersSnippetTests {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -57,108 +57,106 @@ public class QueryParametersSnippetTests {
 	public ExpectedSnippet snippet = new ExpectedSnippet();
 
 	@Test
-	public void undocumentedQueryParameter() throws IOException {
+	public void undocumentedParameter() throws IOException {
 		this.thrown.expect(SnippetException.class);
 		this.thrown
-				.expectMessage(equalTo("Query parameters with the following names were"
+				.expectMessage(equalTo("Request parameters with the following names were"
 						+ " not documented: [a]"));
-		new QueryParametersSnippet(Collections.<ParameterDescriptor> emptyList())
-				.document("undocumented-query-parameter",
-						result(get("/").param("a", "alpha")));
+		new RequestParametersSnippet(Collections.<ParameterDescriptor> emptyList())
+				.document("undocumented-parameter", result(get("/").param("a", "alpha")));
 	}
 
 	@Test
-	public void missingQueryParameter() throws IOException {
+	public void missingParameter() throws IOException {
 		this.thrown.expect(SnippetException.class);
 		this.thrown
-				.expectMessage(equalTo("Query parameters with the following names were"
+				.expectMessage(equalTo("Request parameters with the following names were"
 						+ " not found in the request: [a]"));
-		new QueryParametersSnippet(Arrays.asList(parameterWithName("a")
-				.description("one"))).document("missing-query-parameter",
-				result(get("/")));
+		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description(
+				"one"))).document("missing-parameter", result(get("/")));
 	}
 
 	@Test
-	public void undocumentedAndMissingQueryParameters() throws IOException {
+	public void undocumentedAndMissingParameters() throws IOException {
 		this.thrown.expect(SnippetException.class);
 		this.thrown
-				.expectMessage(equalTo("Query parameters with the following names were"
-						+ " not documented: [b]. Query parameters with the following"
+				.expectMessage(equalTo("Request parameters with the following names were"
+						+ " not documented: [b]. Request parameters with the following"
 						+ " names were not found in the request: [a]"));
-		new QueryParametersSnippet(Arrays.asList(parameterWithName("a")
-				.description("one"))).document(
-				"undocumented-and-missing-query-parameters",
-				result(get("/").param("b", "bravo")));
+		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description(
+				"one"))).document("undocumented-and-missing-parameters", result(get("/")
+				.param("b", "bravo")));
 	}
 
 	@Test
-	public void queryParameterSnippetFromRequestParameters() throws IOException {
-		this.snippet.expectQueryParameters("query-parameter-snippet-request-parameters")
-				.withContents(
-						tableWithHeader("Parameter", "Description").row("a", "one").row(
-								"b", "two"));
-		new QueryParametersSnippet(Arrays.asList(parameterWithName("a")
-				.description("one"), parameterWithName("b").description("two")))
-				.document("query-parameter-snippet-request-parameters", result(get("/")
-						.param("a", "bravo").param("b", "bravo")));
-	}
-
-	@Test
-	public void queryParameterSnippetFromRequestUriQueryString() throws IOException {
-		this.snippet.expectQueryParameters(
-				"query-parameter-snippet-request-uri-query-string").withContents(
+	public void requestParameterSnippetFromRequestParameters() throws IOException {
+		this.snippet.expectRequestParameters(
+				"request-parameter-snippet-request-parameters").withContents(
 				tableWithHeader("Parameter", "Description").row("a", "one").row("b",
 						"two"));
-		new QueryParametersSnippet(Arrays.asList(parameterWithName("a")
-				.description("one"), parameterWithName("b").description("two")))
-				.document(
-						"query-parameter-snippet-request-uri-query-string",
-						result(get("/?a=alpha&b=bravo").requestAttr(
-								RestDocumentationContext.class.getName(),
-								new RestDocumentationContext(null))));
+		new RequestParametersSnippet(Arrays.asList(
+				parameterWithName("a").description("one"), parameterWithName("b")
+						.description("two"))).document(
+				"request-parameter-snippet-request-parameters",
+				result(get("/").param("a", "bravo").param("b", "bravo")));
 	}
 
 	@Test
-	public void queryParametersWithCustomDescriptorAttributes() throws IOException {
-		this.snippet.expectQueryParameters(
-				"query-parameters-with-custom-descriptor-attributes").withContents(
+	public void requestParameterSnippetFromRequestUriQueryString() throws IOException {
+		this.snippet.expectRequestParameters(
+				"request-parameter-snippet-request-uri-query-string").withContents(
+				tableWithHeader("Parameter", "Description").row("a", "one").row("b",
+						"two"));
+		new RequestParametersSnippet(Arrays.asList(
+				parameterWithName("a").description("one"), parameterWithName("b")
+						.description("two"))).document(
+				"request-parameter-snippet-request-uri-query-string",
+				result(get("/?a=alpha&b=bravo").requestAttr(
+						RestDocumentationContext.class.getName(),
+						new RestDocumentationContext(null))));
+	}
+
+	@Test
+	public void requestParametersWithCustomDescriptorAttributes() throws IOException {
+		this.snippet.expectRequestParameters(
+				"request-parameters-with-custom-descriptor-attributes").withContents(
 				tableWithHeader("Parameter", "Description", "Foo").row("a", "one",
 						"alpha").row("b", "two", "bravo"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("query-parameters")).thenReturn(
-				snippetResource("query-parameters-with-extra-column"));
+		when(resolver.resolveTemplateResource("request-parameters")).thenReturn(
+				snippetResource("request-parameters-with-extra-column"));
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
 				resolver));
 		request.addParameter("a", "bravo");
 		request.addParameter("b", "bravo");
-		new QueryParametersSnippet(Arrays.asList(
+		new RequestParametersSnippet(Arrays.asList(
 				parameterWithName("a").description("one").attributes(
 						key("foo").value("alpha")),
 				parameterWithName("b").description("two").attributes(
 						key("foo").value("bravo")))).document(
-				"query-parameters-with-custom-descriptor-attributes", result(request));
+				"request-parameters-with-custom-descriptor-attributes", result(request));
 	}
 
 	@Test
-	public void queryParametersWithCustomAttributes() throws IOException {
-		this.snippet.expectQueryParameters("query-parameters-with-custom-attributes")
+	public void requestParametersWithCustomAttributes() throws IOException {
+		this.snippet.expectRequestParameters("request-parameters-with-custom-attributes")
 				.withContents(startsWith(".The title"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("query-parameters")).thenReturn(
-				snippetResource("query-parameters-with-title"));
+		when(resolver.resolveTemplateResource("request-parameters")).thenReturn(
+				snippetResource("request-parameters-with-title"));
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
 				resolver));
 		request.addParameter("a", "bravo");
 		request.addParameter("b", "bravo");
-		new QueryParametersSnippet(
+		new RequestParametersSnippet(
 				attributes(key("title").value("The title")),
 				Arrays.asList(
 						parameterWithName("a").description("one").attributes(
 								key("foo").value("alpha")), parameterWithName("b")
 								.description("two").attributes(key("foo").value("bravo"))))
-				.document("query-parameters-with-custom-attributes", result(request));
+				.document("request-parameters-with-custom-attributes", result(request));
 	}
 
 	private FileSystemResource snippetResource(String name) {

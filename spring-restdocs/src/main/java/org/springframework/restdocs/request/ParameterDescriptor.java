@@ -22,7 +22,7 @@ import java.util.Map;
 import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
- * A descriptor of a parameter in a query string
+ * A descriptor of a request or path parameter
  * 
  * @author Andy Wilkinson
  * @see RequestDocumentation#parameterWithName
