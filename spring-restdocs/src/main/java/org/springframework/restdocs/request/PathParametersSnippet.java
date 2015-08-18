@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.request;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,21 @@ class PathParametersSnippet extends AbstractParametersSnippet {
 	PathParametersSnippet(Map<String, Object> attributes,
 			List<ParameterDescriptor> descriptors) {
 		super("path-parameters", attributes, descriptors);
+	}
+
+	@Override
+	protected Map<String, Object> document(MvcResult result) throws IOException {
+		Map<String, Object> model = super.document(result);
+		model.put("path", remoteQueryStringIfPresent(extractUrlTemplate(result)));
+		return model;
+	}
+
+	private String remoteQueryStringIfPresent(String urlTemplate) {
+		int index = urlTemplate.indexOf('?');
+		if (index == -1) {
+			return urlTemplate;
+		}
+		return urlTemplate.substring(0, index);
 	}
 
 	@Override

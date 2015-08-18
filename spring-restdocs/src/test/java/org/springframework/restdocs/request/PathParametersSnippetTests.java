@@ -24,6 +24,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
+import static org.springframework.restdocs.test.SnippetMatchers.tableWithTitleAndHeader;
 import static org.springframework.restdocs.test.StubMvcResult.result;
 import static org.springframework.restdocs.test.TestRequestBuilders.get;
 
@@ -89,13 +90,28 @@ public class PathParametersSnippetTests {
 	@Test
 	public void pathParameters() throws IOException {
 		this.snippet.expectPathParameters("path-parameters").withContents(
-				tableWithHeader("Parameter", "Description").row("a", "one").row("b",
-						"two"));
+				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description").row("a",
+						"one").row("b", "two"));
 		new PathParametersSnippet(Arrays.asList(
 				parameterWithName("a").description("one"), parameterWithName("b")
 						.description("two"))).document(
 				"path-parameters",
 				result(get("/{a}/{b}", "alpha", "banana").requestAttr(
+						RestDocumentationContext.class.getName(),
+						new RestDocumentationContext(null))));
+	}
+
+	@Test
+	public void pathParametersWithQueryString() throws IOException {
+		this.snippet.expectPathParameters("path-parameters-with-query-string")
+				.withContents(
+						tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description")
+								.row("a", "one").row("b", "two"));
+		new PathParametersSnippet(Arrays.asList(
+				parameterWithName("a").description("one"), parameterWithName("b")
+						.description("two"))).document(
+				"path-parameters-with-query-string",
+				result(get("/{a}/{b}?foo=bar", "alpha", "banana").requestAttr(
 						RestDocumentationContext.class.getName(),
 						new RestDocumentationContext(null))));
 	}

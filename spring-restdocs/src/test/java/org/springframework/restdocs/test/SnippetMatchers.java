@@ -44,8 +44,13 @@ public class SnippetMatchers {
 		return new SnippetMatcher();
 	}
 
+	public static AsciidoctorTableMatcher tableWithTitleAndHeader(String title,
+			String... headers) {
+		return new AsciidoctorTableMatcher(title, headers);
+	}
+
 	public static AsciidoctorTableMatcher tableWithHeader(String... headers) {
-		return new AsciidoctorTableMatcher(headers);
+		return new AsciidoctorTableMatcher(null, headers);
 	}
 
 	public static HttpRequestMatcher httpRequest(RequestMethod method, String uri) {
@@ -166,7 +171,10 @@ public class SnippetMatchers {
 
 	public static class AsciidoctorTableMatcher extends AbstractSnippetContentMatcher {
 
-		private AsciidoctorTableMatcher(String... columns) {
+		private AsciidoctorTableMatcher(String title, String... columns) {
+			if (StringUtils.hasText(title)) {
+				this.addLine("." + title);
+			}
 			this.addLine("|===");
 			String header = "|"
 					+ StringUtils
