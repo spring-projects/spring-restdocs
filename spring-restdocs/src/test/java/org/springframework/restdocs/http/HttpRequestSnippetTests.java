@@ -52,7 +52,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
  * @author Jonathan Pearlin
  *
  */
-public class HttpRequestDocumentationHandlerTests {
+public class HttpRequestSnippetTests {
 
 	private static final String BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
 

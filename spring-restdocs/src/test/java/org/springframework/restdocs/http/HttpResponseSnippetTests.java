@@ -45,7 +45,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
  */
-public class HttpResponseDocumentationHandlerTests {
+public class HttpResponseSnippetTests {
 
 	@Rule
 	public final ExpectedSnippet snippet = new ExpectedSnippet();

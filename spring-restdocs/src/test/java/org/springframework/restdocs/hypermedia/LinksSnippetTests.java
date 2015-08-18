@@ -48,7 +48,7 @@ import org.springframework.util.MultiValueMap;
  * 
  * @author Andy Wilkinson
  */
-public class LinksDocumentationHandlerTests {
+public class LinksSnippetTests {
 
 	@Rule
 	public ExpectedSnippet snippet = new ExpectedSnippet();

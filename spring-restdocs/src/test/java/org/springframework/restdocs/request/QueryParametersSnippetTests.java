@@ -48,7 +48,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
  *
  * @author Andy Wilkinson
  */
-public class QueryParametersDocumentationHandlerTests {
+public class QueryParametersSnippetTests {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();

@@ -49,7 +49,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
  * 
  * @author Andy Wilkinson
  */
-public class RequestFieldsDocumentationHandlerTests {
+public class RequestFieldsSnippetTests {
 
 	@Rule
 	public final ExpectedException thrown = ExpectedException.none();

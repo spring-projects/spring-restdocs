@@ -48,7 +48,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
  * @author awilkinson
  *
  */
-public class PathParametersDocumentationHandlerTests {
+public class PathParametersSnippetTests {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();

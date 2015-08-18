@@ -50,7 +50,7 @@ import org.springframework.restdocs.test.ExpectedSnippet;
  * @author Dmitriy Mayboroda
  * @author Jonathan Pearlin
  */
-public class CurlRequestDocumentationHandlerTests {
+public class CurlRequestSnippetTests {
 
 	@Rule
 	public ExpectedSnippet snippet = new ExpectedSnippet();
