@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.restdocs.payload.FieldType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -267,8 +267,8 @@ public class ApiDocumentation {
 				.andExpect(status().isNoContent())
 				.andDo(document("note-update-example",
 						requestFields(
-								fieldWithPath("title").description("The title of the note").type(FieldType.STRING).optional(),
-								fieldWithPath("body").description("The body of the note").type(FieldType.STRING).optional(),
+								fieldWithPath("title").description("The title of the note").type(JsonFieldType.STRING).optional(),
+								fieldWithPath("body").description("The body of the note").type(JsonFieldType.STRING).optional(),
 								fieldWithPath("tags").description("An array of tag resource URIs").optional())));
 	}
 
