@@ -65,8 +65,9 @@ provided:
 ----
 include::{examples-dir}/com/example/Payload.java[tags=response]
 ----
-<1> Use `withResponseFields` to describe the expected fields in the response payload.
-To document a request `withRequestFields` can be used.
+<1> Use `responseFields` to describe the expected fields in the response payload.
+To document a request `requestFields` can be used. Both are static methods on
+`org.springframework.restdocs.payload.PayloadDocumentation`.
 <2> Expect a field with the path `contact`. Uses the static `fieldWithPath` method on
 `org.springframework.restdocs.payload.PayloadDocumentation`.
 <3> Expect a field with the path `contact.email`.
@@ -355,9 +356,8 @@ There are two ways to provide extra information for inclusion in a generated sni
 
 . Use the `attributes` method on a field, link or parameter descriptor to add one or more
   attributes to an individual descriptor.
-. Pass in some attributes when calling `withCurlRequest`, `withHttpRequest`,
-  `withHttpResponse`, etc on `RestDocumentationResultHandler`. Such attributes will be
-  associated with the snippet as a whole.
+. Pass in some attributes when calling `curlRequest`, `httpRequest`, `httpResponse`, etc.
+  Such attributes will be associated with the snippet as a whole.
 
 Any additional attributes are made available during the template rendering process.
 Coupled with a custom snippet template, this makes it possible to include extra
