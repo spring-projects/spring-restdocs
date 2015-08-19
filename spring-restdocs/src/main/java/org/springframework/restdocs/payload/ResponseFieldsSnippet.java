@@ -21,11 +21,12 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
 
 /**
- * A {@link Snippet} the documents the fields in a response.
+ * A {@link Snippet} that documents the fields in a response.
  * 
  * @author Andy Wilkinson
  */
@@ -43,6 +44,15 @@ class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	@Override
 	protected Reader getPayloadReader(MvcResult result) throws IOException {
 		return new StringReader(result.getResponse().getContentAsString());
+	}
+
+	@Override
+	protected MediaType getContentType(MvcResult result) {
+		String contentType = result.getResponse().getContentType();
+		if (contentType != null) {
+			return MediaType.valueOf(contentType);
+		}
+		return null;
 	}
 
 }

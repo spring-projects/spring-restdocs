@@ -18,36 +18,28 @@ package org.springframework.restdocs.payload;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import org.springframework.http.MediaType;
+import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 
 /**
- * A {@link TemplatedSnippet} that produces a snippet documenting a
- * RESTful resource's request or response fields.
+ * A {@link TemplatedSnippet} that produces a snippet documenting a RESTful resource's
+ * request or response fields.
  *
  * @author Andreas Evers
  * @author Andy Wilkinson
  */
-public abstract class AbstractFieldsSnippet extends
-		TemplatedSnippet {
-
-	private final Map<String, FieldDescriptor> descriptorsByPath = new LinkedHashMap<String, FieldDescriptor>();
-
-	private final FieldTypeResolver fieldTypeResolver = new FieldTypeResolver();
-
-	private final FieldValidator fieldValidator = new FieldValidator();
-
-	private final ObjectMapper objectMapper = new ObjectMapper();
+public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	private List<FieldDescriptor> fieldDescriptors;
 
@@ -57,45 +49,73 @@ public abstract class AbstractFieldsSnippet extends
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath());
 			Assert.hasText(descriptor.getDescription());
-			this.descriptorsByPath.put(descriptor.getPath(), descriptor);
 		}
 		this.fieldDescriptors = descriptors;
 	}
 
 	@Override
 	protected Map<String, Object> document(MvcResult result) throws IOException {
-		this.fieldValidator.validate(getPayloadReader(result), this.fieldDescriptors);
-		Object payload = extractPayload(result);
+		MediaType contentType = getContentType(result);
+		PayloadHandler payloadHandler;
+		if (contentType != null
+				&& MediaType.APPLICATION_XML.isCompatibleWith(contentType)) {
+			payloadHandler = new XmlPayloadHandler(readPayload(result));
+		}
+		else {
+			payloadHandler = new JsonPayloadHandler(readPayload(result));
+		}
+
+		validateFieldDocumentation(payloadHandler);
+
+		for (FieldDescriptor descriptor : this.fieldDescriptors) {
+			if (descriptor.getType() == null) {
+				descriptor.type(payloadHandler.determineFieldType(descriptor.getPath()));
+			}
+		}
+
 		Map<String, Object> model = new HashMap<>();
 		List<Map<String, Object>> fields = new ArrayList<>();
 		model.put("fields", fields);
-		for (Entry<String, FieldDescriptor> entry : this.descriptorsByPath.entrySet()) {
-			FieldDescriptor descriptor = entry.getValue();
-			if (descriptor.getType() == null) {
-				descriptor.type(getFieldType(descriptor, payload));
-			}
+		for (FieldDescriptor descriptor : this.fieldDescriptors) {
 			fields.add(descriptor.toModel());
 		}
 		return model;
 	}
 
-	private FieldType getFieldType(FieldDescriptor descriptor, Object payload) {
-		try {
-			return AbstractFieldsSnippet.this.fieldTypeResolver
-					.resolveFieldType(descriptor.getPath(), payload);
-		}
-		catch (FieldDoesNotExistException ex) {
-			String message = "Cannot determine the type of the field '"
-					+ descriptor.getPath() + "' as it is not present in the"
-					+ " payload. Please provide a type using"
-					+ " FieldDescriptor.type(FieldType).";
-			throw new FieldTypeRequiredException(message);
+	private String readPayload(MvcResult result) throws IOException {
+		StringWriter writer = new StringWriter();
+		FileCopyUtils.copy(getPayloadReader(result), writer);
+		return writer.toString();
+	}
+
+	private void validateFieldDocumentation(PayloadHandler payloadHandler) {
+		List<FieldDescriptor> missingFields = payloadHandler
+				.findMissingFields(this.fieldDescriptors);
+		String undocumentedPayload = payloadHandler
+				.getUndocumentedPayload(this.fieldDescriptors);
+
+		if (!missingFields.isEmpty() || StringUtils.hasText(undocumentedPayload)) {
+			String message = "";
+			if (StringUtils.hasText(undocumentedPayload)) {
+				message += String.format("The following parts of the payload were"
+						+ " not documented:%n%s", undocumentedPayload);
+			}
+			if (!missingFields.isEmpty()) {
+				if (message.length() > 0) {
+					message += String.format("%n");
+				}
+				List<String> paths = new ArrayList<String>();
+				for (FieldDescriptor fieldDescriptor : missingFields) {
+					paths.add(fieldDescriptor.getPath());
+				}
+				message += "Fields with the following paths were not found in the"
+						+ " payload: " + paths;
+			}
+			throw new SnippetException(message);
 		}
 	}
 
-	private Object extractPayload(MvcResult result) throws IOException {
-		return this.objectMapper.readValue(getPayloadReader(result), Object.class);
-	}
+	protected abstract MediaType getContentType(MvcResult result);
 
 	protected abstract Reader getPayloadReader(MvcResult result) throws IOException;
 

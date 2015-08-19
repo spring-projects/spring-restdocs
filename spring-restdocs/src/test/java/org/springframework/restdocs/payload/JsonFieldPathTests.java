@@ -24,89 +24,89 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * Tests for {@link FieldPath}
+ * Tests for {@link JsonFieldPath}
  * 
  * @author Andy Wilkinson
  */
-public class FieldPathTests {
+public class JsonFieldPathTests {
 
 	@Test
 	public void singleFieldIsPrecise() {
-		assertTrue(FieldPath.compile("a").isPrecise());
+		assertTrue(JsonFieldPath.compile("a").isPrecise());
 	}
 
 	@Test
 	public void singleNestedFieldIsPrecise() {
-		assertTrue(FieldPath.compile("a.b").isPrecise());
+		assertTrue(JsonFieldPath.compile("a.b").isPrecise());
 	}
 
 	@Test
 	public void topLevelArrayIsNotPrecise() {
-		assertFalse(FieldPath.compile("[]").isPrecise());
+		assertFalse(JsonFieldPath.compile("[]").isPrecise());
 	}
 
 	@Test
 	public void fieldBeneathTopLevelArrayIsNotPrecise() {
-		assertFalse(FieldPath.compile("[]a").isPrecise());
+		assertFalse(JsonFieldPath.compile("[]a").isPrecise());
 	}
 
 	@Test
 	public void arrayIsNotPrecise() {
-		assertFalse(FieldPath.compile("a[]").isPrecise());
+		assertFalse(JsonFieldPath.compile("a[]").isPrecise());
 	}
 
 	@Test
 	public void nestedArrayIsNotPrecise() {
-		assertFalse(FieldPath.compile("a.b[]").isPrecise());
+		assertFalse(JsonFieldPath.compile("a.b[]").isPrecise());
 	}
 
 	@Test
 	public void arrayOfArraysIsNotPrecise() {
-		assertFalse(FieldPath.compile("a[][]").isPrecise());
+		assertFalse(JsonFieldPath.compile("a[][]").isPrecise());
 	}
 
 	@Test
 	public void fieldBeneathAnArrayIsNotPrecise() {
-		assertFalse(FieldPath.compile("a[].b").isPrecise());
+		assertFalse(JsonFieldPath.compile("a[].b").isPrecise());
 	}
 
 	@Test
 	public void compilationOfSingleElementPath() {
-		assertThat(FieldPath.compile("a").getSegments(), contains("a"));
+		assertThat(JsonFieldPath.compile("a").getSegments(), contains("a"));
 	}
 
 	@Test
 	public void compilationOfMultipleElementPath() {
-		assertThat(FieldPath.compile("a.b.c").getSegments(), contains("a", "b", "c"));
+		assertThat(JsonFieldPath.compile("a.b.c").getSegments(), contains("a", "b", "c"));
 	}
 
 	@Test
 	public void compilationOfPathWithArraysWithNoDotSeparators() {
-		assertThat(FieldPath.compile("a[]b[]c").getSegments(),
+		assertThat(JsonFieldPath.compile("a[]b[]c").getSegments(),
 				contains("a", "[]", "b", "[]", "c"));
 	}
 
 	@Test
 	public void compilationOfPathWithArraysWithPreAndPostDotSeparators() {
-		assertThat(FieldPath.compile("a.[].b.[].c").getSegments(),
+		assertThat(JsonFieldPath.compile("a.[].b.[].c").getSegments(),
 				contains("a", "[]", "b", "[]", "c"));
 	}
 
 	@Test
 	public void compilationOfPathWithArraysWithPreDotSeparators() {
-		assertThat(FieldPath.compile("a.[]b.[]c").getSegments(),
+		assertThat(JsonFieldPath.compile("a.[]b.[]c").getSegments(),
 				contains("a", "[]", "b", "[]", "c"));
 	}
 
 	@Test
 	public void compilationOfPathWithArraysWithPostDotSeparators() {
-		assertThat(FieldPath.compile("a[].b[].c").getSegments(),
+		assertThat(JsonFieldPath.compile("a[].b[].c").getSegments(),
 				contains("a", "[]", "b", "[]", "c"));
 	}
 
 	@Test
 	public void compilationOfPathStartingWithAnArray() {
-		assertThat(FieldPath.compile("[]a.b.c").getSegments(),
+		assertThat(JsonFieldPath.compile("[]a.b.c").getSegments(),
 				contains("[]", "a", "b", "c"));
 	}
 

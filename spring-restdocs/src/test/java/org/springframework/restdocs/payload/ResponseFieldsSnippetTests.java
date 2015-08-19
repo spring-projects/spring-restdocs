@@ -15,6 +15,8 @@
  */
 package org.springframework.restdocs.payload;
 
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,13 +28,16 @@ import static org.springframework.restdocs.test.StubMvcResult.result;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
@@ -66,10 +71,10 @@ public class ResponseFieldsSnippetTests {
 		response.getWriter().append(
 				"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
 						+ " [{\"id\":356,\"name\": \"sample\"}]}");
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("id")
-				.description("one"), fieldWithPath("date").description("two"),
-				fieldWithPath("assets").description("three"), fieldWithPath("assets[]")
-						.description("four"),
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("id").description("one"),
+				fieldWithPath("date").description("two"), fieldWithPath("assets")
+						.description("three"),
+				fieldWithPath("assets[]").description("four"),
 				fieldWithPath("assets[].id").description("five"),
 				fieldWithPath("assets[].name").description("six"))).document(
 				"map-response-with-fields", result(response));
@@ -86,10 +91,10 @@ public class ResponseFieldsSnippetTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.getWriter()
 				.append("[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]");
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b")
-				.description("one"), fieldWithPath("[]a.c").description("two"),
-				fieldWithPath("[]a").description("three"))).document(
-				"array-response-with-fields", result(response));
+		new ResponseFieldsSnippet(Arrays.asList(
+				fieldWithPath("[]a.b").description("one"), fieldWithPath("[]a.c")
+						.description("two"), fieldWithPath("[]a").description("three")))
+				.document("array-response-with-fields", result(response));
 	}
 
 	@Test
@@ -100,8 +105,8 @@ public class ResponseFieldsSnippetTests {
 
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.getWriter().append("[\"a\", \"b\", \"c\"]");
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]")
-				.description("one"))).document("array-response", result(response));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]").description("one")))
+				.document("array-response", result(response));
 	}
 
 	@Test
@@ -142,10 +147,80 @@ public class ResponseFieldsSnippetTests {
 				resolver));
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.getOutputStream().print("{\"a\": \"foo\"}");
-		new ResponseFieldsSnippet(attributes(key("title").value(
-				"Custom title")), Arrays.asList(fieldWithPath("a").description("one")))
-				.document("response-fields-with-custom-attributes",
-						result(request, response));
+		new ResponseFieldsSnippet(attributes(key("title").value("Custom title")),
+				Arrays.asList(fieldWithPath("a").description("one"))).document(
+				"response-fields-with-custom-attributes", result(request, response));
+	}
+
+	@Test
+	public void xmlResponseFields() throws IOException {
+		this.snippet.expectResponseFields("xml-response").withContents( //
+				tableWithHeader("Path", "Type", "Description") //
+						.row("a/b", "b", "one") //
+						.row("a/c", "c", "two") //
+						.row("a", "a", "three"));
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.setContentType(MediaType.APPLICATION_XML_VALUE);
+		response.getOutputStream().print("<a><b>5</b><c>charlie</c></a>");
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")
+				.type("b"), fieldWithPath("a/c").description("two").type("c"),
+				fieldWithPath("a").description("three").type("a"))).document(
+				"xml-response", result(response));
+	}
+
+	@Test
+	public void undocumentedXmlResponseField() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown
+				.expectMessage(startsWith("The following parts of the payload were not"
+						+ " documented:"));
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.setContentType(MediaType.APPLICATION_XML_VALUE);
+		response.getOutputStream().print("<a><b>5</b></a>");
+		new ResponseFieldsSnippet(Collections.<FieldDescriptor> emptyList()).document(
+				"undocumented-xml-response-field", result(response));
+	}
+
+	@Test
+	public void xmlResponseFieldWithNoType() throws IOException {
+		this.thrown.expect(FieldTypeRequiredException.class);
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.setContentType(MediaType.APPLICATION_XML_VALUE);
+		response.getOutputStream().print("<a>5</a>");
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
+				.document("xml-response-no-field-type", result(response));
+	}
+
+	@Test
+	public void missingXmlResponseField() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown
+				.expectMessage(equalTo("Fields with the following paths were not found"
+						+ " in the payload: [a/b]"));
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.setContentType(MediaType.APPLICATION_XML_VALUE);
+		response.getOutputStream().print("<a></a>");
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one"),
+				fieldWithPath("a").description("one"))).document(
+				"missing-xml-response-field", result(response));
+	}
+
+	@Test
+	public void undocumentedXmlResponseFieldAndMissingXmlResponseField()
+			throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown
+				.expectMessage(startsWith("The following parts of the payload were not"
+						+ " documented:"));
+		this.thrown
+				.expectMessage(endsWith("Fields with the following paths were not found"
+						+ " in the payload: [a/b]"));
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.setContentType(MediaType.APPLICATION_XML_VALUE);
+		response.getOutputStream().print("<a><c>5</c></a>");
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
+				.document("undocumented-xml-request-field-and-missing-xml-request-field",
+						result(response));
 	}
 
 	private FileSystemResource snippetResource(String name) {

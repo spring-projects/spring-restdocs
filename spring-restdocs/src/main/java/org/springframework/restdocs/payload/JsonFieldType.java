@@ -25,7 +25,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author Andy Wilkinson
  */
-public enum FieldType {
+public enum JsonFieldType {
 
 	ARRAY, BOOLEAN, OBJECT, NUMBER, NULL, STRING, VARIES;
 

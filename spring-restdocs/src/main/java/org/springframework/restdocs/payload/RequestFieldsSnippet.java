@@ -20,6 +20,7 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -41,6 +42,15 @@ class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	@Override
 	protected Reader getPayloadReader(MvcResult result) throws IOException {
 		return result.getRequest().getReader();
+	}
+
+	@Override
+	protected MediaType getContentType(MvcResult result) {
+		String contentType = result.getRequest().getContentType();
+		if (contentType != null) {
+			return MediaType.valueOf(contentType);
+		}
+		return null;
 	}
 
 }

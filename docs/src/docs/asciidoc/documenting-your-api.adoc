@@ -81,12 +81,18 @@ payload and the field has not been marked as optional. For payloads with a hiera
 structure, documenting a field is sufficient for all of its descendants to also be
 treated as having been documented.
 
-[[documenting-your-api-request-response-payloads-field-paths]]
-==== Field paths
+TIP: By default, Spring REST Docs will assume that the payload you are documenting is
+JSON. If you want to document an XML payload the content type of the request or response
+must be compatible with `application/xml`.
 
-When documenting request and response payloads, fields are identified using a path. Paths
-use `.` to descend into a child object and `[]` to identify an array. For example, with
-this JSON payload:
+[[documenting-your-api-request-response-payloads-json]]
+==== JSON payloads
+
+[[documenting-your-api-request-response-payloads-json-field-paths]]
+===== JSON field paths
+
+JSON field paths use `.` to descend into a child object and `[]` to identify an array. For
+example, with this JSON payload:
 
 [source,json,indent=0]
 ----
@@ -131,8 +137,8 @@ The following paths are all present:
 
 
 
-[[documenting-your-api-request-response-payloads-field-types]]
-==== Field types
+[[documenting-your-api-request-response-payloads-json-field-types]]
+===== JSON field types
 
 When a field is documented, Spring REST Docs will attempt to determine its type by
 examining the payload. Seven different types are supported:
@@ -163,14 +169,33 @@ examining the payload. Seven different types are supported:
 | The field occurs multiple times in the payload with a variety of different types
 |===
 
-The type can also be set explicitly using the `type(FieldType)` method on
-`FieldDescriptor`:
+The type can also be set explicitly using the `type(Object)` method on
+`FieldDescriptor`. Typically, one of the values enumerated by `JsonFieldType` will be
+used:
 
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/Payload.java[tags=explicit-type]
 ----
 <1> Set the field's type to `string`.
+
+
+[[documenting-your-api-request-response-payloads-xml]]
+==== XML payloads
+
+[[documenting-your-api-request-response-payloads-xml-field-paths]]
+===== XML field paths
+
+XML field paths are described using XPath. `/` is used to descend into a child node.
+
+
+
+[[documenting-your-api-request-response-payloads-xml-field-types]]
+===== XML field types
+
+When documenting an XML payload, you must provide a type for the field using the
+`type(Object)` method on `FieldDescriptor`. The result of the supplied type's `toString`
+method will be included in the documentation.
 
 
 

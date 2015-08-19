@@ -20,26 +20,26 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Resolves the type of a field in a request or response payload
+ * Resolves the type of a field in a JSON request or response payload
  * 
  * @author Andy Wilkinson
  */
-class FieldTypeResolver {
+class JsonFieldTypeResolver {
 
-	private final FieldProcessor fieldProcessor = new FieldProcessor();
+	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
-	FieldType resolveFieldType(String path, Object payload) {
-		FieldPath fieldPath = FieldPath.compile(path);
+	JsonFieldType resolveFieldType(String path, Object payload) {
+		JsonFieldPath fieldPath = JsonFieldPath.compile(path);
 		Object field = this.fieldProcessor.extract(fieldPath, payload);
 		if (field instanceof Collection && !fieldPath.isPrecise()) {
-			FieldType commonType = null;
+			JsonFieldType commonType = null;
 			for (Object item : (Collection<?>) field) {
-				FieldType fieldType = determineFieldType(item);
+				JsonFieldType fieldType = determineFieldType(item);
 				if (commonType == null) {
 					commonType = fieldType;
 				}
 				else if (fieldType != commonType) {
-					return FieldType.VARIES;
+					return JsonFieldType.VARIES;
 				}
 			}
 			return commonType;
@@ -47,22 +47,22 @@ class FieldTypeResolver {
 		return determineFieldType(this.fieldProcessor.extract(fieldPath, payload));
 	}
 
-	private FieldType determineFieldType(Object fieldValue) {
+	private JsonFieldType determineFieldType(Object fieldValue) {
 		if (fieldValue == null) {
-			return FieldType.NULL;
+			return JsonFieldType.NULL;
 		}
 		if (fieldValue instanceof String) {
-			return FieldType.STRING;
+			return JsonFieldType.STRING;
 		}
 		if (fieldValue instanceof Map) {
-			return FieldType.OBJECT;
+			return JsonFieldType.OBJECT;
 		}
 		if (fieldValue instanceof Collection) {
-			return FieldType.ARRAY;
+			return JsonFieldType.ARRAY;
 		}
 		if (fieldValue instanceof Boolean) {
-			return FieldType.BOOLEAN;
+			return JsonFieldType.BOOLEAN;
 		}
-		return FieldType.NUMBER;
+		return JsonFieldType.NUMBER;
 	}
 }

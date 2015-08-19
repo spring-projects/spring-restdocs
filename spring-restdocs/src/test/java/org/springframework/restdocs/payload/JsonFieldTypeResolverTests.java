@@ -29,66 +29,66 @@ import org.junit.rules.ExpectedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Tests for {@link FieldTypeResolver}
+ * Tests for {@link JsonFieldTypeResolver}
  * 
  * @author Andy Wilkinson
  *
  */
-public class FieldTypeResolverTests {
+public class JsonFieldTypeResolverTests {
 
-	private final FieldTypeResolver fieldTypeResolver = new FieldTypeResolver();
+	private final JsonFieldTypeResolver fieldTypeResolver = new JsonFieldTypeResolver();
 
 	@Rule
 	public ExpectedException thrownException = ExpectedException.none();
 
 	@Test
 	public void arrayField() throws IOException {
-		assertFieldType(FieldType.ARRAY, "[]");
+		assertFieldType(JsonFieldType.ARRAY, "[]");
 	}
 
 	@Test
 	public void booleanField() throws IOException {
-		assertFieldType(FieldType.BOOLEAN, "true");
+		assertFieldType(JsonFieldType.BOOLEAN, "true");
 	}
 
 	@Test
 	public void objectField() throws IOException {
-		assertFieldType(FieldType.OBJECT, "{}");
+		assertFieldType(JsonFieldType.OBJECT, "{}");
 	}
 
 	@Test
 	public void nullField() throws IOException {
-		assertFieldType(FieldType.NULL, "null");
+		assertFieldType(JsonFieldType.NULL, "null");
 	}
 
 	@Test
 	public void numberField() throws IOException {
-		assertFieldType(FieldType.NUMBER, "1.2345");
+		assertFieldType(JsonFieldType.NUMBER, "1.2345");
 	}
 
 	@Test
 	public void stringField() throws IOException {
-		assertFieldType(FieldType.STRING, "\"Foo\"");
+		assertFieldType(JsonFieldType.STRING, "\"Foo\"");
 	}
 
 	@Test
 	public void nestedField() throws IOException {
 		assertThat(this.fieldTypeResolver.resolveFieldType("a.b.c",
-				createPayload("{\"a\":{\"b\":{\"c\":{}}}}")), equalTo(FieldType.OBJECT));
+				createPayload("{\"a\":{\"b\":{\"c\":{}}}}")), equalTo(JsonFieldType.OBJECT));
 	}
 
 	@Test
 	public void multipleFieldsWithSameType() throws IOException {
 		assertThat(this.fieldTypeResolver.resolveFieldType("a[].id",
 				createPayload("{\"a\":[{\"id\":1},{\"id\":2}]}")),
-				equalTo(FieldType.NUMBER));
+				equalTo(JsonFieldType.NUMBER));
 	}
 
 	@Test
 	public void multipleFieldsWithDifferentTypes() throws IOException {
 		assertThat(this.fieldTypeResolver.resolveFieldType("a[].id",
 				createPayload("{\"a\":[{\"id\":1},{\"id\":true}]}")),
-				equalTo(FieldType.VARIES));
+				equalTo(JsonFieldType.VARIES));
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class FieldTypeResolverTests {
 		this.fieldTypeResolver.resolveFieldType("a.b", createPayload("{\"a\":{}}"));
 	}
 
-	private void assertFieldType(FieldType expectedType, String jsonValue)
+	private void assertFieldType(JsonFieldType expectedType, String jsonValue)
 			throws IOException {
 		assertThat(this.fieldTypeResolver.resolveFieldType("field",
 				createSimplePayload(jsonValue)), equalTo(expectedType));

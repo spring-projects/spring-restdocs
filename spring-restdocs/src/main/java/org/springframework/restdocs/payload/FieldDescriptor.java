@@ -33,7 +33,7 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 
 	private final String path;
 
-	private FieldType type;
+	private Object type;
 
 	private boolean optional;
 
@@ -44,13 +44,14 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	}
 
 	/**
-	 * Specifies the type of the field
+	 * Specifies the type of the field. When documenting a JSON payload, the
+	 * {@link JsonFieldType} enumeration will typically be used.
 	 * 
 	 * @param type The type of the field
-	 * 
 	 * @return {@code this}
+	 * @see JsonFieldType
 	 */
-	public FieldDescriptor type(FieldType type) {
+	public FieldDescriptor type(Object type) {
 		this.type = type;
 		return this;
 	}
@@ -80,7 +81,7 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 		return this.path;
 	}
 
-	FieldType getType() {
+	Object getType() {
 		return this.type;
 	}
 

@@ -37,8 +37,12 @@ public abstract class PayloadDocumentation {
 	 * Creates a {@code FieldDescriptor} that describes a field with the given
 	 * {@code path}.
 	 * <p>
-	 * The {@code path} uses '.' to descend into a child object and ' {@code []}' to
-	 * descend into an array. For example, with this JSON payload:
+	 * When documenting an XML payload, the {@code path} uses XPath, i.e. '/' is used to
+	 * descend to a child node.
+	 * <p>
+	 * When documenting a JSON payload, the {@code path} uses '.' to descend into a child
+	 * object and ' {@code []}' to descend into an array. For example, with this JSON
+	 * payload:
 	 * 
 	 * <pre>
 	 * {
@@ -132,8 +136,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static Snippet requestFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
-		return new RequestFieldsSnippet(attributes,
-				Arrays.asList(descriptors));
+		return new RequestFieldsSnippet(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -174,8 +177,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static Snippet responseFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
-		return new ResponseFieldsSnippet(attributes,
-				Arrays.asList(descriptors));
+		return new ResponseFieldsSnippet(attributes, Arrays.asList(descriptors));
 	}
 
 }

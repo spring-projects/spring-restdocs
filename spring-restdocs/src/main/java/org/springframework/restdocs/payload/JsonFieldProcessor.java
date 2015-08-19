@@ -23,15 +23,15 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A {@code FieldProcessor} processes a payload's fields, allowing them to be extracted
- * and removed
+ * A {@code JsonFieldProcessor} processes a payload's fields, allowing them to be
+ * extracted and removed
  * 
  * @author Andy Wilkinson
  *
  */
-final class FieldProcessor {
+final class JsonFieldProcessor {
 
-	boolean hasField(FieldPath fieldPath, Object payload) {
+	boolean hasField(JsonFieldPath fieldPath, Object payload) {
 		final AtomicReference<Boolean> hasField = new AtomicReference<Boolean>(false);
 		traverse(new ProcessingContext(payload, fieldPath), new MatchCallback() {
 
@@ -44,7 +44,7 @@ final class FieldProcessor {
 		return hasField.get();
 	}
 
-	Object extract(FieldPath path, Object payload) {
+	Object extract(JsonFieldPath path, Object payload) {
 		final List<Object> matches = new ArrayList<Object>();
 		traverse(new ProcessingContext(payload, path), new MatchCallback() {
 
@@ -65,7 +65,7 @@ final class FieldProcessor {
 		}
 	}
 
-	void remove(final FieldPath path, Object payload) {
+	void remove(final JsonFieldPath path, Object payload) {
 		traverse(new ProcessingContext(payload, path), new MatchCallback() {
 
 			@Override
@@ -78,7 +78,7 @@ final class FieldProcessor {
 
 	private void traverse(ProcessingContext context, MatchCallback matchCallback) {
 		final String segment = context.getSegment();
-		if (FieldPath.isArraySegment(segment)) {
+		if (JsonFieldPath.isArraySegment(segment)) {
 			if (context.getPayload() instanceof List) {
 				handleListPayload(context, matchCallback);
 			}
@@ -206,13 +206,13 @@ final class FieldProcessor {
 
 		private final Match parent;
 
-		private final FieldPath path;
+		private final JsonFieldPath path;
 
-		private ProcessingContext(Object payload, FieldPath path) {
+		private ProcessingContext(Object payload, JsonFieldPath path) {
 			this(payload, path, null, null);
 		}
 
-		private ProcessingContext(Object payload, FieldPath path, List<String> segments,
+		private ProcessingContext(Object payload, JsonFieldPath path, List<String> segments,
 				Match parent) {
 			this.payload = payload;
 			this.path = path;

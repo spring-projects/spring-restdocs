@@ -31,7 +31,7 @@ public class FieldDoesNotExistException extends RuntimeException {
 	 * 
 	 * @param fieldPath the path of the field that does not exist
 	 */
-	public FieldDoesNotExistException(FieldPath fieldPath) {
+	public FieldDoesNotExistException(JsonFieldPath fieldPath) {
 		super("The payload does not contain a field with the path '" + fieldPath + "'");
 	}
 }

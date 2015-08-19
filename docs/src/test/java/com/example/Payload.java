@@ -27,7 +27,7 @@ import static org.springframework.restdocs.RestDocumentationRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.FieldType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 public class Payload {
@@ -50,7 +50,7 @@ private MockMvc mockMvc;
 			// tag::explicit-type[]
 			.andDo(document("index", responseFields(
 					fieldWithPath("contact.email")
-							.type(FieldType.STRING) // <1>
+							.type(JsonFieldType.STRING) // <1>
 							.optional()
 							.description("The user's email address"))));
 			// end::explicit-type[]

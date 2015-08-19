@@ -22,12 +22,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A path that identifies a field in a payload
+ * A path that identifies a field in a JSON payload
  * 
  * @author Andy Wilkinson
  *
  */
-final class FieldPath {
+final class JsonFieldPath {
 
 	private static final Pattern ARRAY_INDEX_PATTERN = Pattern
 			.compile("\\[([0-9]+|\\*){0,1}\\]");
@@ -38,7 +38,7 @@ final class FieldPath {
 
 	private final boolean precise;
 
-	private FieldPath(String rawPath, List<String> segments, boolean precise) {
+	private JsonFieldPath(String rawPath, List<String> segments, boolean precise) {
 		this.rawPath = rawPath;
 		this.segments = segments;
 		this.precise = precise;
@@ -57,9 +57,9 @@ final class FieldPath {
 		return this.rawPath;
 	}
 
-	static FieldPath compile(String path) {
+	static JsonFieldPath compile(String path) {
 		List<String> segments = extractSegments(path);
-		return new FieldPath(path, segments, matchesSingleValue(segments));
+		return new JsonFieldPath(path, segments, matchesSingleValue(segments));
 	}
 
 	static boolean isArraySegment(String segment) {

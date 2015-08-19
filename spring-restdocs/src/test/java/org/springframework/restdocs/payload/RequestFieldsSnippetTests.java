@@ -36,6 +36,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.snippet.SnippetException;
@@ -65,8 +66,8 @@ public class RequestFieldsSnippetTests {
 						.row("a.c", "String", "two") //
 						.row("a", "Object", "three"));
 
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b")
-				.description("one"), fieldWithPath("a.c").description("two"),
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one"),
+				fieldWithPath("a.c").description("two"),
 				fieldWithPath("a").description("three"))).document(
 				"map-request-with-fields",
 				result(get("/foo").content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")));
@@ -80,9 +81,9 @@ public class RequestFieldsSnippetTests {
 						.row("[]a.c", "String", "two") //
 						.row("[]a", "Object", "three"));
 
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b")
-				.description("one"), fieldWithPath("[]a.c").description("two"),
-				fieldWithPath("[]a").description("three"))).document(
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b").description("one"),
+				fieldWithPath("[]a.c").description("two"), fieldWithPath("[]a")
+						.description("three"))).document(
 				"array-request-with-fields",
 				result(get("/foo").content(
 						"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")));
@@ -94,9 +95,8 @@ public class RequestFieldsSnippetTests {
 		this.thrown
 				.expectMessage(startsWith("The following parts of the payload were not"
 						+ " documented:"));
-		new RequestFieldsSnippet(Collections.<FieldDescriptor> emptyList())
-				.document("undocumented-request-field",
-						result(get("/foo").content("{\"a\": 5}")));
+		new RequestFieldsSnippet(Collections.<FieldDescriptor> emptyList()).document(
+				"undocumented-request-field", result(get("/foo").content("{\"a\": 5}")));
 	}
 
 	@Test
@@ -105,18 +105,16 @@ public class RequestFieldsSnippetTests {
 		this.thrown
 				.expectMessage(equalTo("Fields with the following paths were not found"
 						+ " in the payload: [a.b]"));
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b")
-				.description("one"))).document("missing-request-fields",
-				result(get("/foo").content("{}")));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")))
+				.document("missing-request-fields", result(get("/foo").content("{}")));
 	}
 
 	@Test
 	public void missingOptionalRequestFieldWithNoTypeProvided() throws IOException {
 		this.thrown.expect(FieldTypeRequiredException.class);
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b")
-				.description("one").optional())).document(
-				"missing-optional-request-field-with-no-type", result(get("/foo")
-						.content("{ }")));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
+				.optional())).document("missing-optional-request-field-with-no-type",
+				result(get("/foo").content("{ }")));
 	}
 
 	@Test
@@ -128,10 +126,9 @@ public class RequestFieldsSnippetTests {
 		this.thrown
 				.expectMessage(endsWith("Fields with the following paths were not found"
 						+ " in the payload: [a.b]"));
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b")
-				.description("one"))).document(
-				"undocumented-request-field-and-missing-request-field",
-				result(get("/foo").content("{ \"a\": { \"c\": 5 }}")));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")))
+				.document("undocumented-request-field-and-missing-request-field",
+						result(get("/foo").content("{ \"a\": { \"c\": 5 }}")));
 	}
 
 	@Test
@@ -171,10 +168,74 @@ public class RequestFieldsSnippetTests {
 				resolver));
 		request.setContent("{\"a\": \"foo\"}".getBytes());
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		new RequestFieldsSnippet(attributes(key("title").value(
-				"Custom title")), Arrays.asList(fieldWithPath("a").description("one")))
-				.document("request-fields-with-custom-attributes",
-						result(request, response));
+		new RequestFieldsSnippet(attributes(key("title").value("Custom title")),
+				Arrays.asList(fieldWithPath("a").description("one"))).document(
+				"request-fields-with-custom-attributes", result(request, response));
+	}
+
+	@Test
+	public void xmlRequestFields() throws IOException {
+		this.snippet.expectRequestFields("xml-request").withContents( //
+				tableWithHeader("Path", "Type", "Description") //
+						.row("a/b", "b", "one") //
+						.row("a/c", "c", "two") //
+						.row("a", "a", "three"));
+
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")
+				.type("b"), fieldWithPath("a/c").description("two").type("c"),
+				fieldWithPath("a").description("three").type("a"))).document(
+				"xml-request",
+				result(get("/foo").content("<a><b>5</b><c>charlie</c></a>").contentType(
+						MediaType.APPLICATION_XML)));
+	}
+
+	@Test
+	public void undocumentedXmlRequestField() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown
+				.expectMessage(startsWith("The following parts of the payload were not"
+						+ " documented:"));
+		new RequestFieldsSnippet(Collections.<FieldDescriptor> emptyList()).document(
+				"undocumented-xml-request-field",
+				result(get("/foo").content("<a><b>5</b></a>").contentType(
+						MediaType.APPLICATION_XML)));
+	}
+
+	@Test
+	public void xmlRequestFieldWithNoType() throws IOException {
+		this.thrown.expect(FieldTypeRequiredException.class);
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
+				.document("missing-xml-request",
+						result(get("/foo").contentType(MediaType.APPLICATION_XML)
+								.content("<a>5</a>")));
+	}
+
+	@Test
+	public void missingXmlRequestField() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown
+				.expectMessage(equalTo("Fields with the following paths were not found"
+						+ " in the payload: [a/b]"));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one"),
+				fieldWithPath("a").description("one"))).document(
+				"missing-xml-request-fields",
+				result(get("/foo").contentType(MediaType.APPLICATION_XML).content(
+						"<a></a>")));
+	}
+
+	@Test
+	public void undocumentedXmlRequestFieldAndMissingXmlRequestField() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown
+				.expectMessage(startsWith("The following parts of the payload were not"
+						+ " documented:"));
+		this.thrown
+				.expectMessage(endsWith("Fields with the following paths were not found"
+						+ " in the payload: [a/b]"));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
+				.document("undocumented-xml-request-field-and-missing-xml-request-field",
+						result(get("/foo").contentType(MediaType.APPLICATION_XML)
+								.content("<a><c>5</c></a>")));
 	}
 
 	private FileSystemResource snippetResource(String name) {

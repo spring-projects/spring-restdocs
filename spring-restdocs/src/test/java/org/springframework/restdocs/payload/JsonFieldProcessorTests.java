@@ -30,19 +30,19 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Tests for {@link FieldProcessor}
+ * Tests for {@link JsonFieldProcessor}
  * 
  * @author Andy Wilkinson
  */
-public class FieldProcessorTests {
+public class JsonFieldProcessorTests {
 
-	private final FieldProcessor fieldProcessor = new FieldProcessor();
+	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
 	@Test
 	public void extractTopLevelMapEntry() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", "alpha");
-		assertThat(this.fieldProcessor.extract(FieldPath.compile("a"), payload),
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a"), payload),
 				equalTo((Object) "alpha"));
 	}
 
@@ -52,7 +52,7 @@ public class FieldProcessorTests {
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
 		alpha.put("b", "bravo");
-		assertThat(this.fieldProcessor.extract(FieldPath.compile("a.b"), payload),
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a.b"), payload),
 				equalTo((Object) "bravo"));
 	}
 
@@ -63,7 +63,7 @@ public class FieldProcessorTests {
 		bravo.put("b", "bravo");
 		List<Map<String, Object>> alpha = Arrays.asList(bravo, bravo);
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract(FieldPath.compile("a"), payload),
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a"), payload),
 				equalTo((Object) alpha));
 	}
 
@@ -74,7 +74,7 @@ public class FieldProcessorTests {
 		bravo.put("b", "bravo");
 		List<Map<String, Object>> alpha = Arrays.asList(bravo, bravo);
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract(FieldPath.compile("a[]"), payload),
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[]"), payload),
 				equalTo((Object) alpha));
 	}
 
@@ -85,7 +85,7 @@ public class FieldProcessorTests {
 		entry.put("b", "bravo");
 		List<Map<String, Object>> alpha = Arrays.asList(entry, entry);
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract(FieldPath.compile("a[].b"), payload),
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[].b"), payload),
 				equalTo((Object) Arrays.asList("bravo", "bravo")));
 	}
 
@@ -98,7 +98,7 @@ public class FieldProcessorTests {
 		List<List<Map<String, String>>> alpha = Arrays.asList(
 				Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract(FieldPath.compile("a[][]"), payload),
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[][]"), payload),
 				equalTo((Object) Arrays.asList(entry1, entry2, entry3)));
 	}
 
@@ -111,7 +111,7 @@ public class FieldProcessorTests {
 		List<List<Map<String, String>>> alpha = Arrays.asList(
 				Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract(FieldPath.compile("a[][].id"), payload),
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[][].id"), payload),
 				equalTo((Object) Arrays.asList("1", "2", "3")));
 	}
 
@@ -124,7 +124,7 @@ public class FieldProcessorTests {
 		List<List<Map<String, Object>>> alpha = Arrays.asList(
 				Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract(FieldPath.compile("a[][].ids"), payload),
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[][].ids"), payload),
 				equalTo((Object) Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3),
 						Arrays.asList(4))));
 	}
@@ -132,21 +132,21 @@ public class FieldProcessorTests {
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentTopLevelField() {
 		this.fieldProcessor
-				.extract(FieldPath.compile("a"), new HashMap<String, Object>());
+				.extract(JsonFieldPath.compile("a"), new HashMap<String, Object>());
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentNestedField() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
 		payload.put("a", new HashMap<String, Object>());
-		this.fieldProcessor.extract(FieldPath.compile("a.b"), payload);
+		this.fieldProcessor.extract(JsonFieldPath.compile("a.b"), payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentNestedFieldWhenParentIsNotAMap() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
 		payload.put("a", 5);
-		this.fieldProcessor.extract(FieldPath.compile("a.b"), payload);
+		this.fieldProcessor.extract(JsonFieldPath.compile("a.b"), payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
@@ -155,20 +155,20 @@ public class FieldProcessorTests {
 		HashMap<String, Object> alpha = new HashMap<String, Object>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
-		this.fieldProcessor.extract(FieldPath.compile("a.b.c"), payload);
+		this.fieldProcessor.extract(JsonFieldPath.compile("a.b.c"), payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentArrayField() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
-		this.fieldProcessor.extract(FieldPath.compile("a[]"), payload);
+		this.fieldProcessor.extract(JsonFieldPath.compile("a[]"), payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentArrayFieldAsTypeDoesNotMatch() {
 		HashMap<String, Object> payload = new HashMap<String, Object>();
 		payload.put("a", 5);
-		this.fieldProcessor.extract(FieldPath.compile("a[]"), payload);
+		this.fieldProcessor.extract(JsonFieldPath.compile("a[]"), payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
@@ -177,14 +177,14 @@ public class FieldProcessorTests {
 		HashMap<String, Object> alpha = new HashMap<String, Object>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
-		this.fieldProcessor.extract(FieldPath.compile("a.b[].id"), payload);
+		this.fieldProcessor.extract(JsonFieldPath.compile("a.b[].id"), payload);
 	}
 
 	@Test
 	public void removeTopLevelMapEntry() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", "alpha");
-		this.fieldProcessor.remove(FieldPath.compile("a"), payload);
+		this.fieldProcessor.remove(JsonFieldPath.compile("a"), payload);
 		assertThat(payload.size(), equalTo(0));
 	}
 
@@ -194,7 +194,7 @@ public class FieldProcessorTests {
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
 		alpha.put("b", "bravo");
-		this.fieldProcessor.remove(FieldPath.compile("a.b"), payload);
+		this.fieldProcessor.remove(JsonFieldPath.compile("a.b"), payload);
 		assertThat(payload.size(), equalTo(0));
 	}
 
@@ -203,7 +203,7 @@ public class FieldProcessorTests {
 	public void removeItemsInArray() throws IOException {
 		Map<String, Object> payload = new ObjectMapper().readValue(
 				"{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}", Map.class);
-		this.fieldProcessor.remove(FieldPath.compile("a[].b"), payload);
+		this.fieldProcessor.remove(JsonFieldPath.compile("a[].b"), payload);
 		assertThat(payload.size(), equalTo(0));
 	}
 
@@ -212,7 +212,7 @@ public class FieldProcessorTests {
 	public void removeItemsInNestedArray() throws IOException {
 		Map<String, Object> payload = new ObjectMapper().readValue(
 				"{\"a\": [[{\"id\":1},{\"id\":2}], [{\"id\":3}]]}", Map.class);
-		this.fieldProcessor.remove(FieldPath.compile("a[][].id"), payload);
+		this.fieldProcessor.remove(JsonFieldPath.compile("a[][].id"), payload);
 		assertThat(payload.size(), equalTo(0));
 	}
 
