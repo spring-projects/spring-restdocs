@@ -6,6 +6,7 @@ dependencies {
 	compile 'org.springframework:spring-webmvc'
 
 	testCompile project(':spring-restdocs')
+	testCompile 'javax.validation:validation-api'
 	testCompile 'junit:junit'
 	testCompile 'org.springframework:spring-test'
 }

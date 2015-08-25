@@ -261,6 +261,92 @@ TIP: To make the path parameters available for documentation, the request must b
 built using one of the methods on `RestDocumentationRequestBuilders` rather than
 `MockMvcRequestBuilders`.
 
+
+
+[[documenting-your-api-constraints]]
+=== Documenting constraints
+
+Spring REST Docs provides a number of classes that can help you to document constraints.
+An instance of `ConstraintDescriptions` can be used to access descriptions of a class's
+constraints:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Constraints.java[tags=constraints]
+----
+<1> Create an instance of `ConstraintDescriptions` for the `UserInput` class
+<2> Get the descriptions of the name property's constraints. This list will contain two
+	descriptions; one for the `NotNull` constraint and one for the `Size` constraint.
+
+The `ApiDocumentation` class in the Spring HATEOAS sample shows this functionality in
+action.
+
+
+
+[[documenting-your-api-constraints-finding]]
+==== Finding constraints
+
+By default, constraints are found using a Bean Validation `Validator`. Currently, only
+property constraints are supported. You can customize the `Validator` that's used by
+creating `ConstraintDescriptions` with a custom `ValidatorConstraintResolver` instance.
+To take complete control of constraint resolution, your own implementation of
+`ConstraintResolver` can be used.
+
+
+
+[[documenting-your-api-constraints-describing]]
+==== Describing constraints
+
+Default descriptions are provided for all of the Bean Validation 1.1's constraints:
+
+* AssertFalse
+* AssertTrue
+* DecimalMax
+* DecimalMin
+* Digits
+* Future
+* Max
+* Min
+* NotNull
+* Null
+* Past
+* Pattern
+* Size
+
+To override the default descriptions, or to provide a new description, create a resource
+bundle with the base name
+`org.springframework.restdocs.constraints.ConstraintDescriptions`.  The Spring
+HATEOAS-based sample contains
+{samples}/rest-notes-spring-hateoas/src/test/resources/org/springframework/restdocs/constraints/ConstraintDescriptions.properties[an
+example of such a resource bundle].
+
+Each key in the resource bundle is the fully-qualified name of a constraint plus
+`.description`. For example, the key for the standard `@NotNull` constraint is
+`javax.validation.constraints.NotNull.description`.
+
+Property placeholder's referring to a constraint's attributes can be used in its
+description. For example, the default description of the `@Min` constraint,
+`Must be at least ${value}`, refers to the constraint's `value` attribute.
+
+To take more control of constraint description resolution, create `ConstraintDescriptions`
+with a custom `ResourceBundleConstraintDescriptionResolver`. To take complete control,
+create `ConstraintDescriptions` with a custom `ConstraintDescriptionResolver`
+implementation.
+
+
+
+==== Using constraint descriptions in generated snippets
+
+Once you have a constraint's descriptions, you're free to use them however you like in
+the generated snippets. For example, you may want to include the constraint descriptions
+as part of a field's description. Alternatively, you could include the constraints as
+<<documenting-your-api-customizing-including-extra-information, extra information>> in
+the request fields snippet. The
+{samples}/rest-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`]
+class in the Spring HATEOAS-based sample illustrates the latter approach.
+
+
+
 [[documenting-your-api-default-snippets]]
 === Default snippets
 

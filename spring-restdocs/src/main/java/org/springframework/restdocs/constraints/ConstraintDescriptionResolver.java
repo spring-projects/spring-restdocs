@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package com.example.notes;
+package org.springframework.restdocs.constraints;
 
+/**
+ * Resolves a description for a {@link Constraint}.
+ * 
+ * @author Andy Wilkinson
+ *
+ */
+public interface ConstraintDescriptionResolver {
 
-abstract class AbstractTagInput {
-
-	private final String name;
-
-	public AbstractTagInput(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
+	/**
+	 * Resolves the description for the given {@code constraint}.
+	 * 
+	 * @param constraint the constraint
+	 * @return the description
+	 */
+	public String resolveDescription(Constraint constraint);
 }

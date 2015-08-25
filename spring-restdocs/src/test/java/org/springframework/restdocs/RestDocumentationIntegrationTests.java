@@ -329,6 +329,7 @@ public class RestDocumentationIntegrationTests {
 			return new ResponseEntity<Map<String, Object>>(response, headers,
 					HttpStatus.OK);
 		}
+
 	}
 
 }

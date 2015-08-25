@@ -20,14 +20,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.RestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,11 +45,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.restdocs.constraints.ConstraintDescriptions;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -147,15 +151,17 @@ public class ApiDocumentation {
 		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
+		ConstrainedFields fields = new ConstrainedFields(NoteInput.class);
+
 		this.mockMvc.perform(
 				post("/notes").contentType(MediaTypes.HAL_JSON).content(
 						this.objectMapper.writeValueAsString(note)))
 				.andExpect(status().isCreated())
 				.andDo(document("notes-create-example",
 						requestFields(
-								fieldWithPath("title").description("The title of the note"),
-								fieldWithPath("body").description("The body of the note"),
-								fieldWithPath("tags").description("An array of tag resource URIs"))));
+								fields.withPath("title").description("The title of the note"),
+								fields.withPath("body").description("The body of the note"),
+								fields.withPath("tags").description("An array of tag resource URIs"))));
 	}
 
 	@Test
@@ -220,13 +226,15 @@ public class ApiDocumentation {
 		Map<String, String> tag = new HashMap<String, String>();
 		tag.put("name", "REST");
 
+		ConstrainedFields fields = new ConstrainedFields(TagInput.class);
+
 		this.mockMvc.perform(
 				post("/tags").contentType(MediaTypes.HAL_JSON).content(
 						this.objectMapper.writeValueAsString(tag)))
 				.andExpect(status().isCreated())
 				.andDo(document("tags-create-example",
 						requestFields(
-								fieldWithPath("name").description("The name of the tag"))));
+								fields.withPath("name").description("The name of the tag"))));
 	}
 
 	@Test
@@ -261,15 +269,24 @@ public class ApiDocumentation {
 		Map<String, Object> noteUpdate = new HashMap<String, Object>();
 		noteUpdate.put("tags", Arrays.asList(tagLocation));
 
+		ConstrainedFields fields = new ConstrainedFields(NotePatchInput.class);
+
 		this.mockMvc.perform(
 				patch(noteLocation).contentType(MediaTypes.HAL_JSON).content(
 						this.objectMapper.writeValueAsString(noteUpdate)))
 				.andExpect(status().isNoContent())
 				.andDo(document("note-update-example",
 						requestFields(
-								fieldWithPath("title").description("The title of the note").type(JsonFieldType.STRING).optional(),
-								fieldWithPath("body").description("The body of the note").type(JsonFieldType.STRING).optional(),
-								fieldWithPath("tags").description("An array of tag resource URIs").optional())));
+								fields.withPath("title")
+										.description("The title of the note")
+										.type(JsonFieldType.STRING)
+										.optional(),
+								fields.withPath("body")
+										.description("The body of the note")
+										.type(JsonFieldType.STRING)
+										.optional(),
+								fields.withPath("tags")
+										.description("An array of tag resource URIs"))));
 	}
 
 	@Test
@@ -311,13 +328,16 @@ public class ApiDocumentation {
 		Map<String, Object> tagUpdate = new HashMap<String, Object>();
 		tagUpdate.put("name", "RESTful");
 
+		ConstrainedFields fields = new ConstrainedFields(TagPatchInput.class);
+
 		this.mockMvc.perform(
 				patch(tagLocation).contentType(MediaTypes.HAL_JSON).content(
 						this.objectMapper.writeValueAsString(tagUpdate)))
 				.andExpect(status().isNoContent())
 				.andDo(document("tag-update-example",
 						requestFields(
-								fieldWithPath("name").description("The name of the tag"))));
+								fields.withPath("name")
+										.description("The name of the tag"))));
 	}
 
 	private void createNote(String title, String body) {
@@ -333,4 +353,20 @@ public class ApiDocumentation {
 		tag.setName(name);
 		this.tagRepository.save(tag);
 	}
+
+	private static class ConstrainedFields {
+
+		private final ConstraintDescriptions constraintDescriptions;
+
+		ConstrainedFields(Class<?> input) {
+			this.constraintDescriptions = new ConstraintDescriptions(input);
+		}
+
+		private FieldDescriptor withPath(String path) {
+			return fieldWithPath(path).attributes(key("constraints").value(StringUtils
+					.collectionToDelimitedString(this.constraintDescriptions
+							.descriptionsForProperty(path), ". ")));
+		}
+	}
+
 }
