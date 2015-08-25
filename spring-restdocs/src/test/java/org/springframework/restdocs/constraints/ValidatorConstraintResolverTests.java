@@ -1,20 +1,27 @@
 package org.springframework.restdocs.constraints;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.validation.Payload;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.hibernate.validator.constraints.CompositionType;
 import org.hibernate.validator.constraints.ConstraintComposition;
 import org.hibernate.validator.constraints.NotBlank;
@@ -37,15 +44,16 @@ public class ValidatorConstraintResolverTests {
 		assertThat(constraints.get(0).getName(), is(NotNull.class.getName()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void multipleFieldConstraints() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("multiple",
 				ConstrainedFields.class);
 		assertThat(constraints, hasSize(2));
-		assertThat(constraints.get(0).getName(), is(NotNull.class.getName()));
-		assertThat(constraints.get(1).getName(), is(Size.class.getName()));
-		assertThat(constraints.get(1).getConfiguration().get("min"), is((Object) 8));
-		assertThat(constraints.get(1).getConfiguration().get("max"), is((Object) 16));
+		assertThat(
+				constraints,
+				containsInAnyOrder(constraint(NotNull.class), constraint(Size.class)
+						.config("min", 8).config("max", 16)));
 	}
 
 	@Test
@@ -94,4 +102,47 @@ public class ValidatorConstraintResolverTests {
 
 	}
 
+	private ConstraintMatcher constraint(final Class<? extends Annotation> annotation) {
+		return new ConstraintMatcher(annotation);
+	}
+
+	private static class ConstraintMatcher extends BaseMatcher<Constraint> {
+
+		private final Class<?> annotation;
+
+		private final Map<String, Object> configuration = new HashMap<>();
+
+		private ConstraintMatcher(Class<?> annotation) {
+			this.annotation = annotation;
+		}
+
+		public ConstraintMatcher config(String key, Object value) {
+			this.configuration.put(key, value);
+			return this;
+		}
+
+		@Override
+		public boolean matches(Object item) {
+			if (!(item instanceof Constraint)) {
+				return false;
+			}
+			Constraint constraint = (Constraint) item;
+			if (!constraint.getName().equals(this.annotation.getName())) {
+				return false;
+			}
+			for (Entry<String, Object> entry : this.configuration.entrySet()) {
+				if (!constraint.getConfiguration().get(entry.getKey())
+						.equals(entry.getValue())) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		@Override
+		public void describeTo(Description description) {
+			description.appendText("Constraint named " + this.annotation.getName()
+					+ " with configuration " + this.configuration);
+		}
+	}
 }
