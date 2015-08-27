@@ -21,9 +21,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.templates.Template;
 import org.springframework.restdocs.templates.TemplateEngine;
-import org.springframework.test.web.servlet.MvcResult;
 
 /**
  * Base class for a {@link Snippet} that is produced using a {@link Template} and
@@ -45,18 +45,20 @@ public abstract class TemplatedSnippet implements Snippet {
 	}
 
 	@Override
-	public void document(String operation, MvcResult result) throws IOException {
-		WriterResolver writerResolver = (WriterResolver) result.getRequest()
-				.getAttribute(WriterResolver.class.getName());
-		try (Writer writer = writerResolver.resolve(operation, this.snippetName)) {
-			Map<String, Object> model = document(result);
+	public void document(Operation operation) throws IOException {
+		WriterResolver writerResolver = (WriterResolver) operation.getAttributes().get(
+				WriterResolver.class.getName());
+		try (Writer writer = writerResolver
+				.resolve(operation.getName(), this.snippetName)) {
+			Map<String, Object> model = createModel(operation);
 			model.putAll(this.attributes);
-			TemplateEngine templateEngine = (TemplateEngine) result.getRequest()
-					.getAttribute(TemplateEngine.class.getName());
+			TemplateEngine templateEngine = (TemplateEngine) operation.getAttributes()
+					.get(TemplateEngine.class.getName());
 			writer.append(templateEngine.compileTemplate(this.snippetName).render(model));
 		}
 	}
 
-	protected abstract Map<String, Object> document(MvcResult result) throws IOException;
+	protected abstract Map<String, Object> createModel(Operation operation)
+			throws IOException;
 
 }

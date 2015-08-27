@@ -24,9 +24,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
 /**
@@ -48,9 +48,9 @@ class PathParametersSnippet extends AbstractParametersSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> document(MvcResult result) throws IOException {
-		Map<String, Object> model = super.document(result);
-		model.put("path", remoteQueryStringIfPresent(extractUrlTemplate(result)));
+	protected Map<String, Object> createModel(Operation operation) throws IOException {
+		Map<String, Object> model = super.createModel(operation);
+		model.put("path", remoteQueryStringIfPresent(extractUrlTemplate(operation)));
 		return model;
 	}
 
@@ -63,8 +63,8 @@ class PathParametersSnippet extends AbstractParametersSnippet {
 	}
 
 	@Override
-	protected Set<String> extractActualParameters(MvcResult result) {
-		String urlTemplate = extractUrlTemplate(result);
+	protected Set<String> extractActualParameters(Operation operation) {
+		String urlTemplate = extractUrlTemplate(operation);
 		Matcher matcher = NAMES_PATTERN.matcher(urlTemplate);
 		Set<String> actualParameters = new HashSet<>();
 		while (matcher.find()) {
@@ -74,8 +74,8 @@ class PathParametersSnippet extends AbstractParametersSnippet {
 		return actualParameters;
 	}
 
-	private String extractUrlTemplate(MvcResult result) {
-		String urlTemplate = (String) result.getRequest().getAttribute(
+	private String extractUrlTemplate(Operation operation) {
+		String urlTemplate = (String) operation.getAttributes().get(
 				"org.springframework.restdocs.urlTemplate");
 		Assert.notNull(urlTemplate,
 				"urlTemplate not found. Did you use RestDocumentationRequestBuilders to "

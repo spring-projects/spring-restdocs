@@ -26,13 +26,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.snippet.DocumentableHttpServletRequest;
+import org.springframework.restdocs.operation.Operation;
+import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * A {@link Snippet} that documents an HTTP request.
@@ -52,27 +53,31 @@ class HttpRequestSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	public Map<String, Object> document(MvcResult result) throws IOException {
-		DocumentableHttpServletRequest request = new DocumentableHttpServletRequest(
-				result.getRequest());
+	public Map<String, Object> createModel(Operation operation) throws IOException {
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("method", result.getRequest().getMethod());
-		model.put("path", request.getRequestUriWithQueryString());
-		model.put("headers", getHeaders(request));
-		model.put("requestBody", getRequestBody(request));
+		model.put("method", operation.getRequest().getMethod());
+		model.put(
+				"path",
+				operation.getRequest().getUri().getRawPath()
+						+ (StringUtils.hasText(operation.getRequest().getUri()
+								.getRawQuery()) ? "?"
+								+ operation.getRequest().getUri().getRawQuery()
+								: ""));
+		model.put("headers", getHeaders(operation.getRequest()));
+		model.put("requestBody", getRequestBody(operation.getRequest()));
 		return model;
 	}
 
-	private List<Map<String, String>> getHeaders(DocumentableHttpServletRequest request) {
+	private List<Map<String, String>> getHeaders(OperationRequest request) {
 		List<Map<String, String>> headers = new ArrayList<>();
 		if (requiresHostHeader(request)) {
-			headers.add(header(HttpHeaders.HOST, request.getHost()));
+			headers.add(header(HttpHeaders.HOST, request.getUri().getHost()));
 		}
 
 		for (Entry<String, List<String>> header : request.getHeaders().entrySet()) {
 			for (String value : header.getValue()) {
 				if (header.getKey() == HttpHeaders.CONTENT_TYPE
-						&& request.isMultipartRequest()) {
+						&& !request.getParts().isEmpty()) {
 					headers.add(header(header.getKey(),
 							String.format("%s; boundary=%s", value, MULTIPART_BOUNDARY)));
 				}
@@ -82,53 +87,54 @@ class HttpRequestSnippet extends TemplatedSnippet {
 
 			}
 		}
-		if (requiresFormEncodingContentType(request)) {
+		if (requiresFormEncodingContentTypeHeader(request)) {
 			headers.add(header(HttpHeaders.CONTENT_TYPE,
 					MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 		}
 		return headers;
 	}
 
-	private String getRequestBody(DocumentableHttpServletRequest request)
-			throws IOException {
+	private String getRequestBody(OperationRequest request) throws IOException {
 		StringWriter httpRequest = new StringWriter();
 		PrintWriter writer = new PrintWriter(httpRequest);
-		if (request.getContentLength() > 0) {
+		if (request.getContent().length > 0) {
 			writer.println();
-			writer.print(request.getContentAsString());
+			writer.print(new String(request.getContent()));
 		}
-		else if (request.isPostRequest() || request.isPutRequest()) {
-			if (request.isMultipartRequest()) {
-				writeParts(request, writer);
-			}
-			else {
-				String queryString = request.getParameterMapAsQueryString();
+		else if (isPutOrPost(request)) {
+			if (request.getParts().isEmpty()) {
+				String queryString = request.getParameters().toQueryString();
 				if (StringUtils.hasText(queryString)) {
 					writer.println();
 					writer.print(queryString);
 				}
 			}
+			else {
+				writeParts(request, writer);
+			}
 		}
 		return httpRequest.toString();
 	}
 
-	private void writeParts(DocumentableHttpServletRequest request, PrintWriter writer)
+	private boolean isPutOrPost(OperationRequest request) {
+		return HttpMethod.PUT.equals(request.getMethod())
+				|| HttpMethod.POST.equals(request.getMethod());
+	}
+
+	private void writeParts(OperationRequest request, PrintWriter writer)
 			throws IOException {
 		writer.println();
-		for (Entry<String, String[]> parameter : request.getParameterMap().entrySet()) {
+		for (Entry<String, List<String>> parameter : request.getParameters().entrySet()) {
 			for (String value : parameter.getValue()) {
 				writePartBoundary(writer);
 				writePart(parameter.getKey(), value, null, writer);
 				writer.println();
 			}
 		}
-		for (Entry<String, List<MultipartFile>> entry : request.getMultipartFiles()
-				.entrySet()) {
-			for (MultipartFile file : entry.getValue()) {
-				writePartBoundary(writer);
-				writePart(file, writer);
-				writer.println();
-			}
+		for (OperationRequestPart part : request.getParts()) {
+			writePartBoundary(writer);
+			writePart(part, writer);
+			writer.println();
 		}
 		writeMultipartEnd(writer);
 	}
@@ -137,33 +143,33 @@ class HttpRequestSnippet extends TemplatedSnippet {
 		writer.printf("--%s%n", MULTIPART_BOUNDARY);
 	}
 
-	private void writePart(String name, String value, String contentType,
+	private void writePart(OperationRequestPart part, PrintWriter writer)
+			throws IOException {
+		writePart(part.getName(), new String(part.getContent()), part.getHeaders()
+				.getContentType(), writer);
+	}
+
+	private void writePart(String name, String value, MediaType contentType,
 			PrintWriter writer) {
 		writer.printf("Content-Disposition: form-data; name=%s%n", name);
-		if (StringUtils.hasText(contentType)) {
+		if (contentType != null) {
 			writer.printf("Content-Type: %s%n", contentType);
 		}
 		writer.println();
 		writer.print(value);
 	}
 
-	private void writePart(MultipartFile part, PrintWriter writer) throws IOException {
-		writePart(part.getName(), new String(part.getBytes()), part.getContentType(),
-				writer);
-	}
-
 	private void writeMultipartEnd(PrintWriter writer) {
 		writer.printf("--%s--", MULTIPART_BOUNDARY);
 	}
 
-	private boolean requiresHostHeader(DocumentableHttpServletRequest request) {
+	private boolean requiresHostHeader(OperationRequest request) {
 		return request.getHeaders().get(HttpHeaders.HOST) == null;
 	}
 
-	private boolean requiresFormEncodingContentType(DocumentableHttpServletRequest request) {
-		return request.getHeaders().getContentType() == null
-				&& (request.isPostRequest() || request.isPutRequest())
-				&& StringUtils.hasText(request.getParameterMapAsQueryString());
+	private boolean requiresFormEncodingContentTypeHeader(OperationRequest request) {
+		return request.getHeaders().get(HttpHeaders.CONTENT_TYPE) == null
+				&& isPutOrPost(request) && !request.getParameters().isEmpty();
 	}
 
 	private Map<String, String> header(String name, String value) {
@@ -172,4 +178,5 @@ class HttpRequestSnippet extends TemplatedSnippet {
 		header.put("value", value);
 		return header;
 	}
+
 }

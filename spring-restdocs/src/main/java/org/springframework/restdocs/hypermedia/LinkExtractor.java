@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.restdocs.operation.OperationResponse;
 
 /**
  * A {@code LinkExtractor} is used to extract {@link Link links} from a JSON response. The
@@ -32,14 +32,13 @@ import org.springframework.mock.web.MockHttpServletResponse;
 public interface LinkExtractor {
 
 	/**
-	 * Extract the links from the given response, returning a {@code Map} of links where
-	 * the keys are the link rels.
+	 * Extract the links from the given {@code response}, returning a {@code Map} of links
+	 * where the keys are the link rels.
 	 *
 	 * @param response The response from which the links are to be extracted
 	 * @return The extracted links, keyed by rel
 	 * @throws IOException if link extraction fails
 	 */
-	Map<String, List<Link>> extractLinks(MockHttpServletResponse response)
-			throws IOException;
+	Map<String, List<Link>> extractLinks(OperationResponse response) throws IOException;
 
 }

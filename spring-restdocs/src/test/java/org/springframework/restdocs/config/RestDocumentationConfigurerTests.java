@@ -92,28 +92,6 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customContextPathWithoutSlash() {
-		String contextPath = "context-path";
-		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().uris()
-				.withContextPath(contextPath).beforeMockMvcCreated(null, null);
-		postProcessor.postProcessRequest(this.request);
-
-		assertUriConfiguration("http", "localhost", 8080);
-		assertThat(this.request.getContextPath(), equalTo("/" + contextPath));
-	}
-
-	@Test
-	public void customContextPathWithSlash() {
-		String contextPath = "/context-path";
-		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().uris()
-				.withContextPath(contextPath).beforeMockMvcCreated(null, null);
-		postProcessor.postProcessRequest(this.request);
-
-		assertUriConfiguration("http", "localhost", 8080);
-		assertThat(this.request.getContextPath(), equalTo(contextPath));
-	}
-
-	@Test
 	public void noContentLengthHeaderWhenRequestHasNotContent() {
 		RequestPostProcessor postProcessor = new RestDocumentationConfigurer().uris()
 				.withPort(8081).beforeMockMvcCreated(null, null);

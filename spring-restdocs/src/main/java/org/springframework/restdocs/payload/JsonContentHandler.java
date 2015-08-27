@@ -10,27 +10,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * A {@link PayloadHandler} for JSON payloads
+ * A {@link ContentHandler} for JSON content
  * 
  * @author Andy Wilkinson
  */
-class JsonPayloadHandler implements PayloadHandler {
+class JsonContentHandler implements ContentHandler {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
 	private final ObjectMapper objectMapper = new ObjectMapper()
 			.enable(SerializationFeature.INDENT_OUTPUT);
 
-	private final String rawPayload;
+	private final byte[] rawContent;
 
-	JsonPayloadHandler(String payload) throws IOException {
-		this.rawPayload = payload;
+	JsonContentHandler(byte[] content) throws IOException {
+		this.rawContent = content;
 	}
 
 	@Override
 	public List<FieldDescriptor> findMissingFields(List<FieldDescriptor> fieldDescriptors) {
 		List<FieldDescriptor> missingFields = new ArrayList<FieldDescriptor>();
-		Object payload = readPayload();
+		Object payload = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
 			if (!fieldDescriptor.isOptional()
 					&& !this.fieldProcessor.hasField(
@@ -43,15 +43,15 @@ class JsonPayloadHandler implements PayloadHandler {
 	}
 
 	@Override
-	public String getUndocumentedPayload(List<FieldDescriptor> fieldDescriptors) {
-		Object payload = readPayload();
+	public String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors) {
+		Object content = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
 			JsonFieldPath path = JsonFieldPath.compile(fieldDescriptor.getPath());
-			this.fieldProcessor.remove(path, payload);
+			this.fieldProcessor.remove(path, content);
 		}
-		if (!isEmpty(payload)) {
+		if (!isEmpty(content)) {
 			try {
-				return this.objectMapper.writeValueAsString(payload);
+				return this.objectMapper.writeValueAsString(content);
 			}
 			catch (JsonProcessingException ex) {
 				throw new PayloadHandlingException(ex);
@@ -60,9 +60,9 @@ class JsonPayloadHandler implements PayloadHandler {
 		return null;
 	}
 
-	private Object readPayload() {
+	private Object readContent() {
 		try {
-			return new ObjectMapper().readValue(this.rawPayload, Object.class);
+			return new ObjectMapper().readValue(this.rawContent, Object.class);
 		}
 		catch (IOException ex) {
 			throw new PayloadHandlingException(ex);
@@ -79,7 +79,7 @@ class JsonPayloadHandler implements PayloadHandler {
 	@Override
 	public Object determineFieldType(String path) {
 		try {
-			return new JsonFieldTypeResolver().resolveFieldType(path, readPayload());
+			return new JsonFieldTypeResolver().resolveFieldType(path, readContent());
 		}
 		catch (FieldDoesNotExistException ex) {
 			String message = "Cannot determine the type of the field '" + path + "' as"

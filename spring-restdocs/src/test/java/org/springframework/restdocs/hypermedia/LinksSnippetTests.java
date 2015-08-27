@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
-import static org.springframework.restdocs.test.StubMvcResult.result;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,12 +33,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
+import org.springframework.restdocs.test.OperationBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -61,9 +61,9 @@ public class LinksSnippetTests {
 		this.thrown.expect(SnippetException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " documented: [foo]"));
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo",
-				"bar")), Collections.<LinkDescriptor> emptyList()).document(
-				"undocumented-link", result());
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
+				Collections.<LinkDescriptor> emptyList()).document(new OperationBuilder(
+				"undocumented-link").build());
 	}
 
 	@Test
@@ -71,9 +71,9 @@ public class LinksSnippetTests {
 		this.thrown.expect(SnippetException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " found in the response: [foo]"));
-		new LinksSnippet(new StubLinkExtractor(),
-				Arrays.asList(new LinkDescriptor("foo").description("bar"))).document(
-				"missing-link", result());
+		new LinksSnippet(new StubLinkExtractor(), Arrays.asList(new LinkDescriptor("foo")
+				.description("bar"))).document(new OperationBuilder("missing-link")
+				.build());
 	}
 
 	@Test
@@ -81,9 +81,9 @@ public class LinksSnippetTests {
 		this.snippet.expectLinks("documented-optional-link").withContents( //
 				tableWithHeader("Relation", "Description") //
 						.row("foo", "bar"));
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo",
-				"blah")), Arrays.asList(new LinkDescriptor("foo").description("bar")
-				.optional())).document("documented-optional-link", result());
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "blah")),
+				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
+				.document(new OperationBuilder("documented-optional-link").build());
 	}
 
 	@Test
@@ -91,9 +91,9 @@ public class LinksSnippetTests {
 		this.snippet.expectLinks("missing-optional-link").withContents( //
 				tableWithHeader("Relation", "Description") //
 						.row("foo", "bar"));
-		new LinksSnippet(new StubLinkExtractor(),
-				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
-				.document("missing-optional-link", result());
+		new LinksSnippet(new StubLinkExtractor(), Arrays.asList(new LinkDescriptor("foo")
+				.description("bar").optional())).document(new OperationBuilder(
+				"missing-optional-link").build());
 	}
 
 	@Test
@@ -102,9 +102,10 @@ public class LinksSnippetTests {
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " documented: [a]. Links with the following relations were not"
 				+ " found in the response: [foo]"));
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a",
-				"alpha")), Arrays.asList(new LinkDescriptor("foo").description("bar")))
-				.document("undocumented-link-and-missing-link", result());
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha")),
+				Arrays.asList(new LinkDescriptor("foo").description("bar")))
+				.document(new OperationBuilder("undocumented-link-and-missing-link")
+						.build());
 	}
 
 	@Test
@@ -113,11 +114,11 @@ public class LinksSnippetTests {
 				tableWithHeader("Relation", "Description") //
 						.row("a", "one") //
 						.row("b", "two"));
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a",
-				"alpha"), new Link("b", "bravo")), Arrays.asList(
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+				new Link("b", "bravo")), Arrays.asList(
 				new LinkDescriptor("a").description("one"),
-				new LinkDescriptor("b").description("two"))).document("documented-links",
-				result());
+				new LinkDescriptor("b").description("two")))
+				.document(new OperationBuilder("documented-links").build());
 	}
 
 	@Test
@@ -134,33 +135,34 @@ public class LinksSnippetTests {
 								"src/test/resources/custom-snippet-templates/links-with-extra-column.snippet"));
 		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
 				resolver));
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a",
-				"alpha"), new Link("b", "bravo")), Arrays.asList(
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+				new Link("b", "bravo")), Arrays.asList(
 				new LinkDescriptor("a").description("one").attributes(
 						key("foo").value("alpha")),
 				new LinkDescriptor("b").description("two").attributes(
-						key("foo").value("bravo")))).document(
-				"links-with-custom-descriptor-attributes", result(request));
+						key("foo").value("bravo")))).document(new OperationBuilder(
+				"links-with-custom-descriptor-attributes").attribute(
+				TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+				.build());
 	}
 
 	@Test
 	public void linksWithCustomAttributes() throws IOException {
 		this.snippet.expectLinks("links-with-custom-attributes").withContents(
 				startsWith(".Title for the links"));
-		MockHttpServletRequest request = new MockHttpServletRequest();
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		when(resolver.resolveTemplateResource("links"))
 				.thenReturn(
 						new FileSystemResource(
 								"src/test/resources/custom-snippet-templates/links-with-title.snippet"));
-		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
-				resolver));
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a",
-				"alpha"), new Link("b", "bravo")), attributes(key("title").value(
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+				new Link("b", "bravo")), attributes(key("title").value(
 				"Title for the links")), Arrays.asList(
 				new LinkDescriptor("a").description("one"),
-				new LinkDescriptor("b").description("two"))).document(
-				"links-with-custom-attributes", result(request));
+				new LinkDescriptor("b").description("two")))
+				.document(new OperationBuilder("links-with-custom-attributes").attribute(
+						TemplateEngine.class.getName(),
+						new MustacheTemplateEngine(resolver)).build());
 	}
 
 	private static class StubLinkExtractor implements LinkExtractor {
@@ -168,7 +170,7 @@ public class LinksSnippetTests {
 		private MultiValueMap<String, Link> linksByRel = new LinkedMultiValueMap<String, Link>();
 
 		@Override
-		public MultiValueMap<String, Link> extractLinks(MockHttpServletResponse response)
+		public MultiValueMap<String, Link> extractLinks(OperationResponse response)
 				throws IOException {
 			return this.linksByRel;
 		}

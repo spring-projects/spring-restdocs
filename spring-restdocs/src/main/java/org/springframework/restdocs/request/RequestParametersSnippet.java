@@ -22,9 +22,9 @@ import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
+import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -67,8 +67,8 @@ class RequestParametersSnippet extends AbstractParametersSnippet {
 	}
 
 	@Override
-	protected Set<String> extractActualParameters(MvcResult result) {
-		return result.getRequest().getParameterMap().keySet();
+	protected Set<String> extractActualParameters(Operation operation) {
+		return operation.getRequest().getParameters().keySet();
 	}
 
 }

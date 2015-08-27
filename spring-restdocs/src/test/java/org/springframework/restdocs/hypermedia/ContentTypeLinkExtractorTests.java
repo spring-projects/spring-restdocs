@@ -26,8 +26,10 @@ import java.util.Map;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.restdocs.operation.StandardOperationResponse;
 
 /**
  * Tests for {@link ContentTypeLinkExtractor}.
@@ -39,12 +41,11 @@ public class ContentTypeLinkExtractorTests {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	private final MockHttpServletResponse response = new MockHttpServletResponse();
-
 	@Test
 	public void extractionFailsWithNullContentType() throws IOException {
 		this.thrown.expect(IllegalStateException.class);
-		new ContentTypeLinkExtractor().extractLinks(this.response);
+		new ContentTypeLinkExtractor().extractLinks(new StandardOperationResponse(
+				HttpStatus.OK, new HttpHeaders(), null));
 	}
 
 	@Test
@@ -52,9 +53,12 @@ public class ContentTypeLinkExtractorTests {
 		Map<MediaType, LinkExtractor> extractors = new HashMap<>();
 		LinkExtractor extractor = mock(LinkExtractor.class);
 		extractors.put(MediaType.APPLICATION_JSON, extractor);
-		this.response.setContentType("application/json");
-		new ContentTypeLinkExtractor(extractors).extractLinks(this.response);
-		verify(extractor).extractLinks(this.response);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		StandardOperationResponse response = new StandardOperationResponse(HttpStatus.OK,
+				httpHeaders, null);
+		new ContentTypeLinkExtractor(extractors).extractLinks(response);
+		verify(extractor).extractLinks(response);
 	}
 
 	@Test
@@ -62,9 +66,12 @@ public class ContentTypeLinkExtractorTests {
 		Map<MediaType, LinkExtractor> extractors = new HashMap<>();
 		LinkExtractor extractor = mock(LinkExtractor.class);
 		extractors.put(MediaType.APPLICATION_JSON, extractor);
-		this.response.setContentType("application/json;foo=bar");
-		new ContentTypeLinkExtractor(extractors).extractLinks(this.response);
-		verify(extractor).extractLinks(this.response);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.parseMediaType("application/json;foo=bar"));
+		StandardOperationResponse response = new StandardOperationResponse(HttpStatus.OK,
+				httpHeaders, null);
+		new ContentTypeLinkExtractor(extractors).extractLinks(response);
+		verify(extractor).extractLinks(response);
 	}
 
 }

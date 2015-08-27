@@ -1,6 +1,22 @@
+/*
+ * Copyright 2014-2015 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.restdocs.payload;
 
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +40,17 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
- * A {@link PayloadHandler} for XML payloads
+ * A {@link ContentHandler} for XML content
  * 
  * @author Andy Wilkinson
  */
-class XmlPayloadHandler implements PayloadHandler {
+class XmlContentHandler implements ContentHandler {
 
 	private final DocumentBuilder documentBuilder;
 
-	private final String rawPayload;
+	private final byte[] rawContent;
 
-	XmlPayloadHandler(String rawPayload) {
+	XmlContentHandler(byte[] rawContent) {
 		try {
 			this.documentBuilder = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
@@ -42,7 +58,7 @@ class XmlPayloadHandler implements PayloadHandler {
 		catch (ParserConfigurationException ex) {
 			throw new IllegalStateException("Failed to create document builder", ex);
 		}
-		this.rawPayload = rawPayload;
+		this.rawContent = rawContent;
 	}
 
 	@Override
@@ -73,8 +89,8 @@ class XmlPayloadHandler implements PayloadHandler {
 
 	private Document readPayload() {
 		try {
-			return this.documentBuilder.parse(new InputSource(new StringReader(
-					this.rawPayload)));
+			return this.documentBuilder.parse(new InputSource(new ByteArrayInputStream(
+					this.rawContent)));
 		}
 		catch (Exception ex) {
 			throw new PayloadHandlingException(ex);
@@ -86,7 +102,7 @@ class XmlPayloadHandler implements PayloadHandler {
 	}
 
 	@Override
-	public String getUndocumentedPayload(List<FieldDescriptor> fieldDescriptors) {
+	public String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors) {
 		Document payload = readPayload();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
 			NodeList matchingNodes;

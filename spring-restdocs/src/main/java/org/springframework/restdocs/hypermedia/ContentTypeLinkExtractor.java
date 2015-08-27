@@ -7,8 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.util.StringUtils;
+import org.springframework.restdocs.operation.OperationResponse;
 
 /**
  * {@link LinkExtractor} that delegates to other link extractors based on the response's
@@ -31,9 +30,9 @@ class ContentTypeLinkExtractor implements LinkExtractor {
 	}
 
 	@Override
-	public Map<String, List<Link>> extractLinks(MockHttpServletResponse response)
+	public Map<String, List<Link>> extractLinks(OperationResponse response)
 			throws IOException {
-		String contentType = response.getContentType();
+		MediaType contentType = response.getHeaders().getContentType();
 		LinkExtractor extractorForContentType = getExtractorForContentType(contentType);
 		if (extractorForContentType != null) {
 			return extractorForContentType.extractLinks(response);
@@ -43,11 +42,10 @@ class ContentTypeLinkExtractor implements LinkExtractor {
 						+ "content type " + contentType);
 	}
 
-	private LinkExtractor getExtractorForContentType(String contentType) {
-		if (StringUtils.hasText(contentType)) {
-			MediaType mediaType = MediaType.parseMediaType(contentType);
+	private LinkExtractor getExtractorForContentType(MediaType contentType) {
+		if (contentType != null) {
 			for (Entry<MediaType, LinkExtractor> entry : this.linkExtractors.entrySet()) {
-				if (mediaType.isCompatibleWith(entry.getKey())) {
+				if (contentType.isCompatibleWith(entry.getKey())) {
 					return entry.getValue();
 				}
 			}

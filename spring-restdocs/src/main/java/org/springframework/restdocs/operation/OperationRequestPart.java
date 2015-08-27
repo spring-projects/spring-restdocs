@@ -14,25 +14,44 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.snippet;
+package org.springframework.restdocs.operation;
 
-import java.io.IOException;
-
-import org.springframework.restdocs.operation.Operation;
+import org.springframework.http.HttpHeaders;
 
 /**
- * A {@link Snippet} is used to document aspects of a call to a RESTful API.
+ * A part of a multipart request
  * 
- * @author Andy Wilkinson
+ * @author awilkinson
+ * @see OperationRequest#getParts()
  */
-public interface Snippet {
+public interface OperationRequestPart {
 
 	/**
-	 * Documents the call to the RESTful API described by the given {@code operation}.
+	 * Returns the name of the part.
 	 * 
-	 * @param operation the API operation
-	 * @throws IOException if a failure occurs will documenting the operation
+	 * @return the name
 	 */
-	void document(Operation operation) throws IOException;
+	String getName();
+
+	/**
+	 * Returns the name of the file that is being uploaded in this part.
+	 * 
+	 * @return the name of the file
+	 */
+	String getSubmittedFileName();
+
+	/**
+	 * Returns the contents of the part.
+	 * 
+	 * @return the contents
+	 */
+	byte[] getContent();
+
+	/**
+	 * Returns the part's headers.
+	 * 
+	 * @return the headers
+	 */
+	HttpHeaders getHeaders();
 
 }

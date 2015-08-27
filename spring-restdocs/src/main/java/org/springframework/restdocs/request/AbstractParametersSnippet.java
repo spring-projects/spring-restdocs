@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014-2015 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.restdocs.request;
 
 import java.io.IOException;
@@ -10,12 +26,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
-abstract class AbstractParametersSnippet extends
-		TemplatedSnippet {
+abstract class AbstractParametersSnippet extends TemplatedSnippet {
 
 	private final Map<String, ParameterDescriptor> descriptorsByName = new LinkedHashMap<>();
 
@@ -30,8 +45,8 @@ abstract class AbstractParametersSnippet extends
 	}
 
 	@Override
-	protected Map<String, Object> document(MvcResult result) throws IOException {
-		verifyParameterDescriptors(result);
+	protected Map<String, Object> createModel(Operation operation) throws IOException {
+		verifyParameterDescriptors(operation);
 
 		Map<String, Object> model = new HashMap<>();
 		List<Map<String, Object>> parameters = new ArrayList<>();
@@ -42,8 +57,8 @@ abstract class AbstractParametersSnippet extends
 		return model;
 	}
 
-	protected void verifyParameterDescriptors(MvcResult result) {
-		Set<String> actualParameters = extractActualParameters(result);
+	protected void verifyParameterDescriptors(Operation operation) {
+		Set<String> actualParameters = extractActualParameters(operation);
 		Set<String> expectedParameters = this.descriptorsByName.keySet();
 		Set<String> undocumentedParameters = new HashSet<String>(actualParameters);
 		undocumentedParameters.removeAll(expectedParameters);
@@ -58,7 +73,7 @@ abstract class AbstractParametersSnippet extends
 		}
 	}
 
-	protected abstract Set<String> extractActualParameters(MvcResult result);
+	protected abstract Set<String> extractActualParameters(Operation operation);
 
 	protected abstract void verificationFailed(Set<String> undocumentedParameters,
 			Set<String> missingParameters);

@@ -17,19 +17,16 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -54,22 +51,22 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> document(MvcResult result) throws IOException {
-		MediaType contentType = getContentType(result);
-		PayloadHandler payloadHandler;
+	protected Map<String, Object> createModel(Operation operation) throws IOException {
+		MediaType contentType = getContentType(operation);
+		ContentHandler contentHandler;
 		if (contentType != null
 				&& MediaType.APPLICATION_XML.isCompatibleWith(contentType)) {
-			payloadHandler = new XmlPayloadHandler(readPayload(result));
+			contentHandler = new XmlContentHandler(getContent(operation));
 		}
 		else {
-			payloadHandler = new JsonPayloadHandler(readPayload(result));
+			contentHandler = new JsonContentHandler(getContent(operation));
 		}
 
-		validateFieldDocumentation(payloadHandler);
+		validateFieldDocumentation(contentHandler);
 
 		for (FieldDescriptor descriptor : this.fieldDescriptors) {
 			if (descriptor.getType() == null) {
-				descriptor.type(payloadHandler.determineFieldType(descriptor.getPath()));
+				descriptor.type(contentHandler.determineFieldType(descriptor.getPath()));
 			}
 		}
 
@@ -82,17 +79,11 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		return model;
 	}
 
-	private String readPayload(MvcResult result) throws IOException {
-		StringWriter writer = new StringWriter();
-		FileCopyUtils.copy(getPayloadReader(result), writer);
-		return writer.toString();
-	}
-
-	private void validateFieldDocumentation(PayloadHandler payloadHandler) {
+	private void validateFieldDocumentation(ContentHandler payloadHandler) {
 		List<FieldDescriptor> missingFields = payloadHandler
 				.findMissingFields(this.fieldDescriptors);
 		String undocumentedPayload = payloadHandler
-				.getUndocumentedPayload(this.fieldDescriptors);
+				.getUndocumentedContent(this.fieldDescriptors);
 
 		if (!missingFields.isEmpty() || StringUtils.hasText(undocumentedPayload)) {
 			String message = "";
@@ -115,8 +106,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		}
 	}
 
-	protected abstract MediaType getContentType(MvcResult result);
+	protected abstract MediaType getContentType(Operation operation);
 
-	protected abstract Reader getPayloadReader(MvcResult result) throws IOException;
+	protected abstract byte[] getContent(Operation operation) throws IOException;
 
 }

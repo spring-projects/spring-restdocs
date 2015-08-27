@@ -14,25 +14,43 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.snippet;
+package org.springframework.restdocs.operation;
 
-import java.io.IOException;
-
-import org.springframework.restdocs.operation.Operation;
+import java.util.Map;
 
 /**
- * A {@link Snippet} is used to document aspects of a call to a RESTful API.
+ * Describes an operation performed on a RESTful service.
  * 
  * @author Andy Wilkinson
  */
-public interface Snippet {
+public interface Operation {
 
 	/**
-	 * Documents the call to the RESTful API described by the given {@code operation}.
+	 * Returns a {@code Map} of attributes associated with the operation.
 	 * 
-	 * @param operation the API operation
-	 * @throws IOException if a failure occurs will documenting the operation
+	 * @return the attributes
 	 */
-	void document(Operation operation) throws IOException;
+	Map<String, Object> getAttributes();
+
+	/**
+	 * Returns the name of the operation.
+	 * 
+	 * @return the name
+	 */
+	String getName();
+
+	/**
+	 * Returns the request that was sent.
+	 * 
+	 * @return the request
+	 */
+	OperationRequest getRequest();
+
+	/**
+	 * Returns the response that was received.
+	 * 
+	 * @return the response
+	 */
+	OperationResponse getResponse();
 
 }

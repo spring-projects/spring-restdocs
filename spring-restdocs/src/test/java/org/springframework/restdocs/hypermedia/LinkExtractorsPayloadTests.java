@@ -19,7 +19,6 @@ package org.springframework.restdocs.hypermedia;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +30,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.StandardOperationResponse;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -105,11 +106,9 @@ public class LinkExtractorsPayloadTests {
 		assertEquals(expectedLinksByRel, actualLinks);
 	}
 
-	private MockHttpServletResponse createResponse(String contentName) throws IOException {
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		FileCopyUtils.copy(new FileReader(getPayloadFile(contentName)),
-				response.getWriter());
-		return response;
+	private OperationResponse createResponse(String contentName) throws IOException {
+		return new StandardOperationResponse(HttpStatus.OK, null,
+				FileCopyUtils.copyToByteArray(getPayloadFile(contentName)));
 	}
 
 	private File getPayloadFile(String name) {

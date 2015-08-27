@@ -16,14 +16,12 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.test.web.servlet.MvcResult;
 
 /**
  * A {@link Snippet} that documents the fields in a response.
@@ -42,17 +40,13 @@ class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	}
 
 	@Override
-	protected Reader getPayloadReader(MvcResult result) throws IOException {
-		return new StringReader(result.getResponse().getContentAsString());
+	protected MediaType getContentType(Operation operation) {
+		return operation.getResponse().getHeaders().getContentType();
 	}
 
 	@Override
-	protected MediaType getContentType(MvcResult result) {
-		String contentType = result.getResponse().getContentType();
-		if (contentType != null) {
-			return MediaType.valueOf(contentType);
-		}
-		return null;
+	protected byte[] getContent(Operation operation) throws IOException {
+		return operation.getResponse().getContent();
 	}
 
 }

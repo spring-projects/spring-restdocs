@@ -17,7 +17,6 @@
 package org.springframework.restdocs.config;
 
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.util.StringUtils;
 
 /**
  * A configurer that can be used to configure the documented URIs
@@ -44,19 +43,11 @@ public class UriConfigurer extends AbstractNestedConfigurer<RestDocumentationCon
 	 */
 	public static final int DEFAULT_PORT = 8080;
 
-	/**
-	 * The default context path for documented URIs
-	 * @see #withContextPath(String)
-	 */
-	public static final String DEFAULT_CONTEXT_PATH = "";
-
 	private String scheme = DEFAULT_SCHEME;
 
 	private String host = DEFAULT_HOST;
 
 	private int port = DEFAULT_PORT;
-
-	private String contextPath = DEFAULT_CONTEXT_PATH;
 
 	protected UriConfigurer(RestDocumentationConfigurer parent) {
 		super(parent);
@@ -98,25 +89,11 @@ public class UriConfigurer extends AbstractNestedConfigurer<RestDocumentationCon
 		return this;
 	}
 
-	/**
-	 * Configures any documented URIs to use the given {@code contextPath}. The default is
-	 * an empty string.
-	 * 
-	 * @param contextPath The context path
-	 * @return {@code this}
-	 */
-	public UriConfigurer withContextPath(String contextPath) {
-		this.contextPath = (StringUtils.hasText(contextPath) && !contextPath
-				.startsWith("/")) ? "/" + contextPath : contextPath;
-		return this;
-	}
-
 	@Override
 	void apply(MockHttpServletRequest request) {
 		request.setScheme(this.scheme);
 		request.setServerPort(this.port);
 		request.setServerName(this.host);
-		request.setContextPath(this.contextPath);
 	}
 
 }

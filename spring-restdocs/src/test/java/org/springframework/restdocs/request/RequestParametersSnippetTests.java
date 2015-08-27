@@ -24,8 +24,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
-import static org.springframework.restdocs.test.StubMvcResult.result;
-import static org.springframework.restdocs.test.TestRequestBuilders.get;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -35,13 +33,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.restdocs.config.RestDocumentationContext;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
+import org.springframework.restdocs.test.OperationBuilder;
 
 /**
  * Tests for {@link RequestParametersSnippet}
@@ -63,7 +60,8 @@ public class RequestParametersSnippetTests {
 				.expectMessage(equalTo("Request parameters with the following names were"
 						+ " not documented: [a]"));
 		new RequestParametersSnippet(Collections.<ParameterDescriptor> emptyList())
-				.document("undocumented-parameter", result(get("/").param("a", "alpha")));
+				.document(new OperationBuilder("undocumented-parameter")
+						.request("http://localhost").param("a", "alpha").build());
 	}
 
 	@Test
@@ -73,7 +71,8 @@ public class RequestParametersSnippetTests {
 				.expectMessage(equalTo("Request parameters with the following names were"
 						+ " not found in the request: [a]"));
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description(
-				"one"))).document("missing-parameter", result(get("/")));
+				"one"))).document(new OperationBuilder("missing-parameter").request(
+				"http://localhost").build());
 	}
 
 	@Test
@@ -84,36 +83,21 @@ public class RequestParametersSnippetTests {
 						+ " not documented: [b]. Request parameters with the following"
 						+ " names were not found in the request: [a]"));
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description(
-				"one"))).document("undocumented-and-missing-parameters", result(get("/")
-				.param("b", "bravo")));
+				"one"))).document(new OperationBuilder(
+				"undocumented-and-missing-parameters").request("http://localhost")
+				.param("b", "bravo").build());
 	}
 
 	@Test
-	public void requestParameterSnippetFromRequestParameters() throws IOException {
-		this.snippet.expectRequestParameters(
-				"request-parameter-snippet-request-parameters").withContents(
+	public void requestParameters() throws IOException {
+		this.snippet.expectRequestParameters("request-parameters").withContents(
 				tableWithHeader("Parameter", "Description").row("a", "one").row("b",
 						"two"));
 		new RequestParametersSnippet(Arrays.asList(
 				parameterWithName("a").description("one"), parameterWithName("b")
-						.description("two"))).document(
-				"request-parameter-snippet-request-parameters",
-				result(get("/").param("a", "bravo").param("b", "bravo")));
-	}
-
-	@Test
-	public void requestParameterSnippetFromRequestUriQueryString() throws IOException {
-		this.snippet.expectRequestParameters(
-				"request-parameter-snippet-request-uri-query-string").withContents(
-				tableWithHeader("Parameter", "Description").row("a", "one").row("b",
-						"two"));
-		new RequestParametersSnippet(Arrays.asList(
-				parameterWithName("a").description("one"), parameterWithName("b")
-						.description("two"))).document(
-				"request-parameter-snippet-request-uri-query-string",
-				result(get("/?a=alpha&b=bravo").requestAttr(
-						RestDocumentationContext.class.getName(),
-						new RestDocumentationContext(null))));
+						.description("two"))).document(new OperationBuilder(
+				"request-parameters").request("http://localhost").param("a", "bravo")
+				.param("b", "bravo").build());
 	}
 
 	@Test
@@ -125,17 +109,15 @@ public class RequestParametersSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		when(resolver.resolveTemplateResource("request-parameters")).thenReturn(
 				snippetResource("request-parameters-with-extra-column"));
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
-				resolver));
-		request.addParameter("a", "bravo");
-		request.addParameter("b", "bravo");
 		new RequestParametersSnippet(Arrays.asList(
 				parameterWithName("a").description("one").attributes(
 						key("foo").value("alpha")),
 				parameterWithName("b").description("two").attributes(
-						key("foo").value("bravo")))).document(
-				"request-parameters-with-custom-descriptor-attributes", result(request));
+						key("foo").value("bravo")))).document(new OperationBuilder(
+				"request-parameters-with-custom-descriptor-attributes")
+				.attribute(TemplateEngine.class.getName(),
+						new MustacheTemplateEngine(resolver)).request("http://localhost")
+				.param("a", "alpha").param("b", "bravo").build());
 	}
 
 	@Test
@@ -145,18 +127,18 @@ public class RequestParametersSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		when(resolver.resolveTemplateResource("request-parameters")).thenReturn(
 				snippetResource("request-parameters-with-title"));
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
-				resolver));
-		request.addParameter("a", "bravo");
-		request.addParameter("b", "bravo");
 		new RequestParametersSnippet(
 				attributes(key("title").value("The title")),
 				Arrays.asList(
 						parameterWithName("a").description("one").attributes(
 								key("foo").value("alpha")), parameterWithName("b")
 								.description("two").attributes(key("foo").value("bravo"))))
-				.document("request-parameters-with-custom-attributes", result(request));
+				.document(new OperationBuilder(
+						"request-parameters-with-custom-attributes")
+						.attribute(TemplateEngine.class.getName(),
+								new MustacheTemplateEngine(resolver))
+						.request("http://localhost").param("a", "alpha")
+						.param("b", "bravo").build());
 	}
 
 	private FileSystemResource snippetResource(String name) {

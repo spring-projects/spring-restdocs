@@ -38,6 +38,7 @@ public class ContentModifyingResponsePostProcessorTests {
 	public void contentCanBeModified() throws Exception {
 		MockHttpServletResponse modified = this.postProcessor.postProcess(this.original);
 		assertThat(modified.getContentAsString(), is(equalTo("modified")));
+		assertThat(modified.getContentAsByteArray(), is(equalTo("modified".getBytes())));
 	}
 
 	@Test
@@ -45,14 +46,6 @@ public class ContentModifyingResponsePostProcessorTests {
 		this.original.addHeader("a", "alpha");
 		MockHttpServletResponse modified = this.postProcessor.postProcess(this.original);
 		assertThat(modified.getHeader("a"), is(equalTo("alpha")));
-	}
-
-	@Test
-	public void getContentAsByteArrayIsUnsupported() throws Exception {
-		this.thrown.expect(UnsupportedOperationException.class);
-		this.thrown.expectMessage(equalTo("Following modification, the response's"
-				+ " content should be accessed as a String"));
-		this.postProcessor.postProcess(this.original).getContentAsByteArray();
 	}
 
 	private static final class TestContentModifyingResponsePostProcessor extends

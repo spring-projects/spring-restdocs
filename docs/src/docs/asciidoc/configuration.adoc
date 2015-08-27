@@ -19,9 +19,6 @@ The default configuration for URIs documented by Spring REST Docs is:
 
 |Port
 |`8080`
-
-|Context path
-|Empty string
 |===
 
 This configuration is applied by `RestDocumentationConfigurer`. You can use its API to
@@ -31,6 +28,9 @@ change one or more of the defaults to suit your needs:
 ----
 include::{examples-dir}/com/example/CustomUriConfiguration.java[tags=custom-uri-configuration]
 ----
+
+TIP: To configure a request's context path, use the `contextPath` method on
+`MockHttpServletRequestBuilder`.
 
 
 

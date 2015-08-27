@@ -81,9 +81,7 @@ public abstract class ContentModifyingReponsePostProcessor implements
 				return this.modifiedContent;
 			}
 			if (this.getContentAsByteArray.equals(method)) {
-				throw new UnsupportedOperationException(
-						"Following modification, the response's content should be"
-								+ " accessed as a String");
+				return this.modifiedContent.getBytes();
 			}
 			return method.invoke(this.delegate, args);
 		}

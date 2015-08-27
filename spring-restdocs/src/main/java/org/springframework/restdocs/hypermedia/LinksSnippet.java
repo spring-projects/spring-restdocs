@@ -26,10 +26,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.springframework.restdocs.operation.Operation;
+import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
 /**
@@ -64,8 +65,9 @@ class LinksSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> document(MvcResult result) throws IOException {
-		validate(this.linkExtractor.extractLinks(result.getResponse()));
+	protected Map<String, Object> createModel(Operation operation) throws IOException {
+		OperationResponse response = operation.getResponse();
+		validate(this.linkExtractor.extractLinks(response));
 		Map<String, Object> model = new HashMap<>();
 		model.put("links", createLinksModel());
 		return model;

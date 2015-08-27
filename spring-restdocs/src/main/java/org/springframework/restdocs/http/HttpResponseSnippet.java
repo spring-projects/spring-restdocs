@@ -21,12 +21,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.restdocs.operation.Operation;
+import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.StringUtils;
 
 /**
  * A {@link Snippet} that documents an HTTP response.
@@ -44,24 +45,26 @@ class HttpResponseSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	public Map<String, Object> document(MvcResult result) throws IOException {
-		HttpStatus status = HttpStatus.valueOf(result.getResponse().getStatus());
+	public Map<String, Object> createModel(Operation operation) throws IOException {
+		OperationResponse response = operation.getResponse();
+		HttpStatus status = response.getStatus();
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(
 				"responseBody",
-				StringUtils.hasLength(result.getResponse().getContentAsString()) ? String
-						.format("%n%s", result.getResponse().getContentAsString()) : "");
+				response.getContent().length > 0 ? String.format("%n%s", new String(
+						response.getContent())) : "");
 		model.put("statusCode", status.value());
 		model.put("statusReason", status.getReasonPhrase());
-		model.put("headers", headers(result));
+		model.put("headers", headers(response));
 		return model;
 	}
 
-	private List<Map<String, String>> headers(MvcResult result) {
+	private List<Map<String, String>> headers(OperationResponse response) {
 		List<Map<String, String>> headers = new ArrayList<>();
-		for (String headerName : result.getResponse().getHeaderNames()) {
-			for (String header : result.getResponse().getHeaders(headerName)) {
-				headers.add(header(headerName, header));
+		for (Entry<String, List<String>> header : response.getHeaders().entrySet()) {
+			List<String> values = header.getValue();
+			for (String value : values) {
+				headers.add(header(header.getKey(), value));
 			}
 		}
 		return headers;

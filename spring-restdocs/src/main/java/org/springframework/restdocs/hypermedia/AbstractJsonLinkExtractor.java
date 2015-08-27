@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.restdocs.operation.OperationResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,10 +35,10 @@ abstract class AbstractJsonLinkExtractor implements LinkExtractor {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Map<String, List<Link>> extractLinks(MockHttpServletResponse response)
+	public Map<String, List<Link>> extractLinks(OperationResponse response)
 			throws IOException {
 		Map<String, Object> jsonContent = this.objectMapper.readValue(
-				response.getContentAsString(), Map.class);
+				new String(response.getContent()), Map.class);
 		return extractLinks(jsonContent);
 	}
 

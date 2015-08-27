@@ -24,7 +24,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
-import static org.springframework.restdocs.test.StubMvcResult.result;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,14 +33,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
+import org.springframework.restdocs.test.OperationBuilder;
 
 /**
  * Tests for {@link PayloadDocumentation}
@@ -66,18 +66,18 @@ public class ResponseFieldsSnippetTests {
 						.row("assets[]", "Object", "four") //
 						.row("assets[].id", "Number", "five") //
 						.row("assets[].name", "String", "six"));
-
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.getWriter().append(
-				"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
-						+ " [{\"id\":356,\"name\": \"sample\"}]}");
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("id").description("one"),
 				fieldWithPath("date").description("two"), fieldWithPath("assets")
 						.description("three"),
 				fieldWithPath("assets[]").description("four"),
 				fieldWithPath("assets[].id").description("five"),
-				fieldWithPath("assets[].name").description("six"))).document(
-				"map-response-with-fields", result(response));
+				fieldWithPath("assets[].name").description("six")))
+				.document(new OperationBuilder("map-response-with-fields")
+						.response()
+						.content(
+								"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
+										+ " [{\"id\":356,\"name\": \"sample\"}]}")
+						.build());
 	}
 
 	@Test
@@ -87,14 +87,12 @@ public class ResponseFieldsSnippetTests {
 						.row("[]a.b", "Number", "one") //
 						.row("[]a.c", "String", "two") //
 						.row("[]a", "Object", "three"));
-
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.getWriter()
-				.append("[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]");
 		new ResponseFieldsSnippet(Arrays.asList(
 				fieldWithPath("[]a.b").description("one"), fieldWithPath("[]a.c")
 						.description("two"), fieldWithPath("[]a").description("three")))
-				.document("array-response-with-fields", result(response));
+				.document(new OperationBuilder("array-response-with-fields").response()
+						.content("[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
+						.build());
 	}
 
 	@Test
@@ -102,11 +100,9 @@ public class ResponseFieldsSnippetTests {
 		this.snippet.expectResponseFields("array-response").withContents( //
 				tableWithHeader("Path", "Type", "Description") //
 						.row("[]", "String", "one"));
-
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.getWriter().append("[\"a\", \"b\", \"c\"]");
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]").description("one")))
-				.document("array-response", result(response));
+				.document(new OperationBuilder("array-response").response()
+						.content("[\"a\", \"b\", \"c\"]").build());
 	}
 
 	@Test
@@ -120,19 +116,17 @@ public class ResponseFieldsSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		when(resolver.resolveTemplateResource("response-fields")).thenReturn(
 				snippetResource("response-fields-with-extra-column"));
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
-				resolver));
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.getOutputStream().print("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}");
 		new ResponseFieldsSnippet(Arrays.asList(
 				fieldWithPath("a.b").description("one").attributes(
 						key("foo").value("alpha")),
 				fieldWithPath("a.c").description("two").attributes(
 						key("foo").value("bravo")),
 				fieldWithPath("a").description("three").attributes(
-						key("foo").value("charlie")))).document(
-				"response-fields-with-custom-attributes", result(request, response));
+						key("foo").value("charlie")))).document(new OperationBuilder(
+				"response-fields-with-custom-attributes")
+				.attribute(TemplateEngine.class.getName(),
+						new MustacheTemplateEngine(resolver)).response()
+				.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
 	}
 
 	@Test
@@ -142,14 +136,12 @@ public class ResponseFieldsSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		when(resolver.resolveTemplateResource("response-fields")).thenReturn(
 				snippetResource("response-fields-with-title"));
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setAttribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(
-				resolver));
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.getOutputStream().print("{\"a\": \"foo\"}");
 		new ResponseFieldsSnippet(attributes(key("title").value("Custom title")),
-				Arrays.asList(fieldWithPath("a").description("one"))).document(
-				"response-fields-with-custom-attributes", result(request, response));
+				Arrays.asList(fieldWithPath("a").description("one")))
+				.document(new OperationBuilder("response-fields-with-custom-attributes")
+						.attribute(TemplateEngine.class.getName(),
+								new MustacheTemplateEngine(resolver)).response()
+						.content("{\"a\": \"foo\"}").build());
 	}
 
 	@Test
@@ -159,13 +151,14 @@ public class ResponseFieldsSnippetTests {
 						.row("a/b", "b", "one") //
 						.row("a/c", "c", "two") //
 						.row("a", "a", "three"));
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		response.setContentType(MediaType.APPLICATION_XML_VALUE);
-		response.getOutputStream().print("<a><b>5</b><c>charlie</c></a>");
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")
 				.type("b"), fieldWithPath("a/c").description("two").type("c"),
-				fieldWithPath("a").description("three").type("a"))).document(
-				"xml-response", result(response));
+				fieldWithPath("a").description("three").type("a")))
+				.document(new OperationBuilder("xml-response")
+						.response()
+						.content("<a><b>5</b><c>charlie</c></a>")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+						.build());
 	}
 
 	@Test
@@ -177,8 +170,12 @@ public class ResponseFieldsSnippetTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setContentType(MediaType.APPLICATION_XML_VALUE);
 		response.getOutputStream().print("<a><b>5</b></a>");
-		new ResponseFieldsSnippet(Collections.<FieldDescriptor> emptyList()).document(
-				"undocumented-xml-response-field", result(response));
+		new ResponseFieldsSnippet(Collections.<FieldDescriptor> emptyList())
+				.document(new OperationBuilder("undocumented-xml-response-field")
+						.response()
+						.content("<a><b>5</b></a>")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+						.build());
 	}
 
 	@Test
@@ -188,7 +185,11 @@ public class ResponseFieldsSnippetTests {
 		response.setContentType(MediaType.APPLICATION_XML_VALUE);
 		response.getOutputStream().print("<a>5</a>");
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
-				.document("xml-response-no-field-type", result(response));
+				.document(new OperationBuilder("xml-response-no-field-type")
+						.response()
+						.content("<a>5</a>")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+						.build());
 	}
 
 	@Test
@@ -201,8 +202,10 @@ public class ResponseFieldsSnippetTests {
 		response.setContentType(MediaType.APPLICATION_XML_VALUE);
 		response.getOutputStream().print("<a></a>");
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one"),
-				fieldWithPath("a").description("one"))).document(
-				"missing-xml-response-field", result(response));
+				fieldWithPath("a").description("one"))).document(new OperationBuilder(
+				"missing-xml-response-field").response().content("<a></a>")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+				.build());
 	}
 
 	@Test
@@ -219,8 +222,12 @@ public class ResponseFieldsSnippetTests {
 		response.setContentType(MediaType.APPLICATION_XML_VALUE);
 		response.getOutputStream().print("<a><c>5</c></a>");
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
-				.document("undocumented-xml-request-field-and-missing-xml-request-field",
-						result(response));
+				.document(new OperationBuilder(
+						"undocumented-xml-request-field-and-missing-xml-request-field")
+						.response()
+						.content("<a><c>5</c></a>")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+						.build());
 	}
 
 	private FileSystemResource snippetResource(String name) {

@@ -16,10 +16,17 @@
 
 package org.springframework.restdocs;
 
+import static org.springframework.restdocs.util.IterableEnumeration.iterable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.restdocs.operation.MockMvcOperationRequestFactory;
+import org.springframework.restdocs.operation.MockMvcOperationResponseFactory;
+import org.springframework.restdocs.operation.StandardOperation;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
@@ -44,14 +51,24 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	@Override
 	public void handle(MvcResult result) throws Exception {
+		Map<String, Object> attributes = new HashMap<>();
+		for (String name : iterable(result.getRequest().getAttributeNames())) {
+			attributes.put(name, result.getRequest().getAttribute(name));
+		}
+		StandardOperation operation = new StandardOperation(this.identifier,
+				new MockMvcOperationRequestFactory().createOperationRequest(result
+						.getRequest()),
+				new MockMvcOperationResponseFactory().createOperationResponse(result
+						.getResponse()), attributes);
 		for (Snippet snippet : getSnippets(result)) {
-			snippet.document(this.identifier, result);
+			snippet.document(operation);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private List<Snippet> getSnippets(MvcResult result) {
-		List<Snippet> combinedSnippets = new ArrayList<>((List<Snippet>) result.getRequest()
+		List<Snippet> combinedSnippets = new ArrayList<>((List<Snippet>) result
+				.getRequest()
 				.getAttribute("org.springframework.restdocs.defaultSnippets"));
 		combinedSnippets.addAll(this.snippets);
 		return combinedSnippets;

@@ -38,8 +38,7 @@ public class CustomUriConfiguration {
 				.apply(documentationConfiguration().uris()
 						.withScheme("https")
 						.withHost("example.com")
-						.withPort(443)
-						.withContextPath("/api"))
+						.withPort(443))
 				.build();
 		// end::custom-uri-configuration[]
 	}
