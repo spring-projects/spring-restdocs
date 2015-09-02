@@ -17,11 +17,10 @@
 package org.springframework.restdocs;
 
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
-import org.springframework.restdocs.response.ResponsePostProcessor;
-import org.springframework.restdocs.response.ResponsePostProcessors;
+import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
+import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
@@ -50,7 +49,7 @@ public abstract class RestDocumentation {
 
 	/**
 	 * Documents the API call with the given {@code identifier} using the given
-	 * {@code handlers}.
+	 * {@code snippets}.
 	 * 
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param snippets the snippets that will document the API call
@@ -64,17 +63,60 @@ public abstract class RestDocumentation {
 	}
 
 	/**
-	 * Enables the modification of the response in a {@link MvcResult} prior to it being
-	 * documented. The modification is performed using the given
-	 * {@code responsePostProcessors}.
+	 * Documents the API call with the given {@code identifier} using the given
+	 * {@code snippets}. The given {@code requestPreprocessor} is applied to the request
+	 * before it is documented.
 	 * 
-	 * @param responsePostProcessors the post-processors to use to modify the response
-	 * @return the response modifier
-	 * @see ResponsePostProcessors
+	 * @param identifier an identifier for the API call that is being documented
+	 * @param requestPreprocessor the request preprocessor
+	 * @param snippets the snippets that will document the API call
+	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
+	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
+	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
 	 */
-	public static ResponseModifier modifyResponseTo(
-			ResponsePostProcessor... responsePostProcessors) {
-		return new ResponseModifier(responsePostProcessors);
+	public static RestDocumentationResultHandler document(String identifier,
+			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
+		return new RestDocumentationResultHandler(identifier, requestPreprocessor,
+				snippets);
+	}
+
+	/**
+	 * Documents the API call with the given {@code identifier} using the given
+	 * {@code snippets}. The given {@code responsePreprocessor} is applied to the request
+	 * before it is documented.
+	 * 
+	 * @param identifier an identifier for the API call that is being documented
+	 * @param responsePreprocessor the response preprocessor
+	 * @param snippets the snippets that will document the API call
+	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
+	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
+	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
+	 */
+	public static RestDocumentationResultHandler document(String identifier,
+			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
+		return new RestDocumentationResultHandler(identifier, responsePreprocessor,
+				snippets);
+	}
+
+	/**
+	 * Documents the API call with the given {@code identifier} using the given
+	 * {@code snippets}. The given {@code requestPreprocessor} and
+	 * {@code responsePreprocessor} are applied to the request and response respectively
+	 * before they are documented.
+	 * 
+	 * @param identifier an identifier for the API call that is being documented
+	 * @param requestPreprocessor the request preprocessor
+	 * @param responsePreprocessor the response preprocessor
+	 * @param snippets the snippets that will document the API call
+	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
+	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
+	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
+	 */
+	public static RestDocumentationResultHandler document(String identifier,
+			OperationRequestPreprocessor requestPreprocessor,
+			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
+		return new RestDocumentationResultHandler(identifier, requestPreprocessor,
+				responsePreprocessor, snippets);
 	}
 
 }

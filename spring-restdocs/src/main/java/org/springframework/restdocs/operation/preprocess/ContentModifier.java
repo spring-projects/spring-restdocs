@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.response;
+package org.springframework.restdocs.operation.preprocess;
 
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationResponse;
 
 /**
- * A {@code ResponsePostProcessor} is used to modify the response received from a MockMvc
- * call prior to the response being documented.
+ * A {@code ContentModifier} modifies the content of an {@link OperationRequest} or
+ * {@link OperationResponse} during the preprocessing that is performed prior to
+ * documentation generation.
  * 
  * @author Andy Wilkinson
+ * @see ContentModifyingOperationPreprocessor
  */
-public interface ResponsePostProcessor {
+interface ContentModifier {
 
 	/**
-	 * Post-processes the given {@code response}, returning a, possibly new,
-	 * {@link MockHttpServletResponse} that should now be used.
+	 * Returns modified content based on the given {@code originalContent}
 	 * 
-	 * @param response The response to post-process
-	 * @return The result of the post-processing
-	 * @throws Exception if a failure occurs during the post-processing
+	 * @param originalContent the original content
+	 * @return the modified content
 	 */
-	MockHttpServletResponse postProcess(MockHttpServletResponse response)
-			throws Exception;
+	byte[] modifyContent(byte[] originalContent);
+
 }

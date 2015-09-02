@@ -1,0 +1,56 @@
+[[customizing-requests-and-responses]]
+== Customizing requests and responses
+
+There may be situations where you do not want to document a request exactly as it was sent
+or a response exactly as it was received. Spring REST Docs provides a number of
+preprocessors that can be used to modify a request or response before it's documented.
+
+Preprocessing is configured by calling `document` with an `OperationRequestPreprocessor`,
+and/or an `OperationResponsePreprocessor`. Instances can be obtained using the
+static `preprocessRequest` and `preprocessResponse` methods on `Preprocessors`:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Preprocessing.java[tags=general]
+----
+<1> Apply a request preprocessor that will remove the header named `Foo`.
+<2> Apply a response preprocessor that will pretty print its content.
+
+Various built in preprocessors, including those illustrated above, are available via the
+static methods on `Preprocessors`. See below for further details.
+
+
+
+[[customizing-requests-and-responses-pretty-printing]]
+=== Pretty printing
+
+`prettyPrint` on `Preprocessors` formats the content of the request or response
+to make it easier to read.
+
+
+
+[[customizing-requests-and-responses-masking-links]]
+=== Masking links
+
+If you're documenting a Hypermedia-based API, you may want to encourage clients to
+navigate the API using links rather than through the use of hard coded URIs. One way to do
+this is to limit the use of URIs in the documentation. `maskLinks` on
+`Preprocessors` replaces the `href` of any links in the response with `...`. A
+different replacement can also be specified if you wish.
+
+
+
+[[customizing-requests-and-responses-removing-headers]]
+=== Removing headers
+
+`removeHeaders` on `Preprocessors` removes any occurrences of the named headers
+from the request or response.
+
+
+
+[[customizing-requests-and-responses-replacing-patterns]]
+=== Replacing patterns
+
+`replacePattern` on `Preprocessors` provides a general purpose mechanism for
+replacing content in a request or response. Any occurrences of a regular expression are
+replaced.

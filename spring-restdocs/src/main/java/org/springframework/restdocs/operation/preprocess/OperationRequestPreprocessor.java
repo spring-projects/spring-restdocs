@@ -14,30 +14,25 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.response;
+package org.springframework.restdocs.operation.preprocess;
 
-import java.util.regex.Pattern;
+import org.springframework.restdocs.operation.OperationRequest;
 
 /**
- * A {@link ResponsePostProcessor} that modifies the content of a hypermedia response to
- * mask the hrefs of any links.
+ * An {@code OperationRequestPreprocessor} is used to modify an {@code OperationRequest}
+ * prior to it being documented.
  * 
  * @author Andy Wilkinson
- * @author Dewet Diener
  */
-class LinkMaskingResponsePostProcessor extends PatternReplacingResponsePostProcessor {
+public interface OperationRequestPreprocessor {
 
-	private static final String DEFAULT_MASK = "...";
-
-	private static final Pattern LINK_HREF = Pattern.compile(
-			"\"href\"\\s*:\\s*\"(.*?)\"", Pattern.DOTALL);
-
-	LinkMaskingResponsePostProcessor() {
-		super(LINK_HREF, DEFAULT_MASK);
-	}
-
-	LinkMaskingResponsePostProcessor(String mask) {
-		super(LINK_HREF, mask);
-	}
+	/**
+	 * Processes and potentially modifies the given {@code request} before it is
+	 * documented.
+	 * 
+	 * @param request the request
+	 * @return the modified request
+	 */
+	OperationRequest preprocess(OperationRequest request);
 
 }

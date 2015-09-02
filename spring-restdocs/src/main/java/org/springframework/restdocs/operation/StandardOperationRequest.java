@@ -59,7 +59,7 @@ public class StandardOperationRequest implements OperationRequest {
 			Collection<OperationRequestPart> parts) {
 		this.uri = uri;
 		this.method = method;
-		this.content = content == null ? new byte[0] : content;
+		this.content = content;
 		this.headers = headers;
 		this.parameters = parameters;
 		this.parts = parts;

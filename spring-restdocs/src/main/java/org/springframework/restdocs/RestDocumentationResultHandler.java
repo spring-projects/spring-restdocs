@@ -26,10 +26,16 @@ import java.util.Map;
 
 import org.springframework.restdocs.operation.MockMvcOperationRequestFactory;
 import org.springframework.restdocs.operation.MockMvcOperationResponseFactory;
+import org.springframework.restdocs.operation.Operation;
+import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.StandardOperation;
+import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
+import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
+import org.springframework.util.Assert;
 
 /**
  * A Spring MVC Test {@code ResultHandler} for documenting RESTful APIs.
@@ -42,10 +48,39 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	private final String identifier;
 
+	private final OperationRequestPreprocessor requestPreprocessor;
+
+	private final OperationResponsePreprocessor responsePreprocessor;
+
 	private final List<Snippet> snippets;
 
 	RestDocumentationResultHandler(String identifier, Snippet... snippets) {
+		this(identifier, new IdentityOperationRequestPreprocessor(),
+				new IdentityOperationResponsePreprocessor(), snippets);
+	}
+
+	RestDocumentationResultHandler(String identifier,
+			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
+		this(identifier, requestPreprocessor,
+				new IdentityOperationResponsePreprocessor(), snippets);
+	}
+
+	RestDocumentationResultHandler(String identifier,
+			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
+		this(identifier, new IdentityOperationRequestPreprocessor(),
+				responsePreprocessor, snippets);
+	}
+
+	RestDocumentationResultHandler(String identifier,
+			OperationRequestPreprocessor requestPreprocessor,
+			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
+		Assert.notNull(identifier, "identifier must be non-null");
+		Assert.notNull(requestPreprocessor, "requestPreprocessor must be non-null");
+		Assert.notNull(responsePreprocessor, "responsePreprocessor must be non-null");
+		Assert.notNull(snippets, "snippets must be non-null");
 		this.identifier = identifier;
+		this.requestPreprocessor = requestPreprocessor;
+		this.responsePreprocessor = responsePreprocessor;
 		this.snippets = Arrays.asList(snippets);
 	}
 
@@ -55,11 +90,15 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		for (String name : iterable(result.getRequest().getAttributeNames())) {
 			attributes.put(name, result.getRequest().getAttribute(name));
 		}
-		StandardOperation operation = new StandardOperation(this.identifier,
-				new MockMvcOperationRequestFactory().createOperationRequest(result
-						.getRequest()),
-				new MockMvcOperationResponseFactory().createOperationResponse(result
-						.getResponse()), attributes);
+		OperationRequest request = this.requestPreprocessor
+				.preprocess(new MockMvcOperationRequestFactory()
+						.createOperationRequest(result.getRequest()));
+
+		OperationResponse response = this.responsePreprocessor
+				.preprocess(new MockMvcOperationResponseFactory()
+						.createOperationResponse(result.getResponse()));
+		Operation operation = new StandardOperation(this.identifier, request, response,
+				attributes);
 		for (Snippet snippet : getSnippets(result)) {
 			snippet.document(operation);
 		}
@@ -72,6 +111,26 @@ public class RestDocumentationResultHandler implements ResultHandler {
 				.getAttribute("org.springframework.restdocs.defaultSnippets"));
 		combinedSnippets.addAll(this.snippets);
 		return combinedSnippets;
+	}
+
+	static final class IdentityOperationRequestPreprocessor implements
+			OperationRequestPreprocessor {
+
+		@Override
+		public OperationRequest preprocess(OperationRequest request) {
+			return request;
+		}
+
+	}
+
+	static final class IdentityOperationResponsePreprocessor implements
+			OperationResponsePreprocessor {
+
+		@Override
+		public OperationResponse preprocess(OperationResponse response) {
+			return response;
+		}
+
 	}
 
 }

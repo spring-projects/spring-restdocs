@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.response;
+package org.springframework.restdocs.operation.preprocess;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,27 +29,28 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.springframework.util.StringUtils;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-class PrettyPrintingResponsePostProcessor extends ContentModifyingReponsePostProcessor {
+/**
+ * A {@link ContentModifier} that modifies the content by pretty printing it.
+ * 
+ * @author Andy Wilkinson
+ */
+public class PrettyPrintingContentModifier implements ContentModifier {
 
 	private static final List<PrettyPrinter> PRETTY_PRINTERS = Collections
 			.unmodifiableList(Arrays.asList(new JsonPrettyPrinter(),
 					new XmlPrettyPrinter()));
 
 	@Override
-	protected String modifyContent(String originalContent) {
-		if (StringUtils.hasText(originalContent)) {
-			for (PrettyPrinter prettyPrinter : PRETTY_PRINTERS) {
-				try {
-					return prettyPrinter.prettyPrint(originalContent);
-				}
-				catch (Exception ex) {
-					// Continue
-				}
+	public byte[] modifyContent(byte[] originalContent) {
+		for (PrettyPrinter prettyPrinter : PRETTY_PRINTERS) {
+			try {
+				return prettyPrinter.prettyPrint(originalContent).getBytes();
+			}
+			catch (Exception ex) {
+				// Continue
 			}
 		}
 		return originalContent;
@@ -57,21 +58,21 @@ class PrettyPrintingResponsePostProcessor extends ContentModifyingReponsePostPro
 
 	private interface PrettyPrinter {
 
-		String prettyPrint(String string) throws Exception;
+		String prettyPrint(byte[] content) throws Exception;
 
 	}
 
 	private static final class XmlPrettyPrinter implements PrettyPrinter {
 
 		@Override
-		public String prettyPrint(String original) throws Exception {
+		public String prettyPrint(byte[] original) throws Exception {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
 					"4");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
 			StringWriter transformed = new StringWriter();
-			transformer.transform(new StreamSource(new StringReader(original)),
+			transformer.transform(new StreamSource(new ByteArrayInputStream(original)),
 					new StreamResult(transformed));
 			return transformed.toString();
 		}
@@ -80,7 +81,7 @@ class PrettyPrintingResponsePostProcessor extends ContentModifyingReponsePostPro
 	private static final class JsonPrettyPrinter implements PrettyPrinter {
 
 		@Override
-		public String prettyPrint(String original) throws IOException {
+		public String prettyPrint(byte[] original) throws IOException {
 			ObjectMapper objectMapper = new ObjectMapper().configure(
 					SerializationFeature.INDENT_OUTPUT, true);
 			return objectMapper.writeValueAsString(objectMapper.readTree(original));

@@ -14,43 +14,51 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.response;
+package org.springframework.restdocs.operation.preprocess;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A {@link ResponsePostProcessor} that modifies the content of the response by replacing
- * occurrences of a regular expression {@link Pattern}.
+ * A {@link ContentModifier} that modifies the content by replacing occurrences of a
+ * regular expression {@link Pattern}.
  * 
  * @author Andy Wilkinson
  * @author Dewet Diener
  */
-class PatternReplacingResponsePostProcessor extends ContentModifyingReponsePostProcessor {
+class PatternReplacingContentModifier implements ContentModifier {
 
 	private final Pattern pattern;
 
 	private final String replacement;
 
-	PatternReplacingResponsePostProcessor(Pattern pattern, String replacement) {
+	/**
+	 * Creates a new {@link PatternReplacingContentModifier} that will replace occurences
+	 * the given {@code pattern} with the given {@code replacement}.
+	 * 
+	 * @param pattern the pattern
+	 * @param replacement the replacement
+	 */
+	PatternReplacingContentModifier(Pattern pattern, String replacement) {
 		this.pattern = pattern;
 		this.replacement = replacement;
 	}
 
 	@Override
-	protected String modifyContent(String originalContent) {
-		Matcher matcher = this.pattern.matcher(originalContent);
+	public byte[] modifyContent(byte[] content) {
+		String original = new String(content);
+		Matcher matcher = this.pattern.matcher(original);
 		StringBuilder buffer = new StringBuilder();
 		int previous = 0;
 		while (matcher.find()) {
-			buffer.append(originalContent.substring(previous, matcher.start(1)));
+			buffer.append(original.substring(previous, matcher.start(1)));
 			buffer.append(this.replacement);
 			previous = matcher.end(1);
 		}
-		if (previous < originalContent.length()) {
-			buffer.append(originalContent.substring(previous));
+		if (previous < original.length()) {
+			buffer.append(original.substring(previous));
 		}
-		return buffer.toString();
+		return buffer.toString().getBytes();
 	}
 
 }

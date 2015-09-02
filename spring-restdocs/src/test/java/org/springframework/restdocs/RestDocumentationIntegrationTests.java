@@ -21,23 +21,25 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.restdocs.RestDocumentation.document;
-import static org.springframework.restdocs.RestDocumentation.modifyResponseTo;
 import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.curl.CurlDocumentation.curlRequest;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.maskLinks;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.replacePattern;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.restdocs.response.ResponsePostProcessors.maskLinks;
-import static org.springframework.restdocs.response.ResponsePostProcessors.prettyPrintContent;
-import static org.springframework.restdocs.response.ResponsePostProcessors.removeHeaders;
-import static org.springframework.restdocs.response.ResponsePostProcessors.replacePattern;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.SnippetMatchers.snippet;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,6 +73,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -236,15 +239,62 @@ public class RestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void postProcessedResponse() throws Exception {
+	public void preprocessedRequest() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(new RestDocumentationConfigurer()).build();
 
-		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk()).andDo(document("original"));
+		Pattern pattern = Pattern.compile("(\"alpha\")");
+
+		mockMvc.perform(
+				get("/").header("a", "alpha").header("b", "bravo")
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON).content("{\"a\":\"alpha\"}"))
+				.andExpect(status().isOk())
+				.andDo(document("original-request"))
+				.andDo(document(
+						"preprocessed-request",
+						preprocessRequest(prettyPrint(), removeHeaders("a"),
+								replacePattern(pattern, "\"<<beta>>\""))));
 
 		assertThat(
-				new File("build/generated-snippets/original/http-response.adoc"),
+				new File("build/generated-snippets/original-request/http-request.adoc"),
+				is(snippet().withContents(
+						httpRequest(RequestMethod.GET, "/").header("Host", "localhost")
+								.header("a", "alpha").header("b", "bravo")
+								.header("Content-Type", "application/json")
+								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
+								.header("Content-Length", "13")
+								.content("{\"a\":\"alpha\"}"))));
+		assertThat(
+				new File(
+						"build/generated-snippets/preprocessed-request/http-request.adoc"),
+				is(snippet().withContents(
+						httpRequest(RequestMethod.GET, "/").header("Host", "localhost")
+								.header("b", "bravo")
+								.header("Content-Type", "application/json")
+								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
+								.header("Content-Length", "22")
+								.content(String.format("{%n  \"a\" : \"<<beta>>\"%n}")))));
+	}
+
+	@Test
+	public void preprocessedResponse() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(new RestDocumentationConfigurer()).build();
+
+		Pattern pattern = Pattern.compile("(\"alpha\")");
+
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("original-response"))
+				.andDo(document(
+						"preprocessed-response",
+						preprocessResponse(prettyPrint(), maskLinks(),
+								removeHeaders("a"),
+								replacePattern(pattern, "\"<<beta>>\""))));
+
+		assertThat(
+				new File("build/generated-snippets/original-response/http-response.adoc"),
 				is(snippet().withContents(
 						httpResponse(HttpStatus.OK)
 								.header("a", "alpha")
@@ -252,16 +302,9 @@ public class RestDocumentationIntegrationTests {
 								.content(
 										"{\"a\":\"alpha\",\"links\":[{\"rel\":\"rel\","
 												+ "\"href\":\"href\"}]}"))));
-
-		Pattern pattern = Pattern.compile("(\"alpha\")");
-		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andDo(modifyResponseTo(prettyPrintContent(), removeHeaders("a"),
-						replacePattern(pattern, "\"<<beta>>\""), maskLinks())
-						.andDocument("post-processed"));
-
 		assertThat(
-				new File("build/generated-snippets/post-processed/http-response.adoc"),
+				new File(
+						"build/generated-snippets/preprocessed-response/http-response.adoc"),
 				is(snippet().withContents(
 						httpResponse(HttpStatus.OK).header("Content-Type",
 								"application/json").content(

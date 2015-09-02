@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.response;
+package org.springframework.restdocs.operation.preprocess;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -22,38 +22,40 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 /**
- * Tests for {@link PrettyPrintingResponsePostProcessor}
+ * Tests for {@link PrettyPrintingContentModifier}
  * 
  * @author Andy Wilkinson
  *
  */
-public class PrettyPrintingResponsePostProcessorTests {
+public class PrettyPrintingContentModifierTests {
 
 	@Test
 	public void prettyPrintJson() throws Exception {
-		assertThat(new PrettyPrintingResponsePostProcessor().modifyContent("{\"a\":5}"),
-				equalTo(String.format("{%n  \"a\" : 5%n}")));
+		assertThat(
+				new PrettyPrintingContentModifier().modifyContent("{\"a\":5}".getBytes()),
+				equalTo(String.format("{%n  \"a\" : 5%n}").getBytes()));
 	}
 
 	@Test
 	public void prettyPrintXml() throws Exception {
 		assertThat(
-				new PrettyPrintingResponsePostProcessor()
-						.modifyContent("<one a=\"alpha\"><two b=\"bravo\"/></one>"),
-				equalTo(String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
-						+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n")));
+				new PrettyPrintingContentModifier().modifyContent("<one a=\"alpha\"><two b=\"bravo\"/></one>"
+						.getBytes()), equalTo(String.format(
+						"<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
+								+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n")
+						.getBytes()));
 	}
 
 	@Test
 	public void empytContentIsHandledGracefully() throws Exception {
-		assertThat(new PrettyPrintingResponsePostProcessor().modifyContent(""),
-				equalTo(""));
+		assertThat(new PrettyPrintingContentModifier().modifyContent("".getBytes()),
+				equalTo("".getBytes()));
 	}
 
 	@Test
 	public void nonJsonAndNonXmlContentIsHandledGracefully() throws Exception {
 		String content = "abcdefg";
-		assertThat(new PrettyPrintingResponsePostProcessor().modifyContent(content),
-				equalTo(content));
+		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes()),
+				equalTo(content.getBytes()));
 	}
 }

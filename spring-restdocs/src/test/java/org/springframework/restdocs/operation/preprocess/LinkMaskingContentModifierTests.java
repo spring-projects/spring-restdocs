@@ -1,20 +1,4 @@
-/*
- * Copyright 2014-2015 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.springframework.restdocs.response;
+package org.springframework.restdocs.operation.preprocess;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,9 +18,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-public class LinkMaskingResponsePostProcessorTests {
+/**
+ * Tests for {@link LinkMaskingContentModifier}
+ * 
+ * @author Andy Wilkinson
+ *
+ */
+public class LinkMaskingContentModifierTests {
 
-	private final LinkMaskingResponsePostProcessor postProcessor = new LinkMaskingResponsePostProcessor();
+	private final ContentModifier contentModifier = new LinkMaskingContentModifier();
 
 	private final Link[] links = new Link[] { new Link("a", "alpha"),
 			new Link("b", "bravo") };
@@ -46,28 +36,28 @@ public class LinkMaskingResponsePostProcessorTests {
 
 	@Test
 	public void halLinksAreMasked() throws Exception {
-		assertThat(this.postProcessor.modifyContent(halPayloadWithLinks(this.links)),
+		assertThat(this.contentModifier.modifyContent(halPayloadWithLinks(this.links)),
 				is(equalTo(halPayloadWithLinks(this.maskedLinks))));
 	}
 
 	@Test
 	public void formattedHalLinksAreMasked() throws Exception {
 		assertThat(
-				this.postProcessor
+				this.contentModifier
 						.modifyContent(formattedHalPayloadWithLinks(this.links)),
 				is(equalTo(formattedHalPayloadWithLinks(this.maskedLinks))));
 	}
 
 	@Test
 	public void atomLinksAreMasked() throws Exception {
-		assertThat(this.postProcessor.modifyContent(atomPayloadWithLinks(this.links)),
+		assertThat(this.contentModifier.modifyContent(atomPayloadWithLinks(this.links)),
 				is(equalTo(atomPayloadWithLinks(this.maskedLinks))));
 	}
 
 	@Test
 	public void formattedAtomLinksAreMasked() throws Exception {
 		assertThat(
-				this.postProcessor
+				this.contentModifier
 						.modifyContent(formattedAtomPayloadWithLinks(this.links)),
 				is(equalTo(formattedAtomPayloadWithLinks(this.maskedLinks))));
 	}
@@ -75,20 +65,20 @@ public class LinkMaskingResponsePostProcessorTests {
 	@Test
 	public void maskCanBeCustomized() throws Exception {
 		assertThat(
-				new LinkMaskingResponsePostProcessor("custom")
+				new LinkMaskingContentModifier("custom")
 						.modifyContent(formattedAtomPayloadWithLinks(this.links)),
 				is(equalTo(formattedAtomPayloadWithLinks(new Link("a", "custom"),
 						new Link("b", "custom")))));
 	}
 
-	private String atomPayloadWithLinks(Link... links) throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(createAtomPayload(links));
+	private byte[] atomPayloadWithLinks(Link... links) throws JsonProcessingException {
+		return new ObjectMapper().writeValueAsBytes(createAtomPayload(links));
 	}
 
-	private String formattedAtomPayloadWithLinks(Link... links)
+	private byte[] formattedAtomPayloadWithLinks(Link... links)
 			throws JsonProcessingException {
 		return new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
-				.writeValueAsString(createAtomPayload(links));
+				.writeValueAsBytes(createAtomPayload(links));
 	}
 
 	private AtomPayload createAtomPayload(Link... links) {
@@ -97,14 +87,14 @@ public class LinkMaskingResponsePostProcessorTests {
 		return payload;
 	}
 
-	private String halPayloadWithLinks(Link... links) throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(createHalPayload(links));
+	private byte[] halPayloadWithLinks(Link... links) throws JsonProcessingException {
+		return new ObjectMapper().writeValueAsBytes(createHalPayload(links));
 	}
 
-	private String formattedHalPayloadWithLinks(Link... links)
+	private byte[] formattedHalPayloadWithLinks(Link... links)
 			throws JsonProcessingException {
 		return new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
-				.writeValueAsString(createHalPayload(links));
+				.writeValueAsBytes(createHalPayload(links));
 	}
 
 	private HalPayload createHalPayload(Link... links) {

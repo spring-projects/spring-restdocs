@@ -23,7 +23,7 @@ snippets produced with Spring MVC Test.
 include::introduction.adoc[]
 include::getting-started.adoc[]
 include::documenting-your-api.adoc[]
-include::customizing-responses.adoc[]
+include::customizing-requests-and-responses.adoc[]
 include::configuration.adoc[]
 include::working-with-asciidoctor.adoc[]
 include::contributing.adoc[]

@@ -44,7 +44,7 @@ public class StandardOperationResponse implements OperationResponse {
 			byte[] content) {
 		this.status = status;
 		this.headers = headers;
-		this.content = content == null ? new byte[0] : content;
+		this.content = content;
 	}
 
 	@Override
