@@ -37,14 +37,19 @@ public class SampleBuildConfigurer {
 	}
 
 	Task createTask(Project project, Object... dependencies) {
-		Task mavenBuild = mavenBuild(project, dependencies)
-		Task gradleBuild = gradleBuild(project, dependencies)
 		Task verifyIncludes = verifyIncludes(project)
-		verifyIncludes.dependsOn mavenBuild, gradleBuild
+		if (new File(this.workingDir, 'build.gradle').isFile()) {
+			Task gradleBuild = gradleBuild(project, dependencies)
+			verifyIncludes.dependsOn gradleBuild
+		}
+		if (new File(this.workingDir, 'pom.xml').isFile()) {
+			Task mavenBuild = mavenBuild(project, dependencies)
+			verifyIncludes.dependsOn(mavenBuild)
+		}
 		Task sampleBuild = project.tasks.create name
 		sampleBuild.description = "Builds the ${name} sample"
 		sampleBuild.group = "Build"
-		sampleBuild.dependsOn mavenBuild, gradleBuild, verifyIncludes
+		sampleBuild.dependsOn verifyIncludes
 		return sampleBuild
 	}
 

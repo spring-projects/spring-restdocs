@@ -11,9 +11,33 @@ buildscript {
 
 allprojects {
 	group = 'org.springframework.restdocs'
+	repositories {
+		jcenter()
+	}
 }
 
 apply plugin: 'samples'
+apply plugin: 'sonar-runner'
+
+sonarRunner {
+	sonarProperties {
+		property 'sonar.jacoco.reportPath', "${buildDir.name}/jacoco.exec"
+		property 'sonar.java.coveragePlugin', 'jacoco'
+		property 'sonar.links.ci', 'https://build.spring.io/browse/SRD'
+		property 'sonar.links.homepage', 'https://github.com/spring-projects/spring-restdocs'
+		property 'sonar.links.issue', 'https://github.com/spring-projects/spring-restdocs'
+		property 'sonar.links.scm', 'https://github.com/spring-projects/spring-restdocs'
+	}
+}
+
+ext {
+	springVersion = '4.1.7.RELEASE'
+	javadocLinks = [
+		'http://docs.oracle.com/javase/8/docs/api/',
+		"http://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
+		'https://docs.jboss.org/hibernate/stable/beanvalidation/api/'
+	] as String[]
+}
 
 subprojects {
 	apply plugin: 'io.spring.dependency-management'
@@ -22,10 +46,14 @@ subprojects {
 	apply plugin: 'propdeps'
 	apply plugin: 'propdeps-eclipse'
 	apply plugin: 'propdeps-maven'
+	apply plugin: 'maven'
+
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
 
 	dependencyManagement {
 		imports {
-			mavenBom 'org.springframework:spring-framework-bom:4.1.7.RELEASE'
+			mavenBom "org.springframework:spring-framework-bom:$springVersion"
 		}
 		dependencies {
 			dependency 'com.fasterxml.jackson.core:jackson-databind:2.4.6'
@@ -41,10 +69,53 @@ subprojects {
 			dependency 'org.jacoco:org.jacoco.agent:0.7.2.201409121644'
 		}
 	}
+
+	configurations {
+		jacoco
+	}
+
+	dependencies {
+		jacoco 'org.jacoco:org.jacoco.agent::runtime'
+	}
+
+	test {
+		testLogging {
+			exceptionFormat "full"
+		}
+	}
+
+	javadoc {
+		description = "Generates project-level javadoc for use in -javadoc jar"
+		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+		options.author = true
+		options.header = "Spring REST Docs $version"
+		options.docTitle = "${options.header} API"
+		options.links = javadocLinks
+		options.addStringOption '-quiet'
+	}
+
+	eclipseJdt.onlyIf { false }
+	cleanEclipseJdt.onlyIf { false }
+
+	task sourcesJar(type: Jar) {
+		classifier = 'sources'
+		from project.sourceSets.main.allSource
+	}
+
+	task javadocJar(type: Jar) {
+		classifier = "javadoc"
+		from javadoc
+	}
+
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
 }
 
 samples {
-	dependOn 'spring-restdocs:install'
+	dependOn 'spring-restdocs-core:install'
+	dependOn 'spring-restdocs-mockmvc:install'
 
 	restNotesSpringHateoas {
 		workingDir 'samples/rest-notes-spring-hateoas'
@@ -55,18 +126,44 @@ samples {
 	}
 }
 
-task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':spring-restdocs:javadoc']) {
+task api (type: Javadoc) {
+	group = "Documentation"
+	description = "Generates aggregated Javadoc API documentation."
+	dependsOn {
+		subprojects.collect {
+			it.tasks.getByName("jar")
+		}
+	}
+	options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+	options.author = true
+	options.header = "Spring REST Docs $version"
+	options.splitIndex = true
+	options.links = javadocLinks
+	options.addStringOption '-quiet'
+
+	source subprojects.collect { project ->
+		project.sourceSets.main.allJava
+	}
+
+	destinationDir = new File(buildDir, "api")
+
+	doFirst {
+		classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
+	}
+}
+
+task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':api']) {
 	group = 'Distribution'
 	baseName = 'spring-restdocs'
 	classifier = 'docs'
-	description = 'Builds -${classifier} archive containing API and reference documentation'
+	description = "Builds -${classifier} archive containing API and reference documentation"
 	destinationDir = file("${project.buildDir}/distributions")
 
-	from (project.tasks.findByPath(':docs:asciidoctor')) {
+	from(project.tasks.findByPath(':docs:asciidoctor')) {
 		into 'reference'
 	}
 
-	from (project.tasks.findByPath(':spring-restdocs:javadoc')) {
+	from(api) {
 		into 'api'
 	}
 }

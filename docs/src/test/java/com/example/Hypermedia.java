@@ -16,12 +16,12 @@
 
 package com.example;
 
-import static org.springframework.restdocs.RestDocumentation.document;
-import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.halLinks;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;

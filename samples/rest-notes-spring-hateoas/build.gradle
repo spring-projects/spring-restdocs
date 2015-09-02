@@ -35,7 +35,7 @@ dependencies {
 
 	testCompile 'com.jayway.jsonpath:json-path'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	testCompile 'org.springframework.restdocs:spring-restdocs:1.0.0.BUILD-SNAPSHOT'
+	testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:1.0.0.BUILD-SNAPSHOT'
 }
 
 ext {
@@ -43,7 +43,6 @@ ext {
 }
 
 test {
-	systemProperty 'org.springframework.restdocs.outputDir', snippetsDir
 	outputs.dir snippetsDir
 }
 
@@ -59,10 +58,6 @@ jar {
 	from ("${asciidoctor.outputDir}/html5") {
 		into 'static/docs'
 	}
-}
-
-task wrapper(type: Wrapper) {
-	gradleVersion = '2.3'
 }
 
 eclipseJdt.onlyIf { false }

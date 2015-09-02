@@ -16,25 +16,32 @@
 
 package com.example;
 
-import static org.springframework.restdocs.RestDocumentation.document;
-import static org.springframework.restdocs.RestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 import org.junit.Before;
+import org.junit.Rule;
+import org.springframework.restdocs.RestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 public class AlwaysDo {
+	
+	@Rule
+	public final RestDocumentation restDocumentation = new RestDocumentation("build");
 
 	private MockMvc mockMvc;
 
 	private WebApplicationContext context;
+	
+	
 
 	// tag::always-do[]
 	@Before
 	public void setUp() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration())
+				.apply(documentationConfiguration(this.restDocumentation))
 				.alwaysDo(document("{method-name}/{step}/"))
 				.build();
 	}

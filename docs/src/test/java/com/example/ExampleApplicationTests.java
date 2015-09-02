@@ -17,16 +17,21 @@
 package com.example;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.restdocs.RestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.restdocs.RestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 public class ExampleApplicationTests {
-
+	
 	// tag::mock-mvc-setup[]
+	@Rule
+	public final RestDocumentation restDocumentation = new RestDocumentation("build/generated-snippets");
+
 	@Autowired
 	private WebApplicationContext context;
 
@@ -35,7 +40,7 @@ public class ExampleApplicationTests {
 	@Before
 	public void setUp() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration())
+				.apply(documentationConfiguration(this.restDocumentation))
 				.build();
 	}
 	// end::mock-mvc-setup[]

@@ -18,7 +18,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.7</java.version>
-		<snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
 	</properties>
 
 	<dependencies>
@@ -49,7 +48,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.restdocs</groupId>
-			<artifactId>spring-restdocs</artifactId>
+			<artifactId>spring-restdocs-mockmvc</artifactId>
 			<version>1.0.0.BUILD-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
@@ -68,9 +67,6 @@
 					<includes>
 						<include>**/*Documentation.java</include>
 					</includes>
-					<systemPropertyVariables>
-						<org.springframework.restdocs.outputDir>${snippetsDirectory}</org.springframework.restdocs.outputDir>
-					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -88,7 +84,7 @@
 							<backend>html</backend>
 							<doctype>book</doctype>
 							<attributes>
-								<snippets>${snippetsDirectory}</snippets>
+								<snippets>${project.build.directory}/generated-snippets</snippets>
 							</attributes>
 						</configuration>
 					</execution>
@@ -96,7 +92,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.7</version>
 				<executions>
 					<execution>
 						<id>copy-resources</id>

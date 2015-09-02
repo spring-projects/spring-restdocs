@@ -1,1 +1,0 @@
-org.springframework.test.context.TestExecutionListener=org.springframework.restdocs.config.RestDocumentationTestExecutionListener

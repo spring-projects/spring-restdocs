@@ -36,10 +36,9 @@ The first step in using Spring REST Docs is to configure your project's build.
 [[getting-started-build-configuration-gradle]]
 ==== Gradle build configuration
 
-Both {samples}[sample applications] contain `build.gradle` files that you may wish to
-use as a reference. The key parts of the configuration are described below.
-
-
+The {samples/rest-notes-spring-hateoas}[Spring HATEOAS sample] contains a `build.gradle`
+file that you may wish to use as a reference. The key parts of the configuration are
+described below.
 
 [source,groovy,indent=0,subs="verbatim,attributes"]
 ----
@@ -48,7 +47,7 @@ use as a reference. The key parts of the configuration are described below.
 	}
 
 	dependencies { <2>
-		testCompile 'org.springframework.restdocs:spring-restdocs:{project-version}'
+		testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}'
 	}
 
 	ext { <3>
@@ -56,24 +55,25 @@ use as a reference. The key parts of the configuration are described below.
 	}
 
 	test { <4>
-		systemProperty 'org.springframework.restdocs.outputDir', snippetsDir
 		outputs.dir snippetsDir
 	}
 
 	asciidoctor { <5>
-		attributes 'snippets': snippetsDir
-		inputs.dir snippetsDir
-		dependsOn test
+		attributes 'snippets': snippetsDir <6>
+		inputs.dir snippetsDir <7>
+		dependsOn test <8>
 	}
 ----
 <1> Apply the Asciidoctor plugin.
 <2> Add a dependency on spring-restdocs in the `testCompile` configuration.
 <3> Configure a property to define the output location for generated snippets.
-<4> Configure the `test` task with the `org.springframework.restdocs.outputDir` system
-property. This property controls the location into which Spring REST Docs will write the
-snippets that it generates.
-<5> Configure the `asciidoctor` task and define an attribute named `snippets`. You can
-then use this attribute when including the generated snippets in your documentation.
+<4> Configure the `test` task to add the snippets directory as an output.
+<5> Configure the `asciidoctor` task
+<6> Define an attribute named `snippets` that can be used when including the generated
+	snippets in your documentation.
+<7> Configure the snippets directory as an input.
+<8> Make the task depend on the test task so that the tests are run before the
+	documentation is created.
 
 
 [[getting-started-build-configuration-gradle-packaging-the-documentation]]
@@ -100,16 +100,15 @@ directory:
 [[getting-started-build-configuration-maven]]
 ==== Maven build configuration
 
-Both {samples}[sample applications] contain `pom.xml` files that you may wish to
-use as a reference. The key parts of the configuration are described below.
-
-
+The {samples/rest-notes-spring-data-rest}[Spring Data REST sample] contains a `pom.xml`
+file that you may wish to use as a reference. The key parts of the configuration are
+described below.
 
 [source,xml,indent=0,subs="verbatim,attributes"]
 ----
 	<dependency> <1>
 		<groupId>org.springframework.restdocs</groupId>
-		<artifactId>spring-restdocs</artifactId>
+		<artifactId>spring-restdocs-mockmvc</artifactId>
 		<version>{project-version}</version>
 		<scope>test</scope>
 	</dependency>
@@ -127,11 +126,6 @@ use as a reference. The key parts of the configuration are described below.
 					<includes>
 						<include>**/*Documentation.java</include>
 					</includes>
-					<systemPropertyVariables>
-						<org.springframework.restdocs.outputDir>
-							${snippetsDirectory}
-						</org.springframework.restdocs.outputDir>
-					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 			<plugin> <4>
@@ -159,14 +153,12 @@ use as a reference. The key parts of the configuration are described below.
 	</build>
 
 ----
-<1> Add a dependency on `spring-restdocs` in the `test` scope.
+<1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope.
 <2> Configure a property to define the output location for generated snippets.
-<3> Configure the SureFire plugin with the `org.springframework.restdocs.outputDir` system
-property. This property controls the location into which Spring REST Docs will write the
-snippets that it generates. The plugin is also configured to include files whose names end
-with `Documentation.java`.
-<4> Configure the Asciidoctor plugin and define an attribute named `snippets`. You can
-then use this attribute when including the generated snippets in your documentation.
+<3> Add the SureFire plugin and configure it to include files whose names end with
+	`Documentation.java`.
+<4> Add the Asciidoctor plugin and configure it to define an attribute named `snippets`
+	that can be used when including the generated snippets in your documentation.
 <5> [[getting-started-build-configuration-maven-plugin-phase]] If you want to
 <<getting-started-build-configuration-maven-packaging, package the documentation>> in your
 project's jar you should use the `prepare-package` phase.
@@ -233,13 +225,18 @@ documentation snippets for the result's request and response.
 [[getting-started-documentation-snippets-setup]]
 ==== Setting up Spring MVC test
 
-The first step in generating documentation snippets is to provide an `@Before` method
+The first step in generating documentation snippets is to declare a `public`
+`RestDocumentation` that's annotated as a JUnit `@Rule` and to provide an `@Before` method
 that creates a `MockMvc` instance:
 
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/ExampleApplicationTests.java[tags=mock-mvc-setup]
 ----
+
+The `RestDocumentation` rule is configured with the output directory into which
+generated snippets should be written. This output directory should match the snippets
+directory that you have configured in your `build.gradle` or `pom.xml` file.
 
 The `MockMvc` instance is configured using a `RestDocumentationConfigurer`. An instance
 of this class can be obtained from the static `documentationConfiguration()` method on
@@ -259,13 +256,14 @@ service and document the request and response.
 ----
 include::{examples-dir}/com/example/InvokeService.java[tags=invoke-service]
 ----
-<1> Invoke the root (`/`) of the service an indicate that an `application/json` response
+<1> Invoke the root (`/`) of the service and indicate that an `application/json` response
 is required.
-<2> Assert that the service is produced the expected response.
+<2> Assert that the service produced the expected response.
 <3> Document the call to the service, writing the snippets into a directory named `index`
 that will be located beneath the configured output directory. The snippets are written by
 a `RestDocumentationResultHandler`. An instance of this class can be obtained from the
-static `document` method on `org.springframework.restdocs.RestDocumentation`.
+static `document` method on
+`org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
 
 By default, three snippets a written:
 

@@ -1,4 +1,5 @@
-rootProject.name = 'spring-restdocs-build'
+rootProject.name = 'spring-restdocs'
 
 include 'docs'
-include 'spring-restdocs'
+include 'spring-restdocs-core'
+include 'spring-restdocs-mockmvc'

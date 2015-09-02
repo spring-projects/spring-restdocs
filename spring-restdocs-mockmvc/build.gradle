@@ -1,0 +1,14 @@
+dependencies {
+	compile 'org.springframework:spring-test'
+	compile project(':spring-restdocs-core')
+
+	testCompile 'org.mockito:mockito-core'
+	testCompile 'org.hamcrest:hamcrest-library'
+	testCompile 'org.springframework.hateoas:spring-hateoas'
+	testCompile project(path: ':spring-restdocs-core', configuration: 'testArtifacts')
+	testRuntime 'commons-logging:commons-logging:1.2'
+}
+
+test {
+	jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*"
+}

@@ -3,12 +3,8 @@ plugins {
 }
 
 dependencies {
-	compile 'org.springframework:spring-webmvc'
-
-	testCompile project(':spring-restdocs')
+	testCompile project(':spring-restdocs-mockmvc')
 	testCompile 'javax.validation:validation-api'
-	testCompile 'junit:junit'
-	testCompile 'org.springframework:spring-test'
 }
 
 tasks.findByPath("artifactoryPublish")?.enabled = false

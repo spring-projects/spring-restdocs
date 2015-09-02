@@ -18,16 +18,16 @@ package com.example.notes;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.RestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.RestDocumentation.document;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,11 +39,13 @@ import java.util.Map;
 import javax.servlet.RequestDispatcher;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -57,6 +59,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringApplicationConfiguration(classes = RestNotesSpringDataRest.class)
 @WebAppConfiguration
 public class ApiDocumentation {
+	
+	@Rule
+	public final RestDocumentation restDocumentation = new RestDocumentation("target/generated-snippets");
 
 	@Autowired
 	private NoteRepository noteRepository;
@@ -75,18 +80,7 @@ public class ApiDocumentation {
 	@Before
 	public void setUp() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration()).build();
-		this.mockMvc = MockMvcBuilders
-				.webAppContextSetup(this.context)
-				.apply(documentationConfiguration()
-					.uris()
-						.withScheme("https")
-						.withHost("localhost")
-						.withPort(8443)
-					.and().snippets()
-						.withEncoding("ISO-8859-1"))
-				.build();
-
+				.apply(documentationConfiguration(this.restDocumentation)).build();
 	}
 
 	@Test

@@ -16,15 +16,20 @@
 
 package com.example;
 
-import static org.springframework.restdocs.RestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.restdocs.RestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 public class CustomEncoding {
+	
+	@Rule
+	public final RestDocumentation restDocumentation = new RestDocumentation("build");
 
 	@Autowired
 	private WebApplicationContext context;
@@ -35,7 +40,7 @@ public class CustomEncoding {
 	public void setUp() {
 		// tag::custom-encoding[]
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration().snippets()
+				.apply(documentationConfiguration(this.restDocumentation).snippets()
 						.withEncoding("ISO-8859-1"))
 				.build();
 		// end::custom-encoding[]
