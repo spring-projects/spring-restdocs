@@ -37,13 +37,15 @@ public class SampleBuildConfigurer {
 	}
 
 	Task createTask(Project project, Object... dependencies) {
-		Task verifyIncludes = verifyIncludes(project)
+		Task verifyIncludes
 		if (new File(this.workingDir, 'build.gradle').isFile()) {
-			Task gradleBuild = gradleBuild(project, dependencies)
+			Task gradleBuild = createGradleBuild(project, dependencies)
+			verifyIncludes = createVerifyIncludes(project, new File(this.workingDir, 'build/asciidoc'))
 			verifyIncludes.dependsOn gradleBuild
 		}
 		if (new File(this.workingDir, 'pom.xml').isFile()) {
-			Task mavenBuild = mavenBuild(project, dependencies)
+			Task mavenBuild = createMavenBuild(project, dependencies)
+			verifyIncludes = createVerifyIncludes(project, new File(this.workingDir, 'target/generated-docs'))
 			verifyIncludes.dependsOn(mavenBuild)
 		}
 		Task sampleBuild = project.tasks.create name
@@ -53,7 +55,7 @@ public class SampleBuildConfigurer {
 		return sampleBuild
 	}
 
-	private Task mavenBuild(Project project, Object... dependencies) {
+	private Task createMavenBuild(Project project, Object... dependencies) {
 		Task mavenBuild = project.tasks.create("${name}Maven", Exec)
 		mavenBuild.description = "Builds the ${name} sample with Maven"
 		mavenBuild.group = "Build"
@@ -66,7 +68,7 @@ public class SampleBuildConfigurer {
 		return mavenBuild
 	}
 
-	private Task gradleBuild(Project project, Object... dependencies) {
+	private Task createGradleBuild(Project project, Object... dependencies) {
 		Task gradleBuild = project.tasks.create("${name}Gradle", GradleBuild)
 		gradleBuild.description = "Builds the ${name} sample with Gradle"
 		gradleBuild.group = "Build"
@@ -76,19 +78,16 @@ public class SampleBuildConfigurer {
 		return gradleBuild
 	}
 
-	private Task verifyIncludes(Project project) {
+	private Task createVerifyIncludes(Project project, File buildDir) {
 		Task verifyIncludes = project.tasks.create("${name}VerifyIncludes")
 		verifyIncludes.description = "Verifies the includes in the ${name} sample"
 		verifyIncludes << {
 			Map unprocessedIncludes = [:]
-			[new File(this.workingDir, "build/asciidoc"),
-					new File(this.workingDir, "target/generated-docs")].each { buildDir ->
-				buildDir.eachFileRecurse { file ->
-					if (file.name.endsWith('.html')) {
-						file.eachLine { line ->
-							if (line.contains(new File(this.workingDir).absolutePath)) {
-								unprocessedIncludes.get(file, []).add(line)
-							}
+			buildDir.eachFileRecurse { file ->
+				if (file.name.endsWith('.html')) {
+					file.eachLine { line ->
+						if (line.contains(new File(this.workingDir).absolutePath)) {
+							unprocessedIncludes.get(file, []).add(line)
 						}
 					}
 				}
