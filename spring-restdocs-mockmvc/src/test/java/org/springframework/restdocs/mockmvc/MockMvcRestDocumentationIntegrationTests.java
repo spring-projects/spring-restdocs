@@ -265,16 +265,21 @@ public class MockMvcRestDocumentationIntegrationTests {
 								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
 								.header("Content-Length", "13")
 								.content("{\"a\":\"alpha\"}"))));
+		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-request/http-request.adoc"),
-				is(snippet().withContents(
-						httpRequest(RequestMethod.GET, "/").header("Host", "localhost")
-								.header("b", "bravo")
-								.header("Content-Type", "application/json")
-								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
-								.header("Content-Length", "22")
-								.content(String.format("{%n  \"a\" : \"<<beta>>\"%n}")))));
+				is(snippet()
+						.withContents(
+								httpRequest(RequestMethod.GET, "/")
+										.header("Host", "localhost")
+										.header("b", "bravo")
+										.header("Content-Type", "application/json")
+										.header("Accept",
+												MediaType.APPLICATION_JSON_VALUE)
+										.header("Content-Length",
+												Integer.toString(prettyPrinted.getBytes().length))
+										.content(prettyPrinted))));
 	}
 
 	@Test
