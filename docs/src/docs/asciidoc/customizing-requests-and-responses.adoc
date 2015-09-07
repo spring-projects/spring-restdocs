@@ -11,10 +11,35 @@ static `preprocessRequest` and `preprocessResponse` methods on `Preprocessors`:
 
 [source,java,indent=0]
 ----
-include::{examples-dir}/com/example/Preprocessing.java[tags=general]
+include::{examples-dir}/com/example/PreprocessingPerTest.java[tags=preprocessing]
 ----
 <1> Apply a request preprocessor that will remove the header named `Foo`.
 <2> Apply a response preprocessor that will pretty print its content.
+
+Alternatively, you may want to apply the same preprocessors to every test. You can do
+so by configuring the preprocessors in your `@Before` method and using the
+<<documentating-your-api-parameterized-output-directories, support for parameterized
+output directories>>:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/PreprocessingEveryTest.java[tags=setup]
+----
+<1> Create the `RestDocumentationResultHandler`, configured to preprocess the request
+	and response.
+<2> Create the `MockMvc` instance, configured to always call the documentation result
+	handler.
+
+Then, in each test, the `RestDocumentationResultHandler` can be configured with anything
+test-specific. For example:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/PreprocessingEveryTest.java[tags=use]
+----
+<1> Document the links specific to the resource that is being tested
+<2> The `perform` call will automatically produce the documentation snippets due to the
+	use of `alwaysDo` above.
 
 Various built in preprocessors, including those illustrated above, are available via the
 static methods on `Preprocessors`. See below for further details.

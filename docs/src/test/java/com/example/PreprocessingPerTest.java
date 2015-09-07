@@ -26,18 +26,18 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 
 import org.springframework.test.web.servlet.MockMvc;
 
-public class Preprocessing {
+public class PreprocessingPerTest {
 
 	private MockMvc mockMvc;
 
 	public void general() throws Exception {
-		// tag::general[]
+		// tag::preprocessing[]
 		this.mockMvc.perform(get("/"))
 			.andExpect(status().isOk())
 			.andDo(document("index",
 					preprocessRequest(removeHeaders("Foo")), // <1>
 					preprocessResponse(prettyPrint()))); // <2>
-		// end::general[]
+		// end::preprocessing[]
 	}
 
 }

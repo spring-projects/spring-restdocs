@@ -64,7 +64,7 @@ public class SnippetConfigurer extends
 	void apply(MockHttpServletRequest request) {
 		((WriterResolver) request.getAttribute(WriterResolver.class.getName()))
 				.setEncoding(this.snippetEncoding);
-		request.setAttribute("org.springframework.restdocs.defaultSnippets",
+		request.setAttribute("org.springframework.restdocs.mockmvc.defaultSnippets",
 				this.defaultSnippets);
 	}
 

@@ -79,7 +79,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		this.identifier = identifier;
 		this.requestPreprocessor = requestPreprocessor;
 		this.responsePreprocessor = responsePreprocessor;
-		this.snippets = Arrays.asList(snippets);
+		this.snippets = new ArrayList<>(Arrays.asList(snippets));
 	}
 
 	@Override
@@ -102,11 +102,23 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		}
 	}
 
+	/**
+	 * Adds the given {@code snippets} such that that are documented when this result
+	 * handler is called.
+	 * 
+	 * @param snippets the snippets to add
+	 * @return this {@code ResultDocumentationResultHandler}
+	 */
+	public RestDocumentationResultHandler snippets(Snippet... snippets) {
+		this.snippets.addAll(Arrays.asList(snippets));
+		return this;
+	}
+
 	@SuppressWarnings("unchecked")
 	private List<Snippet> getSnippets(MvcResult result) {
 		List<Snippet> combinedSnippets = new ArrayList<>((List<Snippet>) result
-				.getRequest()
-				.getAttribute("org.springframework.restdocs.defaultSnippets"));
+				.getRequest().getAttribute(
+						"org.springframework.restdocs.mockmvc.defaultSnippets"));
 		combinedSnippets.addAll(this.snippets);
 		return combinedSnippets;
 	}
