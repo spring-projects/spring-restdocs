@@ -11,9 +11,22 @@ This section provides more details about using Spring REST Docs to document your
 Spring REST Docs provides support for documenting the links in a
 https://en.wikipedia.org/wiki/HATEOAS[Hypermedia-based] API:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/Hypermedia.java[tag=links]
+include::{examples-dir}/com/example/mockmvc/Hypermedia.java[tag=links]
+----
+<1> Configure Spring REST docs to produce a snippet describing the response's links.
+	Uses the static `links` method on
+	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<2> Expect a link whose rel is `alpha`. Uses the static `linkWithRel` method on
+	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<3> Expect a link whose rel is `bravo`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Hypermedia.java[tag=links]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the response's links.
 	Uses the static `links` method on
@@ -47,14 +60,23 @@ Two link formats are understood by default:
 If you are using Atom or HAL-format links but with a different content type you can
 provide one of the built-in `LinkExtractor` implementations to `links`. For example:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/Hypermedia.java[tag=explicit-extractor]
+include::{examples-dir}/com/example/mockmvc/Hypermedia.java[tag=explicit-extractor]
 ----
 <1> Indicate that the links are in HAL format. Uses the static `halLinks` method on
 `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 
-If your API represents its links in a format other than Atom or HAL you can provide your
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Hypermedia.java[tag=explicit-extractor]
+----
+<1> Indicate that the links are in HAL format. Uses the static `halLinks` method on
+`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+
+If your API represents its links in a format other than Atom or HAL, you can provide your
 own implementation of the `LinkExtractor` interface to extract the links from the
 response.
 
@@ -65,9 +87,22 @@ In addition to the hypermedia-specific support <<documenting-your-api-hypermedia
 above>>, support for general documentation of request and response payloads is also
 provided. For example:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/Payload.java[tags=response]
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=response]
+----
+<1> Configure Spring REST docs to produce a snippet describing the fields in the response
+	payload. To document a request `requestFields` can be used. Both are static methods on
+	`org.springframework.restdocs.payload.PayloadDocumentation`.
+<2> Expect a field with the path `contact`. Uses the static `fieldWithPath` method on
+	`org.springframework.restdocs.payload.PayloadDocumentation`.
+<3> Expect a field with the path `contact.email`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Payload.java[tags=response]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the fields in the response
 	payload. To document a request `requestFields` can be used. Both are static methods on
@@ -223,9 +258,17 @@ The type can also be set explicitly using the `type(Object)` method on
 in the documentation. Typically, one of the values enumerated by `JsonFieldType` will be
 used:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/Payload.java[tags=explicit-type]
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=explicit-type]
+----
+<1> Set the field's type to `string`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Payload.java[tags=explicit-type]
 ----
 <1> Set the field's type to `string`.
 
@@ -255,9 +298,10 @@ method will be used in the documentation.
 A request's parameters can be documented using `requestParameters`. Request parameters
 can be included in a `GET` request's query string. For example:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/RequestParameters.java[tags=request-parameters-query-string]
+include::{examples-dir}/com/example/mockmvc/RequestParameters.java[tags=request-parameters-query-string]
 ----
 <1> Perform a `GET` request with two parameters, `page` and `per_page` in the query
 	string.
@@ -268,13 +312,36 @@ include::{examples-dir}/com/example/RequestParameters.java[tags=request-paramete
 	`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the `per_page` parameter.
 
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/RequestParameters.java[tags=request-parameters-query-string]
+----
+<1> Configure Spring REST Docs to  produce a snippet describing the request's parameters.
+	Uses the static `requestParameters` method on
+	`org.springframework.restdocs.request.RequestDocumentation`.
+<2> Document the `page` parameter. Uses the static `parameterWithName` method on
+	`org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the `per_page` parameter.
+<4> Perform a `GET` request with two parameters, `page` and `per_page` in the query
+	string.
+
 Request parameters can also be included as form data in the body of a POST request:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/RequestParameters.java[tags=request-parameters-form-data]
+include::{examples-dir}/com/example/mockmvc/RequestParameters.java[tags=request-parameters-form-data]
 ----
 <1> Perform a `POST` request with a single parameter, `username`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/RequestParameters.java[tags=request-parameters-form-data]
+----
+<1> Configure the `username` parameter.
+<2> Perform the `POST` request.
 
 In both cases, the result is a snippet named `request-parameters.adoc` that contains a
 table describing the parameters that are supported by the resource.
@@ -294,9 +361,10 @@ above.
 
 A request's path parameters can be documented using `pathParameters`. For example:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/PathParameters.java[tags=path-parameters]
+include::{examples-dir}/com/example/mockmvc/PathParameters.java[tags=path-parameters]
 ----
 <1> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
 <2> Configure Spring REST Docs to produce a snippet describing the request's path
@@ -305,6 +373,19 @@ include::{examples-dir}/com/example/PathParameters.java[tags=path-parameters]
 <3> Document the parameter named `latitude`. Uses the static `parameterWithName` method on
 	`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the parameter named `longitude`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/PathParameters.java[tags=path-parameters]
+----
+<1> Configure Spring REST Docs to produce a snippet describing the request's path
+	parameters. Uses the static `pathParameters` method on
+	`org.springframework.restdocs.request.RequestDocumentation`.
+<2> Document the parameter named `latitude`. Uses the static `parameterWithName` method on
+	`org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the parameter named `longitude`.
+<4> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
 
 The result is a snippet named `path-parameters.adoc` that contains a table describing
 the path parameters that are supported by the resource.
@@ -329,9 +410,10 @@ above.
 The headers in a request or response can be documented using `requestHeaders` and
 `responseHeaders` respectively. For example:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/HttpHeaders.java[tags=headers]
+include::{examples-dir}/com/example/mockmvc/HttpHeaders.java[tags=headers]
 ----
 <1> Perform a `GET` request with an `Authorization` header that uses basic authentication
 <2> Configure Spring REST Docs to produce a snippet describing the request's headers.
@@ -341,6 +423,20 @@ include::{examples-dir}/com/example/HttpHeaders.java[tags=headers]
 	`org.springframework.restdocs.headers.HeaderDocumentation.
 <4> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
 	method on `org.springframework.restdocs.headers.HeaderDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/HttpHeaders.java[tags=headers]
+----
+<1> Configure Spring REST Docs to produce a snippet describing the request's headers.
+	Uses the static `requestHeaders` method on
+	`org.springframework.restdocs.headers.HeaderDocumentation`.
+<2> Document the `Authorization` header. Uses the static `headerWithName` method on
+	`org.springframework.restdocs.headers.HeaderDocumentation.
+<3> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
+	method on `org.springframework.restdocs.headers.HeaderDocumentation`.
+<4> Configure the request with an `Authorization` header that uses basic authentication
 
 The result is a snippet named `request-headers.adoc` and a snippet named
 `response-headers.adoc`. Each contains a table describing the headers.
@@ -436,8 +532,7 @@ class in the Spring HATEOAS-based sample illustrates the latter approach.
 [[documenting-your-api-default-snippets]]
 === Default snippets
 
-A number of snippets are produced automatically when you document a call to
-`MockMvc.perform`:
+A number of snippets are produced automatically when you document a request and response.
 
 [cols="1,3"]
 |===
@@ -489,23 +584,30 @@ are supported:
 | The nome of the test class, formatted using snake_case
 
 | {step}
-| The count of calls to MockMvc.perform in the current test
+| The count of calls made to the service in the current test
 |===
 
 For example, `document("{class-name}/{method-name}")` in a test method named
 `creatingANote` on the test class `GettingStartedDocumentation`, will write
 snippets into a directory named `getting-started-documentation/creating-a-note`.
 
-A parameterized output directory is particularly useful in combination with Spring MVC
-Test's `alwaysDo` functionality. It allows documentation to be configured once in a setup
-method:
+A parameterized output directory is particularly useful in combination with an `@Before`
+method. It allows documentation to be configured once in a setup method and then reused
+in every test in the class:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/AlwaysDo.java[tags=always-do]
+include::{examples-dir}/com/example/mockmvc/ParameterizedOutput.java[tags=parameterized-output]
 ----
 
-With this configuration in place, every call to `MockMvc.perform` will produce
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ParameterizedOutput.java[tags=parameterized-output]
+----
+
+With this configuration in place, every call to the service you are testing will produce
 the <<documenting-your-api-default-snippets,default snippets>> without any further
 configuration. Take a look at the `GettingStartedDocumentation` classes in each of the
 sample applications to see this functionality in action.
@@ -549,9 +651,19 @@ A concrete example of the above is the addition of a constraints column and a ti
 documenting request fields. The first step is to provide a `constraints` attribute for
 each field that you are documenting and to provide a `title` attribute:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/Payload.java[tags=constraints]
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=constraints]
+----
+<1> Configure the `title` attribute for the request fields snippet
+<2> Set the `constraints` attribute for the `name` field
+<3> Set the `constraints` attribute for the `email` field
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Payload.java[tags=constraints]
 ----
 <1> Configure the `title` attribute for the request fields snippet
 <2> Set the `constraints` attribute for the `name` field

@@ -58,6 +58,7 @@ subprojects {
 		}
 		dependencies {
 			dependency 'com.fasterxml.jackson.core:jackson-databind:2.4.6.1'
+			dependency 'com.jayway.restassured:rest-assured:2.8.0'
 			dependency 'com.samskivert:jmustache:1.11'
 			dependency 'commons-codec:commons-codec:1.10'
 			dependency 'javax.servlet:javax.servlet-api:3.1.0'

@@ -41,6 +41,7 @@ public class Constraints {
 		@NotNull
 		@Size(min = 8)
 		String password;
+
 	}
 	// end::constraints[]
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.config.SnippetConfigurer;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationResponse;
@@ -32,8 +34,6 @@ import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.util.Assert;
-
-import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
 
 /**
  * A Spring MVC Test {@code ResultHandler} for documenting RESTful APIs.
@@ -85,9 +85,15 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	@Override
 	public void handle(MvcResult result) throws Exception {
 		Map<String, Object> attributes = new HashMap<>();
-		for (String name : iterable(result.getRequest().getAttributeNames())) {
-			attributes.put(name, result.getRequest().getAttribute(name));
-		}
+		attributes.put(RestDocumentationContext.class.getName(), result.getRequest()
+				.getAttribute(RestDocumentationContext.class.getName()));
+		attributes.put("org.springframework.restdocs.urlTemplate", result.getRequest()
+				.getAttribute("org.springframework.restdocs.urlTemplate"));
+		@SuppressWarnings("unchecked")
+		Map<String, Object> configuration = (Map<String, Object>) result.getRequest()
+				.getAttribute("org.springframework.restdocs.configuration");
+		attributes.putAll(configuration);
+
 		OperationRequest request = this.requestPreprocessor
 				.preprocess(new MockMvcOperationRequestFactory()
 						.createOperationRequest(result.getRequest()));
@@ -103,7 +109,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	}
 
 	/**
-	 * Adds the given {@code snippets} such that that are documented when this result
+	 * Adds the given {@code snippets} such that they are documented when this result
 	 * handler is called.
 	 *
 	 * @param snippets the snippets to add
@@ -116,9 +122,10 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	@SuppressWarnings("unchecked")
 	private List<Snippet> getSnippets(MvcResult result) {
-		List<Snippet> combinedSnippets = new ArrayList<>((List<Snippet>) result
-				.getRequest().getAttribute(
-						"org.springframework.restdocs.mockmvc.defaultSnippets"));
+		List<Snippet> combinedSnippets = new ArrayList<>(
+				(List<Snippet>) ((Map<String, Object>) result.getRequest().getAttribute(
+						"org.springframework.restdocs.configuration"))
+						.get(SnippetConfigurer.ATTRIBUTE_DEFAULT_SNIPPETS));
 		combinedSnippets.addAll(this.snippets);
 		return combinedSnippets;
 	}

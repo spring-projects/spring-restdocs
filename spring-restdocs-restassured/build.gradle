@@ -1,0 +1,16 @@
+dependencies {
+	compile project(':spring-restdocs-core')
+	compile 'com.jayway.restassured:rest-assured'
+
+	testCompile 'org.mockito:mockito-core'
+	testCompile 'org.hamcrest:hamcrest-library'
+	testCompile 'org.springframework.hateoas:spring-hateoas'
+	testCompile 'org.springframework.boot:spring-boot-starter-web:1.2.5.RELEASE'
+	testCompile 'org.springframework:spring-test'
+	testCompile project(path: ':spring-restdocs-core', configuration: 'testArtifacts')
+	testRuntime 'commons-logging:commons-logging:1.2'
+}
+
+test {
+	jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*"
+}

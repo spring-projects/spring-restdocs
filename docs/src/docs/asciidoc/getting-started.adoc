@@ -83,7 +83,9 @@ the configuration are described below.
 		</plugins>
 	</build>
 ----
-<1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope.
+<1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope. If you want to use
+	REST Assured rather than MockMvc, add a dependency on `spring-restdocs-restassured`
+	instead.
 <2> Configure a property to define the output location for generated snippets.
 <3> Add the SureFire plugin and configure it to include files whose names end with
 	`Documentation.java`.
@@ -120,7 +122,9 @@ project's jar you should use the `prepare-package` phase.
 	}
 ----
 <1> Apply the Asciidoctor plugin.
-<2> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration.
+<2> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration. If
+	you want to use REST Assured rather than MockMvc, add a dependency on
+	`spring-restdocs-restassured` instead.
 <3> Configure a property to define the output location for generated snippets.
 <4> Configure the `test` task to add the snippets directory as an output.
 <5> Configure the `asciidoctor` task
@@ -199,14 +203,16 @@ from where it will be included in the jar file.
 
 [[getting-started-documentation-snippets]]
 === Generating documentation snippets
-Spring REST Docs uses {spring-framework-docs}/#spring-mvc-test-framework[Spring's MVC Test
-framework] to make requests to the service that you are documenting. It then produces
-documentation snippets for request and resulting response.
+Spring REST Docs uses JUnit and
+{spring-framework-docs}/#spring-mvc-test-framework[Spring's MVC Test framework] or
+http://www.rest-assured.io[REST Assured] to make requests to the service that you are
+documenting. It then produces documentation snippets for the request and the resulting
+response.
 
 
 
 [[getting-started-documentation-snippets-setup]]
-==== Setting up Spring MVC test
+==== Setting up your tests
 
 The first step in generating documentation snippets is to declare a `public`
 `RestDocumentation` field that's annotated as a JUnit `@Rule`. The `RestDocumentation`
@@ -214,47 +220,59 @@ rule is configured with the output directory into which generated snippets shoul
 written. This output directory should match the snippets directory that you have
 configured in your `build.gradle` or `pom.xml` file.
 
-For Maven (`pom.xml` that will typically be `target/generated-snippets`:
+For Maven (`pom.xml` that will typically be `target/generated-snippets` and for
+Gradle (`build.gradle`) it will typically be `build/generated-snippets`:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.Maven
 ----
 @Rule
 public RestDocumentation restDocumentation = new RestDocumentation("target/generated-snippets");
 ----
 
-And for Gradle (`build.gradle`) it will typically be `build/generated-snippets`:
-
-[source,java,indent=0]
+[source,java,indent=0,role="secondary"]
+.Gradle
 ----
 @Rule
 public RestDocumentation restDocumentation = new RestDocumentation("build/generated-snippets");
 ----
 
-Next, provide an `@Before` method that creates a `MockMvc` instance:
+Next, provide an `@Before` method to configure MockMvc or REST Assured:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/ExampleApplicationTests.java[tags=mock-mvc-setup]
+include::{examples-dir}/com/example/mockmvc/ExampleApplicationTests.java[tags=setup]
 ----
-
-The `MockMvc` instance is configured using a `RestDocumentationMockMvcConfigurer`. An
+<1> The `MockMvc` instance is configured using a `MockMvcRestDocumentationConfigurer`. An
 instance of this class can be obtained from the static `documentationConfiguration()`
 method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
-`RestDocumentationMockMvcConfigurer` applies sensible defaults and also provides an API
-for customizing the configuration. Refer to the
-<<configuration, configuration section>> for more information.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationTests.java[tags=setup]
+----
+<1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a
+`Filter`. An instance of this class can be obtained from the static
+`documentationConfiguration()` method on
+`org.springframework.restdocs.restassured.RestAssuredRestDocumentation`.
+
+The configurer applies sensible defaults and also provides an API for customizing the
+configuration. Refer to the <<configuration, configuration section>> for more information.
 
 
 
 [[getting-started-documentation-snippets-invoking-the-service]]
 ==== Invoking the RESTful service
 
-Now that a `MockMvc` instance has been created, it can be used to invoke the RESTful
+Now that the testing framework has been configured, it can be used to invoke the RESTful
 service and document the request and response. For example:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/InvokeService.java[tags=invoke-service]
+include::{examples-dir}/com/example/mockmvc/InvokeService.java[tags=invoke-service]
 ----
 <1> Invoke the root (`/`) of the service and indicate that an `application/json` response
 is required.
@@ -264,6 +282,21 @@ that will be located beneath the configured output directory. The snippets are w
 a `RestDocumentationResultHandler`. An instance of this class can be obtained from the
 static `document` method on
 `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/InvokeService.java[tags=invoke-service]
+----
+<1> Apply the specification that was initialised in the `@Before` method.
+<2> Indicate that an `application/json` response is required.
+<3> Document the call to the service, writing the snippets into a directory named `index`
+that will be located beneath the configured output directory. The snippets are written by
+a `RestDocumentationFilter`. An instance of this class can be obtained from the
+static `document` method on
+`org.springframework.restdocs.restassured.RestAssuredRestDocumentation`.
+<4> Invoke the root (`/`) of the service.
+<5> Assert that the service produce the expected response.
 
 By default, three snippets are written:
 

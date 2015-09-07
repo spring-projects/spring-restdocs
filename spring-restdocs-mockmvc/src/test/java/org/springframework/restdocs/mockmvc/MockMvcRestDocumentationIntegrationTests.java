@@ -83,7 +83,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Integration tests for using Spring REST Docs with Spring Test's Mock MVC.
+ * Integration tests for using Spring REST Docs with Spring Test's MockMvc.
  *
  * @author Andy Wilkinson
  * @author Dewet Diener
@@ -112,8 +112,10 @@ public class MockMvcRestDocumentationIntegrationTests {
 
 	@Test
 	public void basicSnippetGeneration() throws Exception {
-		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(this.restDocumentation)).build();
+		MockMvc mockMvc = MockMvcBuilders
+				.webAppContextSetup(this.context)
+				.apply(new MockMvcRestDocumentationConfigurer(this.restDocumentation)
+						.snippets().withEncoding("UTF-8")).build();
 
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(document("basic"));

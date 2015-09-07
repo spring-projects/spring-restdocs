@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,8 +92,9 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	private String extractUrlTemplate(Operation operation) {
 		String urlTemplate = (String) operation.getAttributes().get(
 				"org.springframework.restdocs.urlTemplate");
-		Assert.notNull(urlTemplate,
-				"urlTemplate not found. Did you use RestDocumentationRequestBuilders to "
+		Assert.notNull(
+				urlTemplate,
+				"urlTemplate not found. If you are using MockMvc, did you use RestDocumentationRequestBuilders to "
 						+ "build the request?");
 		return urlTemplate;
 	}

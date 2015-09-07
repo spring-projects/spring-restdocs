@@ -10,9 +10,10 @@ http://asciidoctor.org[Asciidoctor]. Asciidoctor processes plain text and produc
 HTML, styled and layed out to suit your needs.
 
 Spring REST Docs makes use of snippets produced by tests written with
-{spring-framework-docs}/#spring-mvc-test-framework[Spring MVC Test]. This test-driven
-approach helps to guarantee the accuracy of your service's documentation. If a snippet is
-incorrect the test that produces it will fail.
+{spring-framework-docs}/#spring-mvc-test-framework[Spring MVC Test] or
+http://www.rest-assured.io[REST Assured]. This test-driven approach helps to guarantee the
+accuracy of your service's documentation. If a snippet is incorrect the test that produces
+it will fail.
 
 Documenting a RESTful service is largely about describing its resources. Two key parts
 of each resource's description are the details of the HTTP requests that it consumes
