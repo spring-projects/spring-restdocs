@@ -16,7 +16,7 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import static org.springframework.restdocs.mockmvc.util.IterableEnumeration.iterable;
+import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
 
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.mockmvc.util;
+package org.springframework.restdocs.mockmvc;
 
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -26,7 +26,7 @@ import java.util.Iterator;
  *
  * @param <T> the type of the Enumeration's contents
  */
-public final class IterableEnumeration<T> implements Iterable<T> {
+final class IterableEnumeration<T> implements Iterable<T> {
 
 	private final Enumeration<T> enumeration;
 
@@ -63,7 +63,7 @@ public final class IterableEnumeration<T> implements Iterable<T> {
 	 * @param enumeration The enumeration to expose as an {@code Iterable}
 	 * @return the iterable
 	 */
-	public static <T> Iterable<T> iterable(Enumeration<T> enumeration) {
+	static <T> Iterable<T> iterable(Enumeration<T> enumeration) {
 		return new IterableEnumeration<T>(enumeration);
 	}
 
