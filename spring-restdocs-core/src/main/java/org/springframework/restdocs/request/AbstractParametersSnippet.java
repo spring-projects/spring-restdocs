@@ -106,7 +106,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	}
 
 	/**
-	 * Returns a model for the given {@link descriptor}.
+	 * Returns a model for the given {@code descriptor}.
 	 * 
 	 * @param descriptor the descriptor
 	 * @return the model
