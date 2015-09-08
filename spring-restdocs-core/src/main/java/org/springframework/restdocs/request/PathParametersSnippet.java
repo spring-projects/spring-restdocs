@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.request;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +63,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> createModel(Operation operation) throws IOException {
+	protected Map<String, Object> createModel(Operation operation) {
 		Map<String, Object> model = super.createModel(operation);
 		model.put("path", removeQueryStringIfPresent(extractUrlTemplate(operation)));
 		return model;

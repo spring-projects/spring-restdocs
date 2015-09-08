@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.snippet.ModelCreationException;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
@@ -85,9 +86,14 @@ public class LinksSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> createModel(Operation operation) throws IOException {
+	protected Map<String, Object> createModel(Operation operation) {
 		OperationResponse response = operation.getResponse();
-		validate(this.linkExtractor.extractLinks(response));
+		try {
+			validate(this.linkExtractor.extractLinks(response));
+		}
+		catch (IOException ex) {
+			throw new ModelCreationException(ex);
+		}
 		Map<String, Object> model = new HashMap<>();
 		model.put("links", createLinksModel());
 		return model;

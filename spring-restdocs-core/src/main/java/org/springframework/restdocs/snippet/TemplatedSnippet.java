@@ -69,7 +69,16 @@ public abstract class TemplatedSnippet implements Snippet {
 		}
 	}
 
-	protected abstract Map<String, Object> createModel(Operation operation)
-			throws IOException;
+	/**
+	 * Create the model that should be used during template rendering to document the
+	 * given {@code operation}. Any additional attributes that were supplied when this
+	 * {@code TemplatedSnippet} were created will be automatically added to the model
+	 * prior to rendering.
+	 * 
+	 * @param operation The operation
+	 * @return the model
+	 * @throws ModelCreationException if model creation fails
+	 */
+	protected abstract Map<String, Object> createModel(Operation operation);
 
 }

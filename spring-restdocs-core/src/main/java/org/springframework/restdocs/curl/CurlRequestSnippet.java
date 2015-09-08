@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.curl;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -59,7 +58,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> createModel(Operation operation) throws IOException {
+	protected Map<String, Object> createModel(Operation operation) {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("url", getUrl(operation));
 		model.put("options", getOptions(operation));
@@ -70,7 +69,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		return String.format("'%s'", operation.getRequest().getUri());
 	}
 
-	private String getOptions(Operation operation) throws IOException {
+	private String getOptions(Operation operation) {
 		StringWriter command = new StringWriter();
 		PrintWriter printer = new PrintWriter(command);
 		writeOptionToIncludeHeadersInOutput(printer);
@@ -101,8 +100,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writePartsIfNecessary(OperationRequest request, PrintWriter writer)
-			throws IOException {
+	private void writePartsIfNecessary(OperationRequest request, PrintWriter writer) {
 		for (OperationRequestPart part : request.getParts()) {
 			writer.printf(" -F '%s=", part.getName());
 			if (!StringUtils.hasText(part.getSubmittedFileName())) {
@@ -120,8 +118,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writeContent(OperationRequest request, PrintWriter writer)
-			throws IOException {
+	private void writeContent(OperationRequest request, PrintWriter writer) {
 		if (request.getContent().length > 0) {
 			writer.print(String.format(" -d '%s'", new String(request.getContent())));
 		}

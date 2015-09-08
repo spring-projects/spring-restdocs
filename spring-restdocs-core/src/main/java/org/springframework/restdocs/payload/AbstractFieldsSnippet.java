@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
+import org.springframework.restdocs.snippet.ModelCreationException;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.Assert;
@@ -61,16 +62,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> createModel(Operation operation) throws IOException {
-		MediaType contentType = getContentType(operation);
-		ContentHandler contentHandler;
-		if (contentType != null
-				&& MediaType.APPLICATION_XML.isCompatibleWith(contentType)) {
-			contentHandler = new XmlContentHandler(getContent(operation));
-		}
-		else {
-			contentHandler = new JsonContentHandler(getContent(operation));
-		}
+	protected Map<String, Object> createModel(Operation operation) {
+		ContentHandler contentHandler = getContentHandler(operation);
 
 		validateFieldDocumentation(contentHandler);
 
@@ -87,6 +80,24 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 			fields.add(descriptor.toModel());
 		}
 		return model;
+	}
+
+	private ContentHandler getContentHandler(Operation operation) {
+		MediaType contentType = getContentType(operation);
+		ContentHandler contentHandler;
+		try {
+			if (contentType != null
+					&& MediaType.APPLICATION_XML.isCompatibleWith(contentType)) {
+				contentHandler = new XmlContentHandler(getContent(operation));
+			}
+			else {
+				contentHandler = new JsonContentHandler(getContent(operation));
+			}
+		}
+		catch (IOException ex) {
+			throw new ModelCreationException(ex);
+		}
+		return contentHandler;
 	}
 
 	private void validateFieldDocumentation(ContentHandler payloadHandler) {

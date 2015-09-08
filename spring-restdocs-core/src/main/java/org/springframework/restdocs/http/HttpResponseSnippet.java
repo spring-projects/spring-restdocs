@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.http;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +55,7 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> createModel(Operation operation) throws IOException {
+	protected Map<String, Object> createModel(Operation operation) {
 		OperationResponse response = operation.getResponse();
 		HttpStatus status = response.getStatus();
 		Map<String, Object> model = new HashMap<String, Object>();

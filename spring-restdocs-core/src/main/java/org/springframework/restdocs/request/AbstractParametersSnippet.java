@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.request;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,7 +61,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> createModel(Operation operation) throws IOException {
+	protected Map<String, Object> createModel(Operation operation) {
 		verifyParameterDescriptors(operation);
 
 		Map<String, Object> model = new HashMap<>();

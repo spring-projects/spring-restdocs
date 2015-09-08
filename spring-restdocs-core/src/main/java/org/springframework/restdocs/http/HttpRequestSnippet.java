@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.http;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	}
 
 	@Override
-	protected Map<String, Object> createModel(Operation operation) throws IOException {
+	protected Map<String, Object> createModel(Operation operation) {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("method", operation.getRequest().getMethod());
 		model.put(
@@ -104,7 +103,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		return headers;
 	}
 
-	private String getRequestBody(OperationRequest request) throws IOException {
+	private String getRequestBody(OperationRequest request) {
 		StringWriter httpRequest = new StringWriter();
 		PrintWriter writer = new PrintWriter(httpRequest);
 		if (request.getContent().length > 0) {
@@ -131,8 +130,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 				|| HttpMethod.POST.equals(request.getMethod());
 	}
 
-	private void writeParts(OperationRequest request, PrintWriter writer)
-			throws IOException {
+	private void writeParts(OperationRequest request, PrintWriter writer) {
 		writer.println();
 		for (Entry<String, List<String>> parameter : request.getParameters().entrySet()) {
 			for (String value : parameter.getValue()) {
@@ -153,8 +151,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		writer.printf("--%s%n", MULTIPART_BOUNDARY);
 	}
 
-	private void writePart(OperationRequestPart part, PrintWriter writer)
-			throws IOException {
+	private void writePart(OperationRequestPart part, PrintWriter writer) {
 		writePart(part.getName(), new String(part.getContent()), part.getHeaders()
 				.getContentType(), writer);
 	}
