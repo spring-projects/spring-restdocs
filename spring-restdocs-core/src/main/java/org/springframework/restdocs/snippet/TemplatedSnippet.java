@@ -81,4 +81,23 @@ public abstract class TemplatedSnippet implements Snippet {
 	 */
 	protected abstract Map<String, Object> createModel(Operation operation);
 
+	/**
+	 * Returns the additional attributes that will be included in the model during
+	 * template rendering.
+	 * 
+	 * @return the additional attributes
+	 */
+	protected final Map<String, Object> getAttributes() {
+		return this.attributes;
+	}
+
+	/**
+	 * Returns the name of the snippet that will be created.
+	 * 
+	 * @return the snippet name
+	 */
+	protected final String getSnippetName() {
+		return this.snippetName;
+	}
+
 }

@@ -47,8 +47,6 @@ public class LinksSnippet extends TemplatedSnippet {
 
 	private final Map<String, LinkDescriptor> descriptorsByRel = new LinkedHashMap<>();
 
-	private final Set<String> requiredRels = new HashSet<>();
-
 	private final LinkExtractor linkExtractor;
 
 	/**
@@ -79,9 +77,6 @@ public class LinksSnippet extends TemplatedSnippet {
 			Assert.hasText(descriptor.getRel());
 			Assert.hasText(descriptor.getDescription());
 			this.descriptorsByRel.put(descriptor.getRel(), descriptor);
-			if (!descriptor.isOptional()) {
-				this.requiredRels.add(descriptor.getRel());
-			}
 		}
 	}
 
@@ -105,7 +100,15 @@ public class LinksSnippet extends TemplatedSnippet {
 		Set<String> undocumentedRels = new HashSet<String>(actualRels);
 		undocumentedRels.removeAll(this.descriptorsByRel.keySet());
 
-		Set<String> missingRels = new HashSet<String>(this.requiredRels);
+		Set<String> requiredRels = new HashSet<>();
+		for (Entry<String, LinkDescriptor> relAndDescriptor : this.descriptorsByRel
+				.entrySet()) {
+			if (!relAndDescriptor.getValue().isOptional()) {
+				requiredRels.add(relAndDescriptor.getKey());
+			}
+		}
+
+		Set<String> missingRels = new HashSet<String>(requiredRels);
 		missingRels.removeAll(actualRels);
 
 		if (!undocumentedRels.isEmpty() || !missingRels.isEmpty()) {
@@ -131,6 +134,16 @@ public class LinksSnippet extends TemplatedSnippet {
 			model.add(entry.getValue().toModel());
 		}
 		return model;
+	}
+
+	/**
+	 * Returns a {@code Map} of {@link LinkDescriptor LinkDescriptors} keyed by their
+	 * {@link LinkDescriptor#getRel() rels}.
+	 * 
+	 * @return the link descriptors
+	 */
+	protected final Map<String, LinkDescriptor> getDescriptorsByRel() {
+		return this.descriptorsByRel;
 	}
 
 }

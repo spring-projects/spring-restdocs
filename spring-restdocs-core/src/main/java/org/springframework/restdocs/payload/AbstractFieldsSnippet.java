@@ -146,4 +146,14 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 */
 	protected abstract byte[] getContent(Operation operation) throws IOException;
 
+	/**
+	 * Returns the list of {@link FieldDescriptor FieldDescriptors} that will be used to
+	 * generate the documentation.
+	 * 
+	 * @return the field descriptors
+	 */
+	protected final List<FieldDescriptor> getFieldDescriptors() {
+		return this.fieldDescriptors;
+	}
+
 }

@@ -94,4 +94,15 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	protected abstract void verificationFailed(Set<String> undocumentedParameters,
 			Set<String> missingParameters);
 
+	/**
+	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will
+	 * be used to generate the documentation key by their
+	 * {@link ParameterDescriptor#getName()}.
+	 * 
+	 * @return the map of path descriptors
+	 */
+	protected final Map<String, ParameterDescriptor> getFieldDescriptors() {
+		return this.descriptorsByName;
+	}
+
 }
