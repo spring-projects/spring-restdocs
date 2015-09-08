@@ -57,9 +57,9 @@ response.
 [[documenting-your-api-request-response-payloads]]
 === Request and response payloads
 
-In addition to the Hypermedia-specific support <<documenting-your-api-hypermedia,described
+In addition to the hypermedia-specific support <<documenting-your-api-hypermedia,described
 above>>, support for general documentation of request and response payloads is also
-provided:
+provided. For example:
 
 [source,java,indent=0]
 ----
@@ -204,26 +204,27 @@ method will be included in the documentation.
 === Request parameters
 
 A request's parameters can be documented using `requestParameters`. Request parameters
-can be included in a `GET` requests query string:
+can be included in a `GET` request's query string. For example:
 
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/RequestParameters.java[tags=request-parameters-query-string]
 ----
-<1> Perform a `GET` request with two parameters in the query string.
+<1> Perform a `GET` request with two parameters, `page` and `per_page` in the query
+	string.
 <2> Produce a snippet describing the request's parameters. Uses the static
 `requestParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
-<3> Document a parameter named `page`. Uses the static `parameterWithName` method on
+<3> Document the `page` parameter. Uses the static `parameterWithName` method on
 `org.springframework.restdocs.request.RequestDocumentation`.
-<4> Document a parameter named `per_page`.
+<4> Document the `per_page` parameter.
 
-They can also be included as form data in the body of a POST request:
+Request parameters can also be included as form data in the body of a POST request:
 
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/RequestParameters.java[tags=request-parameters-form-data]
 ----
-<1> Perform a `POST` request with a single parameter.
+<1> Perform a `POST` request with a single parameter, `username`.
 
 In both cases, the result is a snippet named `request-parameters.adoc` that contains a
 table describing the parameters that are supported by the resource.
@@ -237,18 +238,18 @@ request parameter is not found in the request.
 [[documenting-your-api-path-parameters]]
 === Path parameters
 
-A request's path parameters can be documented using `pathParameters`
+A request's path parameters can be documented using `pathParameters`. For example:
 
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/PathParameters.java[tags=path-parameters]
 ----
-<1> Build the request. Uses the static `get` method on `RestDocumentationRequestBuilders`.
+<1> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
 <2> Produce a snippet describing the request's path parameters. Uses the static
 `pathParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
-<3> Document a parameter named `longitude`. Uses the static `parameterWithName` method on
+<3> Document the parameter named `latitude`. Uses the static `parameterWithName` method on
 `org.springframework.restdocs.request.RequestDocumentation`.
-<4> Document a parameter named `latitude`.
+<4> Document the parameter named `longitude`.
 
 The result is a snippet named `path-parameters.adoc` that contains a table describing
 the path parameters that are supported by the resource.
@@ -268,7 +269,7 @@ built using one of the methods on `RestDocumentationRequestBuilders` rather than
 
 Spring REST Docs provides a number of classes that can help you to document constraints.
 An instance of `ConstraintDescriptions` can be used to access descriptions of a class's
-constraints:
+constraints. For example:
 
 [source,java,indent=0]
 ----
@@ -400,8 +401,8 @@ are supported:
 For example, `document("{method-name}")` in a test method named `creatingANote` will write
 snippets into a directory named `creating-a-note`.
 
-The `{step}` parameter is particularly useful in combination with Spring MVC Test's
-`alwaysDo` functionality. It allows documentation to be configured once in a setup method:
+A parameterized output directory is particularly useful in combination with Spring MVC
+Test's `alwaysDo` functionality. It allows documentation to be configured once in a setup method:
 
 [source,java,indent=0]
 ----

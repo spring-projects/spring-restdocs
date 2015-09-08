@@ -13,8 +13,7 @@ If you want to jump straight in, there are two sample applications available.
 http://projects.spring.io/spring-hateoas/[Spring HATEOAS] and
 {samples}/rest-notes-spring-data-rest[the other] uses
 http://projects.spring.io/spring-data-rest/[Spring Data REST]. Both samples use
-Spring REST Docs to produce a detailed API guide and a getting started walkthrough. You
-can use either Gradle or Maven to build them.
+Spring REST Docs to produce a detailed API guide and a getting started walkthrough.
 
 In each sample the source for the documentation can be found in `src/main/asciidoc`.
 `api-guide.adoc` produces an API guide for the service. `getting-started-guide.adoc`
@@ -36,7 +35,7 @@ The first step in using Spring REST Docs is to configure your project's build.
 [[getting-started-build-configuration-gradle]]
 ==== Gradle build configuration
 
-The {samples/rest-notes-spring-hateoas}[Spring HATEOAS sample] contains a `build.gradle`
+The {samples}rest-notes-spring-hateoas[Spring HATEOAS sample] contains a `build.gradle`
 file that you may wish to use as a reference. The key parts of the configuration are
 described below.
 
@@ -65,7 +64,7 @@ described below.
 	}
 ----
 <1> Apply the Asciidoctor plugin.
-<2> Add a dependency on spring-restdocs in the `testCompile` configuration.
+<2> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration.
 <3> Configure a property to define the output location for generated snippets.
 <4> Configure the `test` task to add the snippets directory as an output.
 <5> Configure the `asciidoctor` task
@@ -100,7 +99,7 @@ directory:
 [[getting-started-build-configuration-maven]]
 ==== Maven build configuration
 
-The {samples/rest-notes-spring-data-rest}[Spring Data REST sample] contains a `pom.xml`
+The {samples}rest-notes-spring-data-rest[Spring Data REST sample] contains a `pom.xml`
 file that you may wish to use as a reference. The key parts of the configuration are
 described below.
 
@@ -135,7 +134,7 @@ described below.
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<phase>package</phase> <5>
+						<phase>package</phase> <6>
 						<goals>
 							<goal>process-asciidoc</goal>
 						</goals>
@@ -143,7 +142,7 @@ described below.
 							<backend>html</backend>
 							<doctype>book</doctype>
 							<attributes>
-								<snippets>${snippetsDirectory}</snippets>
+								<snippets>${snippetsDirectory}</snippets> <5>
 							</attributes>
 						</configuration>
 					</execution>
@@ -157,9 +156,10 @@ described below.
 <2> Configure a property to define the output location for generated snippets.
 <3> Add the SureFire plugin and configure it to include files whose names end with
 	`Documentation.java`.
-<4> Add the Asciidoctor plugin and configure it to define an attribute named `snippets`
-	that can be used when including the generated snippets in your documentation.
-<5> [[getting-started-build-configuration-maven-plugin-phase]] If you want to
+<4> Add the Asciidoctor plugin
+<5> Define an attribute named `snippets` that can be used when including the generated
+	snippets in your documentation.
+<6> [[getting-started-build-configuration-maven-plugin-phase]] If you want to
 <<getting-started-build-configuration-maven-packaging, package the documentation>> in your
 project's jar you should use the `prepare-package` phase.
 
@@ -226,8 +226,8 @@ documentation snippets for the result's request and response.
 ==== Setting up Spring MVC test
 
 The first step in generating documentation snippets is to declare a `public`
-`RestDocumentation` that's annotated as a JUnit `@Rule` and to provide an `@Before` method
-that creates a `MockMvc` instance:
+`RestDocumentation` field that's annotated as a JUnit `@Rule` and to provide an `@Before`
+method that creates a `MockMvc` instance:
 
 [source,java,indent=0]
 ----
@@ -250,7 +250,7 @@ sensible defaults and also provides an API for customizing the configuration. Re
 ==== Invoking the RESTful service
 
 Now that a `MockMvc` instance has been created, it can be used to invoke the RESTful
-service and document the request and response.
+service and document the request and response. For example:
 
 [source,java,indent=0]
 ----
@@ -282,7 +282,7 @@ that can be produced by Spring REST Docs.
 The generated snippets can be included in your documentation using the
 http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
 The `snippets` attribute specified in the <<getting-started-build-configuration, build
-configuration>> can be used to reference the snippets output directory, for example:
+configuration>> can be used to reference the snippets output directory. For example:
 
 [source,adoc,indent=0]
 ----
