@@ -20,6 +20,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.GradleBuild
 
 public class SampleBuildConfigurer {
@@ -65,6 +66,13 @@ public class SampleBuildConfigurer {
 				"${System.env.MAVEN_HOME}/bin/mvn${suffix}" : "mvn${suffix}",
 						'clean', 'package']
 		mavenBuild.dependsOn dependencies
+
+		mavenBuild.doFirst {
+			replaceVersion(new File(this.workingDir, 'pom.xml'),
+					'<spring-restdocs.version>.*</spring-restdocs.version>',
+					"<spring-restdocs.version>${project.version}</spring-restdocs.version>")
+		}
+
 		return mavenBuild
 	}
 
@@ -75,7 +83,23 @@ public class SampleBuildConfigurer {
 		gradleBuild.dir = this.workingDir
 		gradleBuild.tasks = ['clean', 'build']
 		gradleBuild.dependsOn dependencies
+
+		gradleBuild.doFirst {
+			replaceVersion(new File(this.workingDir, 'build.gradle'),
+					"springRestdocsVersion = '.*'",
+					"springRestdocsVersion = '${project.version}'")
+		}
+
 		return gradleBuild
+	}
+
+	private void replaceVersion(File target, String pattern, String replacement) {
+		def lines = target.readLines()
+		target.withWriter { writer ->
+			lines.each { line ->
+				writer.println(line.replaceAll(pattern, replacement))
+			}
+		}
 	}
 
 	private Task createVerifyIncludes(Project project, File buildDir) {
