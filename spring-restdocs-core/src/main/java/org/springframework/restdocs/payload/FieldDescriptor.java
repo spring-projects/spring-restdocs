@@ -16,9 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
@@ -39,7 +36,12 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 
 	private String description;
 
-	FieldDescriptor(String path) {
+	/**
+	 * Creates a new {@code FieldDescriptor} describing the field with the given
+	 * {@code path}.
+	 * @param path the path
+	 */
+	protected FieldDescriptor(String path) {
 		this.path = path;
 	}
 
@@ -51,7 +53,7 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	 * @return {@code this}
 	 * @see JsonFieldType
 	 */
-	public FieldDescriptor type(Object type) {
+	public final FieldDescriptor type(Object type) {
 		this.type = type;
 		return this;
 	}
@@ -61,7 +63,7 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	 * 
 	 * @return {@code this}
 	 */
-	public FieldDescriptor optional() {
+	public final FieldDescriptor optional() {
 		this.optional = true;
 		return this;
 	}
@@ -72,34 +74,45 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	 * @param description The field's description
 	 * @return {@code this}
 	 */
-	public FieldDescriptor description(String description) {
+	public final FieldDescriptor description(String description) {
 		this.description = description;
 		return this;
 	}
 
-	String getPath() {
+	/**
+	 * Returns the path of the field described by this descriptor
+	 * 
+	 * @return the path
+	 */
+	public final String getPath() {
 		return this.path;
 	}
 
-	Object getType() {
+	/**
+	 * Returns the type of the field described by this descriptor
+	 * 
+	 * @return the type
+	 */
+	public final Object getType() {
 		return this.type;
 	}
 
-	boolean isOptional() {
+	/**
+	 * Returns {@code true} if the described field is optional, otherwise {@code false}
+	 * 
+	 * @return {@code true} if the described field is optional, otherwise {@code false}
+	 */
+	public final boolean isOptional() {
 		return this.optional;
 	}
 
-	String getDescription() {
+	/**
+	 * Returns the description for the field
+	 * 
+	 * @return the field description
+	 */
+	public final String getDescription() {
 		return this.description;
 	}
 
-	Map<String, Object> toModel() {
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("path", this.path);
-		model.put("type", this.type.toString());
-		model.put("description", this.description);
-		model.put("optional", this.optional);
-		model.putAll(this.getAttributes());
-		return model;
-	}
 }

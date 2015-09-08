@@ -131,7 +131,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	private List<Map<String, Object>> createLinksModel() {
 		List<Map<String, Object>> model = new ArrayList<>();
 		for (Entry<String, LinkDescriptor> entry : this.descriptorsByRel.entrySet()) {
-			model.add(entry.getValue().toModel());
+			model.add(createModelForDescriptor(entry.getValue()));
 		}
 		return model;
 	}
@@ -144,6 +144,21 @@ public class LinksSnippet extends TemplatedSnippet {
 	 */
 	protected final Map<String, LinkDescriptor> getDescriptorsByRel() {
 		return this.descriptorsByRel;
+	}
+
+	/**
+	 * Returns a model for the given {@code descriptor}
+	 * 
+	 * @param descriptor the descriptor
+	 * @return the model
+	 */
+	protected Map<String, Object> createModelForDescriptor(LinkDescriptor descriptor) {
+		Map<String, Object> model = new HashMap<>();
+		model.put("rel", descriptor.getRel());
+		model.put("description", descriptor.getDescription());
+		model.put("optional", descriptor.isOptional());
+		model.putAll(descriptor.getAttributes());
+		return model;
 	}
 
 }

@@ -16,9 +16,6 @@
 
 package org.springframework.restdocs.request;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
@@ -34,7 +31,13 @@ public class ParameterDescriptor extends AbstractDescriptor<ParameterDescriptor>
 
 	private String description;
 
-	ParameterDescriptor(String name) {
+	/**
+	 * Creates a new {@code ParameterDescriptor} describing the parameter with the given
+	 * {@code name}.
+	 * 
+	 * @param name the name of the parameter
+	 */
+	protected ParameterDescriptor(String name) {
 		this.name = name;
 	}
 
@@ -44,25 +47,27 @@ public class ParameterDescriptor extends AbstractDescriptor<ParameterDescriptor>
 	 * @param description The parameter's description
 	 * @return {@code this}
 	 */
-	public ParameterDescriptor description(String description) {
+	public final ParameterDescriptor description(String description) {
 		this.description = description;
 		return this;
 	}
 
-	String getName() {
+	/**
+	 * Returns the name of the parameter being described by this descriptor
+	 * 
+	 * @return the name of the parameter
+	 */
+	public final String getName() {
 		return this.name;
 	}
 
-	String getDescription() {
+	/**
+	 * Returns the description of the parameter
+	 * 
+	 * @return the description
+	 */
+	public final String getDescription() {
 		return this.description;
-	}
-
-	Map<String, Object> toModel() {
-		Map<String, Object> model = new HashMap<>();
-		model.put("name", this.name);
-		model.put("description", this.description);
-		model.putAll(getAttributes());
-		return model;
 	}
 
 }

@@ -34,7 +34,7 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 	private Map<String, Object> attributes = new HashMap<>();
 
 	/**
-	 * Sets the descriptor's attributes
+	 * Adds the given {@code attributes} to the descriptor
 	 *
 	 * @param attributes the attributes
 	 * @return the descriptor
@@ -52,7 +52,7 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 	 *
 	 * @return the attributes
 	 */
-	protected Map<String, Object> getAttributes() {
+	public final Map<String, Object> getAttributes() {
 		return this.attributes;
 	}
 

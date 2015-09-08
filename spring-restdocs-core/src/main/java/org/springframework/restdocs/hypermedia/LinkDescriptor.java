@@ -16,9 +16,6 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
@@ -36,7 +33,12 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 
 	private boolean optional;
 
-	LinkDescriptor(String rel) {
+	/**
+	 * Creates a new {@code LinkDescriptor} describing a link with the given {@code rel}.
+	 * 
+	 * @param rel the rel of the link
+	 */
+	protected LinkDescriptor(String rel) {
 		this.rel = rel;
 	}
 
@@ -46,7 +48,7 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 	 * @param description The link's description
 	 * @return {@code this}
 	 */
-	public LinkDescriptor description(String description) {
+	public final LinkDescriptor description(String description) {
 		this.description = description;
 		return this;
 	}
@@ -56,29 +58,36 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 	 *
 	 * @return {@code this}
 	 */
-	public LinkDescriptor optional() {
+	public final LinkDescriptor optional() {
 		this.optional = true;
 		return this;
 	}
 
-	String getRel() {
+	/**
+	 * Returns the rel of the link described by this descriptor
+	 * 
+	 * @return the rel
+	 */
+	public final String getRel() {
 		return this.rel;
 	}
 
-	String getDescription() {
+	/**
+	 * Returns the description for the link
+	 * 
+	 * @return the link description
+	 */
+	public final String getDescription() {
 		return this.description;
 	}
 
-	boolean isOptional() {
+	/**
+	 * Returns {@code true} if the described link is optional, otherwise {@code false}
+	 * 
+	 * @return {@code true} if the described link is optional, otherwise {@code false}
+	 */
+	public final boolean isOptional() {
 		return this.optional;
 	}
 
-	Map<String, Object> toModel() {
-		Map<String, Object> model = new HashMap<>();
-		model.put("rel", this.rel);
-		model.put("description", this.description);
-		model.put("optional", this.optional);
-		model.putAll(getAttributes());
-		return model;
-	}
 }

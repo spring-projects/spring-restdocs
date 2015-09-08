@@ -77,7 +77,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		List<Map<String, Object>> fields = new ArrayList<>();
 		model.put("fields", fields);
 		for (FieldDescriptor descriptor : this.fieldDescriptors) {
-			fields.add(descriptor.toModel());
+			fields.add(createModelForDescriptor(descriptor));
 		}
 		return model;
 	}
@@ -154,6 +154,22 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 */
 	protected final List<FieldDescriptor> getFieldDescriptors() {
 		return this.fieldDescriptors;
+	}
+
+	/**
+	 * Returns a model for the given {@code descriptor}
+	 * 
+	 * @param descriptor the descriptor
+	 * @return the model
+	 */
+	protected Map<String, Object> createModelForDescriptor(FieldDescriptor descriptor) {
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("path", descriptor.getPath());
+		model.put("type", descriptor.getType().toString());
+		model.put("description", descriptor.getDescription());
+		model.put("optional", descriptor.isOptional());
+		model.putAll(descriptor.getAttributes());
+		return model;
 	}
 
 }

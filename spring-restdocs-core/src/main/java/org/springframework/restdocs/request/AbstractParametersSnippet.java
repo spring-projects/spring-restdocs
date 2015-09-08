@@ -67,7 +67,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 		Map<String, Object> model = new HashMap<>();
 		List<Map<String, Object>> parameters = new ArrayList<>();
 		for (Entry<String, ParameterDescriptor> entry : this.descriptorsByName.entrySet()) {
-			parameters.add(entry.getValue().toModel());
+			parameters.add(createModelForDescriptor(entry.getValue()));
 		}
 		model.put("parameters", parameters);
 		return model;
@@ -103,6 +103,20 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 */
 	protected final Map<String, ParameterDescriptor> getFieldDescriptors() {
 		return this.descriptorsByName;
+	}
+
+	/**
+	 * Returns a model for the given {@link descriptor}.
+	 * 
+	 * @param descriptor the descriptor
+	 * @return the model
+	 */
+	protected Map<String, Object> createModelForDescriptor(ParameterDescriptor descriptor) {
+		Map<String, Object> model = new HashMap<>();
+		model.put("name", descriptor.getName());
+		model.put("description", descriptor.getDescription());
+		model.putAll(descriptor.getAttributes());
+		return model;
 	}
 
 }
