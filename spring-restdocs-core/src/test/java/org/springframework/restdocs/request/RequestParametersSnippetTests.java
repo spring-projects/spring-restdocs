@@ -131,11 +131,11 @@ public class RequestParametersSnippetTests {
 		when(resolver.resolveTemplateResource("request-parameters")).thenReturn(
 				snippetResource("request-parameters-with-title"));
 		new RequestParametersSnippet(
-				attributes(key("title").value("The title")),
 				Arrays.asList(
 						parameterWithName("a").description("one").attributes(
 								key("foo").value("alpha")), parameterWithName("b")
-								.description("two").attributes(key("foo").value("bravo"))))
+								.description("two").attributes(key("foo").value("bravo"))),
+				attributes(key("title").value("The title")))
 				.document(new OperationBuilder(
 						"request-parameters-with-custom-attributes", this.snippet
 								.getOutputDirectory())

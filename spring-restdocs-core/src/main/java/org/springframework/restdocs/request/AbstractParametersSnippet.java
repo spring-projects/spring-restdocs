@@ -30,12 +30,29 @@ import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.Assert;
 
-abstract class AbstractParametersSnippet extends TemplatedSnippet {
+/**
+ * Abstract {@link TemplatedSnippet} subclass that provides a base for snippets that
+ * document parameters from a request sent to a RESTful resource.
+ *
+ * @author Andreas Evers
+ * @author Andy Wilkinson
+ */
+public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 
 	private final Map<String, ParameterDescriptor> descriptorsByName = new LinkedHashMap<>();
 
+	/**
+	 * Creates a new {@code AbstractParametersSnippet} that will produce a snippet with
+	 * the given {@code snippetName} that will document parameters using the given
+	 * {@code descriptors}. The given {@code attributes} will be included in the model
+	 * during template rendering.
+	 * 
+	 * @param snippetName The snippet name
+	 * @param descriptors The descriptors
+	 * @param attributes The additional attributes
+	 */
 	protected AbstractParametersSnippet(String snippetName,
-			Map<String, Object> attributes, List<ParameterDescriptor> descriptors) {
+			List<ParameterDescriptor> descriptors, Map<String, Object> attributes) {
 		super(snippetName, attributes);
 		for (ParameterDescriptor descriptor : descriptors) {
 			Assert.hasText(descriptor.getName());

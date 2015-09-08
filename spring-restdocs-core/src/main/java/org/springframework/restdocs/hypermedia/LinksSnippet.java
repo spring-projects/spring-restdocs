@@ -37,8 +37,12 @@ import org.springframework.util.Assert;
  * A {@link Snippet} that documents a RESTful resource's links.
  *
  * @author Andy Wilkinson
+ * @see HypermediaDocumentation#links(LinkDescriptor...)
+ * @see HypermediaDocumentation#links(LinkExtractor, LinkDescriptor...)
+ * @see HypermediaDocumentation#links(Map, LinkDescriptor...)
+ * @see HypermediaDocumentation#links(LinkExtractor, Map, LinkDescriptor...)
  */
-class LinksSnippet extends TemplatedSnippet {
+public class LinksSnippet extends TemplatedSnippet {
 
 	private final Map<String, LinkDescriptor> descriptorsByRel = new LinkedHashMap<>();
 
@@ -46,12 +50,28 @@ class LinksSnippet extends TemplatedSnippet {
 
 	private final LinkExtractor linkExtractor;
 
-	LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
-		this(linkExtractor, null, descriptors);
+	/**
+	 * Creates a new {@code LinksSnippet} that will extract links using the given
+	 * {@code linkExtractor} and document them using the given {@code descriptors}.
+	 * 
+	 * @param linkExtractor the link extractor
+	 * @param descriptors the link descriptors
+	 */
+	protected LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
+		this(linkExtractor, descriptors, null);
 	}
 
-	LinksSnippet(LinkExtractor linkExtractor, Map<String, Object> attributes,
-			List<LinkDescriptor> descriptors) {
+	/**
+	 * Creates a new {@code LinksSnippet} that will extract links using the given
+	 * {@code linkExtractor} and document them using the given {@code descriptors}. The
+	 * given {@code attributes} will be included in the model during template rendering.
+	 * 
+	 * @param linkExtractor the link extractor
+	 * @param descriptors the link descriptors
+	 * @param attributes the additional attributes
+	 */
+	protected LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors,
+			Map<String, Object> attributes) {
 		super("links", attributes);
 		this.linkExtractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {

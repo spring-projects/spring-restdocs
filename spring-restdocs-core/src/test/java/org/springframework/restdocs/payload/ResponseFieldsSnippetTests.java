@@ -139,8 +139,8 @@ public class ResponseFieldsSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		when(resolver.resolveTemplateResource("response-fields")).thenReturn(
 				snippetResource("response-fields-with-title"));
-		new ResponseFieldsSnippet(attributes(key("title").value("Custom title")),
-				Arrays.asList(fieldWithPath("a").description("one")))
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
+				attributes(key("title").value("Custom title")))
 				.document(new OperationBuilder("response-fields-with-custom-attributes",
 						this.snippet.getOutputDirectory())
 						.attribute(TemplateEngine.class.getName(),

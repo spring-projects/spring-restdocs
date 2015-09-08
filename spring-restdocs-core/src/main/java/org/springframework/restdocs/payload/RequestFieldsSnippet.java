@@ -28,15 +28,32 @@ import org.springframework.restdocs.snippet.Snippet;
  * A {@link Snippet} that documents the fields in a request.
  * 
  * @author Andy Wilkinson
+ * @see PayloadDocumentation#requestFields(FieldDescriptor...)
+ * @see PayloadDocumentation#requestFields(Map, FieldDescriptor...)
  */
-class RequestFieldsSnippet extends AbstractFieldsSnippet {
+public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 
-	RequestFieldsSnippet(List<FieldDescriptor> descriptors) {
-		this(null, descriptors);
+	/**
+	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
+	 * request using the given {@code descriptors}.
+	 * 
+	 * @param descriptors the descriptors
+	 */
+	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors) {
+		this(descriptors, null);
 	}
 
-	RequestFieldsSnippet(Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
-		super("request", attributes, descriptors);
+	/**
+	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
+	 * request using the given {@code descriptors}. The given {@code attributes} will be
+	 * included in the model during template rendering.
+	 * 
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 */
+	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes) {
+		super("request", descriptors, attributes);
 	}
 
 	@Override

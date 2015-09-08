@@ -71,7 +71,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static Snippet pathParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {
-		return new PathParametersSnippet(attributes, Arrays.asList(descriptors));
+		return new PathParametersSnippet(Arrays.asList(descriptors), attributes);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static Snippet requestParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {
-		return new RequestParametersSnippet(attributes, Arrays.asList(descriptors));
+		return new RequestParametersSnippet(Arrays.asList(descriptors), attributes);
 	}
 
 }

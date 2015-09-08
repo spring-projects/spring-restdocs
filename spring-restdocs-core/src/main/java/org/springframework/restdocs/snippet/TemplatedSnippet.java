@@ -38,6 +38,14 @@ public abstract class TemplatedSnippet implements Snippet {
 
 	private final String snippetName;
 
+	/**
+	 * Creates a new {@code TemplatedSnippet} that will produce a snippet with the given
+	 * {@code snippetName}. The given {@code attributes} will be included in the model
+	 * during rendering of the template.
+	 * 
+	 * @param snippetName The name of the snippet
+	 * @param attributes The additional attributes
+	 */
 	protected TemplatedSnippet(String snippetName, Map<String, Object> attributes) {
 		this.snippetName = snippetName;
 		if (attributes != null) {

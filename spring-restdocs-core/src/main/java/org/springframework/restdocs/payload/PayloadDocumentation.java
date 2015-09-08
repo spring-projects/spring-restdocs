@@ -136,7 +136,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static Snippet requestFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
-		return new RequestFieldsSnippet(attributes, Arrays.asList(descriptors));
+		return new RequestFieldsSnippet(Arrays.asList(descriptors), attributes);
 	}
 
 	/**
@@ -177,7 +177,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static Snippet responseFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
-		return new ResponseFieldsSnippet(attributes, Arrays.asList(descriptors));
+		return new ResponseFieldsSnippet(Arrays.asList(descriptors), attributes);
 	}
 
 }

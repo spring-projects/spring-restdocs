@@ -147,11 +147,11 @@ public class PathParametersSnippetTests {
 		when(resolver.resolveTemplateResource("path-parameters")).thenReturn(
 				snippetResource("path-parameters-with-title"));
 		new PathParametersSnippet(
-				attributes(key("title").value("The title")),
 				Arrays.asList(
 						parameterWithName("a").description("one").attributes(
 								key("foo").value("alpha")), parameterWithName("b")
-								.description("two").attributes(key("foo").value("bravo"))))
+								.description("two").attributes(key("foo").value("bravo"))),
+				attributes(key("title").value("The title")))
 				.document(new OperationBuilder("path-parameters-with-custom-attributes",
 						this.snippet.getOutputDirectory())
 						.attribute("org.springframework.restdocs.urlTemplate", "/{a}/{b}")

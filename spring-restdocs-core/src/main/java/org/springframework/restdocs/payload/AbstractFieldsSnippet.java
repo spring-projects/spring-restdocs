@@ -30,8 +30,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * A {@link TemplatedSnippet} that produces a snippet documenting a RESTful resource's
- * request or response fields.
+ * Abstract {@link TemplatedSnippet} subclass that provides a base for snippets that
+ * document a RESTful resource's request or response fields.
  *
  * @author Andreas Evers
  * @author Andy Wilkinson
@@ -40,8 +40,18 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	private List<FieldDescriptor> fieldDescriptors;
 
-	AbstractFieldsSnippet(String type, Map<String, Object> attributes,
-			List<FieldDescriptor> descriptors) {
+	/**
+	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
+	 * {@code <type>-fields}. The fields will be documented using the given
+	 * {@code  descriptors} and the given {@code attributes} will be included in the model
+	 * during template rendering.
+	 * 
+	 * @param type the type of the fields
+	 * @param descriptors the field descriptors
+	 * @param attributes the additional attributes
+	 */
+	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes) {
 		super(type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath());
@@ -106,8 +116,23 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		}
 	}
 
+	/**
+	 * Returns the content type of the request or response extracted from the given
+	 * {@code operation}.
+	 * 
+	 * @param operation The operation
+	 * @return The content type
+	 */
 	protected abstract MediaType getContentType(Operation operation);
 
+	/**
+	 * Returns the content of the request or response extracted form the given
+	 * {@code operation}.
+	 * 
+	 * @param operation The operation
+	 * @return The content
+	 * @throws IOException if the content cannot be extracted
+	 */
 	protected abstract byte[] getContent(Operation operation) throws IOException;
 
 }

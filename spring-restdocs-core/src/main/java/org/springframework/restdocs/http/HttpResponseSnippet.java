@@ -33,19 +33,30 @@ import org.springframework.restdocs.snippet.TemplatedSnippet;
  * A {@link Snippet} that documents an HTTP response.
  *
  * @author Andy Wilkinson
+ * @see HttpDocumentation#httpResponse()
+ * @see HttpDocumentation#httpResponse(Map)
  */
-class HttpResponseSnippet extends TemplatedSnippet {
+public class HttpResponseSnippet extends TemplatedSnippet {
 
-	HttpResponseSnippet() {
+	/**
+	 * Creates a new {@code HttpResponseSnippet} with no additional attributes.
+	 */
+	protected HttpResponseSnippet() {
 		this(null);
 	}
 
-	HttpResponseSnippet(Map<String, Object> attributes) {
+	/**
+	 * Creates a new {@code HttpResponseSnippet} with the given additional
+	 * {@code attributes} that will be included in the model during template rendering.
+	 * 
+	 * @param attributes The additional attributes
+	 */
+	protected HttpResponseSnippet(Map<String, Object> attributes) {
 		super("http-response", attributes);
 	}
 
 	@Override
-	public Map<String, Object> createModel(Operation operation) throws IOException {
+	protected Map<String, Object> createModel(Operation operation) throws IOException {
 		OperationResponse response = operation.getResponse();
 		HttpStatus status = response.getStatus();
 		Map<String, Object> model = new HashMap<String, Object>();

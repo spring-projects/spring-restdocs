@@ -170,8 +170,8 @@ public class RequestFieldsSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		when(resolver.resolveTemplateResource("request-fields")).thenReturn(
 				snippetResource("request-fields-with-title"));
-		new RequestFieldsSnippet(attributes(key("title").value("Custom title")),
-				Arrays.asList(fieldWithPath("a").description("one")))
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
+				attributes(key("title").value("Custom title")))
 				.document(new OperationBuilder("request-fields-with-custom-attributes",
 						this.snippet.getOutputDirectory())
 						.attribute(TemplateEngine.class.getName(),

@@ -33,28 +33,44 @@ import org.springframework.util.Assert;
  * A {@link Snippet} that documents the path parameters supported by a RESTful resource.
  *
  * @author Andy Wilkinson
+ * @see RequestDocumentation#pathParameters(ParameterDescriptor...)
+ * @see RequestDocumentation#pathParameters(Map, ParameterDescriptor...)
  */
-class PathParametersSnippet extends AbstractParametersSnippet {
+public class PathParametersSnippet extends AbstractParametersSnippet {
 
 	private static final Pattern NAMES_PATTERN = Pattern.compile("\\{([^/]+?)\\}");
 
-	PathParametersSnippet(List<ParameterDescriptor> descriptors) {
-		this(null, descriptors);
+	/**
+	 * Creates a new {@code PathParametersSnippet} that will document the request's path
+	 * parameters using the given {@code descriptors}.
+	 * 
+	 * @param descriptors the parameter descriptors
+	 */
+	protected PathParametersSnippet(List<ParameterDescriptor> descriptors) {
+		this(descriptors, null);
 	}
 
-	PathParametersSnippet(Map<String, Object> attributes,
-			List<ParameterDescriptor> descriptors) {
-		super("path-parameters", attributes, descriptors);
+	/**
+	 * Creates a new {@code PathParametersSnippet} that will document the request's path
+	 * parameters using the given {@code descriptors}. The given {@code attributes} will
+	 * be included in the model during template rendering.
+	 * 
+	 * @param descriptors the parameter descriptors
+	 * @param attributes the additional attributes
+	 */
+	protected PathParametersSnippet(List<ParameterDescriptor> descriptors,
+			Map<String, Object> attributes) {
+		super("path-parameters", descriptors, attributes);
 	}
 
 	@Override
 	protected Map<String, Object> createModel(Operation operation) throws IOException {
 		Map<String, Object> model = super.createModel(operation);
-		model.put("path", remoteQueryStringIfPresent(extractUrlTemplate(operation)));
+		model.put("path", removeQueryStringIfPresent(extractUrlTemplate(operation)));
 		return model;
 	}
 
-	private String remoteQueryStringIfPresent(String urlTemplate) {
+	private String removeQueryStringIfPresent(String urlTemplate) {
 		int index = urlTemplate.indexOf('?');
 		if (index == -1) {
 			return urlTemplate;

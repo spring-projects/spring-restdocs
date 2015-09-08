@@ -67,8 +67,8 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static Snippet links(Map<String, Object> attributes,
 			LinkDescriptor... descriptors) {
-		return new LinksSnippet(new ContentTypeLinkExtractor(), attributes,
-				Arrays.asList(descriptors));
+		return new LinksSnippet(new ContentTypeLinkExtractor(), Arrays.asList(descriptors),
+				attributes);
 	}
 
 	/**
@@ -98,8 +98,8 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static Snippet links(LinkExtractor linkExtractor,
 			Map<String, Object> attributes, LinkDescriptor... descriptors) {
-		return new LinksSnippet(linkExtractor, attributes,
-				Arrays.asList(descriptors));
+		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors),
+				attributes);
 	}
 
 	/**

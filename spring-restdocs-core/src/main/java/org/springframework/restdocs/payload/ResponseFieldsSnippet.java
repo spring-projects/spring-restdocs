@@ -27,16 +27,32 @@ import org.springframework.restdocs.snippet.Snippet;
  * A {@link Snippet} that documents the fields in a response.
  * 
  * @author Andy Wilkinson
+ * @see PayloadDocumentation#responseFields(FieldDescriptor...)
+ * @see PayloadDocumentation#responseFields(Map, FieldDescriptor...)
  */
-class ResponseFieldsSnippet extends AbstractFieldsSnippet {
+public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 
-	ResponseFieldsSnippet(List<FieldDescriptor> descriptors) {
-		this(null, descriptors);
+	/**
+	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
+	 * response using the given {@code descriptors}.
+	 * 
+	 * @param descriptors the descriptors
+	 */
+	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors) {
+		this(descriptors, null);
 	}
 
-	ResponseFieldsSnippet(Map<String, Object> attributes,
-			List<FieldDescriptor> descriptors) {
-		super("response", attributes, descriptors);
+	/**
+	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
+	 * response using the given {@code descriptors}. The given {@code attributes} will be
+	 * included in the model during template rendering.
+	 * 
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 */
+	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes) {
+		super("response", descriptors, attributes);
 	}
 
 	@Override

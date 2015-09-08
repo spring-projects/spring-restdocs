@@ -36,31 +36,43 @@ import org.springframework.util.StringUtils;
  * A {@link Snippet} that documents the curl command for a request.
  *
  * @author Andy Wilkinson
+ * @see CurlDocumentation#curlRequest()
+ * @see CurlDocumentation#curlRequest(Map)
  */
-class CurlRequestSnippet extends TemplatedSnippet {
+public class CurlRequestSnippet extends TemplatedSnippet {
 
-	CurlRequestSnippet() {
+	/**
+	 * Creates a new {@code CurlRequestSnippet} with no additional attributes.
+	 */
+	protected CurlRequestSnippet() {
 		this(null);
 	}
 
-	CurlRequestSnippet(Map<String, Object> attributes) {
+	/**
+	 * Creates a new {@code CurlRequestSnippet} with the given additional
+	 * {@code attributes} that will be included in the model during template rendering.
+	 * 
+	 * @param attributes The additional attributes
+	 */
+	protected CurlRequestSnippet(Map<String, Object> attributes) {
 		super("curl-request", attributes);
 	}
 
 	@Override
-	public Map<String, Object> createModel(Operation operation) throws IOException {
+	protected Map<String, Object> createModel(Operation operation) throws IOException {
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("arguments", getCurlCommandArguments(operation));
+		model.put("url", getUrl(operation));
+		model.put("options", getOptions(operation));
 		return model;
 	}
 
-	private String getCurlCommandArguments(Operation operation) throws IOException {
+	private String getUrl(Operation operation) {
+		return String.format("'%s'", operation.getRequest().getUri());
+	}
+
+	private String getOptions(Operation operation) throws IOException {
 		StringWriter command = new StringWriter();
 		PrintWriter printer = new PrintWriter(command);
-		printer.print("'");
-		printer.print(operation.getRequest().getUri());
-		printer.print("'");
-
 		writeOptionToIncludeHeadersInOutput(printer);
 		writeHttpMethodIfNecessary(operation.getRequest(), printer);
 		writeHeaders(operation.getRequest(), printer);
@@ -72,7 +84,7 @@ class CurlRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeOptionToIncludeHeadersInOutput(PrintWriter writer) {
-		writer.print(" -i");
+		writer.print("-i");
 	}
 
 	private void writeHttpMethodIfNecessary(OperationRequest request, PrintWriter writer) {

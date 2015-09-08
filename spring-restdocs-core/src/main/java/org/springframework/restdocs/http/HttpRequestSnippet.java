@@ -39,21 +39,32 @@ import org.springframework.util.StringUtils;
  * A {@link Snippet} that documents an HTTP request.
  *
  * @author Andy Wilkinson
+ * @see HttpDocumentation#httpRequest()
+ * @see HttpDocumentation#httpRequest(Map)
  */
-class HttpRequestSnippet extends TemplatedSnippet {
+public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private static final String MULTIPART_BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
 
-	HttpRequestSnippet() {
+	/**
+	 * Creates a new {@code HttpRequestSnippet} with no additional attributes.
+	 */
+	protected HttpRequestSnippet() {
 		this(null);
 	}
 
-	HttpRequestSnippet(Map<String, Object> attributes) {
+	/**
+	 * Creates a new {@code HttpRequestSnippet} with the given additional
+	 * {@code attributes} that will be included in the model during template rendering.
+	 * 
+	 * @param attributes The additional attributes
+	 */
+	protected HttpRequestSnippet(Map<String, Object> attributes) {
 		super("http-request", attributes);
 	}
 
 	@Override
-	public Map<String, Object> createModel(Operation operation) throws IOException {
+	protected Map<String, Object> createModel(Operation operation) throws IOException {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("method", operation.getRequest().getMethod());
 		model.put(
@@ -61,8 +72,7 @@ class HttpRequestSnippet extends TemplatedSnippet {
 				operation.getRequest().getUri().getRawPath()
 						+ (StringUtils.hasText(operation.getRequest().getUri()
 								.getRawQuery()) ? "?"
-								+ operation.getRequest().getUri().getRawQuery()
-								: ""));
+								+ operation.getRequest().getUri().getRawQuery() : ""));
 		model.put("headers", getHeaders(operation.getRequest()));
 		model.put("requestBody", getRequestBody(operation.getRequest()));
 		return model;

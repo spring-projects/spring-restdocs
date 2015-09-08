@@ -20,32 +20,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletRequest;
-
 import org.springframework.restdocs.operation.Operation;
+import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * A {@link Snippet} that documents the request parameters supported by a RESTful
  * resource.
  * <p>
- * Request parameters are sent as part of the query string or as posted from data.
+ * Request parameters are sent as part of the query string or as POSTed form data.
  *
  * @author Andy Wilkinson
- * @see ServletRequest#getParameterMap()
- * @see RequestParam
+ * @see OperationRequest#getParameters()
+ * @see RequestDocumentation#requestParameters(ParameterDescriptor...)
+ * @see RequestDocumentation#requestParameters(Map, ParameterDescriptor...)
  */
-class RequestParametersSnippet extends AbstractParametersSnippet {
+public class RequestParametersSnippet extends AbstractParametersSnippet {
 
-	RequestParametersSnippet(List<ParameterDescriptor> descriptors) {
-		this(null, descriptors);
+	/**
+	 * Creates a new {@code RequestParametersSnippet} that will document the request's
+	 * parameters using the given {@code descriptors}.
+	 * 
+	 * @param descriptors the parameter descriptors
+	 */
+	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors) {
+		this(descriptors, null);
 	}
 
-	RequestParametersSnippet(Map<String, Object> attributes,
-			List<ParameterDescriptor> descriptors) {
-		super("request-parameters", attributes, descriptors);
+	/**
+	 * Creates a new {@code RequestParametersSnippet} that will document the request's
+	 * parameters using the given {@code descriptors}. The given {@code attributes} will
+	 * be included in the model during template rendering.
+	 * 
+	 * @param descriptors the parameter descriptors
+	 * @param attributes the additional attributes
+	 */
+	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors,
+			Map<String, Object> attributes) {
+		super("request-parameters", descriptors, attributes);
 	}
 
 	@Override

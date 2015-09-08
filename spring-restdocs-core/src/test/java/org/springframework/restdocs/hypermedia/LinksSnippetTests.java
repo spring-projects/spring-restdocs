@@ -154,10 +154,10 @@ public class LinksSnippetTests {
 						new FileSystemResource(
 								"src/test/resources/custom-snippet-templates/links-with-title.snippet"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-				new Link("b", "bravo")), attributes(key("title").value(
-				"Title for the links")), Arrays.asList(
+				new Link("b", "bravo")), Arrays.asList(
 				new LinkDescriptor("a").description("one"),
-				new LinkDescriptor("b").description("two")))
+				new LinkDescriptor("b").description("two")), attributes(key("title").value(
+				"Title for the links")))
 				.document(new OperationBuilder("links-with-custom-attributes",
 						this.snippet.getOutputDirectory()).attribute(
 						TemplateEngine.class.getName(),
