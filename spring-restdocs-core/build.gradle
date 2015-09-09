@@ -27,6 +27,7 @@ dependencies {
 	compile 'junit:junit'
 	compile 'org.springframework:spring-webmvc'
 	compile 'javax.servlet:javax.servlet-api'
+	compile 'commons-codec:commons-codec:1.10'
 	compile files(jmustacheRepackJar)
 	jarjar 'com.googlecode.jarjar:jarjar:1.3'
 	jmustache 'com.samskivert:jmustache@jar'
