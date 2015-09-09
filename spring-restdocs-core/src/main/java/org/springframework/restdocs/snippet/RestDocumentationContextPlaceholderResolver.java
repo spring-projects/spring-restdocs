@@ -66,20 +66,24 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 			return this.context.getTestMethodName();
 		}
 		if ("method-name".equals(placeholderName)) {
-			return camelCaseToDash(this.context.getTestMethodName());
+			return camelCaseToKebabCase(this.context.getTestMethodName());
 		}
 		if ("method_name".equals(placeholderName)) {
-			return camelCaseToUnderscore(this.context.getTestMethodName());
+			return camelCaseToSnakeCase(this.context.getTestMethodName());
 		}
 		return null;
 	}
 
-	private String camelCaseToDash(String string) {
+	protected final String camelCaseToKebabCase(String string) {
 		return camelCaseToSeparator(string, "-");
 	}
 
-	private String camelCaseToUnderscore(String string) {
+	protected final String camelCaseToSnakeCase(String string) {
 		return camelCaseToSeparator(string, "_");
+	}
+
+	protected final RestDocumentationContext getContext() {
+		return this.context;
 	}
 
 	private String camelCaseToSeparator(String string, String separator) {
