@@ -74,14 +74,32 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 		return null;
 	}
 
+	/**
+	 * Converts the given {@code string} from camelCase to kebab-case.
+	 * 
+	 * @param string the string
+	 * @return the converted string
+	 */
 	protected final String camelCaseToKebabCase(String string) {
 		return camelCaseToSeparator(string, "-");
 	}
 
+	/**
+	 * Converts the given {@code string} from camelCase to snake_case.
+	 * 
+	 * @param string the string
+	 * @return the converted string
+	 */
 	protected final String camelCaseToSnakeCase(String string) {
 		return camelCaseToSeparator(string, "_");
 	}
 
+	/**
+	 * Returns the {@link RestDocumentationContext} that should be used during placeholder
+	 * resolution.
+	 * 
+	 * @return the context
+	 */
 	protected final RestDocumentationContext getContext() {
 		return this.context;
 	}
