@@ -238,9 +238,9 @@ The `RestDocumentation` rule is configured with the output directory into which
 generated snippets should be written. This output directory should match the snippets
 directory that you have configured in your `build.gradle` or `pom.xml` file.
 
-The `MockMvc` instance is configured using a `RestDocumentationConfigurer`. An instance
+The `MockMvc` instance is configured using a `RestDocumentationMockMvcConfigurer`. An instance
 of this class can be obtained from the static `documentationConfiguration()` method on
-`org.springframework.restdocs.RestDocumentation`. `RestDocumentationConfigurer` applies
+`org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`. `RestDocumentationMockMvcConfigurer` applies
 sensible defaults and also provides an API for customizing the configuration. Refer to the
 <<configuration, configuration section>> for more information.
 
