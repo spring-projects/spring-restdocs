@@ -1,11 +1,11 @@
 = RESTful Notes API Guide
 Andy Wilkinson;
 :doctype: book
-:toc:
-:sectanchors:
-:sectlinks:
-:toclevels: 4
+:icons: font
 :source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
 
 [[overview]]
 = Overview

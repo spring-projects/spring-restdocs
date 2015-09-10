@@ -1,9 +1,11 @@
 = RESTful Notes Getting Started Guide
 Andy Wilkinson;
 :doctype: book
-:toc:
-:toclevels: 4
+:icons: font
 :source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
 
 [introduction]
 = Introduction
@@ -21,20 +23,18 @@ to describe the relationships between resources and to allow navigation between 
 RESTful Notes is written using http://projects.spring.io/spring-boot[Spring Boot] which
 makes it easy to get it up and running so that you can start exploring the REST API.
 
-At the moment, binaries for RESTful Notes are not published anywhere. However, building
-and running it from source is straightforward. The first step is to clone the Git
-repository:
+The first step is to clone the Git repository:
 
 [source,bash]
 ----
-$ git clone https://github.com/wilkinsona/spring-restdocs
+$ git clone https://github.com/spring-projects/spring-restdocs
 ----
 
 Once the clone is complete, you're ready to get the service up and running:
 
 [source,bash]
 ----
-$ cd rest-notes
+$ cd samples/rest-notes-spring-hateoas
 $ ./gradlew build
 $ java -jar build/libs/*.jar
 ----
