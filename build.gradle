@@ -153,7 +153,7 @@ task api (type: Javadoc) {
 	}
 }
 
-task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':api']) {
+task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':api', ':buildSamples']) {
 	group = 'Distribution'
 	baseName = 'spring-restdocs'
 	classifier = 'docs'
@@ -166,6 +166,10 @@ task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':api']) {
 
 	from(api) {
 		into 'api'
+	}
+
+	from(file('samples/rest-notes-spring-hateoas/build/asciidoc/html5')) {
+		into 'samples/restful-notes'
 	}
 }
 
