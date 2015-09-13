@@ -28,15 +28,23 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * <ul>
  * <li>{@code step} – the {@link RestDocumentationContext#getStepCount() step current
  * count}.
- * <li>{@code methodName} - the name of the
- * {@link RestDocumentationContext#getTestMethodName() current test method} formatted
- * using camelCase
+ * <li>{@code methodName} - the unmodified name of the
+ * {@link RestDocumentationContext#getTestMethodName() current test method} without
+ * applying any formatting
  * <li>{@code method-name} - the name of the
  * {@link RestDocumentationContext#getTestMethodName() current test method} formatted
  * using kebab-case
  * <li>{@code method_name} - the name of the
  * {@link RestDocumentationContext#getTestMethodName() current test method} formatted
  * using snake_case
+ * <li>{@code ClassName} - the unmodified {@link Class#getSimpleName() simple name} of the
+ * {@link RestDocumentationContext#getTestClass() current test class}
+ * <li>{@code class-name} - the {@link Class#getSimpleName() simple name} of the
+ * {@link RestDocumentationContext#getTestClass() current test class} formatted using
+ * kebab-case
+ * <li>{@code class_name} - the {@link Class#getSimpleName() simple name} of the
+ * {@link RestDocumentationContext#getTestClass() current test class} formatted using
+ * snake case
  * </ul>
  * 
  * @author Andy Wilkinson
@@ -70,6 +78,15 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 		}
 		if ("method_name".equals(placeholderName)) {
 			return camelCaseToSnakeCase(this.context.getTestMethodName());
+		}
+		if ("ClassName".equals(placeholderName)) {
+			return this.context.getTestClass().getSimpleName();
+		}
+		if ("class-name".equals(placeholderName)) {
+			return camelCaseToKebabCase(this.context.getTestClass().getSimpleName());
+		}
+		if ("class_name".equals(placeholderName)) {
+			return camelCaseToSnakeCase(this.context.getTestClass().getSimpleName());
 		}
 		return null;
 	}
@@ -108,7 +125,9 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 		Matcher matcher = CAMEL_CASE_PATTERN.matcher(string);
 		StringBuffer result = new StringBuffer();
 		while (matcher.find()) {
-			matcher.appendReplacement(result, separator + matcher.group(1).toLowerCase());
+			String replacement = (matcher.start() > 0) ? separator
+					+ matcher.group(1).toLowerCase() : matcher.group(1).toLowerCase();
+			matcher.appendReplacement(result, replacement);
 		}
 		matcher.appendTail(result);
 		return result.toString();

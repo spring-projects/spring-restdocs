@@ -32,14 +32,14 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 public class RestDocumentationContextPlaceholderResolverTests {
 
 	@Test
-	public void dashSeparatedMethodName() throws Exception {
+	public void kebabCaseMethodName() throws Exception {
 		assertThat(
 				createResolver("dashSeparatedMethodName").resolvePlaceholder(
 						"method-name"), equalTo("dash-separated-method-name"));
 	}
 
 	@Test
-	public void underscoreSeparatedMethodName() throws Exception {
+	public void snakeCaseMethodName() throws Exception {
 		assertThat(
 				createResolver("underscoreSeparatedMethodName").resolvePlaceholder(
 						"method_name"), equalTo("underscore_separated_method_name"));
@@ -53,13 +53,36 @@ public class RestDocumentationContextPlaceholderResolverTests {
 	}
 
 	@Test
+	public void kebabCaseClassName() throws Exception {
+		assertThat(createResolver().resolvePlaceholder("class-name"),
+				equalTo("rest-documentation-context-placeholder-resolver-tests"));
+	}
+
+	@Test
+	public void snakeCaseClassName() throws Exception {
+		assertThat(createResolver().resolvePlaceholder("class_name"),
+				equalTo("rest_documentation_context_placeholder_resolver_tests"));
+	}
+
+	@Test
+	public void camelCaseClassName() throws Exception {
+		assertThat(createResolver().resolvePlaceholder("ClassName"),
+				equalTo("RestDocumentationContextPlaceholderResolverTests"));
+	}
+
+	@Test
 	public void stepCount() throws Exception {
 		assertThat(createResolver("stepCount").resolvePlaceholder("step"), equalTo("0"));
 	}
 
+	private PlaceholderResolver createResolver() {
+		return new RestDocumentationContextPlaceholderResolver(
+				new RestDocumentationContext(getClass(), null, null));
+	}
+
 	private PlaceholderResolver createResolver(String methodName) {
 		return new RestDocumentationContextPlaceholderResolver(
-				new RestDocumentationContext(null, methodName, null));
+				new RestDocumentationContext(getClass(), methodName, null));
 	}
 
 }

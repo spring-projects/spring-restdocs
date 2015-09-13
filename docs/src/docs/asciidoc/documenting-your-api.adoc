@@ -386,7 +386,7 @@ are supported:
 | Parameter | Description
 
 | {methodName}
-| The name of the test method, formatted using camelCase
+| The unmodified name of the test method
 
 | {method-name}
 | The name of the test method, formatted using kebab-case
@@ -394,15 +394,26 @@ are supported:
 | {method_name}
 | The name of the test method, formatted using snake_case
 
+| {ClassName}
+| The unmodified name of the test class
+
+| {class-name}
+| The name of the test class, formatted using kebab-case
+
+| {class_name}
+| The nome of the test class, formatted using snake_case
+
 | {step}
 | The count of calls to MockMvc.perform in the current test
 |===
 
-For example, `document("{method-name}")` in a test method named `creatingANote` will write
-snippets into a directory named `creating-a-note`.
+For example, `document("{class-name}/{method-name}")` in a test method named
+`creatingANote` on the test class `GettingStartedDocumentaiton`, will write
+snippets into a directory named `getting-started-documentation/creating-a-note`.
 
 A parameterized output directory is particularly useful in combination with Spring MVC
-Test's `alwaysDo` functionality. It allows documentation to be configured once in a setup method:
+Test's `alwaysDo` functionality. It allows documentation to be configured once in a setup
+method:
 
 [source,java,indent=0]
 ----
