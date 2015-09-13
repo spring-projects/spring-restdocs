@@ -27,7 +27,7 @@ import org.springframework.restdocs.operation.OperationResponse;
  * @author Andy Wilkinson
  * @see ContentModifyingOperationPreprocessor
  */
-interface ContentModifier {
+public interface ContentModifier {
 
 	/**
 	 * Returns modified content based on the given {@code originalContent}

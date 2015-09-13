@@ -28,11 +28,17 @@ import org.springframework.restdocs.operation.StandardOperationResponse;
  * 
  * @author Andy Wilkinson
  */
-class ContentModifyingOperationPreprocessor implements OperationPreprocessor {
+public class ContentModifyingOperationPreprocessor implements OperationPreprocessor {
 
 	private final ContentModifier contentModifier;
 
-	ContentModifyingOperationPreprocessor(ContentModifier contentModifier) {
+	/**
+	 * Create a new {@code ContentModifyingOperationPreprocessor} that will apply the
+	 * given {@code contentModifier} to the operation's request or response.
+	 * 
+	 * @param contentModifier the contentModifier
+	 */
+	public ContentModifyingOperationPreprocessor(ContentModifier contentModifier) {
 		this.contentModifier = contentModifier;
 	}
 
