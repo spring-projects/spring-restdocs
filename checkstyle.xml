@@ -7,7 +7,7 @@
 
 	<!-- Checks whether files end with a new line. -->
 	<!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-	<module name="NewlineAtEndOfFile"/>
+<!-- 	<module name="NewlineAtEndOfFile"/> -->
 
 	<module name="FileLength" />
 
