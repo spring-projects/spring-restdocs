@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<!-- A simple set of Checkstyle rules -->
+<module name="Checker">
+
+	<!-- Checks whether files end with a new line. -->
+	<!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+	<module name="NewlineAtEndOfFile"/>
+
+	<module name="FileLength" />
+
+	<module name="RegexpSingleline">
+		<property name="format" value="System\.(out|err)\.print" />
+		<property name="message"
+			value="System.out.println and System.err.println are not allowed. Using logging instead." />
+	</module>
+	<module name="RegexpSingleline">
+		<property name="format" value="\.printStackTrace\(\)" />
+		<property name="message"
+			value="Calls to Throwable.printStackTrace() are not allowed. Log the exception instead." />
+	</module>
+
+	<module name="TreeWalker">
+
+		<!-- Checks for Naming Conventions. -->
+		<!-- See http://checkstyle.sf.net/config_naming.html -->
+		<module name="ConstantName" />
+		<module name="LocalFinalVariableName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="MethodName" />
+		<module name="PackageName" />
+		<module name="ParameterName" />
+		<module name="StaticVariableName" />
+		<module name="TypeName" />
+
+		<!-- Checks for imports -->
+		<!-- See http://checkstyle.sf.net/config_import.html -->
+		<module name="AvoidStarImport" />
+		<module name="IllegalImport" /> <!-- defaults to sun.* packages -->
+<!-- 		<module name="RedundantImport" /> -->
+<!-- 		<module name="UnusedImports" /> -->
+
+		<!-- Checks for Size Violations. -->
+		<!-- Size checks - http://checkstyle.sourceforge.net/config_sizes.html -->
+		<module name="MethodLength" />
+		<module name="ParameterNumber" />
+<!-- 		<module name="LineLengthCheck"> -->
+<!-- 			<property name="max" value="120" /> -->
+<!-- 			<property name="tabWidth" value="4" /> -->
+<!-- 			<property name="ignorePattern" value="^import" /> -->
+<!-- 		</module> -->
+
+		<!-- Block checks - http://checkstyle.sourceforge.net/config_blocks.html -->
+		<module name="LeftCurly" />
+<!-- 		<module name="RightCurly"/> -->
+		<module name="NeedBraces" />
+
+		<!-- Metrics checks - http://checkstyle.sourceforge.net/config_metrics.html -->
+		<module name="JavaNCSS">
+			<property name="methodMaximum" value="32" />
+			<property name="classMaximum" value="500" />
+		</module>
+		<module name="CyclomaticComplexity">
+			<property name="max" value="10" />
+		</module>
+		<module name="NPathComplexity">
+			<property name="max" value="32" />
+		</module>
+
+		<!-- Coding checks http://checkstyle.sourceforge.net/config_coding.html -->
+		<module name="EmptyStatement" />
+		<module name="EqualsHashCode" />
+		<module name="IllegalInstantiation" />
+		<module name="InnerAssignment" />
+		<module name="MissingSwitchDefault" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="NestedIfDepth">
+			<property name="max" value="2" />
+		</module>
+		<module name="NestedTryDepth">
+			<property name="max" value="2" />
+		</module>
+		<module name="NoFinalizer" />
+
+	</module>
+
+</module>

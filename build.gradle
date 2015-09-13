@@ -47,6 +47,7 @@ subprojects {
 	apply plugin: 'propdeps-eclipse'
 	apply plugin: 'propdeps-maven'
 	apply plugin: 'maven'
+	apply plugin: 'checkstyle'
 	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
 
 	sourceCompatibility = 1.7
@@ -69,6 +70,10 @@ subprojects {
 			dependency 'org.springframework.hateoas:spring-hateoas:0.17.0.RELEASE'
 			dependency 'org.jacoco:org.jacoco.agent:0.7.2.201409121644'
 		}
+	}
+
+	checkstyle {
+		configFile = rootProject.file('checkstyle.xml')
 	}
 
 	configurations {
