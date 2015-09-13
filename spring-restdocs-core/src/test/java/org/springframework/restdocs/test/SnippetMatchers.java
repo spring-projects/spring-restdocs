@@ -191,6 +191,11 @@ public class SnippetMatchers {
 			this.addLine(-1, "");
 			return this;
 		}
+
+		public AsciidoctorTableMatcher configuration(String configuration) {
+			this.addLine(0, configuration);
+			return this;
+		}
 	}
 
 	public static class SnippetMatcher extends BaseMatcher<File> {

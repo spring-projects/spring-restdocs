@@ -34,8 +34,6 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 
 	private boolean optional;
 
-	private String description;
-
 	/**
 	 * Creates a new {@code FieldDescriptor} describing the field with the given
 	 * {@code path}.
@@ -69,17 +67,6 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	}
 
 	/**
-	 * Specifies the description of the field
-	 * 
-	 * @param description The field's description
-	 * @return {@code this}
-	 */
-	public final FieldDescriptor description(String description) {
-		this.description = description;
-		return this;
-	}
-
-	/**
 	 * Returns the path of the field described by this descriptor
 	 * 
 	 * @return the path
@@ -104,15 +91,6 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	 */
 	public final boolean isOptional() {
 		return this.optional;
-	}
-
-	/**
-	 * Returns the description for the field
-	 * 
-	 * @return the field description
-	 */
-	public final String getDescription() {
-		return this.description;
 	}
 
 }

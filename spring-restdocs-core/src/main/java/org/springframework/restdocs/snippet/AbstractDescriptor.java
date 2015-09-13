@@ -33,6 +33,8 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 
 	private Map<String, Object> attributes = new HashMap<>();
 
+	private Object description;
+
 	/**
 	 * Adds the given {@code attributes} to the descriptor
 	 *
@@ -40,11 +42,32 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 	 * @return the descriptor
 	 */
 	@SuppressWarnings("unchecked")
-	public T attributes(Attribute... attributes) {
+	public final T attributes(Attribute... attributes) {
 		for (Attribute attribute : attributes) {
 			this.attributes.put(attribute.getKey(), attribute.getValue());
 		}
 		return (T) this;
+	}
+
+	/**
+	 * Specifies the description
+	 * 
+	 * @param description the description
+	 * @return the descriptor
+	 */
+	@SuppressWarnings("unchecked")
+	public final T description(Object description) {
+		this.description = description;
+		return (T) this;
+	}
+
+	/**
+	 * Returns the description
+	 * 
+	 * @return the description
+	 */
+	public final Object getDescription() {
+		return this.description;
 	}
 
 	/**

@@ -29,8 +29,6 @@ public class ParameterDescriptor extends AbstractDescriptor<ParameterDescriptor>
 
 	private final String name;
 
-	private String description;
-
 	/**
 	 * Creates a new {@code ParameterDescriptor} describing the parameter with the given
 	 * {@code name}.
@@ -42,32 +40,12 @@ public class ParameterDescriptor extends AbstractDescriptor<ParameterDescriptor>
 	}
 
 	/**
-	 * Specifies the description of the parameter
-	 * 
-	 * @param description The parameter's description
-	 * @return {@code this}
-	 */
-	public final ParameterDescriptor description(String description) {
-		this.description = description;
-		return this;
-	}
-
-	/**
 	 * Returns the name of the parameter being described by this descriptor
 	 * 
 	 * @return the name of the parameter
 	 */
 	public final String getName() {
 		return this.name;
-	}
-
-	/**
-	 * Returns the description of the parameter
-	 * 
-	 * @return the description
-	 */
-	public final String getDescription() {
-		return this.description;
 	}
 
 }

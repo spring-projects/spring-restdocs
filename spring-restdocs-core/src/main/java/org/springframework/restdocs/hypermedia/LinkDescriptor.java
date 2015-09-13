@@ -29,8 +29,6 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 
 	private final String rel;
 
-	private String description;
-
 	private boolean optional;
 
 	/**
@@ -40,17 +38,6 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 	 */
 	protected LinkDescriptor(String rel) {
 		this.rel = rel;
-	}
-
-	/**
-	 * Specifies the description of the link
-	 * 
-	 * @param description The link's description
-	 * @return {@code this}
-	 */
-	public final LinkDescriptor description(String description) {
-		this.description = description;
-		return this;
 	}
 
 	/**
@@ -70,15 +57,6 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 	 */
 	public final String getRel() {
 		return this.rel;
-	}
-
-	/**
-	 * Returns the description for the link
-	 * 
-	 * @return the link description
-	 */
-	public final String getDescription() {
-		return this.description;
 	}
 
 	/**

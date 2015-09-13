@@ -75,7 +75,7 @@ public class LinksSnippet extends TemplatedSnippet {
 		this.linkExtractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {
 			Assert.hasText(descriptor.getRel());
-			Assert.hasText(descriptor.getDescription());
+			Assert.notNull(descriptor.getDescription());
 			this.descriptorsByRel.put(descriptor.getRel(), descriptor);
 		}
 	}

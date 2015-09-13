@@ -55,7 +55,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 		super(snippetName, attributes);
 		for (ParameterDescriptor descriptor : descriptors) {
 			Assert.hasText(descriptor.getName());
-			Assert.hasText(descriptor.getDescription());
+			Assert.notNull(descriptor.getDescription());
 			this.descriptorsByName.put(descriptor.getName(), descriptor);
 		}
 	}

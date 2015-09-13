@@ -56,7 +56,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		super(type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath());
-			Assert.hasText(descriptor.getDescription());
+			Assert.notNull(descriptor.getDescription());
 		}
 		this.fieldDescriptors = descriptors;
 	}

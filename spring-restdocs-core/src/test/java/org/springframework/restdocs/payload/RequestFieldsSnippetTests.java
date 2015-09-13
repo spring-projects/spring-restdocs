@@ -180,6 +180,26 @@ public class RequestFieldsSnippetTests {
 	}
 
 	@Test
+	public void requestFieldsWithListDescription() throws IOException {
+		this.snippet.expectRequestFields("request-fields-with-list-description")
+				.withContents(
+						tableWithHeader("Path", "Type", "Description")
+								//
+								.row("a", "String", String.format(" - one%n - two"))
+								.configuration("[cols=\"1,1,1a\"]"));
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		when(resolver.resolveTemplateResource("request-fields")).thenReturn(
+				snippetResource("request-fields-with-list-description"));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description(
+				Arrays.asList("one", "two"))))
+				.document(new OperationBuilder("request-fields-with-list-description",
+						this.snippet.getOutputDirectory())
+						.attribute(TemplateEngine.class.getName(),
+								new MustacheTemplateEngine(resolver))
+						.request("http://localhost").content("{\"a\": \"foo\"}").build());
+	}
+
+	@Test
 	public void xmlRequestFields() throws IOException {
 		this.snippet.expectRequestFields("xml-request").withContents( //
 				tableWithHeader("Path", "Type", "Description") //
