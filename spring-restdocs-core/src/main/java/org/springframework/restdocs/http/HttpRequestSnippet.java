@@ -18,6 +18,7 @@ package org.springframework.restdocs.http;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
+import org.springframework.restdocs.snippet.ModelCreationException;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.StringUtils;
@@ -107,8 +109,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		StringWriter httpRequest = new StringWriter();
 		PrintWriter writer = new PrintWriter(httpRequest);
 		if (request.getContent().length > 0) {
-			writer.println();
-			writer.print(new String(request.getContent()));
+			writer.print(responseBody(request));
 		}
 		else if (isPutOrPost(request)) {
 			if (request.getParts().isEmpty()) {
@@ -123,6 +124,31 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 			}
 		}
 		return httpRequest.toString();
+	}
+	
+	private String responseBody(OperationRequest request) {
+		byte[] content = request.getContent();
+		if (content.length > 0) {
+			MediaType contentType = request.getHeaders().getContentType();
+			String charset = null;
+			if (contentType != null) {
+				charset = contentType.getParameter("charset");
+			}
+			if (charset != null) {
+				try {
+					return String.format("%n%s", new String(content, charset));
+				}
+				catch (UnsupportedEncodingException e) {
+					throw new ModelCreationException(charset + " is unsupported charset.", e);
+				}
+			}
+			else {
+				return String.format("%n%s", new String(content));
+			}
+		}
+		else {
+			return "";
+		}
 	}
 
 	private boolean isPutOrPost(OperationRequest request) {

@@ -85,7 +85,23 @@ public class HttpRequestSnippetTests {
 				.request("http://localhost/foo").method("POST").content("Hello, world")
 				.build());
 	}
+	
+	@Test
+	public void postRequestWithCharset() throws IOException {
+		this.snippet.expectHttpRequest("post-request-with-charset").withContents(
+				httpRequest(POST, "/foo")
+				.header(HttpHeaders.HOST, "localhost")
+				.header("Content-Type", "text/plain;charset=UTF-8").content(
+						"こんにちわ, 世界")); // Hello, World in japanese.
 
+		new HttpRequestSnippet().document(new OperationBuilder(
+				"post-request-with-charset", this.snippet.getOutputDirectory())
+				.request("http://localhost/foo").method("POST")
+				.header("Content-Type", "text/plain;charset=UTF-8")
+				.content("こんにちわ, 世界")
+				.build());
+	}
+	
 	@Test
 	public void postRequestWithParameter() throws IOException {
 		this.snippet.expectHttpRequest("post-request-with-parameter").withContents(

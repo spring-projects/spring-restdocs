@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.http;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +24,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.snippet.ModelCreationException;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 
@@ -59,14 +62,36 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 		OperationResponse response = operation.getResponse();
 		HttpStatus status = response.getStatus();
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(
-				"responseBody",
-				response.getContent().length > 0 ? String.format("%n%s", new String(
-						response.getContent())) : "");
+		model.put("responseBody",responseBody(response));
 		model.put("statusCode", status.value());
 		model.put("statusReason", status.getReasonPhrase());
 		model.put("headers", headers(response));
 		return model;
+	}
+	
+	private String responseBody(OperationResponse response) {
+		byte[] content = response.getContent();
+		if (content.length > 0) {
+			MediaType contentType = response.getHeaders().getContentType();
+			String charset = null;
+			if (contentType != null) {
+				charset = contentType.getParameter("charset");
+			}
+			if (charset != null) {
+				try {
+					return String.format("%n%s", new String(content, charset));
+				}
+				catch (UnsupportedEncodingException e) {
+					throw new ModelCreationException(charset + " is unsupported charset.", e);
+				}
+			}
+			else {
+				return String.format("%n%s", new String(content));
+			}
+		}
+		else {
+			return "";
+		}
 	}
 
 	private List<Map<String, String>> headers(OperationResponse response) {
