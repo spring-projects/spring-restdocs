@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.operation;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 
@@ -37,6 +38,14 @@ public interface OperationRequest {
 	 * @return the contents, never {@code null}
 	 */
 	byte[] getContent();
+
+	/**
+	 * Returns the contents as string of the request. If the request has no content an empty string
+	 * is returned
+	 * @return the contents as string, never {@code null}
+	 * @throws IOException if an input or output exception occurred
+	 */
+	String getContentAsString() throws IOException;
 
 	/**
 	 * Returns the headers that were included in the request.

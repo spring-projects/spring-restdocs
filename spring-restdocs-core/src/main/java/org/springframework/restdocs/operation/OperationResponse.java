@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.operation;
 
+import java.io.IOException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
@@ -49,4 +51,12 @@ public interface OperationResponse {
 	 * @return the contents, never {@code null}
 	 */
 	byte[] getContent();
+
+	/**
+	 * Returns the contents as string of the response. If the response has no content an empty string
+	 * is returned
+	 * @return the contents as string, never {@code null}
+	 * @throws IOException if an input or output exception occurred
+	 */
+	String getContentAsString() throws IOException;
 }

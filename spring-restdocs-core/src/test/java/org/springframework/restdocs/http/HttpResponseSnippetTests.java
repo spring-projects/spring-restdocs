@@ -84,7 +84,15 @@ public class HttpResponseSnippetTests {
 		new HttpResponseSnippet().document(new OperationBuilder("response-with-content",
 				this.snippet.getOutputDirectory()).response().content("content").build());
 	}
-
+	
+	@Test
+	public void responseWithCharset() throws IOException {
+		this.snippet.expectHttpResponse("response-with-charset").withContents(
+				httpResponse(OK).header("Content-Type", "text/plain;charset=UTF-8").content("コンテンツ"));
+		new HttpResponseSnippet().document(new OperationBuilder("response-with-charset",
+				this.snippet.getOutputDirectory()).response().header("Content-Type", "text/plain;charset=UTF-8").content("コンテンツ").build());
+	}
+	
 	@Test
 	public void responseWithCustomSnippetAttributes() throws IOException {
 		this.snippet.expectHttpResponse("response-with-snippet-attributes").withContents(
