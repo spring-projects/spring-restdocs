@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.operation;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,6 +24,7 @@ import java.util.Collections;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 
 /**
  * Standard implementation of {@link OperationRequest}.
@@ -32,6 +34,8 @@ import org.springframework.http.HttpMethod;
 public class StandardOperationRequest implements OperationRequest {
 
 	private byte[] content;
+
+	private String characterEncoding;
 
 	private HttpHeaders headers;
 
@@ -60,6 +64,7 @@ public class StandardOperationRequest implements OperationRequest {
 		this.uri = uri;
 		this.method = method;
 		this.content = content;
+		this.characterEncoding = detectCharsetFromContentTypeHeader(headers);
 		this.headers = headers;
 		this.parameters = parameters;
 		this.parts = parts;
@@ -68,6 +73,17 @@ public class StandardOperationRequest implements OperationRequest {
 	@Override
 	public byte[] getContent() {
 		return Arrays.copyOf(this.content, this.content.length);
+	}
+	
+	@Override
+	public String getContentAsString() throws UnsupportedEncodingException {
+		if (content.length > 0) {
+			return characterEncoding != null ?
+					new String(content, characterEncoding) : new String(content);
+		}
+		else {
+			return "";
+		}
 	}
 
 	@Override
@@ -95,4 +111,14 @@ public class StandardOperationRequest implements OperationRequest {
 		return this.uri;
 	}
 
+	private String detectCharsetFromContentTypeHeader(HttpHeaders headers) {
+		if (headers == null) {
+			return null;
+		}
+		MediaType contentType = headers.getContentType();
+		if (contentType == null) {
+			return null;
+		}
+		return contentType.getParameter("charset");
+	}
 }

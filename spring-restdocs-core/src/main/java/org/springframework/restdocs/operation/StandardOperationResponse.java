@@ -16,8 +16,11 @@
 
 package org.springframework.restdocs.operation;
 
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 /**
  * Standard implementation of {@link OperationResponse}.
@@ -32,6 +35,8 @@ public class StandardOperationResponse implements OperationResponse {
 
 	private final byte[] content;
 
+	private String characterEncoding;
+
 	/**
 	 * Creates a new response with the given {@code status}, {@code headers}, and
 	 * {@code content}.
@@ -45,6 +50,7 @@ public class StandardOperationResponse implements OperationResponse {
 		this.status = status;
 		this.headers = headers;
 		this.content = content;
+		this.characterEncoding = detectCharsetFromContentTypeHeader(headers);
 	}
 
 	@Override
@@ -62,4 +68,25 @@ public class StandardOperationResponse implements OperationResponse {
 		return this.content;
 	}
 
+	@Override
+	public String getContentAsString() throws UnsupportedEncodingException {
+		if (content.length > 0) {
+			return characterEncoding != null ?
+					new String(content, characterEncoding) : new String(content);
+		}
+		else {
+			return "";
+		}
+	}
+
+	private String detectCharsetFromContentTypeHeader(HttpHeaders headers) {
+		if (headers == null) {
+			return null;
+		}
+		MediaType contentType = headers.getContentType();
+		if (contentType == null) {
+			return null;
+		}
+		return contentType.getParameter("charset");
+	}
 }

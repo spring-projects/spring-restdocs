@@ -16,9 +16,9 @@
 
 package org.springframework.restdocs.http;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +109,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		StringWriter httpRequest = new StringWriter();
 		PrintWriter writer = new PrintWriter(httpRequest);
 		if (request.getContent().length > 0) {
-			writer.print(responseBody(request));
+			writer.print(requestBody(request));
 		}
 		else if (isPutOrPost(request)) {
 			if (request.getParts().isEmpty()) {
@@ -125,29 +125,14 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		}
 		return httpRequest.toString();
 	}
-	
-	private String responseBody(OperationRequest request) {
-		byte[] content = request.getContent();
-		if (content.length > 0) {
-			MediaType contentType = request.getHeaders().getContentType();
-			String charset = null;
-			if (contentType != null) {
-				charset = contentType.getParameter("charset");
-			}
-			if (charset != null) {
-				try {
-					return String.format("%n%s", new String(content, charset));
-				}
-				catch (UnsupportedEncodingException e) {
-					throw new ModelCreationException(charset + " is unsupported charset.", e);
-				}
-			}
-			else {
-				return String.format("%n%s", new String(content));
-			}
+
+	private String requestBody(OperationRequest request) {
+		try {
+			String content = request.getContentAsString();
+			return content.isEmpty() ? content : String.format("%n%s", content);
 		}
-		else {
-			return "";
+		catch (IOException e) {
+			throw new ModelCreationException("Failed to create response body.", e);
 		}
 	}
 
