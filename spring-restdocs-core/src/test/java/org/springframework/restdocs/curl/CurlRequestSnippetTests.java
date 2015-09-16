@@ -36,6 +36,7 @@ import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
+import org.springframework.util.Base64Utils;
 
 /**
  * Tests for {@link CurlRequestSnippet}
@@ -44,6 +45,7 @@ import org.springframework.restdocs.test.OperationBuilder;
  * @author Yann Le Guern
  * @author Dmitriy Mayboroda
  * @author Jonathan Pearlin
+ * @author Paul-Christian Volkmer
  */
 public class CurlRequestSnippetTests {
 
@@ -255,6 +257,19 @@ public class CurlRequestSnippetTests {
 						.attribute(TemplateEngine.class.getName(),
 								new MustacheTemplateEngine(resolver))
 						.request("http://localhost/foo").build());
+	}
+
+	@Test
+	public void basicAuthCredentialsAreSuppliedUsingUserOption() throws IOException {
+		this.snippet.expectCurlRequest("basic-auth").withContents(
+				codeBlock("bash").content(
+						"$ curl 'http://localhost/foo' -i -u 'user:secret'"));
+		new CurlRequestSnippet().document(new OperationBuilder("basic-auth", this.snippet
+				.getOutputDirectory())
+				.request("http://localhost/foo")
+				.header(HttpHeaders.AUTHORIZATION,
+						"Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
+				.build());
 	}
 
 }
