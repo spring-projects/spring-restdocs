@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -74,10 +75,10 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	private String getOptions(Operation operation) {
 		StringWriter command = new StringWriter();
 		PrintWriter printer = new PrintWriter(command);
-		writeOptionToIncludeHeadersInOutput(printer);
-		writeHttpBasicAuthorization(operation.getRequest(), printer);
+		writeIncludeHeadersInOutputOption(printer);
+		HttpHeaders headers = writeUserOptionIfNecessary(operation.getRequest(), printer);
 		writeHttpMethodIfNecessary(operation.getRequest(), printer);
-		writeHeaders(operation.getRequest(), printer);
+		writeHeaders(headers, printer);
 		writePartsIfNecessary(operation.getRequest(), printer);
 
 		writeContent(operation.getRequest(), printer);
@@ -85,8 +86,26 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		return command.toString();
 	}
 
-	private void writeOptionToIncludeHeadersInOutput(PrintWriter writer) {
+	private void writeIncludeHeadersInOutputOption(PrintWriter writer) {
 		writer.print("-i");
+	}
+
+	private HttpHeaders writeUserOptionIfNecessary(OperationRequest request,
+			PrintWriter writer) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.putAll(request.getHeaders());
+		String authorization = headers.getFirst(HttpHeaders.AUTHORIZATION);
+		if (isAuthorizationBasicHeader(authorization)) {
+			String credentials = new String(Base64Utils.decodeFromString(authorization
+					.substring(5).trim()));
+			writer.print(String.format(" -u '%s'", credentials));
+			headers.remove(HttpHeaders.AUTHORIZATION);
+		}
+		return headers;
+	}
+
+	private boolean isAuthorizationBasicHeader(String header) {
+		return header != null && header.startsWith("Basic");
 	}
 
 	private void writeHttpMethodIfNecessary(OperationRequest request, PrintWriter writer) {
@@ -95,24 +114,9 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writeHttpBasicAuthorization(OperationRequest request, PrintWriter writer) {
-		for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
+	private void writeHeaders(HttpHeaders headers, PrintWriter writer) {
+		for (Entry<String, List<String>> entry : headers.entrySet()) {
 			for (String header : entry.getValue()) {
-				if (isAuthBasicHeader(entry.getKey(), header)) {
-					String auth = new String(Base64Utils.decodeFromString(header.replace("Basic", "").trim()));
-					writer.print(String.format(" -u '%s'", auth));
-					break;
-				}
-			}
-		}
-	}
-
-	private void writeHeaders(OperationRequest request, PrintWriter writer) {
-		for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
-			for (String header : entry.getValue()) {
-				if (isAuthBasicHeader(entry.getKey(), header)) {
-					continue;
-				}
 				writer.print(String.format(" -H '%s: %s'", entry.getKey(), header));
 			}
 		}
@@ -158,10 +162,6 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	private boolean isPutOrPost(OperationRequest request) {
 		return HttpMethod.PUT.equals(request.getMethod())
 				|| HttpMethod.POST.equals(request.getMethod());
-	}
-
-	private boolean isAuthBasicHeader(String key, String value) {
-		return ("Authorization".equals(key) && value.startsWith("Basic"));
 	}
 
 }

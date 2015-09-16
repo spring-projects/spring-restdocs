@@ -260,12 +260,15 @@ public class CurlRequestSnippetTests {
 	}
 
 	@Test
-	public void httpBasicAuthorizationHeader() throws IOException {
-		this.snippet.expectCurlRequest("get-request")
-				.withContents(codeBlock("bash").content("$ curl 'http://localhost/foo' -i -u 'user:secret'"));
-		new CurlRequestSnippet().document(new OperationBuilder("get-request", this.snippet.getOutputDirectory())
+	public void basicAuthCredentialsAreSuppliedUsingUserOption() throws IOException {
+		this.snippet.expectCurlRequest("basic-auth").withContents(
+				codeBlock("bash").content(
+						"$ curl 'http://localhost/foo' -i -u 'user:secret'"));
+		new CurlRequestSnippet().document(new OperationBuilder("basic-auth", this.snippet
+				.getOutputDirectory())
 				.request("http://localhost/foo")
-				.header(HttpHeaders.AUTHORIZATION, "Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
+				.header(HttpHeaders.AUTHORIZATION,
+						"Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
 				.build());
 	}
 
