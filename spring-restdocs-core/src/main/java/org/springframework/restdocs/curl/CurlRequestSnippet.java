@@ -29,12 +29,14 @@ import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 
 /**
  * A {@link Snippet} that documents the curl command for a request.
  *
  * @author Andy Wilkinson
+ * @author Paul-Christian Volkmer
  * @see CurlDocumentation#curlRequest()
  * @see CurlDocumentation#curlRequest(Map)
  */
@@ -73,6 +75,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		StringWriter command = new StringWriter();
 		PrintWriter printer = new PrintWriter(command);
 		writeOptionToIncludeHeadersInOutput(printer);
+		writeHttpBasicAuthorization(operation.getRequest(), printer);
 		writeHttpMethodIfNecessary(operation.getRequest(), printer);
 		writeHeaders(operation.getRequest(), printer);
 		writePartsIfNecessary(operation.getRequest(), printer);
@@ -92,9 +95,24 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
+	private void writeHttpBasicAuthorization(OperationRequest request, PrintWriter writer) {
+		for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
+			for (String header : entry.getValue()) {
+				if (isAuthBasicHeader(entry.getKey(), header)) {
+					String auth = new String(Base64Utils.decodeFromString(header.replace("Basic", "").trim()));
+					writer.print(String.format(" -u '%s'", auth));
+					break;
+				}
+			}
+		}
+	}
+
 	private void writeHeaders(OperationRequest request, PrintWriter writer) {
 		for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
 			for (String header : entry.getValue()) {
+				if (isAuthBasicHeader(entry.getKey(), header)) {
+					continue;
+				}
 				writer.print(String.format(" -H '%s: %s'", entry.getKey(), header));
 			}
 		}
@@ -140,6 +158,10 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	private boolean isPutOrPost(OperationRequest request) {
 		return HttpMethod.PUT.equals(request.getMethod())
 				|| HttpMethod.POST.equals(request.getMethod());
+	}
+
+	private boolean isAuthBasicHeader(String key, String value) {
+		return ("Authorization".equals(key) && value.startsWith("Basic"));
 	}
 
 }
