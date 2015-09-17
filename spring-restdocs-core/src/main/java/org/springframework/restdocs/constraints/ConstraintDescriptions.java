@@ -48,7 +48,7 @@ public class ConstraintDescriptions {
 
 	/**
 	 * Create a new {@code ConstraintDescriptions} for the given {@code clazz}.
-	 * Constraints will be resolved using the given {@link constraintResolver} and
+	 * Constraints will be resolved using the given {@code constraintResolver} and
 	 * descriptions will be resolved using a
 	 * {@link ResourceBundleConstraintDescriptionResolver}.
 	 * 

@@ -42,7 +42,7 @@ public class ValidatorConstraintResolver implements ConstraintResolver {
 
 	/**
 	 * Creates a new {@code ValidatorConstraintResolver} that will use a {@link Validator}
-	 * in its default configurationto resolve constraints.
+	 * in its default configuration to resolve constraints.
 	 * 
 	 * @see Validation#buildDefaultValidatorFactory()
 	 * @see ValidatorFactory#getValidator()
