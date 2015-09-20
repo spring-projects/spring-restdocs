@@ -75,6 +75,16 @@ public class ExpectedSnippet implements TestRule {
 		return this;
 	}
 
+	public ExpectedSnippet expectRequestHeaders(String name) {
+		expect(name, "request-headers");
+		return this;
+	}
+
+	public ExpectedSnippet expectResponseHeaders(String name) {
+		expect(name, "response-headers");
+		return this;
+	}
+
 	public ExpectedSnippet expectLinks(String name) {
 		expect(name, "links");
 		return this;
