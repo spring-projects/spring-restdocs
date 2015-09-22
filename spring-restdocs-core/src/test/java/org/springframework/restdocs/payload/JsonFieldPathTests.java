@@ -27,6 +27,7 @@ import org.junit.Test;
  * Tests for {@link JsonFieldPath}
  * 
  * @author Andy Wilkinson
+ * @author Jeremy Rickard
  */
 public class JsonFieldPathTests {
 
@@ -108,6 +109,21 @@ public class JsonFieldPathTests {
 	public void compilationOfPathStartingWithAnArray() {
 		assertThat(JsonFieldPath.compile("[]a.b.c").getSegments(),
 				contains("[]", "a", "b", "c"));
+	}
+
+	@Test
+	public void compilationOfMultipleElementPathWithBrackets() {
+		assertThat(JsonFieldPath.compile("['a']['b']['c']").getSegments(), contains("a", "b", "c"));
+	}
+
+	@Test
+	public void compilationOfMultipleElementPathWithAndWithoutBrackets() {
+		assertThat(JsonFieldPath.compile("['a'][].b['c']").getSegments(), contains("a", "[]", "b", "c"));
+	}
+
+	@Test
+	public void compilationOfMultipleElementPathWithAndWithoutBracketsAndEmbeddedDots() {
+		assertThat(JsonFieldPath.compile("['a.key'][].b['c']").getSegments(), contains("a.key", "[]", "b", "c"));
 	}
 
 }

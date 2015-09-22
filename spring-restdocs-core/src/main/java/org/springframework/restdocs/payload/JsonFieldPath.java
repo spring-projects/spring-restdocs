@@ -16,7 +16,7 @@
 
 package org.springframework.restdocs.payload;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,9 +25,14 @@ import java.util.regex.Pattern;
  * A path that identifies a field in a JSON payload
  * 
  * @author Andy Wilkinson
+ * @author Jeremy Rickard
  *
  */
 final class JsonFieldPath {
+
+	private static final Pattern BRACKETS_AND_ARRAY_PATTERN = Pattern
+			.compile("\\[\'(.+?)\'\\]|\\[([0-9]+|\\*){0,1}\\]");
+
 
 	private static final Pattern ARRAY_INDEX_PATTERN = Pattern
 			.compile("\\[([0-9]+|\\*){0,1}\\]");
@@ -76,31 +81,38 @@ final class JsonFieldPath {
 	}
 
 	private static List<String> extractSegments(String path) {
-		Matcher matcher = ARRAY_INDEX_PATTERN.matcher(path);
-		StringBuilder buffer = new StringBuilder();
+		Matcher matcher = BRACKETS_AND_ARRAY_PATTERN.matcher(path);
+
 		int previous = 0;
+
+		List<String> tokens = new ArrayList<>();
 		while (matcher.find()) {
-			appendWithSeparatorIfNecessary(buffer,
-					path.substring(previous, matcher.start(0)));
-			appendWithSeparatorIfNecessary(buffer, matcher.group());
+			if (previous != matcher.start()) {
+				tokens.addAll(expandToken(path.substring(previous, matcher.start())));
+			}
+			if (matcher.group(1) != null) {
+				tokens.add(matcher.group(1));
+			} else {
+				tokens.add(matcher.group());
+			}
 			previous = matcher.end(0);
 		}
+
 		if (previous < path.length()) {
-			appendWithSeparatorIfNecessary(buffer, path.substring(previous));
+			tokens.addAll(expandToken(path.substring(previous)));
 		}
 
-		String processedPath = buffer.toString();
-
-		return Arrays.asList(processedPath.indexOf('.') > -1 ? processedPath.split("\\.")
-				: new String[] { processedPath });
+		return tokens;
 	}
 
-	private static void appendWithSeparatorIfNecessary(StringBuilder buffer,
-			String toAppend) {
-		if (buffer.length() > 0 && (buffer.lastIndexOf(".") != buffer.length() - 1)
-				&& !toAppend.startsWith(".")) {
-			buffer.append(".");
+	private static List<String> expandToken(String token) {
+		String[] tokens = token.split("\\.");
+		List<String> expandedTokens = new ArrayList<>();
+		for (String aToken : tokens) {
+			if (aToken.length() > 0) {
+				expandedTokens.add(aToken);
+			}
 		}
-		buffer.append(toAppend);
+		return expandedTokens;
 	}
 }
