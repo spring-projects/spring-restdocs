@@ -92,8 +92,10 @@ must be compatible with `application/xml`.
 [[documenting-your-api-request-response-payloads-json-field-paths]]
 ===== JSON field paths
 
-JSON field paths use `.` to descend into a child object and `[]` to identify an array. For
-example, with this JSON payload:
+JSON field paths use `.` or bracket notation to descend into a child object and `[]` to
+identify an array. Using bracket notation enables the use of `.` within a key name.
+
+For example, with this JSON payload:
 
 [source,json,indent=0]
 ----
@@ -109,7 +111,8 @@ example, with this JSON payload:
 				{
 					"d":"three"
 				}
-			]
+			],
+			"e.dot" : "four"
 		}
 	}
 ----
@@ -126,6 +129,15 @@ The following paths are all present:
 |`a.b`
 |An array containing three objects
 
+|`['a']['b']`
+|An array containing three objects
+
+|`a['b']`
+|An array containing three objects
+
+|`['a'].b`
+|An array containing three objects
+
 |`a.b[]`
 |An array containing three objects
 
@@ -134,6 +146,14 @@ The following paths are all present:
 
 |`a.b[].d`
 |The string `three`
+
+|`a['e.dot']`
+|The string `four`
+
+|`['a']['e.dot']`
+|The string `four`
+
+
 |===
 
 
