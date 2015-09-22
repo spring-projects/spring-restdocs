@@ -21,8 +21,8 @@ The default configuration for URIs documented by Spring REST Docs is:
 |`8080`
 |===
 
-This configuration is applied by `RestDocumentationConfigurer`. You can use its API to
-change one or more of the defaults to suit your needs:
+This configuration is applied by `RestDocumentationMockMvcConfigurer`. You can use its API
+to change one or more of the defaults to suit your needs:
 
 [source,java,indent=0]
 ----
@@ -39,7 +39,7 @@ TIP: To configure a request's context path, use the `contextPath` method on
 
 The default encoding used by Asciidoctor is `UTF-8`. Spring REST Docs adopts the same
 default for the snippets that it generates. If you require an encoding other than `UTF-8`,
-use `RestDocumentationConfigurer` to configure it:
+use `RestDocumentationMockMvcConfigurer` to configure it:
 
 [source,java,indent=0]
 ----
@@ -57,9 +57,9 @@ Three snippets are produced by default:
 - `http-request`
 - `http-response`
 
-This default configuration is applied by `RestDocumentationConfigurer`. You can use its
-API to change the configuration. For example, to only produce the `curl-request` snippet
-by default:
+This default configuration is applied by `RestDocumentationMockMvcConfigurer`. You can use
+its API to change the configuration. For example, to only produce the `curl-request`
+snippet by default:
 
 [source,java,indent=0]
 ----
