@@ -40,6 +40,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.SnippetMatchers.snippet;
@@ -345,6 +346,23 @@ public class MockMvcRestDocumentationIntegrationTests {
 						"index",
 						curlRequest(attributes(key("title").value(
 								"Access the index using curl")))));
+	}
+
+	@Test
+	public void customContextPath() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+
+		mockMvc.perform(
+				get("/custom/").contextPath("/custom").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(document("custom-context-path"));
+		assertThat(
+				new File("build/generated-snippets/custom-context-path/curl-request.adoc"),
+				is(snippet()
+						.withContents(
+								codeBlock("bash")
+										.content(
+												"$ curl 'http://localhost:8080/custom/' -i -H 'Accept: application/json'"))));
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
