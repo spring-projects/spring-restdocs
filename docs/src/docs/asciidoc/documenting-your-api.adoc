@@ -92,10 +92,14 @@ must be compatible with `application/xml`.
 [[documenting-your-api-request-response-payloads-json-field-paths]]
 ===== JSON field paths
 
-JSON field paths use `.` or bracket notation to descend into a child object and `[]` to
-identify an array. Using bracket notation enables the use of `.` within a key name.
+JSON field paths use either dot notation or bracket notation. Dot notation uses '.' to
+separate each key in the path; `a.b`, for example. Bracket notation wraps each key in
+square brackets and single quotes; `['a']['b']`, for example. In either case, `[]` is used
+to identify an array. Dot notation is more concise, but using bracket notation enables the
+use of `.` within a key name; `['a.b']`, for example. The two different notations can be
+used in the same path; `a['b']`, for example.
 
-For example, with this JSON payload:
+With this JSON payload:
 
 [source,json,indent=0]
 ----

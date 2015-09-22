@@ -33,7 +33,6 @@ final class JsonFieldPath {
 	private static final Pattern BRACKETS_AND_ARRAY_PATTERN = Pattern
 			.compile("\\[\'(.+?)\'\\]|\\[([0-9]+|\\*){0,1}\\]");
 
-
 	private static final Pattern ARRAY_INDEX_PATTERN = Pattern
 			.compile("\\[([0-9]+|\\*){0,1}\\]");
 
@@ -85,34 +84,35 @@ final class JsonFieldPath {
 
 		int previous = 0;
 
-		List<String> tokens = new ArrayList<>();
+		List<String> segments = new ArrayList<>();
 		while (matcher.find()) {
 			if (previous != matcher.start()) {
-				tokens.addAll(expandToken(path.substring(previous, matcher.start())));
+				segments.addAll(extractDotSeparatedSegments(path.substring(previous,
+						matcher.start())));
 			}
 			if (matcher.group(1) != null) {
-				tokens.add(matcher.group(1));
-			} else {
-				tokens.add(matcher.group());
+				segments.add(matcher.group(1));
+			}
+			else {
+				segments.add(matcher.group());
 			}
 			previous = matcher.end(0);
 		}
 
 		if (previous < path.length()) {
-			tokens.addAll(expandToken(path.substring(previous)));
+			segments.addAll(extractDotSeparatedSegments(path.substring(previous)));
 		}
 
-		return tokens;
+		return segments;
 	}
 
-	private static List<String> expandToken(String token) {
-		String[] tokens = token.split("\\.");
-		List<String> expandedTokens = new ArrayList<>();
-		for (String aToken : tokens) {
-			if (aToken.length() > 0) {
-				expandedTokens.add(aToken);
+	private static List<String> extractDotSeparatedSegments(String path) {
+		List<String> segments = new ArrayList<>();
+		for (String segment : path.split("\\.")) {
+			if (segment.length() > 0) {
+				segments.add(segment);
 			}
 		}
-		return expandedTokens;
+		return segments;
 	}
 }

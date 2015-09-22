@@ -111,7 +111,8 @@ public class JsonFieldProcessorTests {
 		List<List<Map<String, String>>> alpha = Arrays.asList(
 				Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[][].id"), payload),
+		assertThat(
+				this.fieldProcessor.extract(JsonFieldPath.compile("a[][].id"), payload),
 				equalTo((Object) Arrays.asList("1", "2", "3")));
 	}
 
@@ -124,15 +125,15 @@ public class JsonFieldProcessorTests {
 		List<List<Map<String, Object>>> alpha = Arrays.asList(
 				Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[][].ids"), payload),
-				equalTo((Object) Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3),
-						Arrays.asList(4))));
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[][].ids"),
+				payload), equalTo((Object) Arrays.asList(Arrays.asList(1, 2),
+				Arrays.asList(3), Arrays.asList(4))));
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentTopLevelField() {
-		this.fieldProcessor
-				.extract(JsonFieldPath.compile("a"), new HashMap<String, Object>());
+		this.fieldProcessor.extract(JsonFieldPath.compile("a"),
+				new HashMap<String, Object>());
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
@@ -214,6 +215,17 @@ public class JsonFieldProcessorTests {
 				"{\"a\": [[{\"id\":1},{\"id\":2}], [{\"id\":3}]]}", Map.class);
 		this.fieldProcessor.remove(JsonFieldPath.compile("a[][].id"), payload);
 		assertThat(payload.size(), equalTo(0));
+	}
+
+	@Test
+	public void extractNestedEntryWithDotInKeys() throws IOException {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> alpha = new HashMap<>();
+		payload.put("a.key", alpha);
+		alpha.put("b.key", "bravo");
+		assertThat(this.fieldProcessor.extract(
+				JsonFieldPath.compile("['a.key']['b.key']"), payload),
+				equalTo((Object) "bravo"));
 	}
 
 	private Map<String, String> createEntry(String... pairs) {
