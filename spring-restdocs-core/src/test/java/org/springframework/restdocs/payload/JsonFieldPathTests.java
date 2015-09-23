@@ -16,16 +16,16 @@
 
 package org.springframework.restdocs.payload;
 
+import org.junit.Test;
+
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 /**
- * Tests for {@link JsonFieldPath}
- * 
+ * Tests for {@link JsonFieldPath}.
+ *
  * @author Andy Wilkinson
  * @author Jeremy Rickard
  */
@@ -113,17 +113,20 @@ public class JsonFieldPathTests {
 
 	@Test
 	public void compilationOfMultipleElementPathWithBrackets() {
-		assertThat(JsonFieldPath.compile("['a']['b']['c']").getSegments(), contains("a", "b", "c"));
+		assertThat(JsonFieldPath.compile("['a']['b']['c']").getSegments(),
+				contains("a", "b", "c"));
 	}
 
 	@Test
 	public void compilationOfMultipleElementPathWithAndWithoutBrackets() {
-		assertThat(JsonFieldPath.compile("['a'][].b['c']").getSegments(), contains("a", "[]", "b", "c"));
+		assertThat(JsonFieldPath.compile("['a'][].b['c']").getSegments(),
+				contains("a", "[]", "b", "c"));
 	}
 
 	@Test
 	public void compilationOfMultipleElementPathWithAndWithoutBracketsAndEmbeddedDots() {
-		assertThat(JsonFieldPath.compile("['a.key'][].b['c']").getSegments(), contains("a.key", "[]", "b", "c"));
+		assertThat(JsonFieldPath.compile("['a.key'][].b['c']").getSegments(),
+				contains("a.key", "[]", "b", "c"));
 	}
 
 }

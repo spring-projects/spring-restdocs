@@ -22,8 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A path that identifies a field in a JSON payload
- * 
+ * A path that identifies a field in a JSON payload.
+ *
  * @author Andy Wilkinson
  * @author Jeremy Rickard
  *

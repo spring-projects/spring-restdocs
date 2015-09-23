@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * The response that was received as part of performing an operation on a RESTful service.
- * 
+ *
  * @author Andy Wilkinson
  * @see Operation
  * @see Operation#getRequest()
@@ -30,14 +30,14 @@ public interface OperationResponse {
 
 	/**
 	 * Returns the status of the response.
-	 * 
+	 *
 	 * @return the status
 	 */
 	HttpStatus getStatus();
 
 	/**
 	 * Returns the headers in the response.
-	 * 
+	 *
 	 * @return the headers
 	 */
 	HttpHeaders getHeaders();
@@ -45,7 +45,7 @@ public interface OperationResponse {
 	/**
 	 * Returns the contents of the response. If the response has no content an empty array
 	 * is returned.
-	 * 
+	 *
 	 * @return the contents, never {@code null}
 	 */
 	byte[] getContent();

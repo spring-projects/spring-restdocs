@@ -40,8 +40,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
- * A {@link ContentHandler} for XML content
- * 
+ * A {@link ContentHandler} for XML content.
+ *
  * @author Andy Wilkinson
  */
 class XmlContentHandler implements ContentHandler {

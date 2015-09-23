@@ -35,10 +35,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * {@link Matcher Matchers} for verify the contents of generated documentation snippets.
- * 
+ *
  * @author Andy Wilkinson
  */
-public class SnippetMatchers {
+public final class SnippetMatchers {
+
+	private SnippetMatchers() {
+
+	}
 
 	public static SnippetMatcher snippet() {
 		return new SnippetMatcher();
@@ -117,6 +121,11 @@ public class SnippetMatchers {
 		}
 	}
 
+	/**
+	 * A {@link Matcher} for an Asciidoctor code block.
+	 *
+	 * @param <T> The type of the matcher
+	 */
 	public static class AsciidoctorCodeBlockMatcher<T extends AsciidoctorCodeBlockMatcher<T>>
 			extends AbstractSnippetContentMatcher {
 
@@ -134,6 +143,11 @@ public class SnippetMatchers {
 
 	}
 
+	/**
+	 * A {@link Matcher} for an HTTP request or response.
+	 *
+	 * @param <T> The type of the matcher
+	 */
 	public static abstract class HttpMatcher<T extends HttpMatcher<T>> extends
 			AsciidoctorCodeBlockMatcher<HttpMatcher<T>> {
 
@@ -151,25 +165,36 @@ public class SnippetMatchers {
 
 	}
 
-	public static class HttpResponseMatcher extends HttpMatcher<HttpResponseMatcher> {
+	/**
+	 * A {@link Matcher} for an HTTP response.
+	 */
+	public static final class HttpResponseMatcher extends
+			HttpMatcher<HttpResponseMatcher> {
 
-		public HttpResponseMatcher(HttpStatus status) {
+		private HttpResponseMatcher(HttpStatus status) {
 			this.content("HTTP/1.1 " + status.value() + " " + status.getReasonPhrase());
 			this.content("");
 		}
 
 	}
 
-	public static class HttpRequestMatcher extends HttpMatcher<HttpRequestMatcher> {
+	/**
+	 * A {@link Matcher} for an HTTP request.
+	 */
+	public static final class HttpRequestMatcher extends HttpMatcher<HttpRequestMatcher> {
 
-		public HttpRequestMatcher(RequestMethod requestMethod, String uri) {
+		private HttpRequestMatcher(RequestMethod requestMethod, String uri) {
 			this.content(requestMethod.name() + " " + uri + " HTTP/1.1");
 			this.content("");
 		}
 
 	}
 
-	public static class AsciidoctorTableMatcher extends AbstractSnippetContentMatcher {
+	/**
+	 * A {@link Matcher} for an Asciidoctor table.
+	 */
+	public static final class AsciidoctorTableMatcher extends
+			AbstractSnippetContentMatcher {
 
 		private AsciidoctorTableMatcher(String title, String... columns) {
 			if (StringUtils.hasText(title)) {
@@ -198,6 +223,9 @@ public class SnippetMatchers {
 		}
 	}
 
+	/**
+	 * A {@link Matcher} for a snippet file.
+	 */
 	public static class SnippetMatcher extends BaseMatcher<File> {
 
 		private Matcher<String> expectedContents;

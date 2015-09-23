@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Resolves the type of a field in a JSON request or response payload
- * 
+ * Resolves the type of a field in a JSON request or response payload.
+ *
  * @author Andy Wilkinson
  */
 class JsonFieldTypeResolver {

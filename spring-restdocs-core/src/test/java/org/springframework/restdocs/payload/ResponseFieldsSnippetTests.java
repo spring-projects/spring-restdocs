@@ -13,17 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.restdocs.payload;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
+package org.springframework.restdocs.payload;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -42,8 +33,18 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
+
 /**
- * Tests for {@link ReponseFieldsSnippet}
+ * Tests for {@link ResponseFieldsSnippet}.
  *
  * @author Andy Wilkinson
  */
@@ -57,13 +58,11 @@ public class ResponseFieldsSnippetTests {
 
 	@Test
 	public void mapResponseWithFields() throws IOException {
-		this.snippet.expectResponseFields("map-response-with-fields").withContents(//
-				tableWithHeader("Path", "Type", "Description") //
-						.row("id", "Number", "one") //
-						.row("date", "String", "two") //
-						.row("assets", "Array", "three") //
-						.row("assets[]", "Object", "four") //
-						.row("assets[].id", "Number", "five") //
+		this.snippet.expectResponseFields("map-response-with-fields").withContents(
+				tableWithHeader("Path", "Type", "Description").row("id", "Number", "one")
+						.row("date", "String", "two").row("assets", "Array", "three")
+						.row("assets[]", "Object", "four")
+						.row("assets[].id", "Number", "five")
 						.row("assets[].name", "String", "six"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("id").description("one"),
 				fieldWithPath("date").description("two"), fieldWithPath("assets")
@@ -82,10 +81,9 @@ public class ResponseFieldsSnippetTests {
 
 	@Test
 	public void arrayResponseWithFields() throws IOException {
-		this.snippet.expectResponseFields("array-response-with-fields").withContents( //
-				tableWithHeader("Path", "Type", "Description") //
-						.row("[]a.b", "Number", "one") //
-						.row("[]a.c", "String", "two") //
+		this.snippet.expectResponseFields("array-response-with-fields").withContents(
+				tableWithHeader("Path", "Type", "Description")
+						.row("[]a.b", "Number", "one").row("[]a.c", "String", "two")
 						.row("[]a", "Object", "three"));
 		new ResponseFieldsSnippet(Arrays.asList(
 				fieldWithPath("[]a.b").description("one"), fieldWithPath("[]a.c")
@@ -98,9 +96,10 @@ public class ResponseFieldsSnippetTests {
 
 	@Test
 	public void arrayResponse() throws IOException {
-		this.snippet.expectResponseFields("array-response").withContents( //
-				tableWithHeader("Path", "Type", "Description") //
-						.row("[]", "String", "one"));
+		this.snippet.expectResponseFields("array-response")
+				.withContents(
+						tableWithHeader("Path", "Type", "Description").row("[]",
+								"String", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]").description("one")))
 				.document(new OperationBuilder("array-response", this.snippet
 						.getOutputDirectory()).response()
@@ -109,15 +108,16 @@ public class ResponseFieldsSnippetTests {
 
 	@Test
 	public void responseFieldsWithCustomDescriptorAttributes() throws IOException {
-		this.snippet.expectResponseFields("response-fields-with-custom-attributes")
-				.withContents( //
-						tableWithHeader("Path", "Type", "Description", "Foo") //
-								.row("a.b", "Number", "one", "alpha") //
-								.row("a.c", "String", "two", "bravo") //
-								.row("a", "Object", "three", "charlie"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("response-fields")).thenReturn(
+		given(resolver.resolveTemplateResource("response-fields")).willReturn(
 				snippetResource("response-fields-with-extra-column"));
+		this.snippet.expectResponseFields("response-fields-with-custom-attributes")
+				.withContents(
+						tableWithHeader("Path", "Type", "Description", "Foo")
+								.row("a.b", "Number", "one", "alpha")
+								.row("a.c", "String", "two", "bravo")
+								.row("a", "Object", "three", "charlie"));
+
 		new ResponseFieldsSnippet(Arrays.asList(
 				fieldWithPath("a.b").description("one").attributes(
 						key("foo").value("alpha")),
@@ -134,11 +134,12 @@ public class ResponseFieldsSnippetTests {
 
 	@Test
 	public void responseFieldsWithCustomAttributes() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("response-fields")).willReturn(
+				snippetResource("response-fields-with-title"));
 		this.snippet.expectResponseFields("response-fields-with-custom-attributes")
 				.withContents(startsWith(".Custom title"));
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("response-fields")).thenReturn(
-				snippetResource("response-fields-with-title"));
+
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
 				attributes(key("title").value("Custom title")))
 				.document(new OperationBuilder("response-fields-with-custom-attributes",
@@ -150,11 +151,9 @@ public class ResponseFieldsSnippetTests {
 
 	@Test
 	public void xmlResponseFields() throws IOException {
-		this.snippet.expectResponseFields("xml-response").withContents( //
-				tableWithHeader("Path", "Type", "Description") //
-						.row("a/b", "b", "one") //
-						.row("a/c", "c", "two") //
-						.row("a", "a", "three"));
+		this.snippet.expectResponseFields("xml-response").withContents(
+				tableWithHeader("Path", "Type", "Description").row("a/b", "b", "one")
+						.row("a/c", "c", "two").row("a", "a", "three"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")
 				.type("b"), fieldWithPath("a/c").description("two").type("c"),
 				fieldWithPath("a").description("three").type("a")))
@@ -172,7 +171,7 @@ public class ResponseFieldsSnippetTests {
 		this.thrown
 				.expectMessage(startsWith("The following parts of the payload were not"
 						+ " documented:"));
-		new ResponseFieldsSnippet(Collections.<FieldDescriptor> emptyList())
+		new ResponseFieldsSnippet(Collections.<FieldDescriptor>emptyList())
 				.document(new OperationBuilder("undocumented-xml-response-field",
 						this.snippet.getOutputDirectory())
 						.response()

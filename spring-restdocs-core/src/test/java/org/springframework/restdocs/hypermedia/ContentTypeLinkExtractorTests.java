@@ -16,9 +16,6 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +28,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.StandardOperationResponse;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 /**
  * Tests for {@link ContentTypeLinkExtractor}.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class ContentTypeLinkExtractorTests {
@@ -73,5 +73,4 @@ public class ContentTypeLinkExtractorTests {
 		new ContentTypeLinkExtractor(extractors).extractLinks(response);
 		verify(extractor).extractLinks(response);
 	}
-
 }

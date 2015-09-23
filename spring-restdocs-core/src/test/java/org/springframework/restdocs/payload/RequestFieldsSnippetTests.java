@@ -16,16 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,9 +33,19 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
+
 /**
- * Tests for {@link RequestFieldsSnippet}
- * 
+ * Tests for {@link RequestFieldsSnippet}.
+ *
  * @author Andy Wilkinson
  */
 public class RequestFieldsSnippetTests {
@@ -58,10 +58,9 @@ public class RequestFieldsSnippetTests {
 
 	@Test
 	public void mapRequestWithFields() throws IOException {
-		this.snippet.expectRequestFields("map-request-with-fields").withContents( //
-				tableWithHeader("Path", "Type", "Description") //
-						.row("a.b", "Number", "one") //
-						.row("a.c", "String", "two") //
+		this.snippet.expectRequestFields("map-request-with-fields").withContents(
+				tableWithHeader("Path", "Type", "Description")
+						.row("a.b", "Number", "one").row("a.c", "String", "two")
 						.row("a", "Object", "three"));
 
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one"),
@@ -74,10 +73,9 @@ public class RequestFieldsSnippetTests {
 
 	@Test
 	public void arrayRequestWithFields() throws IOException {
-		this.snippet.expectRequestFields("array-request-with-fields").withContents( //
-				tableWithHeader("Path", "Type", "Description") //
-						.row("[]a.b", "Number", "one") //
-						.row("[]a.c", "String", "two") //
+		this.snippet.expectRequestFields("array-request-with-fields").withContents(
+				tableWithHeader("Path", "Type", "Description")
+						.row("[]a.b", "Number", "one").row("[]a.c", "String", "two")
 						.row("[]a", "Object", "three"));
 
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b").description("one"),
@@ -94,7 +92,7 @@ public class RequestFieldsSnippetTests {
 		this.thrown
 				.expectMessage(startsWith("The following parts of the payload were not"
 						+ " documented:"));
-		new RequestFieldsSnippet(Collections.<FieldDescriptor> emptyList())
+		new RequestFieldsSnippet(Collections.<FieldDescriptor>emptyList())
 				.document(new OperationBuilder("undocumented-request-field", this.snippet
 						.getOutputDirectory()).request("http://localhost")
 						.content("{\"a\": 5}").build());
@@ -140,15 +138,16 @@ public class RequestFieldsSnippetTests {
 
 	@Test
 	public void requestFieldsWithCustomDescriptorAttributes() throws IOException {
-		this.snippet.expectRequestFields(
-				"request-fields-with-custom-descriptor-attributes").withContents( //
-				tableWithHeader("Path", "Type", "Description", "Foo") //
-						.row("a.b", "Number", "one", "alpha") //
-						.row("a.c", "String", "two", "bravo") //
-						.row("a", "Object", "three", "charlie"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("request-fields")).thenReturn(
+		given(resolver.resolveTemplateResource("request-fields")).willReturn(
 				snippetResource("request-fields-with-extra-column"));
+		this.snippet.expectRequestFields(
+				"request-fields-with-custom-descriptor-attributes").withContents(
+				tableWithHeader("Path", "Type", "Description", "Foo")
+						.row("a.b", "Number", "one", "alpha")
+						.row("a.c", "String", "two", "bravo")
+						.row("a", "Object", "three", "charlie"));
+
 		new RequestFieldsSnippet(Arrays.asList(
 				fieldWithPath("a.b").description("one").attributes(
 						key("foo").value("alpha")),
@@ -165,11 +164,12 @@ public class RequestFieldsSnippetTests {
 
 	@Test
 	public void requestFieldsWithCustomAttributes() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("request-fields")).willReturn(
+				snippetResource("request-fields-with-title"));
 		this.snippet.expectRequestFields("request-fields-with-custom-attributes")
 				.withContents(startsWith(".Custom title"));
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("request-fields")).thenReturn(
-				snippetResource("request-fields-with-title"));
+
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
 				attributes(key("title").value("Custom title")))
 				.document(new OperationBuilder("request-fields-with-custom-attributes",
@@ -181,15 +181,16 @@ public class RequestFieldsSnippetTests {
 
 	@Test
 	public void requestFieldsWithListDescription() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("request-fields")).willReturn(
+				snippetResource("request-fields-with-list-description"));
 		this.snippet.expectRequestFields("request-fields-with-list-description")
 				.withContents(
 						tableWithHeader("Path", "Type", "Description")
 								//
 								.row("a", "String", String.format(" - one%n - two"))
 								.configuration("[cols=\"1,1,1a\"]"));
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("request-fields")).thenReturn(
-				snippetResource("request-fields-with-list-description"));
+
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description(
 				Arrays.asList("one", "two"))))
 				.document(new OperationBuilder("request-fields-with-list-description",
@@ -201,11 +202,9 @@ public class RequestFieldsSnippetTests {
 
 	@Test
 	public void xmlRequestFields() throws IOException {
-		this.snippet.expectRequestFields("xml-request").withContents( //
-				tableWithHeader("Path", "Type", "Description") //
-						.row("a/b", "b", "one") //
-						.row("a/c", "c", "two") //
-						.row("a", "a", "three"));
+		this.snippet.expectRequestFields("xml-request").withContents(
+				tableWithHeader("Path", "Type", "Description").row("a/b", "b", "one")
+						.row("a/c", "c", "two").row("a", "a", "three"));
 
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")
 				.type("b"), fieldWithPath("a/c").description("two").type("c"),
@@ -224,7 +223,7 @@ public class RequestFieldsSnippetTests {
 		this.thrown
 				.expectMessage(startsWith("The following parts of the payload were not"
 						+ " documented:"));
-		new RequestFieldsSnippet(Collections.<FieldDescriptor> emptyList())
+		new RequestFieldsSnippet(Collections.<FieldDescriptor>emptyList())
 				.document(new OperationBuilder("undocumented-xml-request-field",
 						this.snippet.getOutputDirectory())
 						.request("http://localhost")

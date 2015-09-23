@@ -23,7 +23,7 @@ import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * Static factory methods for documenting a RESTful API that utilizes Hypermedia.
- * 
+ *
  * @author Andy Wilkinson
  */
 public abstract class HypermediaDocumentation {
@@ -34,7 +34,7 @@ public abstract class HypermediaDocumentation {
 
 	/**
 	 * Creates a {@code LinkDescriptor} that describes a link with the given {@code rel}.
-	 * 
+	 *
 	 * @param rel The rel of the link
 	 * @return a {@code LinkDescriptor} ready for further configuration
 	 */
@@ -46,7 +46,7 @@ public abstract class HypermediaDocumentation {
 	 * Returns a handler that will produce a snippet documenting the links in the API
 	 * call's response. Links will be extracted from the response automatically based on
 	 * its content type.
-	 * 
+	 *
 	 * @param descriptors The descriptions of the response's links
 	 * @return the handler
 	 */
@@ -60,22 +60,22 @@ public abstract class HypermediaDocumentation {
 	 * call's response. The given {@code attributes} will be available during snippet
 	 * generation. Links will be extracted from the response automatically based on its
 	 * content type.
-	 * 
+	 *
 	 * @param attributes Attributes made available during rendering of the links snippet
 	 * @param descriptors The descriptions of the response's links
 	 * @return the handler
 	 */
 	public static Snippet links(Map<String, Object> attributes,
 			LinkDescriptor... descriptors) {
-		return new LinksSnippet(new ContentTypeLinkExtractor(), Arrays.asList(descriptors),
-				attributes);
+		return new LinksSnippet(new ContentTypeLinkExtractor(),
+				Arrays.asList(descriptors), attributes);
 	}
 
 	/**
 	 * Returns a handler that will produce a snippet documenting the links in the API
 	 * call's response. Links will be extracted from the response using the given
 	 * {@code linkExtractor}.
-	 * 
+	 *
 	 * @param linkExtractor Used to extract the links from the response
 	 * @param descriptors The descriptions of the response's links
 	 * @return the handler
@@ -90,7 +90,7 @@ public abstract class HypermediaDocumentation {
 	 * call's response. The given {@code attributes} will be available during snippet
 	 * generation. Links will be extracted from the response using the given
 	 * {@code linkExtractor}.
-	 * 
+	 *
 	 * @param attributes Attributes made available during rendering of the links snippet
 	 * @param linkExtractor Used to extract the links from the response
 	 * @param descriptors The descriptions of the response's links
@@ -98,8 +98,7 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static Snippet links(LinkExtractor linkExtractor,
 			Map<String, Object> attributes, LinkDescriptor... descriptors) {
-		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors),
-				attributes);
+		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors), attributes);
 	}
 
 	/**

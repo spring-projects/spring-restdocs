@@ -27,7 +27,7 @@ import org.springframework.restdocs.snippet.WriterResolver;
 
 /**
  * A configurer that can be used to configure the generated documentation snippets.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class SnippetConfigurer extends
@@ -38,7 +38,8 @@ public class SnippetConfigurer extends
 			HttpDocumentation.httpResponse());
 
 	/**
-	 * The default encoding for documentation snippets
+	 * The default encoding for documentation snippets.
+	 *
 	 * @see #withEncoding(String)
 	 */
 	public static final String DEFAULT_SNIPPET_ENCODING = "UTF-8";
@@ -52,6 +53,7 @@ public class SnippetConfigurer extends
 	/**
 	 * Configures any documentation snippets to be written using the given
 	 * {@code encoding}. The default is UTF-8.
+	 *
 	 * @param encoding the encoding
 	 * @return {@code this}
 	 */
@@ -70,7 +72,7 @@ public class SnippetConfigurer extends
 
 	/**
 	 * Configures the documentation snippets that will be produced by default.
-	 * 
+	 *
 	 * @param defaultSnippets the default snippets
 	 * @return {@code this}
 	 */

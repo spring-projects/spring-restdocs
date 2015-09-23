@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * A {@link Snippet} that documents the fields in a response.
- * 
+ *
  * @author Andy Wilkinson
  * @see PayloadDocumentation#responseFields(FieldDescriptor...)
  * @see PayloadDocumentation#responseFields(Map, FieldDescriptor...)
@@ -35,7 +36,7 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	/**
 	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
 	 * response using the given {@code descriptors}.
-	 * 
+	 *
 	 * @param descriptors the descriptors
 	 */
 	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors) {
@@ -46,7 +47,7 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
 	 * response using the given {@code descriptors}. The given {@code attributes} will be
 	 * included in the model during template rendering.
-	 * 
+	 *
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */

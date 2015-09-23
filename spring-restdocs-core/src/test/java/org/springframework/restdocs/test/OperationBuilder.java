@@ -43,6 +43,11 @@ import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
+/**
+ * Basic builder API for creating an {@link Operation}.
+ *
+ * @author Andy Wilkinson
+ */
 public class OperationBuilder {
 
 	private final Map<String, Object> attributes = new HashMap<>();
@@ -91,7 +96,10 @@ public class OperationBuilder {
 				this.responseBuilder.buildResponse(), this.attributes);
 	}
 
-	public class OperationRequestBuilder {
+	/**
+	 * Basic builder API for creating an {@link OperationRequest}.
+	 */
+	public final class OperationRequestBuilder {
 
 		private URI requestUri = URI.create("http://localhost/");
 
@@ -105,7 +113,7 @@ public class OperationBuilder {
 
 		private List<OperationRequestPartBuilder> partBuilders = new ArrayList<>();
 
-		public OperationRequestBuilder(String uri) {
+		private OperationRequestBuilder(String uri) {
 			this.requestUri = URI.create(uri);
 		}
 
@@ -151,7 +159,10 @@ public class OperationBuilder {
 			return partBuilder;
 		}
 
-		public class OperationRequestPartBuilder {
+		/**
+		 * Basic builder API for creating an {@link OperationRequestPart}.
+		 */
+		public final class OperationRequestPartBuilder {
 
 			private final String name;
 
@@ -191,7 +202,10 @@ public class OperationBuilder {
 		}
 	}
 
-	public class OperationResponseBuilder {
+	/**
+	 * Basic builder API for creating an {@link OperationResponse}.
+	 */
+	public final class OperationResponseBuilder {
 
 		private HttpStatus status = HttpStatus.OK;
 

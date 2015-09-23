@@ -33,8 +33,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * A {@link MockMvcConfigurer} that can be used to configure the documentation
- * 
+ * A {@link MockMvcConfigurer} that can be used to configure the documentation.
+ *
  * @author Andy Wilkinson
  * @author Dmitriy Mayboroda
  * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
@@ -55,7 +55,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 	/**
 	 * Creates a new {code RestDocumentationMockMvcConfigurer} that will use the given
 	 * {@code restDocumentation} when configuring MockMvc.
-	 * 
+	 *
 	 * @param restDocumentation the rest documentation
 	 * @see MockMvcRestDocumentation#documentationConfiguration(RestDocumentation)
 	 */
@@ -69,7 +69,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 	/**
 	 * Returns a {@link UriConfigurer} that can be used to configure the request URIs that
 	 * will be documented.
-	 * 
+	 *
 	 * @return the URI configurer
 	 */
 	public UriConfigurer uris() {
@@ -79,7 +79,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 	/**
 	 * Returns a {@link SnippetConfigurer} that can be used to configure the snippets that
 	 * will be generated.
-	 * 
+	 *
 	 * @return the snippet configurer
 	 */
 	public SnippetConfigurer snippets() {
@@ -88,7 +88,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 
 	/**
 	 * Configures the {@link TemplateEngine} that will be used for snippet rendering.
-	 * 
+	 *
 	 * @param templateEngine the template engine to use
 	 * @return {@code this}
 	 */
@@ -100,7 +100,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 	/**
 	 * Configures the {@link WriterResolver} that will be used to resolve a writer for a
 	 * snippet.
-	 * 
+	 *
 	 * @param writerResolver The writer resolver to use
 	 * @return {@code this}
 	 */
@@ -115,7 +115,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 		return this.requestPostProcessor;
 	}
 
-	private static class ContentLengthHeaderConfigurer extends AbstractConfigurer {
+	private static final class ContentLengthHeaderConfigurer extends AbstractConfigurer {
 
 		@Override
 		void apply(MockHttpServletRequest request) {
@@ -128,7 +128,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 
 	}
 
-	private static class TemplateEngineConfigurer extends AbstractConfigurer {
+	private static final class TemplateEngineConfigurer extends AbstractConfigurer {
 
 		private TemplateEngine templateEngine = new MustacheTemplateEngine(
 				new StandardTemplateResourceResolver());
@@ -144,7 +144,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 
 	}
 
-	private static class WriterResolverConfigurer extends AbstractConfigurer {
+	private static final class WriterResolverConfigurer extends AbstractConfigurer {
 
 		private WriterResolver writerResolver;
 
@@ -167,7 +167,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 
 	}
 
-	private static class ConfigurerApplyingRequestPostProcessor implements
+	private static final class ConfigurerApplyingRequestPostProcessor implements
 			RequestPostProcessor {
 
 		private final RestDocumentation restDocumentation;

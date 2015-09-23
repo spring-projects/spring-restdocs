@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Static factory methods for documenting aspects of a request sent to a RESTful API.
- * 
+ *
  * @author Andy Wilkinson
  */
 public abstract class RequestDocumentation {
@@ -39,7 +39,7 @@ public abstract class RequestDocumentation {
 	/**
 	 * Creates a {@link ParameterDescriptor} that describes a request or path parameter
 	 * with the given {@code name}.
-	 * 
+	 *
 	 * @param name The name of the parameter
 	 * @return a {@link ParameterDescriptor} ready for further configuration
 	 */
@@ -50,7 +50,7 @@ public abstract class RequestDocumentation {
 	/**
 	 * Returns a snippet that will document the path parameters from the API call's
 	 * request.
-	 * 
+	 *
 	 * @param descriptors The descriptions of the parameters in the request's path
 	 * @return the snippet
 	 * @see PathVariable
@@ -62,7 +62,7 @@ public abstract class RequestDocumentation {
 	/**
 	 * Returns a snippet that will document the path parameters from the API call's
 	 * request. The given {@code attributes} will be available during snippet rendering.
-	 * 
+	 *
 	 * @param attributes Attributes made available during rendering of the path parameters
 	 * snippet
 	 * @param descriptors The descriptions of the parameters in the request's path
@@ -77,7 +77,7 @@ public abstract class RequestDocumentation {
 	/**
 	 * Returns a snippet that will document the request parameters from the API call's
 	 * request.
-	 * 
+	 *
 	 * @param descriptors The descriptions of the request's parameters
 	 * @return the snippet
 	 * @see RequestParam
@@ -90,7 +90,7 @@ public abstract class RequestDocumentation {
 	/**
 	 * Returns a snippet that will document the request parameters from the API call's
 	 * request. The given {@code attributes} will be available during snippet rendering.
-	 * 
+	 *
 	 * @param attributes Attributes made available during rendering of the request
 	 * parameters snippet
 	 * @param descriptors The descriptions of the request's parameters

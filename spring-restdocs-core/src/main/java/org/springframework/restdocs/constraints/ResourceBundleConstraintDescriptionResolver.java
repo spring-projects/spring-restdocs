@@ -45,7 +45,7 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * {@code javax.validation.constraints.NotNull.description}.
  * <p>
  * Default descriptions are provided for Bean Validation 1.1's constraints:
- * 
+ *
  * <ul>
  * <li>{@link AssertFalse}
  * <li>{@link AssertTrue}
@@ -61,7 +61,7 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * <li>{@link Pattern}
  * <li>{@link Size}
  * </ul>
- * 
+ *
  * @author Andy Wilkinson
  */
 public class ResourceBundleConstraintDescriptionResolver implements
@@ -78,7 +78,7 @@ public class ResourceBundleConstraintDescriptionResolver implements
 	 * Creates a new {@code ResourceBundleConstraintDescriptionResolver} that will resolve
 	 * descriptions by looking them up in a resource bundle with the base name
 	 * {@code org.springframework.restdocs.constraints.ConstraintDescriptions} in the
-	 * default locale loaded using the thread context class loader
+	 * default locale loaded using the thread context class loader.
 	 */
 	public ResourceBundleConstraintDescriptionResolver() {
 		this(getBundle("ConstraintDescriptions"));
@@ -87,7 +87,7 @@ public class ResourceBundleConstraintDescriptionResolver implements
 	/**
 	 * Creates a new {@code ResourceBundleConstraintDescriptionResolver} that will resolve
 	 * descriptions by looking them up in the given {@code resourceBundle}.
-	 * 
+	 *
 	 * @param resourceBundle the resource bundle
 	 */
 	public ResourceBundleConstraintDescriptionResolver(ResourceBundle resourceBundle) {
@@ -126,7 +126,8 @@ public class ResourceBundleConstraintDescriptionResolver implements
 		return this.defaultDescriptions.getString(key);
 	}
 
-	private static class ConstraintPlaceholderResolver implements PlaceholderResolver {
+	private static final class ConstraintPlaceholderResolver implements
+			PlaceholderResolver {
 
 		private final Constraint constraint;
 

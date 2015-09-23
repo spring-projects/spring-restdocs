@@ -16,11 +16,6 @@
 
 package org.springframework.restdocs.constraints;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -43,8 +38,13 @@ import org.hibernate.validator.constraints.ConstraintComposition;
 import org.hibernate.validator.constraints.NotBlank;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link ValidatorConstraintResolver}
+ * Tests for {@link ValidatorConstraintResolver}.
  *
  * @author Andy Wilkinson
  */
@@ -86,6 +86,10 @@ public class ValidatorConstraintResolverTests {
 		assertThat(constraints, hasSize(1));
 	}
 
+	private ConstraintMatcher constraint(final Class<? extends Annotation> annotation) {
+		return new ConstraintMatcher(annotation);
+	}
+
 	private static class ConstrainedFields {
 
 		@NotNull
@@ -108,7 +112,7 @@ public class ValidatorConstraintResolverTests {
 	@Target(ElementType.FIELD)
 	@Retention(RetentionPolicy.RUNTIME)
 	@javax.validation.Constraint(validatedBy = {})
-	public @interface CompositeConstraint {
+	private @interface CompositeConstraint {
 
 		String message() default "Must be null or not blank";
 
@@ -118,11 +122,7 @@ public class ValidatorConstraintResolverTests {
 
 	}
 
-	private ConstraintMatcher constraint(final Class<? extends Annotation> annotation) {
-		return new ConstraintMatcher(annotation);
-	}
-
-	private static class ConstraintMatcher extends BaseMatcher<Constraint> {
+	private static final class ConstraintMatcher extends BaseMatcher<Constraint> {
 
 		private final Class<?> annotation;
 

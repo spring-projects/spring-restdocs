@@ -19,8 +19,8 @@ package org.springframework.restdocs.operation.preprocess;
 import java.util.regex.Pattern;
 
 /**
- * A content modifier the masks the {@code href} of any hypermedia links
- * 
+ * A content modifier the masks the {@code href} of any hypermedia links.
+ *
  * @author Andy Wilkinson
  */
 class LinkMaskingContentModifier implements ContentModifier {

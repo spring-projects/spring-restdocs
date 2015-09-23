@@ -15,6 +15,7 @@
  */
 
 /**
- * Core Spring REST Docs classes. 
+ * Core Spring REST Docs classes.
  */
 package org.springframework.restdocs;
+

@@ -19,37 +19,37 @@ package org.springframework.restdocs.operation;
 import org.springframework.http.HttpHeaders;
 
 /**
- * A part of a multipart request
- * 
- * @author awilkinson
+ * A part of a multipart request.
+ *
+ * @author Andy Wilkinson
  * @see OperationRequest#getParts()
  */
 public interface OperationRequestPart {
 
 	/**
 	 * Returns the name of the part.
-	 * 
+	 *
 	 * @return the name
 	 */
 	String getName();
 
 	/**
 	 * Returns the name of the file that is being uploaded in this part.
-	 * 
+	 *
 	 * @return the name of the file
 	 */
 	String getSubmittedFileName();
 
 	/**
 	 * Returns the contents of the part.
-	 * 
+	 *
 	 * @return the contents
 	 */
 	byte[] getContent();
 
 	/**
 	 * Returns the part's headers.
-	 * 
+	 *
 	 * @return the headers
 	 */
 	HttpHeaders getHeaders();

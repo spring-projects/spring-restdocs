@@ -25,8 +25,8 @@ import org.springframework.restdocs.operation.OperationResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Abstract base class for a {@link LinkExtractor} that extracts links from JSON
- * 
+ * Abstract base class for a {@link LinkExtractor} that extracts links from JSON.
+ *
  * @author Andy Wilkinson
  */
 abstract class AbstractJsonLinkExtractor implements LinkExtractor {
@@ -43,4 +43,5 @@ abstract class AbstractJsonLinkExtractor implements LinkExtractor {
 	}
 
 	protected abstract Map<String, List<Link>> extractLinks(Map<String, Object> json);
+
 }

@@ -16,36 +16,6 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.restdocs.curl.CurlDocumentation.curlRequest;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.maskLinks;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.replacePattern;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
-import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
-import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
-import static org.springframework.restdocs.test.SnippetMatchers.snippet;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -80,11 +50,40 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.restdocs.curl.CurlDocumentation.curlRequest;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.maskLinks;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.replacePattern;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
+import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
+import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
+import static org.springframework.restdocs.test.SnippetMatchers.snippet;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Integration tests for Spring REST Docs
- * 
+ * Integration tests for using Spring REST Docs with Spring Test's Mock MVC.
+ *
  * @author Andy Wilkinson
  * @author Dewet Diener
  */
@@ -371,9 +370,12 @@ public class MockMvcRestDocumentationIntegrationTests {
 		}
 	}
 
+	/**
+	 * Test configuration that enables Spring MVC.
+	 */
 	@Configuration
 	@EnableWebMvc
-	static class TestConfiguration extends WebMvcConfigurerAdapter {
+	static class TestConfiguration {
 
 		@Bean
 		public TestController testController() {
@@ -383,7 +385,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@RestController
-	static class TestController {
+	private static class TestController {
 
 		@RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<Map<String, Object>> foo() {

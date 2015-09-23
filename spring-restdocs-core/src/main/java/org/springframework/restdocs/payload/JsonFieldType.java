@@ -21,13 +21,46 @@ import java.util.Locale;
 import org.springframework.util.StringUtils;
 
 /**
- * An enumeration of the possible types for a field in a JSON request or response payload
- * 
+ * An enumeration of the possible types for a field in a JSON request or response payload.
+ *
  * @author Andy Wilkinson
  */
 public enum JsonFieldType {
 
-	ARRAY, BOOLEAN, OBJECT, NUMBER, NULL, STRING, VARIES;
+	/**
+	 * An array.
+	 */
+	ARRAY,
+
+	/**
+	 * A boolean value.
+	 */
+	BOOLEAN,
+
+	/**
+	 * An object (map).
+	 */
+	OBJECT,
+
+	/**
+	 * A number.
+	 */
+	NUMBER,
+
+	/**
+	 * {@code null}.
+	 */
+	NULL,
+
+	/**
+	 * A string.
+	 */
+	STRING,
+
+	/**
+	 * A variety of different types.
+	 */
+	VARIES;
 
 	@Override
 	public String toString() {

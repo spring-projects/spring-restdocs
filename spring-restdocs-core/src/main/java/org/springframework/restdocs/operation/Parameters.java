@@ -24,8 +24,8 @@ import java.util.Map;
 import org.springframework.util.LinkedMultiValueMap;
 
 /**
- * The parameters received in a request
- * 
+ * The parameters received in a request.
+ *
  * @author Andy Wilkinson
  */
 @SuppressWarnings("serial")
@@ -33,8 +33,8 @@ public class Parameters extends LinkedMultiValueMap<String, String> {
 
 	/**
 	 * Converts the parameters to a query string suitable for use in a URI or the body of
-	 * a form-encoded request
-	 * 
+	 * a form-encoded request.
+	 *
 	 * @return the query string
 	 */
 	public String toQueryString() {

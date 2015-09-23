@@ -41,7 +41,7 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 	/**
 	 * Creates a new {@code RequestParametersSnippet} that will document the request's
 	 * parameters using the given {@code descriptors}.
-	 * 
+	 *
 	 * @param descriptors the parameter descriptors
 	 */
 	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors) {
@@ -52,7 +52,7 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 	 * Creates a new {@code RequestParametersSnippet} that will document the request's
 	 * parameters using the given {@code descriptors}. The given {@code attributes} will
 	 * be included in the model during template rendering.
-	 * 
+	 *
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */

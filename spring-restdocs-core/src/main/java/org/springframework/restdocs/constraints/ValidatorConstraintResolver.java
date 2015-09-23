@@ -32,7 +32,7 @@ import javax.validation.metadata.PropertyDescriptor;
  * constraints. The name of the constraint is the fully-qualified class name of the
  * constraint annotation. For example, a {@link NotNull} constraint will be named
  * {@code javax.validation.constraints.NotNull}.
- * 
+ *
  * @author Andy Wilkinson
  *
  */
@@ -43,7 +43,7 @@ public class ValidatorConstraintResolver implements ConstraintResolver {
 	/**
 	 * Creates a new {@code ValidatorConstraintResolver} that will use a {@link Validator}
 	 * in its default configuration to resolve constraints.
-	 * 
+	 *
 	 * @see Validation#buildDefaultValidatorFactory()
 	 * @see ValidatorFactory#getValidator()
 	 */
@@ -54,7 +54,7 @@ public class ValidatorConstraintResolver implements ConstraintResolver {
 	/**
 	 * Creates a new {@code ValidatorConstraintResolver} that will use the given
 	 * {@code Validator} to resolve constraints.
-	 * 
+	 *
 	 * @param validator the validator
 	 */
 	public ValidatorConstraintResolver(Validator validator) {
@@ -78,5 +78,4 @@ public class ValidatorConstraintResolver implements ConstraintResolver {
 		}
 		return constraints;
 	}
-
 }

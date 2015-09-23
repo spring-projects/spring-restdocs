@@ -19,8 +19,8 @@ package org.springframework.restdocs.constraints;
 import java.util.Map;
 
 /**
- * A constraint
- * 
+ * A constraint.
+ *
  * @author Andy Wilkinson
  */
 public class Constraint {
@@ -32,7 +32,7 @@ public class Constraint {
 	/**
 	 * Creates a new {@code Constraint} with the given {@code name} and
 	 * {@code configuration}.
-	 * 
+	 *
 	 * @param name the name
 	 * @param configuration the configuration
 	 */
@@ -42,8 +42,8 @@ public class Constraint {
 	}
 
 	/**
-	 * Returns the name of the constraint
-	 * 
+	 * Returns the name of the constraint.
+	 *
 	 * @return the name
 	 */
 	public String getName() {
@@ -51,8 +51,8 @@ public class Constraint {
 	}
 
 	/**
-	 * Returns the configuration of the constraint
-	 * 
+	 * Returns the configuration of the constraint.
+	 *
 	 * @return the configuration
 	 */
 	public Map<String, Object> getConfiguration() {

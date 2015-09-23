@@ -18,3 +18,4 @@
  * Documenting query and path parameters of requests sent to a RESTful API.
  */
 package org.springframework.restdocs.request;
+

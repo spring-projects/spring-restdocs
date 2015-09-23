@@ -47,8 +47,6 @@ subprojects {
 	apply plugin: 'propdeps-eclipse'
 	apply plugin: 'propdeps-maven'
 	apply plugin: 'maven'
-	apply plugin: 'checkstyle'
-	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
 
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
@@ -73,8 +71,32 @@ subprojects {
 		}
 	}
 
+	test {
+		testLogging {
+			exceptionFormat "full"
+		}
+	}
+
+	eclipseJdt {
+		inputFile = rootProject.file('config/eclipse/org.eclipse.jdt.core.prefs')
+		doLast {
+			project.file('.settings/org.eclipse.jdt.ui.prefs').withWriter { writer ->
+				writer << rootProject.file('config/eclipse/org.eclipse.jdt.ui.prefs').text
+			}
+		}
+	}
+
+}
+
+configure(subprojects - project(":docs")) { subproject ->
+
+	apply plugin: 'checkstyle'
+	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
+
 	checkstyle {
-		configFile = rootProject.file('checkstyle.xml')
+		configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+		configProperties = [ 'checkstyle.config.dir' : rootProject.file('config/checkstyle') ]
+		toolVersion = '6.10.1'
 	}
 
 	configurations {
@@ -83,12 +105,6 @@ subprojects {
 
 	dependencies {
 		jacoco 'org.jacoco:org.jacoco.agent::runtime'
-	}
-
-	test {
-		testLogging {
-			exceptionFormat "full"
-		}
 	}
 
 	javadoc {
@@ -100,9 +116,6 @@ subprojects {
 		options.links = javadocLinks
 		options.addStringOption '-quiet'
 	}
-
-	eclipseJdt.onlyIf { false }
-	cleanEclipseJdt.onlyIf { false }
 
 	task sourcesJar(type: Jar) {
 		classifier = 'sources'

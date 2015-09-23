@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.restdocs.templates.mustache;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ import org.springframework.restdocs.templates.Template;
 /**
  * An adapter that exposes a compiled <a href="https://mustache.github.io">Mustache</a>
  * template as a {@link Template}.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class MustacheTemplate implements Template {
@@ -33,6 +34,7 @@ public class MustacheTemplate implements Template {
 	 * Creates a new {@code MustacheTemplate} that adapts the given {@code delegate}. When
 	 * rendered, the given {@code defaultContext} will be combined with the render context
 	 * prior to executing the delegate.
+	 *
 	 * @param delegate The delegate to adapt
 	 */
 	public MustacheTemplate(org.springframework.restdocs.mustache.Template delegate) {

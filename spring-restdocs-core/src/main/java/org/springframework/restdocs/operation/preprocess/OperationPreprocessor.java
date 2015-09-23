@@ -23,22 +23,22 @@ import org.springframework.restdocs.operation.OperationResponse;
 /**
  * An {@code OperationPreprocessor} processes the {@link OperationRequest} and
  * {@link OperationResponse} of an {@link Operation} prior to it being documented.
- * 
+ *
  * @author Andy Wilkinson
  */
 public interface OperationPreprocessor {
 
 	/**
-	 * Processes the given {@code request}
-	 * 
+	 * Processes the given {@code request}.
+	 *
 	 * @param request the request to process
 	 * @return the processed request
 	 */
 	OperationRequest preprocess(OperationRequest request);
 
 	/**
-	 * Processes the given {@code response}
-	 * 
+	 * Processes the given {@code response}.
+	 *
 	 * @param response the response to process
 	 * @return the processed response
 	 */

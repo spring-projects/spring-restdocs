@@ -16,8 +16,6 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -36,6 +34,8 @@ import org.springframework.restdocs.operation.StandardOperationResponse;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Parameterized tests for {@link HalLinkExtractor} and {@link AtomLinkExtractor} with
@@ -88,14 +88,14 @@ public class LinkExtractorsPayloadTests {
 	public void noLinks() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("no-links"));
-		assertLinks(Collections.<Link> emptyList(), links);
+		assertLinks(Collections.<Link>emptyList(), links);
 	}
 
 	@Test
 	public void linksInTheWrongFormat() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("wrong-format"));
-		assertLinks(Collections.<Link> emptyList(), links);
+		assertLinks(Collections.<Link>emptyList(), links);
 	}
 
 	private void assertLinks(List<Link> expectedLinks, Map<String, List<Link>> actualLinks) {

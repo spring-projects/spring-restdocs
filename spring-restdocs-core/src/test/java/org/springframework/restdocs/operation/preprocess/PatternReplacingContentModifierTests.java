@@ -16,16 +16,16 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.util.regex.Pattern;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link PatternReplacingContentModifier}
+ * Tests for {@link PatternReplacingContentModifier}.
  *
  * @author Andy Wilkinson
  *

@@ -37,7 +37,7 @@ public class RestDocumentation implements TestRule {
 
 	/**
 	 * Creates a new {@code RestDocumentation} instance that will generate snippets to the
-	 * given {@code outputDirectory}
+	 * given {@code outputDirectory}.
 	 *
 	 * @param outputDirectory the output directory
 	 */

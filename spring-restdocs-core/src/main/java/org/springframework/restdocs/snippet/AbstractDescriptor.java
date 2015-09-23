@@ -25,9 +25,8 @@ import org.springframework.restdocs.snippet.Attributes.Attribute;
  * Base class for descriptors. Provides the ability to associate arbitrary attributes with
  * a descriptor.
  *
- * @author Andy Wilkinson
- *
  * @param <T> the type of the descriptor
+ * @author Andy Wilkinson
  */
 public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 
@@ -36,7 +35,7 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 	private Object description;
 
 	/**
-	 * Adds the given {@code attributes} to the descriptor
+	 * Adds the given {@code attributes} to the descriptor.
 	 *
 	 * @param attributes the attributes
 	 * @return the descriptor
@@ -50,8 +49,8 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 	}
 
 	/**
-	 * Specifies the description
-	 * 
+	 * Specifies the description.
+	 *
 	 * @param description the description
 	 * @return the descriptor
 	 */
@@ -62,8 +61,8 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 	}
 
 	/**
-	 * Returns the description
-	 * 
+	 * Returns the description.
+	 *
 	 * @return the description
 	 */
 	public final Object getDescription() {
@@ -71,7 +70,7 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 	}
 
 	/**
-	 * Returns the descriptor's attributes
+	 * Returns the descriptor's attributes.
 	 *
 	 * @return the attributes
 	 */

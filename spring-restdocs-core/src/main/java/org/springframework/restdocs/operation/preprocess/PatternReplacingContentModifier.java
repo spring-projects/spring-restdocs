@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 /**
  * A {@link ContentModifier} that modifies the content by replacing occurrences of a
  * regular expression {@link Pattern}.
- * 
+ *
  * @author Andy Wilkinson
  * @author Dewet Diener
  */
@@ -35,7 +35,7 @@ class PatternReplacingContentModifier implements ContentModifier {
 	/**
 	 * Creates a new {@link PatternReplacingContentModifier} that will replace occurences
 	 * the given {@code pattern} with the given {@code replacement}.
-	 * 
+	 *
 	 * @param pattern the pattern
 	 * @param replacement the replacement
 	 */

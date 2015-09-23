@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Provides access to descriptions of a class's constraints
- * 
+ * Provides access to descriptions of a class's constraints.
+ *
  * @author Andy Wilkinson
  */
 public class ConstraintDescriptions {
@@ -38,7 +38,7 @@ public class ConstraintDescriptions {
 	 * Constraints will be resolved using a {@link ValidatorConstraintResolver} and
 	 * descriptions will be resolved using a
 	 * {@link ResourceBundleConstraintDescriptionResolver}.
-	 * 
+	 *
 	 * @param clazz the class
 	 */
 	public ConstraintDescriptions(Class<?> clazz) {
@@ -51,7 +51,7 @@ public class ConstraintDescriptions {
 	 * Constraints will be resolved using the given {@code constraintResolver} and
 	 * descriptions will be resolved using a
 	 * {@link ResourceBundleConstraintDescriptionResolver}.
-	 * 
+	 *
 	 * @param clazz the class
 	 * @param constraintResolver the constraint resolver
 	 */
@@ -63,7 +63,7 @@ public class ConstraintDescriptions {
 	 * Create a new {@code ConstraintDescriptions} for the given {@code clazz}.
 	 * Constraints will be resolved using a {@link ValidatorConstraintResolver} and
 	 * descriptions will be resolved using the given {@code descriptionResolver}.
-	 * 
+	 *
 	 * @param clazz the class
 	 * @param descriptionResolver the description resolver
 	 */
@@ -76,7 +76,7 @@ public class ConstraintDescriptions {
 	 * Create a new {@code ConstraintDescriptions} for the given {@code clazz}.
 	 * Constraints will be resolved using the given {@code constraintResolver} and
 	 * descriptions will be resolved using the given {@code descriptionResolver}.
-	 * 
+	 *
 	 * @param clazz the class
 	 * @param constraintResolver the constraint resolver
 	 * @param descriptionResolver the description resolver
@@ -89,8 +89,8 @@ public class ConstraintDescriptions {
 	}
 
 	/**
-	 * Returns a list of the descriptions for the constraints on the given property
-	 * 
+	 * Returns a list of the descriptions for the constraints on the given property.
+	 *
 	 * @param property the property
 	 * @return the list of constraint descriptions
 	 */
@@ -104,5 +104,4 @@ public class ConstraintDescriptions {
 		Collections.sort(descriptions);
 		return descriptions;
 	}
-
 }

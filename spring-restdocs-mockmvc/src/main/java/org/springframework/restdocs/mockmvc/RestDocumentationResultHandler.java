@@ -16,8 +16,6 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,9 +33,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.util.Assert;
 
+import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
+
 /**
  * A Spring MVC Test {@code ResultHandler} for documenting RESTful APIs.
- * 
+ *
  * @author Andy Wilkinson
  * @author Andreas Evers
  * @see MockMvcRestDocumentation#document(String, Snippet...)
@@ -105,7 +105,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	/**
 	 * Adds the given {@code snippets} such that that are documented when this result
 	 * handler is called.
-	 * 
+	 *
 	 * @param snippets the snippets to add
 	 * @return this {@code ResultDocumentationResultHandler}
 	 */
@@ -123,7 +123,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		return combinedSnippets;
 	}
 
-	static final class IdentityOperationRequestPreprocessor implements
+	private static final class IdentityOperationRequestPreprocessor implements
 			OperationRequestPreprocessor {
 
 		@Override
@@ -133,7 +133,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	}
 
-	static final class IdentityOperationResponsePreprocessor implements
+	private static final class IdentityOperationResponsePreprocessor implements
 			OperationResponsePreprocessor {
 
 		@Override

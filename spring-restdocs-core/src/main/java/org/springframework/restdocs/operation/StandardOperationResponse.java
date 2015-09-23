@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * Standard implementation of {@link OperationResponse}.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class StandardOperationResponse implements OperationResponse {
@@ -35,7 +35,7 @@ public class StandardOperationResponse implements OperationResponse {
 	/**
 	 * Creates a new response with the given {@code status}, {@code headers}, and
 	 * {@code content}.
-	 * 
+	 *
 	 * @param status the status of the response
 	 * @param headers the headers of the response
 	 * @param content the content of the response

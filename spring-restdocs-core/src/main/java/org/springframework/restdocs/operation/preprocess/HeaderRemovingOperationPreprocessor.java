@@ -27,8 +27,8 @@ import org.springframework.restdocs.operation.StandardOperationRequest;
 import org.springframework.restdocs.operation.StandardOperationResponse;
 
 /**
- * An {@link OperationPreprocessor} that removes headers
- * 
+ * An {@link OperationPreprocessor} that removes headers.
+ *
  * @author Andy Wilkinson
  */
 class HeaderRemovingOperationPreprocessor implements OperationPreprocessor {

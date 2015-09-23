@@ -53,7 +53,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with the given additional
 	 * {@code attributes} that will be included in the model during template rendering.
-	 * 
+	 *
 	 * @param attributes The additional attributes
 	 */
 	protected CurlRequestSnippet(Map<String, Object> attributes) {

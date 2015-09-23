@@ -25,7 +25,7 @@ import org.springframework.util.Assert;
  * An {@link OperationResponsePreprocessor} that delgates to one or more
  * {@link OperationPreprocessor OperationPreprocessors} to preprocess an
  * {@link OperationResponse}.
- * 
+ *
  * @author Andy Wilkinson
  */
 class DelegatingOperationResponsePreprocessor implements OperationResponsePreprocessor {
@@ -36,7 +36,7 @@ class DelegatingOperationResponsePreprocessor implements OperationResponsePrepro
 	 * Creates a new {@code DelegatingOperationResponsePreprocessor} that will delegate to
 	 * the given {@code delegates} by calling
 	 * {@link OperationPreprocessor#preprocess(OperationResponse)}.
-	 * 
+	 *
 	 * @param delegates the delegates
 	 */
 	DelegatingOperationResponsePreprocessor(List<OperationPreprocessor> delegates) {

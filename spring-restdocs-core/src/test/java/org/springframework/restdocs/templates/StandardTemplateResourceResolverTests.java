@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.restdocs.templates;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+package org.springframework.restdocs.templates;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -29,9 +26,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.core.io.Resource;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Tests for {@link TemplateResourceResolver}.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class StandardTemplateResourceResolverTests {

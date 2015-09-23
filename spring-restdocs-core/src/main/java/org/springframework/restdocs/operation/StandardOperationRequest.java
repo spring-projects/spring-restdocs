@@ -26,7 +26,7 @@ import org.springframework.http.HttpMethod;
 
 /**
  * Standard implementation of {@link OperationRequest}.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class StandardOperationRequest implements OperationRequest {
@@ -46,7 +46,7 @@ public class StandardOperationRequest implements OperationRequest {
 	/**
 	 * Creates a new request with the given {@code uri} and {@code method}. The request
 	 * will have the given {@code headers}, {@code parameters}, and {@code parts}.
-	 * 
+	 *
 	 * @param uri the uri
 	 * @param method the method
 	 * @param content the content

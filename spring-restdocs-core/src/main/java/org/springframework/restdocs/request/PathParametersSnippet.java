@@ -42,7 +42,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	/**
 	 * Creates a new {@code PathParametersSnippet} that will document the request's path
 	 * parameters using the given {@code descriptors}.
-	 * 
+	 *
 	 * @param descriptors the parameter descriptors
 	 */
 	protected PathParametersSnippet(List<ParameterDescriptor> descriptors) {
@@ -53,7 +53,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	 * Creates a new {@code PathParametersSnippet} that will document the request's path
 	 * parameters using the given {@code descriptors}. The given {@code attributes} will
 	 * be included in the model during template rendering.
-	 * 
+	 *
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */

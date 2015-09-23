@@ -23,9 +23,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Base class for {@link NestedConfigurer} implementations.
- * 
- * @author Andy Wilkinson
+ *
  * @param <PARENT> The type of the configurer's parent
+ * @author Andy Wilkinson
  */
 abstract class AbstractNestedConfigurer<PARENT extends MockMvcConfigurer> extends
 		AbstractConfigurer implements NestedConfigurer<PARENT>, MockMvcConfigurer {

@@ -19,8 +19,8 @@ package org.springframework.restdocs.request;
 import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
- * A descriptor of a request or path parameter
- * 
+ * A descriptor of a request or path parameter.
+ *
  * @author Andy Wilkinson
  * @see RequestDocumentation#parameterWithName
  *
@@ -32,7 +32,7 @@ public class ParameterDescriptor extends AbstractDescriptor<ParameterDescriptor>
 	/**
 	 * Creates a new {@code ParameterDescriptor} describing the parameter with the given
 	 * {@code name}.
-	 * 
+	 *
 	 * @param name the name of the parameter
 	 */
 	protected ParameterDescriptor(String name) {
@@ -40,8 +40,8 @@ public class ParameterDescriptor extends AbstractDescriptor<ParameterDescriptor>
 	}
 
 	/**
-	 * Returns the name of the parameter being described by this descriptor
-	 * 
+	 * Returns the name of the parameter being described by this descriptor.
+	 *
 	 * @return the name of the parameter
 	 */
 	public final String getName() {

@@ -16,6 +16,16 @@
 
 package org.springframework.restdocs.mockmvc;
 
+import java.net.URI;
+
+import javax.servlet.ServletContext;
+
+import org.junit.Test;
+import org.springframework.http.HttpMethod;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -29,20 +39,9 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.request;
 
-import java.net.URI;
-
-import javax.servlet.ServletContext;
-
-import org.junit.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
 /**
- * Tests for {@link RestDocumentationRequestBuilders}
- * 
+ * Tests for {@link RestDocumentationRequestBuilders}.
+ *
  * @author Andy Wilkinson
  *
  */

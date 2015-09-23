@@ -16,9 +16,6 @@
 
 package org.springframework.restdocs.test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -29,10 +26,13 @@ import org.junit.runners.model.Statement;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.restdocs.test.SnippetMatchers.SnippetMatcher;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * The {@code ExpectedSnippet} rule is used to verify that a {@link TemplatedSnippet} has
  * generated the expected snippet.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class ExpectedSnippet implements TestRule {
@@ -50,22 +50,6 @@ public class ExpectedSnippet implements TestRule {
 		this.outputDirectory = new File("build/"
 				+ description.getTestClass().getSimpleName());
 		return new ExpectedSnippetStatement(base);
-	}
-
-	private final class ExpectedSnippetStatement extends Statement {
-
-		private final Statement delegate;
-
-		public ExpectedSnippetStatement(Statement delegate) {
-			this.delegate = delegate;
-		}
-
-		@Override
-		public void evaluate() throws Throwable {
-			this.delegate.evaluate();
-			verifySnippet();
-		}
-
 	}
 
 	private void verifySnippet() throws IOException {
@@ -128,6 +112,22 @@ public class ExpectedSnippet implements TestRule {
 
 	public File getOutputDirectory() {
 		return this.outputDirectory;
+	}
+
+	private final class ExpectedSnippetStatement extends Statement {
+
+		private final Statement delegate;
+
+		private ExpectedSnippetStatement(Statement delegate) {
+			this.delegate = delegate;
+		}
+
+		@Override
+		public void evaluate() throws Throwable {
+			this.delegate.evaluate();
+			verifySnippet();
+		}
+
 	}
 
 }

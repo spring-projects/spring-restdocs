@@ -19,7 +19,7 @@ package org.springframework.restdocs.hypermedia;
 import org.springframework.core.style.ToStringCreator;
 
 /**
- * Representation of a link used in a Hypermedia-based API
+ * Representation of a link used in a Hypermedia-based API.
  *
  * @author Andy Wilkinson
  */
@@ -30,7 +30,7 @@ public class Link {
 	private final String href;
 
 	/**
-	 * Creates a new {@code Link} with the given {@code rel} and {@code href}
+	 * Creates a new {@code Link} with the given {@code rel} and {@code href}.
 	 *
 	 * @param rel The link's rel
 	 * @param href The link's href
@@ -41,7 +41,7 @@ public class Link {
 	}
 
 	/**
-	 * Returns the link's {@code rel}
+	 * Returns the link's {@code rel}.
 	 * @return the link's {@code rel}
 	 */
 	public String getRel() {
@@ -49,7 +49,7 @@ public class Link {
 	}
 
 	/**
-	 * Returns the link's {@code href}
+	 * Returns the link's {@code href}.
 	 * @return the link's {@code href}
 	 */
 	public String getHref() {

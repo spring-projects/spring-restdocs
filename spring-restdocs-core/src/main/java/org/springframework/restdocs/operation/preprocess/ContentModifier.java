@@ -23,15 +23,15 @@ import org.springframework.restdocs.operation.OperationResponse;
  * A {@code ContentModifier} modifies the content of an {@link OperationRequest} or
  * {@link OperationResponse} during the preprocessing that is performed prior to
  * documentation generation.
- * 
+ *
  * @author Andy Wilkinson
  * @see ContentModifyingOperationPreprocessor
  */
 public interface ContentModifier {
 
 	/**
-	 * Returns modified content based on the given {@code originalContent}
-	 * 
+	 * Returns modified content based on the given {@code originalContent}.
+	 *
 	 * @param originalContent the original content
 	 * @return the modified content
 	 */

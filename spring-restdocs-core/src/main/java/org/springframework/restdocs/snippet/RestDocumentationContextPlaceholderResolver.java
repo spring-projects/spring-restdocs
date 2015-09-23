@@ -46,7 +46,7 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * {@link RestDocumentationContext#getTestClass() current test class} formatted using
  * snake case
  * </ul>
- * 
+ *
  * @author Andy Wilkinson
  */
 public class RestDocumentationContextPlaceholderResolver implements PlaceholderResolver {
@@ -58,7 +58,7 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 	/**
 	 * Creates a new placeholder resolver that will resolve placeholders using the given
 	 * {@code context}.
-	 * 
+	 *
 	 * @param context the context to use
 	 */
 	public RestDocumentationContextPlaceholderResolver(RestDocumentationContext context) {
@@ -93,7 +93,7 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 
 	/**
 	 * Converts the given {@code string} from camelCase to kebab-case.
-	 * 
+	 *
 	 * @param string the string
 	 * @return the converted string
 	 */
@@ -103,7 +103,7 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 
 	/**
 	 * Converts the given {@code string} from camelCase to snake_case.
-	 * 
+	 *
 	 * @param string the string
 	 * @return the converted string
 	 */
@@ -114,7 +114,7 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 	/**
 	 * Returns the {@link RestDocumentationContext} that should be used during placeholder
 	 * resolution.
-	 * 
+	 *
 	 * @return the context
 	 */
 	protected final RestDocumentationContext getContext() {

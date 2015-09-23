@@ -16,20 +16,20 @@
 
 package org.springframework.restdocs.snippet;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-
 import java.io.File;
 
 import org.junit.Test;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+
 /**
  * Tests for {@link StandardWriterResolver}.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class StandardWriterResolverTests {
