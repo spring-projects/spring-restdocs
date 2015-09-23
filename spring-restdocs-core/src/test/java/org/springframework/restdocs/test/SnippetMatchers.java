@@ -17,8 +17,9 @@
 package org.springframework.restdocs.test;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -251,7 +252,8 @@ public final class SnippetMatchers {
 		}
 
 		private String read(File snippetFile) throws IOException {
-			return FileCopyUtils.copyToString(new FileReader(snippetFile));
+			return FileCopyUtils.copyToString(new InputStreamReader(new FileInputStream(
+					snippetFile), "UTF-8"));
 		}
 
 		@Override
