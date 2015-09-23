@@ -98,7 +98,7 @@ public class HttpRequestSnippetTests {
 				"post-request-with-charset", this.snippet.getOutputDirectory())
 				.request("http://localhost/foo").method("POST")
 				.header("Content-Type", "text/plain;charset=UTF-8")
-				.content(japaneseContent).build());
+				.content(japaneseContent.getBytes("UTF-8")).build());
 	}
 
 	@Test

@@ -140,6 +140,11 @@ public class OperationBuilder {
 			return this;
 		}
 
+		public OperationRequestBuilder content(byte[] content) {
+			this.content = content;
+			return this;
+		}
+
 		public OperationRequestBuilder param(String name, String... values) {
 			for (String value : values) {
 				this.parameters.add(name, value);

@@ -93,7 +93,7 @@ public class HttpResponseSnippetTests {
 		new HttpResponseSnippet().document(new OperationBuilder("response-with-charset",
 				this.snippet.getOutputDirectory()).response()
 				.header("Content-Type", "text/plain;charset=UTF-8")
-				.content(japaneseContent).build());
+				.content(japaneseContent.getBytes("UTF-8")).build());
 	}
 
 	@Test
