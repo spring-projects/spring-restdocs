@@ -388,7 +388,8 @@ call that is being documented
 
 | `http-request.adoc`
 | Contains the HTTP request that is equivalent to the `MockMvc` call that is being
-documented
+  documented. HTTP 1.1 requires a `Host` header. If you do not provide one via the
+  `MockMvc` API the snippet will add one automatically.
 
 | `http-response.adoc`
 | Contains the HTTP response that was returned
