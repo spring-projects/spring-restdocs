@@ -48,6 +48,16 @@ public interface OperationRequestPart {
 	byte[] getContent();
 
 	/**
+	 * Returns the content of the part as a {@link String}. If the part has no content an
+	 * empty string is returned. If the part has a {@code Content-Type} header that
+	 * specifies a charset then that charset will be used when converting the contents to
+	 * a {@code String}.
+	 *
+	 * @return the contents as string, never {@code null}
+	 */
+	String getContentAsString();
+
+	/**
 	 * Returns the part's headers.
 	 *
 	 * @return the headers

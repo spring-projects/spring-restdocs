@@ -43,10 +43,21 @@ public interface OperationResponse {
 	HttpHeaders getHeaders();
 
 	/**
-	 * Returns the contents of the response. If the response has no content an empty array
+	 * Returns the content of the response. If the response has no content an empty array
 	 * is returned.
 	 *
 	 * @return the contents, never {@code null}
 	 */
 	byte[] getContent();
+
+	/**
+	 * Returns the content of the response as a {@link String}. If the response has no
+	 * content an empty string is returned. If the response has a {@code Content-Type}
+	 * header that specifies a charset then that charset will be used when converting the
+	 * contents to a {@code String}.
+	 *
+	 * @return the contents as string, never {@code null}
+	 */
+	String getContentAsString();
+
 }

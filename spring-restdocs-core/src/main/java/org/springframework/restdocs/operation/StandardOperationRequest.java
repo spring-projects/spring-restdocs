@@ -17,7 +17,6 @@
 package org.springframework.restdocs.operation;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -29,11 +28,8 @@ import org.springframework.http.HttpMethod;
  *
  * @author Andy Wilkinson
  */
-public class StandardOperationRequest implements OperationRequest {
-
-	private byte[] content;
-
-	private HttpHeaders headers;
+public class StandardOperationRequest extends AbstractOperationMessage implements
+		OperationRequest {
 
 	private HttpMethod method;
 
@@ -57,22 +53,11 @@ public class StandardOperationRequest implements OperationRequest {
 	public StandardOperationRequest(URI uri, HttpMethod method, byte[] content,
 			HttpHeaders headers, Parameters parameters,
 			Collection<OperationRequestPart> parts) {
+		super(content, headers);
 		this.uri = uri;
 		this.method = method;
-		this.content = content;
-		this.headers = headers;
 		this.parameters = parameters;
 		this.parts = parts;
-	}
-
-	@Override
-	public byte[] getContent() {
-		return Arrays.copyOf(this.content, this.content.length);
-	}
-
-	@Override
-	public HttpHeaders getHeaders() {
-		return this.headers;
 	}
 
 	@Override

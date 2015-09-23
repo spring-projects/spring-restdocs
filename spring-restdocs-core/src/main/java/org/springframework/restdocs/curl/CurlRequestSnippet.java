@@ -80,7 +80,6 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		writeHttpMethodIfNecessary(operation.getRequest(), printer);
 		writeHeaders(headers, printer);
 		writePartsIfNecessary(operation.getRequest(), printer);
-
 		writeContent(operation.getRequest(), printer);
 
 		return command.toString();
@@ -126,7 +125,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		for (OperationRequestPart part : request.getParts()) {
 			writer.printf(" -F '%s=", part.getName());
 			if (!StringUtils.hasText(part.getSubmittedFileName())) {
-				writer.append(new String(part.getContent()));
+				writer.append(part.getContentAsString());
 			}
 			else {
 				writer.printf("@%s", part.getSubmittedFileName());
@@ -141,8 +140,9 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeContent(OperationRequest request, PrintWriter writer) {
-		if (request.getContent().length > 0) {
-			writer.print(String.format(" -d '%s'", new String(request.getContent())));
+		String content = request.getContentAsString();
+		if (StringUtils.hasText(content)) {
+			writer.print(String.format(" -d '%s'", content));
 		}
 		else if (!request.getParts().isEmpty()) {
 			for (Entry<String, List<String>> entry : request.getParameters().entrySet()) {

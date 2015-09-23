@@ -29,6 +29,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.springframework.http.MediaType;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -44,7 +46,7 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 					new XmlPrettyPrinter()));
 
 	@Override
-	public byte[] modifyContent(byte[] originalContent) {
+	public byte[] modifyContent(byte[] originalContent, MediaType contentType) {
 		for (PrettyPrinter prettyPrinter : PRETTY_PRINTERS) {
 			try {
 				return prettyPrinter.prettyPrint(originalContent).getBytes();

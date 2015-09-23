@@ -23,15 +23,12 @@ import org.springframework.http.HttpHeaders;
  *
  * @author Andy Wilkinson
  */
-public class StandardOperationRequestPart implements OperationRequestPart {
+public class StandardOperationRequestPart extends AbstractOperationMessage implements
+		OperationRequestPart {
 
 	private final String name;
 
 	private final String submittedFileName;
-
-	private final byte[] content;
-
-	private final HttpHeaders headers;
 
 	/**
 	 * Creates a new {@code StandardOperationRequestPart} with the given {@code name}.
@@ -43,10 +40,9 @@ public class StandardOperationRequestPart implements OperationRequestPart {
 	 */
 	public StandardOperationRequestPart(String name, String submittedFileName,
 			byte[] content, HttpHeaders headers) {
+		super(content, headers);
 		this.name = name;
 		this.submittedFileName = submittedFileName;
-		this.content = content;
-		this.headers = headers;
 	}
 
 	@Override
@@ -57,16 +53,6 @@ public class StandardOperationRequestPart implements OperationRequestPart {
 	@Override
 	public String getSubmittedFileName() {
 		return this.submittedFileName;
-	}
-
-	@Override
-	public byte[] getContent() {
-		return this.content;
-	}
-
-	@Override
-	public HttpHeaders getHeaders() {
-		return this.headers;
 	}
 
 }

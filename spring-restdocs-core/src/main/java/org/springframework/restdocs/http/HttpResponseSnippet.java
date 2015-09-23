@@ -59,14 +59,16 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 		OperationResponse response = operation.getResponse();
 		HttpStatus status = response.getStatus();
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(
-				"responseBody",
-				response.getContent().length > 0 ? String.format("%n%s", new String(
-						response.getContent())) : "");
+		model.put("responseBody", responseBody(response));
 		model.put("statusCode", status.value());
 		model.put("statusReason", status.getReasonPhrase());
 		model.put("headers", headers(response));
 		return model;
+	}
+
+	private String responseBody(OperationResponse response) {
+		String content = response.getContentAsString();
+		return content.isEmpty() ? content : String.format("%n%s", content);
 	}
 
 	private List<Map<String, String>> headers(OperationResponse response) {

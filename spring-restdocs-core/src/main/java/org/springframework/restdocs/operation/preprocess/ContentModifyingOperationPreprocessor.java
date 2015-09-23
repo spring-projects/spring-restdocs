@@ -44,7 +44,8 @@ public class ContentModifyingOperationPreprocessor implements OperationPreproces
 
 	@Override
 	public OperationRequest preprocess(OperationRequest request) {
-		byte[] modifiedContent = this.contentModifier.modifyContent(request.getContent());
+		byte[] modifiedContent = this.contentModifier.modifyContent(request.getContent(),
+				request.getHeaders().getContentType());
 		return new StandardOperationRequest(request.getUri(), request.getMethod(),
 				modifiedContent,
 				getUpdatedHeaders(request.getHeaders(), modifiedContent),
@@ -53,8 +54,8 @@ public class ContentModifyingOperationPreprocessor implements OperationPreproces
 
 	@Override
 	public OperationResponse preprocess(OperationResponse response) {
-		byte[] modifiedContent = this.contentModifier
-				.modifyContent(response.getContent());
+		byte[] modifiedContent = this.contentModifier.modifyContent(
+				response.getContent(), response.getHeaders().getContentType());
 		return new StandardOperationResponse(response.getStatus(), getUpdatedHeaders(
 				response.getHeaders(), modifiedContent), modifiedContent);
 	}

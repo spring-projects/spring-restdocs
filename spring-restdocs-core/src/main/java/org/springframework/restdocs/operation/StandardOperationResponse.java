@@ -24,13 +24,10 @@ import org.springframework.http.HttpStatus;
  *
  * @author Andy Wilkinson
  */
-public class StandardOperationResponse implements OperationResponse {
+public class StandardOperationResponse extends AbstractOperationMessage implements
+		OperationResponse {
 
 	private final HttpStatus status;
-
-	private final HttpHeaders headers;
-
-	private final byte[] content;
 
 	/**
 	 * Creates a new response with the given {@code status}, {@code headers}, and
@@ -42,24 +39,13 @@ public class StandardOperationResponse implements OperationResponse {
 	 */
 	public StandardOperationResponse(HttpStatus status, HttpHeaders headers,
 			byte[] content) {
+		super(content, headers);
 		this.status = status;
-		this.headers = headers;
-		this.content = content;
 	}
 
 	@Override
 	public HttpStatus getStatus() {
 		return this.status;
-	}
-
-	@Override
-	public HttpHeaders getHeaders() {
-		return this.headers;
-	}
-
-	@Override
-	public byte[] getContent() {
-		return this.content;
 	}
 
 }

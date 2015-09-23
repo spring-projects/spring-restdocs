@@ -68,8 +68,7 @@ public class HttpResponseSnippetTests {
 	@Test
 	public void responseWithHeaders() throws IOException {
 		this.snippet.expectHttpResponse("response-with-headers").withContents(
-				httpResponse(HttpStatus.OK) //
-						.header("Content-Type", "application/json") //
+				httpResponse(HttpStatus.OK).header("Content-Type", "application/json")
 						.header("a", "alpha"));
 		new HttpResponseSnippet().document(new OperationBuilder("response-with-headers",
 				this.snippet.getOutputDirectory()).response()
@@ -83,6 +82,17 @@ public class HttpResponseSnippetTests {
 				httpResponse(HttpStatus.OK).content("content"));
 		new HttpResponseSnippet().document(new OperationBuilder("response-with-content",
 				this.snippet.getOutputDirectory()).response().content("content").build());
+	}
+
+	@Test
+	public void responseWithCharset() throws IOException {
+		this.snippet.expectHttpResponse("response-with-charset").withContents(
+				httpResponse(HttpStatus.OK).header("Content-Type",
+						"text/plain;charset=UTF-8").content("コンテンツ"));
+		new HttpResponseSnippet().document(new OperationBuilder("response-with-charset",
+				this.snippet.getOutputDirectory()).response()
+				.header("Content-Type", "text/plain;charset=UTF-8").content("コンテンツ")
+				.build());
 	}
 
 	@Test

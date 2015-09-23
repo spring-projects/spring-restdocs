@@ -31,12 +31,22 @@ import org.springframework.http.HttpMethod;
 public interface OperationRequest {
 
 	/**
-	 * Returns the contents of the request. If the request has no content an empty array
-	 * is returned.
+	 * Returns the content of the request. If the request has no content an empty array is
+	 * returned.
 	 *
 	 * @return the contents, never {@code null}
 	 */
 	byte[] getContent();
+
+	/**
+	 * Returns the content of the request as a {@link String}. If the request has no
+	 * content an empty string is returned. If the request has a {@code Content-Type}
+	 * header that specifies a charset then that charset will be used when converting the
+	 * contents to a {@code String}.
+	 *
+	 * @return the contents as string, never {@code null}
+	 */
+	String getContentAsString();
 
 	/**
 	 * Returns the headers that were included in the request.

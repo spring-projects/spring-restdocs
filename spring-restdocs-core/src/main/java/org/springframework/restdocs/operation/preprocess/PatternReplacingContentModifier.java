@@ -19,6 +19,8 @@ package org.springframework.restdocs.operation.preprocess;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.http.MediaType;
+
 /**
  * A {@link ContentModifier} that modifies the content by replacing occurrences of a
  * regular expression {@link Pattern}.
@@ -45,15 +47,29 @@ class PatternReplacingContentModifier implements ContentModifier {
 	}
 
 	@Override
-	public byte[] modifyContent(byte[] content) {
-		String original = new String(content);
+	public byte[] modifyContent(byte[] content, MediaType contentType) {
+		String original;
+		if (contentType != null && contentType.getCharSet() != null) {
+			original = new String(content, contentType.getCharSet());
+		}
+		else {
+			original = new String(content);
+		}
 		Matcher matcher = this.pattern.matcher(original);
 		StringBuilder buffer = new StringBuilder();
 		int previous = 0;
 		while (matcher.find()) {
-			buffer.append(original.substring(previous, matcher.start(1)));
+			String prefix;
+			if (matcher.groupCount() > 0) {
+				prefix = original.substring(previous, matcher.start(1));
+				previous = matcher.end(1);
+			}
+			else {
+				prefix = original.substring(previous, matcher.start());
+				previous = matcher.end();
+			}
+			buffer.append(prefix);
 			buffer.append(this.replacement);
-			previous = matcher.end(1);
 		}
 		if (previous < original.length()) {
 			buffer.append(original.substring(previous));

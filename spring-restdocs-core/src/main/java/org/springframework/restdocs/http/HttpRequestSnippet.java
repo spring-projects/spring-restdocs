@@ -106,9 +106,9 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	private String getRequestBody(OperationRequest request) {
 		StringWriter httpRequest = new StringWriter();
 		PrintWriter writer = new PrintWriter(httpRequest);
-		if (request.getContent().length > 0) {
-			writer.println();
-			writer.print(new String(request.getContent()));
+		String content = request.getContentAsString();
+		if (StringUtils.hasText(content)) {
+			writer.printf("%n%s", content);
 		}
 		else if (isPutOrPost(request)) {
 			if (request.getParts().isEmpty()) {
@@ -152,7 +152,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writePart(OperationRequestPart part, PrintWriter writer) {
-		writePart(part.getName(), new String(part.getContent()), part.getHeaders()
+		writePart(part.getName(), part.getContentAsString(), part.getHeaders()
 				.getContentType(), writer);
 	}
 
