@@ -27,7 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 public class ExampleApplicationTests {
-	
+
 	// tag::mock-mvc-setup[]
 	@Rule
 	public final RestDocumentation restDocumentation = new RestDocumentation("build/generated-snippets");
