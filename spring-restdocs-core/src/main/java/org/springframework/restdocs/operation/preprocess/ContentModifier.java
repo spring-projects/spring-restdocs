@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationResponse;
 
@@ -33,8 +34,9 @@ public interface ContentModifier {
 	 * Returns modified content based on the given {@code originalContent}.
 	 *
 	 * @param originalContent the original content
+	 * @param contentType the type of the original content, may be {@code null}
 	 * @return the modified content
 	 */
-	byte[] modifyContent(byte[] originalContent);
+	byte[] modifyContent(byte[] originalContent, MediaType contentType);
 
 }

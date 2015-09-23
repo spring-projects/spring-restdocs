@@ -16,9 +16,11 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
+import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
+import org.springframework.http.MediaType;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -35,13 +37,23 @@ public class PatternReplacingContentModifierTests {
 	@Test
 	public void patternsAreReplaced() throws Exception {
 		Pattern pattern = Pattern.compile(
-				"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
+				"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
 				Pattern.CASE_INSENSITIVE);
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(
 				pattern, "<<uuid>>");
-		assertThat(
-				contentModifier.modifyContent("{\"id\" : \"CA761232-ED42-11CE-BACD-00AA0057B223\"}"
-						.getBytes()), is(equalTo("{\"id\" : \"<<uuid>>\"}".getBytes())));
+		assertThat(contentModifier.modifyContent(
+				"{\"id\" : \"CA761232-ED42-11CE-BACD-00AA0057B223\"}".getBytes(), null),
+				is(equalTo("{\"id\" : \"<<uuid>>\"}".getBytes())));
+	}
+
+	@Test
+	public void encodingIsPreserved() {
+		Pattern pattern = Pattern.compile("[0-9]+");
+		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(
+				pattern, "<<number>>");
+		assertThat(contentModifier.modifyContent("こんにちわ, 世界 123".getBytes(),
+				new MediaType("text", "plain", Charset.forName("UTF-8"))),
+				is(equalTo("こんにちわ, 世界 <<number>>".getBytes())));
 	}
 
 }

@@ -16,28 +16,20 @@
 
 package org.springframework.restdocs.operation;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 
 /**
  * Standard implementation of {@link OperationRequest}.
  *
  * @author Andy Wilkinson
  */
-public class StandardOperationRequest implements OperationRequest {
-
-	private byte[] content;
-
-	private String characterEncoding;
-
-	private HttpHeaders headers;
+public class StandardOperationRequest extends AbstractOperationMessage implements
+		OperationRequest {
 
 	private HttpMethod method;
 
@@ -61,34 +53,11 @@ public class StandardOperationRequest implements OperationRequest {
 	public StandardOperationRequest(URI uri, HttpMethod method, byte[] content,
 			HttpHeaders headers, Parameters parameters,
 			Collection<OperationRequestPart> parts) {
+		super(content, headers);
 		this.uri = uri;
 		this.method = method;
-		this.content = content;
-		this.characterEncoding = detectCharsetFromContentTypeHeader(headers);
-		this.headers = headers;
 		this.parameters = parameters;
 		this.parts = parts;
-	}
-
-	@Override
-	public byte[] getContent() {
-		return Arrays.copyOf(this.content, this.content.length);
-	}
-	
-	@Override
-	public String getContentAsString() throws UnsupportedEncodingException {
-		if (content.length > 0) {
-			return characterEncoding != null ?
-					new String(content, characterEncoding) : new String(content);
-		}
-		else {
-			return "";
-		}
-	}
-
-	@Override
-	public HttpHeaders getHeaders() {
-		return this.headers;
 	}
 
 	@Override
@@ -111,14 +80,4 @@ public class StandardOperationRequest implements OperationRequest {
 		return this.uri;
 	}
 
-	private String detectCharsetFromContentTypeHeader(HttpHeaders headers) {
-		if (headers == null) {
-			return null;
-		}
-		MediaType contentType = headers.getContentType();
-		if (contentType == null) {
-			return null;
-		}
-		return contentType.getParameter("charset");
-	}
 }

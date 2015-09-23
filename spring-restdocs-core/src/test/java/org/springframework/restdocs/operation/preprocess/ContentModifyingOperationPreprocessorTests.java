@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationResponse;
@@ -46,7 +47,7 @@ public class ContentModifyingOperationPreprocessorTests {
 			new ContentModifier() {
 
 				@Override
-				public byte[] modifyContent(byte[] originalContent) {
+				public byte[] modifyContent(byte[] originalContent, MediaType mediaType) {
 					return "modified".getBytes();
 				}
 

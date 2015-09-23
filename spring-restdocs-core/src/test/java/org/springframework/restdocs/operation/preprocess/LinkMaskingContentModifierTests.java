@@ -52,37 +52,36 @@ public class LinkMaskingContentModifierTests {
 
 	@Test
 	public void halLinksAreMasked() throws Exception {
-		assertThat(this.contentModifier.modifyContent(halPayloadWithLinks(this.links)),
+		assertThat(
+				this.contentModifier.modifyContent(halPayloadWithLinks(this.links), null),
 				is(equalTo(halPayloadWithLinks(this.maskedLinks))));
 	}
 
 	@Test
 	public void formattedHalLinksAreMasked() throws Exception {
-		assertThat(
-				this.contentModifier
-						.modifyContent(formattedHalPayloadWithLinks(this.links)),
+		assertThat(this.contentModifier.modifyContent(
+				formattedHalPayloadWithLinks(this.links), null),
 				is(equalTo(formattedHalPayloadWithLinks(this.maskedLinks))));
 	}
 
 	@Test
 	public void atomLinksAreMasked() throws Exception {
-		assertThat(this.contentModifier.modifyContent(atomPayloadWithLinks(this.links)),
-				is(equalTo(atomPayloadWithLinks(this.maskedLinks))));
+		assertThat(this.contentModifier.modifyContent(atomPayloadWithLinks(this.links),
+				null), is(equalTo(atomPayloadWithLinks(this.maskedLinks))));
 	}
 
 	@Test
 	public void formattedAtomLinksAreMasked() throws Exception {
-		assertThat(
-				this.contentModifier
-						.modifyContent(formattedAtomPayloadWithLinks(this.links)),
+		assertThat(this.contentModifier.modifyContent(
+				formattedAtomPayloadWithLinks(this.links), null),
 				is(equalTo(formattedAtomPayloadWithLinks(this.maskedLinks))));
 	}
 
 	@Test
 	public void maskCanBeCustomized() throws Exception {
 		assertThat(
-				new LinkMaskingContentModifier("custom")
-						.modifyContent(formattedAtomPayloadWithLinks(this.links)),
+				new LinkMaskingContentModifier("custom").modifyContent(
+						formattedAtomPayloadWithLinks(this.links), null),
 				is(equalTo(formattedAtomPayloadWithLinks(new Link("a", "custom"),
 						new Link("b", "custom")))));
 	}

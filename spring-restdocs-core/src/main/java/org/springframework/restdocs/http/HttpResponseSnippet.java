@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.http;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.Map.Entry;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationResponse;
-import org.springframework.restdocs.snippet.ModelCreationException;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 
@@ -69,13 +67,8 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 	}
 
 	private String responseBody(OperationResponse response) {
-		try {
-			String content = response.getContentAsString();
-			return content.isEmpty() ? content : String.format("%n%s", content);
-		}
-		catch (IOException e) {
-			throw new ModelCreationException("Failed to create response body.", e);
-		}
+		String content = response.getContentAsString();
+		return content.isEmpty() ? content : String.format("%n%s", content);
 	}
 
 	private List<Map<String, String>> headers(OperationResponse response) {

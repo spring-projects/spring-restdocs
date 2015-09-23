@@ -38,7 +38,7 @@ abstract class AbstractJsonLinkExtractor implements LinkExtractor {
 	public Map<String, List<Link>> extractLinks(OperationResponse response)
 			throws IOException {
 		Map<String, Object> jsonContent = this.objectMapper.readValue(
-				new String(response.getContent()), Map.class);
+				response.getContent(), Map.class);
 		return extractLinks(jsonContent);
 	}
 

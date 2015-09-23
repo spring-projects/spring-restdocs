@@ -16,8 +16,6 @@
 
 package org.springframework.restdocs.operation;
 
-import java.io.IOException;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
@@ -45,7 +43,7 @@ public interface OperationResponse {
 	HttpHeaders getHeaders();
 
 	/**
-	 * Returns the contents of the response. If the response has no content an empty array
+	 * Returns the content of the response. If the response has no content an empty array
 	 * is returned.
 	 *
 	 * @return the contents, never {@code null}
@@ -53,10 +51,13 @@ public interface OperationResponse {
 	byte[] getContent();
 
 	/**
-	 * Returns the contents as string of the response. If the response has no content an empty string
-	 * is returned
+	 * Returns the content of the response as a {@link String}. If the response has no
+	 * content an empty string is returned. If the response has a {@code Content-Type}
+	 * header that specifies a charset then that charset will be used when converting the
+	 * contents to a {@code String}.
+	 *
 	 * @return the contents as string, never {@code null}
-	 * @throws IOException if an input or output exception occurred
 	 */
-	String getContentAsString() throws IOException;
+	String getContentAsString();
+
 }

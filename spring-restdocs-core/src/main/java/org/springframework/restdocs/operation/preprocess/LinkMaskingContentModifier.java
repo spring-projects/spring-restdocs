@@ -18,6 +18,8 @@ package org.springframework.restdocs.operation.preprocess;
 
 import java.util.regex.Pattern;
 
+import org.springframework.http.MediaType;
+
 /**
  * A content modifier the masks the {@code href} of any hypermedia links.
  *
@@ -41,8 +43,8 @@ class LinkMaskingContentModifier implements ContentModifier {
 	}
 
 	@Override
-	public byte[] modifyContent(byte[] originalContent) {
-		return this.contentModifier.modifyContent(originalContent);
+	public byte[] modifyContent(byte[] originalContent, MediaType contentType) {
+		return this.contentModifier.modifyContent(originalContent, contentType);
 	}
 
 }
