@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A {@code JsonFieldProcessor} processes a payload's fields, allowing them to be
- * extracted and removed
- * 
+ * extracted and removed.
+ *
  * @author Andy Wilkinson
  *
  */
@@ -212,8 +212,8 @@ final class JsonFieldProcessor {
 			this(payload, path, null, null);
 		}
 
-		private ProcessingContext(Object payload, JsonFieldPath path, List<String> segments,
-				Match parent) {
+		private ProcessingContext(Object payload, JsonFieldPath path,
+				List<String> segments, Match parent) {
 			this.payload = payload;
 			this.path = path;
 			this.segments = segments == null ? path.getSegments() : segments;

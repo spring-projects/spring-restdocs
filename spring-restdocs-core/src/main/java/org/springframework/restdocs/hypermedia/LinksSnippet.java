@@ -52,7 +52,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code LinksSnippet} that will extract links using the given
 	 * {@code linkExtractor} and document them using the given {@code descriptors}.
-	 * 
+	 *
 	 * @param linkExtractor the link extractor
 	 * @param descriptors the link descriptors
 	 */
@@ -64,7 +64,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	 * Creates a new {@code LinksSnippet} that will extract links using the given
 	 * {@code linkExtractor} and document them using the given {@code descriptors}. The
 	 * given {@code attributes} will be included in the model during template rendering.
-	 * 
+	 *
 	 * @param linkExtractor the link extractor
 	 * @param descriptors the link descriptors
 	 * @param attributes the additional attributes
@@ -139,7 +139,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	/**
 	 * Returns a {@code Map} of {@link LinkDescriptor LinkDescriptors} keyed by their
 	 * {@link LinkDescriptor#getRel() rels}.
-	 * 
+	 *
 	 * @return the link descriptors
 	 */
 	protected final Map<String, LinkDescriptor> getDescriptorsByRel() {
@@ -147,8 +147,8 @@ public class LinksSnippet extends TemplatedSnippet {
 	}
 
 	/**
-	 * Returns a model for the given {@code descriptor}
-	 * 
+	 * Returns a model for the given {@code descriptor}.
+	 *
 	 * @param descriptor the descriptor
 	 * @return the model
 	 */

@@ -16,13 +16,6 @@
 
 package org.springframework.restdocs.curl;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
-
 import java.io.IOException;
 
 import org.junit.Rule;
@@ -38,8 +31,15 @@ import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 import org.springframework.util.Base64Utils;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
+
 /**
- * Tests for {@link CurlRequestSnippet}
+ * Tests for {@link CurlRequestSnippet}.
  *
  * @author Andy Wilkinson
  * @author Yann Le Guern
@@ -247,8 +247,8 @@ public class CurlRequestSnippetTests {
 		this.snippet.expectCurlRequest("custom-attributes").withContents(
 				containsString("curl request title"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("curl-request"))
-				.thenReturn(
+		given(resolver.resolveTemplateResource("curl-request"))
+				.willReturn(
 						new FileSystemResource(
 								"src/test/resources/custom-snippet-templates/curl-request-with-title.snippet"));
 		new CurlRequestSnippet(attributes(key("title").value("curl request title")))

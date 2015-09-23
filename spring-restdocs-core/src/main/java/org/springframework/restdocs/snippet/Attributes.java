@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.restdocs.snippet;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A fluent API for building a map of attributes
- * 
+ * A fluent API for building a map of attributes.
+ *
  * @author Andy Wilkinson
  */
 public abstract class Attributes {
@@ -32,7 +33,7 @@ public abstract class Attributes {
 	/**
 	 * Creates an attribute with the given {@code key}. A value for the attribute must
 	 * still be specified.
-	 * 
+	 *
 	 * @param key The key of the attribute
 	 * @return An {@code AttributeBuilder} to use to specify the value of the attribute
 	 * @see AttributeBuilder#value(Object)
@@ -43,7 +44,7 @@ public abstract class Attributes {
 
 	/**
 	 * Creates a {@code Map} of the given {@code attributes}.
-	 * 
+	 *
 	 * @param attributes The attributes
 	 * @return A Map of the attributes
 	 */
@@ -56,9 +57,9 @@ public abstract class Attributes {
 	}
 
 	/**
-	 * A simple builder for an attribute (key-value pair)
+	 * A simple builder for an attribute (key-value pair).
 	 */
-	public static class AttributeBuilder {
+	public static final class AttributeBuilder {
 
 		private final String key;
 
@@ -67,8 +68,8 @@ public abstract class Attributes {
 		}
 
 		/**
-		 * Configures the value of the attribute
-		 * 
+		 * Configures the value of the attribute.
+		 *
 		 * @param value The attribute's value
 		 * @return A newly created {@code Attribute}
 		 */
@@ -81,7 +82,7 @@ public abstract class Attributes {
 	/**
 	 * An attribute (key-value pair).
 	 */
-	public static class Attribute {
+	public static final class Attribute {
 
 		private final String key;
 
@@ -89,6 +90,7 @@ public abstract class Attributes {
 
 		/**
 		 * Creates a new attribute with the given {@code key} and {@code value}.
+		 *
 		 * @param key the key
 		 * @param value the value
 		 */
@@ -98,7 +100,8 @@ public abstract class Attributes {
 		}
 
 		/**
-		 * Returns the attribute's key
+		 * Returns the attribute's key.
+		 *
 		 * @return the key
 		 */
 		public String getKey() {
@@ -106,7 +109,8 @@ public abstract class Attributes {
 		}
 
 		/**
-		 * Returns the attribute's value
+		 * Returns the attribute's value.
+		 *
 		 * @return the value
 		 */
 		public Object getValue() {

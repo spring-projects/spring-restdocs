@@ -16,15 +16,6 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.Arrays;
@@ -37,14 +28,22 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.restdocs.mockmvc.MockMvcOperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 /**
- * Tests for {@link MockMvcOperationRequestFactory}
+ * Tests for {@link MockMvcOperationRequestFactory}.
  *
  * @author Andy Wilkinson
  */
@@ -183,13 +182,13 @@ public class MockMvcOperationRequestFactoryTests {
 		MockHttpServletRequest mockRequest = MockMvcRequestBuilders.get("/foo")
 				.buildRequest(new MockServletContext());
 		Part mockPart = mock(Part.class);
-		when(mockPart.getHeaderNames()).thenReturn(Arrays.asList("a", "b"));
-		when(mockPart.getHeaders("a")).thenReturn(Arrays.asList("alpha"));
-		when(mockPart.getHeaders("b")).thenReturn(Arrays.asList("bravo", "banana"));
-		when(mockPart.getInputStream()).thenReturn(
+		given(mockPart.getHeaderNames()).willReturn(Arrays.asList("a", "b"));
+		given(mockPart.getHeaders("a")).willReturn(Arrays.asList("alpha"));
+		given(mockPart.getHeaders("b")).willReturn(Arrays.asList("bravo", "banana"));
+		given(mockPart.getInputStream()).willReturn(
 				new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }));
-		when(mockPart.getName()).thenReturn("part-name");
-		when(mockPart.getSubmittedFileName()).thenReturn("submitted.txt");
+		given(mockPart.getName()).willReturn("part-name");
+		given(mockPart.getSubmittedFileName()).willReturn("submitted.txt");
 		mockRequest.addPart(mockPart);
 		OperationRequest request = this.factory.createOperationRequest(mockRequest);
 		assertThat(request.getParts().size(), is(1));
@@ -207,14 +206,14 @@ public class MockMvcOperationRequestFactoryTests {
 		MockHttpServletRequest mockRequest = MockMvcRequestBuilders.get("/foo")
 				.buildRequest(new MockServletContext());
 		Part mockPart = mock(Part.class);
-		when(mockPart.getHeaderNames()).thenReturn(Arrays.asList("a", "b"));
-		when(mockPart.getHeaders("a")).thenReturn(Arrays.asList("alpha"));
-		when(mockPart.getHeaders("b")).thenReturn(Arrays.asList("bravo", "banana"));
-		when(mockPart.getInputStream()).thenReturn(
+		given(mockPart.getHeaderNames()).willReturn(Arrays.asList("a", "b"));
+		given(mockPart.getHeaders("a")).willReturn(Arrays.asList("alpha"));
+		given(mockPart.getHeaders("b")).willReturn(Arrays.asList("bravo", "banana"));
+		given(mockPart.getInputStream()).willReturn(
 				new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }));
-		when(mockPart.getName()).thenReturn("part-name");
-		when(mockPart.getSubmittedFileName()).thenReturn("submitted.png");
-		when(mockPart.getContentType()).thenReturn("image/png");
+		given(mockPart.getName()).willReturn("part-name");
+		given(mockPart.getSubmittedFileName()).willReturn("submitted.png");
+		given(mockPart.getContentType()).willReturn("image/png");
 		mockRequest.addPart(mockPart);
 		OperationRequest request = this.factory.createOperationRequest(mockRequest);
 		assertThat(request.getParts().size(), is(1));

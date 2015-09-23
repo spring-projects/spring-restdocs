@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * A {@link ContentHandler} for JSON content
+ * A {@link ContentHandler} for JSON content.
  *
  * @author Andy Wilkinson
  */

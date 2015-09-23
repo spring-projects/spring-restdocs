@@ -16,10 +16,6 @@
 
 package org.springframework.restdocs.constraints;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -39,8 +35,12 @@ import javax.validation.constraints.Size;
 
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link ConstraintDescriptions}
+ * Tests for {@link ConstraintDescriptions}.
  *
  * @author Andy Wilkinson
  */

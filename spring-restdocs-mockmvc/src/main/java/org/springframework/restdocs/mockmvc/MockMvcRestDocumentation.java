@@ -26,8 +26,8 @@ import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
 
 /**
- * Static factory methods for documenting RESTful APIs using Spring MVC Test
- * 
+ * Static factory methods for documenting RESTful APIs using Spring MVC Test.
+ *
  * @author Andy Wilkinson
  */
 public abstract class MockMvcRestDocumentation {
@@ -39,7 +39,7 @@ public abstract class MockMvcRestDocumentation {
 	/**
 	 * Provides access to a {@link MockMvcConfigurer} that can be used to configure a
 	 * {@link MockMvc} instance using the given {@code restDocumentation}.
-	 * 
+	 *
 	 * @param restDocumentation the REST documentation
 	 * @return the configurer
 	 * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
@@ -52,7 +52,7 @@ public abstract class MockMvcRestDocumentation {
 	/**
 	 * Documents the API call with the given {@code identifier} using the given
 	 * {@code snippets}.
-	 * 
+	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param snippets the snippets that will document the API call
 	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
@@ -68,7 +68,7 @@ public abstract class MockMvcRestDocumentation {
 	 * Documents the API call with the given {@code identifier} using the given
 	 * {@code snippets}. The given {@code requestPreprocessor} is applied to the request
 	 * before it is documented.
-	 * 
+	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param requestPreprocessor the request preprocessor
 	 * @param snippets the snippets that will document the API call
@@ -86,7 +86,7 @@ public abstract class MockMvcRestDocumentation {
 	 * Documents the API call with the given {@code identifier} using the given
 	 * {@code snippets}. The given {@code responsePreprocessor} is applied to the request
 	 * before it is documented.
-	 * 
+	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param responsePreprocessor the response preprocessor
 	 * @param snippets the snippets that will document the API call
@@ -105,7 +105,7 @@ public abstract class MockMvcRestDocumentation {
 	 * {@code snippets}. The given {@code requestPreprocessor} and
 	 * {@code responsePreprocessor} are applied to the request and response respectively
 	 * before they are documented.
-	 * 
+	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param requestPreprocessor the request preprocessor
 	 * @param responsePreprocessor the response preprocessor

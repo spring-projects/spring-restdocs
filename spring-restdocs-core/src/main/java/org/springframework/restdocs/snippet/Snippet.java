@@ -22,14 +22,14 @@ import org.springframework.restdocs.operation.Operation;
 
 /**
  * A {@link Snippet} is used to document aspects of a call to a RESTful API.
- * 
+ *
  * @author Andy Wilkinson
  */
 public interface Snippet {
 
 	/**
 	 * Documents the call to the RESTful API described by the given {@code operation}.
-	 * 
+	 *
 	 * @param operation the API operation
 	 * @throws IOException if a failure occurs will documenting the operation
 	 */

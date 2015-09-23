@@ -18,3 +18,4 @@
  * Snippet generation.
  */
 package org.springframework.restdocs.snippet;
+

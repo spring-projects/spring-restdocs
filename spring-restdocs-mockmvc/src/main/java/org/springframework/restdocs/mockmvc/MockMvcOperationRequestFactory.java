@@ -16,8 +16,6 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -43,10 +41,12 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
+
 /**
  * A factory for creating an {@link OperationRequest} from a
  * {@link MockHttpServletRequest}.
- * 
+ *
  * @author Andy Wilkinson
  *
  */
@@ -62,7 +62,7 @@ class MockMvcOperationRequestFactory {
 
 	/**
 	 * Creates a new {@code OperationRequest} derived from the given {@code mockRequest}.
-	 * 
+	 *
 	 * @param mockRequest the request
 	 * @return the {@code OperationRequest}
 	 * @throws Exception if the request could not be created

@@ -25,14 +25,14 @@ import org.springframework.restdocs.operation.StandardOperationResponse;
 /**
  * A factory for creating an {@link OperationResponse} derived from a
  * {@link MockHttpServletResponse}.
- * 
+ *
  * @author Andy Wilkinson
  */
 class MockMvcOperationResponseFactory {
 
 	/**
 	 * Create a new {@code OperationResponse} derived from the given {@code mockResponse}.
-	 * 
+	 *
 	 * @param mockResponse the response
 	 * @return the {@code OperationResponse}
 	 */

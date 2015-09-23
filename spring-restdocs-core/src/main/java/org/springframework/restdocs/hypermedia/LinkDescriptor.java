@@ -19,11 +19,10 @@ package org.springframework.restdocs.hypermedia;
 import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
- * A description of a link found in a hypermedia API
- * 
- * @see HypermediaDocumentation#linkWithRel(String)
- * 
+ * A description of a link found in a hypermedia API.
+ *
  * @author Andy Wilkinson
+ * @see HypermediaDocumentation#linkWithRel(String)
  */
 public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 
@@ -33,7 +32,7 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 
 	/**
 	 * Creates a new {@code LinkDescriptor} describing a link with the given {@code rel}.
-	 * 
+	 *
 	 * @param rel the rel of the link
 	 */
 	protected LinkDescriptor(String rel) {
@@ -41,7 +40,7 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 	}
 
 	/**
-	 * Marks the link as optional
+	 * Marks the link as optional.
 	 *
 	 * @return {@code this}
 	 */
@@ -51,8 +50,8 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 	}
 
 	/**
-	 * Returns the rel of the link described by this descriptor
-	 * 
+	 * Returns the rel of the link described by this descriptor.
+	 *
 	 * @return the rel
 	 */
 	public final String getRel() {
@@ -60,8 +59,8 @@ public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
 	}
 
 	/**
-	 * Returns {@code true} if the described link is optional, otherwise {@code false}
-	 * 
+	 * Returns {@code true} if the described link is optional, otherwise {@code false}.
+	 *
 	 * @return {@code true} if the described link is optional, otherwise {@code false}
 	 */
 	public final boolean isOptional() {

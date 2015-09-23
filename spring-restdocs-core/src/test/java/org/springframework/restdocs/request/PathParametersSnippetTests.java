@@ -16,16 +16,6 @@
 
 package org.springframework.restdocs.request;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithTitleAndHeader;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,10 +31,20 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
+import static org.springframework.restdocs.test.SnippetMatchers.tableWithTitleAndHeader;
+
 /**
- * Tests for {@link PathParametersSnippet}
- * 
- * @author awilkinson
+ * Tests for {@link PathParametersSnippet}.
+ *
+ * @author Andy Wilkinson
  *
  */
 public class PathParametersSnippetTests {
@@ -60,7 +60,7 @@ public class PathParametersSnippetTests {
 		this.thrown.expect(SnippetException.class);
 		this.thrown.expectMessage(equalTo("Path parameters with the following names were"
 				+ " not documented: [a]"));
-		new PathParametersSnippet(Collections.<ParameterDescriptor> emptyList())
+		new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList())
 				.document(new OperationBuilder("undocumented-path-parameter",
 						this.snippet.getOutputDirectory()).attribute(
 						"org.springframework.restdocs.urlTemplate", "/{a}/").build());
@@ -121,13 +121,14 @@ public class PathParametersSnippetTests {
 
 	@Test
 	public void pathParametersWithCustomDescriptorAttributes() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("path-parameters")).willReturn(
+				snippetResource("path-parameters-with-extra-column"));
 		this.snippet.expectPathParameters(
 				"path-parameters-with-custom-descriptor-attributes").withContents(
 				tableWithHeader("Parameter", "Description", "Foo").row("a", "one",
 						"alpha").row("b", "two", "bravo"));
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("path-parameters")).thenReturn(
-				snippetResource("path-parameters-with-extra-column"));
+
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")
 				.attributes(key("foo").value("alpha")), parameterWithName("b")
 				.description("two").attributes(key("foo").value("bravo"))))
@@ -141,16 +142,15 @@ public class PathParametersSnippetTests {
 
 	@Test
 	public void pathParametersWithCustomAttributes() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("path-parameters")).willReturn(
+				snippetResource("path-parameters-with-title"));
 		this.snippet.expectPathParameters("path-parameters-with-custom-attributes")
 				.withContents(startsWith(".The title"));
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("path-parameters")).thenReturn(
-				snippetResource("path-parameters-with-title"));
-		new PathParametersSnippet(
-				Arrays.asList(
-						parameterWithName("a").description("one").attributes(
-								key("foo").value("alpha")), parameterWithName("b")
-								.description("two").attributes(key("foo").value("bravo"))),
+
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")
+				.attributes(key("foo").value("alpha")), parameterWithName("b")
+				.description("two").attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title")))
 				.document(new OperationBuilder("path-parameters-with-custom-attributes",
 						this.snippet.getOutputDirectory())

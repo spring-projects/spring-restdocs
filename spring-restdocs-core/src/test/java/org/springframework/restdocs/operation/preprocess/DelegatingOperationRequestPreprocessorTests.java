@@ -16,19 +16,19 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.Arrays;
 
 import org.junit.Test;
 import org.springframework.restdocs.operation.OperationRequest;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 /**
- * Tests for {@link DelegatingOperationRequestPreprocessor}
- * 
+ * Tests for {@link DelegatingOperationRequestPreprocessor}.
+ *
  * @author Andy Wilkinson
  */
 public class DelegatingOperationRequestPreprocessorTests {
@@ -36,19 +36,17 @@ public class DelegatingOperationRequestPreprocessorTests {
 	@Test
 	public void delegationOccurs() {
 		OperationRequest originalRequest = mock(OperationRequest.class);
-
 		OperationPreprocessor preprocessor1 = mock(OperationPreprocessor.class);
 		OperationRequest preprocessedRequest1 = mock(OperationRequest.class);
-		when(preprocessor1.preprocess(originalRequest)).thenReturn(preprocessedRequest1);
-
 		OperationPreprocessor preprocessor2 = mock(OperationPreprocessor.class);
 		OperationRequest preprocessedRequest2 = mock(OperationRequest.class);
-		when(preprocessor2.preprocess(preprocessedRequest1)).thenReturn(
-				preprocessedRequest2);
-
 		OperationPreprocessor preprocessor3 = mock(OperationPreprocessor.class);
 		OperationRequest preprocessedRequest3 = mock(OperationRequest.class);
-		when(preprocessor3.preprocess(preprocessedRequest2)).thenReturn(
+
+		given(preprocessor1.preprocess(originalRequest)).willReturn(preprocessedRequest1);
+		given(preprocessor2.preprocess(preprocessedRequest1)).willReturn(
+				preprocessedRequest2);
+		given(preprocessor3.preprocess(preprocessedRequest2)).willReturn(
 				preprocessedRequest3);
 
 		OperationRequest result = new DelegatingOperationRequestPreprocessor(
@@ -57,4 +55,5 @@ public class DelegatingOperationRequestPreprocessorTests {
 
 		assertThat(result, is(preprocessedRequest3));
 	}
+
 }

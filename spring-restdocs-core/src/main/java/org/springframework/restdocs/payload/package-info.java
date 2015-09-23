@@ -18,3 +18,4 @@
  * Documenting the payload of a RESTful API's requests and responses.
  */
 package org.springframework.restdocs.payload;
+

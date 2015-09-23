@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
  * template and makes it available for documentation. Required when
  * {@link RequestDocumentation#pathParameters(org.springframework.restdocs.request.ParameterDescriptor...)
  * ) documenting path parameters} and recommended for general usage.
- * 
+ *
  * @author Andy Wilkinson
  * @see MockMvcRequestBuilders
  * @see RequestDocumentation#pathParameters(org.springframework.restdocs.request.ParameterDescriptor...)
@@ -47,7 +47,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a GET request. The url template
 	 * will be captured and made available for documentation.
-	 * 
+	 *
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables
 	 * @return the builder for the GET request
@@ -60,7 +60,7 @@ public abstract class RestDocumentationRequestBuilders {
 
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a GET request.
-	 * 
+	 *
 	 * @param uri the URL
 	 * @return the builder for the GET request
 	 */
@@ -71,7 +71,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a POST request. The url template
 	 * will be captured and made available for documentation.
-	 * 
+	 *
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables
 	 * @return the builder for the POST request
@@ -84,7 +84,7 @@ public abstract class RestDocumentationRequestBuilders {
 
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a POST request.
-	 * 
+	 *
 	 * @param uri the URL
 	 * @return the builder for the POST request
 	 */
@@ -95,7 +95,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a PUT request. The url template
 	 * will be captured and made available for documentation.
-	 * 
+	 *
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables
 	 * @return the builder for the PUT request
@@ -108,7 +108,7 @@ public abstract class RestDocumentationRequestBuilders {
 
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a PUT request.
-	 * 
+	 *
 	 * @param uri the URL
 	 * @return the builder for the PUT request
 	 */
@@ -119,7 +119,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a PATCH request. The url
 	 * template will be captured and made available for documentation.
-	 * 
+	 *
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables
 	 * @return the builder for the PATCH request
@@ -132,7 +132,7 @@ public abstract class RestDocumentationRequestBuilders {
 
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a PATCH request.
-	 * 
+	 *
 	 * @param uri the URL
 	 * @return the builder for the PATCH request
 	 */
@@ -143,7 +143,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a DELETE request. The url
 	 * template will be captured and made available for documentation.
-	 * 
+	 *
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables
 	 * @return the builder for the DELETE request
@@ -156,7 +156,7 @@ public abstract class RestDocumentationRequestBuilders {
 
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a DELETE request.
-	 * 
+	 *
 	 * @param uri the URL
 	 * @return the builder for the DELETE request
 	 */
@@ -167,7 +167,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for an OPTIONS request. The url
 	 * template will be captured and made available for documentation.
-	 * 
+	 *
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables
 	 * @return the builder for the OPTIONS request
@@ -180,7 +180,7 @@ public abstract class RestDocumentationRequestBuilders {
 
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for an OPTIONS request.
-	 * 
+	 *
 	 * @param uri the URL
 	 * @return the builder for the OPTIONS request
 	 */
@@ -191,7 +191,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a HEAD request. The url template
 	 * will be captured and made available for documentation.
-	 * 
+	 *
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables
 	 * @return the builder for the HEAD request
@@ -204,7 +204,7 @@ public abstract class RestDocumentationRequestBuilders {
 
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a HEAD request.
-	 * 
+	 *
 	 * @param uri the URL
 	 * @return the builder for the HEAD request
 	 */
@@ -215,7 +215,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a request with the given HTTP
 	 * method. The url template will be captured and made available for documentation.
-	 * 
+	 *
 	 * @param httpMethod the HTTP method
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables
@@ -241,7 +241,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a multipart request. The url
 	 * template will be captured and made available for documentation.
-	 * 
+	 *
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables
 	 * @return the builder for the file upload request
@@ -255,7 +255,7 @@ public abstract class RestDocumentationRequestBuilders {
 
 	/**
 	 * Create a {@link MockHttpServletRequestBuilder} for a multipart request.
-	 * 
+	 *
 	 * @param uri the URL
 	 * @return the builder for the file upload request
 	 */

@@ -16,14 +16,6 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,8 +34,16 @@ import org.springframework.restdocs.test.OperationBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
+
 /**
- * Tests for {@link LinksSnippet}
+ * Tests for {@link LinksSnippet}.
  *
  * @author Andy Wilkinson
  */
@@ -61,7 +61,7 @@ public class LinksSnippetTests {
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " documented: [foo]"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
-				Collections.<LinkDescriptor> emptyList()).document(new OperationBuilder(
+				Collections.<LinkDescriptor>emptyList()).document(new OperationBuilder(
 				"undocumented-link", this.snippet.getOutputDirectory()).build());
 	}
 
@@ -77,9 +77,8 @@ public class LinksSnippetTests {
 
 	@Test
 	public void documentedOptionalLink() throws IOException {
-		this.snippet.expectLinks("documented-optional-link").withContents( //
-				tableWithHeader("Relation", "Description") //
-						.row("foo", "bar"));
+		this.snippet.expectLinks("documented-optional-link").withContents(
+				tableWithHeader("Relation", "Description").row("foo", "bar"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "blah")),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
 				.document(new OperationBuilder("documented-optional-link", this.snippet
@@ -88,9 +87,8 @@ public class LinksSnippetTests {
 
 	@Test
 	public void missingOptionalLink() throws IOException {
-		this.snippet.expectLinks("missing-optional-link").withContents( //
-				tableWithHeader("Relation", "Description") //
-						.row("foo", "bar"));
+		this.snippet.expectLinks("missing-optional-link").withContents(
+				tableWithHeader("Relation", "Description").row("foo", "bar"));
 		new LinksSnippet(new StubLinkExtractor(), Arrays.asList(new LinkDescriptor("foo")
 				.description("bar").optional())).document(new OperationBuilder(
 				"missing-optional-link", this.snippet.getOutputDirectory()).build());
@@ -110,9 +108,8 @@ public class LinksSnippetTests {
 
 	@Test
 	public void documentedLinks() throws IOException {
-		this.snippet.expectLinks("documented-links").withContents( //
-				tableWithHeader("Relation", "Description") //
-						.row("a", "one") //
+		this.snippet.expectLinks("documented-links").withContents(
+				tableWithHeader("Relation", "Description").row("a", "one")
 						.row("b", "two"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 				new Link("b", "bravo")), Arrays.asList(
@@ -124,15 +121,15 @@ public class LinksSnippetTests {
 
 	@Test
 	public void linksWithCustomDescriptorAttributes() throws IOException {
-		this.snippet.expectLinks("links-with-custom-descriptor-attributes").withContents( //
-				tableWithHeader("Relation", "Description", "Foo") //
-						.row("a", "one", "alpha") //
-						.row("b", "two", "bravo"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("links"))
-				.thenReturn(
+		given(resolver.resolveTemplateResource("links"))
+				.willReturn(
 						new FileSystemResource(
 								"src/test/resources/custom-snippet-templates/links-with-extra-column.snippet"));
+		this.snippet.expectLinks("links-with-custom-descriptor-attributes").withContents(
+				tableWithHeader("Relation", "Description", "Foo")
+						.row("a", "one", "alpha").row("b", "two", "bravo"));
+
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 				new Link("b", "bravo")), Arrays.asList(
 				new LinkDescriptor("a").description("one").attributes(
@@ -146,21 +143,21 @@ public class LinksSnippetTests {
 
 	@Test
 	public void linksWithCustomAttributes() throws IOException {
-		this.snippet.expectLinks("links-with-custom-attributes").withContents(
-				startsWith(".Title for the links"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("links"))
-				.thenReturn(
+		given(resolver.resolveTemplateResource("links"))
+				.willReturn(
 						new FileSystemResource(
 								"src/test/resources/custom-snippet-templates/links-with-title.snippet"));
+		this.snippet.expectLinks("links-with-custom-attributes").withContents(
+				startsWith(".Title for the links"));
+
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 				new Link("b", "bravo")), Arrays.asList(
 				new LinkDescriptor("a").description("one"),
-				new LinkDescriptor("b").description("two")), attributes(key("title").value(
-				"Title for the links")))
-				.document(new OperationBuilder("links-with-custom-attributes",
-						this.snippet.getOutputDirectory()).attribute(
-						TemplateEngine.class.getName(),
+				new LinkDescriptor("b").description("two")), attributes(key("title")
+				.value("Title for the links"))).document(new OperationBuilder(
+				"links-with-custom-attributes", this.snippet.getOutputDirectory())
+				.attribute(TemplateEngine.class.getName(),
 						new MustacheTemplateEngine(resolver)).build());
 	}
 

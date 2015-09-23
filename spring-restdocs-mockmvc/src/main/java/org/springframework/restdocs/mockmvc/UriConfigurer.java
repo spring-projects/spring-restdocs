@@ -19,26 +19,30 @@ package org.springframework.restdocs.mockmvc;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
- * A configurer that can be used to configure the documented URIs
- * 
+ * A configurer that can be used to configure the documented URIs.
+ *
  * @author Andy Wilkinson
  */
-public class UriConfigurer extends AbstractNestedConfigurer<RestDocumentationMockMvcConfigurer> {
+public class UriConfigurer extends
+		AbstractNestedConfigurer<RestDocumentationMockMvcConfigurer> {
 
 	/**
-	 * The default scheme for documented URIs
+	 * The default scheme for documented URIs.
+	 *
 	 * @see #withScheme(String)
 	 */
 	public static final String DEFAULT_SCHEME = "http";
 
 	/**
-	 * The defalt host for documented URIs
+	 * The defalt host for documented URIs.
+	 *
 	 * @see #withHost(String)
 	 */
 	public static final String DEFAULT_HOST = "localhost";
 
 	/**
-	 * The default port for documented URIs
+	 * The default port for documented URIs.
+	 *
 	 * @see #withPort(int)
 	 */
 	public static final int DEFAULT_PORT = 8080;
@@ -49,14 +53,14 @@ public class UriConfigurer extends AbstractNestedConfigurer<RestDocumentationMoc
 
 	private int port = DEFAULT_PORT;
 
-	protected UriConfigurer(RestDocumentationMockMvcConfigurer parent) {
+	UriConfigurer(RestDocumentationMockMvcConfigurer parent) {
 		super(parent);
 	}
 
 	/**
 	 * Configures any documented URIs to use the given {@code scheme}. The default is
 	 * {@code http}.
-	 * 
+	 *
 	 * @param scheme The URI scheme
 	 * @return {@code this}
 	 */
@@ -68,7 +72,7 @@ public class UriConfigurer extends AbstractNestedConfigurer<RestDocumentationMoc
 	/**
 	 * Configures any documented URIs to use the given {@code host}. The default is
 	 * {@code localhost}.
-	 * 
+	 *
 	 * @param host The URI host
 	 * @return {@code this}
 	 */
@@ -80,7 +84,7 @@ public class UriConfigurer extends AbstractNestedConfigurer<RestDocumentationMoc
 	/**
 	 * Configures any documented URIs to use the given {@code port}. The default is
 	 * {@code 8080}.
-	 * 
+	 *
 	 * @param port The URI port
 	 * @return {@code this}
 	 */

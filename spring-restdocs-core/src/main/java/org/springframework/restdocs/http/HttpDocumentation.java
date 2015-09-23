@@ -22,7 +22,7 @@ import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * Static factory methods for documenting a RESTful API's HTTP requests.
- * 
+ *
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
  */
@@ -35,7 +35,7 @@ public abstract class HttpDocumentation {
 	/**
 	 * Returns a handler that will produce a snippet containing the HTTP request for the
 	 * API call.
-	 * 
+	 *
 	 * @return the handler that will produce the snippet
 	 */
 	public static Snippet httpRequest() {

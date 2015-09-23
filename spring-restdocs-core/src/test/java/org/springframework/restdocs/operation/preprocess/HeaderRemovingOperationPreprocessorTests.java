@@ -16,11 +16,6 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
-
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,8 +31,13 @@ import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.StandardOperationRequest;
 import org.springframework.restdocs.operation.StandardOperationResponse;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link HeaderRemovingOperationPreprocessorTests}
+ * Tests for {@link HeaderRemovingOperationPreprocessorTests}.
  *
  * @author Andy Wilkinson
  *
@@ -52,7 +52,7 @@ public class HeaderRemovingOperationPreprocessorTests {
 		StandardOperationRequest request = new StandardOperationRequest(
 				URI.create("http://localhost"), HttpMethod.GET, new byte[0],
 				getHttpHeaders(), new Parameters(),
-				Collections.<OperationRequestPart> emptyList());
+				Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
 		assertThat(preprocessed.getHeaders().size(), is(equalTo(1)));
 		assertThat(preprocessed.getHeaders(), hasEntry("a", Arrays.asList("alpha")));

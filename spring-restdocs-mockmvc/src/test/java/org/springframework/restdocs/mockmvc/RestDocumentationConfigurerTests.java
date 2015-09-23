@@ -16,12 +16,6 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import java.net.URI;
 
 import org.junit.Rule;
@@ -32,6 +26,12 @@ import org.springframework.restdocs.RestDocumentation;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link RestDocumentationMockMvcConfigurer}.

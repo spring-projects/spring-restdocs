@@ -16,9 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,9 +26,12 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link JsonFieldProcessor}
- * 
+ * Tests for {@link JsonFieldProcessor}.
+ *
  * @author Andy Wilkinson
  */
 public class JsonFieldProcessorTests {

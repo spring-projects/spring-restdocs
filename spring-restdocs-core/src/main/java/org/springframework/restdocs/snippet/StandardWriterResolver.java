@@ -28,10 +28,10 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
 /**
  * Standard implementation of {@link WriterResolver}.
- * 
+ *
  * @author Andy Wilkinson
  */
-public class StandardWriterResolver implements WriterResolver {
+public final class StandardWriterResolver implements WriterResolver {
 
 	private String encoding = "UTF-8";
 
@@ -44,7 +44,7 @@ public class StandardWriterResolver implements WriterResolver {
 	 * Creates a new {@code StandardWriterResolver} that will use the given
 	 * {@code placeholderResolver} to resolve any placeholders in the
 	 * {@code operationName}.
-	 * 
+	 *
 	 * @param placeholderResolver the placeholder resolver
 	 */
 	public StandardWriterResolver(PlaceholderResolver placeholderResolver) {
@@ -71,7 +71,7 @@ public class StandardWriterResolver implements WriterResolver {
 		this.encoding = encoding;
 	}
 
-	protected File resolveFile(String outputDirectory, String fileName,
+	File resolveFile(String outputDirectory, String fileName,
 			RestDocumentationContext context) {
 		File outputFile = new File(outputDirectory, fileName);
 		if (!outputFile.isAbsolute()) {

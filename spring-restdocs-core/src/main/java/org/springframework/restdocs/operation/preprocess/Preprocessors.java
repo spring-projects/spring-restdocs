@@ -28,10 +28,10 @@ import org.springframework.restdocs.operation.OperationResponse;
  * OperationPreprocessors} that can be applied to an {@link Operation Operation's}
  * {@link OperationRequest request} or {@link OperationResponse response} before it is
  * documented.
- * 
+ *
  * @author Andy Wilkinson
  */
-public class Preprocessors {
+public final class Preprocessors {
 
 	private Preprocessors() {
 
@@ -40,7 +40,7 @@ public class Preprocessors {
 	/**
 	 * Returns an {@link OperationRequestPreprocessor} that will preprocess the request by
 	 * applying the given {@code preprocessors} to it.
-	 * 
+	 *
 	 * @param preprocessors the preprocessors
 	 * @return the request preprocessor
 	 */
@@ -52,7 +52,7 @@ public class Preprocessors {
 	/**
 	 * Returns an {@link OperationResponsePreprocessor} that will preprocess the response
 	 * by applying the given {@code preprocessors} to it.
-	 * 
+	 *
 	 * @param preprocessors the preprocessors
 	 * @return the response preprocessor
 	 */
@@ -64,7 +64,7 @@ public class Preprocessors {
 	/**
 	 * Returns an {@code OperationPreprocessor} that will pretty print the content of the
 	 * request or response.
-	 * 
+	 *
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor prettyPrint() {
@@ -75,7 +75,7 @@ public class Preprocessors {
 	/**
 	 * Returns an {@code OperationPreprocessor} that will remove headers from the request
 	 * or response.
-	 * 
+	 *
 	 * @param headersToRemove the names of the headers to remove
 	 * @return the preprocessor
 	 */
@@ -86,7 +86,7 @@ public class Preprocessors {
 	/**
 	 * Returns an {@code OperationPreprocessor} that will mask the href of hypermedia
 	 * links in the request or response.
-	 * 
+	 *
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor maskLinks() {
@@ -96,7 +96,7 @@ public class Preprocessors {
 	/**
 	 * Returns an {@code OperationPreprocessor} that will mask the href of hypermedia
 	 * links in the request or response.
-	 * 
+	 *
 	 * @param mask the link mask
 	 * @return the preprocessor
 	 */
@@ -108,8 +108,8 @@ public class Preprocessors {
 	/**
 	 * Returns an {@code OperationPreprocessor} that will modify the content of the
 	 * request or response by replacing occurences of the given {@code pattern} with the
-	 * given {@code replacement}
-	 * 
+	 * given {@code replacement}.
+	 *
 	 * @param pattern the pattern
 	 * @param replacement the replacement
 	 * @return the preprocessor

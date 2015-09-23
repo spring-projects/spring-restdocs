@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.restdocs.templates;
 
 import org.springframework.core.io.ClassPathResource;
@@ -26,7 +27,7 @@ import org.springframework.core.io.Resource;
  * resource exists {@code default-} is prepended to the name and the classpath is checked
  * again. The built-in snippet templates are all named {@code default- name}, thereby
  * allowing them to be overridden.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class StandardTemplateResourceResolver implements TemplateResourceResolver {

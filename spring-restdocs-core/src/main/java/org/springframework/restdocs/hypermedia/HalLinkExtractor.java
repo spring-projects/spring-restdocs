@@ -28,7 +28,7 @@ import org.springframework.http.MediaType;
 /**
  * {@link LinkExtractor} that extracts links in Hypermedia Application Language (HAL)
  * format.
- * 
+ *
  * @author Andy Wilkinson
  */
 class HalLinkExtractor extends AbstractJsonLinkExtractor {
@@ -77,4 +77,5 @@ class HalLinkExtractor extends AbstractJsonLinkExtractor {
 			links.add(possibleLink);
 		}
 	}
+
 }

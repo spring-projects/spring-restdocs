@@ -19,8 +19,8 @@ package org.springframework.restdocs.operation;
 import java.util.Map;
 
 /**
- * Standard implementation of {@link Operation}
- * 
+ * Standard implementation of {@link Operation}.
+ *
  * @author Andy Wilkinson
  */
 public class StandardOperation implements Operation {
@@ -34,8 +34,8 @@ public class StandardOperation implements Operation {
 	private final Map<String, Object> attributes;
 
 	/**
-	 * Creates a new {@code StandardOperation}
-	 * 
+	 * Creates a new {@code StandardOperation}.
+	 *
 	 * @param name the name of the operation
 	 * @param request the request that was sent
 	 * @param response the response that was received

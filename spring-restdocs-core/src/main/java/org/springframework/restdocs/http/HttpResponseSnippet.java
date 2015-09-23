@@ -47,7 +47,7 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code HttpResponseSnippet} with the given additional
 	 * {@code attributes} that will be included in the model during template rendering.
-	 * 
+	 *
 	 * @param attributes The additional attributes
 	 */
 	protected HttpResponseSnippet(Map<String, Object> attributes) {
@@ -86,4 +86,5 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 		header.put("value", value);
 		return header;
 	}
+
 }

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * A {@link ContentModifier} that modifies the content by pretty printing it.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class PrettyPrintingContentModifier implements ContentModifier {

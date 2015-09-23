@@ -16,10 +16,6 @@
 
 package org.springframework.restdocs.constraints;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,8 +39,12 @@ import javax.validation.constraints.Size;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link ResourceBundleConstraintDescriptionResolver}
+ * Tests for {@link ResourceBundleConstraintDescriptionResolver}.
  *
  * @author Andy Wilkinson
  */
@@ -55,14 +55,14 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessageAssertFalse() {
 		String description = this.resolver.resolveDescription(new Constraint(
-				AssertFalse.class.getName(), Collections.<String, Object> emptyMap()));
+				AssertFalse.class.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Must be false")));
 	}
 
 	@Test
 	public void defaultMessageAssertTrue() {
 		String description = this.resolver.resolveDescription(new Constraint(
-				AssertTrue.class.getName(), Collections.<String, Object> emptyMap()));
+				AssertTrue.class.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Must be true")));
 	}
 
@@ -98,7 +98,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessageFuture() {
 		String description = this.resolver.resolveDescription(new Constraint(Future.class
-				.getName(), Collections.<String, Object> emptyMap()));
+				.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Must be in the future")));
 	}
 
@@ -123,21 +123,21 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessageNotNull() {
 		String description = this.resolver.resolveDescription(new Constraint(
-				NotNull.class.getName(), Collections.<String, Object> emptyMap()));
+				NotNull.class.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Must not be null")));
 	}
 
 	@Test
 	public void defaultMessageNull() {
 		String description = this.resolver.resolveDescription(new Constraint(Null.class
-				.getName(), Collections.<String, Object> emptyMap()));
+				.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Must be null")));
 	}
 
 	@Test
 	public void defaultMessagePast() {
 		String description = this.resolver.resolveDescription(new Constraint(Past.class
-				.getName(), Collections.<String, Object> emptyMap()));
+				.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Must be in the past")));
 	}
 
@@ -179,7 +179,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		try {
 			String description = new ResourceBundleConstraintDescriptionResolver()
 					.resolveDescription(new Constraint(NotNull.class.getName(),
-							Collections.<String, Object> emptyMap()));
+							Collections.<String, Object>emptyMap()));
 			assertThat(description, is(equalTo("Should not be null")));
 
 		}
@@ -201,7 +201,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		};
 		String description = new ResourceBundleConstraintDescriptionResolver(bundle)
 				.resolveDescription(new Constraint(NotNull.class.getName(), Collections
-						.<String, Object> emptyMap()));
+						.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Not null")));
 	}
 

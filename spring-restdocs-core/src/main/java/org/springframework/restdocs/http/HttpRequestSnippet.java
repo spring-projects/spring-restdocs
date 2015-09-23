@@ -55,7 +55,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code HttpRequestSnippet} with the given additional
 	 * {@code attributes} that will be included in the model during template rendering.
-	 * 
+	 *
 	 * @param attributes The additional attributes
 	 */
 	protected HttpRequestSnippet(Map<String, Object> attributes) {

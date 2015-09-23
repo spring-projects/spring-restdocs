@@ -20,7 +20,7 @@ import org.springframework.http.HttpHeaders;
 
 /**
  * Standard implementation of {@code OperationRequestPart}.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class StandardOperationRequestPart implements OperationRequestPart {
@@ -35,7 +35,7 @@ public class StandardOperationRequestPart implements OperationRequestPart {
 
 	/**
 	 * Creates a new {@code StandardOperationRequestPart} with the given {@code name}.
-	 * 
+	 *
 	 * @param name the name of the part
 	 * @param submittedFileName the name of the file being uploaded by this part
 	 * @param content the contents of the part

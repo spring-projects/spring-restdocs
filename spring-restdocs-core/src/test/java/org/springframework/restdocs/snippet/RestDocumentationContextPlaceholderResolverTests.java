@@ -16,15 +16,15 @@
 
 package org.springframework.restdocs.snippet;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link RestDocumentationContextPlaceholderResolver}
+ * Tests for {@link RestDocumentationContextPlaceholderResolver}.
  *
  * @author Andy Wilkinson
  *

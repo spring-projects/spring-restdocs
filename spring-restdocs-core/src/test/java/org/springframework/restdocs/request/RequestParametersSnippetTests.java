@@ -16,15 +16,6 @@
 
 package org.springframework.restdocs.request;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,8 +31,17 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
+
 /**
- * Tests for {@link RequestParametersSnippet}
+ * Tests for {@link RequestParametersSnippet}.
  *
  * @author Andy Wilkinson
  */
@@ -59,7 +59,7 @@ public class RequestParametersSnippetTests {
 		this.thrown
 				.expectMessage(equalTo("Request parameters with the following names were"
 						+ " not documented: [a]"));
-		new RequestParametersSnippet(Collections.<ParameterDescriptor> emptyList())
+		new RequestParametersSnippet(Collections.<ParameterDescriptor>emptyList())
 				.document(new OperationBuilder("undocumented-parameter", this.snippet
 						.getOutputDirectory()).request("http://localhost")
 						.param("a", "alpha").build());
@@ -104,13 +104,14 @@ public class RequestParametersSnippetTests {
 
 	@Test
 	public void requestParametersWithCustomDescriptorAttributes() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("request-parameters")).willReturn(
+				snippetResource("request-parameters-with-extra-column"));
 		this.snippet.expectRequestParameters(
 				"request-parameters-with-custom-descriptor-attributes").withContents(
 				tableWithHeader("Parameter", "Description", "Foo").row("a", "one",
 						"alpha").row("b", "two", "bravo"));
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("request-parameters")).thenReturn(
-				snippetResource("request-parameters-with-extra-column"));
+
 		new RequestParametersSnippet(Arrays.asList(
 				parameterWithName("a").description("one").attributes(
 						key("foo").value("alpha")),
@@ -125,24 +126,23 @@ public class RequestParametersSnippetTests {
 
 	@Test
 	public void requestParametersWithCustomAttributes() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("request-parameters")).willReturn(
+				snippetResource("request-parameters-with-title"));
 		this.snippet.expectRequestParameters("request-parameters-with-custom-attributes")
 				.withContents(startsWith(".The title"));
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("request-parameters")).thenReturn(
-				snippetResource("request-parameters-with-title"));
-		new RequestParametersSnippet(
-				Arrays.asList(
-						parameterWithName("a").description("one").attributes(
-								key("foo").value("alpha")), parameterWithName("b")
-								.description("two").attributes(key("foo").value("bravo"))),
-				attributes(key("title").value("The title")))
-				.document(new OperationBuilder(
-						"request-parameters-with-custom-attributes", this.snippet
-								.getOutputDirectory())
-						.attribute(TemplateEngine.class.getName(),
-								new MustacheTemplateEngine(resolver))
-						.request("http://localhost").param("a", "alpha")
-						.param("b", "bravo").build());
+
+		new RequestParametersSnippet(Arrays.asList(
+				parameterWithName("a").description("one").attributes(
+						key("foo").value("alpha")),
+				parameterWithName("b").description("two").attributes(
+						key("foo").value("bravo"))), attributes(key("title").value(
+				"The title"))).document(new OperationBuilder(
+				"request-parameters-with-custom-attributes", this.snippet
+						.getOutputDirectory())
+				.attribute(TemplateEngine.class.getName(),
+						new MustacheTemplateEngine(resolver)).request("http://localhost")
+				.param("a", "alpha").param("b", "bravo").build());
 	}
 
 	private FileSystemResource snippetResource(String name) {

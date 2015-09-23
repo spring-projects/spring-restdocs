@@ -19,12 +19,11 @@ package org.springframework.restdocs.payload;
 import org.springframework.restdocs.snippet.AbstractDescriptor;
 
 /**
- * A description of a field found in a request or response payload
- * 
- * @see PayloadDocumentation#fieldWithPath(String)
- * 
+ * A description of a field found in a request or response payload.
+ *
  * @author Andreas Evers
  * @author Andy Wilkinson
+ * @see PayloadDocumentation#fieldWithPath(String)
  */
 public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 
@@ -46,7 +45,7 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	/**
 	 * Specifies the type of the field. When documenting a JSON payload, the
 	 * {@link JsonFieldType} enumeration will typically be used.
-	 * 
+	 *
 	 * @param type The type of the field
 	 * @return {@code this}
 	 * @see JsonFieldType
@@ -57,8 +56,8 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	}
 
 	/**
-	 * Marks the field as optional
-	 * 
+	 * Marks the field as optional.
+	 *
 	 * @return {@code this}
 	 */
 	public final FieldDescriptor optional() {
@@ -67,8 +66,8 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	}
 
 	/**
-	 * Returns the path of the field described by this descriptor
-	 * 
+	 * Returns the path of the field described by this descriptor.
+	 *
 	 * @return the path
 	 */
 	public final String getPath() {
@@ -76,8 +75,8 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	}
 
 	/**
-	 * Returns the type of the field described by this descriptor
-	 * 
+	 * Returns the type of the field described by this descriptor.
+	 *
 	 * @return the type
 	 */
 	public final Object getType() {
@@ -85,8 +84,8 @@ public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
 	}
 
 	/**
-	 * Returns {@code true} if the described field is optional, otherwise {@code false}
-	 * 
+	 * Returns {@code true} if the described field is optional, otherwise {@code false}.
+	 *
 	 * @return {@code true} if the described field is optional, otherwise {@code false}
 	 */
 	public final boolean isOptional() {

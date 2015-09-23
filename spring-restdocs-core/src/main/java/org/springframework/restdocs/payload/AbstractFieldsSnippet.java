@@ -46,7 +46,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * {@code <type>-fields}. The fields will be documented using the given
 	 * {@code  descriptors} and the given {@code attributes} will be included in the model
 	 * during template rendering.
-	 * 
+	 *
 	 * @param type the type of the fields
 	 * @param descriptors the field descriptors
 	 * @param attributes the additional attributes
@@ -130,7 +130,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	/**
 	 * Returns the content type of the request or response extracted from the given
 	 * {@code operation}.
-	 * 
+	 *
 	 * @param operation The operation
 	 * @return The content type
 	 */
@@ -139,7 +139,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	/**
 	 * Returns the content of the request or response extracted form the given
 	 * {@code operation}.
-	 * 
+	 *
 	 * @param operation The operation
 	 * @return The content
 	 * @throws IOException if the content cannot be extracted
@@ -149,7 +149,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	/**
 	 * Returns the list of {@link FieldDescriptor FieldDescriptors} that will be used to
 	 * generate the documentation.
-	 * 
+	 *
 	 * @return the field descriptors
 	 */
 	protected final List<FieldDescriptor> getFieldDescriptors() {
@@ -157,8 +157,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	}
 
 	/**
-	 * Returns a model for the given {@code descriptor}
-	 * 
+	 * Returns a model for the given {@code descriptor}.
+	 *
 	 * @param descriptor the descriptor
 	 * @return the model
 	 */

@@ -45,7 +45,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * the given {@code snippetName} that will document parameters using the given
 	 * {@code descriptors}. The given {@code attributes} will be included in the model
 	 * during template rendering.
-	 * 
+	 *
 	 * @param snippetName The snippet name
 	 * @param descriptors The descriptors
 	 * @param attributes The additional attributes
@@ -73,7 +73,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 		return model;
 	}
 
-	protected void verifyParameterDescriptors(Operation operation) {
+	private void verifyParameterDescriptors(Operation operation) {
 		Set<String> actualParameters = extractActualParameters(operation);
 		Set<String> expectedParameters = this.descriptorsByName.keySet();
 		Set<String> undocumentedParameters = new HashSet<String>(actualParameters);
@@ -84,13 +84,25 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 		if (!undocumentedParameters.isEmpty() || !missingParameters.isEmpty()) {
 			verificationFailed(undocumentedParameters, missingParameters);
 		}
-		else {
-			Assert.isTrue(actualParameters.equals(expectedParameters));
-		}
 	}
 
+	/**
+	 * Extracts the names of the parameters that were present in the given
+	 * {@code operation}.
+	 *
+	 * @param operation the operation
+	 * @return the parameters
+	 */
 	protected abstract Set<String> extractActualParameters(Operation operation);
 
+	/**
+	 * Called when the documented parameters do not match the actual parameters.
+	 *
+	 * @param undocumentedParameters the parameters that were found in the operation but
+	 * were not documented
+	 * @param missingParameters the parameters that were documented but were not found in
+	 * the operation
+	 */
 	protected abstract void verificationFailed(Set<String> undocumentedParameters,
 			Set<String> missingParameters);
 
@@ -98,7 +110,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will
 	 * be used to generate the documentation key by their
 	 * {@link ParameterDescriptor#getName()}.
-	 * 
+	 *
 	 * @return the map of path descriptors
 	 */
 	protected final Map<String, ParameterDescriptor> getFieldDescriptors() {
@@ -107,7 +119,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 
 	/**
 	 * Returns a model for the given {@code descriptor}.
-	 * 
+	 *
 	 * @param descriptor the descriptor
 	 * @return the model
 	 */

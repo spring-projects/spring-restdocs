@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.restdocs.snippet;
 
-import org.springframework.restdocs.operation.Operation;
+package org.springframework.restdocs.snippet;
 
 /**
  * An exception that can be thrown by a {@link TemplatedSnippet} to indicate that a
  * failure has occurred during model creation.
- * 
+ *
  * @author Andy Wilkinson
- * @see TemplatedSnippet#createModel(Operation)
+ * @see TemplatedSnippet#createModel(org.springframework.restdocs.operation.Operation)
  */
 @SuppressWarnings("serial")
 public class ModelCreationException extends RuntimeException {
 
 	/**
 	 * Creates a new {@code ModelCreationException} with the given {@code cause}.
-	 * 
+	 *
 	 * @param cause the cause
 	 */
 	public ModelCreationException(Throwable cause) {
@@ -39,7 +38,7 @@ public class ModelCreationException extends RuntimeException {
 	/**
 	 * Creates a new {@code ModelCreationException} with the given {@code message} and
 	 * {@code cause}.
-	 * 
+	 *
 	 * @param message the message
 	 * @param cause the cause
 	 */

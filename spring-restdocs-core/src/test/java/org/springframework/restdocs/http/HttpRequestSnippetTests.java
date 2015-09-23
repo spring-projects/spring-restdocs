@@ -16,16 +16,6 @@
 
 package org.springframework.restdocs.http;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
-
 import java.io.IOException;
 
 import org.junit.Rule;
@@ -38,10 +28,18 @@ import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 
 /**
- * Tests for {@link HttpRequestSnippet}
- * 
+ * Tests for {@link HttpRequestSnippet}.
+ *
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
  *
@@ -56,8 +54,8 @@ public class HttpRequestSnippetTests {
 	@Test
 	public void getRequest() throws IOException {
 		this.snippet.expectHttpRequest("get-request").withContents(
-				httpRequest(GET, "/foo").header(HttpHeaders.HOST, "localhost").header(
-						"Alpha", "a"));
+				httpRequest(RequestMethod.GET, "/foo").header(HttpHeaders.HOST,
+						"localhost").header("Alpha", "a"));
 
 		new HttpRequestSnippet().document(new OperationBuilder("get-request",
 				this.snippet.getOutputDirectory()).request("http://localhost/foo")
@@ -67,7 +65,8 @@ public class HttpRequestSnippetTests {
 	@Test
 	public void getRequestWithQueryString() throws IOException {
 		this.snippet.expectHttpRequest("get-request-with-query-string").withContents(
-				httpRequest(GET, "/foo?bar=baz").header(HttpHeaders.HOST, "localhost"));
+				httpRequest(RequestMethod.GET, "/foo?bar=baz").header(HttpHeaders.HOST,
+						"localhost"));
 
 		new HttpRequestSnippet().document(new OperationBuilder(
 				"get-request-with-query-string", this.snippet.getOutputDirectory())
@@ -77,8 +76,8 @@ public class HttpRequestSnippetTests {
 	@Test
 	public void postRequestWithContent() throws IOException {
 		this.snippet.expectHttpRequest("post-request-with-content").withContents(
-				httpRequest(POST, "/foo").header(HttpHeaders.HOST, "localhost").content(
-						"Hello, world"));
+				httpRequest(RequestMethod.POST, "/foo").header(HttpHeaders.HOST,
+						"localhost").content("Hello, world"));
 
 		new HttpRequestSnippet().document(new OperationBuilder(
 				"post-request-with-content", this.snippet.getOutputDirectory())
@@ -89,7 +88,8 @@ public class HttpRequestSnippetTests {
 	@Test
 	public void postRequestWithParameter() throws IOException {
 		this.snippet.expectHttpRequest("post-request-with-parameter").withContents(
-				httpRequest(POST, "/foo").header(HttpHeaders.HOST, "localhost")
+				httpRequest(RequestMethod.POST, "/foo")
+						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
@@ -102,8 +102,8 @@ public class HttpRequestSnippetTests {
 	@Test
 	public void putRequestWithContent() throws IOException {
 		this.snippet.expectHttpRequest("put-request-with-content").withContents(
-				httpRequest(PUT, "/foo").header(HttpHeaders.HOST, "localhost").content(
-						"Hello, world"));
+				httpRequest(RequestMethod.PUT, "/foo").header(HttpHeaders.HOST,
+						"localhost").content("Hello, world"));
 
 		new HttpRequestSnippet().document(new OperationBuilder(
 				"put-request-with-content", this.snippet.getOutputDirectory())
@@ -114,7 +114,8 @@ public class HttpRequestSnippetTests {
 	@Test
 	public void putRequestWithParameter() throws IOException {
 		this.snippet.expectHttpRequest("put-request-with-parameter").withContents(
-				httpRequest(PUT, "/foo").header(HttpHeaders.HOST, "localhost")
+				httpRequest(RequestMethod.PUT, "/foo")
+						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
@@ -129,7 +130,7 @@ public class HttpRequestSnippetTests {
 		String expectedContent = createPart(String.format("Content-Disposition: "
 				+ "form-data; " + "name=image%n%n<< data >>"));
 		this.snippet.expectHttpRequest("multipart-post").withContents(
-				httpRequest(POST, "/upload")
+				httpRequest(RequestMethod.POST, "/upload")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
@@ -153,7 +154,7 @@ public class HttpRequestSnippetTests {
 				+ "name=image%n%n<< data >>"));
 		String expectedContent = param1Part + param2Part + param3Part + filePart;
 		this.snippet.expectHttpRequest("multipart-post-with-parameters").withContents(
-				httpRequest(POST, "/upload")
+				httpRequest(RequestMethod.POST, "/upload")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
@@ -172,7 +173,7 @@ public class HttpRequestSnippetTests {
 				.format("Content-Disposition: form-data; name=image%nContent-Type: "
 						+ "image/png%n%n<< data >>"));
 		this.snippet.expectHttpRequest("multipart-post-with-content-type").withContents(
-				httpRequest(POST, "/upload")
+				httpRequest(RequestMethod.POST, "/upload")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
@@ -188,7 +189,8 @@ public class HttpRequestSnippetTests {
 	@Test
 	public void getRequestWithCustomHost() throws IOException {
 		this.snippet.expectHttpRequest("get-request-custom-host").withContents(
-				httpRequest(GET, "/foo").header(HttpHeaders.HOST, "api.example.com"));
+				httpRequest(RequestMethod.GET, "/foo").header(HttpHeaders.HOST,
+						"api.example.com"));
 		new HttpRequestSnippet().document(new OperationBuilder("get-request-custom-host",
 				this.snippet.getOutputDirectory()).request("http://localhost/foo")
 				.header(HttpHeaders.HOST, "api.example.com").build());
@@ -199,8 +201,8 @@ public class HttpRequestSnippetTests {
 		this.snippet.expectHttpRequest("request-with-snippet-attributes").withContents(
 				containsString("Title for the request"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		when(resolver.resolveTemplateResource("http-request"))
-				.thenReturn(
+		given(resolver.resolveTemplateResource("http-request"))
+				.willReturn(
 						new FileSystemResource(
 								"src/test/resources/custom-snippet-templates/http-request-with-title.snippet"));
 		new HttpRequestSnippet(attributes(key("title").value("Title for the request")))

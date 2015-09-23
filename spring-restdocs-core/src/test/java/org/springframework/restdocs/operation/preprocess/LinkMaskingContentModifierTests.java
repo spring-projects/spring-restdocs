@@ -16,10 +16,6 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -34,8 +30,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link LinkMaskingContentModifier}
+ * Tests for {@link LinkMaskingContentModifier}.
  *
  * @author Andy Wilkinson
  *
@@ -125,21 +125,22 @@ public class LinkMaskingContentModifierTests {
 		return payload;
 	}
 
-	static final class AtomPayload {
+	private static final class AtomPayload {
 
 		private List<Link> links;
+
+		@SuppressWarnings("unused")
+		public List<Link> getLinks() {
+			return this.links;
+		}
 
 		public void setLinks(List<Link> links) {
 			this.links = links;
 		}
 
-		public List<Link> getLinks() {
-			return this.links;
-		}
-
 	}
 
-	static final class HalPayload {
+	private static final class HalPayload {
 
 		private Map<String, Object> links;
 

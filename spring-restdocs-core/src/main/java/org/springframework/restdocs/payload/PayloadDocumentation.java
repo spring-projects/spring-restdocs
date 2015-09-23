@@ -23,7 +23,7 @@ import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * Static factory methods for documenting a RESTful API's request and response payloads.
- * 
+ *
  * @author Andreas Evers
  * @author Andy Wilkinson
  */
@@ -43,27 +43,27 @@ public abstract class PayloadDocumentation {
 	 * When documenting a JSON payload, the {@code path} uses '.' to descend into a child
 	 * object and ' {@code []}' to descend into an array. For example, with this JSON
 	 * payload:
-	 * 
+	 *
 	 * <pre>
 	 * {
-     *    "a":{
-     *        "b":[
-     *            {
-     *                "c":"one"
-     *            },
-     *            {
-     *                "c":"two"
-     *            },
-     *            {
-     *                "d":"three"
-     *            }
-     *        ]
-     *    }
-     * }
+	 *    "a":{
+	 *        "b":[
+	 *            {
+	 *                "c":"one"
+	 *            },
+	 *            {
+	 *                "c":"two"
+	 *            },
+	 *            {
+	 *                "d":"three"
+	 *            }
+	 *        ]
+	 *    }
+	 * }
 	 * </pre>
-	 * 
+	 *
 	 * The following paths are all present:
-	 * 
+	 *
 	 * <table summary="Paths and their values">
 	 * <tr>
 	 * <th>Path</th>
@@ -90,7 +90,7 @@ public abstract class PayloadDocumentation {
 	 * <td>The string "three"</td>
 	 * </tr>
 	 * </table>
-	 * 
+	 *
 	 * @param path The path of the field
 	 * @return a {@code FieldDescriptor} ready for further configuration
 	 */
@@ -108,7 +108,7 @@ public abstract class PayloadDocumentation {
 	 * a failure will also occur. For payloads with a hierarchical structure, documenting
 	 * a field is sufficient for all of its descendants to also be treated as having been
 	 * documented.
-	 * 
+	 *
 	 * @param descriptors The descriptions of the request's fields
 	 * @return the handler
 	 * @see #fieldWithPath(String)
@@ -128,7 +128,7 @@ public abstract class PayloadDocumentation {
 	 * a failure will also occur. For payloads with a hierarchical structure, documenting
 	 * a field is sufficient for all of its descendants to also be treated as having been
 	 * documented.
-	 * 
+	 *
 	 * @param attributes Attributes made available during rendering of the snippet
 	 * @param descriptors The descriptions of the request's fields
 	 * @return the handler
@@ -149,7 +149,7 @@ public abstract class PayloadDocumentation {
 	 * a failure will also occur. For payloads with a hierarchical structure, documenting
 	 * a field is sufficient for all of its descendants to also be treated as having been
 	 * documented.
-	 * 
+	 *
 	 * @param descriptors The descriptions of the response's fields
 	 * @return the handler
 	 * @see #fieldWithPath(String)
@@ -169,7 +169,7 @@ public abstract class PayloadDocumentation {
 	 * a failure will also occur. For payloads with a hierarchical structure, documenting
 	 * a field is sufficient for all of its descendants to also be treated as having been
 	 * documented.
-	 * 
+	 *
 	 * @param attributes Attributes made available during rendering of the snippet
 	 * @param descriptors The descriptions of the response's fields
 	 * @return the handler

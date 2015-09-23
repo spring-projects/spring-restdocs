@@ -16,14 +16,14 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
-
 /**
- * Tests for {@link PrettyPrintingContentModifier}
- * 
+ * Tests for {@link PrettyPrintingContentModifier}.
+ *
  * @author Andy Wilkinson
  *
  */

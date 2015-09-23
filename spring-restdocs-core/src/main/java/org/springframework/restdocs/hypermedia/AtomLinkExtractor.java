@@ -25,7 +25,7 @@ import org.springframework.util.MultiValueMap;
 
 /**
  * {@link LinkExtractor} that extracts links in Atom format.
- * 
+ *
  * @author Andy Wilkinson
  */
 @SuppressWarnings("unchecked")
@@ -62,4 +62,5 @@ class AtomLinkExtractor extends AbstractJsonLinkExtractor {
 			extractedLinks.add(link.getRel(), link);
 		}
 	}
+
 }

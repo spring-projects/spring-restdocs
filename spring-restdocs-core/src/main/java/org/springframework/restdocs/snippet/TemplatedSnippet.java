@@ -42,7 +42,7 @@ public abstract class TemplatedSnippet implements Snippet {
 	 * Creates a new {@code TemplatedSnippet} that will produce a snippet with the given
 	 * {@code snippetName}. The given {@code attributes} will be included in the model
 	 * during rendering of the template.
-	 * 
+	 *
 	 * @param snippetName The name of the snippet
 	 * @param attributes The additional attributes
 	 */
@@ -74,7 +74,7 @@ public abstract class TemplatedSnippet implements Snippet {
 	 * given {@code operation}. Any additional attributes that were supplied when this
 	 * {@code TemplatedSnippet} were created will be automatically added to the model
 	 * prior to rendering.
-	 * 
+	 *
 	 * @param operation The operation
 	 * @return the model
 	 * @throws ModelCreationException if model creation fails
@@ -84,7 +84,7 @@ public abstract class TemplatedSnippet implements Snippet {
 	/**
 	 * Returns the additional attributes that will be included in the model during
 	 * template rendering.
-	 * 
+	 *
 	 * @return the additional attributes
 	 */
 	protected final Map<String, Object> getAttributes() {
@@ -93,7 +93,7 @@ public abstract class TemplatedSnippet implements Snippet {
 
 	/**
 	 * Returns the name of the snippet that will be created.
-	 * 
+	 *
 	 * @return the snippet name
 	 */
 	protected final String getSnippetName() {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.restdocs.templates.mustache;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ import org.springframework.restdocs.templates.TemplateResourceResolver;
  * implemented using <a href="https://github.com/samskivert/jmustache">JMustache</a>.
  * <p>
  * Note that JMustache has been repackaged and embedded to prevent classpath conflicts.
- * 
+ *
  * @author Andy Wilkinson
  */
 public class MustacheTemplateEngine implements TemplateEngine {
@@ -42,7 +43,7 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	/**
 	 * Creates a new {@link MustacheTemplateEngine} that will use the given
 	 * {@code templateResourceResolver} to resolve template paths.
-	 * 
+	 *
 	 * @param templateResourceResolver The resolve to use
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver) {

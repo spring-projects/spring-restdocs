@@ -21,10 +21,9 @@ import java.util.Iterator;
 
 /**
  * An adapter to expose an {@link Enumeration} as an {@link Iterable}.
- * 
- * @author Andy Wilkinson
  *
  * @param <T> the type of the Enumeration's contents
+ * @author Andy Wilkinson
  */
 final class IterableEnumeration<T> implements Iterable<T> {
 
@@ -57,8 +56,8 @@ final class IterableEnumeration<T> implements Iterable<T> {
 	}
 
 	/**
-	 * Creates a new {@code Iterable} that will iterate over the given {@code enumeration}
-	 * 
+	 * Creates an {@code Iterable} that will iterate over the given {@code enumeration}.
+	 *
 	 * @param <T> the type of the enumeration's elements
 	 * @param enumeration The enumeration to expose as an {@code Iterable}
 	 * @return the iterable

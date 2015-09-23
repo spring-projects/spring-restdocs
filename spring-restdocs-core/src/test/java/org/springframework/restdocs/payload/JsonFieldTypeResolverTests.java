@@ -16,9 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -28,9 +25,12 @@ import org.junit.rules.ExpectedException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link JsonFieldTypeResolver}
- * 
+ * Tests for {@link JsonFieldTypeResolver}.
+ *
  * @author Andy Wilkinson
  *
  */
@@ -74,7 +74,8 @@ public class JsonFieldTypeResolverTests {
 	@Test
 	public void nestedField() throws IOException {
 		assertThat(this.fieldTypeResolver.resolveFieldType("a.b.c",
-				createPayload("{\"a\":{\"b\":{\"c\":{}}}}")), equalTo(JsonFieldType.OBJECT));
+				createPayload("{\"a\":{\"b\":{\"c\":{}}}}")),
+				equalTo(JsonFieldType.OBJECT));
 	}
 
 	@Test

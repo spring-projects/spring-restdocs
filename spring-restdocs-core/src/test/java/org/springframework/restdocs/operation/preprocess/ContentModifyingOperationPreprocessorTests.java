@@ -16,10 +16,6 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.net.URI;
 import java.util.Collections;
 
@@ -34,8 +30,12 @@ import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.StandardOperationRequest;
 import org.springframework.restdocs.operation.StandardOperationResponse;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 /**
- * Tests for {@link ContentModifyingOperationPreprocessor}
+ * Tests for {@link ContentModifyingOperationPreprocessor}.
  *
  * @author Andy Wilkinson
  *
@@ -57,7 +57,7 @@ public class ContentModifyingOperationPreprocessorTests {
 		StandardOperationRequest request = new StandardOperationRequest(
 				URI.create("http://localhost"), HttpMethod.GET, "content".getBytes(),
 				new HttpHeaders(), new Parameters(),
-				Collections.<OperationRequestPart> emptyList());
+				Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
 		assertThat(preprocessed.getContent(), is(equalTo("modified".getBytes())));
 	}
@@ -75,7 +75,7 @@ public class ContentModifyingOperationPreprocessorTests {
 		StandardOperationRequest request = new StandardOperationRequest(
 				URI.create("http://localhost"), HttpMethod.GET, "content".getBytes(),
 				new HttpHeaders(), new Parameters(),
-				Collections.<OperationRequestPart> emptyList());
+				Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
 		assertThat(preprocessed.getHeaders().getContentLength(), is(equalTo(-1L)));
 	}
@@ -87,7 +87,7 @@ public class ContentModifyingOperationPreprocessorTests {
 		StandardOperationRequest request = new StandardOperationRequest(
 				URI.create("http://localhost"), HttpMethod.GET, "content".getBytes(),
 				httpHeaders, new Parameters(),
-				Collections.<OperationRequestPart> emptyList());
+				Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
 		assertThat(preprocessed.getHeaders().getContentLength(), is(equalTo(8L)));
 	}
