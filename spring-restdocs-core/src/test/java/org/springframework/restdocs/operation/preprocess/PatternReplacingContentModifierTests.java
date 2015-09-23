@@ -48,12 +48,13 @@ public class PatternReplacingContentModifierTests {
 
 	@Test
 	public void encodingIsPreserved() {
+		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		Pattern pattern = Pattern.compile("[0-9]+");
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(
 				pattern, "<<number>>");
-		assertThat(contentModifier.modifyContent("こんにちわ, 世界 123".getBytes(),
+		assertThat(contentModifier.modifyContent((japaneseContent + " 123").getBytes(),
 				new MediaType("text", "plain", Charset.forName("UTF-8"))),
-				is(equalTo("こんにちわ, 世界 <<number>>".getBytes())));
+				is(equalTo((japaneseContent + " <<number>>").getBytes())));
 	}
 
 }

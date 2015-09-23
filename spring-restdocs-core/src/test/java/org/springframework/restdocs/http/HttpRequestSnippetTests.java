@@ -87,17 +87,18 @@ public class HttpRequestSnippetTests {
 
 	@Test
 	public void postRequestWithCharset() throws IOException {
+		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		this.snippet.expectHttpRequest("post-request-with-charset").withContents(
 				httpRequest(RequestMethod.POST, "/foo")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "text/plain;charset=UTF-8")
-						.content("こんにちわ, 世界")); // Hello, World in Japanese
+						.content(japaneseContent));
 
 		new HttpRequestSnippet().document(new OperationBuilder(
 				"post-request-with-charset", this.snippet.getOutputDirectory())
 				.request("http://localhost/foo").method("POST")
-				.header("Content-Type", "text/plain;charset=UTF-8").content("こんにちわ, 世界")
-				.build());
+				.header("Content-Type", "text/plain;charset=UTF-8")
+				.content(japaneseContent).build());
 	}
 
 	@Test

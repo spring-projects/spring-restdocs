@@ -86,13 +86,14 @@ public class HttpResponseSnippetTests {
 
 	@Test
 	public void responseWithCharset() throws IOException {
+		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		this.snippet.expectHttpResponse("response-with-charset").withContents(
 				httpResponse(HttpStatus.OK).header("Content-Type",
-						"text/plain;charset=UTF-8").content("コンテンツ"));
+						"text/plain;charset=UTF-8").content(japaneseContent));
 		new HttpResponseSnippet().document(new OperationBuilder("response-with-charset",
 				this.snippet.getOutputDirectory()).response()
-				.header("Content-Type", "text/plain;charset=UTF-8").content("コンテンツ")
-				.build());
+				.header("Content-Type", "text/plain;charset=UTF-8")
+				.content(japaneseContent).build());
 	}
 
 	@Test
