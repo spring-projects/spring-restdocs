@@ -18,6 +18,8 @@ package com.example.notes;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -97,6 +99,15 @@ public class ApiDocumentation {
 				.apply(documentationConfiguration(this.restDocumentation))
 				.alwaysDo(this.document)
 				.build();
+	}
+	
+	@Test
+	public void headersExample() throws Exception {
+		this.document.snippets(responseHeaders(
+				headerWithName("Content-Type").description("The Content-Type of the payload, e.g. `application/hal+json`")));
+		
+		this.mockMvc.perform(get("/"))
+			.andExpect(status().isOk());
 	}
 
 	@Test

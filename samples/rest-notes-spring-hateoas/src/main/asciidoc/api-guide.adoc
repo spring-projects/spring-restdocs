@@ -58,6 +58,13 @@ use of HTTP status codes.
 | The requested resource did not exist
 |===
 
+[[overview-headers]]
+== Headers
+
+Every response has the following header(s):
+
+include::{snippets}/headers-example/response-headers.adoc[]
+
 [[overview-errors]]
 == Errors
 
