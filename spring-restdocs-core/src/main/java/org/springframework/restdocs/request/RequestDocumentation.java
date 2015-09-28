@@ -19,11 +19,8 @@ package org.springframework.restdocs.request;
 import java.util.Arrays;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
-
+import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Static factory methods for documenting aspects of a request sent to a RESTful API.
@@ -48,26 +45,36 @@ public abstract class RequestDocumentation {
 	}
 
 	/**
-	 * Returns a snippet that will document the path parameters from the API call's
-	 * request.
+	 * Returns a {@code Snippet} that will document the path parameters from the API
+	 * operation's request. The parameters will be documented using the given
+	 * {@code descriptors}.
+	 * <p>
+	 * If a parameter is present in the request path, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * parameter is documented, is not marked as optional, and is not present in the
+	 * request path, a failure will also occur.
 	 *
-	 * @param descriptors The descriptions of the parameters in the request's path
-	 * @return the snippet
-	 * @see PathVariable
+	 * @param descriptors the descriptions of the parameters in the request's path
+	 * @return the snippet that will document the parameters
 	 */
 	public static Snippet pathParameters(ParameterDescriptor... descriptors) {
 		return new PathParametersSnippet(Arrays.asList(descriptors));
 	}
 
 	/**
-	 * Returns a snippet that will document the path parameters from the API call's
-	 * request. The given {@code attributes} will be available during snippet rendering.
+	 * Returns a {@code Snippet} that will document the path parameters from the API
+	 * operation's request. The given {@code attributes} will be available during snippet
+	 * rendering and the parameters will be documented using the given {@code descriptors}
+	 * .
+	 * <p>
+	 * If a parameter is present in the request path, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * parameter is documented, is not marked as optional, and is not present in the
+	 * request path, a failure will also occur.
 	 *
-	 * @param attributes Attributes made available during rendering of the path parameters
-	 * snippet
-	 * @param descriptors The descriptions of the parameters in the request's path
-	 * @return the snippet
-	 * @see PathVariable
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the parameters in the request's path
+	 * @return the snippet that will document the parameters
 	 */
 	public static Snippet pathParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {
@@ -75,28 +82,38 @@ public abstract class RequestDocumentation {
 	}
 
 	/**
-	 * Returns a snippet that will document the request parameters from the API call's
-	 * request.
+	 * Returns a {@code Snippet} that will document the parameters from the API
+	 * operation's request. The parameters will be documented using the given
+	 * {@code descriptors}.
+	 * <p>
+	 * If a parameter is present in the request, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * parameter is documented, is not marked as optional, and is not present in the
+	 * request, a failure will also occur.
 	 *
 	 * @param descriptors The descriptions of the request's parameters
 	 * @return the snippet
-	 * @see RequestParam
-	 * @see ServletRequest#getParameterMap()
+	 * @see OperationRequest#getParameters()
 	 */
 	public static Snippet requestParameters(ParameterDescriptor... descriptors) {
 		return new RequestParametersSnippet(Arrays.asList(descriptors));
 	}
 
 	/**
-	 * Returns a snippet that will document the request parameters from the API call's
-	 * request. The given {@code attributes} will be available during snippet rendering.
+	 * Returns a {@code Snippet} that will document the parameters from the API
+	 * operation's request. The given {@code attributes} will be available during snippet
+	 * rendering and the parameters will be documented using the given {@code descriptors}
+	 * .
+	 * <p>
+	 * If a parameter is present in the request, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * parameter is documented, is not marked as optional, and is not present in the
+	 * request, a failure will also occur.
 	 *
-	 * @param attributes Attributes made available during rendering of the request
-	 * parameters snippet
-	 * @param descriptors The descriptions of the request's parameters
-	 * @return the snippet
-	 * @see RequestParam
-	 * @see ServletRequest#getParameterMap()
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request's parameters
+	 * @return the snippet that will document the parameters
+	 * @see OperationRequest#getParameters()
 	 */
 	public static Snippet requestParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {

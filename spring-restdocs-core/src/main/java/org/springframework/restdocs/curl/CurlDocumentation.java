@@ -36,22 +36,22 @@ public abstract class CurlDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet containing the curl request for the
-	 * API call.
+	 * Returns a new {@code Snippet} that will document the curl request for the API
+	 * operation.
 	 *
-	 * @return the handler that will produce the snippet
+	 * @return the snippet that will document the curl request
 	 */
 	public static Snippet curlRequest() {
 		return new CurlRequestSnippet();
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet containing the curl request for the
-	 * API call. The given {@code attributes} will be available during snippet generation.
+	 * Returns a new {@code Snippet} that will document the curl request for the API
+	 * operation. The given {@code attributes} will be available during snippet
+	 * generation.
 	 *
-	 * @param attributes Attributes made available during rendering of the curl request
-	 * snippet
-	 * @return the handler that will produce the snippet
+	 * @param attributes the attributes
+	 * @return the snippet that will document the curl request
 	 */
 	public static Snippet curlRequest(Map<String, Object> attributes) {
 		return new CurlRequestSnippet(attributes);

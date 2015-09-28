@@ -33,41 +33,44 @@ public abstract class HttpDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet containing the HTTP request for the
-	 * API call.
+	 * Returns a new {@code Snippet} that will document the HTTP request for the API
+	 * operation.
 	 *
-	 * @return the handler that will produce the snippet
+	 * @return the snippet that will document the HTTP request
 	 */
 	public static Snippet httpRequest() {
 		return new HttpRequestSnippet();
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet containing the HTTP request for the
-	 * API call. The given {@code attributes} will be available during snippet generation.
+	 * Returns a new {@code Snippet} that will document the HTTP request for the API
+	 * operation. The given {@code attributes} will be available during snippet
+	 * generation.
 	 *
 	 * @param attributes the attributes
-	 * @return the handler that will produce the snippet
+	 * @return the snippet that will document the HTTP request
 	 */
 	public static Snippet httpRequest(Map<String, Object> attributes) {
 		return new HttpRequestSnippet(attributes);
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet containing the HTTP response for the
-	 * API call.
-	 * @return the handler that will produce the snippet
+	 * Returns a {@code Snippet} that will document the HTTP response for the API
+	 * operation.
+	 *
+	 * @return the snippet that will document the HTTP response
 	 */
 	public static Snippet httpResponse() {
 		return new HttpResponseSnippet();
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet containing the HTTP response for the
-	 * API call. The given {@code attributes} will be available during snippet generation.
+	 * Returns a {@code Snippet} that will document the HTTP response for the API
+	 * operation. The given {@code attributes} will be available during snippet
+	 * generation.
 	 *
 	 * @param attributes the attributes
-	 * @return the handler that will produce the snippet
+	 * @return the snippet that will document the HTTP response
 	 */
 	public static Snippet httpResponse(Map<String, Object> attributes) {
 		return new HttpResponseSnippet(attributes);

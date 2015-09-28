@@ -51,10 +51,10 @@ public abstract class MockMvcRestDocumentation {
 
 	/**
 	 * Documents the API call with the given {@code identifier} using the given
-	 * {@code snippets}.
+	 * {@code snippets} in addition to any default snippets.
 	 *
 	 * @param identifier an identifier for the API call that is being documented
-	 * @param snippets the snippets that will document the API call
+	 * @param snippets the snippets
 	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
 	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
 	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
@@ -66,12 +66,12 @@ public abstract class MockMvcRestDocumentation {
 
 	/**
 	 * Documents the API call with the given {@code identifier} using the given
-	 * {@code snippets}. The given {@code requestPreprocessor} is applied to the request
-	 * before it is documented.
+	 * {@code snippets} in addition to any default snippets. The given
+	 * {@code requestPreprocessor} is applied to the request before it is documented.
 	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param requestPreprocessor the request preprocessor
-	 * @param snippets the snippets that will document the API call
+	 * @param snippets the snippets
 	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
 	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
 	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
@@ -84,12 +84,12 @@ public abstract class MockMvcRestDocumentation {
 
 	/**
 	 * Documents the API call with the given {@code identifier} using the given
-	 * {@code snippets}. The given {@code responsePreprocessor} is applied to the request
-	 * before it is documented.
+	 * {@code snippets} in addition to any default snippets. The given
+	 * {@code responsePreprocessor} is applied to the request before it is documented.
 	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param responsePreprocessor the response preprocessor
-	 * @param snippets the snippets that will document the API call
+	 * @param snippets the snippets
 	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
 	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
 	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
@@ -102,14 +102,14 @@ public abstract class MockMvcRestDocumentation {
 
 	/**
 	 * Documents the API call with the given {@code identifier} using the given
-	 * {@code snippets}. The given {@code requestPreprocessor} and
-	 * {@code responsePreprocessor} are applied to the request and response respectively
-	 * before they are documented.
+	 * {@code snippets} in addition to any default snippets. The given
+	 * {@code requestPreprocessor} and {@code responsePreprocessor} are applied to the
+	 * request and response respectively before they are documented.
 	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param requestPreprocessor the request preprocessor
 	 * @param responsePreprocessor the response preprocessor
-	 * @param snippets the snippets that will document the API call
+	 * @param snippets the snippets
 	 * @return a Mock MVC {@code ResultHandler} that will produce the documentation
 	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
 	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)

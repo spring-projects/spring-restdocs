@@ -19,6 +19,8 @@ package org.springframework.restdocs.mockmvc;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.curl.CurlDocumentation;
+import org.springframework.restdocs.http.HttpDocumentation;
 import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
@@ -33,6 +35,22 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * A {@link MockMvcConfigurer} that can be used to configure the documentation.
+ * <p>
+ * In the absence of any {@link #snippets() customization} the following snippets will be
+ * produced by default:
+ * <ul>
+ * <li>{@link CurlDocumentation#curlRequest() Curl request}</li>
+ * <li>{@link HttpDocumentation#httpRequest() HTTP request}</li>
+ * <li>{@link HttpDocumentation#httpResponse() HTTP response}</li>
+ * </ul>
+ * <p>
+ * In the absence of any {@link #uris() customization}, documented URIs have the following
+ * defaults:
+ * <ul>
+ * <li>Scheme: {@code http}</li>
+ * <li>Host: {@code localhost}</li>
+ * <li>Port: {@code 8080}</li>
+ * </ul>
  *
  * @author Andy Wilkinson
  * @author Dmitriy Mayboroda

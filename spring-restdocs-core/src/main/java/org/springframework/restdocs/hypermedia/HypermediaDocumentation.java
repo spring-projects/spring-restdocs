@@ -43,12 +43,17 @@ public abstract class HypermediaDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the links in the API
-	 * call's response. Links will be extracted from the response automatically based on
-	 * its content type.
+	 * Returns a new {@code Snippet} that will document the links in the API operation's
+	 * response. Links will be extracted from the response automatically based on its
+	 * content type and will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
+	 * is documented, is not marked as optional, and is not present in the response, a
+	 * failure will also occur.
 	 *
-	 * @param descriptors The descriptions of the response's links
-	 * @return the handler
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
 	 */
 	public static Snippet links(LinkDescriptor... descriptors) {
 		return new LinksSnippet(new ContentTypeLinkExtractor(),
@@ -56,14 +61,19 @@ public abstract class HypermediaDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the links in the API
-	 * call's response. The given {@code attributes} will be available during snippet
-	 * generation. Links will be extracted from the response automatically based on its
-	 * content type.
+	 * Returns a new {@code Snippet} that will document the links in the API call's
+	 * response. The given {@code attributes} will be available during snippet generation.
+	 * Links will be extracted from the response automatically based on its content type
+	 * and will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
+	 * is documented, is not marked as optional, and is not present in the response, a
+	 * failure will also occur.
 	 *
-	 * @param attributes Attributes made available during rendering of the links snippet
-	 * @param descriptors The descriptions of the response's links
-	 * @return the handler
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
 	 */
 	public static Snippet links(Map<String, Object> attributes,
 			LinkDescriptor... descriptors) {
@@ -72,13 +82,18 @@ public abstract class HypermediaDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the links in the API
-	 * call's response. Links will be extracted from the response using the given
-	 * {@code linkExtractor}.
+	 * Returns a new {@code Snippet} that will document the links in the API operation's
+	 * response. Links will be extracted from the response using the given
+	 * {@code linkExtractor} and will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
+	 * is documented, is not marked as optional, and is not present in the response, a
+	 * failure will also occur.
 	 *
-	 * @param linkExtractor Used to extract the links from the response
-	 * @param descriptors The descriptions of the response's links
-	 * @return the handler
+	 * @param linkExtractor used to extract the links from the response
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
 	 */
 	public static Snippet links(LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
@@ -86,15 +101,20 @@ public abstract class HypermediaDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the links in the API
-	 * call's response. The given {@code attributes} will be available during snippet
-	 * generation. Links will be extracted from the response using the given
-	 * {@code linkExtractor}.
+	 * Returns a new {@code Snippet} that will document the links in the API operation's
+	 * response. The given {@code attributes} will be available during snippet generation.
+	 * Links will be extracted from the response using the given {@code linkExtractor} and
+	 * will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
+	 * is documented, is not marked as optional, and is not present in the response, a
+	 * failure will also occur.
 	 *
-	 * @param attributes Attributes made available during rendering of the links snippet
-	 * @param linkExtractor Used to extract the links from the response
-	 * @param descriptors The descriptions of the response's links
-	 * @return the handler
+	 * @param attributes the attributes
+	 * @param linkExtractor used to extract the links from the response
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
 	 */
 	public static Snippet links(LinkExtractor linkExtractor,
 			Map<String, Object> attributes, LinkDescriptor... descriptors) {
@@ -104,9 +124,19 @@ public abstract class HypermediaDocumentation {
 	/**
 	 * Returns a {@code LinkExtractor} capable of extracting links in Hypermedia
 	 * Application Language (HAL) format where the links are found in a map named
-	 * {@code _links}.
+	 * {@code _links}. For example:
 	 *
-	 * @return The extract for HAL-style links
+	 * <pre>
+	 * {
+	 *     "_links": {
+	 *         "self": {
+	 *             "href": "http://example.com/foo"
+	 *         }
+	 *     }
+	 * }
+	 * </pre>
+	 *
+	 * @return The extractor for HAL-style links
 	 */
 	public static LinkExtractor halLinks() {
 		return new HalLinkExtractor();
@@ -114,7 +144,18 @@ public abstract class HypermediaDocumentation {
 
 	/**
 	 * Returns a {@code LinkExtractor} capable of extracting links in Atom format where
-	 * the links are found in an array named {@code links}.
+	 * the links are found in an array named {@code links}. For example:
+	 *
+	 * <pre>
+	 * {
+	 *     "links": [
+	 *         {
+	 *             "rel": "self",
+	 *             "href": "http://example.com/foo"
+	 *         }
+	 *     ]
+     * }
+	 * </pre>
 	 *
 	 * @return The extractor for Atom-style links
 	 */

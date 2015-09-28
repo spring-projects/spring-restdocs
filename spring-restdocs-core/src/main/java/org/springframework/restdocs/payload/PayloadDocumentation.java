@@ -99,18 +99,18 @@ public abstract class PayloadDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the fields of the API
-	 * call's request.
+	 * Returns a {@code Snippet} that will document the fields of the API operations's
+	 * request payload. The fields will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the request, but is not documented by one of the
-	 * descriptors, a failure will occur when the handler is invoked. Similarly, if a
+	 * If a field is present in the request payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * field is documented, is not marked as optional, and is not present in the request,
 	 * a failure will also occur. For payloads with a hierarchical structure, documenting
 	 * a field is sufficient for all of its descendants to also be treated as having been
 	 * documented.
 	 *
-	 * @param descriptors The descriptions of the request's fields
-	 * @return the handler
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
 	 */
 	public static Snippet requestFields(FieldDescriptor... descriptors) {
@@ -118,20 +118,20 @@ public abstract class PayloadDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the fields of the API
-	 * call's request. The given {@code attributes} will be available during snippet
-	 * generation.
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
+	 * request payload. The fields will be documented using the given {@code descriptors}
+	 * and the given {@code attributes} will be available during snippet generation.
 	 * <p>
-	 * If a field is present in the request, but is not documented by one of the
-	 * descriptors, a failure will occur when the handler is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request,
-	 * a failure will also occur. For payloads with a hierarchical structure, documenting
-	 * a field is sufficient for all of its descendants to also be treated as having been
-	 * documented.
+	 * If a field is present in the request payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
 	 *
-	 * @param attributes Attributes made available during rendering of the snippet
-	 * @param descriptors The descriptions of the request's fields
-	 * @return the handler
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
 	 */
 	public static Snippet requestFields(Map<String, Object> attributes,
@@ -140,18 +140,19 @@ public abstract class PayloadDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the fields of the API
-	 * call's response.
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
+	 * response payload. The fields will be documented using the given {@code descriptors}
+	 * .
 	 * <p>
-	 * If a field is present in the response, but is not documented by one of the
-	 * descriptors, a failure will occur when the handler is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the response,
-	 * a failure will also occur. For payloads with a hierarchical structure, documenting
-	 * a field is sufficient for all of its descendants to also be treated as having been
-	 * documented.
+	 * If a field is present in the response payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
 	 *
-	 * @param descriptors The descriptions of the response's fields
-	 * @return the handler
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
 	 */
 	public static Snippet responseFields(FieldDescriptor... descriptors) {
@@ -159,20 +160,20 @@ public abstract class PayloadDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the fields of the API
-	 * call's response. The given {@code attributes} will be available during snippet
-	 * generation.
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
+	 * response payload. The fields will be documented using the given {@code descriptors}
+	 * and the given {@code attributes} will be available during snippet generation.
 	 * <p>
-	 * If a field is present in the response, but is not documented by one of the
-	 * descriptors, a failure will occur when the handler is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the response,
-	 * a failure will also occur. For payloads with a hierarchical structure, documenting
-	 * a field is sufficient for all of its descendants to also be treated as having been
-	 * documented.
+	 * If a field is present in the response payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
 	 *
-	 * @param attributes Attributes made available during rendering of the snippet
-	 * @param descriptors The descriptions of the response's fields
-	 * @return the handler
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
 	 */
 	public static Snippet responseFields(Map<String, Object> attributes,
