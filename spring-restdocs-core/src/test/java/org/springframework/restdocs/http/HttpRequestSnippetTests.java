@@ -75,30 +75,33 @@ public class HttpRequestSnippetTests {
 
 	@Test
 	public void postRequestWithContent() throws IOException {
+		String content = "Hello, world";
 		this.snippet.expectHttpRequest("post-request-with-content").withContents(
-				httpRequest(RequestMethod.POST, "/foo").header(HttpHeaders.HOST,
-						"localhost").content("Hello, world"));
+				httpRequest(RequestMethod.POST, "/foo")
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet().document(new OperationBuilder(
 				"post-request-with-content", this.snippet.getOutputDirectory())
-				.request("http://localhost/foo").method("POST").content("Hello, world")
-				.build());
+				.request("http://localhost/foo").method("POST").content(content).build());
 	}
 
 	@Test
 	public void postRequestWithCharset() throws IOException {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
+		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
 		this.snippet.expectHttpRequest("post-request-with-charset").withContents(
 				httpRequest(RequestMethod.POST, "/foo")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "text/plain;charset=UTF-8")
+						.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length)
 						.content(japaneseContent));
 
 		new HttpRequestSnippet().document(new OperationBuilder(
 				"post-request-with-charset", this.snippet.getOutputDirectory())
 				.request("http://localhost/foo").method("POST")
-				.header("Content-Type", "text/plain;charset=UTF-8")
-				.content(japaneseContent.getBytes("UTF-8")).build());
+				.header("Content-Type", "text/plain;charset=UTF-8").content(contentBytes)
+				.build());
 	}
 
 	@Test
@@ -117,14 +120,15 @@ public class HttpRequestSnippetTests {
 
 	@Test
 	public void putRequestWithContent() throws IOException {
+		String content = "Hello, world";
 		this.snippet.expectHttpRequest("put-request-with-content").withContents(
-				httpRequest(RequestMethod.PUT, "/foo").header(HttpHeaders.HOST,
-						"localhost").content("Hello, world"));
+				httpRequest(RequestMethod.PUT, "/foo")
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet().document(new OperationBuilder(
 				"put-request-with-content", this.snippet.getOutputDirectory())
-				.request("http://localhost/foo").method("PUT").content("Hello, world")
-				.build());
+				.request("http://localhost/foo").method("PUT").content(content).build());
 	}
 
 	@Test

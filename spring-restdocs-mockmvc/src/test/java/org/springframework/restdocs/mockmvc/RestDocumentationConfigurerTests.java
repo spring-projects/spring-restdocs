@@ -27,7 +27,6 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
@@ -92,17 +91,6 @@ public class RestDocumentationConfigurerTests {
 				.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 		assertThat(this.request.getHeader("Content-Length"), is(nullValue()));
-	}
-
-	@Test
-	public void contentLengthHeaderIsSetWhenRequestHasContent() {
-		RequestPostProcessor postProcessor = new RestDocumentationMockMvcConfigurer(
-				this.restDocumentation).beforeMockMvcCreated(null, null);
-		byte[] content = "Hello, world".getBytes();
-		this.request.setContent(content);
-		postProcessor.postProcessRequest(this.request);
-		assertThat(this.request.getHeader("Content-Length"),
-				is(equalTo(Integer.toString(content.length))));
 	}
 
 	private void assertUriConfiguration(String scheme, String host, int port) {

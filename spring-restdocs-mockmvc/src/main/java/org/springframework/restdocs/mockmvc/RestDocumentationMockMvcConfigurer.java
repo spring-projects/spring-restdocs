@@ -29,7 +29,6 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurerAdapter;
-import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -62,8 +61,7 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 	RestDocumentationMockMvcConfigurer(RestDocumentation restDocumentation) {
 		this.requestPostProcessor = new ConfigurerApplyingRequestPostProcessor(
 				restDocumentation, this.uriConfigurer, this.writerResolverConfigurer,
-				this.snippetConfigurer, new ContentLengthHeaderConfigurer(),
-				this.templateEngineConfigurer);
+				this.snippetConfigurer, this.templateEngineConfigurer);
 	}
 
 	/**
@@ -113,19 +111,6 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 	public RequestPostProcessor beforeMockMvcCreated(
 			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
 		return this.requestPostProcessor;
-	}
-
-	private static final class ContentLengthHeaderConfigurer extends AbstractConfigurer {
-
-		@Override
-		void apply(MockHttpServletRequest request) {
-			long contentLength = request.getContentLengthLong();
-			if (contentLength > 0
-					&& !StringUtils.hasText(request.getHeader("Content-Length"))) {
-				request.addHeader("Content-Length", request.getContentLengthLong());
-			}
-		}
-
 	}
 
 	private static final class TemplateEngineConfigurer extends AbstractConfigurer {

@@ -63,8 +63,11 @@ public class ContentModifyingOperationPreprocessor implements OperationPreproces
 	private HttpHeaders getUpdatedHeaders(HttpHeaders headers, byte[] updatedContent) {
 		HttpHeaders updatedHeaders = new HttpHeaders();
 		updatedHeaders.putAll(headers);
-		if (updatedHeaders.getContentLength() > -1) {
+		if (updatedContent.length > 0) {
 			updatedHeaders.setContentLength(updatedContent.length);
+		}
+		else {
+			updatedHeaders.remove(HttpHeaders.CONTENT_LENGTH);
 		}
 		return updatedHeaders;
 	}

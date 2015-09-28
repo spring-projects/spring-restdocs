@@ -78,22 +78,27 @@ public class HttpResponseSnippetTests {
 
 	@Test
 	public void responseWithContent() throws IOException {
+		String content = "content";
 		this.snippet.expectHttpResponse("response-with-content").withContents(
-				httpResponse(HttpStatus.OK).content("content"));
+				httpResponse(HttpStatus.OK).content(content).header(
+						HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 		new HttpResponseSnippet().document(new OperationBuilder("response-with-content",
-				this.snippet.getOutputDirectory()).response().content("content").build());
+				this.snippet.getOutputDirectory()).response().content(content).build());
 	}
 
 	@Test
 	public void responseWithCharset() throws IOException {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
+		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
 		this.snippet.expectHttpResponse("response-with-charset").withContents(
-				httpResponse(HttpStatus.OK).header("Content-Type",
-						"text/plain;charset=UTF-8").content(japaneseContent));
+				httpResponse(HttpStatus.OK)
+						.header("Content-Type", "text/plain;charset=UTF-8")
+						.content(japaneseContent)
+						.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length));
 		new HttpResponseSnippet().document(new OperationBuilder("response-with-charset",
 				this.snippet.getOutputDirectory()).response()
-				.header("Content-Type", "text/plain;charset=UTF-8")
-				.content(japaneseContent.getBytes("UTF-8")).build());
+				.header("Content-Type", "text/plain;charset=UTF-8").content(contentBytes)
+				.build());
 	}
 
 	@Test

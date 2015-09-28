@@ -157,7 +157,8 @@ public class MockMvcOperationRequestFactoryTests {
 		OperationRequestPart part = request.getParts().iterator().next();
 		assertThat(part.getName(), is(equalTo("file")));
 		assertThat(part.getSubmittedFileName(), is(nullValue()));
-		assertThat(part.getHeaders().isEmpty(), is(true));
+		assertThat(part.getHeaders().size(), is(1));
+		assertThat(part.getHeaders().getContentLength(), is(4L));
 		assertThat(part.getContent(), is(equalTo(new byte[] { 1, 2, 3, 4 })));
 	}
 

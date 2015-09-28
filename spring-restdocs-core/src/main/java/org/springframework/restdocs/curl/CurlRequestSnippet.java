@@ -115,8 +115,10 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 	private void writeHeaders(HttpHeaders headers, PrintWriter writer) {
 		for (Entry<String, List<String>> entry : headers.entrySet()) {
-			for (String header : entry.getValue()) {
-				writer.print(String.format(" -H '%s: %s'", entry.getKey(), header));
+			if (!HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(entry.getKey())) {
+				for (String header : entry.getValue()) {
+					writer.print(String.format(" -H '%s: %s'", entry.getKey(), header));
+				}
 			}
 		}
 	}

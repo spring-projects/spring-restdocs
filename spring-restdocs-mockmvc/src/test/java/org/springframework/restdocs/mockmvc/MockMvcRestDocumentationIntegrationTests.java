@@ -79,6 +79,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.SnippetMatchers.snippet;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -118,6 +119,21 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andExpect(status().isOk()).andDo(document("basic"));
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/basic"),
 				"http-request.adoc", "http-response.adoc", "curl-request.adoc");
+	}
+
+	@Test
+	public void curlSnippetWithContent() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+
+		mockMvc.perform(post("/").accept(MediaType.APPLICATION_JSON).content("content"))
+				.andExpect(status().isOk()).andDo(document("curl-snippet-with-content"));
+		assertThat(new File(
+				"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
+				is(snippet().withContents(
+						codeBlock("bash").content(
+								"$ curl " + "'http://localhost:8080/' -i -X POST "
+										+ "-H 'Accept: application/json' -d 'content'"))));
 	}
 
 	@Test
@@ -298,24 +314,27 @@ public class MockMvcRestDocumentationIntegrationTests {
 								removeHeaders("a"),
 								replacePattern(pattern, "\"<<beta>>\""))));
 
+		String original = "{\"a\":\"alpha\",\"links\":[{\"rel\":\"rel\","
+				+ "\"href\":\"href\"}]}";
 		assertThat(
 				new File("build/generated-snippets/original-response/http-response.adoc"),
 				is(snippet().withContents(
 						httpResponse(HttpStatus.OK)
 								.header("a", "alpha")
 								.header("Content-Type", "application/json")
-								.content(
-										"{\"a\":\"alpha\",\"links\":[{\"rel\":\"rel\","
-												+ "\"href\":\"href\"}]}"))));
+								.header(HttpHeaders.CONTENT_LENGTH,
+										original.getBytes().length).content(original))));
+		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
+				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-response/http-response.adoc"),
 				is(snippet().withContents(
-						httpResponse(HttpStatus.OK).header("Content-Type",
-								"application/json").content(
-								String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" :"
-										+ " [ {%n    \"rel\" : \"rel\",%n    \"href\" :"
-										+ " \"...\"%n  } ]%n}")))));
+						httpResponse(HttpStatus.OK)
+								.header("Content-Type", "application/json")
+								.header(HttpHeaders.CONTENT_LENGTH,
+										prettyPrinted.getBytes().length)
+								.content(prettyPrinted))));
 	}
 
 	@Test

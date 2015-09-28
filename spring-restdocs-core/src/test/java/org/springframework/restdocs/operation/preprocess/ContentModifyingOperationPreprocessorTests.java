@@ -72,16 +72,6 @@ public class ContentModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void unknownContentLengthIsUnchanged() {
-		StandardOperationRequest request = new StandardOperationRequest(
-				URI.create("http://localhost"), HttpMethod.GET, "content".getBytes(),
-				new HttpHeaders(), new Parameters(),
-				Collections.<OperationRequestPart>emptyList());
-		OperationRequest preprocessed = this.preprocessor.preprocess(request);
-		assertThat(preprocessed.getHeaders().getContentLength(), is(equalTo(-1L)));
-	}
-
-	@Test
 	public void contentLengthIsUpdated() {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentLength(7);

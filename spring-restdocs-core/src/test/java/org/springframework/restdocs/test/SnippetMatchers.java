@@ -164,6 +164,12 @@ public final class SnippetMatchers {
 			return (T) this;
 		}
 
+		@SuppressWarnings("unchecked")
+		public T header(String name, long value) {
+			this.addLine(this.headerOffset++, name + ": " + value);
+			return (T) this;
+		}
+
 	}
 
 	/**
