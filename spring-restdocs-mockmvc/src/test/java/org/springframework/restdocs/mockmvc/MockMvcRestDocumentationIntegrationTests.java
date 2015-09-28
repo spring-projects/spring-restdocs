@@ -137,6 +137,25 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void curlSnippetWithQueryStringOnPost() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+
+		mockMvc.perform(
+				post("/?foo=bar").param("foo", "bar").param("a", "alpha")
+						.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andDo(document("curl-snippet-with-query-string"));
+		assertThat(
+				new File(
+						"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
+				is(snippet().withContents(
+						codeBlock("bash").content(
+								"$ curl "
+										+ "'http://localhost:8080/?foo=bar' -i -X POST "
+										+ "-H 'Accept: application/json' -d 'a=alpha'"))));
+	}
+
+	@Test
 	public void linksSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();

@@ -31,6 +31,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
+import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.Base64Utils;
@@ -165,9 +166,41 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 			}
 		}
 		else if (isPutOrPost(request)) {
-			String queryString = request.getParameters().toQueryString();
-			if (StringUtils.hasText(queryString)) {
-				writer.print(String.format(" -d '%s'", queryString));
+			writeContentUsingParameters(request, writer);
+		}
+	}
+
+	private void writeContentUsingParameters(OperationRequest request, PrintWriter writer) {
+		Parameters uniqueParameters = getUniqueParameters(request);
+		String queryString = uniqueParameters.toQueryString();
+		if (StringUtils.hasText(queryString)) {
+			writer.print(String.format(" -d '%s'", queryString));
+		}
+	}
+
+	private Parameters getUniqueParameters(OperationRequest request) {
+		Parameters queryStringParameters = new QueryStringParser()
+				.parse(request.getUri());
+		Parameters uniqueParameters = new Parameters();
+
+		for (Entry<String, List<String>> parameter : request.getParameters().entrySet()) {
+			addIfUnique(parameter, queryStringParameters, uniqueParameters);
+		}
+		return uniqueParameters;
+	}
+
+	private void addIfUnique(Entry<String, List<String>> parameter,
+			Parameters queryStringParameters, Parameters uniqueParameters) {
+		if (!queryStringParameters.containsKey(parameter.getKey())) {
+			uniqueParameters.put(parameter.getKey(), parameter.getValue());
+		}
+		else {
+			List<String> candidates = parameter.getValue();
+			List<String> existing = queryStringParameters.get(parameter.getKey());
+			for (String candidate : candidates) {
+				if (!existing.contains(candidate)) {
+					uniqueParameters.add(parameter.getKey(), candidate);
+				}
 			}
 		}
 	}

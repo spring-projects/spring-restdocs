@@ -84,7 +84,7 @@ public class CurlRequestSnippetTests {
 	}
 
 	@Test
-	public void requestWithQueryString() throws IOException {
+	public void getRequestWithQueryString() throws IOException {
 		this.snippet.expectCurlRequest("request-with-query-string")
 				.withContents(
 						codeBlock("bash").content(
@@ -92,6 +92,16 @@ public class CurlRequestSnippetTests {
 		new CurlRequestSnippet().document(new OperationBuilder(
 				"request-with-query-string", this.snippet.getOutputDirectory()).request(
 				"http://localhost/foo?param=value").build());
+	}
+
+	@Test
+	public void postRequestWithQueryString() throws IOException {
+		this.snippet.expectCurlRequest("post-request-with-query-string").withContents(
+				codeBlock("bash").content(
+						"$ curl 'http://localhost/foo?param=value' -i -X POST"));
+		new CurlRequestSnippet().document(new OperationBuilder(
+				"post-request-with-query-string", this.snippet.getOutputDirectory())
+				.request("http://localhost/foo?param=value").method("POST").build());
 	}
 
 	@Test
@@ -130,6 +140,35 @@ public class CurlRequestSnippetTests {
 				"post-request-with-url-encoded-parameter", this.snippet
 						.getOutputDirectory()).request("http://localhost/foo")
 				.method("POST").param("k1", "a&b").build());
+	}
+
+	@Test
+	public void postRequestWithQueryStringAndParameter() throws IOException {
+		this.snippet
+				.expectCurlRequest("post-request-with-query-string-and-parameter")
+				.withContents(
+						codeBlock("bash")
+								.content(
+										"$ curl 'http://localhost/foo?a=alpha' -i -X POST -d 'b=bravo'"));
+		new CurlRequestSnippet().document(new OperationBuilder(
+				"post-request-with-query-string-and-parameter", this.snippet
+						.getOutputDirectory()).request("http://localhost/foo?a=alpha")
+				.method("POST").param("b", "bravo").build());
+	}
+
+	@Test
+	public void postRequestWithOverlappingQueryStringAndParameters() throws IOException {
+		this.snippet
+				.expectCurlRequest(
+						"post-request-with-overlapping-query-string-and-parameters")
+				.withContents(
+						codeBlock("bash")
+								.content(
+										"$ curl 'http://localhost/foo?a=alpha' -i -X POST -d 'b=bravo'"));
+		new CurlRequestSnippet().document(new OperationBuilder(
+				"post-request-with-overlapping-query-string-and-parameters", this.snippet
+						.getOutputDirectory()).request("http://localhost/foo?a=alpha")
+				.method("POST").param("a", "alpha").param("b", "bravo").build());
 	}
 
 	@Test
