@@ -22,9 +22,9 @@ import java.util.Set;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationResponse;
-import org.springframework.restdocs.operation.StandardOperationRequest;
-import org.springframework.restdocs.operation.StandardOperationResponse;
+import org.springframework.restdocs.operation.OperationResponseFactory;
 
 /**
  * An {@link OperationPreprocessor} that removes headers.
@@ -32,6 +32,10 @@ import org.springframework.restdocs.operation.StandardOperationResponse;
  * @author Andy Wilkinson
  */
 class HeaderRemovingOperationPreprocessor implements OperationPreprocessor {
+
+	private final OperationRequestFactory requestFactory = new OperationRequestFactory();
+
+	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
 
 	private final Set<String> headersToRemove;
 
@@ -41,15 +45,14 @@ class HeaderRemovingOperationPreprocessor implements OperationPreprocessor {
 
 	@Override
 	public OperationResponse preprocess(OperationResponse response) {
-		return new StandardOperationResponse(response.getStatus(),
-				removeHeaders(response.getHeaders()), response.getContent());
+		return this.responseFactory.createFrom(response,
+				removeHeaders(response.getHeaders()));
 	}
 
 	@Override
 	public OperationRequest preprocess(OperationRequest request) {
-		return new StandardOperationRequest(request.getUri(), request.getMethod(),
-				request.getContent(), removeHeaders(request.getHeaders()),
-				request.getParameters(), request.getParts());
+		return this.requestFactory.createFrom(request,
+				removeHeaders(request.getHeaders()));
 	}
 
 	private HttpHeaders removeHeaders(HttpHeaders originalHeaders) {

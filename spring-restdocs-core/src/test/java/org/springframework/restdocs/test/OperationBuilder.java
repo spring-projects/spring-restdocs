@@ -29,13 +29,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
+import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.StandardOperation;
-import org.springframework.restdocs.operation.StandardOperationRequest;
-import org.springframework.restdocs.operation.StandardOperationRequestPart;
-import org.springframework.restdocs.operation.StandardOperationResponse;
 import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
@@ -122,7 +122,7 @@ public class OperationBuilder {
 			for (OperationRequestPartBuilder builder : this.partBuilders) {
 				parts.add(builder.buildPart());
 			}
-			return new StandardOperationRequest(this.requestUri, this.method,
+			return new OperationRequestFactory().create(this.requestUri, this.method,
 					this.content, this.headers, this.parameters, parts);
 		}
 
@@ -196,7 +196,7 @@ public class OperationBuilder {
 			}
 
 			private OperationRequestPart buildPart() {
-				return new StandardOperationRequestPart(this.name,
+				return new OperationRequestPartFactory().create(this.name,
 						this.submittedFileName, this.content, this.headers);
 			}
 
@@ -219,7 +219,8 @@ public class OperationBuilder {
 		private byte[] content = new byte[0];
 
 		private OperationResponse buildResponse() {
-			return new StandardOperationResponse(this.status, this.headers, this.content);
+			return new OperationResponseFactory().create(this.status, this.headers,
+					this.content);
 		}
 
 		public OperationResponseBuilder status(int status) {

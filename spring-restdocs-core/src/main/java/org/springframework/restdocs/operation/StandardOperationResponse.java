@@ -24,7 +24,7 @@ import org.springframework.http.HttpStatus;
  *
  * @author Andy Wilkinson
  */
-public class StandardOperationResponse extends AbstractOperationMessage implements
+class StandardOperationResponse extends AbstractOperationMessage implements
 		OperationResponse {
 
 	private final HttpStatus status;
@@ -37,8 +37,7 @@ public class StandardOperationResponse extends AbstractOperationMessage implemen
 	 * @param headers the headers of the response
 	 * @param content the content of the response
 	 */
-	public StandardOperationResponse(HttpStatus status, HttpHeaders headers,
-			byte[] content) {
+	StandardOperationResponse(HttpStatus status, HttpHeaders headers, byte[] content) {
 		super(content, headers);
 		this.status = status;
 	}

@@ -35,18 +35,7 @@ abstract class AbstractOperationMessage {
 
 	AbstractOperationMessage(byte[] content, HttpHeaders headers) {
 		this.content = content == null ? new byte[0] : content;
-		this.headers = createHeaders(content, headers);
-	}
-
-	private static HttpHeaders createHeaders(byte[] content, HttpHeaders input) {
-		HttpHeaders headers = new HttpHeaders();
-		if (input != null) {
-			headers.putAll(input);
-		}
-		if (content != null && content.length > 0 && headers.getContentLength() == -1) {
-			headers.setContentLength(content.length);
-		}
-		return headers;
+		this.headers = headers;
 	}
 
 	public byte[] getContent() {

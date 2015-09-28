@@ -25,11 +25,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
-import org.springframework.restdocs.operation.StandardOperationRequest;
-import org.springframework.restdocs.operation.StandardOperationResponse;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -44,23 +44,29 @@ import static org.junit.Assert.assertThat;
  */
 public class HeaderRemovingOperationPreprocessorTests {
 
+	private final OperationRequestFactory requestFactory = new OperationRequestFactory();
+
+	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
+
 	private final HeaderRemovingOperationPreprocessor preprocessor = new HeaderRemovingOperationPreprocessor(
 			"b");
 
 	@Test
 	public void modifyRequestHeaders() {
-		StandardOperationRequest request = new StandardOperationRequest(
+		OperationRequest request = this.requestFactory.create(
 				URI.create("http://localhost"), HttpMethod.GET, new byte[0],
 				getHttpHeaders(), new Parameters(),
 				Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
-		assertThat(preprocessed.getHeaders().size(), is(equalTo(1)));
+		assertThat(preprocessed.getHeaders().size(), is(equalTo(2)));
 		assertThat(preprocessed.getHeaders(), hasEntry("a", Arrays.asList("alpha")));
+		assertThat(preprocessed.getHeaders(),
+				hasEntry("Host", Arrays.asList("localhost")));
 	}
 
 	@Test
 	public void modifyResponseHeaders() {
-		StandardOperationResponse response = new StandardOperationResponse(HttpStatus.OK,
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK,
 				getHttpHeaders(), new byte[0]);
 		OperationResponse preprocessed = this.preprocessor.preprocess(response);
 		assertThat(preprocessed.getHeaders().size(), is(equalTo(1)));

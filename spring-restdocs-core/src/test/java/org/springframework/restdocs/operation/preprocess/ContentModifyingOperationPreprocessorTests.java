@@ -25,11 +25,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
-import org.springframework.restdocs.operation.StandardOperationRequest;
-import org.springframework.restdocs.operation.StandardOperationResponse;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -43,6 +43,10 @@ import static org.junit.Assert.assertThat;
  */
 public class ContentModifyingOperationPreprocessorTests {
 
+	private final OperationRequestFactory requestFactory = new OperationRequestFactory();
+
+	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
+
 	private final ContentModifyingOperationPreprocessor preprocessor = new ContentModifyingOperationPreprocessor(
 			new ContentModifier() {
 
@@ -55,7 +59,7 @@ public class ContentModifyingOperationPreprocessorTests {
 
 	@Test
 	public void modifyRequestContent() {
-		StandardOperationRequest request = new StandardOperationRequest(
+		OperationRequest request = this.requestFactory.create(
 				URI.create("http://localhost"), HttpMethod.GET, "content".getBytes(),
 				new HttpHeaders(), new Parameters(),
 				Collections.<OperationRequestPart>emptyList());
@@ -65,7 +69,7 @@ public class ContentModifyingOperationPreprocessorTests {
 
 	@Test
 	public void modifyResponseContent() {
-		StandardOperationResponse response = new StandardOperationResponse(HttpStatus.OK,
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK,
 				new HttpHeaders(), "content".getBytes());
 		OperationResponse preprocessed = this.preprocessor.preprocess(response);
 		assertThat(preprocessed.getContent(), is(equalTo("modified".getBytes())));
@@ -75,7 +79,7 @@ public class ContentModifyingOperationPreprocessorTests {
 	public void contentLengthIsUpdated() {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentLength(7);
-		StandardOperationRequest request = new StandardOperationRequest(
+		OperationRequest request = this.requestFactory.create(
 				URI.create("http://localhost"), HttpMethod.GET, "content".getBytes(),
 				httpHeaders, new Parameters(),
 				Collections.<OperationRequestPart>emptyList());

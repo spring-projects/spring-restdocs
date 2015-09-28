@@ -269,33 +269,31 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andDo(document("original-request"))
 				.andDo(document(
 						"preprocessed-request",
-						preprocessRequest(prettyPrint(), removeHeaders("a"),
+						preprocessRequest(
+								prettyPrint(),
+								removeHeaders("a", HttpHeaders.HOST,
+										HttpHeaders.CONTENT_LENGTH),
 								replacePattern(pattern, "\"<<beta>>\""))));
 
 		assertThat(
 				new File("build/generated-snippets/original-request/http-request.adoc"),
 				is(snippet().withContents(
-						httpRequest(RequestMethod.GET, "/").header("Host", "localhost")
-								.header("a", "alpha").header("b", "bravo")
+						httpRequest(RequestMethod.GET, "/").header("a", "alpha")
+								.header("b", "bravo")
 								.header("Content-Type", "application/json")
 								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
+								.header("Host", "localhost")
 								.header("Content-Length", "13")
 								.content("{\"a\":\"alpha\"}"))));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-request/http-request.adoc"),
-				is(snippet()
-						.withContents(
-								httpRequest(RequestMethod.GET, "/")
-										.header("Host", "localhost")
-										.header("b", "bravo")
-										.header("Content-Type", "application/json")
-										.header("Accept",
-												MediaType.APPLICATION_JSON_VALUE)
-										.header("Content-Length",
-												Integer.toString(prettyPrinted.getBytes().length))
-										.content(prettyPrinted))));
+				is(snippet().withContents(
+						httpRequest(RequestMethod.GET, "/").header("b", "bravo")
+								.header("Content-Type", "application/json")
+								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
+								.content(prettyPrinted))));
 	}
 
 	@Test

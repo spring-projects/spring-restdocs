@@ -77,10 +77,6 @@ different replacement can also be specified if you wish.
 `removeHeaders` on `Preprocessors` removes any occurrences of the named headers
 from the request or response.
 
-NOTE: For an HTTP 1.1 request to be valid it must contain a `Host` header. Therefore,
-irrespective of any preprocessing, the default HTTP request snippet will always contain a
-`Host` header.
-
 
 
 [[customizing-requests-and-responses-preprocessors-replace-patterns]]

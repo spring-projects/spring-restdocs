@@ -20,7 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
-import org.springframework.restdocs.operation.StandardOperationResponse;
+import org.springframework.restdocs.operation.OperationResponseFactory;
 
 /**
  * A factory for creating an {@link OperationResponse} derived from a
@@ -36,8 +36,8 @@ class MockMvcOperationResponseFactory {
 	 * @param mockResponse the response
 	 * @return the {@code OperationResponse}
 	 */
-	public OperationResponse createOperationResponse(MockHttpServletResponse mockResponse) {
-		return new StandardOperationResponse(
+	OperationResponse createOperationResponse(MockHttpServletResponse mockResponse) {
+		return new OperationResponseFactory().create(
 				HttpStatus.valueOf(mockResponse.getStatus()),
 				extractHeaders(mockResponse), mockResponse.getContentAsByteArray());
 	}

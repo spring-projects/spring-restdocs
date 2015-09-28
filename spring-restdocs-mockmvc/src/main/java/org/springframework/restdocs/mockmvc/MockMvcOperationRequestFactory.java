@@ -33,10 +33,10 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
+import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.Parameters;
-import org.springframework.restdocs.operation.StandardOperationRequest;
-import org.springframework.restdocs.operation.StandardOperationRequestPart;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,7 +67,7 @@ class MockMvcOperationRequestFactory {
 	 * @return the {@code OperationRequest}
 	 * @throws Exception if the request could not be created
 	 */
-	public OperationRequest createOperationRequest(MockHttpServletRequest mockRequest)
+	OperationRequest createOperationRequest(MockHttpServletRequest mockRequest)
 			throws Exception {
 		HttpHeaders headers = extractHeaders(mockRequest);
 		Parameters parameters = extractParameters(mockRequest);
@@ -76,8 +76,9 @@ class MockMvcOperationRequestFactory {
 		if (!StringUtils.hasText(queryString) && "GET".equals(mockRequest.getMethod())) {
 			queryString = parameters.toQueryString();
 		}
-		return new StandardOperationRequest(URI.create(getRequestUri(mockRequest)
-				+ (StringUtils.hasText(queryString) ? "?" + queryString : "")),
+		return new OperationRequestFactory().create(
+				URI.create(getRequestUri(mockRequest)
+						+ (StringUtils.hasText(queryString) ? "?" + queryString : "")),
 				HttpMethod.valueOf(mockRequest.getMethod()),
 				FileCopyUtils.copyToByteArray(mockRequest.getInputStream()), headers,
 				parameters, parts);
@@ -102,16 +103,17 @@ class MockMvcOperationRequestFactory {
 		return parts;
 	}
 
-	private StandardOperationRequestPart createOperationRequestPart(Part part)
-			throws IOException {
+	private OperationRequestPart createOperationRequestPart(Part part) throws IOException {
 		HttpHeaders partHeaders = extractHeaders(part);
 		List<String> contentTypeHeader = partHeaders.get(HttpHeaders.CONTENT_TYPE);
 		if (part.getContentType() != null && contentTypeHeader == null) {
 			partHeaders.setContentType(MediaType.parseMediaType(part.getContentType()));
 		}
-		return new StandardOperationRequestPart(part.getName(), StringUtils.hasText(part
-				.getSubmittedFileName()) ? part.getSubmittedFileName() : null,
-				FileCopyUtils.copyToByteArray(part.getInputStream()), partHeaders);
+		return new OperationRequestPartFactory()
+				.create(part.getName(),
+						StringUtils.hasText(part.getSubmittedFileName()) ? part
+								.getSubmittedFileName() : null, FileCopyUtils
+								.copyToByteArray(part.getInputStream()), partHeaders);
 	}
 
 	private List<OperationRequestPart> extractMultipartRequestParts(
@@ -126,14 +128,14 @@ class MockMvcOperationRequestFactory {
 		return parts;
 	}
 
-	private StandardOperationRequestPart createOperationRequestPart(MultipartFile file)
+	private OperationRequestPart createOperationRequestPart(MultipartFile file)
 			throws IOException {
 		HttpHeaders partHeaders = new HttpHeaders();
 		if (StringUtils.hasText(file.getContentType())) {
 			partHeaders.setContentType(MediaType.parseMediaType(file.getContentType()));
 		}
-		return new StandardOperationRequestPart(file.getName(), StringUtils.hasText(file
-				.getOriginalFilename()) ? file.getOriginalFilename() : null,
+		return new OperationRequestPartFactory().create(file.getName(), StringUtils
+				.hasText(file.getOriginalFilename()) ? file.getOriginalFilename() : null,
 				file.getBytes(), partHeaders);
 	}
 

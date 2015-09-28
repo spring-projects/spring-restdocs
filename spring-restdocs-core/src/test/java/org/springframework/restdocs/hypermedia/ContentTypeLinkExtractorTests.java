@@ -26,7 +26,8 @@ import org.junit.rules.ExpectedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.operation.StandardOperationResponse;
+import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.OperationResponseFactory;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -38,13 +39,15 @@ import static org.mockito.Mockito.verify;
  */
 public class ContentTypeLinkExtractorTests {
 
+	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
+
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void extractionFailsWithNullContentType() throws IOException {
 		this.thrown.expect(IllegalStateException.class);
-		new ContentTypeLinkExtractor().extractLinks(new StandardOperationResponse(
+		new ContentTypeLinkExtractor().extractLinks(this.responseFactory.create(
 				HttpStatus.OK, new HttpHeaders(), null));
 	}
 
@@ -55,7 +58,7 @@ public class ContentTypeLinkExtractorTests {
 		extractors.put(MediaType.APPLICATION_JSON, extractor);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		StandardOperationResponse response = new StandardOperationResponse(HttpStatus.OK,
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK,
 				httpHeaders, null);
 		new ContentTypeLinkExtractor(extractors).extractLinks(response);
 		verify(extractor).extractLinks(response);
@@ -68,7 +71,7 @@ public class ContentTypeLinkExtractorTests {
 		extractors.put(MediaType.APPLICATION_JSON, extractor);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.parseMediaType("application/json;foo=bar"));
-		StandardOperationResponse response = new StandardOperationResponse(HttpStatus.OK,
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK,
 				httpHeaders, null);
 		new ContentTypeLinkExtractor(extractors).extractLinks(response);
 		verify(extractor).extractLinks(response);

@@ -54,8 +54,8 @@ public class HttpRequestSnippetTests {
 	@Test
 	public void getRequest() throws IOException {
 		this.snippet.expectHttpRequest("get-request").withContents(
-				httpRequest(RequestMethod.GET, "/foo").header(HttpHeaders.HOST,
-						"localhost").header("Alpha", "a"));
+				httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a").header(
+						HttpHeaders.HOST, "localhost"));
 
 		new HttpRequestSnippet().document(new OperationBuilder("get-request",
 				this.snippet.getOutputDirectory()).request("http://localhost/foo")
@@ -92,8 +92,8 @@ public class HttpRequestSnippetTests {
 		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
 		this.snippet.expectHttpRequest("post-request-with-charset").withContents(
 				httpRequest(RequestMethod.POST, "/foo")
-						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "text/plain;charset=UTF-8")
+						.header(HttpHeaders.HOST, "localhost")
 						.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length)
 						.content(japaneseContent));
 
@@ -151,10 +151,9 @@ public class HttpRequestSnippetTests {
 				+ "form-data; " + "name=image%n%n<< data >>"));
 		this.snippet.expectHttpRequest("multipart-post").withContents(
 				httpRequest(RequestMethod.POST, "/upload")
-						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
-						.content(expectedContent));
+						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
 		new HttpRequestSnippet().document(new OperationBuilder("multipart-post",
 				this.snippet.getOutputDirectory()).request("http://localhost/upload")
 				.method("POST")
@@ -175,10 +174,9 @@ public class HttpRequestSnippetTests {
 		String expectedContent = param1Part + param2Part + param3Part + filePart;
 		this.snippet.expectHttpRequest("multipart-post-with-parameters").withContents(
 				httpRequest(RequestMethod.POST, "/upload")
-						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
-						.content(expectedContent));
+						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
 		new HttpRequestSnippet().document(new OperationBuilder(
 				"multipart-post-with-parameters", this.snippet.getOutputDirectory())
 				.request("http://localhost/upload").method("POST")
@@ -194,10 +192,9 @@ public class HttpRequestSnippetTests {
 						+ "image/png%n%n<< data >>"));
 		this.snippet.expectHttpRequest("multipart-post-with-content-type").withContents(
 				httpRequest(RequestMethod.POST, "/upload")
-						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
-						.content(expectedContent));
+						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
 		new HttpRequestSnippet().document(new OperationBuilder(
 				"multipart-post-with-content-type", this.snippet.getOutputDirectory())
 				.request("http://localhost/upload").method("POST")

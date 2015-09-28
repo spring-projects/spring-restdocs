@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.operation.OperationResponse;
-import org.springframework.restdocs.operation.StandardOperationResponse;
+import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -45,6 +45,8 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(Parameterized.class)
 public class LinkExtractorsPayloadTests {
+
+	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
 
 	private final LinkExtractor linkExtractor;
 
@@ -107,7 +109,7 @@ public class LinkExtractorsPayloadTests {
 	}
 
 	private OperationResponse createResponse(String contentName) throws IOException {
-		return new StandardOperationResponse(HttpStatus.OK, null,
+		return this.responseFactory.create(HttpStatus.OK, null,
 				FileCopyUtils.copyToByteArray(getPayloadFile(contentName)));
 	}
 

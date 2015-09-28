@@ -16,11 +16,10 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationResponse;
-import org.springframework.restdocs.operation.StandardOperationRequest;
-import org.springframework.restdocs.operation.StandardOperationResponse;
+import org.springframework.restdocs.operation.OperationResponseFactory;
 
 /**
  * An {@link OperationPreprocessor} that applies a {@link ContentModifier} to the content
@@ -29,6 +28,10 @@ import org.springframework.restdocs.operation.StandardOperationResponse;
  * @author Andy Wilkinson
  */
 public class ContentModifyingOperationPreprocessor implements OperationPreprocessor {
+
+	private final OperationRequestFactory requestFactory = new OperationRequestFactory();
+
+	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
 
 	private final ContentModifier contentModifier;
 
@@ -46,30 +49,14 @@ public class ContentModifyingOperationPreprocessor implements OperationPreproces
 	public OperationRequest preprocess(OperationRequest request) {
 		byte[] modifiedContent = this.contentModifier.modifyContent(request.getContent(),
 				request.getHeaders().getContentType());
-		return new StandardOperationRequest(request.getUri(), request.getMethod(),
-				modifiedContent,
-				getUpdatedHeaders(request.getHeaders(), modifiedContent),
-				request.getParameters(), request.getParts());
+		return this.requestFactory.createFrom(request, modifiedContent);
 	}
 
 	@Override
 	public OperationResponse preprocess(OperationResponse response) {
 		byte[] modifiedContent = this.contentModifier.modifyContent(
 				response.getContent(), response.getHeaders().getContentType());
-		return new StandardOperationResponse(response.getStatus(), getUpdatedHeaders(
-				response.getHeaders(), modifiedContent), modifiedContent);
-	}
-
-	private HttpHeaders getUpdatedHeaders(HttpHeaders headers, byte[] updatedContent) {
-		HttpHeaders updatedHeaders = new HttpHeaders();
-		updatedHeaders.putAll(headers);
-		if (updatedContent.length > 0) {
-			updatedHeaders.setContentLength(updatedContent.length);
-		}
-		else {
-			updatedHeaders.remove(HttpHeaders.CONTENT_LENGTH);
-		}
-		return updatedHeaders;
+		return this.responseFactory.createFrom(response, modifiedContent);
 	}
 
 }

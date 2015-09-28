@@ -79,9 +79,6 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private List<Map<String, String>> getHeaders(OperationRequest request) {
 		List<Map<String, String>> headers = new ArrayList<>();
-		if (requiresHostHeader(request)) {
-			headers.add(header(HttpHeaders.HOST, request.getUri().getHost()));
-		}
 
 		for (Entry<String, List<String>> header : request.getHeaders().entrySet()) {
 			for (String value : header.getValue()) {
@@ -168,10 +165,6 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private void writeMultipartEnd(PrintWriter writer) {
 		writer.printf("--%s--", MULTIPART_BOUNDARY);
-	}
-
-	private boolean requiresHostHeader(OperationRequest request) {
-		return request.getHeaders().get(HttpHeaders.HOST) == null;
 	}
 
 	private boolean requiresFormEncodingContentTypeHeader(OperationRequest request) {

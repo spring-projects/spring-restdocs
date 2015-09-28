@@ -28,7 +28,7 @@ import org.springframework.http.HttpMethod;
  *
  * @author Andy Wilkinson
  */
-public class StandardOperationRequest extends AbstractOperationMessage implements
+class StandardOperationRequest extends AbstractOperationMessage implements
 		OperationRequest {
 
 	private HttpMethod method;
@@ -50,7 +50,7 @@ public class StandardOperationRequest extends AbstractOperationMessage implement
 	 * @param parameters the parameters
 	 * @param parts the parts
 	 */
-	public StandardOperationRequest(URI uri, HttpMethod method, byte[] content,
+	StandardOperationRequest(URI uri, HttpMethod method, byte[] content,
 			HttpHeaders headers, Parameters parameters,
 			Collection<OperationRequestPart> parts) {
 		super(content, headers);
