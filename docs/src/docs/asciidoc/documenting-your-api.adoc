@@ -288,6 +288,31 @@ built using one of the methods on `RestDocumentationRequestBuilders` rather than
 
 
 
+[[documenting-your-api-http-headers]]
+=== HTTP headers
+
+The headers in a request or response can be documented using `requestHeaders` and
+`responseHeaders` respectively. For example:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/HttpHeaders.java[tags=headers]
+----
+<1> Perform a `GET` request with an `Authorization` header that uses basic authentication
+<2> Produce a snippet describing the request's headers. Uses the static `requestHeaders`
+method on `org.springframework.restdocs.headers.HeaderDocumentation`.
+<3> Document the `Authorization` header. Uses the static `headerWithName` method on
+`org.springframework.restdocs.headers.HeaderDocumentation.
+<4> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
+method on `org.springframework.restdocs.headers.HeaderDocumentation`.
+
+The result is a snippet named `request-headers.adoc` and a snippet named
+`response-headers.adoc`. Each contains a table describing the headers.
+
+When documenting HTTP Headers, the test will fail if a documented header is not found in
+the request or response.
+
+
 [[documenting-your-api-constraints]]
 === Documenting constraints
 
