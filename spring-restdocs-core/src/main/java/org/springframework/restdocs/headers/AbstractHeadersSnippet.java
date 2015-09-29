@@ -91,8 +91,8 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	}
 
 	/**
-	 * Finds the headers that are missing from the operation. A header is missing if
-	 * it is described by one of the {@code headerDescriptors} but is not present in the
+	 * Finds the headers that are missing from the operation. A header is missing if it is
+	 * described by one of the {@code headerDescriptors} but is not present in the
 	 * operation.
 	 *
 	 * @param operation the operation
@@ -100,9 +100,10 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	 */
 	protected List<HeaderDescriptor> findMissingHeaders(Operation operation) {
 		List<HeaderDescriptor> missingHeaders = new ArrayList<HeaderDescriptor>();
+		Set<String> actualHeaders = extractActualHeaders(operation);
 		for (HeaderDescriptor headerDescriptor : this.headerDescriptors) {
 			if (!headerDescriptor.isOptional()
-					&& !getHeaders(operation).contains(headerDescriptor.getName())) {
+					&& !actualHeaders.contains(headerDescriptor.getName())) {
 				missingHeaders.add(headerDescriptor);
 			}
 		}
@@ -111,13 +112,13 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	}
 
 	/**
-	 * Returns the headers of the request or response extracted form the given
+	 * Extracts the names of the headers from the request or response of the given
 	 * {@code operation}.
 	 *
-	 * @param operation The operation
-	 * @return The headers
+	 * @param operation the operation
+	 * @return the header names
 	 */
-	protected abstract Set<String> getHeaders(Operation operation);
+	protected abstract Set<String> extractActualHeaders(Operation operation);
 
 	/**
 	 * Returns the list of {@link HeaderDescriptor HeaderDescriptors} that will be used to

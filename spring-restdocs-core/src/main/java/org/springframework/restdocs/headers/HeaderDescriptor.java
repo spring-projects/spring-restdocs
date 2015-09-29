@@ -56,7 +56,7 @@ public class HeaderDescriptor extends AbstractDescriptor<HeaderDescriptor> {
 	 *
 	 * @return the header name
 	 */
-	public String getName() {
+	public final String getName() {
 		return this.name;
 	}
 

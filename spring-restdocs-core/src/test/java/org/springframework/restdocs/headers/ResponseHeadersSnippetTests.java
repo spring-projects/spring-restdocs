@@ -41,9 +41,10 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 
 /**
- * Tests for {@link ReponseHeadersSnippet}.
+ * Tests for {@link ResponseHeadersSnippet}.
  *
  * @author Andreas Evers
+ * @author Andy Wilkinson
  */
 public class ResponseHeadersSnippetTests {
 
@@ -55,40 +56,41 @@ public class ResponseHeadersSnippetTests {
 
 	@Test
 	public void responseWithHeaders() throws IOException {
-		this.snippet.expectResponseHeaders("response-headers").withContents(//
-				tableWithHeader("Name", "Description") //
-						.row("X-Test", "one") //
-						.row("Content-Type", "two") //
-						.row("Etag", "three") //
-						.row("Content-Length", "four") //
-						.row("Cache-Control", "five") //
-						.row("Vary", "six"));
+		this.snippet.expectResponseHeaders("response-headers").withContents(
+				tableWithHeader("Name", "Description").row("X-Test", "one")
+						.row("Content-Type", "two").row("Etag", "three")
+						.row("Cache-Control", "five").row("Vary", "six"));
 		new ResponseHeadersSnippet(Arrays.asList(
-				headerWithName("X-Test").description("one"), //
-				headerWithName("Content-Type").description("two"), //
-				headerWithName("Etag").description("three"), //
-				headerWithName("Content-Length").description("four"), //
-				headerWithName("Cache-Control").description("five"), //
-				headerWithName("Vary").description("six"))) //
+				headerWithName("X-Test").description("one"),
+				headerWithName("Content-Type").description("two"), headerWithName("Etag")
+						.description("three"), headerWithName("Cache-Control")
+						.description("five"), headerWithName("Vary").description("six")))
 				.document(new OperationBuilder("response-headers", this.snippet
-						.getOutputDirectory()) //
-						.response() //
-						.header("X-Test", "test") //
-						.header("Content-Type", "application/json") //
-						.header("Etag", "lskjadldj3ii32l2ij23") //
-						.header("Content-Length", "19166") //
-						.header("Cache-Control", "max-age=0") //
-						.header("Vary", "User-Agent") //
-						.build());
+						.getOutputDirectory()).response().header("X-Test", "test")
+						.header("Content-Type", "application/json")
+						.header("Etag", "lskjadldj3ii32l2ij23")
+						.header("Cache-Control", "max-age=0")
+						.header("Vary", "User-Agent").build());
+	}
+
+	@Test
+	public void caseInsensitiveResponseHeaders() throws IOException {
+		this.snippet
+				.expectResponseHeaders("case-insensitive-response-headers")
+				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one"));
+		new ResponseHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
+				"one"))).document(new OperationBuilder(
+				"case-insensitive-response-headers", this.snippet.getOutputDirectory())
+				.response().header("X-test", "test").build());
 	}
 
 	@Test
 	public void responseHeadersWithCustomDescriptorAttributes() throws IOException {
 		this.snippet.expectResponseHeaders("response-headers-with-custom-attributes")
-				.withContents(//
-						tableWithHeader("Name", "Description", "Foo") //
-								.row("X-Test", "one", "alpha") //
-								.row("Content-Type", "two", "bravo") //
+				.withContents(
+						tableWithHeader("Name", "Description", "Foo")
+								.row("X-Test", "one", "alpha")
+								.row("Content-Type", "two", "bravo")
 								.row("Etag", "three", "charlie"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-headers")).willReturn(

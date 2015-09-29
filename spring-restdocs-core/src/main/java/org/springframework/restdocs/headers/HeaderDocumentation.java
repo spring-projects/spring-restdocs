@@ -25,6 +25,7 @@ import org.springframework.restdocs.snippet.Snippet;
  * Static factory methods for documenting a RESTful API's request and response headers.
  *
  * @author Andreas Evers
+ * @author Andy Wilkinson
  */
 public abstract class HeaderDocumentation {
 
@@ -44,15 +45,14 @@ public abstract class HeaderDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the headers of the API
-	 * call's request.
+	 * Returns a new {@link Snippet} that will document the headers of the API operation's
+	 * request. The headers will be documented using the given {@code descriptors}.
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
-	 * request, a failure will occur. If a header is present in the request, but is not
-	 * documented by one of the descriptors, there will be no failure.
+	 * request, a failure will occur.
 	 *
-	 * @param descriptors The descriptions of the request's headers
-	 * @return the handler
+	 * @param descriptors the descriptions of the request's headers
+	 * @return the snippet that will document the request headers
 	 * @see #headerWithName(String)
 	 */
 	public static Snippet requestHeaders(HeaderDescriptor... descriptors) {
@@ -60,17 +60,16 @@ public abstract class HeaderDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the headers of the API
-	 * call's request. The given {@code attributes} will be available during snippet
-	 * generation.
+	 * Returns a new {@link Snippet} that will document the headers of the API
+	 * operations's request. The given {@code attributes} will be available during snippet
+	 * generation and the headers will be documented using the given {@code descriptors}.
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
-	 * request, a failure will occur. If a header is present in the request, but is not
-	 * documented by one of the descriptors, there will be no failure.
+	 * request, a failure will occur.
 	 *
-	 * @param attributes Attributes made available during rendering of the snippet
-	 * @param descriptors The descriptions of the request's headers
-	 * @return the handler
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request's headers
+	 * @return the snippet that will document the request headers
 	 * @see #headerWithName(String)
 	 */
 	public static Snippet requestHeaders(Map<String, Object> attributes,
@@ -79,15 +78,14 @@ public abstract class HeaderDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the headers of the API
-	 * call's response.
+	 * Returns a new {@link Snippet} that will document the headers of the API operation's
+	 * response. The headers will be documented using the given {@code descriptors}.
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
-	 * response, a failure will occur. If a header is present in the response, but is not
-	 * documented by one of the descriptors, there will be no failure.
+	 * request, a failure will occur.
 	 *
-	 * @param descriptors The descriptions of the response's headers
-	 * @return the handler
+	 * @param descriptors the descriptions of the response's headers
+	 * @return the snippet that will document the response headers
 	 * @see #headerWithName(String)
 	 */
 	public static Snippet responseHeaders(HeaderDescriptor... descriptors) {
@@ -95,17 +93,17 @@ public abstract class HeaderDocumentation {
 	}
 
 	/**
-	 * Returns a handler that will produce a snippet documenting the headers of the API
-	 * call's response. The given {@code attributes} will be available during snippet
-	 * generation.
+	 * Returns a new {@link Snippet} that will document the headers of the API
+	 * operations's response. The given {@code attributes} will be available during
+	 * snippet generation and the headers will be documented using the given
+	 * {@code descriptors}.
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
-	 * response, a failure will occur. If a header is present in the response, but is not
-	 * documented by one of the descriptors, there will be no failure.
+	 * response, a failure will occur.
 	 *
-	 * @param attributes Attributes made available during rendering of the snippet
-	 * @param descriptors The descriptions of the response's headers
-	 * @return the handler
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response's headers
+	 * @return the snippet that will document the response headers
 	 * @see #headerWithName(String)
 	 */
 	public static Snippet responseHeaders(Map<String, Object> attributes,

@@ -44,6 +44,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
  * Tests for {@link RequestHeadersSnippet}.
  *
  * @author Andreas Evers
+ * @author Andy Wilkinson
  */
 public class RequestHeadersSnippetTests {
 
@@ -55,31 +56,36 @@ public class RequestHeadersSnippetTests {
 
 	@Test
 	public void requestWithHeaders() throws IOException {
-		this.snippet.expectRequestHeaders("request-with-headers").withContents(//
-				tableWithHeader("Name", "Description") //
-						.row("X-Test", "one") //
-						.row("Accept", "two") //
-						.row("Accept-Encoding", "three") //
-						.row("Accept-Language", "four") //
-						.row("Cache-Control", "five") //
+		this.snippet.expectRequestHeaders("request-with-headers").withContents(
+				tableWithHeader("Name", "Description").row("X-Test", "one")
+						.row("Accept", "two").row("Accept-Encoding", "three")
+						.row("Accept-Language", "four").row("Cache-Control", "five")
 						.row("Connection", "six"));
 		new RequestHeadersSnippet(Arrays.asList(
-				headerWithName("X-Test").description("one"), //
-				headerWithName("Accept").description("two"), //
-				headerWithName("Accept-Encoding").description("three"), //
-				headerWithName("Accept-Language").description("four"), //
-				headerWithName("Cache-Control").description("five"), //
-				headerWithName("Connection").description("six"))) //
+				headerWithName("X-Test").description("one"), headerWithName("Accept")
+						.description("two"), headerWithName("Accept-Encoding")
+						.description("three"), headerWithName("Accept-Language")
+						.description("four"), headerWithName("Cache-Control")
+						.description("five"),
+				headerWithName("Connection").description("six")))
 				.document(new OperationBuilder("request-with-headers", this.snippet
-						.getOutputDirectory()) //
-						.request("http://localhost") //
-						.header("X-Test", "test") //
-						.header("Accept", "*/*") //
-						.header("Accept-Encoding", "gzip, deflate") //
-						.header("Accept-Language", "en-US,en;q=0.5") //
-						.header("Cache-Control", "max-age=0") //
-						.header("Connection", "keep-alive") //
-						.build());
+						.getOutputDirectory()).request("http://localhost")
+						.header("X-Test", "test").header("Accept", "*/*")
+						.header("Accept-Encoding", "gzip, deflate")
+						.header("Accept-Language", "en-US,en;q=0.5")
+						.header("Cache-Control", "max-age=0")
+						.header("Connection", "keep-alive").build());
+	}
+
+	@Test
+	public void caseInsensitiveRequestHeaders() throws IOException {
+		this.snippet
+				.expectRequestHeaders("case-insensitive-request-headers")
+				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one"));
+		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
+				"one"))).document(new OperationBuilder(
+				"case-insensitive-request-headers", this.snippet.getOutputDirectory())
+				.request("/").header("X-test", "test").build());
 	}
 
 	@Test
@@ -118,9 +124,9 @@ public class RequestHeadersSnippetTests {
 	public void requestHeadersWithCustomDescriptorAttributes() throws IOException {
 		this.snippet.expectRequestHeaders("request-headers-with-custom-attributes")
 				.withContents(//
-						tableWithHeader("Name", "Description", "Foo") //
-								.row("X-Test", "one", "alpha") //
-								.row("Accept-Encoding", "two", "bravo") //
+						tableWithHeader("Name", "Description", "Foo")
+								.row("X-Test", "one", "alpha")
+								.row("Accept-Encoding", "two", "bravo")
 								.row("Accept", "three", "charlie"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-headers")).willReturn(

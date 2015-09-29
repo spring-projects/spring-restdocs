@@ -34,6 +34,7 @@ import static org.junit.Assert.assertThat;
  * generated the expected snippet.
  *
  * @author Andy Wilkinson
+ * @author Andreas Evers
  */
 public class ExpectedSnippet implements TestRule {
 

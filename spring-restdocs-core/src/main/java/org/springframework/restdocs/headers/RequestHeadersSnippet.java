@@ -56,7 +56,7 @@ public class RequestHeadersSnippet extends AbstractHeadersSnippet {
 	}
 
 	@Override
-	protected Set<String> getHeaders(Operation operation) {
+	protected Set<String> extractActualHeaders(Operation operation) {
 		return operation.getRequest().getHeaders().keySet();
 	}
 
