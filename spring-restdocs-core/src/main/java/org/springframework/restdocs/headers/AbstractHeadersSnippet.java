@@ -75,18 +75,13 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 
 	private void validateHeaderDocumentation(Operation operation) {
 		List<HeaderDescriptor> missingHeaders = findMissingHeaders(operation);
-
 		if (!missingHeaders.isEmpty()) {
-			String message = "";
-			if (!missingHeaders.isEmpty()) {
-				List<String> names = new ArrayList<String>();
-				for (HeaderDescriptor headerDescriptor : missingHeaders) {
-					names.add(headerDescriptor.getName());
-				}
-				message += "Headers with the following names were not found in the "
-						+ this.type + ": " + names;
+			List<String> names = new ArrayList<String>();
+			for (HeaderDescriptor headerDescriptor : missingHeaders) {
+				names.add(headerDescriptor.getName());
 			}
-			throw new SnippetException(message);
+			throw new SnippetException("Headers with the following names were not found"
+					+ " in the " + this.type + ": " + names);
 		}
 	}
 

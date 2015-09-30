@@ -400,30 +400,6 @@ public class MockMvcRestDocumentationIntegrationTests {
 												"$ curl 'http://localhost:8080/custom/' -i -H 'Accept: application/json'"))));
 	}
 
-	@Test
-	public void stackOverflowQuestion() throws Exception {
-		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(this.restDocumentation)).build();
-
-		mockMvc.perform(get("/company/5").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andDo(document(
-						"company",
-						responseFields(
-								fieldWithPath("companyName").description(
-										"The name of the company"),
-								fieldWithPath("employee").description(
-										"An array of the company's employees"))))
-				.andDo(document(
-						"employee",
-						responseFields(
-								fieldWithPath("companyName").ignored(),
-								fieldWithPath("employee[].name").description(
-										"The name of the employee"),
-								fieldWithPath("employee[].age").description(
-										"The age of the employee"))));
-	}
-
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
 		for (String snippet : snippets) {
 			assertTrue(new File(directory, snippet).isFile());
