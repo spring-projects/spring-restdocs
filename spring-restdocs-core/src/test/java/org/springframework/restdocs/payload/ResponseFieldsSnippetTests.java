@@ -107,6 +107,19 @@ public class ResponseFieldsSnippetTests {
 	}
 
 	@Test
+	public void ignoredResponseField() throws IOException {
+		this.snippet.expectResponseFields("ignored-response-field").withContents(
+				tableWithHeader("Path", "Type", "Description").row("b", "Number",
+						"Field b"));
+
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").ignored(),
+				fieldWithPath("b").description("Field b")))
+				.document(new OperationBuilder("ignored-response-field", this.snippet
+						.getOutputDirectory()).response().content("{\"a\": 5, \"b\": 4}")
+						.build());
+	}
+
+	@Test
 	public void responseFieldsWithCustomDescriptorAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-fields")).willReturn(

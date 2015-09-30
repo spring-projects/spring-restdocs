@@ -105,6 +105,18 @@ public class PathParametersSnippetTests {
 	}
 
 	@Test
+	public void ignoredPathParameter() throws IOException {
+		this.snippet.expectPathParameters("ignored-path-parameter").withContents(
+				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description").row("b",
+						"two"));
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
+				parameterWithName("b").description("two")))
+				.document(new OperationBuilder("ignored-path-parameter", this.snippet
+						.getOutputDirectory()).attribute(
+						"org.springframework.restdocs.urlTemplate", "/{a}/{b}").build());
+	}
+
+	@Test
 	public void pathParametersWithQueryString() throws IOException {
 		this.snippet.expectPathParameters("path-parameters-with-query-string")
 				.withContents(

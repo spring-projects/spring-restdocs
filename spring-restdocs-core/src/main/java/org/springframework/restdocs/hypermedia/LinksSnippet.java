@@ -74,8 +74,12 @@ public class LinksSnippet extends TemplatedSnippet {
 		super("links", attributes);
 		this.linkExtractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {
-			Assert.hasText(descriptor.getRel());
-			Assert.notNull(descriptor.getDescription());
+			Assert.notNull(descriptor.getRel(), "Link descriptors must have a rel");
+			if (!descriptor.isIgnored()) {
+				Assert.notNull(descriptor.getDescription(), "The descriptor for link '"
+						+ descriptor.getRel() + "' must either have a description or be"
+						+ " marked as " + "ignored");
+			}
 			this.descriptorsByRel.put(descriptor.getRel(), descriptor);
 		}
 	}
@@ -131,7 +135,10 @@ public class LinksSnippet extends TemplatedSnippet {
 	private List<Map<String, Object>> createLinksModel() {
 		List<Map<String, Object>> model = new ArrayList<>();
 		for (Entry<String, LinkDescriptor> entry : this.descriptorsByRel.entrySet()) {
-			model.add(createModelForDescriptor(entry.getValue()));
+			LinkDescriptor descriptor = entry.getValue();
+			if (!descriptor.isIgnored()) {
+				model.add(createModelForDescriptor(descriptor));
+			}
 		}
 		return model;
 	}

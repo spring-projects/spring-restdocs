@@ -66,6 +66,17 @@ public class LinksSnippetTests {
 	}
 
 	@Test
+	public void ignoredLink() throws IOException {
+		this.snippet.expectLinks("ignored-link").withContents(
+				tableWithHeader("Relation", "Description").row("b", "Link b"));
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+				new Link("b", "bravo")), Arrays.asList(new LinkDescriptor("a").ignored(),
+				new LinkDescriptor("b").description("Link b")))
+				.document(new OperationBuilder("ignored-link", this.snippet
+						.getOutputDirectory()).build());
+	}
+
+	@Test
 	public void missingLink() throws IOException {
 		this.thrown.expect(SnippetException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"

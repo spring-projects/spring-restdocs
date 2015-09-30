@@ -99,6 +99,19 @@ public class RequestFieldsSnippetTests {
 	}
 
 	@Test
+	public void ignoredRequestField() throws IOException {
+		this.snippet.expectRequestFields("ignored-request-field").withContents(
+				tableWithHeader("Path", "Type", "Description").row("b", "Number",
+						"Field b"));
+
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").ignored(),
+				fieldWithPath("b").description("Field b")))
+				.document(new OperationBuilder("ignored-request-field", this.snippet
+						.getOutputDirectory()).request("http://localhost")
+						.content("{\"a\": 5, \"b\": 4}").build());
+	}
+
+	@Test
 	public void missingRequestField() throws IOException {
 		this.thrown.expect(SnippetException.class);
 		this.thrown

@@ -53,6 +53,10 @@ public abstract class RequestDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * parameter is documented, is not marked as optional, and is not present in the
 	 * request path, a failure will also occur.
+	 * <p>
+	 * If you do not want to document a path parameter, a parameter descriptor can be
+	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
+	 * in the generated snippet while avoiding the failure described above.
 	 *
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
@@ -71,6 +75,10 @@ public abstract class RequestDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * parameter is documented, is not marked as optional, and is not present in the
 	 * request path, a failure will also occur.
+	 * <p>
+	 * If you do not want to document a path parameter, a parameter descriptor can be
+	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
+	 * in the generated snippet while avoiding the failure described above.
 	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the parameters in the request's path
@@ -90,6 +98,10 @@ public abstract class RequestDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * parameter is documented, is not marked as optional, and is not present in the
 	 * request, a failure will also occur.
+	 * <p>
+	 * If you do not want to document a request parameter, a parameter descriptor can be
+	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
+	 * in the generated snippet while avoiding the failure described above.
 	 *
 	 * @param descriptors The descriptions of the request's parameters
 	 * @return the snippet
@@ -109,6 +121,10 @@ public abstract class RequestDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * parameter is documented, is not marked as optional, and is not present in the
 	 * request, a failure will also occur.
+	 * <p>
+	 * If you do not want to document a request parameter, a parameter descriptor can be
+	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
+	 * in the generated snippet while avoiding the failure described above.
 	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's parameters

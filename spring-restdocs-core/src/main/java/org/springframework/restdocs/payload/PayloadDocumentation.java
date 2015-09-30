@@ -108,6 +108,10 @@ public abstract class PayloadDocumentation {
 	 * a failure will also occur. For payloads with a hierarchical structure, documenting
 	 * a field is sufficient for all of its descendants to also be treated as having been
 	 * documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
 	 *
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
@@ -128,6 +132,10 @@ public abstract class PayloadDocumentation {
 	 * payload, a failure will also occur. For payloads with a hierarchical structure,
 	 * documenting a field is sufficient for all of its descendants to also be treated as
 	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
 	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
@@ -150,6 +158,10 @@ public abstract class PayloadDocumentation {
 	 * payload, a failure will also occur. For payloads with a hierarchical structure,
 	 * documenting a field is sufficient for all of its descendants to also be treated as
 	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
 	 *
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
@@ -170,6 +182,10 @@ public abstract class PayloadDocumentation {
 	 * payload, a failure will also occur. For payloads with a hierarchical structure,
 	 * documenting a field is sufficient for all of its descendants to also be treated as
 	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
 	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields

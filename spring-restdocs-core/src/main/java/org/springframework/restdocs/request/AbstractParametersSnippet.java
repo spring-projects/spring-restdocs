@@ -54,8 +54,13 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 			List<ParameterDescriptor> descriptors, Map<String, Object> attributes) {
 		super(snippetName, attributes);
 		for (ParameterDescriptor descriptor : descriptors) {
-			Assert.hasText(descriptor.getName());
-			Assert.notNull(descriptor.getDescription());
+			Assert.notNull(descriptor.getName(), "Parameter descriptors must have a name");
+			if (!descriptor.isIgnored()) {
+				Assert.notNull(descriptor.getDescription(),
+						"The descriptor for parameter '" + descriptor.getName()
+								+ "' must either have a description or be marked as "
+								+ "ignored");
+			}
 			this.descriptorsByName.put(descriptor.getName(), descriptor);
 		}
 	}
@@ -67,7 +72,10 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 		Map<String, Object> model = new HashMap<>();
 		List<Map<String, Object>> parameters = new ArrayList<>();
 		for (Entry<String, ParameterDescriptor> entry : this.descriptorsByName.entrySet()) {
-			parameters.add(createModelForDescriptor(entry.getValue()));
+			ParameterDescriptor descriptor = entry.getValue();
+			if (!descriptor.isIgnored()) {
+				parameters.add(createModelForDescriptor(descriptor));
+			}
 		}
 		model.put("parameters", parameters);
 		return model;

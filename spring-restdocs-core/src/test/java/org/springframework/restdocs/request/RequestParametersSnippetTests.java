@@ -103,6 +103,17 @@ public class RequestParametersSnippetTests {
 	}
 
 	@Test
+	public void ignoredRequestParameter() throws IOException {
+		this.snippet.expectRequestParameters("ignored-request-parameter").withContents(
+				tableWithHeader("Parameter", "Description").row("b", "two"));
+		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
+				parameterWithName("b").description("two")))
+				.document(new OperationBuilder("ignored-request-parameter", this.snippet
+						.getOutputDirectory()).request("http://localhost")
+						.param("a", "bravo").param("b", "bravo").build());
+	}
+
+	@Test
 	public void requestParametersWithCustomDescriptorAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters")).willReturn(

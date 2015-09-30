@@ -16,7 +16,7 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import org.springframework.restdocs.snippet.AbstractDescriptor;
+import org.springframework.restdocs.snippet.IgnorableDescriptor;
 
 /**
  * A description of a link found in a hypermedia API.
@@ -24,7 +24,7 @@ import org.springframework.restdocs.snippet.AbstractDescriptor;
  * @author Andy Wilkinson
  * @see HypermediaDocumentation#linkWithRel(String)
  */
-public class LinkDescriptor extends AbstractDescriptor<LinkDescriptor> {
+public class LinkDescriptor extends IgnorableDescriptor<LinkDescriptor> {
 
 	private final String rel;
 

@@ -55,8 +55,13 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 			Map<String, Object> attributes) {
 		super(type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
-			Assert.notNull(descriptor.getPath());
-			Assert.notNull(descriptor.getDescription());
+			Assert.notNull(descriptor.getPath(), "Field descriptors must have a path");
+			if (!descriptor.isIgnored()) {
+				Assert.notNull(descriptor.getDescription(), "The descriptor for field '"
+						+ descriptor.getPath() + "' must either have a description or"
+						+ " be marked as " + "ignored");
+			}
+
 		}
 		this.fieldDescriptors = descriptors;
 	}
@@ -77,7 +82,9 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		List<Map<String, Object>> fields = new ArrayList<>();
 		model.put("fields", fields);
 		for (FieldDescriptor descriptor : this.fieldDescriptors) {
-			fields.add(createModelForDescriptor(descriptor));
+			if (!descriptor.isIgnored()) {
+				fields.add(createModelForDescriptor(descriptor));
+			}
 		}
 		return model;
 	}

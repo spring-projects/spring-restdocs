@@ -16,7 +16,7 @@
 
 package org.springframework.restdocs.request;
 
-import org.springframework.restdocs.snippet.AbstractDescriptor;
+import org.springframework.restdocs.snippet.IgnorableDescriptor;
 
 /**
  * A descriptor of a request or path parameter.
@@ -25,7 +25,7 @@ import org.springframework.restdocs.snippet.AbstractDescriptor;
  * @see RequestDocumentation#parameterWithName
  *
  */
-public class ParameterDescriptor extends AbstractDescriptor<ParameterDescriptor> {
+public class ParameterDescriptor extends IgnorableDescriptor<ParameterDescriptor> {
 
 	private final String name;
 

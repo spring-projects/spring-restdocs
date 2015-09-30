@@ -16,7 +16,7 @@
 
 package org.springframework.restdocs.payload;
 
-import org.springframework.restdocs.snippet.AbstractDescriptor;
+import org.springframework.restdocs.snippet.IgnorableDescriptor;
 
 /**
  * A description of a field found in a request or response payload.
@@ -25,7 +25,7 @@ import org.springframework.restdocs.snippet.AbstractDescriptor;
  * @author Andy Wilkinson
  * @see PayloadDocumentation#fieldWithPath(String)
  */
-public class FieldDescriptor extends AbstractDescriptor<FieldDescriptor> {
+public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 
 	private final String path;
 

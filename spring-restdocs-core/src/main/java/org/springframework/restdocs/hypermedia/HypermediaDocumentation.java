@@ -51,6 +51,10 @@ public abstract class HypermediaDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
 	 * is documented, is not marked as optional, and is not present in the response, a
 	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a link, a link descriptor can be marked as
+	 * {@link LinkDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
 	 *
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
@@ -70,6 +74,10 @@ public abstract class HypermediaDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
 	 * is documented, is not marked as optional, and is not present in the response, a
 	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a link, a link descriptor can be marked as
+	 * {@link LinkDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
 	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's links
@@ -90,6 +98,10 @@ public abstract class HypermediaDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
 	 * is documented, is not marked as optional, and is not present in the response, a
 	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a link, a link descriptor can be marked as
+	 * {@link LinkDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
 	 *
 	 * @param linkExtractor used to extract the links from the response
 	 * @param descriptors the descriptions of the response's links
@@ -110,6 +122,10 @@ public abstract class HypermediaDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
 	 * is documented, is not marked as optional, and is not present in the response, a
 	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a link, a link descriptor can be marked as
+	 * {@link LinkDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
 	 *
 	 * @param attributes the attributes
 	 * @param linkExtractor used to extract the links from the response
