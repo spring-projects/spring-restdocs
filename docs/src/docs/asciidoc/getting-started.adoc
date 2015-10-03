@@ -59,7 +59,7 @@ described below.
 
 	asciidoctor { <5>
 		attributes 'snippets': snippetsDir <6>
-		inputs.dir snippetsDir <7>
+		sourceDir snippetsDir <7>
 		dependsOn test <8>
 	}
 ----
@@ -70,7 +70,7 @@ described below.
 <5> Configure the `asciidoctor` task
 <6> Define an attribute named `snippets` that can be used when including the generated
 	snippets in your documentation.
-<7> Configure the snippets directory as an input.
+<7> Configure the snippets directory as the asciidoc source directory.
 <8> Make the task depend on the test task so that the tests are run before the
 	documentation is created.
 
