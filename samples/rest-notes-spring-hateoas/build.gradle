@@ -48,7 +48,6 @@ test {
 }
 
 asciidoctor {
-	sourceDir 'src/main/asciidoc' // Align with Maven's default location
 	attributes 'snippets': snippetsDir
 	inputs.dir snippetsDir
 	dependsOn test
