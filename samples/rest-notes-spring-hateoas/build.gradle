@@ -3,7 +3,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.6.RELEASE'
 	}
 }
 
@@ -36,7 +36,7 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-hateoas'
 
 	runtime 'com.h2database:h2'
-	runtime 'org.atteo:evo-inflector:1.2'
+	runtime 'org.atteo:evo-inflector:1.2.1'
 
 	testCompile 'com.jayway.jsonpath:json-path'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
