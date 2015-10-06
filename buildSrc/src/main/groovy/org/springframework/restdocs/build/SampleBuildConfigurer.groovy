@@ -61,7 +61,7 @@ public class SampleBuildConfigurer {
 		mavenBuild.description = "Builds the ${name} sample with Maven"
 		mavenBuild.group = "Build"
 		mavenBuild.workingDir = this.workingDir
-		mavenBuild.commandLine = [isWindows() ? "mvnw.bat" : "./mvnw", 'clean', 'package']
+		mavenBuild.commandLine = [isWindows() ? ".\\mvnw.bat" : "./mvnw", 'clean', 'package']
 		mavenBuild.dependsOn dependencies
 
 		mavenBuild.doFirst {
