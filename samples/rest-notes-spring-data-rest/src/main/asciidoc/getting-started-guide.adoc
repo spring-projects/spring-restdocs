@@ -35,7 +35,7 @@ Once the clone is complete, you're ready to get the service up and running:
 [source,bash]
 ----
 $ cd samples/rest-notes-spring-data-rest
-$ mvn clean package
+$ ./mvnw clean package
 $ java -jar target/*.jar
 ----
 

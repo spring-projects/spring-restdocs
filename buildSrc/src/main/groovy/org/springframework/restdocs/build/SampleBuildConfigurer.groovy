@@ -61,10 +61,7 @@ public class SampleBuildConfigurer {
 		mavenBuild.description = "Builds the ${name} sample with Maven"
 		mavenBuild.group = "Build"
 		mavenBuild.workingDir = this.workingDir
-		String suffix = File.separatorChar == '/' ? '' : '.bat'
-		mavenBuild.commandLine = [System.env.MAVEN_HOME ?
-				"${System.env.MAVEN_HOME}/bin/mvn${suffix}" : "mvn${suffix}",
-						'clean', 'package']
+		mavenBuild.commandLine = [isWindows() ? "mvnw.bat" : "./mvnw", 'clean', 'package']
 		mavenBuild.dependsOn dependencies
 
 		mavenBuild.doFirst {
@@ -74,6 +71,10 @@ public class SampleBuildConfigurer {
 		}
 
 		return mavenBuild
+	}
+
+	private boolean isWindows() {
+		return File.separatorChar == '\\'
 	}
 
 	private Task createGradleBuild(Project project, Object... dependencies) {
