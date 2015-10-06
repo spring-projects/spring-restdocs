@@ -15,9 +15,9 @@ http://projects.spring.io/spring-hateoas/[Spring HATEOAS] and
 http://projects.spring.io/spring-data-rest/[Spring Data REST]. Both samples use
 Spring REST Docs to produce a detailed API guide and a getting started walkthrough.
 
-In each sample the source for the documentation can be found in `src/main/asciidoc`.
-`api-guide.adoc` produces an API guide for the service. `getting-started-guide.adoc`
-produces a getting started guide that provides an introductory walkthrough.
+Each sample contains a file named `api-guide.adoc` that produces an API guide for the
+service, and a file named `getting-started-guide.adoc` that produces a getting started
+guide that provides an introductory walkthrough.
 
 The code that produces the generated snippets can be found in `src/test/java`.
 `ApiDocumentation.java` produces the snippets for the API guide.
@@ -35,7 +35,7 @@ The first step in using Spring REST Docs is to configure your project's build.
 [[getting-started-build-configuration-gradle]]
 ==== Gradle build configuration
 
-The {samples}rest-notes-spring-hateoas[Spring HATEOAS sample] contains a `build.gradle`
+The {samples}/rest-notes-spring-hateoas[Spring HATEOAS sample] contains a `build.gradle`
 file that you may wish to use as a reference. The key parts of the configuration are
 described below.
 
@@ -99,7 +99,7 @@ directory:
 [[getting-started-build-configuration-maven]]
 ==== Maven build configuration
 
-The {samples}rest-notes-spring-data-rest[Spring Data REST sample] contains a `pom.xml`
+The {samples}/rest-notes-spring-data-rest[Spring Data REST sample] contains a `pom.xml`
 file that you may wish to use as a reference. The key parts of the configuration are
 described below.
 
@@ -210,7 +210,8 @@ be included in the project's jar:
 ----
 <1> The existing declaration for the Asciidoctor plugin.
 <2> The resource plugin must be declared after the Asciidoctor plugin as they are bound
-to the same phase and the resource plugin must run after the Asciidoctor plugin.
+to the same phase (`prepare-package`) and the resource plugin must run after the
+Asciidoctor plugin.
 
 
 
@@ -218,7 +219,7 @@ to the same phase and the resource plugin must run after the Asciidoctor plugin.
 === Generating documentation snippets
 Spring REST Docs uses {spring-framework-docs}/#spring-mvc-test-framework[Spring's MVC Test
 framework] to make requests to the service that you are documenting. It then produces
-documentation snippets for the result's request and response.
+documentation snippets for request and resulting response.
 
 
 

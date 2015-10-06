@@ -9,9 +9,9 @@ Andy Wilkinson
 
 :examples-dir: ../../test/java
 :github: https://github.com/spring-projects/spring-restdocs
-:source: {github}/tree/{branch-or-tag}/
-:samples: {source}/samples
-:templates: {source}/spring-restdocs/src/main/resources/org/springframework/restdocs/templates
+:source: {github}/tree/{branch-or-tag}
+:samples: {source}samples
+:templates: {source}spring-restdocs/src/main/resources/org/springframework/restdocs/templates
 :spring-boot-docs: http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle
 :spring-framework-docs: http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle
 

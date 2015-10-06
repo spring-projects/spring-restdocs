@@ -15,10 +15,11 @@ https://en.wikipedia.org/wiki/HATEOAS[Hypermedia-based] API:
 ----
 include::{examples-dir}/com/example/Hypermedia.java[tag=links]
 ----
-<1> Produce a snippet describing the response's links. Uses the static `links` method on
-`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<1> Configure Spring REST docs to produce a snippet describing the response's links.
+	Uses the static `links` method on
+	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <2> Expect a link whose rel is `alpha`. Uses the static `linkWithRel` method on
-`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <3> Expect a link whose rel is `bravo`.
 
 The result is a snippet named `links.adoc` that contains a table describing the resource's
@@ -27,6 +28,9 @@ links.
 When documenting links, the test will fail if an undocumented link is found in the
 response. Similarly, the test will also fail if a documented link is not found in the
 response and the link has not been marked as optional.
+
+If you do not want to document a link, you can mark it as ignored. This will prevent it
+from appearing in the generated snippet while avoiding the failure described above.
 
 
 
@@ -65,11 +69,11 @@ provided. For example:
 ----
 include::{examples-dir}/com/example/Payload.java[tags=response]
 ----
-<1> Use `responseFields` to describe the expected fields in the response payload.
-To document a request `requestFields` can be used. Both are static methods on
-`org.springframework.restdocs.payload.PayloadDocumentation`.
+<1> Configure Spring REST docs to produce a snippet describing the fields in the response
+	payload. To document a request `requestFields` can be used. Both are static methods on
+	`org.springframework.restdocs.payload.PayloadDocumentation`.
 <2> Expect a field with the path `contact`. Uses the static `fieldWithPath` method on
-`org.springframework.restdocs.payload.PayloadDocumentation`.
+	`org.springframework.restdocs.payload.PayloadDocumentation`.
 <3> Expect a field with the path `contact.email`.
 
 The result is a snippet that contains a table describing the fields. For requests this
@@ -81,6 +85,9 @@ payload. Similarly, the test will also fail if a documented field is not found i
 payload and the field has not been marked as optional. For payloads with a hierarchical
 structure, documenting a field is sufficient for all of its descendants to also be
 treated as having been documented.
+
+If you do not want to document a field, you can mark it as ignored. This will prevent it
+from appearing in the generated snippet while avoiding the failure described above.
 
 TIP: By default, Spring REST Docs will assume that the payload you are documenting is
 JSON. If you want to document an XML payload the content type of the request or response
@@ -195,7 +202,8 @@ examining the payload. Seven different types are supported:
 |===
 
 The type can also be set explicitly using the `type(Object)` method on
-`FieldDescriptor`. Typically, one of the values enumerated by `JsonFieldType` will be
+`FieldDescriptor`. The result of the supplied ``Object``'s `toString` method will be used
+in the documentation. Typically, one of the values enumerated by `JsonFieldType` will be
 used:
 
 [source,java,indent=0]
@@ -220,7 +228,7 @@ XML field paths are described using XPath. `/` is used to descend into a child n
 
 When documenting an XML payload, you must provide a type for the field using the
 `type(Object)` method on `FieldDescriptor`. The result of the supplied type's `toString`
-method will be included in the documentation.
+method will be used in the documentation.
 
 
 
@@ -236,10 +244,11 @@ include::{examples-dir}/com/example/RequestParameters.java[tags=request-paramete
 ----
 <1> Perform a `GET` request with two parameters, `page` and `per_page` in the query
 	string.
-<2> Produce a snippet describing the request's parameters. Uses the static
-`requestParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<2> Configure Spring REST Docs to  produce a snippet describing the request's parameters.
+	Uses the static `requestParameters` method on
+	`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the `page` parameter. Uses the static `parameterWithName` method on
-`org.springframework.restdocs.request.RequestDocumentation`.
+	`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the `per_page` parameter.
 
 Request parameters can also be included as form data in the body of a POST request:
@@ -257,6 +266,10 @@ When documenting request parameters, the test will fail if an undocumented reque
 parameter is used in the request. Similarly, the test will also fail if a documented
 request parameter is not found in the request.
 
+If you do not want to document a request parameter, you can mark it as ignored. This will
+prevent it from appearing in the generated snippet while avoiding the failure described
+above.
+
 
 
 [[documenting-your-api-path-parameters]]
@@ -269,22 +282,27 @@ A request's path parameters can be documented using `pathParameters`. For exampl
 include::{examples-dir}/com/example/PathParameters.java[tags=path-parameters]
 ----
 <1> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
-<2> Produce a snippet describing the request's path parameters. Uses the static
-`pathParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's path
+	parameters. Uses the static `pathParameters` method on
+	`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the parameter named `latitude`. Uses the static `parameterWithName` method on
-`org.springframework.restdocs.request.RequestDocumentation`.
+	`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the parameter named `longitude`.
 
 The result is a snippet named `path-parameters.adoc` that contains a table describing
 the path parameters that are supported by the resource.
 
+TIP: To make the path parameters available for documentation, the request must be
+built using one of the methods on `RestDocumentationRequestBuilders` rather than
+`MockMvcRequestBuilders`.
+
 When documenting path parameters, the test will fail if an undocumented path parameter
 is used in the request. Similarly, the test will also fail if a documented path parameter
 is not found in the request.
 
-TIP: To make the path parameters available for documentation, the request must be
-built using one of the methods on `RestDocumentationRequestBuilders` rather than
-`MockMvcRequestBuilders`.
+If you do not want to document a path parameter, you can mark it as ignored. This will
+prevent it from appearing in the generated snippet while avoiding the failure described
+above.
 
 
 
@@ -299,12 +317,13 @@ The headers in a request or response can be documented using `requestHeaders` an
 include::{examples-dir}/com/example/HttpHeaders.java[tags=headers]
 ----
 <1> Perform a `GET` request with an `Authorization` header that uses basic authentication
-<2> Produce a snippet describing the request's headers. Uses the static `requestHeaders`
-method on `org.springframework.restdocs.headers.HeaderDocumentation`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's headers.
+	Uses the static `requestHeaders` method on
+	`org.springframework.restdocs.headers.HeaderDocumentation`.
 <3> Document the `Authorization` header. Uses the static `headerWithName` method on
-`org.springframework.restdocs.headers.HeaderDocumentation.
+	`org.springframework.restdocs.headers.HeaderDocumentation.
 <4> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
-method on `org.springframework.restdocs.headers.HeaderDocumentation`.
+	method on `org.springframework.restdocs.headers.HeaderDocumentation`.
 
 The result is a snippet named `request-headers.adoc` and a snippet named
 `response-headers.adoc`. Each contains a table describing the headers.
@@ -328,8 +347,8 @@ include::{examples-dir}/com/example/Constraints.java[tags=constraints]
 <2> Get the descriptions of the name property's constraints. This list will contain two
 	descriptions; one for the `NotNull` constraint and one for the `Size` constraint.
 
-The `ApiDocumentation` class in the Spring HATEOAS sample shows this functionality in
-action.
+The {samples}/rest-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`]
+class in the Spring HATEOAS sample shows this functionality in action.
 
 
 
@@ -457,7 +476,7 @@ are supported:
 |===
 
 For example, `document("{class-name}/{method-name}")` in a test method named
-`creatingANote` on the test class `GettingStartedDocumentaiton`, will write
+`creatingANote` on the test class `GettingStartedDocumentation`, will write
 snippets into a directory named `getting-started-documentation/creating-a-note`.
 
 A parameterized output directory is particularly useful in combination with Spring MVC
@@ -485,7 +504,7 @@ sample applications to see this functionality in action.
 ==== Customizing the generated snippets
 Spring REST Docs uses https://mustache.github.io[Mustache] templates to produce the
 generated snippets.
-{source}spring-restdocs/src/main/resources/org/springframework/restdocs/templates[Default
+{source}/spring-restdocs/src/main/resources/org/springframework/restdocs/templates[Default
 templates] are provided for each of the snippets that Spring REST Docs can produce. To
 customize a snippet's content, you can provide your own template.
 
@@ -501,8 +520,7 @@ override the template for the `curl-request.adoc` snippet, create a template nam
 
 There are two ways to provide extra information for inclusion in a generated snippet:
 
-. Use the `attributes` method on a field, link or parameter descriptor to add one or more
-  attributes to an individual descriptor.
+. Use the `attributes` method on a descriptor to add one or more attributes to it.
 . Pass in some attributes when calling `curlRequest`, `httpRequest`, `httpResponse`, etc.
   Such attributes will be associated with the snippet as a whole.
 
