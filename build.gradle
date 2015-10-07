@@ -6,6 +6,7 @@ buildscript {
 	dependencies {
 		classpath 'io.spring.gradle:dependency-management-plugin:0.5.3.RELEASE'
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+		classpath 'io.spring.gradle:spring-io-plugin:0.0.4.RELEASE'
 	}
 }
 
@@ -50,6 +51,22 @@ subprojects {
 
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
+
+	if (project.hasProperty('platformVersion')) {
+		apply plugin: 'spring-io'
+
+		repositories {
+			maven { url "https://repo.spring.io/libs-snapshot" }
+		}
+
+		dependencyManagement {
+			springIoTestRuntime {
+				imports {
+					mavenBom "io.spring.platform:platform-bom:${platformVersion}"
+				}
+			}
+		}
+	}
 
 	dependencyManagement {
 		imports {
