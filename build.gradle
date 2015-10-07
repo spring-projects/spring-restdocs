@@ -52,22 +52,6 @@ subprojects {
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
 
-	if (project.hasProperty('platformVersion')) {
-		apply plugin: 'spring-io'
-
-		repositories {
-			maven { url "https://repo.spring.io/libs-snapshot" }
-		}
-
-		dependencyManagement {
-			springIoTestRuntime {
-				imports {
-					mavenBom "io.spring.platform:platform-bom:${platformVersion}"
-				}
-			}
-		}
-	}
-
 	dependencyManagement {
 		imports {
 			mavenBom "org.springframework:spring-framework-bom:$springVersion"
@@ -109,6 +93,22 @@ configure(subprojects - project(":docs")) { subproject ->
 
 	apply plugin: 'checkstyle'
 	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
+
+	if (project.hasProperty('platformVersion')) {
+		apply plugin: 'spring-io'
+
+		repositories {
+			maven { url "https://repo.spring.io/libs-snapshot" }
+		}
+
+		dependencyManagement {
+			springIoTestRuntime {
+				imports {
+					mavenBom "io.spring.platform:platform-bom:${platformVersion}"
+				}
+			}
+		}
+	}
 
 	checkstyle {
 		configFile = rootProject.file('config/checkstyle/checkstyle.xml')
