@@ -1,3 +1,5 @@
+description = 'Spring REST Docs Core'
+
 configurations {
 	jarjar
 	jmustache

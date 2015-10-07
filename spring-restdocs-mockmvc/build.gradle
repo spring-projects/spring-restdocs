@@ -1,3 +1,5 @@
+description = 'Spring REST Docs MockMvc'
+
 dependencies {
 	compile 'org.springframework:spring-test'
 	compile project(':spring-restdocs-core')
