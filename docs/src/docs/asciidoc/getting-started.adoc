@@ -16,21 +16,26 @@ If you want to jump straight in, a number of sample applications are available:
 
 | {samples}/rest-assured[REST Assured]
 | Gradle
-| Demonstrates the use of Spring REST Docs with REST Assured.
+| Demonstrates the use of Spring REST Docs with http://rest-assured.io[REST Assured].
+
+| {samples}/rest-notes-slate[Slate]
+| Gradle
+| Demonstrates the use of Spring REST Docs with Markdown and
+  http://github.com/tripit/slate[Slate].
 
 | {samples}/rest-notes-spring-data-rest[Spring Data REST]
 | Maven
 | Demonstrates the creation of a getting started guide and an API guide for a service
-  implemented using Spring Data REST.
+  implemented using http://projects.spring.io/spring-data-rest/[Spring Data REST].
 
 | {samples}/rest-notes-spring-hateoas[Spring HATEOAS]
 | Gradle
 | Demonstrates the creation of a getting started guide and an API guide for a service
-  implemented using Spring HATEOAS.
+  implemented using http://projects.spring.io/spring-hateoas/[Spring HATEOAS].
 
 | {samples}/testng[TestNG]
 | Gradle
-| Demonstrates the use of Spring REST Docs with TestNG.
+| Demonstrates the use of Spring REST Docs with http://testng.org[TestNG].
 
 |===
 

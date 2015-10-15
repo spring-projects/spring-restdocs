@@ -29,6 +29,8 @@ public class SampleBuildConfigurer {
 
 	private String workingDir
 
+	private boolean verifyIncludes = true
+
 	SampleBuildConfigurer(String name) {
 		this.name = name
 	}
@@ -39,24 +41,34 @@ public class SampleBuildConfigurer {
 
 	Task createTask(Project project, Object... dependencies) {
 		File sampleDir = new File(this.workingDir).absoluteFile
-		Task verifyIncludes
+		Task sampleBuild = project.tasks.create name
+		sampleBuild.description = "Builds the ${name} sample"
+		sampleBuild.group = "Build"
 		if (new File(sampleDir, 'build.gradle').isFile()) {
 			Task gradleBuild = createGradleBuild(project, dependencies)
-			verifyIncludes = createVerifyIncludes(project, new File(sampleDir, 'build/asciidoc'))
-			verifyIncludes.dependsOn gradleBuild
+			if (verifyIncludes) {
+				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'build/asciidoc'))
+				verifyIncludesTask.dependsOn gradleBuild
+				sampleBuild.dependsOn verifyIncludesTask
+			}
+			else {
+				sampleBuild.dependsOn gradleBuild
+			}
 		}
 		else if (new File(sampleDir, 'pom.xml').isFile()) {
 			Task mavenBuild = createMavenBuild(project, sampleDir, dependencies)
-			verifyIncludes = createVerifyIncludes(project, new File(sampleDir, 'target/generated-docs'))
-			verifyIncludes.dependsOn(mavenBuild)
+			if (verifyIncludes) {
+				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'target/generated-docs'))
+				verifyIncludesTask.dependsOn(mavenBuild)
+				sampleBuild.dependsOn verifyIncludesTask
+			}
+			else {
+				sampleBuild.dependsOn mavenBuild
+			}
 		}
 		else {
 			throw new IllegalStateException("No pom.xml or build.gradle was found in $sampleDir")
 		}
-		Task sampleBuild = project.tasks.create name
-		sampleBuild.description = "Builds the ${name} sample"
-		sampleBuild.group = "Build"
-		sampleBuild.dependsOn verifyIncludes
 		return sampleBuild
 	}
 
@@ -108,9 +120,9 @@ public class SampleBuildConfigurer {
 	}
 
 	private Task createVerifyIncludes(Project project, File buildDir) {
-		Task verifyIncludes = project.tasks.create("${name}VerifyIncludes")
-		verifyIncludes.description = "Verifies the includes in the ${name} sample"
-		verifyIncludes << {
+		Task verifyIncludesTask = project.tasks.create("${name}VerifyIncludes")
+		verifyIncludesTask.description = "Verifies the includes in the ${name} sample"
+		verifyIncludesTask << {
 			Map unprocessedIncludes = [:]
 			buildDir.eachFileRecurse { file ->
 				if (file.name.endsWith('.html')) {
@@ -132,6 +144,6 @@ public class SampleBuildConfigurer {
 				throw new GradleException(message.toString())
 			}
 		}
-		return verifyIncludes
+		return verifyIncludesTask
 	}
 }

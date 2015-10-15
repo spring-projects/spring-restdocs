@@ -216,6 +216,10 @@ task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':api', ':buildSamples'
 	from(file('samples/rest-notes-spring-hateoas/build/asciidoc/html5')) {
 		into 'samples/restful-notes'
 	}
+
+	from(file('samples/rest-notes-slate/build/docs')) {
+		into 'samples/slate'
+	}
 }
 
 configurations {
