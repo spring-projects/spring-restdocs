@@ -28,7 +28,7 @@ targetCompatibility = 1.7
 
 ext {
 	snippetsDir = file('build/generated-snippets')
-	springRestdocsVersion = '1.0.0.BUILD-SNAPSHOT'
+	springRestdocsVersion = '1.0.1.BUILD-SNAPSHOT'
 }
 
 dependencies {
