@@ -16,9 +16,12 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.restdocs.test.OutputCapture;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -28,6 +31,9 @@ import static org.junit.Assert.assertThat;
  *
  */
 public class PrettyPrintingContentModifierTests {
+
+	@Rule
+	public OutputCapture outputCapture = new OutputCapture();
 
 	@Test
 	public void prettyPrintJson() throws Exception {
@@ -56,7 +62,9 @@ public class PrettyPrintingContentModifierTests {
 	@Test
 	public void nonJsonAndNonXmlContentIsHandledGracefully() throws Exception {
 		String content = "abcdefg";
+		this.outputCapture.expect(isEmptyString());
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(),
 				null), equalTo(content.getBytes()));
+
 	}
 }
