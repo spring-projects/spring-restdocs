@@ -16,14 +16,13 @@
 
 package org.springframework.restdocs.request;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import javax.servlet.ServletRequest;
-
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.ServletRequest;
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Static factory methods for documenting aspects of a request sent to a RESTful API.
@@ -72,6 +71,22 @@ public abstract class RequestDocumentation {
 	public static Snippet pathParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {
 		return new PathParametersSnippet(attributes, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a snippet that will document the path parameters from the API call's
+	 * request.
+	 * This method may be usefull when the path with parameters cannot be retrieved from
+	 * the request.
+	 * As of today it's only usefull when rest-assured is used.
+	 *
+	 * @param pathWithParameters the path containing the parameters
+	 * @param descriptors The descriptions of the parameters in the request's path
+	 * @return the snippet
+	 * @see PathVariable
+	 */
+	public static Snippet pathParameters(String pathWithParameters, ParameterDescriptor... descriptors) {
+		return new CustomPathParametersSnippet(pathWithParameters, Arrays.asList(descriptors));
 	}
 
 	/**

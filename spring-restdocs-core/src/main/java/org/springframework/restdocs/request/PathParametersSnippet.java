@@ -16,6 +16,11 @@
 
 package org.springframework.restdocs.request;
 
+import org.springframework.restdocs.operation.Operation;
+import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.util.Assert;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -23,11 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.springframework.restdocs.operation.Operation;
-import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.util.Assert;
 
 /**
  * A {@link Snippet} that documents the path parameters supported by a RESTful resource.
@@ -74,7 +74,7 @@ class PathParametersSnippet extends AbstractParametersSnippet {
 		return actualParameters;
 	}
 
-	private String extractUrlTemplate(Operation operation) {
+	protected String extractUrlTemplate(Operation operation) {
 		String urlTemplate = (String) operation.getAttributes().get(
 				"org.springframework.restdocs.urlTemplate");
 		Assert.notNull(urlTemplate,

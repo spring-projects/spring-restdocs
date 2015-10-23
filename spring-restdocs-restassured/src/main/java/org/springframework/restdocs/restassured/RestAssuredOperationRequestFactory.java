@@ -16,12 +16,9 @@
 
 package org.springframework.restdocs.restassured;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.jayway.restassured.filter.FilterContext;
+import com.jayway.restassured.response.Header;
+import com.jayway.restassured.specification.FilterableRequestSpecification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -29,9 +26,11 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.StandardOperationRequest;
 
-import com.jayway.restassured.filter.FilterContext;
-import com.jayway.restassured.response.Header;
-import com.jayway.restassured.specification.FilterableRequestSpecification;
+import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Map.Entry;
 
 class RestAssuredOperationRequestFactory {
 
@@ -60,6 +59,10 @@ class RestAssuredOperationRequestFactory {
 		Parameters parameters = new Parameters();
 		Map<String, ?> requestParams = requestSpec.getRequestParams();
 		for (Entry<String, ?> entry : requestParams.entrySet()) {
+			parameters.add(entry.getKey(), entry.getValue().toString());
+		}
+		Map<String, ?> queryParams = requestSpec.getQueryParams();
+		for (Entry<String, ?> entry : queryParams.entrySet()) {
 			parameters.add(entry.getKey(), entry.getValue().toString());
 		}
 		return parameters;
