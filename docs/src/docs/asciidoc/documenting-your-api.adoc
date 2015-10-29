@@ -521,7 +521,7 @@ sample applications to see this functionality in action.
 ==== Customizing the generated snippets
 Spring REST Docs uses https://mustache.github.io[Mustache] templates to produce the
 generated snippets.
-{source}/spring-restdocs/src/main/resources/org/springframework/restdocs/templates[Default
+{source}/spring-restdocs-core/src/main/resources/org/springframework/restdocs/templates[Default
 templates] are provided for each of the snippets that Spring REST Docs can produce. To
 customize a snippet's content, you can provide your own template.
 
