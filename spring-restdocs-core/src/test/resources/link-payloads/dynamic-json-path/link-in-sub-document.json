@@ -1,0 +1,7 @@
+{
+	"foo": {
+		"links": {
+			"alpha": "http://alpha.example.com"
+		}
+	}
+}

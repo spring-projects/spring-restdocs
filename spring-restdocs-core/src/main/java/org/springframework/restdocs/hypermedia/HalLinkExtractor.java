@@ -16,12 +16,7 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Collections;
 
 import org.springframework.http.MediaType;
 
@@ -30,52 +25,14 @@ import org.springframework.http.MediaType;
  * format.
  *
  * @author Andy Wilkinson
+ * @author Mattias Severson
  */
-class HalLinkExtractor extends AbstractJsonLinkExtractor {
+class HalLinkExtractor extends DynamicJsonPathLinkExtractor {
 
 	static final MediaType HAL_MEDIA_TYPE = new MediaType("application", "hal+json");
 
-	@Override
-	public Map<String, List<Link>> extractLinks(Map<String, Object> json) {
-		Map<String, List<Link>> extractedLinks = new LinkedHashMap<>();
-		Object possibleLinks = json.get("_links");
-		if (possibleLinks instanceof Map) {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> links = (Map<String, Object>) possibleLinks;
-			for (Entry<String, Object> entry : links.entrySet()) {
-				String rel = entry.getKey();
-				extractedLinks.put(rel, convertToLinks(entry.getValue(), rel));
-			}
-		}
-		return extractedLinks;
-	}
-
-	private static List<Link> convertToLinks(Object object, String rel) {
-		List<Link> links = new ArrayList<>();
-		if (object instanceof Collection) {
-			@SuppressWarnings("unchecked")
-			Collection<Object> hrefObjects = (Collection<Object>) object;
-			for (Object hrefObject : hrefObjects) {
-				maybeAddLink(maybeCreateLink(rel, hrefObject), links);
-			}
-		}
-		else {
-			maybeAddLink(maybeCreateLink(rel, object), links);
-		}
-		return links;
-	}
-
-	private static Link maybeCreateLink(String rel, Object possibleHref) {
-		if (possibleHref instanceof String) {
-			return new Link(rel, (String) possibleHref);
-		}
-		return null;
-	}
-
-	private static void maybeAddLink(Link possibleLink, List<Link> links) {
-		if (possibleLink != null) {
-			links.add(possibleLink);
-		}
+	HalLinkExtractor() {
+		super(Collections.singletonList("_links"));
 	}
 
 }

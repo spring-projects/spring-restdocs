@@ -18,6 +18,7 @@ package org.springframework.restdocs.hypermedia;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.restdocs.snippet.Snippet;
 
@@ -177,5 +178,55 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static LinkExtractor atomLinks() {
 		return new AtomLinkExtractor();
+	}
+
+	/**
+	 * Returns a {@code LinkExtractor} capable of extracting links where the the links are found in a {@code Map} with
+	 * the keys are the "rel" attributes of the {@code links}. The location of the {@code Map} is based on a json path
+	 * selector. For example:
+	 *
+	 * <pre>
+	 * {
+	 *     "links": {
+	 *         "alpha": "http://example.com/alpha"
+	 *         "bravo": "http://example.com/bravo"
+	 *     }
+	 * }
+	 * </pre>
+	 *
+	 * Supports multiple links of the same rel as well, e.g.
+	 *
+	 * <pre>
+	 * {
+	 *     "links": {
+	 *         "alpha": ["http://example.com/foo", "http://example.com/bar"]
+	 *     }
+	 * }
+	 * </pre>
+	 *
+	 * And links located in different sub-documents
+	 *
+	 * <pre>
+	 * {
+	 *     first: {
+	 *         "links": {
+	 *             "alpha": "http://example.com/alpha"
+	 *         }
+	 *     },
+	 *     second: {
+	 *         "links": {
+	 *             "bravo": "http://example.com/bravo"
+	 *         }
+	 *     }
+	 * }
+	 * </pre>
+	 *
+	 * @param jsonPaths JSON path(s) used to select the links sub-document(s)
+	 *
+	 * @return The extractor for dynamic json path links
+	 */
+	public static LinkExtractor dynamicJsonPathLinks(String... jsonPaths) {
+		Objects.requireNonNull(jsonPaths, "jsonPaths must not be null");
+		return new DynamicJsonPathLinkExtractor(Arrays.asList(jsonPaths));
 	}
 }
