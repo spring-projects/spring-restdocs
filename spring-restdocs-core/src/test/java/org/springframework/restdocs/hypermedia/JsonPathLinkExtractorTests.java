@@ -47,7 +47,7 @@ public class JsonPathLinkExtractorTests {
 
 	@Test
 	public void linkInSubDocument() throws IOException {
-		this.linkExtractor = new JsonPathLinkExtractor("foo.links");
+		this.linkExtractor = new JsonPathLinkExtractor("$.foo.links");
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("link-in-sub-document"));
 		assertLinks(Collections.singletonList(new Link("alpha", "http://alpha.example.com")), links);
@@ -55,7 +55,7 @@ public class JsonPathLinkExtractorTests {
 
 	@Test
 	public void multipleLinksInDifferentDocuments() throws IOException {
-		this.linkExtractor = new JsonPathLinkExtractor("first.links", "second.links");
+		this.linkExtractor = new JsonPathLinkExtractor("$.first.links", "$.second.links");
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("multiple-links-different-sub-documents"));
 		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com"),

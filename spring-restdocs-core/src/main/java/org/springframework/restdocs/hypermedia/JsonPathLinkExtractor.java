@@ -17,21 +17,30 @@
 package org.springframework.restdocs.hypermedia;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.restdocs.operation.OperationResponse;
+
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
+
 /**
- * {@link LinkExtractor} that extracts links based on a dynamic json path selector.
+ * {@link LinkExtractor} that extracts links based on a json path selector.
  *
  * @author Mattias Severson
  *
  * @see HypermediaDocumentation#jsonPathLinks(String...)
  */
-class JsonPathLinkExtractor extends AbstractJsonLinkExtractor {
+class JsonPathLinkExtractor implements LinkExtractor {
 
 	private final List<String> jsonPaths;
 
@@ -40,36 +49,35 @@ class JsonPathLinkExtractor extends AbstractJsonLinkExtractor {
 	}
 
 	@Override
-	public Map<String, List<Link>> extractLinks(Map<String, Object> json) {
-		Map<String, List<Link>> extractedLinks = new LinkedHashMap<>();
-		for (String jsonPath : this.jsonPaths) {
-			Object possibleLinks = getPossibleLinks(jsonPath, json);
-			if (possibleLinks instanceof Map) {
-				@SuppressWarnings("unchecked")
-				Map<String, Object> links = (Map<String, Object>) possibleLinks;
-				for (Map.Entry<String, Object> entry : links.entrySet()) {
-					String rel = entry.getKey();
-					extractedLinks.put(rel, convertToLinks(entry.getValue(), rel));
+	public Map<String, List<Link>> extractLinks(OperationResponse response)
+			throws IOException {
+		try (InputStream inputStream = new ByteArrayInputStream(response.getContent())) {
+			Map<String, List<Link>> result = new HashMap<>();
+			DocumentContext json = JsonPath.parse(inputStream);
+			for (String jsonPath : this.jsonPaths) {
+				try {
+					Object jsonContent = json.read(jsonPath);
+					result.putAll(extractLinks(jsonContent));
 				}
+				catch (PathNotFoundException e) {
+					// ignore
+				}
+			}
+			return result;
+		}
+	}
+
+	public Map<String, List<Link>> extractLinks(Object json) {
+		Map<String, List<Link>> extractedLinks = new HashMap<>();
+		if (json instanceof Map) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> links = (Map<String, Object>) json;
+			for (Map.Entry<String, Object> entry : links.entrySet()) {
+				String rel = entry.getKey();
+				extractedLinks.put(rel, convertToLinks(entry.getValue(), rel));
 			}
 		}
 		return extractedLinks;
-	}
-
-	private static Object getPossibleLinks(String jsonPath, Object json) {
-		if (json instanceof Map) {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> jsonDocument = (Map<String, Object>) json;
-			if (!jsonPath.contains(".")) {
-				return jsonDocument.get(jsonPath);
-			}
-			else {
-				int dotIndex = jsonPath.indexOf(".");
-				String jsonKey = jsonPath.substring(0, dotIndex);
-				return getPossibleLinks(jsonPath.substring(dotIndex + 1), jsonDocument.get(jsonKey));
-			}
-		}
-		return json;
 	}
 
 	private static List<Link> convertToLinks(Object object, String rel) {

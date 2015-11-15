@@ -57,7 +57,7 @@ public class LinkExtractorsPayloadTests {
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[] { new HalLinkExtractor(), "hal" },
 				new Object[] { new AtomLinkExtractor(), "atom" },
-				new Object[] { new JsonPathLinkExtractor("links"), "json-path" });
+				new Object[] { new JsonPathLinkExtractor("$.links"), "json-path" });
 	}
 
 	public LinkExtractorsPayloadTests(LinkExtractor linkExtractor, String linkType) {

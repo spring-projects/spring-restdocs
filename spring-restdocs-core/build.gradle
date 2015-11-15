@@ -34,6 +34,7 @@ dependencies {
 	jmustache 'com.samskivert:jmustache@jar'
 	optional 'javax.validation:validation-api'
 	optional 'commons-codec:commons-codec'
+	optional 'com.jayway.jsonpath:json-path:2.0.0'
 	testCompile 'org.mockito:mockito-core'
 	testCompile 'org.hamcrest:hamcrest-core'
 	testCompile 'org.hamcrest:hamcrest-library'
