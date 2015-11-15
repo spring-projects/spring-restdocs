@@ -16,8 +16,6 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import java.util.Collections;
-
 import org.springframework.http.MediaType;
 
 /**
@@ -27,12 +25,12 @@ import org.springframework.http.MediaType;
  * @author Andy Wilkinson
  * @author Mattias Severson
  */
-class HalLinkExtractor extends DynamicJsonPathLinkExtractor {
+class HalLinkExtractor extends JsonPathLinkExtractor {
 
 	static final MediaType HAL_MEDIA_TYPE = new MediaType("application", "hal+json");
 
 	HalLinkExtractor() {
-		super(Collections.singletonList("_links"));
+		super("_links");
 	}
 
 }

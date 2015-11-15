@@ -223,10 +223,10 @@ public abstract class HypermediaDocumentation {
 	 *
 	 * @param jsonPaths JSON path(s) used to select the links sub-document(s)
 	 *
-	 * @return The extractor for dynamic json path links
+	 * @return The extractor for json path links
 	 */
-	public static LinkExtractor dynamicJsonPathLinks(String... jsonPaths) {
+	public static LinkExtractor jsonPathLinks(String... jsonPaths) {
 		Objects.requireNonNull(jsonPaths, "jsonPaths must not be null");
-		return new DynamicJsonPathLinkExtractor(Arrays.asList(jsonPaths));
+		return new JsonPathLinkExtractor(jsonPaths);
 	}
 }

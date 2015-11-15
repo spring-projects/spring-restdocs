@@ -18,6 +18,7 @@ package org.springframework.restdocs.hypermedia;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,14 +29,14 @@ import java.util.Map;
  *
  * @author Mattias Severson
  *
- * @see HypermediaDocumentation#dynamicJsonPathLinks(String...)
+ * @see HypermediaDocumentation#jsonPathLinks(String...)
  */
-class DynamicJsonPathLinkExtractor extends AbstractJsonLinkExtractor {
+class JsonPathLinkExtractor extends AbstractJsonLinkExtractor {
 
 	private final List<String> jsonPaths;
 
-	DynamicJsonPathLinkExtractor(List<String> jsonPaths) {
-		this.jsonPaths = jsonPaths;
+	JsonPathLinkExtractor(String... jsonPaths) {
+		this.jsonPaths = Arrays.asList(jsonPaths);
 	}
 
 	@Override

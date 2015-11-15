@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Parameterized tests for {@link HalLinkExtractor}, {@link AtomLinkExtractor} and
- * {@link DynamicJsonPathLinkExtractor} with various payloads.
+ * {@link JsonPathLinkExtractor} with various payloads.
  *
  * @author Andy Wilkinson
  * @author Mattias Severson
@@ -57,7 +57,7 @@ public class LinkExtractorsPayloadTests {
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[] { new HalLinkExtractor(), "hal" },
 				new Object[] { new AtomLinkExtractor(), "atom" },
-				new Object[] { new DynamicJsonPathLinkExtractor(Collections.singletonList("links")), "dynamic-json-path" });
+				new Object[] { new JsonPathLinkExtractor("links"), "json-path" });
 	}
 
 	public LinkExtractorsPayloadTests(LinkExtractor linkExtractor, String linkType) {

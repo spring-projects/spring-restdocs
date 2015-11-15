@@ -34,20 +34,20 @@ import org.springframework.util.MultiValueMap;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test for {@link DynamicJsonPathLinkExtractor} with various payloads.
+ * Test for {@link JsonPathLinkExtractor} with various payloads.
  *
  * @author Mattias Severson
  *
  * @see LinkExtractorsPayloadTests
  */
-public class DynamicJsonPathLinkExtractorTests {
+public class JsonPathLinkExtractorTests {
 
 	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
 	private LinkExtractor linkExtractor;
 
 	@Test
 	public void linkInSubDocument() throws IOException {
-		this.linkExtractor = new DynamicJsonPathLinkExtractor(Collections.singletonList("foo.links"));
+		this.linkExtractor = new JsonPathLinkExtractor("foo.links");
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("link-in-sub-document"));
 		assertLinks(Collections.singletonList(new Link("alpha", "http://alpha.example.com")), links);
@@ -55,7 +55,7 @@ public class DynamicJsonPathLinkExtractorTests {
 
 	@Test
 	public void multipleLinksInDifferentDocuments() throws IOException {
-		this.linkExtractor = new DynamicJsonPathLinkExtractor(Arrays.asList("first.links", "second.links"));
+		this.linkExtractor = new JsonPathLinkExtractor("first.links", "second.links");
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("multiple-links-different-sub-documents"));
 		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com"),
@@ -76,6 +76,6 @@ public class DynamicJsonPathLinkExtractorTests {
 	}
 
 	private File getPayloadFile(String name) {
-		return new File("src/test/resources/link-payloads/dynamic-json-path/" + name + ".json");
+		return new File("src/test/resources/link-payloads/json-path/" + name + ".json");
 	}
 }
