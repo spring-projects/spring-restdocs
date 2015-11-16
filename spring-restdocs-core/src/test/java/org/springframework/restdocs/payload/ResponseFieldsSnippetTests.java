@@ -192,6 +192,21 @@ public class ResponseFieldsSnippetTests {
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
 						.build());
 	}
+	
+	@Test
+	public void undocumentedXmlWithAttributeResponseField() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown
+				.expectMessage(equalTo("The following parts of the payload were not"
+						+ " documented:\r\n<a>\r\n    <b>5</b>\r\n</a>\r\n"));
+		new ResponseFieldsSnippet(Arrays.asList(new FieldDescriptor("/a/b/@id").type("").description("")))
+				.document(new OperationBuilder("undocumented-xml-response-field",
+						this.snippet.getOutputDirectory())
+						.response()
+						.content("<a><b id=\"1\">5</b></a>")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+						.build());
+	}
 
 	@Test
 	public void xmlResponseFieldWithNoType() throws IOException {
