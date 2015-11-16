@@ -34,6 +34,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -115,7 +116,14 @@ class XmlContentHandler implements ContentHandler {
 			}
 			for (int i = 0; i < matchingNodes.getLength(); i++) {
 				Node node = matchingNodes.item(i);
-				node.getParentNode().removeChild(node);
+				if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+					Attr attr = (Attr) node;
+					attr.getOwnerElement().removeAttributeNode(attr);
+				}
+				else {
+					node.getParentNode().removeChild(node);
+				}
+
 			}
 		}
 		if (payload.getChildNodes().getLength() > 0) {

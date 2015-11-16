@@ -194,6 +194,77 @@ public class ResponseFieldsSnippetTests {
 	}
 
 	@Test
+	public void xmlAttribute() throws IOException {
+		this.snippet.expectResponseFields("xml-attribute").withContents(
+				tableWithHeader("Path", "Type", "Description").row("a", "b", "one").row(
+						"a/@id", "c", "two"));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")
+				.type("b"), fieldWithPath("a/@id").description("two").type("c")))
+				.document(new OperationBuilder("xml-attribute", this.snippet
+						.getOutputDirectory())
+						.response()
+						.content("<a id=\"1\">foo</a>")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+						.build());
+	}
+
+	@Test
+	public void missingXmlAttribute() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown
+				.expectMessage(equalTo("Fields with the following paths were not found"
+						+ " in the payload: [a/@id]"));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")
+				.type("b"), fieldWithPath("a/@id").description("two").type("c")))
+				.document(new OperationBuilder("missing-xml-attribute", this.snippet
+						.getOutputDirectory())
+						.response()
+						.content("<a>foo</a>")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+						.build());
+	}
+
+	@Test
+	public void missingOptionalXmlAttribute() throws IOException {
+		this.snippet.expectResponseFields("missing-optional-xml-attribute").withContents(
+				tableWithHeader("Path", "Type", "Description").row("a", "b", "one").row(
+						"a/@id", "c", "two"));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")
+				.type("b"), fieldWithPath("a/@id").description("two").type("c")
+				.optional())).document(new OperationBuilder(
+				"missing-optional-xml-attribute", this.snippet.getOutputDirectory())
+				.response().content("<a>foo</a>")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+				.build());
+	}
+
+	@Test
+	public void undocumentedAttributeDoesNotCauseFailure() throws IOException {
+		this.snippet.expectResponseFields("undocumented-attribute").withContents(
+				tableWithHeader("Path", "Type", "Description").row("a", "a", "one"));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")
+				.type("a"))).document(new OperationBuilder("undocumented-attribute",
+				this.snippet.getOutputDirectory()).response()
+				.content("<a id=\"foo\">bar</a>")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+				.build());
+	}
+
+	@Test
+	public void documentedXmlAttributesAreRemoved() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown.expectMessage(equalTo(String
+				.format("The following parts of the payload were not documented:"
+						+ "%n<a>bar</a>%n")));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/@id").description("one")
+				.type("a"))).document(new OperationBuilder(
+				"documented-attribute-is-removed", this.snippet.getOutputDirectory())
+				.response().content("<a id=\"foo\">bar</a>")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+				.build());
+	}
+
+	@Test
 	public void xmlResponseFieldWithNoType() throws IOException {
 		this.thrown.expect(FieldTypeRequiredException.class);
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
