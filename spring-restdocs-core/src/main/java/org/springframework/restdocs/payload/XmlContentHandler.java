@@ -116,7 +116,6 @@ class XmlContentHandler implements ContentHandler {
 			}
 			for (int i = 0; i < matchingNodes.getLength(); i++) {
 				Node node = matchingNodes.item(i);
-
 				if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
 					Attr attr = (Attr) node;
 					attr.getOwnerElement().removeAttributeNode(attr);
