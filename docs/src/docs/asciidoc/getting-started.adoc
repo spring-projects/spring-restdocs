@@ -227,17 +227,33 @@ documentation snippets for request and resulting response.
 ==== Setting up Spring MVC test
 
 The first step in generating documentation snippets is to declare a `public`
-`RestDocumentation` field that's annotated as a JUnit `@Rule` and to provide an `@Before`
-method that creates a `MockMvc` instance:
+`RestDocumentation` field that's annotated as a JUnit `@Rule`. The `RestDocumentation`
+rule is configured with the output directory into which generated snippets should be
+written. This output directory should match the snippets directory that you have
+configured in your `build.gradle` or `pom.xml` file.
+
+For Maven (`pom.xml` that will typically be `target/generated-snippets`:
+
+[source,java,indent=0]
+----
+@Rule
+public RestDocumentation restDocumentation = new RestDocumentation("target/generated-snippets");
+----
+
+And for Gradle (`build.gradle`) it will typically be `build/generated-snippets`:
+
+[source,java,indent=0]
+----
+@Rule
+public RestDocumentation restDocumentation = new RestDocumentation("build/generated-snippets");
+----
+
+Next, provide an `@Before` method that creates a `MockMvc` instance:
 
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/ExampleApplicationTests.java[tags=mock-mvc-setup]
 ----
-
-The `RestDocumentation` rule is configured with the output directory into which
-generated snippets should be written. This output directory should match the snippets
-directory that you have configured in your `build.gradle` or `pom.xml` file.
 
 The `MockMvc` instance is configured using a `RestDocumentationMockMvcConfigurer`. An
 instance of this class can be obtained from the static `documentationConfiguration()`
