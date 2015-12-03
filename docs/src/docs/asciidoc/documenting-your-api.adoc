@@ -167,6 +167,23 @@ The following paths are all present:
 
 |===
 
+A response that uses an array at its root can also be documented. The path `[]` will refer
+to the entire array. You can then use bracket or dot notation to identify fields within
+the array's entries. For example, `[].id` corresponds to the `id` field of every object
+found in the following array:
+
+[source,json,indent=0]
+----
+	[
+		{
+			"id":1
+		},
+		{
+			"id":2
+		}
+	]
+----
+
 
 
 [[documenting-your-api-request-response-payloads-json-field-types]]
