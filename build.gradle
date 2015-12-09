@@ -22,6 +22,7 @@ apply plugin: 'sonar-runner'
 
 sonarRunner {
 	sonarProperties {
+		property 'sonar.branch', '1.0.x'
 		property 'sonar.jacoco.reportPath', "${buildDir.name}/jacoco.exec"
 		property 'sonar.java.coveragePlugin', 'jacoco'
 		property 'sonar.links.ci', 'https://build.spring.io/browse/SRD'
