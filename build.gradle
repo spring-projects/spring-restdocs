@@ -32,7 +32,7 @@ sonarRunner {
 }
 
 ext {
-	springVersion = '4.1.7.RELEASE'
+	springVersion = '4.1.8.RELEASE'
 	javadocLinks = [
 		'http://docs.oracle.com/javase/8/docs/api/',
 		"http://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
