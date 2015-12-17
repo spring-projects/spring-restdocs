@@ -134,7 +134,7 @@ described below.
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<phase>package</phase> <6>
+						<phase>prepare-package</phase> <6>
 						<goals>
 							<goal>process-asciidoc</goal>
 						</goals>
