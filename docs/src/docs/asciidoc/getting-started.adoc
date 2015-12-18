@@ -134,7 +134,8 @@ described below.
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<phase>prepare-package</phase> <6>
+						<phase>package</phase>
+						<!-- <phase>prepare-package</phase> --> <6>
 						<goals>
 							<goal>process-asciidoc</goal>
 						</goals>
@@ -180,7 +181,14 @@ be included in the project's jar:
 	<plugin> <1>
 		<groupId>org.asciidoctor</groupId>
 		<artifactId>asciidoctor-maven-plugin</artifactId>
-		<!-- … -->
+		<version>1.5.2</version>
+		<executions>
+			<execution>
+				<id>generate-docs</id>
+				<phase>prepare-package</phase>
+				<!-- … -->
+			</execution>
+		</executions>
 	</plugin>
 	<plugin> <2>
 		<artifactId>maven-resources-plugin</artifactId>
