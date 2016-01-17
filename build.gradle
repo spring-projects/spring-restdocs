@@ -156,11 +156,11 @@ samples {
 	dependOn 'spring-restdocs-mockmvc:install'
 
 	restNotesSpringHateoas {
-		workingDir 'samples/rest-notes-spring-hateoas'
+		workingDir "$projectDir/samples/rest-notes-spring-hateoas"
 	}
 
 	restNotesSpringDataRest {
-		workingDir 'samples/rest-notes-spring-data-rest'
+		workingDir "$projectDir/samples/rest-notes-spring-data-rest"
 	}
 }
 
