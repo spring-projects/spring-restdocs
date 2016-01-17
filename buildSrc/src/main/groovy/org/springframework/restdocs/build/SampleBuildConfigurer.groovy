@@ -38,16 +38,20 @@ public class SampleBuildConfigurer {
 	}
 
 	Task createTask(Project project, Object... dependencies) {
+		File sampleDir = new File(this.workingDir).absoluteFile
 		Task verifyIncludes
-		if (new File(this.workingDir, 'build.gradle').isFile()) {
+		if (new File(sampleDir, 'build.gradle').isFile()) {
 			Task gradleBuild = createGradleBuild(project, dependencies)
-			verifyIncludes = createVerifyIncludes(project, new File(this.workingDir, 'build/asciidoc'))
+			verifyIncludes = createVerifyIncludes(project, new File(sampleDir, 'build/asciidoc'))
 			verifyIncludes.dependsOn gradleBuild
 		}
-		if (new File(this.workingDir, 'pom.xml').isFile()) {
-			Task mavenBuild = createMavenBuild(project, dependencies)
-			verifyIncludes = createVerifyIncludes(project, new File(this.workingDir, 'target/generated-docs'))
+		else if (new File(sampleDir, 'pom.xml').isFile()) {
+			Task mavenBuild = createMavenBuild(project, sampleDir, dependencies)
+			verifyIncludes = createVerifyIncludes(project, new File(sampleDir, 'target/generated-docs'))
 			verifyIncludes.dependsOn(mavenBuild)
+		}
+		else {
+			throw new IllegalStateException("No pom.xml or build.gradle was found in $sampleDir")
 		}
 		Task sampleBuild = project.tasks.create name
 		sampleBuild.description = "Builds the ${name} sample"
@@ -56,12 +60,12 @@ public class SampleBuildConfigurer {
 		return sampleBuild
 	}
 
-	private Task createMavenBuild(Project project, Object... dependencies) {
+	private Task createMavenBuild(Project project, File sampleDir, Object... dependencies) {
 		Task mavenBuild = project.tasks.create("${name}Maven", Exec)
 		mavenBuild.description = "Builds the ${name} sample with Maven"
 		mavenBuild.group = "Build"
 		mavenBuild.workingDir = this.workingDir
-		mavenBuild.commandLine = [isWindows() ? "${new File(this.workingDir).absolutePath}/mvnw.cmd" : './mvnw', 'clean', 'package']
+		mavenBuild.commandLine = [isWindows() ? "${sampleDir.absolutePath}/mvnw.cmd" : './mvnw', 'clean', 'package']
 		mavenBuild.dependsOn dependencies
 
 		mavenBuild.doFirst {
