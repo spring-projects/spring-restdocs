@@ -82,7 +82,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 		for (Entry<String, List<String>> header : request.getHeaders().entrySet()) {
 			for (String value : header.getValue()) {
-				if (header.getKey() == HttpHeaders.CONTENT_TYPE
+				if (HttpHeaders.CONTENT_TYPE.equals(header.getKey())
 						&& !request.getParts().isEmpty()) {
 					headers.add(header(header.getKey(),
 							String.format("%s; boundary=%s", value, MULTIPART_BOUNDARY)));
