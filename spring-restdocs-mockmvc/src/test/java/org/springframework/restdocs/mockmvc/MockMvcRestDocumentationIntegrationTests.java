@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -430,8 +430,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 			response.put("links", Arrays.asList(new Link("rel", "href")));
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("a", "alpha");
-			return new ResponseEntity<Map<String, Object>>(response, headers,
-					HttpStatus.OK);
+			return new ResponseEntity<>(response, headers, HttpStatus.OK);
 		}
 
 		@RequestMapping(value = "/company/5", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	private void validateHeaderDocumentation(Operation operation) {
 		List<HeaderDescriptor> missingHeaders = findMissingHeaders(operation);
 		if (!missingHeaders.isEmpty()) {
-			List<String> names = new ArrayList<String>();
+			List<String> names = new ArrayList<>();
 			for (HeaderDescriptor headerDescriptor : missingHeaders) {
 				names.add(headerDescriptor.getName());
 			}
@@ -94,7 +94,7 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	 * @return descriptors for the headers that are missing from the operation
 	 */
 	protected List<HeaderDescriptor> findMissingHeaders(Operation operation) {
-		List<HeaderDescriptor> missingHeaders = new ArrayList<HeaderDescriptor>();
+		List<HeaderDescriptor> missingHeaders = new ArrayList<>();
 		Set<String> actualHeaders = extractActualHeaders(operation);
 		for (HeaderDescriptor headerDescriptor : this.headerDescriptors) {
 			if (!headerDescriptor.isOptional()
@@ -132,7 +132,7 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	 * @return the model
 	 */
 	protected Map<String, Object> createModelForDescriptor(HeaderDescriptor descriptor) {
-		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<>();
 		model.put("name", descriptor.getName());
 		model.put("description", descriptor.getDescription());
 		model.put("optional", descriptor.isOptional());

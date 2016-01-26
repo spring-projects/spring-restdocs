@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	@Override
 	protected Map<String, Object> createModel(Operation operation) {
-		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<>();
 		model.put("method", operation.getRequest().getMethod());
 		model.put(
 				"path",
