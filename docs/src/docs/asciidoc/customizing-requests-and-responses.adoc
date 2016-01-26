@@ -12,7 +12,7 @@ example:
 
 [source,java,indent=0]
 ----
-include::{examples-dir}/com/example/PreprocessingPerTest.java[tags=preprocessing]
+include::{examples-dir}/com/example/PerTestPreprocessing.java[tags=preprocessing]
 ----
 <1> Apply a request preprocessor that will remove the header named `Foo`.
 <2> Apply a response preprocessor that will pretty print its content.
@@ -24,7 +24,7 @@ output directories>>:
 
 [source,java,indent=0]
 ----
-include::{examples-dir}/com/example/PreprocessingEveryTest.java[tags=setup]
+include::{examples-dir}/com/example/EveryTestPreprocessing.java[tags=setup]
 ----
 <1> Create the `RestDocumentationResultHandler`, configured to preprocess the request
 	and response.
@@ -36,7 +36,7 @@ test-specific. For example:
 
 [source,java,indent=0]
 ----
-include::{examples-dir}/com/example/PreprocessingEveryTest.java[tags=use]
+include::{examples-dir}/com/example/EveryTestPreprocessing.java[tags=use]
 ----
 <1> Document the links specific to the resource that is being tested
 <2> The `perform` call will automatically produce the documentation snippets due to the
