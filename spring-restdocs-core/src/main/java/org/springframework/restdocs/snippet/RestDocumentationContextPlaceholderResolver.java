@@ -26,7 +26,7 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * A {@link PlaceholderResolver} that resolves placeholders using a
  * {@link RestDocumentationContext}. The following placeholders are supported:
  * <ul>
- * <li>{@code step} – the {@link RestDocumentationContext#getStepCount() step current
+ * <li>{@code step} - the {@link RestDocumentationContext#getStepCount() step current
  * count}.
  * <li>{@code methodName} - the unmodified name of the
  * {@link RestDocumentationContext#getTestMethodName() current test method} without
