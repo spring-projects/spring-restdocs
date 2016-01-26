@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 final class JsonFieldProcessor {
 
 	boolean hasField(JsonFieldPath fieldPath, Object payload) {
-		final AtomicReference<Boolean> hasField = new AtomicReference<Boolean>(false);
+		final AtomicReference<Boolean> hasField = new AtomicReference<>(false);
 		traverse(new ProcessingContext(payload, fieldPath), new MatchCallback() {
 
 			@Override
@@ -45,7 +45,7 @@ final class JsonFieldProcessor {
 	}
 
 	Object extract(JsonFieldPath path, Object payload) {
-		final List<Object> matches = new ArrayList<Object>();
+		final List<Object> matches = new ArrayList<>();
 		traverse(new ProcessingContext(payload, path), new MatchCallback() {
 
 			@Override

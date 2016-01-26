@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,9 +84,9 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	private void verifyParameterDescriptors(Operation operation) {
 		Set<String> actualParameters = extractActualParameters(operation);
 		Set<String> expectedParameters = this.descriptorsByName.keySet();
-		Set<String> undocumentedParameters = new HashSet<String>(actualParameters);
+		Set<String> undocumentedParameters = new HashSet<>(actualParameters);
 		undocumentedParameters.removeAll(expectedParameters);
-		Set<String> missingParameters = new HashSet<String>(expectedParameters);
+		Set<String> missingParameters = new HashSet<>(expectedParameters);
 		missingParameters.removeAll(actualParameters);
 
 		if (!undocumentedParameters.isEmpty() || !missingParameters.isEmpty()) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 				if (message.length() > 0) {
 					message += String.format("%n");
 				}
-				List<String> paths = new ArrayList<String>();
+				List<String> paths = new ArrayList<>();
 				for (FieldDescriptor fieldDescriptor : missingFields) {
 					paths.add(fieldDescriptor.getPath());
 				}
@@ -170,7 +170,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @return the model
 	 */
 	protected Map<String, Object> createModelForDescriptor(FieldDescriptor descriptor) {
-		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<>();
 		model.put("path", descriptor.getPath());
 		model.put("type", descriptor.getType().toString());
 		model.put("description", descriptor.getDescription());

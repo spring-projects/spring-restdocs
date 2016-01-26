@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ final class IterableEnumeration<T> implements Iterable<T> {
 	 * @return the iterable
 	 */
 	static <T> Iterable<T> iterable(Enumeration<T> enumeration) {
-		return new IterableEnumeration<T>(enumeration);
+		return new IterableEnumeration<>(enumeration);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,22 +138,22 @@ public class JsonFieldProcessorTests {
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentNestedField() {
-		HashMap<String, Object> payload = new HashMap<String, Object>();
+		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", new HashMap<String, Object>());
 		this.fieldProcessor.extract(JsonFieldPath.compile("a.b"), payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentNestedFieldWhenParentIsNotAMap() {
-		HashMap<String, Object> payload = new HashMap<String, Object>();
+		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
 		this.fieldProcessor.extract(JsonFieldPath.compile("a.b"), payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentFieldWhenParentIsAnArray() {
-		HashMap<String, Object> payload = new HashMap<String, Object>();
-		HashMap<String, Object> alpha = new HashMap<String, Object>();
+		HashMap<String, Object> payload = new HashMap<>();
+		HashMap<String, Object> alpha = new HashMap<>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
 		this.fieldProcessor.extract(JsonFieldPath.compile("a.b.c"), payload);
@@ -161,21 +161,21 @@ public class JsonFieldProcessorTests {
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentArrayField() {
-		HashMap<String, Object> payload = new HashMap<String, Object>();
+		HashMap<String, Object> payload = new HashMap<>();
 		this.fieldProcessor.extract(JsonFieldPath.compile("a[]"), payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentArrayFieldAsTypeDoesNotMatch() {
-		HashMap<String, Object> payload = new HashMap<String, Object>();
+		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
 		this.fieldProcessor.extract(JsonFieldPath.compile("a[]"), payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentFieldBeneathAnArray() {
-		HashMap<String, Object> payload = new HashMap<String, Object>();
-		HashMap<String, Object> alpha = new HashMap<String, Object>();
+		HashMap<String, Object> payload = new HashMap<>();
+		HashMap<String, Object> alpha = new HashMap<>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
 		this.fieldProcessor.extract(JsonFieldPath.compile("a.b[].id"), payload);
