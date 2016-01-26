@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package com.example;
 
+import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -23,43 +25,17 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 
-import org.junit.Before;
-import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+public class PerTestPreprocessing {
 
-public class PreprocessingEveryTest {
-	
-	private WebApplicationContext context;
-	
 	private MockMvc mockMvc;
-	
-	private RestDocumentationResultHandler document;
-	
-	// tag::setup[]
-	@Before
-	public void setup() {
-		 this.document = document("{method-name}", // <1>
-				 preprocessRequest(removeHeaders("Foo")),
-				 preprocessResponse(prettyPrint()));
-		 this.mockMvc = MockMvcBuilders
-				 .webAppContextSetup(this.context)
-				 .alwaysDo(this.document) // <2>
-				 .build();
-	}
-	// end::setup[]	
 
-	public void use() throws Exception {
-		// tag::use[]
-		this.document.snippets( // <1>
-				links(linkWithRel("self").description("Canonical self link")));
-		this.mockMvc.perform(get("/")) // <2>
-			.andExpect(status().isOk()); 
-		// end::use[]
+	public void general() throws Exception {
+		// tag::preprocessing[]
+		this.mockMvc.perform(get("/")).andExpect(status().isOk())
+				.andDo(document("index", preprocessRequest(removeHeaders("Foo")), // <1>
+						preprocessResponse(prettyPrint()))); // <2>
+		// end::preprocessing[]
 	}
 
 }

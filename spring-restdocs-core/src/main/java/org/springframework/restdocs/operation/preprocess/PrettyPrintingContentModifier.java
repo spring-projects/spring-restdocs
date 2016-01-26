@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,9 +98,8 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 			SAXParser parser = parserFactory.newSAXParser();
 			XMLReader xmlReader = parser.getXMLReader();
 			xmlReader.setErrorHandler(new SilentErrorHandler());
-			SAXSource xmlInput = new SAXSource(xmlReader, new InputSource(
-					new ByteArrayInputStream(original)));
-			return xmlInput;
+			return new SAXSource(xmlReader, new InputSource(new ByteArrayInputStream(
+					original)));
 		}
 
 		private static final class SilentErrorListener implements ErrorListener {
@@ -108,18 +107,18 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 			@Override
 			public void warning(TransformerException exception)
 					throws TransformerException {
-
+				// Suppress
 			}
 
 			@Override
 			public void error(TransformerException exception) throws TransformerException {
-
+				// Suppress
 			}
 
 			@Override
 			public void fatalError(TransformerException exception)
 					throws TransformerException {
-
+				// Suppress
 			}
 
 		}
@@ -128,17 +127,17 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 			@Override
 			public void warning(SAXParseException exception) throws SAXException {
-
+				// Suppress
 			}
 
 			@Override
 			public void error(SAXParseException exception) throws SAXException {
-
+				// Suppress
 			}
 
 			@Override
 			public void fatalError(SAXParseException exception) throws SAXException {
-
+				// Suppress
 			}
 		}
 	}
