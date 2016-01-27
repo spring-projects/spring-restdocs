@@ -28,82 +28,14 @@ The code that produces the generated snippets can be found in `src/test/java`.
 [[getting-started-build-configuration]]
 === Build configuration
 
-The first step in using Spring REST Docs is to configure your project's build.
+The first step in using Spring REST Docs is to configure your project's build. The
+{samples}/rest-notes-spring-hateoas[Spring HATEOAS] and
+{samples}/rest-notes-spring-data-rest[Spring Data REST] samples contain a `build.gradle`
+and `pom.xml` respectively that you may wish to use as a reference. The key parts of
+the configuration are described below.
 
-
-
-[[getting-started-build-configuration-gradle]]
-==== Gradle build configuration
-
-The {samples}/rest-notes-spring-hateoas[Spring HATEOAS sample] contains a `build.gradle`
-file that you may wish to use as a reference. The key parts of the configuration are
-described below.
-
-[source,groovy,indent=0,subs="verbatim,attributes"]
-----
-	plugins { <1>
-		id "org.asciidoctor.convert" version "1.5.2"
-	}
-
-	dependencies { <2>
-		testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}'
-	}
-
-	ext { <3>
-		snippetsDir = file('build/generated-snippets')
-	}
-
-	test { <4>
-		outputs.dir snippetsDir
-	}
-
-	asciidoctor { <5>
-		attributes 'snippets': snippetsDir <6>
-		inputs.dir snippetsDir <7>
-		dependsOn test <8>
-	}
-----
-<1> Apply the Asciidoctor plugin.
-<2> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration.
-<3> Configure a property to define the output location for generated snippets.
-<4> Configure the `test` task to add the snippets directory as an output.
-<5> Configure the `asciidoctor` task
-<6> Define an attribute named `snippets` that can be used when including the generated
-	snippets in your documentation.
-<7> Configure the snippets directory as an input.
-<8> Make the task depend on the test task so that the tests are run before the
-	documentation is created.
-
-
-[[getting-started-build-configuration-gradle-packaging-the-documentation]]
-==== Packaging the documentation
-
-You may want to package the generated documentation in your project's jar file, for
-example to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
-static content] by Spring Boot. You can do so by configuring the `jar` task to depend on
-the `asciidoctor` task and to copy the generated documentation into the jar's static
-directory:
-
-[source,groovy,indent=0]
-----
-	jar {
-		dependsOn asciidoctor
-		from ("${asciidoctor.outputDir}/html5") {
-			into 'static/docs'
-		}
-	}
-----
-
-
-
-[[getting-started-build-configuration-maven]]
-==== Maven build configuration
-
-The {samples}/rest-notes-spring-data-rest[Spring Data REST sample] contains a `pom.xml`
-file that you may wish to use as a reference. The key parts of the configuration are
-described below.
-
-[source,xml,indent=0,subs="verbatim,attributes"]
+[source,xml,indent=0,subs="verbatim,attributes",role="primary"]
+.Maven
 ----
 	<dependency> <1>
 		<groupId>org.springframework.restdocs</groupId>
@@ -150,7 +82,6 @@ described below.
 			</plugin>
 		</plugins>
 	</build>
-
 ----
 <1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope.
 <2> Configure a property to define the output location for generated snippets.
@@ -163,19 +94,55 @@ described below.
 <<getting-started-build-configuration-maven-packaging, package the documentation>> in your
 project's jar you should use the `prepare-package` phase.
 
-[[getting-started-build-configuration-maven-packaging]]
+[source,groovy,indent=0,subs="verbatim,attributes",role="secondary"]
+.Gradle
+----
+	plugins { <1>
+		id "org.asciidoctor.convert" version "1.5.2"
+	}
+
+	dependencies { <2>
+		testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}'
+	}
+
+	ext { <3>
+		snippetsDir = file('build/generated-snippets')
+	}
+
+	test { <4>
+		outputs.dir snippetsDir
+	}
+
+	asciidoctor { <5>
+		attributes 'snippets': snippetsDir <6>
+		inputs.dir snippetsDir <7>
+		dependsOn test <8>
+	}
+----
+<1> Apply the Asciidoctor plugin.
+<2> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration.
+<3> Configure a property to define the output location for generated snippets.
+<4> Configure the `test` task to add the snippets directory as an output.
+<5> Configure the `asciidoctor` task
+<6> Define an attribute named `snippets` that can be used when including the generated
+	snippets in your documentation.
+<7> Configure the snippets directory as an input.
+<8> Make the task depend on the test task so that the tests are run before the
+	documentation is created.
+
+
+[[getting-started-build-configuration-gradle-packaging-the-documentation]]
 ==== Packaging the documentation
 
 You may want to package the generated documentation in your project's jar file, for
 example to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
-static content] by Spring Boot.
+static content] by Spring Boot. To do so, configure your project's build so that:
 
-First, configure the Asciidoctor plugin so that it runs in the `prepare-package` phase, as
-<<getting-started-build-configuration-maven-plugin-phase, described above>>. Now configure
-Maven's resources plugin to copy the generated documentation into a location where it'll
-be included in the project's jar:
+1. The documentation is generated before the jar is built
+2. The generated documentation is included in the jar
 
-[source,xml,indent=0]
+[source,xml,indent=0,role="primary",role="primary"]
+.Maven
 ----
 	<plugin> <1>
 		<groupId>org.asciidoctor</groupId>
@@ -192,7 +159,7 @@ be included in the project's jar:
 				<goals>
 					<goal>copy-resources</goal>
 				</goals>
-				<configuration>
+				<configuration> <3>
 					<outputDirectory>
 						${project.build.outputDirectory}/static/docs
 					</outputDirectory>
@@ -211,7 +178,22 @@ be included in the project's jar:
 <1> The existing declaration for the Asciidoctor plugin.
 <2> The resource plugin must be declared after the Asciidoctor plugin as they are bound
 to the same phase (`prepare-package`) and the resource plugin must run after the
-Asciidoctor plugin.
+Asciidoctor plugin to ensure that the documentation is generated before it's copied.
+<3> Copy the generated documentation into the build output's `static/docs` directory,
+from where it will be included in the jar file.
+
+[source,groovy,indent=0,role="secondary"]
+.Gradle
+----
+	jar {
+		dependsOn asciidoctor <1>
+		from ("${asciidoctor.outputDir}/html5") { <2>
+			into 'static/docs'
+		}
+	}
+----
+<1> Ensure that the documentation has been generated before the jar is built.
+<2> Copy the generated documentation into the jar's `static/docs` directory.
 
 
 
