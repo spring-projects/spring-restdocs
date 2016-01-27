@@ -265,7 +265,7 @@ a `RestDocumentationResultHandler`. An instance of this class can be obtained fr
 static `document` method on
 `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
 
-By default, three snippets a written:
+By default, three snippets are written:
 
  * `<output-directory>/index/curl-request.adoc`
  * `<output-directory>/index/http-request.adoc`
