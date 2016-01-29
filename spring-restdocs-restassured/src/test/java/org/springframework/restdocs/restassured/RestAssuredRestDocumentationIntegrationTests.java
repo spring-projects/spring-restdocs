@@ -70,6 +70,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.restassured.operation.preprocess.RestAssuredPreprocessors.modifyUris;
+import static org.springframework.restdocs.snippet.SnippetFormats.asciidoctor;
 import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
@@ -114,8 +115,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
-				is(snippet().withContents(
-						codeBlock("bash").content(
+				is(snippet(asciidoctor()).withContents(
+						codeBlock(asciidoctor(), "bash").content(
 								"$ curl 'http://localhost:" + this.port + "/' -i "
 										+ "-X POST -H 'Accept: application/json' "
 										+ "-H 'Content-Type: " + contentType + "' "
@@ -133,8 +134,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
-				is(snippet().withContents(
-						codeBlock("bash").content(
+				is(snippet(asciidoctor()).withContents(
+						codeBlock(asciidoctor(), "bash").content(
 								"$ curl " + "'http://localhost:" + this.port
 										+ "/?foo=bar' -i -X POST "
 										+ "-H 'Accept: application/json' "
@@ -261,9 +262,9 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.then().statusCode(200);
 		assertThat(
 				new File("build/generated-snippets/original-request/http-request.adoc"),
-				is(snippet()
+				is(snippet(asciidoctor())
 						.withContents(
-								httpRequest(RequestMethod.GET, "/")
+								httpRequest(asciidoctor(), RequestMethod.GET, "/")
 										.header("a", "alpha")
 										.header("b", "bravo")
 										.header("Accept",
@@ -277,9 +278,9 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-request/http-request.adoc"),
-				is(snippet()
+				is(snippet(asciidoctor())
 						.withContents(
-								httpRequest(RequestMethod.GET, "/")
+								httpRequest(asciidoctor(), RequestMethod.GET, "/")
 										.header("b", "bravo")
 										.header("Accept",
 												MediaType.APPLICATION_JSON_VALUE)
@@ -308,8 +309,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-response/http-response.adoc"),
-				is(snippet().withContents(
-						httpResponse(HttpStatus.OK)
+				is(snippet(asciidoctor()).withContents(
+						httpResponse(asciidoctor(), HttpStatus.OK)
 								.header("Foo", "https://api.example.com/foo/bar")
 								.header("Content-Type", "application/json;charset=UTF-8")
 								.header(HttpHeaders.CONTENT_LENGTH,
@@ -335,7 +336,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		}
 		assertThat(new File(
 				"build/generated-snippets/custom-snippet-template/curl-request.adoc"),
-				is(snippet().withContents(equalTo("Custom curl request"))));
+				is(snippet(asciidoctor()).withContents(equalTo("Custom curl request"))));
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {

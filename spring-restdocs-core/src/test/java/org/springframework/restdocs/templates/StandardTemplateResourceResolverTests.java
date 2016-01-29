@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.springframework.core.io.Resource;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.springframework.restdocs.snippet.SnippetFormats.asciidoctor;
 
 /**
  * Tests for {@link TemplateResourceResolver}.
@@ -40,7 +41,8 @@ public class StandardTemplateResourceResolverTests {
 	@Rule
 	public final ExpectedException thrown = ExpectedException.none();
 
-	private final TemplateResourceResolver resolver = new StandardTemplateResourceResolver();
+	private final TemplateResourceResolver resolver = new StandardTemplateResourceResolver(
+			asciidoctor());
 
 	private final TestClassLoader classLoader = new TestClassLoader();
 
@@ -66,7 +68,7 @@ public class StandardTemplateResourceResolverTests {
 	@Test
 	public void fallsBackToDefaultSnippet() throws Exception {
 		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/default-test.snippet", getClass()
+				"org/springframework/restdocs/templates/adoc/test.snippet", getClass()
 						.getResource("test.snippet"));
 		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
 				new Callable<Resource>() {

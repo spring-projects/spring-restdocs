@@ -51,8 +51,8 @@ public final class RestAssuredRestDocumentationConfigurer
 
 	RestAssuredRestDocumentationConfigurer(RestDocumentation restDocumentation) {
 		this.restDocumentation = restDocumentation;
-		this.configurers = Arrays.asList(getTemplateEngineConfigurer(),
-				getWriterResolverConfigurer(), snippets());
+		this.configurers = Arrays.asList(snippets(), getTemplateEngineConfigurer(),
+				getWriterResolverConfigurer());
 	}
 
 	@Override

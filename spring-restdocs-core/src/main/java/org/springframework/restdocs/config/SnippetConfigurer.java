@@ -24,7 +24,8 @@ import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.curl.CurlDocumentation;
 import org.springframework.restdocs.http.HttpDocumentation;
 import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.restdocs.snippet.WriterResolver;
+import org.springframework.restdocs.snippet.SnippetFormat;
+import org.springframework.restdocs.snippet.SnippetFormats;
 
 /**
  * A configurer that can be used to configure the generated documentation snippets.
@@ -51,7 +52,17 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 	 */
 	public static final String DEFAULT_SNIPPET_ENCODING = "UTF-8";
 
+	/**
+	 * The default format for documentation snippets.
+	 *
+	 * @see #withFormat(SnippetFormat)
+	 */
+	public static final SnippetFormat DEFAULT_SNIPPET_FORMAT = SnippetFormats
+			.asciidoctor();
+
 	private String snippetEncoding = DEFAULT_SNIPPET_ENCODING;
+
+	private SnippetFormat snippetFormat = DEFAULT_SNIPPET_FORMAT;
 
 	/**
 	 * Creates a new {@code SnippetConfigurer} with the given {@code parent}.
@@ -64,8 +75,8 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 
 	@Override
 	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
-		((WriterResolver) configuration.get(WriterResolver.class.getName()))
-				.setEncoding(this.snippetEncoding);
+		configuration.put(SnippetConfiguration.class.getName(), new SnippetConfiguration(
+				this.snippetEncoding, this.snippetFormat));
 		configuration.put(ATTRIBUTE_DEFAULT_SNIPPETS, this.defaultSnippets);
 	}
 
@@ -93,4 +104,17 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 		this.defaultSnippets = Arrays.asList(defaultSnippets);
 		return (T) this;
 	}
+
+	/**
+	 * Configures the format of the documentation snippets.
+	 *
+	 * @param format the snippet format
+	 * @return {@code this}
+	 */
+	@SuppressWarnings("unchecked")
+	public T withFormat(SnippetFormat format) {
+		this.snippetFormat = format;
+		return (T) this;
+	}
+
 }

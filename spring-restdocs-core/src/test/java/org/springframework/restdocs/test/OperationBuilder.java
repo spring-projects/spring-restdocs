@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.StandardOperation;
 import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
+import org.springframework.restdocs.snippet.SnippetFormat;
+import org.springframework.restdocs.snippet.SnippetFormats;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
@@ -58,11 +60,18 @@ public class OperationBuilder {
 
 	private final File outputDirectory;
 
+	private final SnippetFormat snippetFormat;
+
 	private OperationRequestBuilder requestBuilder;
 
 	public OperationBuilder(String name, File outputDirectory) {
+		this(name, outputDirectory, SnippetFormats.asciidoctor());
+	}
+
+	public OperationBuilder(String name, File outputDirectory, SnippetFormat snippetFormat) {
 		this.name = name;
 		this.outputDirectory = outputDirectory;
+		this.snippetFormat = snippetFormat;
 	}
 
 	public OperationRequestBuilder request(String uri) {
@@ -82,13 +91,15 @@ public class OperationBuilder {
 	public Operation build() {
 		if (this.attributes.get(TemplateEngine.class.getName()) == null) {
 			this.attributes.put(TemplateEngine.class.getName(),
-					new MustacheTemplateEngine(new StandardTemplateResourceResolver()));
+					new MustacheTemplateEngine(new StandardTemplateResourceResolver(
+							this.snippetFormat)));
 		}
 		RestDocumentationContext context = new RestDocumentationContext(null, null,
 				this.outputDirectory);
 		this.attributes.put(RestDocumentationContext.class.getName(), context);
 		this.attributes.put(WriterResolver.class.getName(), new StandardWriterResolver(
-				new RestDocumentationContextPlaceholderResolver(context)));
+				new RestDocumentationContextPlaceholderResolver(context), "UTF-8",
+				this.snippetFormat));
 		return new StandardOperation(this.name,
 				(this.requestBuilder == null ? new OperationRequestBuilder(
 						"http://localhost/").buildRequest() : this.requestBuilder

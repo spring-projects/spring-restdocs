@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,26 +19,20 @@ package org.springframework.restdocs.headers;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.AbstractSnippetTests;
+import org.springframework.restdocs.snippet.SnippetFormat;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 
 /**
  * Tests for {@link RequestHeadersSnippet}.
@@ -46,13 +40,11 @@ import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
  * @author Andreas Evers
  * @author Andy Wilkinson
  */
-public class RequestHeadersSnippetTests {
+public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 
-	@Rule
-	public final ExpectedException thrown = ExpectedException.none();
-
-	@Rule
-	public final ExpectedSnippet snippet = new ExpectedSnippet();
+	public RequestHeadersSnippetTests(String name, SnippetFormat snippetFormat) {
+		super(name, snippetFormat);
+	}
 
 	@Test
 	public void requestWithHeaders() throws IOException {
@@ -67,14 +59,13 @@ public class RequestHeadersSnippetTests {
 						.description("three"), headerWithName("Accept-Language")
 						.description("four"), headerWithName("Cache-Control")
 						.description("five"),
-				headerWithName("Connection").description("six")))
-				.document(new OperationBuilder("request-with-headers", this.snippet
-						.getOutputDirectory()).request("http://localhost")
-						.header("X-Test", "test").header("Accept", "*/*")
-						.header("Accept-Encoding", "gzip, deflate")
-						.header("Accept-Language", "en-US,en;q=0.5")
-						.header("Cache-Control", "max-age=0")
-						.header("Connection", "keep-alive").build());
+				headerWithName("Connection").description("six"))).document(operationBuilder(
+				"request-with-headers").request("http://localhost")
+				.header("X-Test", "test").header("Accept", "*/*")
+				.header("Accept-Encoding", "gzip, deflate")
+				.header("Accept-Language", "en-US,en;q=0.5")
+				.header("Cache-Control", "max-age=0").header("Connection", "keep-alive")
+				.build());
 	}
 
 	@Test
@@ -83,8 +74,7 @@ public class RequestHeadersSnippetTests {
 				.expectRequestHeaders("case-insensitive-request-headers")
 				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one"));
 		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
-				"one"))).document(new OperationBuilder(
-				"case-insensitive-request-headers", this.snippet.getOutputDirectory())
+				"one"))).document(operationBuilder("case-insensitive-request-headers")
 				.request("/").header("X-test", "test").build());
 	}
 
@@ -97,37 +87,28 @@ public class RequestHeadersSnippetTests {
 	}
 
 	@Test
-	public void missingRequestHeader() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(equalTo("Headers with the following names were not found"
-						+ " in the request: [Accept]"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description(
-				"one"))).document(new OperationBuilder("missing-request-headers",
-				this.snippet.getOutputDirectory()).request("http://localhost").build());
-	}
-
-	@Test
-	public void undocumentedRequestHeaderAndMissingRequestHeader() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(endsWith("Headers with the following names were not found"
-						+ " in the request: [Accept]"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description(
-				"one"))).document(new OperationBuilder(
-				"undocumented-request-header-and-missing-request-header", this.snippet
-						.getOutputDirectory()).request("http://localhost")
-				.header("X-Test", "test").build());
+	public void requestHeadersWithCustomAttributes() throws IOException {
+		this.snippet.expectRequestHeaders("request-headers-with-custom-attributes")
+				.withContents(containsString("Custom title"));
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("request-headers")).willReturn(
+				snippetResource("request-headers-with-title"));
+		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
+				"one")), attributes(key("title").value("Custom title")))
+				.document(operationBuilder("request-headers-with-custom-attributes")
+						.attribute(TemplateEngine.class.getName(),
+								new MustacheTemplateEngine(resolver))
+						.request("http://localhost").header("X-Test", "test").build());
 	}
 
 	@Test
 	public void requestHeadersWithCustomDescriptorAttributes() throws IOException {
-		this.snippet.expectRequestHeaders("request-headers-with-custom-attributes")
-				.withContents(//
-						tableWithHeader("Name", "Description", "Foo")
-								.row("X-Test", "one", "alpha")
-								.row("Accept-Encoding", "two", "bravo")
-								.row("Accept", "three", "charlie"));
+		this.snippet.expectRequestHeaders(
+				"request-headers-with-custom-descriptor-attributes").withContents(//
+				tableWithHeader("Name", "Description", "Foo")
+						.row("X-Test", "one", "alpha")
+						.row("Accept-Encoding", "two", "bravo")
+						.row("Accept", "three", "charlie"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-headers")).willReturn(
 				snippetResource("request-headers-with-extra-column"));
@@ -137,34 +118,12 @@ public class RequestHeadersSnippetTests {
 				headerWithName("Accept-Encoding").description("two").attributes(
 						key("foo").value("bravo")),
 				headerWithName("Accept").description("three").attributes(
-						key("foo").value("charlie")))).document(new OperationBuilder(
-				"request-headers-with-custom-attributes", this.snippet
-						.getOutputDirectory())
+						key("foo").value("charlie")))).document(operationBuilder(
+				"request-headers-with-custom-descriptor-attributes")
 				.attribute(TemplateEngine.class.getName(),
 						new MustacheTemplateEngine(resolver)).request("http://localhost")
 				.header("X-Test", "test").header("Accept-Encoding", "gzip, deflate")
 				.header("Accept", "*/*").build());
-	}
-
-	@Test
-	public void requestHeadersWithCustomAttributes() throws IOException {
-		this.snippet.expectRequestHeaders("request-headers-with-custom-attributes")
-				.withContents(startsWith(".Custom title"));
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-headers")).willReturn(
-				snippetResource("request-headers-with-title"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
-				"one")), attributes(key("title").value("Custom title")))
-				.document(new OperationBuilder("request-headers-with-custom-attributes",
-						this.snippet.getOutputDirectory())
-						.attribute(TemplateEngine.class.getName(),
-								new MustacheTemplateEngine(resolver))
-						.request("http://localhost").header("X-Test", "test").build());
-	}
-
-	private FileSystemResource snippetResource(String name) {
-		return new FileSystemResource("src/test/resources/custom-snippet-templates/"
-				+ name + ".snippet");
 	}
 
 }

@@ -93,13 +93,20 @@ public abstract class RestDocumentationConfigurer<S, T> {
 
 	private static final class TemplateEngineConfigurer extends AbstractConfigurer {
 
-		private TemplateEngine templateEngine = new MustacheTemplateEngine(
-				new StandardTemplateResourceResolver());
+		private TemplateEngine templateEngine;
 
 		@Override
 		public void apply(Map<String, Object> configuration,
 				RestDocumentationContext context) {
-			configuration.put(TemplateEngine.class.getName(), this.templateEngine);
+			TemplateEngine engineToUse = this.templateEngine;
+			if (engineToUse == null) {
+				SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
+						.get(SnippetConfiguration.class.getName());
+				engineToUse = new MustacheTemplateEngine(
+						new StandardTemplateResourceResolver(
+								snippetConfiguration.getFormat()));
+			}
+			configuration.put(TemplateEngine.class.getName(), engineToUse);
 		}
 
 		private void setTemplateEngine(TemplateEngine templateEngine) {
@@ -117,8 +124,12 @@ public abstract class RestDocumentationConfigurer<S, T> {
 				RestDocumentationContext context) {
 			WriterResolver resolverToUse = this.writerResolver;
 			if (resolverToUse == null) {
+				SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
+						.get(SnippetConfiguration.class.getName());
 				resolverToUse = new StandardWriterResolver(
-						new RestDocumentationContextPlaceholderResolver(context));
+						new RestDocumentationContextPlaceholderResolver(context),
+						snippetConfiguration.getEncoding(),
+						snippetConfiguration.getFormat());
 			}
 			configuration.put(WriterResolver.class.getName(), resolverToUse);
 		}

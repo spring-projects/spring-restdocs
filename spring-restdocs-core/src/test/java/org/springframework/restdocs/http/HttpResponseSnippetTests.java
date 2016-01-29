@@ -18,24 +18,21 @@ package org.springframework.restdocs.http;
 
 import java.io.IOException;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.AbstractSnippetTests;
+import org.springframework.restdocs.snippet.SnippetFormat;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.ExpectedSnippet;
-import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 
 /**
  * Tests for {@link HttpResponseSnippet}.
@@ -43,25 +40,24 @@ import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
  */
-public class HttpResponseSnippetTests {
+public class HttpResponseSnippetTests extends AbstractSnippetTests {
 
-	@Rule
-	public final ExpectedSnippet snippet = new ExpectedSnippet();
+	public HttpResponseSnippetTests(String name, SnippetFormat snippetFormat) {
+		super(name, snippetFormat);
+	}
 
 	@Test
 	public void basicResponse() throws IOException {
 		this.snippet.expectHttpResponse("basic-response").withContents(
 				httpResponse(HttpStatus.OK));
-		new HttpResponseSnippet().document(new OperationBuilder("basic-response",
-				this.snippet.getOutputDirectory()).build());
+		new HttpResponseSnippet().document(operationBuilder("basic-response").build());
 	}
 
 	@Test
 	public void nonOkResponse() throws IOException {
 		this.snippet.expectHttpResponse("non-ok-response").withContents(
 				httpResponse(HttpStatus.BAD_REQUEST));
-		new HttpResponseSnippet().document(new OperationBuilder("non-ok-response",
-				this.snippet.getOutputDirectory()).response()
+		new HttpResponseSnippet().document(operationBuilder("non-ok-response").response()
 				.status(HttpStatus.BAD_REQUEST.value()).build());
 	}
 
@@ -70,8 +66,7 @@ public class HttpResponseSnippetTests {
 		this.snippet.expectHttpResponse("response-with-headers").withContents(
 				httpResponse(HttpStatus.OK).header("Content-Type", "application/json")
 						.header("a", "alpha"));
-		new HttpResponseSnippet().document(new OperationBuilder("response-with-headers",
-				this.snippet.getOutputDirectory()).response()
+		new HttpResponseSnippet().document(operationBuilder("response-with-headers").response()
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.header("a", "alpha").build());
 	}
@@ -82,8 +77,8 @@ public class HttpResponseSnippetTests {
 		this.snippet.expectHttpResponse("response-with-content").withContents(
 				httpResponse(HttpStatus.OK).content(content).header(
 						HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
-		new HttpResponseSnippet().document(new OperationBuilder("response-with-content",
-				this.snippet.getOutputDirectory()).response().content(content).build());
+		new HttpResponseSnippet().document(operationBuilder("response-with-content").response()
+				.content(content).build());
 	}
 
 	@Test
@@ -95,8 +90,7 @@ public class HttpResponseSnippetTests {
 						.header("Content-Type", "text/plain;charset=UTF-8")
 						.content(japaneseContent)
 						.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length));
-		new HttpResponseSnippet().document(new OperationBuilder("response-with-charset",
-				this.snippet.getOutputDirectory()).response()
+		new HttpResponseSnippet().document(operationBuilder("response-with-charset").response()
 				.header("Content-Type", "text/plain;charset=UTF-8").content(contentBytes)
 				.build());
 	}
@@ -106,13 +100,10 @@ public class HttpResponseSnippetTests {
 		this.snippet.expectHttpResponse("response-with-snippet-attributes").withContents(
 				containsString("Title for the response"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("http-response"))
-				.willReturn(
-						new FileSystemResource(
-								"src/test/resources/custom-snippet-templates/http-response-with-title.snippet"));
+		given(resolver.resolveTemplateResource("http-response")).willReturn(
+				snippetResource("http-response-with-title"));
 		new HttpResponseSnippet(attributes(key("title").value("Title for the response")))
-				.document(new OperationBuilder("response-with-snippet-attributes",
-						this.snippet.getOutputDirectory()).attribute(
+				.document(operationBuilder("response-with-snippet-attributes").attribute(
 						TemplateEngine.class.getName(),
 						new MustacheTemplateEngine(resolver)).build());
 	}

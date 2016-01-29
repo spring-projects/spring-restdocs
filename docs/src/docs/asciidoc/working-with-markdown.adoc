@@ -1,0 +1,28 @@
+[[working-with-markdown]]
+== Working with Markdown
+
+This section describes any aspects of working with Markdown that are particularly
+relevant to Spring REST Docs.
+
+
+
+[[working-with-markdown-limitations]]
+=== Limitations
+
+Markdown was originally designed for people writing for the web and, as such, isn't
+as well-suited to writing documentation as Asciidoctor. Typically, these limitations
+are overcome by using another tool that builds on top of Markdown.
+
+Markdown has no official support for tables. Spring REST Docs' default Markdown snippet
+templates use https://michelf.ca/projects/php-markdown/extra/#table[Markdown Extra's table
+format].
+
+
+
+[[working-with-markdown-including-snippets]]
+=== Including snippets
+
+Markdown has no built-in support for including one Markdown file in another. To include
+the generated snippets of Markdown in your documentation, you should use an additional
+tool that supports this functionality. One example that's particularly well-suited to
+documenting APIs is https://github.com/tripit/slate[Slate].

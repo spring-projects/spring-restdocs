@@ -23,6 +23,7 @@ import org.hamcrest.Matcher;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.springframework.restdocs.snippet.SnippetFormat;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.restdocs.test.SnippetMatchers.SnippetMatcher;
 
@@ -38,13 +39,20 @@ import static org.junit.Assert.assertThat;
  */
 public class ExpectedSnippet implements TestRule {
 
+	private final SnippetFormat snippetFormat;
+
+	private final SnippetMatcher snippet;
+
 	private String expectedName;
 
 	private String expectedType;
 
-	private SnippetMatcher snippet = SnippetMatchers.snippet();
-
 	private File outputDirectory;
+
+	public ExpectedSnippet(SnippetFormat snippetFormat) {
+		this.snippetFormat = snippetFormat;
+		this.snippet = SnippetMatchers.snippet(snippetFormat);
+	}
 
 	@Override
 	public Statement apply(final Statement base, Description description) {
@@ -56,7 +64,8 @@ public class ExpectedSnippet implements TestRule {
 	private void verifySnippet() throws IOException {
 		if (this.outputDirectory != null && this.expectedName != null) {
 			File snippetDir = new File(this.outputDirectory, this.expectedName);
-			File snippetFile = new File(snippetDir, this.expectedType + ".adoc");
+			File snippetFile = new File(snippetDir, this.expectedType + "."
+					+ this.snippetFormat.getFileExtension());
 			assertThat(snippetFile, is(this.snippet));
 		}
 	}

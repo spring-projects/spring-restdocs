@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,29 +33,54 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  */
 public final class StandardWriterResolver implements WriterResolver {
 
-	private String encoding = "UTF-8";
-
 	private final PlaceholderResolver placeholderResolver;
 
 	private final PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper(
 			"{", "}");
 
+	private String encoding = "UTF-8";
+
+	private SnippetFormat snippetFormat;
+
 	/**
 	 * Creates a new {@code StandardWriterResolver} that will use the given
 	 * {@code placeholderResolver} to resolve any placeholders in the
-	 * {@code operationName}.
+	 * {@code operationName}. Writers will use {@code UTF-8} encoding and, when writing to
+	 * a file, will use a filename appropriate for Asciidoctor content.
 	 *
 	 * @param placeholderResolver the placeholder resolver
+	 * @deprecated since 1.1.0 in favor of
+	 * {@link #StandardWriterResolver(PropertyPlaceholderHelper.PlaceholderResolver, String, SnippetFormat)}
 	 */
+	@Deprecated
 	public StandardWriterResolver(PlaceholderResolver placeholderResolver) {
+		this(placeholderResolver, "UTF-8", SnippetFormats.asciidoctor());
+	}
+
+	/**
+	 * Creates a new {@code StandardWriterResolver} that will use the given
+	 * {@code placeholderResolver} to resolve any placeholders in the
+	 * {@code operationName}. Writers will use the given {@code encoding} and, when
+	 * writing to a file, will use a filename appropriate for content in the given
+	 * {@code snippetFormat}.
+	 *
+	 * @param placeholderResolver the placeholder resolver
+	 * @param encoding the encoding
+	 * @param snippetFormat the snippet format
+	 */
+	public StandardWriterResolver(PlaceholderResolver placeholderResolver,
+			String encoding, SnippetFormat snippetFormat) {
 		this.placeholderResolver = placeholderResolver;
+		this.encoding = encoding;
+		this.snippetFormat = snippetFormat;
 	}
 
 	@Override
 	public Writer resolve(String operationName, String snippetName,
 			RestDocumentationContext context) throws IOException {
 		File outputFile = resolveFile(this.propertyPlaceholderHelper.replacePlaceholders(
-				operationName, this.placeholderResolver), snippetName + ".adoc", context);
+				operationName, this.placeholderResolver), snippetName + "."
+				+ this.snippetFormat.getFileExtension(), context);
 
 		if (outputFile != null) {
 			createDirectoriesIfNecessary(outputFile);
@@ -95,4 +120,5 @@ public final class StandardWriterResolver implements WriterResolver {
 			throw new IllegalStateException("Failed to create directory '" + parent + "'");
 		}
 	}
+
 }

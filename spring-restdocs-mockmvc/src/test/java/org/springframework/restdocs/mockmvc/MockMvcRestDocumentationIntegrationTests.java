@@ -75,6 +75,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.restdocs.snippet.SnippetFormats.asciidoctor;
+import static org.springframework.restdocs.snippet.SnippetFormats.markdown;
 import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
@@ -124,16 +126,31 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void markdownSnippetGeneration() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders
+				.webAppContextSetup(this.context)
+				.apply(new MockMvcRestDocumentationConfigurer(this.restDocumentation)
+						.snippets().withEncoding("UTF-8").withFormat(markdown())).build();
+
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(document("basic-markdown"));
+		assertExpectedSnippetFilesExist(new File(
+				"build/generated-snippets/basic-markdown"), "http-request.md",
+				"http-response.md", "curl-request.md");
+	}
+
+	@Test
 	public void curlSnippetWithContent() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
 
 		mockMvc.perform(post("/").accept(MediaType.APPLICATION_JSON).content("content"))
 				.andExpect(status().isOk()).andDo(document("curl-snippet-with-content"));
-		assertThat(new File(
-				"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
-				is(snippet().withContents(
-						codeBlock("bash").content(
+		assertThat(
+				new File(
+						"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
+				is(snippet(asciidoctor()).withContents(
+						codeBlock(asciidoctor(), "bash").content(
 								"$ curl " + "'http://localhost:8080/' -i -X POST "
 										+ "-H 'Accept: application/json' -d 'content'"))));
 	}
@@ -150,8 +167,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
-				is(snippet().withContents(
-						codeBlock("bash").content(
+				is(snippet(asciidoctor()).withContents(
+						codeBlock(asciidoctor(), "bash").content(
 								"$ curl "
 										+ "'http://localhost:8080/?foo=bar' -i -X POST "
 										+ "-H 'Accept: application/json' -d 'a=alpha'"))));
@@ -298,9 +315,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 
 		assertThat(
 				new File("build/generated-snippets/original-request/http-request.adoc"),
-				is(snippet().withContents(
-						httpRequest(RequestMethod.GET, "/").header("a", "alpha")
-								.header("b", "bravo")
+				is(snippet(asciidoctor()).withContents(
+						httpRequest(asciidoctor(), RequestMethod.GET, "/")
+								.header("a", "alpha").header("b", "bravo")
 								.header("Content-Type", "application/json")
 								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
 								.header("Host", "localhost")
@@ -310,8 +327,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-request/http-request.adoc"),
-				is(snippet().withContents(
-						httpRequest(RequestMethod.GET, "/").header("b", "bravo")
+				is(snippet(asciidoctor()).withContents(
+						httpRequest(asciidoctor(), RequestMethod.GET, "/")
+								.header("b", "bravo")
 								.header("Content-Type", "application/json")
 								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
 								.content(prettyPrinted))));
@@ -337,8 +355,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 				+ "\"href\":\"href\"}]}";
 		assertThat(
 				new File("build/generated-snippets/original-response/http-response.adoc"),
-				is(snippet().withContents(
-						httpResponse(HttpStatus.OK)
+				is(snippet(asciidoctor()).withContents(
+						httpResponse(asciidoctor(), HttpStatus.OK)
 								.header("a", "alpha")
 								.header("Content-Type", "application/json")
 								.header(HttpHeaders.CONTENT_LENGTH,
@@ -348,8 +366,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-response/http-response.adoc"),
-				is(snippet().withContents(
-						httpResponse(HttpStatus.OK)
+				is(snippet(asciidoctor()).withContents(
+						httpResponse(asciidoctor(), HttpStatus.OK)
 								.header("Content-Type", "application/json")
 								.header(HttpHeaders.CONTENT_LENGTH,
 										prettyPrinted.getBytes().length)
@@ -376,7 +394,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 		}
 		assertThat(new File(
 				"build/generated-snippets/custom-snippet-template/curl-request.adoc"),
-				is(snippet().withContents(equalTo("Custom curl request"))));
+				is(snippet(asciidoctor()).withContents(equalTo("Custom curl request"))));
 
 		mockMvc.perform(get("/")).andDo(
 				document(
@@ -395,9 +413,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andExpect(status().isOk()).andDo(document("custom-context-path"));
 		assertThat(
 				new File("build/generated-snippets/custom-context-path/curl-request.adoc"),
-				is(snippet()
+				is(snippet(asciidoctor())
 						.withContents(
-								codeBlock("bash")
+								codeBlock(asciidoctor(), "bash")
 										.content(
 												"$ curl 'http://localhost:8080/custom/' -i -H 'Accept: application/json'"))));
 	}

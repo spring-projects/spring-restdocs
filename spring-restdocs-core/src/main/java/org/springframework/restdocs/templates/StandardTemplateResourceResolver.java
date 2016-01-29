@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,44 @@ package org.springframework.restdocs.templates;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.restdocs.snippet.SnippetFormat;
+import org.springframework.restdocs.snippet.SnippetFormats;
 
 /**
  * Standard implementation of {@link TemplateResourceResolver}.
  * <p>
- * Templates are resolved by first looking for a resource on the classpath named
+ * Templates are resolved by looking for a resource on the classpath named
  * {@code org/springframework/restdocs/templates/&#123;name&#125;.snippet}. If no such
- * resource exists {@code default-} is prepended to the name and the classpath is checked
- * again. The built-in snippet templates are all named {@code default- name}, thereby
- * allowing them to be overridden.
+ * resource exists an attempt is made to return a default resource that is appropriate for
+ * the configured snippet format.
  *
  * @author Andy Wilkinson
  */
 public class StandardTemplateResourceResolver implements TemplateResourceResolver {
+
+	private final SnippetFormat snippetFormat;
+
+	/**
+	 * Creates a new {@code StandardTemplateResourceResolver} that will produce default
+	 * template resources formatted with Asciidoctor.
+	 *
+	 * @deprecated since 1.1.0 in favour of
+	 * {@link #StandardTemplateResourceResolver(SnippetFormat)}
+	 */
+	@Deprecated
+	public StandardTemplateResourceResolver() {
+		this(SnippetFormats.asciidoctor());
+	}
+
+	/**
+	 * Creates a new {@code StandardTemplateResourceResolver} that will produce default
+	 * template resources formatted with the given {@code snippetFormat}.
+	 *
+	 * @param snippetFormat the format for the default snippet templates
+	 */
+	public StandardTemplateResourceResolver(SnippetFormat snippetFormat) {
+		this.snippetFormat = snippetFormat;
+	}
 
 	@Override
 	public Resource resolveTemplateResource(String name) {
@@ -38,7 +63,9 @@ public class StandardTemplateResourceResolver implements TemplateResourceResolve
 				"org/springframework/restdocs/templates/" + name + ".snippet");
 		if (!classPathResource.exists()) {
 			classPathResource = new ClassPathResource(
-					"org/springframework/restdocs/templates/default-" + name + ".snippet");
+					"org/springframework/restdocs/templates/"
+							+ this.snippetFormat.getFileExtension() + "/" + name
+							+ ".snippet");
 			if (!classPathResource.exists()) {
 				throw new IllegalStateException("Template named '" + name
 						+ "' could not be resolved");

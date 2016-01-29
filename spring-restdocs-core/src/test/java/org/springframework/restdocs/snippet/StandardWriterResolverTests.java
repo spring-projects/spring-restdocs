@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.snippet.SnippetFormats.asciidoctor;
 
 /**
  * Tests for {@link StandardWriterResolver}.
@@ -37,7 +38,7 @@ public class StandardWriterResolverTests {
 	private final PlaceholderResolver placeholderResolver = mock(PlaceholderResolver.class);
 
 	private final StandardWriterResolver resolver = new StandardWriterResolver(
-			this.placeholderResolver);
+			this.placeholderResolver, "UTF-8", asciidoctor());
 
 	@Test
 	public void noConfiguredOutputDirectoryAndRelativeInput() {

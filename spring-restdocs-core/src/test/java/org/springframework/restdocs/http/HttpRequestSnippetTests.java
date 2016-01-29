@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,14 @@ package org.springframework.restdocs.http;
 
 import java.io.IOException;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.AbstractSnippetTests;
+import org.springframework.restdocs.snippet.SnippetFormat;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.ExpectedSnippet;
-import org.springframework.restdocs.test.OperationBuilder;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -35,21 +33,20 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 
 /**
  * Tests for {@link HttpRequestSnippet}.
  *
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
- *
  */
-public class HttpRequestSnippetTests {
+public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	private static final String BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
 
-	@Rule
-	public final ExpectedSnippet snippet = new ExpectedSnippet();
+	public HttpRequestSnippetTests(String name, SnippetFormat snippetFormat) {
+		super(name, snippetFormat);
+	}
 
 	@Test
 	public void getRequest() throws IOException {
@@ -57,9 +54,8 @@ public class HttpRequestSnippetTests {
 				httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a").header(
 						HttpHeaders.HOST, "localhost"));
 
-		new HttpRequestSnippet().document(new OperationBuilder("get-request",
-				this.snippet.getOutputDirectory()).request("http://localhost/foo")
-				.header("Alpha", "a").build());
+		new HttpRequestSnippet().document(operationBuilder("get-request")
+				.request("http://localhost/foo").header("Alpha", "a").build());
 	}
 
 	@Test
@@ -68,8 +64,7 @@ public class HttpRequestSnippetTests {
 				httpRequest(RequestMethod.GET, "/foo?bar=baz").header(HttpHeaders.HOST,
 						"localhost"));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"get-request-with-query-string", this.snippet.getOutputDirectory())
+		new HttpRequestSnippet().document(operationBuilder("get-request-with-query-string")
 				.request("http://localhost/foo?bar=baz").build());
 	}
 
@@ -81,8 +76,7 @@ public class HttpRequestSnippetTests {
 						.header(HttpHeaders.HOST, "localhost").content(content)
 						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"post-request-with-content", this.snippet.getOutputDirectory())
+		new HttpRequestSnippet().document(operationBuilder("post-request-with-content")
 				.request("http://localhost/foo").method("POST").content(content).build());
 	}
 
@@ -97,8 +91,7 @@ public class HttpRequestSnippetTests {
 						.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length)
 						.content(japaneseContent));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"post-request-with-charset", this.snippet.getOutputDirectory())
+		new HttpRequestSnippet().document(operationBuilder("post-request-with-charset")
 				.request("http://localhost/foo").method("POST")
 				.header("Content-Type", "text/plain;charset=UTF-8").content(contentBytes)
 				.build());
@@ -112,8 +105,7 @@ public class HttpRequestSnippetTests {
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"post-request-with-parameter", this.snippet.getOutputDirectory())
+		new HttpRequestSnippet().document(operationBuilder("post-request-with-parameter")
 				.request("http://localhost/foo").method("POST").param("b&r", "baz")
 				.param("a", "alpha").build());
 	}
@@ -126,8 +118,7 @@ public class HttpRequestSnippetTests {
 						.header(HttpHeaders.HOST, "localhost").content(content)
 						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"put-request-with-content", this.snippet.getOutputDirectory())
+		new HttpRequestSnippet().document(operationBuilder("put-request-with-content")
 				.request("http://localhost/foo").method("PUT").content(content).build());
 	}
 
@@ -139,8 +130,7 @@ public class HttpRequestSnippetTests {
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"put-request-with-parameter", this.snippet.getOutputDirectory())
+		new HttpRequestSnippet().document(operationBuilder("put-request-with-parameter")
 				.request("http://localhost/foo").method("PUT").param("b&r", "baz")
 				.param("a", "alpha").build());
 	}
@@ -154,9 +144,8 @@ public class HttpRequestSnippetTests {
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(new OperationBuilder("multipart-post",
-				this.snippet.getOutputDirectory()).request("http://localhost/upload")
-				.method("POST")
+		new HttpRequestSnippet().document(operationBuilder("multipart-post")
+				.request("http://localhost/upload").method("POST")
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", "<< data >>".getBytes()).build());
 	}
@@ -177,8 +166,7 @@ public class HttpRequestSnippetTests {
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"multipart-post-with-parameters", this.snippet.getOutputDirectory())
+		new HttpRequestSnippet().document(operationBuilder("multipart-post-with-parameters")
 				.request("http://localhost/upload").method("POST")
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.param("a", "apple", "avocado").param("b", "banana")
@@ -195,8 +183,7 @@ public class HttpRequestSnippetTests {
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"multipart-post-with-content-type", this.snippet.getOutputDirectory())
+		new HttpRequestSnippet().document(operationBuilder("multipart-post-with-content-type")
 				.request("http://localhost/upload").method("POST")
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", "<< data >>".getBytes())
@@ -208,8 +195,8 @@ public class HttpRequestSnippetTests {
 		this.snippet.expectHttpRequest("get-request-custom-host").withContents(
 				httpRequest(RequestMethod.GET, "/foo").header(HttpHeaders.HOST,
 						"api.example.com"));
-		new HttpRequestSnippet().document(new OperationBuilder("get-request-custom-host",
-				this.snippet.getOutputDirectory()).request("http://localhost/foo")
+		new HttpRequestSnippet().document(operationBuilder("get-request-custom-host")
+				.request("http://localhost/foo")
 				.header(HttpHeaders.HOST, "api.example.com").build());
 	}
 
@@ -218,13 +205,10 @@ public class HttpRequestSnippetTests {
 		this.snippet.expectHttpRequest("request-with-snippet-attributes").withContents(
 				containsString("Title for the request"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("http-request"))
-				.willReturn(
-						new FileSystemResource(
-								"src/test/resources/custom-snippet-templates/http-request-with-title.snippet"));
+		given(resolver.resolveTemplateResource("http-request")).willReturn(
+				snippetResource("http-request-with-title"));
 		new HttpRequestSnippet(attributes(key("title").value("Title for the request")))
-				.document(new OperationBuilder("request-with-snippet-attributes",
-						this.snippet.getOutputDirectory())
+				.document(operationBuilder("request-with-snippet-attributes")
 						.attribute(TemplateEngine.class.getName(),
 								new MustacheTemplateEngine(resolver))
 						.request("http://localhost/foo").build());

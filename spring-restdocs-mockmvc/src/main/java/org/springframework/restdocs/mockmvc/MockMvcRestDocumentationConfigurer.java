@@ -67,8 +67,8 @@ public class MockMvcRestDocumentationConfigurer
 	public RequestPostProcessor beforeMockMvcCreated(
 			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
 		return new ConfigurerApplyingRequestPostProcessor(this.restDocumentation,
-				Arrays.asList(getTemplateEngineConfigurer(),
-						getWriterResolverConfigurer(), snippets(), this.uriConfigurer));
+				Arrays.asList(snippets(), getTemplateEngineConfigurer(),
+						getWriterResolverConfigurer(), this.uriConfigurer));
 	}
 
 	@Override
