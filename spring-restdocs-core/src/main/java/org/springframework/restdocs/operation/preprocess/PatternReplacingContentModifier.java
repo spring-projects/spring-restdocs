@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ class PatternReplacingContentModifier implements ContentModifier {
 	private final String replacement;
 
 	/**
-	 * Creates a new {@link PatternReplacingContentModifier} that will replace occurences
-	 * the given {@code pattern} with the given {@code replacement}.
+	 * Creates a new {@link PatternReplacingContentModifier} that will replace occurrences
+	 * of the given {@code pattern} with the given {@code replacement}.
 	 *
 	 * @param pattern the pattern
 	 * @param replacement the replacement
@@ -56,7 +56,7 @@ class PatternReplacingContentModifier implements ContentModifier {
 			original = new String(content);
 		}
 		Matcher matcher = this.pattern.matcher(original);
-		StringBuilder buffer = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
 		int previous = 0;
 		while (matcher.find()) {
 			String prefix;
@@ -68,13 +68,13 @@ class PatternReplacingContentModifier implements ContentModifier {
 				prefix = original.substring(previous, matcher.start());
 				previous = matcher.end();
 			}
-			buffer.append(prefix);
-			buffer.append(this.replacement);
+			builder.append(prefix);
+			builder.append(this.replacement);
 		}
 		if (previous < original.length()) {
-			buffer.append(original.substring(previous));
+			builder.append(original.substring(previous));
 		}
-		return buffer.toString().getBytes();
+		return builder.toString().getBytes();
 	}
 
 }

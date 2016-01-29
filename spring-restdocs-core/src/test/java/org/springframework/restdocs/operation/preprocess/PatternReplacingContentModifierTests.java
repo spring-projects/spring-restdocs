@@ -47,6 +47,19 @@ public class PatternReplacingContentModifierTests {
 	}
 
 	@Test
+	public void contentThatDoesNotMatchIsUnchanged() throws Exception {
+		Pattern pattern = Pattern.compile(
+				"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+				Pattern.CASE_INSENSITIVE);
+		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(
+				pattern, "<<uuid>>");
+		assertThat(
+				contentModifier.modifyContent(
+						"{\"id\" : \"CA76-ED42-11CE-BACD\"}".getBytes(), null),
+				is(equalTo("{\"id\" : \"CA76-ED42-11CE-BACD\"}".getBytes())));
+	}
+
+	@Test
 	public void encodingIsPreserved() {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		Pattern pattern = Pattern.compile("[0-9]+");
