@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,18 +36,32 @@ import org.springframework.restdocs.templates.TemplateResourceResolver;
  */
 public class MustacheTemplateEngine implements TemplateEngine {
 
-	private final Compiler compiler = Mustache.compiler().escapeHTML(false);
+	private final Compiler compiler;
 
 	private final TemplateResourceResolver templateResourceResolver;
 
 	/**
-	 * Creates a new {@link MustacheTemplateEngine} that will use the given
+	 * Creates a new {@code MustacheTemplateEngine} that will use the given
 	 * {@code templateResourceResolver} to resolve template paths.
 	 *
-	 * @param templateResourceResolver The resolve to use
+	 * @param templateResourceResolver the resolver to use
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver) {
+		this(templateResourceResolver, Mustache.compiler().escapeHTML(false));
+	}
+
+	/**
+	 * Creates a new {@code MustacheTemplateEngine} that will use the given
+	 * {@code  tempalteResourceResolver} to resolve templates and the given
+	 * {@code compiler} to compile them.
+	 *
+	 * @param templateResourceResolver the resolver to use
+	 * @param compiler the compiler to use
+	 */
+	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver,
+			Compiler compiler) {
 		this.templateResourceResolver = templateResourceResolver;
+		this.compiler = compiler;
 	}
 
 	@Override
@@ -56,6 +70,25 @@ public class MustacheTemplateEngine implements TemplateEngine {
 				.resolveTemplateResource(name);
 		return new MustacheTemplate(this.compiler.compile(new InputStreamReader(
 				templateResource.getInputStream())));
+	}
+
+	/**
+	 * Returns the {@link Compiler} used to compile Mustache templates.
+	 *
+	 * @return the compiler
+	 */
+	protected final Compiler getCompiler() {
+		return this.compiler;
+	}
+
+	/**
+	 * Returns the {@link TemplateResourceResolver} used to resolve the template resources
+	 * prior to compilation.
+	 *
+	 * @return the resolver
+	 */
+	protected final TemplateResourceResolver getTemplateResourceResolver() {
+		return this.templateResourceResolver;
 	}
 
 }
