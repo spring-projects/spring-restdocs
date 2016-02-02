@@ -4,10 +4,16 @@ Spring REST Docs is released under the Apache 2.0 license. If you would like to
 contribute something, or simply want to work with the code, this document should help you
 to get started.
 
+## Code of conduct
+
+This project adheres to the Contributor Covenant [code of conduct][1]. By participating,
+you are expected to uphold this code. Please report unacceptable behavior to
+spring-code-of-conduct@pivotal.io.
+
 ## Sign the contributor license agreement
 
 Before we accept a non-trivial patch or pull request we will need you to sign the
-[contributor's license agreement (CLA)][1]. Signing the contributor's agreement does not
+[contributor's license agreement (CLA)][2]. Signing the contributor's agreement does not
 grant anyone commit rights to the main repository, but it does mean that we can accept
 your contributions, and you will get an author credit if we do. Please use "Andy
 Wilkinson" in the project lead field when you complete the form.
@@ -28,7 +34,7 @@ None of these is essential for a pull request, but they will all help
 - Add unit tests that covers and new or modified functionality
 - Whenever possible, please rebase your branch against the current master (or other
   target branch in the main project).
-* When writing a commit message please follow [these conventions][2]. Also, if you are
+* When writing a commit message please follow [these conventions][3]. Also, if you are
   fixing an existing issue please add `Fixes gh-nnn` at the end of the commit message
   (where nnn is the issue number).
 
@@ -54,5 +60,6 @@ $ ./gradlew eclipse
 The project can then be imported into Eclipse using `File -> Import…` and then selecting
 `General -> Existing Projects into Workspace`.
 
-[1]: https://support.springsource.com/spring_committer_signup
-[2]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+[1]: CODE_OF_CONDUCT.md
+[2]: https://support.springsource.com/spring_committer_signup
+[3]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html

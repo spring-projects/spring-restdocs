@@ -25,11 +25,12 @@ Spring REST Docs requires Java 7 or later and is built using [Gradle][10]:
 
 ## Contributing
 
-[Pull requests][11] are welcome. Please see the [contributor guidelines][12] for details.
+Contributors to this project agree to uphold its [code of conduct][11].
+[Pull requests][12] are welcome. Please see the [contributor guidelines][13] for details.
 
 ## Licence
 
-Spring REST Docs is open source software released under the [Apache 2.0 license][13].
+Spring REST Docs is open source software released under the [Apache 2.0 license][14].
 
 [1]: https://build.spring.io/plugins/servlet/buildStatusImage/SRD-PUB (Build status)
 [2]: https://build.spring.io/browse/SRD-PUB
@@ -41,7 +42,8 @@ Spring REST Docs is open source software released under the [Apache 2.0 license]
 [8]: https://www.youtube.com/watch?v=knH5ihPNiUs&feature=youtu.be
 [9]: http://docs.spring.io/spring-restdocs/docs/
 [10]: http://gradle.org
-[11]: https://help.github.com/articles/using-pull-requests/
-[12]: https://github.com/spring-projects/spring-restdocs/blob/master/CONTRIBUTING.md
-[13]: http://www.apache.org/licenses/LICENSE-2.0.html
+[11]: CODE_OF_CONDUCT.md
+[12]: https://help.github.com/articles/using-pull-requests/
+[13]: CONTRIBUTING.md
+[14]: http://www.apache.org/licenses/LICENSE-2.0.html
 
