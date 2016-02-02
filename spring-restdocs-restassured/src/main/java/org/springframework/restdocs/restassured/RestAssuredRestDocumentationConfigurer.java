@@ -16,14 +16,11 @@
 
 package org.springframework.restdocs.restassured;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.config.AbstractConfigurer;
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
 
 import com.jayway.restassured.filter.Filter;
@@ -45,14 +42,10 @@ public final class RestAssuredRestDocumentationConfigurer
 	private final RestAssuredSnippetConfigurer snippetConfigurer = new RestAssuredSnippetConfigurer(
 			this);
 
-	private final List<AbstractConfigurer> configurers;
-
 	private final RestDocumentation restDocumentation;
 
 	RestAssuredRestDocumentationConfigurer(RestDocumentation restDocumentation) {
 		this.restDocumentation = restDocumentation;
-		this.configurers = Arrays.asList(snippets(), getTemplateEngineConfigurer(),
-				getWriterResolverConfigurer());
 	}
 
 	@Override
@@ -68,9 +61,7 @@ public final class RestAssuredRestDocumentationConfigurer
 		Map<String, Object> configuration = new HashMap<>();
 		filterContext.setValue("org.springframework.restdocs.configuration",
 				configuration);
-		for (AbstractConfigurer configurer : this.configurers) {
-			configurer.apply(configuration, context);
-		}
+		apply(configuration, context);
 		return filterContext.next(requestSpec, responseSpec);
 	}
 }

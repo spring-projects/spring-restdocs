@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.config;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationContext;
@@ -34,7 +36,7 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
  * support chaining
  * @author Andy Wilkinson
  */
-public abstract class RestDocumentationConfigurer<S, T> {
+public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, T> {
 
 	private final WriterResolverConfigurer writerResolverConfigurer = new WriterResolverConfigurer();
 
@@ -74,21 +76,19 @@ public abstract class RestDocumentationConfigurer<S, T> {
 	}
 
 	/**
-	 * Returns the configurer used to configure the context with a {@link WriterResolver}.
+	 * Applies this configurer to the given {@code configuration} within the given
+	 * {@code context}.
 	 *
-	 * @return the configurer
+	 * @param configuration the configuration
+	 * @param context the current context
 	 */
-	protected final AbstractConfigurer getWriterResolverConfigurer() {
-		return this.writerResolverConfigurer;
-	}
-
-	/**
-	 * Returns the configurer used to configure the context with a {@link TemplateEngine}.
-	 *
-	 * @return the configurer
-	 */
-	protected final AbstractConfigurer getTemplateEngineConfigurer() {
-		return this.templateEngineConfigurer;
+	protected final void apply(Map<String, Object> configuration,
+			RestDocumentationContext context) {
+		List<AbstractConfigurer> configurers = Arrays.asList(snippets(),
+				this.templateEngineConfigurer, this.writerResolverConfigurer);
+		for (AbstractConfigurer configurer : configurers) {
+			configurer.apply(configuration, context);
+		}
 	}
 
 	private static final class TemplateEngineConfigurer extends AbstractConfigurer {

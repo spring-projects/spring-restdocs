@@ -16,15 +16,12 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.config.AbstractConfigurer;
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
@@ -66,9 +63,7 @@ public class MockMvcRestDocumentationConfigurer
 	@Override
 	public RequestPostProcessor beforeMockMvcCreated(
 			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
-		return new ConfigurerApplyingRequestPostProcessor(this.restDocumentation,
-				Arrays.asList(snippets(), getTemplateEngineConfigurer(),
-						getWriterResolverConfigurer(), this.uriConfigurer));
+		return new ConfigurerApplyingRequestPostProcessor(this.restDocumentation);
 	}
 
 	@Override
@@ -81,17 +76,13 @@ public class MockMvcRestDocumentationConfigurer
 		return this.snippetConfigurer;
 	}
 
-	private static final class ConfigurerApplyingRequestPostProcessor implements
+	private final class ConfigurerApplyingRequestPostProcessor implements
 			RequestPostProcessor {
 
 		private final RestDocumentation restDocumentation;
 
-		private final List<AbstractConfigurer> configurers;
-
-		private ConfigurerApplyingRequestPostProcessor(
-				RestDocumentation restDocumentation, List<AbstractConfigurer> configurers) {
+		private ConfigurerApplyingRequestPostProcessor(RestDocumentation restDocumentation) {
 			this.restDocumentation = restDocumentation;
-			this.configurers = configurers;
 		}
 
 		@Override
@@ -105,9 +96,9 @@ public class MockMvcRestDocumentationConfigurer
 					request.getAttribute(urlTemplateAttribute));
 			request.setAttribute("org.springframework.restdocs.configuration",
 					configuration);
-			for (AbstractConfigurer configurer : this.configurers) {
-				configurer.apply(configuration, context);
-			}
+			MockMvcRestDocumentationConfigurer.this.apply(configuration, context);
+			MockMvcRestDocumentationConfigurer.this.uriConfigurer.apply(configuration,
+					context);
 			return request;
 		}
 	}
