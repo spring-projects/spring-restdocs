@@ -19,6 +19,7 @@ package org.springframework.restdocs.operation.preprocess;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -27,20 +28,28 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 
 /**
- * An {@link OperationPreprocessor} that removes headers.
+ * An {@link OperationPreprocessor} that removes headers. The headers to remove are
+ * provided as constructor arguments and can be either plain string or patterns to match
+ * against the headers found
  *
  * @author Andy Wilkinson
  */
 class HeaderRemovingOperationPreprocessor implements OperationPreprocessor {
 
 	private final OperationRequestFactory requestFactory = new OperationRequestFactory();
-
 	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
 
-	private final Set<String> headersToRemove;
+	private final Set<String> plainHeadersToRemove;
+	private final Set<Pattern> patternHeadersToRemove;
 
-	HeaderRemovingOperationPreprocessor(String... headersToRemove) {
-		this.headersToRemove = new HashSet<>(Arrays.asList(headersToRemove));
+	HeaderRemovingOperationPreprocessor(String ... headersToRemove) {
+		this.plainHeadersToRemove = new HashSet<>(Arrays.asList(headersToRemove));
+		this.patternHeadersToRemove = null;
+	}
+
+	HeaderRemovingOperationPreprocessor(Pattern ... patternHeadersToRemove) {
+		this.plainHeadersToRemove = null;
+		this.patternHeadersToRemove = new HashSet<>(Arrays.asList(patternHeadersToRemove));
 	}
 
 	@Override
@@ -58,8 +67,25 @@ class HeaderRemovingOperationPreprocessor implements OperationPreprocessor {
 	private HttpHeaders removeHeaders(HttpHeaders originalHeaders) {
 		HttpHeaders processedHeaders = new HttpHeaders();
 		processedHeaders.putAll(originalHeaders);
-		for (String headerToRemove : this.headersToRemove) {
-			processedHeaders.remove(headerToRemove);
+		if (this.plainHeadersToRemove != null) {
+			for (String headerToRemove : this.plainHeadersToRemove) {
+				processedHeaders.remove(headerToRemove);
+			}
+		}
+		else {
+			Set<String> toRemove = new HashSet<>();
+			for (String headerToCheck : originalHeaders.keySet()) {
+				for (Pattern pattern : this.patternHeadersToRemove) {
+					if (pattern.matcher(headerToCheck).matches()) {
+						toRemove.add(headerToCheck);
+					}
+				}
+			}
+			// Remove afterwards to avoid side effects when removing while iterating over
+			// the set keys :
+			for (String headerToRemove : toRemove) {
+				processedHeaders.remove(headerToRemove);
+			}
 		}
 		return processedHeaders;
 	}
