@@ -17,6 +17,7 @@
 package org.springframework.restdocs.restassured;
 
 import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.RestDocumentationHandler;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.snippet.Snippet;
@@ -27,6 +28,10 @@ import org.springframework.restdocs.snippet.Snippet;
  * @author Andy Wilkinson
  */
 public abstract class RestAssuredRestDocumentation {
+
+	private static final RestAssuredRequestConverter REQUEST_CONVERTER = new RestAssuredRequestConverter();
+
+	private static final RestAssuredResponseConverter RESPONSE_CONVERTER = new RestAssuredResponseConverter();
 
 	private RestAssuredRestDocumentation() {
 
@@ -41,7 +46,8 @@ public abstract class RestAssuredRestDocumentation {
 	 * @return a {@link RestDocumentationFilter} that will produce the documentation
 	 */
 	public static RestDocumentationFilter document(String identifier, Snippet... snippets) {
-		return new RestDocumentationFilter(identifier, snippets);
+		return new RestDocumentationFilter(new RestDocumentationHandler<>(identifier,
+				REQUEST_CONVERTER, RESPONSE_CONVERTER, snippets));
 	}
 
 	/**
@@ -56,7 +62,8 @@ public abstract class RestAssuredRestDocumentation {
 	 */
 	public static RestDocumentationFilter document(String identifier,
 			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
-		return new RestDocumentationFilter(identifier, requestPreprocessor, snippets);
+		return new RestDocumentationFilter(new RestDocumentationHandler<>(identifier,
+				REQUEST_CONVERTER, RESPONSE_CONVERTER, requestPreprocessor, snippets));
 	}
 
 	/**
@@ -71,7 +78,8 @@ public abstract class RestAssuredRestDocumentation {
 	 */
 	public static RestDocumentationFilter document(String identifier,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationFilter(identifier, responsePreprocessor, snippets);
+		return new RestDocumentationFilter(new RestDocumentationHandler<>(identifier,
+				REQUEST_CONVERTER, RESPONSE_CONVERTER, responsePreprocessor, snippets));
 	}
 
 	/**
@@ -89,8 +97,9 @@ public abstract class RestAssuredRestDocumentation {
 	public static RestDocumentationFilter document(String identifier,
 			OperationRequestPreprocessor requestPreprocessor,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationFilter(identifier, requestPreprocessor,
-				responsePreprocessor, snippets);
+		return new RestDocumentationFilter(new RestDocumentationHandler<>(identifier,
+				REQUEST_CONVERTER, RESPONSE_CONVERTER, requestPreprocessor,
+				responsePreprocessor, snippets));
 	}
 
 	/**

@@ -17,6 +17,7 @@
 package org.springframework.restdocs.mockmvc;
 
 import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.RestDocumentationHandler;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.snippet.Snippet;
@@ -31,6 +32,10 @@ import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
  * @author Andy Wilkinson
  */
 public abstract class MockMvcRestDocumentation {
+
+	private static final MockMvcRequestConverter REQUEST_CONVERTER = new MockMvcRequestConverter();
+
+	private static final MockMvcResponseConverter RESPONSE_CONVERTER = new MockMvcResponseConverter();
 
 	private MockMvcRestDocumentation() {
 
@@ -61,7 +66,8 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			Snippet... snippets) {
-		return new RestDocumentationResultHandler(identifier, snippets);
+		return new RestDocumentationResultHandler(new RestDocumentationHandler<>(
+				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, snippets));
 	}
 
 	/**
@@ -78,8 +84,9 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(identifier, requestPreprocessor,
-				snippets);
+		return new RestDocumentationResultHandler(new RestDocumentationHandler<>(
+				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, requestPreprocessor,
+				snippets));
 	}
 
 	/**
@@ -96,8 +103,9 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(identifier, responsePreprocessor,
-				snippets);
+		return new RestDocumentationResultHandler(new RestDocumentationHandler<>(
+				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, responsePreprocessor,
+				snippets));
 	}
 
 	/**
@@ -117,8 +125,9 @@ public abstract class MockMvcRestDocumentation {
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationRequestPreprocessor requestPreprocessor,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(identifier, requestPreprocessor,
-				responsePreprocessor, snippets);
+		return new RestDocumentationResultHandler(new RestDocumentationHandler<>(
+				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, requestPreprocessor,
+				responsePreprocessor, snippets));
 	}
 
 }

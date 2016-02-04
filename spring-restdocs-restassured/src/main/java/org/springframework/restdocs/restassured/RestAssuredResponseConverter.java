@@ -20,19 +20,21 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
+import org.springframework.restdocs.operation.ResponseConverter;
 
 import com.jayway.restassured.response.Header;
 import com.jayway.restassured.response.Response;
 
 /**
- * A factory for creating an {@link OperationResponse} derived from a REST Assured
+ * A converter for creating an {@link OperationResponse} from a REST Assured
  * {@link Response}.
  *
  * @author Andy Wilkinson
  */
-class RestAssuredOperationResponseFactory {
+class RestAssuredResponseConverter implements ResponseConverter<Response> {
 
-	OperationResponse createOperationResponse(Response response) {
+	@Override
+	public OperationResponse convert(Response response) {
 		return new OperationResponseFactory().create(
 				HttpStatus.valueOf(response.getStatusCode()), extractHeaders(response),
 				extractContent(response));

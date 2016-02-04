@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
+import org.springframework.restdocs.operation.ConversionException;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestConverter;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,13 +46,13 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
 
 /**
- * A factory for creating an {@link OperationRequest} from a
+ * A converter for creating an {@link OperationRequest} from a
  * {@link MockHttpServletRequest}.
  *
  * @author Andy Wilkinson
  *
  */
-class MockMvcOperationRequestFactory {
+class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest> {
 
 	private static final String SCHEME_HTTP = "http";
 
@@ -60,28 +62,29 @@ class MockMvcOperationRequestFactory {
 
 	private static final int STANDARD_PORT_HTTPS = 443;
 
-	/**
-	 * Creates a new {@code OperationRequest} derived from the given {@code mockRequest}.
-	 *
-	 * @param mockRequest the request
-	 * @return the {@code OperationRequest}
-	 * @throws Exception if the request could not be created
-	 */
-	OperationRequest createOperationRequest(MockHttpServletRequest mockRequest)
-			throws Exception {
-		HttpHeaders headers = extractHeaders(mockRequest);
-		Parameters parameters = extractParameters(mockRequest);
-		List<OperationRequestPart> parts = extractParts(mockRequest);
-		String queryString = mockRequest.getQueryString();
-		if (!StringUtils.hasText(queryString) && "GET".equals(mockRequest.getMethod())) {
-			queryString = parameters.toQueryString();
+	@Override
+	public OperationRequest convert(MockHttpServletRequest mockRequest) {
+		try {
+			HttpHeaders headers = extractHeaders(mockRequest);
+			Parameters parameters = extractParameters(mockRequest);
+			List<OperationRequestPart> parts = extractParts(mockRequest);
+			String queryString = mockRequest.getQueryString();
+			if (!StringUtils.hasText(queryString)
+					&& "GET".equals(mockRequest.getMethod())) {
+				queryString = parameters.toQueryString();
+			}
+			return new OperationRequestFactory()
+					.create(URI
+							.create(getRequestUri(mockRequest)
+									+ (StringUtils.hasText(queryString) ? "?"
+											+ queryString : "")),
+							HttpMethod.valueOf(mockRequest.getMethod()), FileCopyUtils
+									.copyToByteArray(mockRequest.getInputStream()),
+							headers, parameters, parts);
 		}
-		return new OperationRequestFactory().create(
-				URI.create(getRequestUri(mockRequest)
-						+ (StringUtils.hasText(queryString) ? "?" + queryString : "")),
-				HttpMethod.valueOf(mockRequest.getMethod()),
-				FileCopyUtils.copyToByteArray(mockRequest.getInputStream()), headers,
-				parameters, parts);
+		catch (Exception ex) {
+			throw new ConversionException(ex);
+		}
 	}
 
 	private List<OperationRequestPart> extractParts(MockHttpServletRequest servletRequest)

@@ -30,20 +30,23 @@ import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestConverter;
 
 import com.jayway.restassured.response.Header;
 import com.jayway.restassured.specification.FilterableRequestSpecification;
 import com.jayway.restassured.specification.MultiPartSpecification;
 
 /**
- * A factory for creating an {@link OperationRequest} derived from a REST Assured
+ * A converter for creating an {@link OperationRequest} from a REST Assured
  * {@link FilterableRequestSpecification}.
  *
  * @author Andy Wilkinson
  */
-class RestAssuredOperationRequestFactory {
+class RestAssuredRequestConverter implements
+		RequestConverter<FilterableRequestSpecification> {
 
-	OperationRequest createOperationRequest(FilterableRequestSpecification requestSpec) {
+	@Override
+	public OperationRequest convert(FilterableRequestSpecification requestSpec) {
 		return new OperationRequestFactory().create(URI.create(requestSpec.getURI()),
 				HttpMethod.valueOf(requestSpec.getMethod().name()),
 				extractContent(requestSpec), extractHeaders(requestSpec),

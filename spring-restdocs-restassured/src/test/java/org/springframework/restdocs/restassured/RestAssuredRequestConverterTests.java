@@ -36,7 +36,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
-import org.springframework.restdocs.restassured.RestAssuredOperationRequestFactoryTests.TestApplication;
+import org.springframework.restdocs.restassured.RestAssuredRequestConverterTests.TestApplication;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +51,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * Tests for {@link RestAssuredOperationRequestFactory}.
+ * Tests for {@link RestAssuredRequestConverter}.
  *
  * @author Andy Wilkinson
  */
@@ -59,12 +59,12 @@ import static org.junit.Assert.assertThat;
 @SpringApplicationConfiguration(classes = TestApplication.class)
 @WebAppConfiguration
 @IntegrationTest("server.port=0")
-public class RestAssuredOperationRequestFactoryTests {
+public class RestAssuredRequestConverterTests {
 
 	@Rule
 	public final ExpectedException thrown = ExpectedException.none();
 
-	private final RestAssuredOperationRequestFactory factory = new RestAssuredOperationRequestFactory();
+	private final RestAssuredRequestConverter factory = new RestAssuredRequestConverter();
 
 	@Value("${local.server.port}")
 	private int port;
@@ -74,7 +74,7 @@ public class RestAssuredOperationRequestFactoryTests {
 		RequestSpecification requestSpec = RestAssured.given().port(this.port);
 		requestSpec.get("/foo/bar");
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getUri(),
 				is(equalTo(URI.create("http://localhost:" + this.port + "/foo/bar"))));
 	}
@@ -84,7 +84,7 @@ public class RestAssuredOperationRequestFactoryTests {
 		RequestSpecification requestSpec = RestAssured.given().port(this.port);
 		requestSpec.head("/foo/bar");
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getMethod(), is(equalTo(HttpMethod.HEAD)));
 	}
 
@@ -94,7 +94,7 @@ public class RestAssuredOperationRequestFactoryTests {
 				.queryParam("foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getParameters().size(), is(1));
 		assertThat(request.getParameters().get("foo"), is(equalTo(Arrays.asList("bar"))));
 	}
@@ -104,7 +104,7 @@ public class RestAssuredOperationRequestFactoryTests {
 		RequestSpecification requestSpec = RestAssured.given().port(this.port);
 		requestSpec.get("/?foo=bar");
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getParameters().size(), is(1));
 		assertThat(request.getParameters().get("foo"), is(equalTo(Arrays.asList("bar"))));
 	}
@@ -115,7 +115,7 @@ public class RestAssuredOperationRequestFactoryTests {
 				.formParameter("foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getParameters().size(), is(1));
 		assertThat(request.getParameters().get("foo"), is(equalTo(Arrays.asList("bar"))));
 	}
@@ -126,7 +126,7 @@ public class RestAssuredOperationRequestFactoryTests {
 				.parameter("foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getParameters().size(), is(1));
 		assertThat(request.getParameters().get("foo"), is(equalTo(Arrays.asList("bar"))));
 	}
@@ -137,7 +137,7 @@ public class RestAssuredOperationRequestFactoryTests {
 				.header("Foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getHeaders().toString(), request.getHeaders().size(), is(3));
 		assertThat(request.getHeaders().get("Foo"), is(equalTo(Arrays.asList("bar"))));
 		assertThat(request.getHeaders().get("Accept"), is(equalTo(Arrays.asList("*/*"))));
@@ -152,7 +152,7 @@ public class RestAssuredOperationRequestFactoryTests {
 				.multiPart("b", new ObjectBody("bar"), "application/json");
 		requestSpec.post().then().statusCode(200);
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		Collection<OperationRequestPart> parts = request.getParts();
 		assertThat(parts.size(), is(2));
 		Iterator<OperationRequestPart> iterator = parts.iterator();
@@ -174,7 +174,7 @@ public class RestAssuredOperationRequestFactoryTests {
 		RequestSpecification requestSpec = RestAssured.given().body("body".getBytes())
 				.port(this.port);
 		requestSpec.post();
-		this.factory.createOperationRequest((FilterableRequestSpecification) requestSpec);
+		this.factory.convert((FilterableRequestSpecification) requestSpec);
 	}
 
 	@Test
@@ -183,7 +183,7 @@ public class RestAssuredOperationRequestFactoryTests {
 				.port(this.port);
 		requestSpec.post();
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getContentAsString(), is(equalTo("body")));
 	}
 
@@ -193,7 +193,7 @@ public class RestAssuredOperationRequestFactoryTests {
 				.body(new ObjectBody("bar")).port(this.port);
 		requestSpec.post();
 		OperationRequest request = this.factory
-				.createOperationRequest((FilterableRequestSpecification) requestSpec);
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getContentAsString(), is(equalTo("{\"foo\":\"bar\"}")));
 	}
 
@@ -205,7 +205,7 @@ public class RestAssuredOperationRequestFactoryTests {
 		requestSpec.post();
 		this.thrown
 				.expectMessage(equalTo("Unsupported request content: java.io.ByteArrayInputStream"));
-		this.factory.createOperationRequest((FilterableRequestSpecification) requestSpec);
+		this.factory.convert((FilterableRequestSpecification) requestSpec);
 	}
 
 	@Test
@@ -214,7 +214,7 @@ public class RestAssuredOperationRequestFactoryTests {
 				.body(new File("src/test/resources/body.txt")).port(this.port);
 		requestSpec.post();
 		this.thrown.expectMessage(equalTo("Unsupported request content: java.io.File"));
-		this.factory.createOperationRequest((FilterableRequestSpecification) requestSpec);
+		this.factory.convert((FilterableRequestSpecification) requestSpec);
 	}
 
 	/**

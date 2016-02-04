@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,22 +21,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
+import org.springframework.restdocs.operation.ResponseConverter;
 
 /**
- * A factory for creating an {@link OperationResponse} derived from a
+ * A converter for creating an {@link OperationResponse} derived from a
  * {@link MockHttpServletResponse}.
  *
  * @author Andy Wilkinson
  */
-class MockMvcOperationResponseFactory {
+class MockMvcResponseConverter implements ResponseConverter<MockHttpServletResponse> {
 
-	/**
-	 * Create a new {@code OperationResponse} derived from the given {@code mockResponse}.
-	 *
-	 * @param mockResponse the response
-	 * @return the {@code OperationResponse}
-	 */
-	OperationResponse createOperationResponse(MockHttpServletResponse mockResponse) {
+	@Override
+	public OperationResponse convert(MockHttpServletResponse mockResponse) {
 		return new OperationResponseFactory().create(
 				HttpStatus.valueOf(mockResponse.getStatus()),
 				extractHeaders(mockResponse), mockResponse.getContentAsByteArray());
@@ -51,4 +47,5 @@ class MockMvcOperationResponseFactory {
 		}
 		return headers;
 	}
+
 }

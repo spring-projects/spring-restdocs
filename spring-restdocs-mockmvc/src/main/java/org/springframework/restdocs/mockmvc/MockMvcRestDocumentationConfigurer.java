@@ -88,12 +88,12 @@ public class MockMvcRestDocumentationConfigurer
 		@Override
 		public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
 			RestDocumentationContext context = this.restDocumentation.beforeOperation();
-			request.setAttribute(RestDocumentationContext.class.getName(), context);
 			Map<String, Object> configuration = new HashMap<>();
 			configuration.put(MockHttpServletRequest.class.getName(), request);
 			String urlTemplateAttribute = "org.springframework.restdocs.urlTemplate";
 			configuration.put(urlTemplateAttribute,
 					request.getAttribute(urlTemplateAttribute));
+			configuration.put(RestDocumentationContext.class.getName(), context);
 			request.setAttribute("org.springframework.restdocs.configuration",
 					configuration);
 			MockMvcRestDocumentationConfigurer.this.apply(configuration, context);

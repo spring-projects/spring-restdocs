@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,13 +43,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 /**
- * Tests for {@link MockMvcOperationRequestFactory}.
+ * Tests for {@link MockMvcRequestConverter}.
  *
  * @author Andy Wilkinson
  */
-public class MockMvcOperationRequestFactoryTests {
+public class MockMvcRequestConverterTests {
 
-	private final MockMvcOperationRequestFactory factory = new MockMvcOperationRequestFactory();
+	private final MockMvcRequestConverter factory = new MockMvcRequestConverter();
 
 	@Test
 	public void httpRequest() throws Exception {
@@ -64,7 +64,7 @@ public class MockMvcOperationRequestFactoryTests {
 		MockHttpServletRequest mockRequest = MockMvcRequestBuilders.get("/foo")
 				.buildRequest(new MockServletContext());
 		mockRequest.setServerPort(8080);
-		OperationRequest request = this.factory.createOperationRequest(mockRequest);
+		OperationRequest request = this.factory.convert(mockRequest);
 		assertThat(request.getUri(), is(URI.create("http://localhost:8080/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.GET));
 	}
@@ -93,7 +93,7 @@ public class MockMvcOperationRequestFactoryTests {
 				.buildRequest(new MockServletContext());
 		mockRequest.setScheme("https");
 		mockRequest.setServerPort(443);
-		OperationRequest request = this.factory.createOperationRequest(mockRequest);
+		OperationRequest request = this.factory.convert(mockRequest);
 		assertThat(request.getUri(), is(URI.create("https://localhost/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.GET));
 	}
@@ -104,7 +104,7 @@ public class MockMvcOperationRequestFactoryTests {
 				.buildRequest(new MockServletContext());
 		mockRequest.setScheme("https");
 		mockRequest.setServerPort(8443);
-		OperationRequest request = this.factory.createOperationRequest(mockRequest);
+		OperationRequest request = this.factory.convert(mockRequest);
 		assertThat(request.getUri(), is(URI.create("https://localhost:8443/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.GET));
 	}
@@ -191,7 +191,7 @@ public class MockMvcOperationRequestFactoryTests {
 		given(mockPart.getName()).willReturn("part-name");
 		given(mockPart.getSubmittedFileName()).willReturn("submitted.txt");
 		mockRequest.addPart(mockPart);
-		OperationRequest request = this.factory.createOperationRequest(mockRequest);
+		OperationRequest request = this.factory.convert(mockRequest);
 		assertThat(request.getParts().size(), is(1));
 		OperationRequestPart part = request.getParts().iterator().next();
 		assertThat(part.getName(), is(equalTo("part-name")));
@@ -216,7 +216,7 @@ public class MockMvcOperationRequestFactoryTests {
 		given(mockPart.getSubmittedFileName()).willReturn("submitted.png");
 		given(mockPart.getContentType()).willReturn("image/png");
 		mockRequest.addPart(mockPart);
-		OperationRequest request = this.factory.createOperationRequest(mockRequest);
+		OperationRequest request = this.factory.convert(mockRequest);
 		assertThat(request.getParts().size(), is(1));
 		OperationRequestPart part = request.getParts().iterator().next();
 		assertThat(part.getName(), is(equalTo("part-name")));
@@ -229,8 +229,7 @@ public class MockMvcOperationRequestFactoryTests {
 
 	private OperationRequest createOperationRequest(MockHttpServletRequestBuilder builder)
 			throws Exception {
-		return this.factory.createOperationRequest(builder
-				.buildRequest(new MockServletContext()));
+		return this.factory.convert(builder.buildRequest(new MockServletContext()));
 	}
 
 }

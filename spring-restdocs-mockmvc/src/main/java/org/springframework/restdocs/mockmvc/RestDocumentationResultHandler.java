@@ -16,20 +16,11 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.config.SnippetConfigurer;
-import org.springframework.restdocs.operation.Operation;
-import org.springframework.restdocs.operation.OperationRequest;
-import org.springframework.restdocs.operation.OperationResponse;
-import org.springframework.restdocs.operation.StandardOperation;
-import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
-import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.restdocs.RestDocumentationHandler;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
@@ -44,68 +35,20 @@ import org.springframework.util.Assert;
  */
 public class RestDocumentationResultHandler implements ResultHandler {
 
-	private final String identifier;
+	private final RestDocumentationHandler<MockHttpServletRequest, MockHttpServletResponse> delegate;
 
-	private final OperationRequestPreprocessor requestPreprocessor;
-
-	private final OperationResponsePreprocessor responsePreprocessor;
-
-	private final List<Snippet> snippets;
-
-	RestDocumentationResultHandler(String identifier, Snippet... snippets) {
-		this(identifier, new IdentityOperationRequestPreprocessor(),
-				new IdentityOperationResponsePreprocessor(), snippets);
-	}
-
-	RestDocumentationResultHandler(String identifier,
-			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
-		this(identifier, requestPreprocessor,
-				new IdentityOperationResponsePreprocessor(), snippets);
-	}
-
-	RestDocumentationResultHandler(String identifier,
-			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		this(identifier, new IdentityOperationRequestPreprocessor(),
-				responsePreprocessor, snippets);
-	}
-
-	RestDocumentationResultHandler(String identifier,
-			OperationRequestPreprocessor requestPreprocessor,
-			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		Assert.notNull(identifier, "identifier must be non-null");
-		Assert.notNull(requestPreprocessor, "requestPreprocessor must be non-null");
-		Assert.notNull(responsePreprocessor, "responsePreprocessor must be non-null");
-		Assert.notNull(snippets, "snippets must be non-null");
-		this.identifier = identifier;
-		this.requestPreprocessor = requestPreprocessor;
-		this.responsePreprocessor = responsePreprocessor;
-		this.snippets = new ArrayList<>(Arrays.asList(snippets));
+	RestDocumentationResultHandler(
+			RestDocumentationHandler<MockHttpServletRequest, MockHttpServletResponse> delegate) {
+		Assert.notNull(delegate, "delegate must be non-null");
+		this.delegate = delegate;
 	}
 
 	@Override
 	public void handle(MvcResult result) throws Exception {
-		Map<String, Object> attributes = new HashMap<>();
-		attributes.put(RestDocumentationContext.class.getName(), result.getRequest()
-				.getAttribute(RestDocumentationContext.class.getName()));
-		attributes.put("org.springframework.restdocs.urlTemplate", result.getRequest()
-				.getAttribute("org.springframework.restdocs.urlTemplate"));
 		@SuppressWarnings("unchecked")
 		Map<String, Object> configuration = (Map<String, Object>) result.getRequest()
 				.getAttribute("org.springframework.restdocs.configuration");
-		attributes.putAll(configuration);
-
-		OperationRequest request = this.requestPreprocessor
-				.preprocess(new MockMvcOperationRequestFactory()
-						.createOperationRequest(result.getRequest()));
-
-		OperationResponse response = this.responsePreprocessor
-				.preprocess(new MockMvcOperationResponseFactory()
-						.createOperationResponse(result.getResponse()));
-		Operation operation = new StandardOperation(this.identifier, request, response,
-				attributes);
-		for (Snippet snippet : getSnippets(result)) {
-			snippet.document(operation);
-		}
+		this.delegate.handle(result.getRequest(), result.getResponse(), configuration);
 	}
 
 	/**
@@ -113,41 +56,11 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 * handler is called.
 	 *
 	 * @param snippets the snippets to add
-	 * @return this {@code ResultDocumentationResultHandler}
+	 * @return this {@code RestDocumentationResultHandler}
 	 */
 	public RestDocumentationResultHandler snippets(Snippet... snippets) {
-		this.snippets.addAll(Arrays.asList(snippets));
+		this.delegate.addSnippets(snippets);
 		return this;
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<Snippet> getSnippets(MvcResult result) {
-		List<Snippet> combinedSnippets = new ArrayList<>(
-				(List<Snippet>) ((Map<String, Object>) result.getRequest().getAttribute(
-						"org.springframework.restdocs.configuration"))
-						.get(SnippetConfigurer.ATTRIBUTE_DEFAULT_SNIPPETS));
-		combinedSnippets.addAll(this.snippets);
-		return combinedSnippets;
-	}
-
-	private static final class IdentityOperationRequestPreprocessor implements
-			OperationRequestPreprocessor {
-
-		@Override
-		public OperationRequest preprocess(OperationRequest request) {
-			return request;
-		}
-
-	}
-
-	private static final class IdentityOperationResponsePreprocessor implements
-			OperationResponsePreprocessor {
-
-		@Override
-		public OperationResponse preprocess(OperationResponse response) {
-			return response;
-		}
-
 	}
 
 }

@@ -16,22 +16,13 @@
 
 package org.springframework.restdocs.restassured;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.config.SnippetConfigurer;
-import org.springframework.restdocs.operation.Operation;
-import org.springframework.restdocs.operation.OperationRequest;
-import org.springframework.restdocs.operation.OperationResponse;
-import org.springframework.restdocs.operation.StandardOperation;
-import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
-import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
+import org.springframework.restdocs.RestDocumentationHandler;
 import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.util.Assert;
 
 import com.jayway.restassured.filter.Filter;
 import com.jayway.restassured.filter.FilterContext;
@@ -46,40 +37,12 @@ import com.jayway.restassured.specification.FilterableResponseSpecification;
  */
 public final class RestDocumentationFilter implements Filter {
 
-	private final String identifier;
+	private final RestDocumentationHandler<FilterableRequestSpecification, Response> delegate;
 
-	private final OperationRequestPreprocessor requestPreprocessor;
-
-	private final OperationResponsePreprocessor responsePreprocessor;
-
-	private final List<Snippet> snippets;
-
-	RestDocumentationFilter(String identifier, Snippet... snippets) {
-		this(identifier, new IdentityOperationRequestPreprocessor(),
-				new IdentityOperationResponsePreprocessor(), snippets);
-	}
-
-	RestDocumentationFilter(String identifier,
-			OperationRequestPreprocessor operationRequestPreprocessor,
-			Snippet... snippets) {
-		this(identifier, operationRequestPreprocessor,
-				new IdentityOperationResponsePreprocessor(), snippets);
-	}
-
-	RestDocumentationFilter(String identifier,
-			OperationResponsePreprocessor operationResponsePreprocessor,
-			Snippet... snippets) {
-		this(identifier, new IdentityOperationRequestPreprocessor(),
-				operationResponsePreprocessor, snippets);
-	}
-
-	RestDocumentationFilter(String identifier,
-			OperationRequestPreprocessor requestPreprocessor,
-			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		this.identifier = identifier;
-		this.requestPreprocessor = requestPreprocessor;
-		this.responsePreprocessor = responsePreprocessor;
-		this.snippets = new ArrayList<>(Arrays.asList(snippets));
+	RestDocumentationFilter(
+			RestDocumentationHandler<FilterableRequestSpecification, Response> delegate) {
+		Assert.notNull(delegate, "delegate must be non-null");
+		this.delegate = delegate;
 	}
 
 	@Override
@@ -87,35 +50,15 @@ public final class RestDocumentationFilter implements Filter {
 			FilterableResponseSpecification responseSpec, FilterContext context) {
 		Response response = context.next(requestSpec, responseSpec);
 
-		OperationRequest operationRequest = this.requestPreprocessor
-				.preprocess(new RestAssuredOperationRequestFactory()
-						.createOperationRequest(requestSpec));
-		OperationResponse operationResponse = this.responsePreprocessor
-				.preprocess(new RestAssuredOperationResponseFactory()
-						.createOperationResponse(response));
-
-		RestDocumentationContext documentationContext = context
-				.getValue(RestDocumentationContext.class.getName());
-
-		Map<String, Object> attributes = new HashMap<>();
-		attributes.put(RestDocumentationContext.class.getName(), documentationContext);
-		attributes.put("org.springframework.restdocs.urlTemplate",
+		Map<String, Object> configuration = new HashMap<>(
+				context.<Map<String, Object>>getValue("org.springframework.restdocs.configuration"));
+		configuration.put(RestDocumentationContext.class.getName(), context
+				.<RestDocumentationContext>getValue(RestDocumentationContext.class
+						.getName()));
+		configuration.put("org.springframework.restdocs.urlTemplate",
 				requestSpec.getUserDefinedPath());
-		Map<String, Object> configuration = context
-				.getValue("org.springframework.restdocs.configuration");
-		attributes.putAll(configuration);
 
-		Operation operation = new StandardOperation(this.identifier, operationRequest,
-				operationResponse, attributes);
-
-		try {
-			for (Snippet snippet : getSnippets(configuration)) {
-				snippet.document(operation);
-			}
-		}
-		catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
+		this.delegate.handle(requestSpec, response, configuration);
 
 		return response;
 	}
@@ -128,37 +71,8 @@ public final class RestDocumentationFilter implements Filter {
 	 * @return this {@code RestDocumentationFilter}
 	 */
 	public RestDocumentationFilter snippets(Snippet... snippets) {
-		this.snippets.addAll(Arrays.asList(snippets));
+		this.delegate.addSnippets(snippets);
 		return this;
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<Snippet> getSnippets(Map<String, Object> configuration) {
-		List<Snippet> combinedSnippets = new ArrayList<>(
-				(List<Snippet>) configuration
-						.get(SnippetConfigurer.ATTRIBUTE_DEFAULT_SNIPPETS));
-		combinedSnippets.addAll(this.snippets);
-		return combinedSnippets;
-	}
-
-	private static final class IdentityOperationRequestPreprocessor implements
-			OperationRequestPreprocessor {
-
-		@Override
-		public OperationRequest preprocess(OperationRequest request) {
-			return request;
-		}
-
-	}
-
-	private static final class IdentityOperationResponsePreprocessor implements
-			OperationResponsePreprocessor {
-
-		@Override
-		public OperationResponse preprocess(OperationResponse response) {
-			return response;
-		}
-
 	}
 
 }
