@@ -76,11 +76,26 @@ public final class Preprocessors {
 	 * Returns an {@code OperationPreprocessor} that will remove headers from the request
 	 * or response.
 	 *
-	 * @param headersToRemove the names of the headers to remove
+	 * @param headersToRemove the names of the headers to remove.
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor removeHeaders(String... headersToRemove) {
 		return new HeaderRemovingOperationPreprocessor(headersToRemove);
+	}
+
+	/**
+	 * Returns an {@code OperationPreprocessor} that will remove headers from the request
+	 * or response based on a pattern match.
+	 *
+	 * @param headerPatternsToRemove pattern for the header names to remove. Every matchig header will be removed.
+	 * @return the preprocessor
+	 */
+	public static OperationPreprocessor removeMatchingHeaders(String... headerPatternsToRemove) {
+		Pattern[] patterns = new Pattern[headerPatternsToRemove.length];
+		for (int i = 0; i < headerPatternsToRemove.length; i++) {
+			patterns[i] = Pattern.compile(headerPatternsToRemove[i]);
+		}
+		return new HeaderRemovingOperationPreprocessor(patterns);
 	}
 
 	/**

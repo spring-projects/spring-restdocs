@@ -19,6 +19,7 @@ package org.springframework.restdocs.operation.preprocess;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
@@ -66,18 +67,43 @@ public class HeaderRemovingOperationPreprocessorTests {
 
 	@Test
 	public void modifyResponseHeaders() {
-		OperationResponse response = this.responseFactory.create(HttpStatus.OK,
-				getHttpHeaders(), new byte[0]);
+		OperationResponse response = createResponse();
 		OperationResponse preprocessed = this.preprocessor.preprocess(response);
 		assertThat(preprocessed.getHeaders().size(), is(equalTo(1)));
 		assertThat(preprocessed.getHeaders(), hasEntry("a", Arrays.asList("alpha")));
 	}
 
-	private HttpHeaders getHttpHeaders() {
+	@Test
+	public void modifyWithPattern() {
+		OperationResponse response = createResponse("content-length", "1234");
+		HeaderRemovingOperationPreprocessor processor =
+			new HeaderRemovingOperationPreprocessor(Pattern.compile("co.*le(.)gth]"));
+		OperationResponse preprocessed = processor.preprocess(response);
+		assertThat(preprocessed.getHeaders().size(), is(equalTo(2)));
+		assertThat(preprocessed.getHeaders(), hasEntry("a", Arrays.asList("alpha")));
+		assertThat(preprocessed.getHeaders(), hasEntry("b", Arrays.asList("bravo", "banana")));
+	}
+
+	@Test
+	public void removeAllHeaders() {
+		HeaderRemovingOperationPreprocessor processor =
+			new HeaderRemovingOperationPreprocessor(Pattern.compile(".*"));
+		OperationResponse preprocessed = processor.preprocess(createResponse());
+		assertThat(preprocessed.getHeaders().size(), is(equalTo(0)));
+	}
+
+	private OperationResponse createResponse(String ... extraHeaders) {
+		return this.responseFactory.create(HttpStatus.OK, getHttpHeaders(extraHeaders), new byte[0]);
+	}
+
+	private HttpHeaders getHttpHeaders(String ... extraHeaders) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add("a", "alpha");
 		httpHeaders.add("b", "bravo");
 		httpHeaders.add("b", "banana");
+		for (int i = 0; i < extraHeaders.length; i += 2) {
+			httpHeaders.add(extraHeaders[i], extraHeaders[i + 1]);
+		}
 		return httpHeaders;
 	}
 
