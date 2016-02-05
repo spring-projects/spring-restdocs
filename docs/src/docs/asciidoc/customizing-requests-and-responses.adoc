@@ -102,9 +102,11 @@ different replacement can also be specified if you wish.
 [[customizing-requests-and-responses-preprocessors-remove-headers]]
 ==== Removing headers
 
-`removeHeaders` on `Preprocessors` removes any occurrences of the named headers
-from the request or response.
+`removeHeaders` on `Preprocessors` removes any headers from the request or response where
+the name is equal to any of the given header names.
 
+`removeMatchingHeaders` on `Preprocessors` removes any headers from the request or
+response where the name matches any of the given regular expression patterns.
 
 
 [[customizing-requests-and-responses-preprocessors-replace-patterns]]
