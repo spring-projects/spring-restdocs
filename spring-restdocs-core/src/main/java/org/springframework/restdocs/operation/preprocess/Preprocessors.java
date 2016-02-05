@@ -30,6 +30,7 @@ import org.springframework.restdocs.operation.OperationResponse;
  * documented.
  *
  * @author Andy Wilkinson
+ * @author Roland Huss
  */
 public final class Preprocessors {
 
@@ -73,29 +74,32 @@ public final class Preprocessors {
 	}
 
 	/**
-	 * Returns an {@code OperationPreprocessor} that will remove headers from the request
-	 * or response.
+	 * Returns an {@code OperationPreprocessor} that will remove any header from the
+	 * request or response with a name that is equal to one of the given
+	 * {@code headersToRemove}.
 	 *
-	 * @param headersToRemove the names of the headers to remove.
+	 * @param headerNames the header names
 	 * @return the preprocessor
+	 * @see String#equals(Object)
 	 */
-	public static OperationPreprocessor removeHeaders(String... headersToRemove) {
-		return new HeaderRemovingOperationPreprocessor(headersToRemove);
+	public static OperationPreprocessor removeHeaders(String... headerNames) {
+		return new HeaderRemovingOperationPreprocessor(new ExactMatchHeaderFilter(
+				headerNames));
 	}
 
 	/**
-	 * Returns an {@code OperationPreprocessor} that will remove headers from the request
-	 * or response based on a pattern match.
+	 * Returns an {@code OperationPreprocessor} that will remove any headers from the
+	 * request or response with a name that matches one of the given
+	 * {@code headerNamePatterns} regular expressions.
 	 *
-	 * @param headerPatternsToRemove pattern for the header names to remove. Every matchig header will be removed.
+	 * @param headerNamePatterns the header name patterns
 	 * @return the preprocessor
+	 * @see java.util.regex.Matcher#matches()
 	 */
-	public static OperationPreprocessor removeMatchingHeaders(String... headerPatternsToRemove) {
-		Pattern[] patterns = new Pattern[headerPatternsToRemove.length];
-		for (int i = 0; i < headerPatternsToRemove.length; i++) {
-			patterns[i] = Pattern.compile(headerPatternsToRemove[i]);
-		}
-		return new HeaderRemovingOperationPreprocessor(patterns);
+	public static OperationPreprocessor removeMatchingHeaders(
+			String... headerNamePatterns) {
+		return new HeaderRemovingOperationPreprocessor(new PatternMatchHeaderFilter(
+				headerNamePatterns));
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.springframework.restdocs.operation.preprocess;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +40,7 @@ import static org.junit.Assert.assertThat;
  * Tests for {@link HeaderRemovingOperationPreprocessorTests}.
  *
  * @author Andy Wilkinson
- *
+ * @author Roland Huss
  */
 public class HeaderRemovingOperationPreprocessorTests {
 
@@ -50,7 +49,7 @@ public class HeaderRemovingOperationPreprocessorTests {
 	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
 
 	private final HeaderRemovingOperationPreprocessor preprocessor = new HeaderRemovingOperationPreprocessor(
-			"b");
+			new ExactMatchHeaderFilter("b"));
 
 	@Test
 	public void modifyRequestHeaders() {
@@ -76,27 +75,29 @@ public class HeaderRemovingOperationPreprocessorTests {
 	@Test
 	public void modifyWithPattern() {
 		OperationResponse response = createResponse("content-length", "1234");
-		HeaderRemovingOperationPreprocessor processor =
-			new HeaderRemovingOperationPreprocessor(Pattern.compile("co.*le(.)gth]"));
+		HeaderRemovingOperationPreprocessor processor = new HeaderRemovingOperationPreprocessor(
+				new PatternMatchHeaderFilter("co.*le(.)gth]"));
 		OperationResponse preprocessed = processor.preprocess(response);
 		assertThat(preprocessed.getHeaders().size(), is(equalTo(2)));
 		assertThat(preprocessed.getHeaders(), hasEntry("a", Arrays.asList("alpha")));
-		assertThat(preprocessed.getHeaders(), hasEntry("b", Arrays.asList("bravo", "banana")));
+		assertThat(preprocessed.getHeaders(),
+				hasEntry("b", Arrays.asList("bravo", "banana")));
 	}
 
 	@Test
 	public void removeAllHeaders() {
-		HeaderRemovingOperationPreprocessor processor =
-			new HeaderRemovingOperationPreprocessor(Pattern.compile(".*"));
+		HeaderRemovingOperationPreprocessor processor = new HeaderRemovingOperationPreprocessor(
+				new PatternMatchHeaderFilter(".*"));
 		OperationResponse preprocessed = processor.preprocess(createResponse());
 		assertThat(preprocessed.getHeaders().size(), is(equalTo(0)));
 	}
 
-	private OperationResponse createResponse(String ... extraHeaders) {
-		return this.responseFactory.create(HttpStatus.OK, getHttpHeaders(extraHeaders), new byte[0]);
+	private OperationResponse createResponse(String... extraHeaders) {
+		return this.responseFactory.create(HttpStatus.OK, getHttpHeaders(extraHeaders),
+				new byte[0]);
 	}
 
-	private HttpHeaders getHttpHeaders(String ... extraHeaders) {
+	private HttpHeaders getHttpHeaders(String... extraHeaders) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add("a", "alpha");
 		httpHeaders.add("b", "bravo");
