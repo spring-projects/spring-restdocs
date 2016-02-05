@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -143,7 +144,8 @@ public class RestDocumentationRequestBuildersTests {
 			HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
 		assertThat(
-				(String) request.getAttribute("org.springframework.restdocs.urlTemplate"),
+				(String) request
+						.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE),
 				is(equalTo("{template}")));
 		assertThat(request.getRequestURI(), is(equalTo("t")));
 		assertThat(request.getMethod(), is(equalTo(httpMethod.name())));

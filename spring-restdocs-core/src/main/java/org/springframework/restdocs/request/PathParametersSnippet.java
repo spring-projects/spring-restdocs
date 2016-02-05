@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.SnippetException;
@@ -91,7 +92,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 
 	private String extractUrlTemplate(Operation operation) {
 		String urlTemplate = (String) operation.getAttributes().get(
-				"org.springframework.restdocs.urlTemplate");
+				RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE);
 		Assert.notNull(
 				urlTemplate,
 				"urlTemplate not found. If you are using MockMvc, did you use RestDocumentationRequestBuilders to "

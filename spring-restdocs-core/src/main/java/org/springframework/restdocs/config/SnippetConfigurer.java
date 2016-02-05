@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.curl.CurlDocumentation;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpDocumentation;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.templates.TemplateFormat;
@@ -35,11 +36,6 @@ import org.springframework.restdocs.templates.TemplateFormats;
  * @author Andy Wilkinson
  */
 public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P> {
-
-	/**
-	 * The name of the attribute that is used to hold the default snippets.
-	 */
-	public static final String ATTRIBUTE_DEFAULT_SNIPPETS = "org.springframework.restdocs.defaultSnippets";
 
 	private List<Snippet> defaultSnippets = Arrays.asList(
 			CurlDocumentation.curlRequest(), HttpDocumentation.httpRequest(),
@@ -77,7 +73,8 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
 		configuration.put(SnippetConfiguration.class.getName(), new SnippetConfiguration(
 				this.snippetEncoding, this.templateFormat));
-		configuration.put(ATTRIBUTE_DEFAULT_SNIPPETS, this.defaultSnippets);
+		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS,
+				this.defaultSnippets);
 	}
 
 	/**

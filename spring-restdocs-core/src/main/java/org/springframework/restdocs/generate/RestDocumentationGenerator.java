@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.restdocs.config.SnippetConfigurer;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationResponse;
@@ -45,6 +44,16 @@ import org.springframework.util.Assert;
  */
 public final class RestDocumentationGenerator<REQ, RESP> {
 
+	/**
+	 * Name of the operation attribute used to hold the request's URL template.
+	 */
+	public static final String ATTRIBUTE_NAME_URL_TEMPLATE = "org.springframework.restdocs.urlTemplate";
+
+	/**
+	 * Name of the operation attribute used to hold the {@link List} of default snippets.
+	 */
+	public static final String ATTRIBUTE_NAME_DEFAULT_SNIPPETS = "org.springframework.restdocs.defaultSnippets";
+
 	private final String identifier;
 
 	private final OperationRequestPreprocessor requestPreprocessor;
@@ -58,8 +67,8 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	private final ResponseConverter<RESP> responseConverter;
 
 	/**
-	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by the
-	 * given {@code identifier}. The given {@code requestConverter} and
+	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by
+	 * the given {@code identifier}. The given {@code requestConverter} and
 	 * {@code responseConverter} are used to convert the operation's request and response
 	 * into generic {@code OperationRequest} and {@code OperationResponse} instances that
 	 * can then be documented. The given documentation {@code snippets} will be produced.
@@ -78,8 +87,8 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	}
 
 	/**
-	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by the
-	 * given {@code identifier}. The given {@code requestConverter} and
+	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by
+	 * the given {@code identifier}. The given {@code requestConverter} and
 	 * {@code responseConverter} are used to convert the operation's request and response
 	 * into generic {@code OperationRequest} and {@code OperationResponse} instances that
 	 * can then be documented. The given {@code requestPreprocessor} is applied to the
@@ -101,8 +110,8 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	}
 
 	/**
-	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by the
-	 * given {@code identifier}. The given {@code requestConverter} and
+	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by
+	 * the given {@code identifier}. The given {@code requestConverter} and
 	 * {@code responseConverter} are used to convert the operation's request and response
 	 * into generic {@code OperationRequest} and {@code OperationResponse} instances that
 	 * can then be documented. The given {@code responsePreprocessor} is applied to the
@@ -125,8 +134,8 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	}
 
 	/**
-	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by the
-	 * given {@code identifier}. The given {@code requestConverter} and
+	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by
+	 * the given {@code identifier}. The given {@code requestConverter} and
 	 * {@code responseConverter} are used to convert the operation's request and response
 	 * into generic {@code OperationRequest} and {@code OperationResponse} instances that
 	 * can then be documented. The given {@code requestPreprocessor} and
@@ -202,7 +211,7 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	private List<Snippet> getSnippets(Map<String, Object> configuration) {
 		List<Snippet> combinedSnippets = new ArrayList<>(this.snippets);
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
-				.get(SnippetConfigurer.ATTRIBUTE_DEFAULT_SNIPPETS);
+				.get(ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		if (defaultSnippets != null) {
 			combinedSnippets.addAll(defaultSnippets);
 		}

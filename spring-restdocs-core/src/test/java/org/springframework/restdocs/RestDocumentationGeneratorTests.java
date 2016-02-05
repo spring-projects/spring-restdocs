@@ -25,7 +25,6 @@ import java.util.Map;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.restdocs.config.SnippetConfigurer;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -91,7 +90,7 @@ public class RestDocumentationGeneratorTests {
 		HashMap<String, Object> configuration = new HashMap<>();
 		Snippet defaultSnippet1 = mock(Snippet.class);
 		Snippet defaultSnippet2 = mock(Snippet.class);
-		configuration.put(SnippetConfigurer.ATTRIBUTE_DEFAULT_SNIPPETS,
+		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS,
 				Arrays.asList(defaultSnippet1, defaultSnippet2));
 		new RestDocumentationGenerator<>("id", this.requestConverter,
 				this.responseConverter, this.snippet).handle(this.request, this.response,

@@ -59,7 +59,7 @@ public final class RestAssuredRestDocumentationConfigurer
 		RestDocumentationContext context = this.restDocumentation.beforeOperation();
 		filterContext.setValue(RestDocumentationContext.class.getName(), context);
 		Map<String, Object> configuration = new HashMap<>();
-		filterContext.setValue("org.springframework.restdocs.configuration",
+		filterContext.setValue(RestDocumentationFilter.CONTEXT_KEY_CONFIGURATION,
 				configuration);
 		apply(configuration, context);
 		return filterContext.next(requestSpec, responseSpec);

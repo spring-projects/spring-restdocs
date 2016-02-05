@@ -23,6 +23,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
 
@@ -62,7 +63,7 @@ public class RestAssuredRestDocumentationConfigurerTests {
 	public void nextFilterIsCalled() {
 		this.configurer.filter(this.requestSpec, this.responseSpec, this.filterContext);
 		verify(this.filterContext).setValue(
-				eq("org.springframework.restdocs.configuration"), any(Map.class));
+				eq(RestDocumentationFilter.CONTEXT_KEY_CONFIGURATION), any(Map.class));
 	}
 
 	@Test
@@ -71,7 +72,7 @@ public class RestAssuredRestDocumentationConfigurerTests {
 		@SuppressWarnings("rawtypes")
 		ArgumentCaptor<Map> configurationCaptor = ArgumentCaptor.forClass(Map.class);
 		verify(this.filterContext).setValue(
-				eq("org.springframework.restdocs.configuration"),
+				eq(RestDocumentationFilter.CONTEXT_KEY_CONFIGURATION),
 				configurationCaptor.capture());
 		@SuppressWarnings("unchecked")
 		Map<String, Object> configuration = configurationCaptor.getValue();
@@ -85,7 +86,8 @@ public class RestAssuredRestDocumentationConfigurerTests {
 						instanceOf(WriterResolver.class)));
 		assertThat(
 				configuration,
-				hasEntry(equalTo("org.springframework.restdocs.defaultSnippets"),
+				hasEntry(
+						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
 	}
 }

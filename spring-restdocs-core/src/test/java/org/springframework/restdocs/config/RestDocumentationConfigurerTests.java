@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.curl.CurlDocumentation;
 import org.springframework.restdocs.curl.CurlRequestSnippet;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpRequestSnippet;
 import org.springframework.restdocs.http.HttpResponseSnippet;
 import org.springframework.restdocs.snippet.Snippet;
@@ -67,10 +68,11 @@ public class RestDocumentationConfigurerTests {
 						instanceOf(StandardWriterResolver.class)));
 		assertThat(
 				configuration,
-				hasEntry(equalTo("org.springframework.restdocs.defaultSnippets"),
+				hasEntry(
+						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
-				.get("org.springframework.restdocs.defaultSnippets");
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		assertThat(
 				defaultSnippets,
 				contains(instanceOf(CurlRequestSnippet.class),
@@ -115,11 +117,12 @@ public class RestDocumentationConfigurerTests {
 				.apply(configuration, context);
 		assertThat(
 				configuration,
-				hasEntry(equalTo("org.springframework.restdocs.defaultSnippets"),
+				hasEntry(
+						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
 		@SuppressWarnings("unchecked")
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
-				.get("org.springframework.restdocs.defaultSnippets");
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		assertThat(defaultSnippets, contains(instanceOf(CurlRequestSnippet.class)));
 	}
 

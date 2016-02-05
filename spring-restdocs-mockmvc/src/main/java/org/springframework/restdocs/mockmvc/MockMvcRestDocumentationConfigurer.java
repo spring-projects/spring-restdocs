@@ -23,6 +23,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
@@ -90,11 +91,12 @@ public class MockMvcRestDocumentationConfigurer
 			RestDocumentationContext context = this.restDocumentation.beforeOperation();
 			Map<String, Object> configuration = new HashMap<>();
 			configuration.put(MockHttpServletRequest.class.getName(), request);
-			String urlTemplateAttribute = "org.springframework.restdocs.urlTemplate";
-			configuration.put(urlTemplateAttribute,
-					request.getAttribute(urlTemplateAttribute));
+			configuration
+					.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+							request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE));
 			configuration.put(RestDocumentationContext.class.getName(), context);
-			request.setAttribute("org.springframework.restdocs.configuration",
+			request.setAttribute(
+					RestDocumentationResultHandler.ATTRIBUTE_NAME_CONFIGURATION,
 					configuration);
 			MockMvcRestDocumentationConfigurer.this.apply(configuration, context);
 			MockMvcRestDocumentationConfigurer.this.uriConfigurer.apply(configuration,

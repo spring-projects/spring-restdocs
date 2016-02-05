@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.springframework.restdocs.AbstractSnippetTests;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
@@ -51,9 +52,10 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 						"one").row("b", "two"));
 		new PathParametersSnippet(Arrays.asList(
 				parameterWithName("a").description("one"), parameterWithName("b")
-						.description("two"))).document(operationBuilder("path-parameters")
-				.attribute("org.springframework.restdocs.urlTemplate", "/{a}/{b}")
-				.build());
+						.description("two")))
+				.document(operationBuilder("path-parameters").attribute(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+						"/{a}/{b}").build());
 	}
 
 	@Test
@@ -64,7 +66,8 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
 				parameterWithName("b").description("two"))).document(operationBuilder(
 				"ignored-path-parameter").attribute(
-				"org.springframework.restdocs.urlTemplate", "/{a}/{b}").build());
+				RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
+				.build());
 	}
 
 	@Test
@@ -77,7 +80,8 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				parameterWithName("a").description("one"), parameterWithName("b")
 						.description("two"))).document(operationBuilder(
 				"path-parameters-with-query-string").attribute(
-				"org.springframework.restdocs.urlTemplate", "/{a}/{b}?foo=bar").build());
+				RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+				"/{a}/{b}?foo=bar").build());
 	}
 
 	@Test
@@ -93,7 +97,8 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				.description("two").attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title"))).document(operationBuilder(
 				"path-parameters-with-custom-attributes")
-				.attribute("org.springframework.restdocs.urlTemplate", "/{a}/{b}")
+				.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+						"/{a}/{b}")
 				.attribute(TemplateEngine.class.getName(),
 						new MustacheTemplateEngine(resolver)).build());
 
@@ -112,8 +117,11 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")
 				.attributes(key("foo").value("alpha")), parameterWithName("b")
 				.description("two").attributes(key("foo").value("bravo"))))
-				.document(operationBuilder("path-parameters-with-custom-descriptor-attributes")
-						.attribute("org.springframework.restdocs.urlTemplate", "/{a}/{b}")
+				.document(operationBuilder(
+						"path-parameters-with-custom-descriptor-attributes")
+						.attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}")
 						.attribute(TemplateEngine.class.getName(),
 								new MustacheTemplateEngine(resolver)).build());
 	}

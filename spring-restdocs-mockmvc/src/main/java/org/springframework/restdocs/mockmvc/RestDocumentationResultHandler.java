@@ -35,6 +35,8 @@ import org.springframework.util.Assert;
  */
 public class RestDocumentationResultHandler implements ResultHandler {
 
+	static final String ATTRIBUTE_NAME_CONFIGURATION = "org.springframework.restdocs.configuration";
+
 	private final RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> delegate;
 
 	RestDocumentationResultHandler(
@@ -47,7 +49,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	public void handle(MvcResult result) throws Exception {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> configuration = (Map<String, Object>) result.getRequest()
-				.getAttribute("org.springframework.restdocs.configuration");
+				.getAttribute(ATTRIBUTE_NAME_CONFIGURATION);
 		this.delegate.handle(result.getRequest(), result.getResponse(), configuration);
 	}
 

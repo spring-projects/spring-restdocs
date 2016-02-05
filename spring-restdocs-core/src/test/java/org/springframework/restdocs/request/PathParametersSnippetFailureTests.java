@@ -23,6 +23,7 @@ import java.util.Collections;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
@@ -53,7 +54,8 @@ public class PathParametersSnippetFailureTests {
 		new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList())
 				.document(new OperationBuilder("undocumented-path-parameter",
 						this.snippet.getOutputDirectory()).attribute(
-						"org.springframework.restdocs.urlTemplate", "/{a}/").build());
+						RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/")
+						.build());
 	}
 
 	@Test
@@ -65,7 +67,8 @@ public class PathParametersSnippetFailureTests {
 				Arrays.asList(parameterWithName("a").description("one")))
 				.document(new OperationBuilder("missing-path-parameter", this.snippet
 						.getOutputDirectory()).attribute(
-						"org.springframework.restdocs.urlTemplate", "/").build());
+						RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/")
+						.build());
 	}
 
 	@Test
@@ -79,7 +82,8 @@ public class PathParametersSnippetFailureTests {
 				.document(new OperationBuilder(
 						"undocumented-and-missing-path-parameters", this.snippet
 								.getOutputDirectory()).attribute(
-						"org.springframework.restdocs.urlTemplate", "/{b}").build());
+						RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{b}")
+						.build());
 	}
 
 }

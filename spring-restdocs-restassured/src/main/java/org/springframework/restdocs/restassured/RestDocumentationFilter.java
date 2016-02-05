@@ -37,6 +37,8 @@ import com.jayway.restassured.specification.FilterableResponseSpecification;
  */
 public final class RestDocumentationFilter implements Filter {
 
+	static final String CONTEXT_KEY_CONFIGURATION = "org.springframework.restdocs.configuration";
+
 	private final RestDocumentationGenerator<FilterableRequestSpecification, Response> delegate;
 
 	RestDocumentationFilter(
@@ -51,11 +53,11 @@ public final class RestDocumentationFilter implements Filter {
 		Response response = context.next(requestSpec, responseSpec);
 
 		Map<String, Object> configuration = new HashMap<>(
-				context.<Map<String, Object>>getValue("org.springframework.restdocs.configuration"));
+				context.<Map<String, Object>>getValue(CONTEXT_KEY_CONFIGURATION));
 		configuration.put(RestDocumentationContext.class.getName(), context
 				.<RestDocumentationContext>getValue(RestDocumentationContext.class
 						.getName()));
-		configuration.put("org.springframework.restdocs.urlTemplate",
+		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
 				requestSpec.getUserDefinedPath());
 
 		this.delegate.handle(requestSpec, response, configuration);
