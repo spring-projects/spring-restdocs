@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.RestDocumentationHandler;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.util.Assert;
 
@@ -37,10 +37,10 @@ import com.jayway.restassured.specification.FilterableResponseSpecification;
  */
 public final class RestDocumentationFilter implements Filter {
 
-	private final RestDocumentationHandler<FilterableRequestSpecification, Response> delegate;
+	private final RestDocumentationGenerator<FilterableRequestSpecification, Response> delegate;
 
 	RestDocumentationFilter(
-			RestDocumentationHandler<FilterableRequestSpecification, Response> delegate) {
+			RestDocumentationGenerator<FilterableRequestSpecification, Response> delegate) {
 		Assert.notNull(delegate, "delegate must be non-null");
 		this.delegate = delegate;
 	}

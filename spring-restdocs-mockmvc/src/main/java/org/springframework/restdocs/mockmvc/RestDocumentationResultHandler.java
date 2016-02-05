@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.restdocs.RestDocumentationHandler;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
@@ -35,10 +35,10 @@ import org.springframework.util.Assert;
  */
 public class RestDocumentationResultHandler implements ResultHandler {
 
-	private final RestDocumentationHandler<MockHttpServletRequest, MockHttpServletResponse> delegate;
+	private final RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> delegate;
 
 	RestDocumentationResultHandler(
-			RestDocumentationHandler<MockHttpServletRequest, MockHttpServletResponse> delegate) {
+			RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> delegate) {
 		Assert.notNull(delegate, "delegate must be non-null");
 		this.delegate = delegate;
 	}

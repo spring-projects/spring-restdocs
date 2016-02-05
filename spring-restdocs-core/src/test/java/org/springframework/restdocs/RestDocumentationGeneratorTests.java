@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.config.SnippetConfigurer;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
@@ -43,11 +44,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**
- * Tests for {@link RestDocumentationHandler}.
+ * Tests for {@link RestDocumentationGenerator}.
  *
  * @author Andy Wilkinson
  */
-public class RestDocumentationHandlerTests {
+public class RestDocumentationGeneratorTests {
 
 	@SuppressWarnings("unchecked")
 	private final RequestConverter<Object> requestConverter = mock(RequestConverter.class);
@@ -75,7 +76,7 @@ public class RestDocumentationHandlerTests {
 		given(this.responseConverter.convert(this.response)).willReturn(
 				this.operationResponse);
 		HashMap<String, Object> configuration = new HashMap<>();
-		new RestDocumentationHandler<>("id", this.requestConverter,
+		new RestDocumentationGenerator<>("id", this.requestConverter,
 				this.responseConverter, this.snippet).handle(this.request, this.response,
 				configuration);
 		verifySnippetInvocation(this.snippet, configuration);
@@ -92,7 +93,7 @@ public class RestDocumentationHandlerTests {
 		Snippet defaultSnippet2 = mock(Snippet.class);
 		configuration.put(SnippetConfigurer.ATTRIBUTE_DEFAULT_SNIPPETS,
 				Arrays.asList(defaultSnippet1, defaultSnippet2));
-		new RestDocumentationHandler<>("id", this.requestConverter,
+		new RestDocumentationGenerator<>("id", this.requestConverter,
 				this.responseConverter, this.snippet).handle(this.request, this.response,
 				configuration);
 		verifySnippetInvocation(this.snippet, configuration);
@@ -108,11 +109,11 @@ public class RestDocumentationHandlerTests {
 				this.operationResponse);
 		Snippet additionalSnippet1 = mock(Snippet.class);
 		Snippet additionalSnippet2 = mock(Snippet.class);
-		RestDocumentationHandler<Object, Object> handler = new RestDocumentationHandler<>(
+		RestDocumentationGenerator<Object, Object> generator = new RestDocumentationGenerator<>(
 				"id", this.requestConverter, this.responseConverter, this.snippet);
-		handler.addSnippets(additionalSnippet1, additionalSnippet2);
+		generator.addSnippets(additionalSnippet1, additionalSnippet2);
 		HashMap<String, Object> configuration = new HashMap<>();
-		handler.handle(this.request, this.response, configuration);
+		generator.handle(this.request, this.response, configuration);
 		verifySnippetInvocation(this.snippet, configuration);
 		verifySnippetInvocation(additionalSnippet1, configuration);
 		verifySnippetInvocation(additionalSnippet2, configuration);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs;
+package org.springframework.restdocs.generate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,14 +36,14 @@ import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.util.Assert;
 
 /**
- * A {@code RestDocumentationHandler} is used to produce documentation snippets from the
- * request and response of an operation performed on a service.
+ * A {@code RestDocumentationGenerator} is used to generate documentation snippets from
+ * the request and response of an operation performed on a service.
  *
  * @param <REQ> the request type that can be handled
  * @param <RESP> the response type that can be handled
  * @author Andy Wilkinson
  */
-public final class RestDocumentationHandler<REQ, RESP> {
+public final class RestDocumentationGenerator<REQ, RESP> {
 
 	private final String identifier;
 
@@ -58,7 +58,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 	private final ResponseConverter<RESP> responseConverter;
 
 	/**
-	 * Creates a new {@code RestDocumentationHandler} for the operation identified by the
+	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by the
 	 * given {@code identifier}. The given {@code requestConverter} and
 	 * {@code responseConverter} are used to convert the operation's request and response
 	 * into generic {@code OperationRequest} and {@code OperationResponse} instances that
@@ -69,7 +69,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 	 * @param responseConverter the response converter
 	 * @param snippets the snippets
 	 */
-	public RestDocumentationHandler(String identifier,
+	public RestDocumentationGenerator(String identifier,
 			RequestConverter<REQ> requestConverter,
 			ResponseConverter<RESP> responseConverter, Snippet... snippets) {
 		this(identifier, requestConverter, responseConverter,
@@ -78,7 +78,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 	}
 
 	/**
-	 * Creates a new {@code RestDocumentationHandler} for the operation identified by the
+	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by the
 	 * given {@code identifier}. The given {@code requestConverter} and
 	 * {@code responseConverter} are used to convert the operation's request and response
 	 * into generic {@code OperationRequest} and {@code OperationResponse} instances that
@@ -92,7 +92,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 	 * @param requestPreprocessor the request preprocessor
 	 * @param snippets the snippets
 	 */
-	public RestDocumentationHandler(String identifier,
+	public RestDocumentationGenerator(String identifier,
 			RequestConverter<REQ> requestConverter,
 			ResponseConverter<RESP> responseConverter,
 			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
@@ -101,7 +101,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 	}
 
 	/**
-	 * Creates a new {@code RestDocumentationHandler} for the operation identified by the
+	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by the
 	 * given {@code identifier}. The given {@code requestConverter} and
 	 * {@code responseConverter} are used to convert the operation's request and response
 	 * into generic {@code OperationRequest} and {@code OperationResponse} instances that
@@ -115,7 +115,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 	 * @param responsePreprocessor the response preprocessor
 	 * @param snippets the snippets
 	 */
-	public RestDocumentationHandler(String identifier,
+	public RestDocumentationGenerator(String identifier,
 			RequestConverter<REQ> requestConverter,
 			ResponseConverter<RESP> responseConverter,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
@@ -125,7 +125,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 	}
 
 	/**
-	 * Creates a new {@code RestDocumentationHandler} for the operation identified by the
+	 * Creates a new {@code RestDocumentationGenerator} for the operation identified by the
 	 * given {@code identifier}. The given {@code requestConverter} and
 	 * {@code responseConverter} are used to convert the operation's request and response
 	 * into generic {@code OperationRequest} and {@code OperationResponse} instances that
@@ -140,7 +140,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 	 * @param responsePreprocessor the response preprocessor
 	 * @param snippets the snippets
 	 */
-	public RestDocumentationHandler(String identifier,
+	public RestDocumentationGenerator(String identifier,
 			RequestConverter<REQ> requestConverter,
 			ResponseConverter<RESP> responseConverter,
 			OperationRequestPreprocessor requestPreprocessor,
@@ -167,7 +167,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 	 * @param request the request
 	 * @param response the request
 	 * @param configuration the configuration
-	 * @throws RestDocumentationException if a failure occurs during handling
+	 * @throws RestDocumentationGenerationException if a failure occurs during handling
 	 */
 	public void handle(REQ request, RESP response, Map<String, Object> configuration) {
 		OperationRequest operationRequest = this.requestPreprocessor
@@ -184,7 +184,7 @@ public final class RestDocumentationHandler<REQ, RESP> {
 			}
 		}
 		catch (IOException ex) {
-			throw new RestDocumentationException(ex);
+			throw new RestDocumentationGenerationException(ex);
 		}
 	}
 

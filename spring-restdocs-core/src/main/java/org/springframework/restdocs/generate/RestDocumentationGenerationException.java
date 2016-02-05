@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs;
+package org.springframework.restdocs.generate;
 
 /**
  * An exception that can be thrown when a failure occurs during REST documentation
@@ -22,14 +22,14 @@ package org.springframework.restdocs;
  *
  * @author Andy Wilkinson
  */
-public class RestDocumentationException extends RuntimeException {
+public class RestDocumentationGenerationException extends RuntimeException {
 
 	/**
 	 * Creates a new {@code RestDocumentationException} with the given {@code cause}.
 	 *
 	 * @param cause the cause
 	 */
-	public RestDocumentationException(Throwable cause) {
+	public RestDocumentationGenerationException(Throwable cause) {
 		super(cause);
 	}
 
@@ -40,7 +40,7 @@ public class RestDocumentationException extends RuntimeException {
 	 * @param message the message
 	 * @param cause the cause
 	 */
-	public RestDocumentationException(String message, Throwable cause) {
+	public RestDocumentationGenerationException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
