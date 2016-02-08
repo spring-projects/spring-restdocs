@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2015-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,11 @@ package org.springframework.restdocs.hypermedia;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
@@ -38,68 +34,32 @@ import org.springframework.util.MultiValueMap;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Parameterized tests for {@link HalLinkExtractor}, {@link AtomLinkExtractor} and
- * {@link JsonPathLinkExtractor} with various payloads.
+ * Test for {@link JsonPathLinkExtractor} with various payloads.
  *
- * @author Andy Wilkinson
  * @author Mattias Severson
+ *
+ * @see LinkExtractorsPayloadTests
  */
-@RunWith(Parameterized.class)
-public class LinkExtractorsPayloadTests {
+public class JsonPathLinkExtractorTests {
 
 	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
+	private LinkExtractor linkExtractor;
 
-	private final LinkExtractor linkExtractor;
-
-	private final String linkType;
-
-	@Parameters
-	public static Collection<Object[]> data() {
-		return Arrays.asList(new Object[] { new HalLinkExtractor(), "hal" },
-				new Object[] { new AtomLinkExtractor(), "atom" },
-				new Object[] { new JsonPathLinkExtractor("$.links"), "json-path" });
-	}
-
-	public LinkExtractorsPayloadTests(LinkExtractor linkExtractor, String linkType) {
-		this.linkExtractor = linkExtractor;
-		this.linkType = linkType;
+	@Test
+	public void linkInSubDocument() throws IOException {
+		this.linkExtractor = new JsonPathLinkExtractor("$.foo.links");
+		Map<String, List<Link>> links = this.linkExtractor
+				.extractLinks(createResponse("link-in-sub-document"));
+		assertLinks(Collections.singletonList(new Link("alpha", "http://alpha.example.com")), links);
 	}
 
 	@Test
-	public void singleLink() throws IOException {
+	public void multipleLinksInDifferentDocuments() throws IOException {
+		this.linkExtractor = new JsonPathLinkExtractor("$.first.links", "$.second.links");
 		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("single-link"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com")), links);
-	}
-
-	@Test
-	public void multipleLinksWithDifferentRels() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("multiple-links-different-rels"));
+				.extractLinks(createResponse("multiple-links-different-sub-documents"));
 		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com"),
 				new Link("bravo", "http://bravo.example.com")), links);
-	}
-
-	@Test
-	public void multipleLinksWithSameRels() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("multiple-links-same-rels"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com/one"),
-				new Link("alpha", "http://alpha.example.com/two")), links);
-	}
-
-	@Test
-	public void noLinks() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("no-links"));
-		assertLinks(Collections.<Link>emptyList(), links);
-	}
-
-	@Test
-	public void linksInTheWrongFormat() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("wrong-format"));
-		assertLinks(Collections.<Link>emptyList(), links);
 	}
 
 	private void assertLinks(List<Link> expectedLinks, Map<String, List<Link>> actualLinks) {
@@ -116,7 +76,6 @@ public class LinkExtractorsPayloadTests {
 	}
 
 	private File getPayloadFile(String name) {
-		return new File("src/test/resources/link-payloads/" + this.linkType + "/" + name
-				+ ".json");
+		return new File("src/test/resources/link-payloads/json-path/" + name + ".json");
 	}
 }

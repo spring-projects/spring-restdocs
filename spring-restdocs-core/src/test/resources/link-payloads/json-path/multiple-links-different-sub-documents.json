@@ -1,0 +1,12 @@
+{
+	"first": {
+		"links": {
+			"alpha": "http://alpha.example.com"
+		}
+	},
+	"second": {
+		"links": {
+			"bravo": "http://bravo.example.com"
+		}
+	}
+}
