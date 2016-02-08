@@ -627,10 +627,14 @@ generated snippets.
 templates] are provided for each of the snippets that Spring REST Docs can produce. To
 customize a snippet's content, you can provide your own template.
 
-Templates are loaded from the classpath in the `org.springframework.restdocs.templates`
-package and each template is named after the snippet that it will produce. For example, to
+Templates are loaded from the classpath from an `org.springframework.restdocs.templates`
+subpackage. The name of the subpackage is determined by the ID of the template format
+that is in use. The default template format, Asciidoctor, has the ID `asciidoctor` so
+snippets are loaded from `org.springframework.restdocs.templates.asciidoctor`. Each
+template is named after the snippet that it will produce. For example, to
 override the template for the `curl-request.adoc` snippet, create a template named
-`curl-request.snippet` in `src/test/resources/org/springframework/restdocs/templates`.
+`curl-request.snippet` in
+`src/test/resources/org/springframework/restdocs/templates/asciidoctor`.
 
 
 

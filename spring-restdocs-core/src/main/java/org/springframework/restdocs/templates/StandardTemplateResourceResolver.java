@@ -22,12 +22,20 @@ import org.springframework.core.io.Resource;
 /**
  * Standard implementation of {@link TemplateResourceResolver}.
  * <p>
- * Templates are resolved by looking for a resource on the classpath named
- * {@code org/springframework/restdocs/templates/&#123;name&#125;.snippet}. If no such
- * resource exists an attempt is made to return a default resource that is appropriate for
- * the configured snippet format.
+ * Templates are resolved by looking for resources on the classpath. The following
+ * locations are checked in order:
+ * <ol>
+ * <li>
+ * <code>org/springframework/restdocs/templates/${templateFormatId}/${name}.snippet</code>
+ * </li>
+ * <li><code>org/springframework/restdocs/templates/${name}.snippet</code></li>
+ * <li>
+ * <code>org/springframework/restdocs/templates/${templateFormatId}/default-${name}.snippet</code>
+ * </li>
+ * </ol>
  *
  * @author Andy Wilkinson
+ * @see TemplateFormat#getId()
  */
 public class StandardTemplateResourceResolver implements TemplateResourceResolver {
 
@@ -57,18 +65,37 @@ public class StandardTemplateResourceResolver implements TemplateResourceResolve
 
 	@Override
 	public Resource resolveTemplateResource(String name) {
-		ClassPathResource classPathResource = new ClassPathResource(
-				"org/springframework/restdocs/templates/" + name + ".snippet");
-		if (!classPathResource.exists()) {
-			classPathResource = new ClassPathResource(
-					"org/springframework/restdocs/templates/"
-							+ this.templateFormat.getId() + "/" + name + ".snippet");
-			if (!classPathResource.exists()) {
-				throw new IllegalStateException("Template named '" + name
-						+ "' could not be resolved");
-			}
+		Resource formatSpecificCustomTemplate = getFormatSpecificCustomTemplate(name);
+		if (formatSpecificCustomTemplate.exists()) {
+			return formatSpecificCustomTemplate;
 		}
-		return classPathResource;
+		Resource customTemplate = getCustomTemplate(name);
+		if (customTemplate.exists()) {
+			return customTemplate;
+		}
+		Resource defaultTemplate = getDefaultTemplate(name);
+		if (defaultTemplate.exists()) {
+			return defaultTemplate;
+		}
+		throw new IllegalStateException("Template named '" + name
+				+ "' could not be resolved");
+	}
+
+	private Resource getFormatSpecificCustomTemplate(String name) {
+		return new ClassPathResource(String.format(
+				"org/springframework/restdocs/templates/%s/%s.snippet",
+				this.templateFormat.getId(), name));
+	}
+
+	private Resource getCustomTemplate(String name) {
+		return new ClassPathResource(String.format(
+				"org/springframework/restdocs/templates/%s.snippet", name));
+	}
+
+	private Resource getDefaultTemplate(String name) {
+		return new ClassPathResource(String.format(
+				"org/springframework/restdocs/templates/%s/default-%s.snippet",
+				this.templateFormat.getId(), name));
 	}
 
 }
