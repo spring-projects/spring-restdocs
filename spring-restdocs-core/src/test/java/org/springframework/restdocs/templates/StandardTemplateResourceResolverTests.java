@@ -29,7 +29,7 @@ import org.springframework.core.io.Resource;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.springframework.restdocs.snippet.SnippetFormats.asciidoctor;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for {@link TemplateResourceResolver}.
@@ -68,8 +68,8 @@ public class StandardTemplateResourceResolverTests {
 	@Test
 	public void fallsBackToDefaultSnippet() throws Exception {
 		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/adoc/test.snippet", getClass()
-						.getResource("test.snippet"));
+				"org/springframework/restdocs/templates/asciidoctor/test.snippet",
+				getClass().getResource("test.snippet"));
 		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
 				new Callable<Resource>() {
 

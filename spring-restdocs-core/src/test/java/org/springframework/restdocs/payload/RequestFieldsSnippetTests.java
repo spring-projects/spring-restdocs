@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.snippet.SnippetFormat;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
@@ -42,8 +42,8 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  */
 public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
-	public RequestFieldsSnippetTests(String name, SnippetFormat snippetFormat) {
-		super(name, snippetFormat);
+	public RequestFieldsSnippetTests(String name, TemplateFormat templateFormat) {
+		super(name, templateFormat);
 	}
 
 	@Test

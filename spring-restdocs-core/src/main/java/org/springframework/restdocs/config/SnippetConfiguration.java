@@ -16,7 +16,7 @@
 
 package org.springframework.restdocs.config;
 
-import org.springframework.restdocs.snippet.SnippetFormat;
+import org.springframework.restdocs.templates.TemplateFormat;
 
 /**
  * An encapsulation of the configuration for documentation snippets.
@@ -27,18 +27,18 @@ class SnippetConfiguration {
 
 	private final String encoding;
 
-	private final SnippetFormat format;
+	private final TemplateFormat format;
 
-	SnippetConfiguration(String encoding, SnippetFormat format) {
+	SnippetConfiguration(String encoding, TemplateFormat templateFormat) {
 		this.encoding = encoding;
-		this.format = format;
+		this.format = templateFormat;
 	}
 
 	String getEncoding() {
 		return this.encoding;
 	}
 
-	SnippetFormat getFormat() {
+	TemplateFormat getTemplateFormat() {
 		return this.format;
 	}
 

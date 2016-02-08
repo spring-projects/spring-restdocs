@@ -59,11 +59,11 @@ include::{examples-dir}/com/example/restassured/CustomEncoding.java[tags=custom-
 
 
 
-[[configuration-snippet-format]]
-=== Snippet format
+[[configuration-snippet-template-format]]
+=== Snippet template format
 
-The default snippet format is Asciidoctor. Markdown is also supported out of the box. You
-can change the default format using the `RestDocumentationConfigurer` API:
+The default snippet template format is Asciidoctor. Markdown is also supported out of the
+box. You can change the default format using the `RestDocumentationConfigurer` API:
 
 [source,java,indent=0,role="primary"]
 .MockMvc

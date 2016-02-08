@@ -30,8 +30,8 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.springframework.http.HttpStatus;
-import org.springframework.restdocs.snippet.SnippetFormat;
-import org.springframework.restdocs.snippet.SnippetFormats;
+import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,18 +47,19 @@ public final class SnippetMatchers {
 
 	}
 
-	public static SnippetMatcher snippet(SnippetFormat snippetFormat) {
-		return new SnippetMatcher(snippetFormat);
+	public static SnippetMatcher snippet(TemplateFormat templateFormat) {
+		return new SnippetMatcher(templateFormat);
 	}
 
-	public static TableMatcher<?> tableWithHeader(SnippetFormat format, String... headers) {
+	public static TableMatcher<?> tableWithHeader(TemplateFormat format,
+			String... headers) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorTableMatcher(null, headers);
 		}
 		return new MarkdownTableMatcher(null, headers);
 	}
 
-	public static TableMatcher<?> tableWithTitleAndHeader(SnippetFormat format,
+	public static TableMatcher<?> tableWithTitleAndHeader(TemplateFormat format,
 			String title, String... headers) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorTableMatcher(title, headers);
@@ -66,7 +67,7 @@ public final class SnippetMatchers {
 		return new MarkdownTableMatcher(title, headers);
 	}
 
-	public static HttpRequestMatcher httpRequest(SnippetFormat format,
+	public static HttpRequestMatcher httpRequest(TemplateFormat format,
 			RequestMethod requestMethod, String uri) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new HttpRequestMatcher(requestMethod, uri,
@@ -76,7 +77,8 @@ public final class SnippetMatchers {
 				"http"), 2);
 	}
 
-	public static HttpResponseMatcher httpResponse(SnippetFormat format, HttpStatus status) {
+	public static HttpResponseMatcher httpResponse(TemplateFormat format,
+			HttpStatus status) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new HttpResponseMatcher(status, new AsciidoctorCodeBlockMatcher<>(
 					"http"), 3);
@@ -85,7 +87,7 @@ public final class SnippetMatchers {
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	public static CodeBlockMatcher<?> codeBlock(SnippetFormat format, String language) {
+	public static CodeBlockMatcher<?> codeBlock(TemplateFormat format, String language) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorCodeBlockMatcher(language);
 		}
@@ -95,12 +97,12 @@ public final class SnippetMatchers {
 	private static abstract class AbstractSnippetContentMatcher extends
 			BaseMatcher<String> {
 
-		private final SnippetFormat snippetFormat;
+		private final TemplateFormat templateFormat;
 
 		private List<String> lines = new ArrayList<>();
 
-		protected AbstractSnippetContentMatcher(SnippetFormat snippetFormat) {
-			this.snippetFormat = snippetFormat;
+		protected AbstractSnippetContentMatcher(TemplateFormat templateFormat) {
+			this.templateFormat = templateFormat;
 		}
 
 		protected void addLine(String line) {
@@ -121,7 +123,7 @@ public final class SnippetMatchers {
 
 		@Override
 		public void describeTo(Description description) {
-			description.appendText(this.snippetFormat.getFileExtension() + " snippet");
+			description.appendText(this.templateFormat.getFileExtension() + " snippet");
 			description.appendText(getLinesAsString());
 		}
 
@@ -157,8 +159,8 @@ public final class SnippetMatchers {
 	public static class CodeBlockMatcher<T extends CodeBlockMatcher<T>> extends
 			AbstractSnippetContentMatcher {
 
-		protected CodeBlockMatcher(SnippetFormat snippetFormat) {
-			super(snippetFormat);
+		protected CodeBlockMatcher(TemplateFormat templateFormat) {
+			super(templateFormat);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -178,7 +180,7 @@ public final class SnippetMatchers {
 			extends CodeBlockMatcher<T> {
 
 		protected AsciidoctorCodeBlockMatcher(String language) {
-			super(SnippetFormats.asciidoctor());
+			super(TemplateFormats.asciidoctor());
 			this.addLine("[source," + language + "]");
 			this.addLine("----");
 			this.addLine("----");
@@ -195,7 +197,7 @@ public final class SnippetMatchers {
 			extends CodeBlockMatcher<T> {
 
 		protected MarkdownCodeBlockMatcher(String language) {
-			super(SnippetFormats.markdown());
+			super(TemplateFormats.markdown());
 			this.addLine("```" + language);
 			this.addLine("```");
 		}
@@ -286,8 +288,8 @@ public final class SnippetMatchers {
 	public static abstract class TableMatcher<T extends TableMatcher<T>> extends
 			AbstractSnippetContentMatcher {
 
-		protected TableMatcher(SnippetFormat snippetFormat) {
-			super(snippetFormat);
+		protected TableMatcher(TemplateFormat templateFormat) {
+			super(templateFormat);
 		}
 
 		public abstract T row(String... entries);
@@ -303,7 +305,7 @@ public final class SnippetMatchers {
 			TableMatcher<AsciidoctorTableMatcher> {
 
 		private AsciidoctorTableMatcher(String title, String... columns) {
-			super(SnippetFormats.asciidoctor());
+			super(TemplateFormats.asciidoctor());
 			if (StringUtils.hasText(title)) {
 				this.addLine("." + title);
 			}
@@ -340,7 +342,7 @@ public final class SnippetMatchers {
 			TableMatcher<MarkdownTableMatcher> {
 
 		private MarkdownTableMatcher(String title, String... columns) {
-			super(SnippetFormats.asciidoctor());
+			super(TemplateFormats.asciidoctor());
 			if (StringUtils.hasText(title)) {
 				this.addLine(title);
 			}
@@ -379,12 +381,12 @@ public final class SnippetMatchers {
 	 */
 	public static final class SnippetMatcher extends BaseMatcher<File> {
 
-		private final SnippetFormat snippetFormat;
+		private final TemplateFormat templateFormat;
 
 		private Matcher<String> expectedContents;
 
-		private SnippetMatcher(SnippetFormat snippetFormat) {
-			this.snippetFormat = snippetFormat;
+		private SnippetMatcher(TemplateFormat templateFormat) {
+			this.templateFormat = templateFormat;
 		}
 
 		@Override
@@ -435,8 +437,8 @@ public final class SnippetMatchers {
 				this.expectedContents.describeTo(description);
 			}
 			else {
-				description
-						.appendText(this.snippetFormat.getFileExtension() + " snippet");
+				description.appendText(this.templateFormat.getFileExtension()
+						+ " snippet");
 			}
 		}
 

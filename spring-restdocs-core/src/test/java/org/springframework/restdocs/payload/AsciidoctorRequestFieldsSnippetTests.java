@@ -22,8 +22,8 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.restdocs.snippet.SnippetFormats;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
@@ -32,7 +32,7 @@ import org.springframework.restdocs.test.OperationBuilder;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.snippet.SnippetFormats.asciidoctor;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 
 /**
@@ -43,7 +43,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 public class AsciidoctorRequestFieldsSnippetTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(SnippetFormats.asciidoctor());
+	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
 
 	@Test
 	public void requestFieldsWithListDescription() throws IOException {
@@ -67,8 +67,9 @@ public class AsciidoctorRequestFieldsSnippetTests {
 	}
 
 	private FileSystemResource snippetResource(String name) {
-		return new FileSystemResource("src/test/resources/custom-snippet-templates/adoc/"
-				+ name + ".snippet");
+		return new FileSystemResource(
+				"src/test/resources/custom-snippet-templates/asciidoctor/" + name
+						+ ".snippet");
 	}
 
 }

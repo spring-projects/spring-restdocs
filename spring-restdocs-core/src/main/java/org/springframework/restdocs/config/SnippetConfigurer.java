@@ -24,8 +24,8 @@ import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.curl.CurlDocumentation;
 import org.springframework.restdocs.http.HttpDocumentation;
 import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.restdocs.snippet.SnippetFormat;
-import org.springframework.restdocs.snippet.SnippetFormats;
+import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 
 /**
  * A configurer that can be used to configure the generated documentation snippets.
@@ -55,14 +55,14 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 	/**
 	 * The default format for documentation snippets.
 	 *
-	 * @see #withFormat(SnippetFormat)
+	 * @see #withTemplateFormat(TemplateFormat)
 	 */
-	public static final SnippetFormat DEFAULT_SNIPPET_FORMAT = SnippetFormats
+	public static final TemplateFormat DEFAULT_TEMPLATE_FORMAT = TemplateFormats
 			.asciidoctor();
 
 	private String snippetEncoding = DEFAULT_SNIPPET_ENCODING;
 
-	private SnippetFormat snippetFormat = DEFAULT_SNIPPET_FORMAT;
+	private TemplateFormat templateFormat = DEFAULT_TEMPLATE_FORMAT;
 
 	/**
 	 * Creates a new {@code SnippetConfigurer} with the given {@code parent}.
@@ -76,7 +76,7 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 	@Override
 	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
 		configuration.put(SnippetConfiguration.class.getName(), new SnippetConfiguration(
-				this.snippetEncoding, this.snippetFormat));
+				this.snippetEncoding, this.templateFormat));
 		configuration.put(ATTRIBUTE_DEFAULT_SNIPPETS, this.defaultSnippets);
 	}
 
@@ -106,14 +106,14 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 	}
 
 	/**
-	 * Configures the format of the documentation snippets.
+	 * Configures the format of the documentation snippet templates.
 	 *
-	 * @param format the snippet format
+	 * @param format the snippet template format
 	 * @return {@code this}
 	 */
 	@SuppressWarnings("unchecked")
-	public T withFormat(SnippetFormat format) {
-		this.snippetFormat = format;
+	public T withTemplateFormat(TemplateFormat format) {
+		this.templateFormat = format;
 		return (T) this;
 	}
 

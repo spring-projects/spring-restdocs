@@ -23,6 +23,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
@@ -40,7 +42,7 @@ public final class StandardWriterResolver implements WriterResolver {
 
 	private String encoding = "UTF-8";
 
-	private SnippetFormat snippetFormat;
+	private TemplateFormat templateFormat;
 
 	/**
 	 * Creates a new {@code StandardWriterResolver} that will use the given
@@ -50,29 +52,29 @@ public final class StandardWriterResolver implements WriterResolver {
 	 *
 	 * @param placeholderResolver the placeholder resolver
 	 * @deprecated since 1.1.0 in favor of
-	 * {@link #StandardWriterResolver(PropertyPlaceholderHelper.PlaceholderResolver, String, SnippetFormat)}
+	 * {@link #StandardWriterResolver(PropertyPlaceholderHelper.PlaceholderResolver, String, TemplateFormat)}
 	 */
 	@Deprecated
 	public StandardWriterResolver(PlaceholderResolver placeholderResolver) {
-		this(placeholderResolver, "UTF-8", SnippetFormats.asciidoctor());
+		this(placeholderResolver, "UTF-8", TemplateFormats.asciidoctor());
 	}
 
 	/**
 	 * Creates a new {@code StandardWriterResolver} that will use the given
 	 * {@code placeholderResolver} to resolve any placeholders in the
 	 * {@code operationName}. Writers will use the given {@code encoding} and, when
-	 * writing to a file, will use a filename appropriate for content in the given
-	 * {@code snippetFormat}.
+	 * writing to a file, will use a filename appropriate for content generated from
+	 * templates in the given {@code templateFormat}.
 	 *
 	 * @param placeholderResolver the placeholder resolver
 	 * @param encoding the encoding
-	 * @param snippetFormat the snippet format
+	 * @param templateFormat the snippet format
 	 */
 	public StandardWriterResolver(PlaceholderResolver placeholderResolver,
-			String encoding, SnippetFormat snippetFormat) {
+			String encoding, TemplateFormat templateFormat) {
 		this.placeholderResolver = placeholderResolver;
 		this.encoding = encoding;
-		this.snippetFormat = snippetFormat;
+		this.templateFormat = templateFormat;
 	}
 
 	@Override
@@ -80,7 +82,7 @@ public final class StandardWriterResolver implements WriterResolver {
 			RestDocumentationContext context) throws IOException {
 		File outputFile = resolveFile(this.propertyPlaceholderHelper.replacePlaceholders(
 				operationName, this.placeholderResolver), snippetName + "."
-				+ this.snippetFormat.getFileExtension(), context);
+				+ this.templateFormat.getFileExtension(), context);
 
 		if (outputFile != null) {
 			createDirectoriesIfNecessary(outputFile);

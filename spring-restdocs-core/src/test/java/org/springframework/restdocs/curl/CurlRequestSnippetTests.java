@@ -24,8 +24,8 @@ import org.junit.runners.Parameterized;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.snippet.SnippetFormat;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.util.Base64Utils;
@@ -48,8 +48,8 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 @RunWith(Parameterized.class)
 public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
-	public CurlRequestSnippetTests(String name, SnippetFormat snippetFormat) {
-		super(name, snippetFormat);
+	public CurlRequestSnippetTests(String name, TemplateFormat templateFormat) {
+		super(name, templateFormat);
 	}
 
 	@Test

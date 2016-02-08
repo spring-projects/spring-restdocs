@@ -75,8 +75,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.snippet.SnippetFormats.asciidoctor;
-import static org.springframework.restdocs.snippet.SnippetFormats.markdown;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
+import static org.springframework.restdocs.templates.TemplateFormats.markdown;
 import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
@@ -130,7 +130,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 		MockMvc mockMvc = MockMvcBuilders
 				.webAppContextSetup(this.context)
 				.apply(new MockMvcRestDocumentationConfigurer(this.restDocumentation)
-						.snippets().withEncoding("UTF-8").withFormat(markdown())).build();
+						.snippets().withEncoding("UTF-8").withTemplateFormat(markdown())).build();
 
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(document("basic-markdown"));

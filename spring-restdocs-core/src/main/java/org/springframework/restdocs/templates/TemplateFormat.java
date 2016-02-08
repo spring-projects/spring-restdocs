@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.snippet;
+package org.springframework.restdocs.templates;
 
 /**
- * A {@link SnippetFormat} provides information about a particular snippet format, such as
- * Asciidoctor or Markdown.
+ * A {@link TemplateFormat} provides information about a particular template format, such
+ * as Asciidoctor or Markdown.
  *
  * @author Andy Wilkinson
  */
-public interface SnippetFormat {
+public interface TemplateFormat {
 
 	/**
-	 * Returns the snippet format's file extension.
+	 * Returns the id of this template format.
+	 *
+	 * @return the id
+	 */
+	String getId();
+
+	/**
+	 * Returns the file extension to use for files generated from templates in this
+	 * format.
 	 *
 	 * @return the file extension
 	 */

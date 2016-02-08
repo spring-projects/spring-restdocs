@@ -18,8 +18,6 @@ package org.springframework.restdocs.templates;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.restdocs.snippet.SnippetFormat;
-import org.springframework.restdocs.snippet.SnippetFormats;
 
 /**
  * Standard implementation of {@link TemplateResourceResolver}.
@@ -33,28 +31,28 @@ import org.springframework.restdocs.snippet.SnippetFormats;
  */
 public class StandardTemplateResourceResolver implements TemplateResourceResolver {
 
-	private final SnippetFormat snippetFormat;
+	private final TemplateFormat templateFormat;
 
 	/**
 	 * Creates a new {@code StandardTemplateResourceResolver} that will produce default
 	 * template resources formatted with Asciidoctor.
 	 *
 	 * @deprecated since 1.1.0 in favour of
-	 * {@link #StandardTemplateResourceResolver(SnippetFormat)}
+	 * {@link #StandardTemplateResourceResolver(TemplateFormat)}
 	 */
 	@Deprecated
 	public StandardTemplateResourceResolver() {
-		this(SnippetFormats.asciidoctor());
+		this(TemplateFormats.asciidoctor());
 	}
 
 	/**
 	 * Creates a new {@code StandardTemplateResourceResolver} that will produce default
-	 * template resources formatted with the given {@code snippetFormat}.
+	 * template resources formatted with the given {@code templateFormat}.
 	 *
-	 * @param snippetFormat the format for the default snippet templates
+	 * @param templateFormat the format for the default snippet templates
 	 */
-	public StandardTemplateResourceResolver(SnippetFormat snippetFormat) {
-		this.snippetFormat = snippetFormat;
+	public StandardTemplateResourceResolver(TemplateFormat templateFormat) {
+		this.templateFormat = templateFormat;
 	}
 
 	@Override
@@ -64,8 +62,7 @@ public class StandardTemplateResourceResolver implements TemplateResourceResolve
 		if (!classPathResource.exists()) {
 			classPathResource = new ClassPathResource(
 					"org/springframework/restdocs/templates/"
-							+ this.snippetFormat.getFileExtension() + "/" + name
-							+ ".snippet");
+							+ this.templateFormat.getId() + "/" + name + ".snippet");
 			if (!classPathResource.exists()) {
 				throw new IllegalStateException("Template named '" + name
 						+ "' could not be resolved");

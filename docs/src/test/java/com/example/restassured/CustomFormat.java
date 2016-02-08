@@ -19,7 +19,7 @@ package com.example.restassured;
 import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.restdocs.RestDocumentation;
-import org.springframework.restdocs.snippet.SnippetFormats;
+import org.springframework.restdocs.templates.TemplateFormats;
 
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.specification.RequestSpecification;
@@ -38,7 +38,7 @@ public class CustomFormat {
 		// tag::custom-format[]
 		this.spec = new RequestSpecBuilder()
 				.addFilter(documentationConfiguration(this.restDocumentation)
-						.snippets().withFormat(SnippetFormats.markdown()))
+						.snippets().withTemplateFormat(TemplateFormats.markdown()))
 				.build();
 		// end::custom-format[]
 	}

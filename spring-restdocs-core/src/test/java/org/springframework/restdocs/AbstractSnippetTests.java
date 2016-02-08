@@ -25,7 +25,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.restdocs.snippet.SnippetFormat;
+import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 import org.springframework.restdocs.test.SnippetMatchers;
@@ -35,8 +35,8 @@ import org.springframework.restdocs.test.SnippetMatchers.HttpResponseMatcher;
 import org.springframework.restdocs.test.SnippetMatchers.TableMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.springframework.restdocs.snippet.SnippetFormats.asciidoctor;
-import static org.springframework.restdocs.snippet.SnippetFormats.markdown;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
+import static org.springframework.restdocs.templates.TemplateFormats.markdown;
 
 /**
  * Abstract base class for testing snippet generation.
@@ -46,7 +46,7 @@ import static org.springframework.restdocs.snippet.SnippetFormats.markdown;
 @RunWith(Parameterized.class)
 public abstract class AbstractSnippetTests {
 
-	protected final SnippetFormat snippetFormat;
+	protected final TemplateFormat templateFormat;
 
 	@Rule
 	public ExpectedSnippet snippet;
@@ -57,40 +57,40 @@ public abstract class AbstractSnippetTests {
 				"Markdown", markdown() });
 	}
 
-	public AbstractSnippetTests(String name, SnippetFormat snippetFormat) {
-		this.snippet = new ExpectedSnippet(snippetFormat);
-		this.snippetFormat = snippetFormat;
+	public AbstractSnippetTests(String name, TemplateFormat templateFormat) {
+		this.snippet = new ExpectedSnippet(templateFormat);
+		this.templateFormat = templateFormat;
 	}
 
 	public CodeBlockMatcher<?> codeBlock(String language) {
-		return SnippetMatchers.codeBlock(this.snippetFormat, language);
+		return SnippetMatchers.codeBlock(this.templateFormat, language);
 	}
 
 	public TableMatcher<?> tableWithHeader(String... headers) {
-		return SnippetMatchers.tableWithHeader(this.snippetFormat, headers);
+		return SnippetMatchers.tableWithHeader(this.templateFormat, headers);
 	}
 
 	public TableMatcher<?> tableWithTitleAndHeader(String title, String... headers) {
-		return SnippetMatchers
-				.tableWithTitleAndHeader(this.snippetFormat, title, headers);
+		return SnippetMatchers.tableWithTitleAndHeader(this.templateFormat, title,
+				headers);
 	}
 
 	public HttpRequestMatcher httpRequest(RequestMethod method, String uri) {
-		return SnippetMatchers.httpRequest(this.snippetFormat, method, uri);
+		return SnippetMatchers.httpRequest(this.templateFormat, method, uri);
 	}
 
 	public HttpResponseMatcher httpResponse(HttpStatus responseStatus) {
-		return SnippetMatchers.httpResponse(this.snippetFormat, responseStatus);
+		return SnippetMatchers.httpResponse(this.templateFormat, responseStatus);
 	}
 
 	public OperationBuilder operationBuilder(String name) {
 		return new OperationBuilder(name, this.snippet.getOutputDirectory(),
-				this.snippetFormat);
+				this.templateFormat);
 	}
 
 	protected FileSystemResource snippetResource(String name) {
 		return new FileSystemResource("src/test/resources/custom-snippet-templates/"
-				+ this.snippetFormat.getFileExtension() + "/" + name + ".snippet");
+				+ this.templateFormat.getId() + "/" + name + ".snippet");
 	}
 
 }

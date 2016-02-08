@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.restdocs.RestDocumentation;
-import org.springframework.restdocs.snippet.SnippetFormats;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -42,7 +42,7 @@ public class CustomFormat {
 		// tag::custom-format[]
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)
-						.snippets().withFormat(SnippetFormats.markdown()))
+						.snippets().withTemplateFormat(TemplateFormats.markdown()))
 				.build();
 		// end::custom-format[]
 	}

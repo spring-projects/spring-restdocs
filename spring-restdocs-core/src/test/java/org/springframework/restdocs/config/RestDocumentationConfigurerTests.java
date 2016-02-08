@@ -28,10 +28,10 @@ import org.springframework.restdocs.curl.CurlRequestSnippet;
 import org.springframework.restdocs.http.HttpRequestSnippet;
 import org.springframework.restdocs.http.HttpResponseSnippet;
 import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.restdocs.snippet.SnippetFormats;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -83,8 +83,8 @@ public class RestDocumentationConfigurerTests {
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getEncoding(), is(equalTo("UTF-8")));
-		assertThat(snippetConfiguration.getFormat(),
-				is(equalTo(SnippetFormats.asciidoctor())));
+		assertThat(snippetConfiguration.getTemplateFormat(),
+				is(equalTo(TemplateFormats.asciidoctor())));
 	}
 
 	@Test
@@ -139,10 +139,10 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customSnippetFormat() {
+	public void customTemplateFormat() {
 		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
-		this.configurer.snippets().withFormat(SnippetFormats.markdown())
+		this.configurer.snippets().withTemplateFormat(TemplateFormats.markdown())
 				.apply(configuration, context);
 		assertThat(
 				configuration,
@@ -150,8 +150,8 @@ public class RestDocumentationConfigurerTests {
 						instanceOf(SnippetConfiguration.class)));
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
-		assertThat(snippetConfiguration.getFormat(),
-				is(equalTo(SnippetFormats.markdown())));
+		assertThat(snippetConfiguration.getTemplateFormat(),
+				is(equalTo(TemplateFormats.markdown())));
 	}
 
 	private static final class TestRestDocumentationConfigurer

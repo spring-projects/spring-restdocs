@@ -22,8 +22,8 @@ import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.snippet.SnippetFormat;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,8 +44,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	private static final String BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
 
-	public HttpRequestSnippetTests(String name, SnippetFormat snippetFormat) {
-		super(name, snippetFormat);
+	public HttpRequestSnippetTests(String name, TemplateFormat templateFormat) {
+		super(name, templateFormat);
 	}
 
 	@Test

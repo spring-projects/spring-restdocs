@@ -104,7 +104,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 						.get(SnippetConfiguration.class.getName());
 				engineToUse = new MustacheTemplateEngine(
 						new StandardTemplateResourceResolver(
-								snippetConfiguration.getFormat()));
+								snippetConfiguration.getTemplateFormat()));
 			}
 			configuration.put(TemplateEngine.class.getName(), engineToUse);
 		}
@@ -129,7 +129,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 				resolverToUse = new StandardWriterResolver(
 						new RestDocumentationContextPlaceholderResolver(context),
 						snippetConfiguration.getEncoding(),
-						snippetConfiguration.getFormat());
+						snippetConfiguration.getTemplateFormat());
 			}
 			configuration.put(WriterResolver.class.getName(), resolverToUse);
 		}

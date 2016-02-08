@@ -24,7 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.restdocs.snippet.SnippetFormats;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
@@ -39,7 +39,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 public class LinksSnippetFailureTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(SnippetFormats.asciidoctor());
+	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
