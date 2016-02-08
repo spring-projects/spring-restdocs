@@ -203,7 +203,7 @@ from where it will be included in the jar file.
 
 [[getting-started-documentation-snippets]]
 === Generating documentation snippets
-Spring REST Docs uses JUnit and
+Spring REST Docs uses
 {spring-framework-docs}/#spring-mvc-test-framework[Spring's MVC Test framework] or
 http://www.rest-assured.io[REST Assured] to make requests to the service that you are
 documenting. It then produces documentation snippets for the request and the resulting
@@ -214,11 +214,18 @@ response.
 [[getting-started-documentation-snippets-setup]]
 ==== Setting up your tests
 
-The first step in generating documentation snippets is to declare a `public`
-`RestDocumentation` field that's annotated as a JUnit `@Rule`. The `RestDocumentation`
-rule is configured with the output directory into which generated snippets should be
-written. This output directory should match the snippets directory that you have
-configured in your `build.gradle` or `pom.xml` file.
+Exactly how you setup your tests depends on the test framework that you're using.
+Spring REST Docs provides first-class support for JUnit. Other frameworks, such as TestNG,
+are also supported although slightly more setup is required.
+
+[[getting-started-documentation-snippets-setup-junit]]
+===== Setting up your JUnit tests
+
+When using JUnit, the first step in generating documentation snippets is to declare a
+`public` `JUnitRestDocumentation` field that's annotated as a JUnit `@Rule`. The
+`JUnitRestDocumentation` rule is configured with the output directory into which generated
+snippets should be written. This output directory should match the snippets directory that
+you have configured in your `build.gradle` or `pom.xml` file.
 
 For Maven (`pom.xml` that will typically be `target/generated-snippets` and for
 Gradle (`build.gradle`) it will typically be `build/generated-snippets`:
@@ -227,14 +234,16 @@ Gradle (`build.gradle`) it will typically be `build/generated-snippets`:
 .Maven
 ----
 @Rule
-public RestDocumentation restDocumentation = new RestDocumentation("target/generated-snippets");
+public JUnitRestDocumentation restDocumentation =
+		new JUnitRestDocumentation("target/generated-snippets");
 ----
 
 [source,java,indent=0,role="secondary"]
 .Gradle
 ----
 @Rule
-public RestDocumentation restDocumentation = new RestDocumentation("build/generated-snippets");
+public JUnitRestDocumentation restDocumentation =
+		new JUnitRestDocumentation("build/generated-snippets");
 ----
 
 Next, provide an `@Before` method to configure MockMvc or REST Assured:
@@ -262,6 +271,54 @@ The configurer applies sensible defaults and also provides an API for customizin
 configuration. Refer to the <<configuration, configuration section>> for more information.
 
 
+
+===== Setting up your tests without JUnit
+[[getting-started-documentation-snippets-setup-manual]]
+
+The configuration when JUnit is not being used is largely similar to when it is being
+used. This section describes the key differences. The {samples}/testng[TestNG sample] also
+illustrates the approach.
+
+The first difference is that `ManualRestDocumentation` should be used in place of
+`JUnitRestDocumentation` and there's no need for the `@Rule` annotation:
+
+[source,java,indent=0,role="primary"]
+.Maven
+----
+private ManualRestDocumentation restDocumentation =
+		new ManualRestDocumentation("target/generated-snippets");
+----
+
+[source,java,indent=0,role="secondary"]
+.Gradle
+----
+private ManualRestDocumentation restDocumentation =
+		new ManualRestDocumentation("build/generated-snippets");
+----
+
+Secondly, `ManualRestDocumentation.beforeTest(Class, String)`
+must be called before each test. This can be done as part of the method that is
+configuring MockMVC or REST Assured:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/ExampleApplicationTestNgTests.java[tags=setup]
+----
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationTestNgTests.java[tags=setup]
+----
+
+Lastly, `ManualRestDocumentation.afterTest` must be called after each test. For example,
+with TestNG:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationTestNgTests.java[tags=teardown]
+----
 
 [[getting-started-documentation-snippets-invoking-the-service]]
 ==== Invoking the RESTful service

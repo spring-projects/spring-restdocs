@@ -16,31 +16,39 @@
 
 package com.example.restassured;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.RestDocumentation;
+import java.lang.reflect.Method;
+
+import org.springframework.restdocs.ManualRestDocumentation;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.specification.RequestSpecification;
 
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
-public class CustomEncoding {
+public class ExampleApplicationTestNgTests {
 
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
+	private final ManualRestDocumentation restDocumentation = new ManualRestDocumentation(
+			"build/generated-snippets");
 
+	// tag::setup[]
 	private RequestSpecification spec;
 
-	@Before
-	public void setUp() {
-		// tag::custom-encoding[]
-		this.spec = new RequestSpecBuilder()
-				.addFilter(documentationConfiguration(this.restDocumentation)
-						.snippets().withEncoding("ISO-8859-1"))
+	@BeforeMethod
+	public void setUp(Method method) {
+		this.spec = new RequestSpecBuilder().addFilter(
+				documentationConfiguration(this.restDocumentation))
 				.build();
-		// end::custom-encoding[]
+		this.restDocumentation.beforeTest(getClass(), method.getName());
 	}
 
+	// end::setup[]
+
+	// tag::teardown[]
+	@AfterMethod
+	public void tearDown() {
+		this.restDocumentation.afterTest();
+	}
+	// end::teardown[]
 }

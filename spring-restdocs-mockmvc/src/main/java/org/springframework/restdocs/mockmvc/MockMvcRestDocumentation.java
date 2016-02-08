@@ -17,6 +17,7 @@
 package org.springframework.restdocs.mockmvc;
 
 import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
@@ -31,6 +32,7 @@ import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
  *
  * @author Andy Wilkinson
  */
+@SuppressWarnings("deprecation")
 public abstract class MockMvcRestDocumentation {
 
 	private static final MockMvcRequestConverter REQUEST_CONVERTER = new MockMvcRequestConverter();
@@ -48,10 +50,26 @@ public abstract class MockMvcRestDocumentation {
 	 * @param restDocumentation the REST documentation
 	 * @return the configurer
 	 * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
+	 * @deprecated Since 1.1 in favor of
+	 * {@link #documentationConfiguration(RestDocumentationContextProvider)}
 	 */
+	@Deprecated
 	public static MockMvcRestDocumentationConfigurer documentationConfiguration(
 			RestDocumentation restDocumentation) {
-		return new MockMvcRestDocumentationConfigurer(restDocumentation);
+		return documentationConfiguration((RestDocumentationContextProvider) restDocumentation);
+	}
+
+	/**
+	 * Provides access to a {@link MockMvcConfigurer} that can be used to configure a
+	 * {@link MockMvc} instance using the given {@code contextProvider}.
+	 *
+	 * @param contextProvider the context provider
+	 * @return the configurer
+	 * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
+	 */
+	public static MockMvcRestDocumentationConfigurer documentationConfiguration(
+			RestDocumentationContextProvider contextProvider) {
+		return new MockMvcRestDocumentationConfigurer(contextProvider);
 	}
 
 	/**

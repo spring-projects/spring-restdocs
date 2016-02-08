@@ -32,7 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 public class Payload {
 
-private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
 	public void response() throws Exception {
 		// tag::response[]

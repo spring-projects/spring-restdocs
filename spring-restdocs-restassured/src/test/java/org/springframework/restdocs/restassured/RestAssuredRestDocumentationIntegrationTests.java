@@ -36,7 +36,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.hypermedia.Link;
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentationIntegrationTests.TestApplication;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -88,7 +88,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.snippet;
 public class RestAssuredRestDocumentationIntegrationTests {
 
 	@Rule
-	public RestDocumentation restDocumentation = new RestDocumentation(
+	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
 			"build/generated-snippets");
 
 	@Value("${local.server.port}")

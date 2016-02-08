@@ -43,7 +43,9 @@ public final class RestDocumentationContext {
 	 * @param testClass the class whose test is being executed
 	 * @param testMethodName the name of the test method that is being executed
 	 * @param outputDirectory the directory to which documentation should be written.
+	 * @deprecated Since 1.1 in favor of {@link ManualRestDocumentation}.
 	 */
+	@Deprecated
 	public RestDocumentationContext(Class<?> testClass, String testMethodName,
 			File outputDirectory) {
 		this.testClass = testClass;

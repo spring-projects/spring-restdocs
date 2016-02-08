@@ -16,7 +16,7 @@
 
 package org.springframework.restdocs.restassured;
 
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
@@ -104,14 +104,14 @@ public abstract class RestAssuredRestDocumentation {
 
 	/**
 	 * Provides access to a {@link RestAssuredRestDocumentationConfigurer} that can be
-	 * used to configure Spring REST Docs using the given {@code restDocumentation}.
+	 * used to configure Spring REST Docs using the given {@code contextProvider}.
 	 *
-	 * @param restDocumentation the REST documentation
+	 * @param contextProvider the context provider
 	 * @return the configurer
 	 */
 	public static RestAssuredRestDocumentationConfigurer documentationConfiguration(
-			RestDocumentation restDocumentation) {
-		return new RestAssuredRestDocumentationConfigurer(restDocumentation);
+			RestDocumentationContextProvider contextProvider) {
+		return new RestAssuredRestDocumentationConfigurer(contextProvider);
 	}
 
 }

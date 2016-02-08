@@ -6,6 +6,8 @@ dependencies {
 	testCompile project(':spring-restdocs-mockmvc')
 	testCompile project(':spring-restdocs-restassured')
 	testCompile 'javax.validation:validation-api'
+	testCompile 'junit:junit'
+	testCompile 'org.testng:testng:6.9.10'
 }
 
 tasks.findByPath("artifactoryPublish")?.enabled = false

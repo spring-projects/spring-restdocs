@@ -22,7 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.hateoas.mvc.BasicLinkBuilder;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -43,7 +43,7 @@ public class MockMvcRestDocumentationConfigurerTests {
 	private MockHttpServletRequest request = new MockHttpServletRequest();
 
 	@Rule
-	public RestDocumentation restDocumentation = new RestDocumentation("test");
+	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("test");
 
 	@Test
 	public void defaultConfiguration() {

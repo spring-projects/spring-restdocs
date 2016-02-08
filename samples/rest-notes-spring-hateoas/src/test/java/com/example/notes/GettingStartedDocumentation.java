@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -61,7 +61,7 @@ import com.jayway.jsonpath.JsonPath;
 public class GettingStartedDocumentation {
 	
 	@Rule
-	public final RestDocumentation restDocumentation = new RestDocumentation("build/generated-snippets");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build/generated-snippets");
 
 	@Autowired
 	private ObjectMapper objectMapper;

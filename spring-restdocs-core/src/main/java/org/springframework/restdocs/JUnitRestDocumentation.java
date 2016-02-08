@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,30 +21,45 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
- * A JUnit {@link TestRule} used to bootstrap the generation of REST documentation from
- * JUnit tests.
+ * A JUnit {@link TestRule} used to automatically manage the
+ * {@link RestDocumentationContext}.
  *
  * @author Andy Wilkinson
- * @deprecated Since 1.1 in favor of {@link JUnitRestDocumentation}
+ * @since 1.1.0
  */
-@Deprecated
-public class RestDocumentation implements TestRule, RestDocumentationContextProvider {
+public class JUnitRestDocumentation implements RestDocumentationContextProvider, TestRule {
 
-	private final JUnitRestDocumentation delegate;
+	private final ManualRestDocumentation delegate;
 
 	/**
-	 * Creates a new {@code RestDocumentation} instance that will generate snippets to the
-	 * given {@code outputDirectory}.
+	 * Creates a new {@code JUnitRestDocumentation} instance that will generate snippets
+	 * to the given {@code outputDirectory}.
 	 *
 	 * @param outputDirectory the output directory
 	 */
-	public RestDocumentation(String outputDirectory) {
-		this.delegate = new JUnitRestDocumentation(outputDirectory);
+	public JUnitRestDocumentation(String outputDirectory) {
+		this.delegate = new ManualRestDocumentation(outputDirectory);
 	}
 
 	@Override
 	public Statement apply(final Statement base, final Description description) {
-		return this.delegate.apply(base, description);
+		return new Statement() {
+
+			@Override
+			public void evaluate() throws Throwable {
+				Class<?> testClass = description.getTestClass();
+				String methodName = description.getMethodName();
+				JUnitRestDocumentation.this.delegate.beforeTest(testClass, methodName);
+				try {
+					base.evaluate();
+				}
+				finally {
+					JUnitRestDocumentation.this.delegate.afterTest();
+				}
+			}
+
+		};
+
 	}
 
 	@Override

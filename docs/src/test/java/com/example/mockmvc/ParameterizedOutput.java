@@ -18,6 +18,7 @@ package com.example.mockmvc;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.RestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -29,7 +30,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 public class ParameterizedOutput {
 
 	@Rule
-	public final RestDocumentation restDocumentation = new RestDocumentation("build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
 
 	private MockMvc mockMvc;
 

@@ -36,7 +36,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.hypermedia.Link;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentationIntegrationTests.TestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
@@ -96,7 +96,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MockMvcRestDocumentationIntegrationTests {
 
 	@Rule
-	public RestDocumentation restDocumentation = new RestDocumentation(
+	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
 			"build/generated-snippets");
 
 	@Autowired

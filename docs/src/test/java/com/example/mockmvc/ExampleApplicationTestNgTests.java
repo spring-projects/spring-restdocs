@@ -16,36 +16,43 @@
 
 package com.example.mockmvc;
 
-import org.junit.Before;
-import org.junit.Rule;
+import java.lang.reflect.Method;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.RestDocumentation;
-import org.springframework.restdocs.templates.TemplateFormats;
+import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
-public class CustomFormat {
+public class ExampleApplicationTestNgTests {
 
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
-
+	public final ManualRestDocumentation restDocumentation = new ManualRestDocumentation(
+			"target/generated-snippets");
+	// tag::setup[]
 	@Autowired
 	private WebApplicationContext context;
 
 	private MockMvc mockMvc;
 
-	@Before
-	public void setUp() {
-		// tag::custom-format[]
+	@BeforeMethod
+	public void setUp(Method method) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(this.restDocumentation)
-						.snippets().withTemplateFormat(TemplateFormats.markdown()))
+				.apply(documentationConfiguration(this.restDocumentation))
 				.build();
-		// end::custom-format[]
+		this.restDocumentation.beforeTest(getClass(), method.getName());
 	}
+
+	// end::setup[]
+
+	// tag::teardown[]
+	@AfterMethod
+	public void tearDown() {
+		this.restDocumentation.afterTest();
+	}
+	// end::teardown[]
 
 }

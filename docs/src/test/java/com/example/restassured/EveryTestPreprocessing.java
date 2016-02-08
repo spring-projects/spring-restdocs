@@ -18,6 +18,7 @@ package com.example.restassured;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.restassured.RestDocumentationFilter;
 
@@ -38,7 +39,7 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 public class EveryTestPreprocessing {
 
 	@Rule
-	public final RestDocumentation restDocumentation = new RestDocumentation(
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
 			"target/generated-snippets");
 
 	// tag::setup[]

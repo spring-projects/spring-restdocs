@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -44,11 +44,10 @@ public class MockMvcRestDocumentationConfigurer
 
 	private final UriConfigurer uriConfigurer = new UriConfigurer(this);
 
-	private final RestDocumentation restDocumentation;
+	private final RestDocumentationContextProvider contextManager;
 
-	MockMvcRestDocumentationConfigurer(RestDocumentation restDocumentation) {
-		super();
-		this.restDocumentation = restDocumentation;
+	MockMvcRestDocumentationConfigurer(RestDocumentationContextProvider contextManager) {
+		this.contextManager = contextManager;
 	}
 
 	/**
@@ -64,7 +63,7 @@ public class MockMvcRestDocumentationConfigurer
 	@Override
 	public RequestPostProcessor beforeMockMvcCreated(
 			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
-		return new ConfigurerApplyingRequestPostProcessor(this.restDocumentation);
+		return new ConfigurerApplyingRequestPostProcessor(this.contextManager);
 	}
 
 	@Override
@@ -80,15 +79,16 @@ public class MockMvcRestDocumentationConfigurer
 	private final class ConfigurerApplyingRequestPostProcessor implements
 			RequestPostProcessor {
 
-		private final RestDocumentation restDocumentation;
+		private final RestDocumentationContextProvider contextManager;
 
-		private ConfigurerApplyingRequestPostProcessor(RestDocumentation restDocumentation) {
-			this.restDocumentation = restDocumentation;
+		private ConfigurerApplyingRequestPostProcessor(
+				RestDocumentationContextProvider contextManager) {
+			this.contextManager = contextManager;
 		}
 
 		@Override
 		public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
-			RestDocumentationContext context = this.restDocumentation.beforeOperation();
+			RestDocumentationContext context = this.contextManager.beforeOperation();
 			Map<String, Object> configuration = new HashMap<>();
 			configuration.put(MockHttpServletRequest.class.getName(), request);
 			configuration

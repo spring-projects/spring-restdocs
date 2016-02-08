@@ -18,6 +18,7 @@ package com.example.restassured;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.RestDocumentation;
 
 import com.jayway.restassured.builder.RequestSpecBuilder;
@@ -29,9 +30,9 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 public class CustomDefaultSnippets {
 
 	@Rule
-	public final RestDocumentation restDocumentation = new RestDocumentation("build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
 
-	RequestSpecification spec;
+	private RequestSpecification spec;
 
 	@Before
 	public void setUp() {

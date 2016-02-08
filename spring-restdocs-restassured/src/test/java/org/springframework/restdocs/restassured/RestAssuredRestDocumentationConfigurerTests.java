@@ -22,7 +22,7 @@ import java.util.Map;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.verify;
 public class RestAssuredRestDocumentationConfigurerTests {
 
 	@Rule
-	public final RestDocumentation restDocumentation = new RestDocumentation("build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
 
 	private final FilterableRequestSpecification requestSpec = mock(FilterableRequestSpecification.class);
 

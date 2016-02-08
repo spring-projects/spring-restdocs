@@ -162,6 +162,10 @@ samples {
 	restNotesSpringDataRest {
 		workingDir "$projectDir/samples/rest-notes-spring-data-rest"
 	}
+
+	testNg {
+		workingDir "$projectDir/samples/testng"
+	}
 }
 
 task api (type: Javadoc) {

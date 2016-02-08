@@ -26,14 +26,14 @@ task jmustacheRepackJar(type: Jar) { repackJar ->
 
 dependencies {
 	compile 'com.fasterxml.jackson.core:jackson-databind'
-	compile 'junit:junit'
 	compile 'org.springframework:spring-webmvc'
 	compile 'javax.servlet:javax.servlet-api'
 	compile files(jmustacheRepackJar)
 	jarjar 'com.googlecode.jarjar:jarjar:1.3'
 	jmustache 'com.samskivert:jmustache@jar'
-	optional 'javax.validation:validation-api'
 	optional 'commons-codec:commons-codec'
+	optional 'javax.validation:validation-api'
+	optional 'junit:junit'
 	testCompile 'org.mockito:mockito-core'
 	testCompile 'org.hamcrest:hamcrest-core'
 	testCompile 'org.hamcrest:hamcrest-library'

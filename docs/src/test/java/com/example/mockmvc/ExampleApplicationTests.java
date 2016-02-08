@@ -19,7 +19,7 @@ package com.example.mockmvc;
 import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -29,7 +29,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 public class ExampleApplicationTests {
 
 	@Rule
-	public final RestDocumentation restDocumentation = new RestDocumentation(
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
 			"target/generated-snippets");
 	// tag::setup[]
 	@Autowired
@@ -44,4 +44,5 @@ public class ExampleApplicationTests {
 				.build();
 	}
 	// end::setup[]
+
 }
