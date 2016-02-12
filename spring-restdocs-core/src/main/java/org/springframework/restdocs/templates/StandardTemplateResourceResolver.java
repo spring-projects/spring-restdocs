@@ -38,10 +38,11 @@ public class StandardTemplateResourceResolver implements TemplateResourceResolve
 				"org/springframework/restdocs/templates/" + name + ".snippet");
 		if (!classPathResource.exists()) {
 			classPathResource = new ClassPathResource(
-					"org/springframework/restdocs/templates/default-" + name + ".snippet");
+					"org/springframework/restdocs/templates/default-" + name
+							+ ".snippet");
 			if (!classPathResource.exists()) {
-				throw new IllegalStateException("Template named '" + name
-						+ "' could not be resolved");
+				throw new IllegalStateException(
+						"Template named '" + name + "' could not be resolved");
 			}
 		}
 		return classPathResource;

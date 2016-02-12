@@ -90,9 +90,9 @@ public class OperationBuilder {
 		this.attributes.put(WriterResolver.class.getName(), new StandardWriterResolver(
 				new RestDocumentationContextPlaceholderResolver(context)));
 		return new StandardOperation(this.name,
-				(this.requestBuilder == null ? new OperationRequestBuilder(
-						"http://localhost/").buildRequest() : this.requestBuilder
-						.buildRequest()),
+				(this.requestBuilder == null
+						? new OperationRequestBuilder("http://localhost/").buildRequest()
+						: this.requestBuilder.buildRequest()),
 				this.responseBuilder.buildResponse(), this.attributes);
 	}
 
@@ -182,7 +182,8 @@ public class OperationBuilder {
 				this.content = content;
 			}
 
-			public OperationRequestPartBuilder submittedFileName(String submittedFileName) {
+			public OperationRequestPartBuilder submittedFileName(
+					String submittedFileName) {
 				this.submittedFileName = submittedFileName;
 				return this;
 			}

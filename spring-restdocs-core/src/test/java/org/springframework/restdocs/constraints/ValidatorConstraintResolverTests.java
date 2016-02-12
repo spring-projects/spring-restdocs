@@ -66,10 +66,8 @@ public class ValidatorConstraintResolverTests {
 		List<Constraint> constraints = this.resolver.resolveForProperty("multiple",
 				ConstrainedFields.class);
 		assertThat(constraints, hasSize(2));
-		assertThat(
-				constraints,
-				containsInAnyOrder(constraint(NotNull.class), constraint(Size.class)
-						.config("min", 8).config("max", 16)));
+		assertThat(constraints, containsInAnyOrder(constraint(NotNull.class),
+				constraint(Size.class).config("min", 8).config("max", 16)));
 	}
 
 	@Test

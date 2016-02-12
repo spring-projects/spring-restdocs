@@ -29,8 +29,8 @@ class LinkMaskingContentModifier implements ContentModifier {
 
 	private static final String DEFAULT_MASK = "...";
 
-	private static final Pattern LINK_HREF = Pattern.compile(
-			"\"href\"\\s*:\\s*\"(.*?)\"", Pattern.DOTALL);
+	private static final Pattern LINK_HREF = Pattern.compile("\"href\"\\s*:\\s*\"(.*?)\"",
+			Pattern.DOTALL);
 
 	private final ContentModifier contentModifier;
 

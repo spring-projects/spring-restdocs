@@ -22,8 +22,8 @@ package org.springframework.restdocs.snippet;
  * @param <T> the type of the descriptor
  * @author Andy Wilkinson
  */
-public abstract class IgnorableDescriptor<T extends IgnorableDescriptor<T>> extends
-		AbstractDescriptor<T> {
+public abstract class IgnorableDescriptor<T extends IgnorableDescriptor<T>>
+		extends AbstractDescriptor<T> {
 
 	private boolean ignored = false;
 

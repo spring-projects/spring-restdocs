@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.restdocs.operation.Parameters;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -43,23 +44,23 @@ public class QueryStringParserTests {
 
 	@Test
 	public void noParameters() {
-		Parameters parameters = this.queryStringParser.parse(URI
-				.create("http://localhost"));
+		Parameters parameters = this.queryStringParser
+				.parse(URI.create("http://localhost"));
 		assertThat(parameters.size(), is(equalTo(0)));
 	}
 
 	@Test
 	public void singleParameter() {
-		Parameters parameters = this.queryStringParser.parse(URI
-				.create("http://localhost?a=alpha"));
+		Parameters parameters = this.queryStringParser
+				.parse(URI.create("http://localhost?a=alpha"));
 		assertThat(parameters.size(), is(equalTo(1)));
 		assertThat(parameters, hasEntry("a", Arrays.asList("alpha")));
 	}
 
 	@Test
 	public void multipleParameters() {
-		Parameters parameters = this.queryStringParser.parse(URI
-				.create("http://localhost?a=alpha&b=bravo&c=charlie"));
+		Parameters parameters = this.queryStringParser
+				.parse(URI.create("http://localhost?a=alpha&b=bravo&c=charlie"));
 		assertThat(parameters.size(), is(equalTo(3)));
 		assertThat(parameters, hasEntry("a", Arrays.asList("alpha")));
 		assertThat(parameters, hasEntry("b", Arrays.asList("bravo")));
@@ -68,16 +69,16 @@ public class QueryStringParserTests {
 
 	@Test
 	public void multipleParametersWithSameKey() {
-		Parameters parameters = this.queryStringParser.parse(URI
-				.create("http://localhost?a=apple&a=avocado"));
+		Parameters parameters = this.queryStringParser
+				.parse(URI.create("http://localhost?a=apple&a=avocado"));
 		assertThat(parameters.size(), is(equalTo(1)));
 		assertThat(parameters, hasEntry("a", Arrays.asList("apple", "avocado")));
 	}
 
 	@Test
 	public void encoded() {
-		Parameters parameters = this.queryStringParser.parse(URI
-				.create("http://localhost?a=al%26%3Dpha"));
+		Parameters parameters = this.queryStringParser
+				.parse(URI.create("http://localhost?a=al%26%3Dpha"));
 		assertThat(parameters.size(), is(equalTo(1)));
 		assertThat(parameters, hasEntry("a", Arrays.asList("al&=pha")));
 	}

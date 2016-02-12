@@ -45,8 +45,8 @@ public class OperationRequestFactory {
 	public OperationRequest create(URI uri, HttpMethod method, byte[] content,
 			HttpHeaders headers, Parameters parameters,
 			Collection<OperationRequestPart> parts) {
-		return new StandardOperationRequest(uri, method, content, augmentHeaders(headers,
-				uri, content), parameters, parts);
+		return new StandardOperationRequest(uri, method, content,
+				augmentHeaders(headers, uri, content), parameters, parts);
 	}
 
 	/**
@@ -74,7 +74,8 @@ public class OperationRequestFactory {
 	 *
 	 * @return The new request with the new content
 	 */
-	public OperationRequest createFrom(OperationRequest original, HttpHeaders newHeaders) {
+	public OperationRequest createFrom(OperationRequest original,
+			HttpHeaders newHeaders) {
 		return new StandardOperationRequest(original.getUri(), original.getMethod(),
 				original.getContent(), newHeaders, original.getParameters(),
 				original.getParts());
@@ -89,8 +90,8 @@ public class OperationRequestFactory {
 
 	private HttpHeaders getUpdatedHeaders(HttpHeaders originalHeaders,
 			byte[] updatedContent) {
-		return new HttpHeadersHelper(originalHeaders).updateContentLengthHeaderIfPresent(
-				updatedContent).getHeaders();
+		return new HttpHeadersHelper(originalHeaders)
+				.updateContentLengthHeaderIfPresent(updatedContent).getHeaders();
 	}
 
 }

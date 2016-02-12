@@ -23,8 +23,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
  *
  * @author Andy Wilkinson
  */
-public class UriConfigurer extends
-		AbstractNestedConfigurer<RestDocumentationMockMvcConfigurer> {
+public class UriConfigurer
+		extends AbstractNestedConfigurer<RestDocumentationMockMvcConfigurer> {
 
 	/**
 	 * The default scheme for documented URIs.

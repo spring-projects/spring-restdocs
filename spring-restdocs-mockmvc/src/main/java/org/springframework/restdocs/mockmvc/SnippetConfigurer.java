@@ -30,12 +30,11 @@ import org.springframework.restdocs.snippet.WriterResolver;
  *
  * @author Andy Wilkinson
  */
-public class SnippetConfigurer extends
-		AbstractNestedConfigurer<RestDocumentationMockMvcConfigurer> {
+public class SnippetConfigurer
+		extends AbstractNestedConfigurer<RestDocumentationMockMvcConfigurer> {
 
-	private List<Snippet> defaultSnippets = Arrays.asList(
-			CurlDocumentation.curlRequest(), HttpDocumentation.httpRequest(),
-			HttpDocumentation.httpResponse());
+	private List<Snippet> defaultSnippets = Arrays.asList(CurlDocumentation.curlRequest(),
+			HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse());
 
 	/**
 	 * The default encoding for documentation snippets.

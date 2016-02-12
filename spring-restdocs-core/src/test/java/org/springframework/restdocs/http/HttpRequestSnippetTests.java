@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.junit.Rule;
 import org.junit.Test;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -53,181 +54,200 @@ public class HttpRequestSnippetTests {
 
 	@Test
 	public void getRequest() throws IOException {
-		this.snippet.expectHttpRequest("get-request").withContents(
-				httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a").header(
-						HttpHeaders.HOST, "localhost"));
+		this.snippet.expectHttpRequest("get-request")
+				.withContents(httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a")
+						.header(HttpHeaders.HOST, "localhost"));
 
-		new HttpRequestSnippet().document(new OperationBuilder("get-request",
-				this.snippet.getOutputDirectory()).request("http://localhost/foo")
-				.header("Alpha", "a").build());
+		new HttpRequestSnippet().document(
+				new OperationBuilder("get-request", this.snippet.getOutputDirectory())
+						.request("http://localhost/foo").header("Alpha", "a").build());
 	}
 
 	@Test
 	public void getRequestWithQueryString() throws IOException {
-		this.snippet.expectHttpRequest("get-request-with-query-string").withContents(
-				httpRequest(RequestMethod.GET, "/foo?bar=baz").header(HttpHeaders.HOST,
-						"localhost"));
+		this.snippet.expectHttpRequest("get-request-with-query-string")
+				.withContents(httpRequest(RequestMethod.GET, "/foo?bar=baz")
+						.header(HttpHeaders.HOST, "localhost"));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"get-request-with-query-string", this.snippet.getOutputDirectory())
-				.request("http://localhost/foo?bar=baz").build());
+		new HttpRequestSnippet()
+				.document(new OperationBuilder("get-request-with-query-string",
+						this.snippet.getOutputDirectory())
+								.request("http://localhost/foo?bar=baz").build());
 	}
 
 	@Test
 	public void postRequestWithContent() throws IOException {
 		String content = "Hello, world";
-		this.snippet.expectHttpRequest("post-request-with-content").withContents(
-				httpRequest(RequestMethod.POST, "/foo")
+		this.snippet.expectHttpRequest("post-request-with-content")
+				.withContents(httpRequest(RequestMethod.POST, "/foo")
 						.header(HttpHeaders.HOST, "localhost").content(content)
 						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"post-request-with-content", this.snippet.getOutputDirectory())
-				.request("http://localhost/foo").method("POST").content(content).build());
+		new HttpRequestSnippet()
+				.document(new OperationBuilder("post-request-with-content",
+						this.snippet.getOutputDirectory()).request("http://localhost/foo")
+								.method("POST").content(content).build());
 	}
 
 	@Test
 	public void postRequestWithCharset() throws IOException {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
-		this.snippet.expectHttpRequest("post-request-with-charset").withContents(
-				httpRequest(RequestMethod.POST, "/foo")
+		this.snippet.expectHttpRequest("post-request-with-charset")
+				.withContents(httpRequest(RequestMethod.POST, "/foo")
 						.header("Content-Type", "text/plain;charset=UTF-8")
 						.header(HttpHeaders.HOST, "localhost")
 						.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length)
 						.content(japaneseContent));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"post-request-with-charset", this.snippet.getOutputDirectory())
-				.request("http://localhost/foo").method("POST")
-				.header("Content-Type", "text/plain;charset=UTF-8").content(contentBytes)
-				.build());
+		new HttpRequestSnippet()
+				.document(new OperationBuilder("post-request-with-charset",
+						this.snippet.getOutputDirectory()).request("http://localhost/foo")
+								.method("POST")
+								.header("Content-Type", "text/plain;charset=UTF-8")
+								.content(contentBytes).build());
 	}
 
 	@Test
 	public void postRequestWithParameter() throws IOException {
-		this.snippet.expectHttpRequest("post-request-with-parameter").withContents(
-				httpRequest(RequestMethod.POST, "/foo")
+		this.snippet.expectHttpRequest("post-request-with-parameter")
+				.withContents(httpRequest(RequestMethod.POST, "/foo")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"post-request-with-parameter", this.snippet.getOutputDirectory())
-				.request("http://localhost/foo").method("POST").param("b&r", "baz")
-				.param("a", "alpha").build());
+		new HttpRequestSnippet()
+				.document(new OperationBuilder("post-request-with-parameter",
+						this.snippet.getOutputDirectory()).request("http://localhost/foo")
+								.method("POST").param("b&r", "baz").param("a", "alpha")
+								.build());
 	}
 
 	@Test
 	public void putRequestWithContent() throws IOException {
 		String content = "Hello, world";
-		this.snippet.expectHttpRequest("put-request-with-content").withContents(
-				httpRequest(RequestMethod.PUT, "/foo")
+		this.snippet.expectHttpRequest("put-request-with-content")
+				.withContents(httpRequest(RequestMethod.PUT, "/foo")
 						.header(HttpHeaders.HOST, "localhost").content(content)
 						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"put-request-with-content", this.snippet.getOutputDirectory())
-				.request("http://localhost/foo").method("PUT").content(content).build());
+		new HttpRequestSnippet().document(new OperationBuilder("put-request-with-content",
+				this.snippet.getOutputDirectory()).request("http://localhost/foo")
+						.method("PUT").content(content).build());
 	}
 
 	@Test
 	public void putRequestWithParameter() throws IOException {
-		this.snippet.expectHttpRequest("put-request-with-parameter").withContents(
-				httpRequest(RequestMethod.PUT, "/foo")
+		this.snippet.expectHttpRequest("put-request-with-parameter")
+				.withContents(httpRequest(RequestMethod.PUT, "/foo")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("b%26r=baz&a=alpha"));
 
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"put-request-with-parameter", this.snippet.getOutputDirectory())
-				.request("http://localhost/foo").method("PUT").param("b&r", "baz")
-				.param("a", "alpha").build());
+		new HttpRequestSnippet()
+				.document(new OperationBuilder("put-request-with-parameter",
+						this.snippet.getOutputDirectory()).request("http://localhost/foo")
+								.method("PUT").param("b&r", "baz").param("a", "alpha")
+								.build());
 	}
 
 	@Test
 	public void multipartPost() throws IOException {
-		String expectedContent = createPart(String.format("Content-Disposition: "
-				+ "form-data; " + "name=image%n%n<< data >>"));
-		this.snippet.expectHttpRequest("multipart-post").withContents(
-				httpRequest(RequestMethod.POST, "/upload")
+		String expectedContent = createPart(String.format(
+				"Content-Disposition: " + "form-data; " + "name=image%n%n<< data >>"));
+		this.snippet
+				.expectHttpRequest(
+						"multipart-post")
+				.withContents(httpRequest(RequestMethod.POST, "/upload")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(new OperationBuilder("multipart-post",
-				this.snippet.getOutputDirectory()).request("http://localhost/upload")
-				.method("POST")
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", "<< data >>".getBytes()).build());
+		new HttpRequestSnippet().document(
+				new OperationBuilder("multipart-post", this.snippet.getOutputDirectory())
+						.request("http://localhost/upload").method("POST")
+						.header(HttpHeaders.CONTENT_TYPE,
+								MediaType.MULTIPART_FORM_DATA_VALUE)
+						.part("image", "<< data >>".getBytes()).build());
 	}
 
 	@Test
 	public void multipartPostWithParameters() throws IOException {
-		String param1Part = createPart(String.format("Content-Disposition: form-data; "
-				+ "name=a%n%napple"), false);
-		String param2Part = createPart(String.format("Content-Disposition: form-data; "
-				+ "name=a%n%navocado"), false);
-		String param3Part = createPart(String.format("Content-Disposition: form-data; "
-				+ "name=b%n%nbanana"), false);
-		String filePart = createPart(String.format("Content-Disposition: form-data; "
-				+ "name=image%n%n<< data >>"));
+		String param1Part = createPart(
+				String.format("Content-Disposition: form-data; " + "name=a%n%napple"),
+				false);
+		String param2Part = createPart(
+				String.format("Content-Disposition: form-data; " + "name=a%n%navocado"),
+				false);
+		String param3Part = createPart(
+				String.format("Content-Disposition: form-data; " + "name=b%n%nbanana"),
+				false);
+		String filePart = createPart(String
+				.format("Content-Disposition: form-data; " + "name=image%n%n<< data >>"));
 		String expectedContent = param1Part + param2Part + param3Part + filePart;
-		this.snippet.expectHttpRequest("multipart-post-with-parameters").withContents(
-				httpRequest(RequestMethod.POST, "/upload")
+		this.snippet
+				.expectHttpRequest(
+						"multipart-post-with-parameters")
+				.withContents(httpRequest(RequestMethod.POST, "/upload")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"multipart-post-with-parameters", this.snippet.getOutputDirectory())
-				.request("http://localhost/upload").method("POST")
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-				.param("a", "apple", "avocado").param("b", "banana")
-				.part("image", "<< data >>".getBytes()).build());
+		new HttpRequestSnippet()
+				.document(new OperationBuilder("multipart-post-with-parameters",
+						this.snippet.getOutputDirectory())
+								.request("http://localhost/upload").method("POST")
+								.header(HttpHeaders.CONTENT_TYPE,
+										MediaType.MULTIPART_FORM_DATA_VALUE)
+						.param("a", "apple", "avocado").param("b", "banana")
+						.part("image", "<< data >>".getBytes()).build());
 	}
 
 	@Test
 	public void multipartPostWithContentType() throws IOException {
-		String expectedContent = createPart(String
-				.format("Content-Disposition: form-data; name=image%nContent-Type: "
+		String expectedContent = createPart(
+				String.format("Content-Disposition: form-data; name=image%nContent-Type: "
 						+ "image/png%n%n<< data >>"));
-		this.snippet.expectHttpRequest("multipart-post-with-content-type").withContents(
-				httpRequest(RequestMethod.POST, "/upload")
+		this.snippet
+				.expectHttpRequest(
+						"multipart-post-with-content-type")
+				.withContents(httpRequest(RequestMethod.POST, "/upload")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(new OperationBuilder(
-				"multipart-post-with-content-type", this.snippet.getOutputDirectory())
-				.request("http://localhost/upload").method("POST")
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", "<< data >>".getBytes())
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE).build());
+		new HttpRequestSnippet()
+				.document(new OperationBuilder("multipart-post-with-content-type",
+						this.snippet.getOutputDirectory())
+								.request("http://localhost/upload").method("POST")
+								.header(HttpHeaders.CONTENT_TYPE,
+										MediaType.MULTIPART_FORM_DATA_VALUE)
+						.part("image", "<< data >>".getBytes())
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
+						.build());
 	}
 
 	@Test
 	public void getRequestWithCustomHost() throws IOException {
-		this.snippet.expectHttpRequest("get-request-custom-host").withContents(
-				httpRequest(RequestMethod.GET, "/foo").header(HttpHeaders.HOST,
-						"api.example.com"));
+		this.snippet.expectHttpRequest("get-request-custom-host")
+				.withContents(httpRequest(RequestMethod.GET, "/foo")
+						.header(HttpHeaders.HOST, "api.example.com"));
 		new HttpRequestSnippet().document(new OperationBuilder("get-request-custom-host",
 				this.snippet.getOutputDirectory()).request("http://localhost/foo")
-				.header(HttpHeaders.HOST, "api.example.com").build());
+						.header(HttpHeaders.HOST, "api.example.com").build());
 	}
 
 	@Test
 	public void requestWithCustomSnippetAttributes() throws IOException {
-		this.snippet.expectHttpRequest("request-with-snippet-attributes").withContents(
-				containsString("Title for the request"));
+		this.snippet.expectHttpRequest("request-with-snippet-attributes")
+				.withContents(containsString("Title for the request"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("http-request"))
-				.willReturn(
-						new FileSystemResource(
-								"src/test/resources/custom-snippet-templates/http-request-with-title.snippet"));
+				.willReturn(new FileSystemResource(
+						"src/test/resources/custom-snippet-templates/http-request-with-title.snippet"));
 		new HttpRequestSnippet(attributes(key("title").value("Title for the request")))
 				.document(new OperationBuilder("request-with-snippet-attributes",
 						this.snippet.getOutputDirectory())
-						.attribute(TemplateEngine.class.getName(),
-								new MustacheTemplateEngine(resolver))
-						.request("http://localhost/foo").build());
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(resolver))
+								.request("http://localhost/foo").build());
 	}
 
 	private String createPart(String content) {

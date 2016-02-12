@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.restdocs.operation.OperationResponse;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.restdocs.operation.OperationResponse;
 
 /**
  * Abstract base class for a {@link LinkExtractor} that extracts links from JSON.
@@ -37,8 +37,8 @@ abstract class AbstractJsonLinkExtractor implements LinkExtractor {
 	@SuppressWarnings("unchecked")
 	public Map<String, List<Link>> extractLinks(OperationResponse response)
 			throws IOException {
-		Map<String, Object> jsonContent = this.objectMapper.readValue(
-				response.getContent(), Map.class);
+		Map<String, Object> jsonContent = this.objectMapper
+				.readValue(response.getContent(), Map.class);
 		return extractLinks(jsonContent);
 	}
 

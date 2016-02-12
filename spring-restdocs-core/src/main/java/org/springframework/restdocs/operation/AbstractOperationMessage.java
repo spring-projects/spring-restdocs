@@ -49,8 +49,8 @@ abstract class AbstractOperationMessage {
 	public String getContentAsString() {
 		if (this.content.length > 0) {
 			Charset charset = extractCharsetFromContentTypeHeader();
-			return charset != null ? new String(this.content, charset) : new String(
-					this.content);
+			return charset != null ? new String(this.content, charset)
+					: new String(this.content);
 		}
 		return "";
 	}

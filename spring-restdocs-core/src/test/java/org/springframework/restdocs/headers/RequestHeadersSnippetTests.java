@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateEngine;
@@ -56,44 +57,51 @@ public class RequestHeadersSnippetTests {
 
 	@Test
 	public void requestWithHeaders() throws IOException {
-		this.snippet.expectRequestHeaders("request-with-headers").withContents(
-				tableWithHeader("Name", "Description").row("X-Test", "one")
+		this.snippet.expectRequestHeaders("request-with-headers")
+				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one")
 						.row("Accept", "two").row("Accept-Encoding", "three")
 						.row("Accept-Language", "four").row("Cache-Control", "five")
 						.row("Connection", "six"));
-		new RequestHeadersSnippet(Arrays.asList(
-				headerWithName("X-Test").description("one"), headerWithName("Accept")
-						.description("two"), headerWithName("Accept-Encoding")
-						.description("three"), headerWithName("Accept-Language")
-						.description("four"), headerWithName("Cache-Control")
-						.description("five"),
-				headerWithName("Connection").description("six")))
-				.document(new OperationBuilder("request-with-headers", this.snippet
-						.getOutputDirectory()).request("http://localhost")
-						.header("X-Test", "test").header("Accept", "*/*")
-						.header("Accept-Encoding", "gzip, deflate")
-						.header("Accept-Language", "en-US,en;q=0.5")
-						.header("Cache-Control", "max-age=0")
-						.header("Connection", "keep-alive").build());
+		new RequestHeadersSnippet(
+				Arrays.asList(headerWithName("X-Test").description("one"),
+						headerWithName("Accept").description("two"),
+						headerWithName("Accept-Encoding").description("three"),
+						headerWithName("Accept-Language").description("four"),
+						headerWithName("Cache-Control").description("five"),
+						headerWithName("Connection").description("six")))
+								.document(new OperationBuilder("request-with-headers",
+										this.snippet.getOutputDirectory())
+												.request("http://localhost")
+												.header("X-Test", "test")
+												.header("Accept", "*/*")
+												.header("Accept-Encoding",
+														"gzip, deflate")
+										.header("Accept-Language", "en-US,en;q=0.5")
+										.header("Cache-Control", "max-age=0")
+										.header("Connection", "keep-alive").build());
 	}
 
 	@Test
 	public void caseInsensitiveRequestHeaders() throws IOException {
-		this.snippet
-				.expectRequestHeaders("case-insensitive-request-headers")
-				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
-				"one"))).document(new OperationBuilder(
-				"case-insensitive-request-headers", this.snippet.getOutputDirectory())
-				.request("/").header("X-test", "test").build());
+		this.snippet.expectRequestHeaders("case-insensitive-request-headers")
+				.withContents(
+						tableWithHeader("Name", "Description").row("X-Test", "one"));
+		new RequestHeadersSnippet(
+				Arrays.asList(headerWithName("X-Test").description("one")))
+						.document(new OperationBuilder("case-insensitive-request-headers",
+								this.snippet.getOutputDirectory()).request("/")
+										.header("X-test", "test").build());
 	}
 
 	@Test
 	public void undocumentedRequestHeader() throws IOException {
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
-				"one"))).document(new OperationBuilder("undocumented-request-header",
-				this.snippet.getOutputDirectory()).request("http://localhost")
-				.header("X-Test", "test").header("Accept", "*/*").build());
+		new RequestHeadersSnippet(
+				Arrays.asList(headerWithName("X-Test").description("one")))
+						.document(new OperationBuilder("undocumented-request-header",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost")
+										.header("X-Test", "test").header("Accept", "*/*")
+										.build());
 	}
 
 	@Test
@@ -102,9 +110,11 @@ public class RequestHeadersSnippetTests {
 		this.thrown
 				.expectMessage(equalTo("Headers with the following names were not found"
 						+ " in the request: [Accept]"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description(
-				"one"))).document(new OperationBuilder("missing-request-headers",
-				this.snippet.getOutputDirectory()).request("http://localhost").build());
+		new RequestHeadersSnippet(
+				Arrays.asList(headerWithName("Accept").description("one")))
+						.document(new OperationBuilder("missing-request-headers",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost").build());
 	}
 
 	@Test
@@ -113,11 +123,13 @@ public class RequestHeadersSnippetTests {
 		this.thrown
 				.expectMessage(endsWith("Headers with the following names were not found"
 						+ " in the request: [Accept]"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description(
-				"one"))).document(new OperationBuilder(
-				"undocumented-request-header-and-missing-request-header", this.snippet
-						.getOutputDirectory()).request("http://localhost")
-				.header("X-Test", "test").build());
+		new RequestHeadersSnippet(
+				Arrays.asList(headerWithName("Accept").description("one")))
+						.document(new OperationBuilder(
+								"undocumented-request-header-and-missing-request-header",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost")
+										.header("X-Test", "test").build());
 	}
 
 	@Test
@@ -129,21 +141,26 @@ public class RequestHeadersSnippetTests {
 								.row("Accept-Encoding", "two", "bravo")
 								.row("Accept", "three", "charlie"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-headers")).willReturn(
-				snippetResource("request-headers-with-extra-column"));
+		given(resolver.resolveTemplateResource("request-headers"))
+				.willReturn(snippetResource("request-headers-with-extra-column"));
 		new RequestHeadersSnippet(Arrays.asList(
-				headerWithName("X-Test").description("one").attributes(
-						key("foo").value("alpha")),
-				headerWithName("Accept-Encoding").description("two").attributes(
-						key("foo").value("bravo")),
-				headerWithName("Accept").description("three").attributes(
-						key("foo").value("charlie")))).document(new OperationBuilder(
-				"request-headers-with-custom-attributes", this.snippet
-						.getOutputDirectory())
-				.attribute(TemplateEngine.class.getName(),
-						new MustacheTemplateEngine(resolver)).request("http://localhost")
-				.header("X-Test", "test").header("Accept-Encoding", "gzip, deflate")
-				.header("Accept", "*/*").build());
+				headerWithName("X-Test").description("one")
+						.attributes(key("foo").value("alpha")),
+				headerWithName("Accept-Encoding").description("two")
+						.attributes(key("foo").value("bravo")),
+				headerWithName("Accept").description("three")
+						.attributes(key("foo").value("charlie"))))
+								.document(new OperationBuilder(
+										"request-headers-with-custom-attributes",
+										this.snippet.getOutputDirectory())
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.request("http://localhost")
+												.header("X-Test", "test")
+												.header("Accept-Encoding",
+														"gzip, deflate")
+												.header("Accept", "*/*").build());
 	}
 
 	@Test
@@ -151,20 +168,22 @@ public class RequestHeadersSnippetTests {
 		this.snippet.expectRequestHeaders("request-headers-with-custom-attributes")
 				.withContents(startsWith(".Custom title"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-headers")).willReturn(
-				snippetResource("request-headers-with-title"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
-				"one")), attributes(key("title").value("Custom title")))
-				.document(new OperationBuilder("request-headers-with-custom-attributes",
-						this.snippet.getOutputDirectory())
-						.attribute(TemplateEngine.class.getName(),
-								new MustacheTemplateEngine(resolver))
-						.request("http://localhost").header("X-Test", "test").build());
+		given(resolver.resolveTemplateResource("request-headers"))
+				.willReturn(snippetResource("request-headers-with-title"));
+		new RequestHeadersSnippet(
+				Arrays.asList(headerWithName("X-Test").description("one")),
+				attributes(key("title").value("Custom title"))).document(
+						new OperationBuilder("request-headers-with-custom-attributes",
+								this.snippet.getOutputDirectory())
+										.attribute(TemplateEngine.class.getName(),
+												new MustacheTemplateEngine(resolver))
+										.request("http://localhost")
+										.header("X-Test", "test").build());
 	}
 
 	private FileSystemResource snippetResource(String name) {
-		return new FileSystemResource("src/test/resources/custom-snippet-templates/"
-				+ name + ".snippet");
+		return new FileSystemResource(
+				"src/test/resources/custom-snippet-templates/" + name + ".snippet");
 	}
 
 }

@@ -54,8 +54,8 @@ public class ContentModifyingOperationPreprocessor implements OperationPreproces
 
 	@Override
 	public OperationResponse preprocess(OperationResponse response) {
-		byte[] modifiedContent = this.contentModifier.modifyContent(
-				response.getContent(), response.getHeaders().getContentType());
+		byte[] modifiedContent = this.contentModifier.modifyContent(response.getContent(),
+				response.getHeaders().getContentType());
 		return this.responseFactory.createFrom(response, modifiedContent);
 	}
 

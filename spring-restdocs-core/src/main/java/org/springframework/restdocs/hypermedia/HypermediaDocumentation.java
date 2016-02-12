@@ -170,7 +170,7 @@ public abstract class HypermediaDocumentation {
 	 *             "href": "http://example.com/foo"
 	 *         }
 	 *     ]
-     * }
+	 * }
 	 * </pre>
 	 *
 	 * @return The extractor for Atom-style links

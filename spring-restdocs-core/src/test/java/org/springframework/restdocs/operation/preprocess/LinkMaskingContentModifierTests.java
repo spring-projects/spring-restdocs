@@ -22,13 +22,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-import org.springframework.restdocs.hypermedia.Link;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.junit.Test;
+
+import org.springframework.restdocs.hypermedia.Link;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -59,8 +59,9 @@ public class LinkMaskingContentModifierTests {
 
 	@Test
 	public void formattedHalLinksAreMasked() throws Exception {
-		assertThat(this.contentModifier.modifyContent(
-				formattedHalPayloadWithLinks(this.links), null),
+		assertThat(
+				this.contentModifier
+						.modifyContent(formattedHalPayloadWithLinks(this.links), null),
 				is(equalTo(formattedHalPayloadWithLinks(this.maskedLinks))));
 	}
 
@@ -72,16 +73,17 @@ public class LinkMaskingContentModifierTests {
 
 	@Test
 	public void formattedAtomLinksAreMasked() throws Exception {
-		assertThat(this.contentModifier.modifyContent(
-				formattedAtomPayloadWithLinks(this.links), null),
+		assertThat(
+				this.contentModifier
+						.modifyContent(formattedAtomPayloadWithLinks(this.links), null),
 				is(equalTo(formattedAtomPayloadWithLinks(this.maskedLinks))));
 	}
 
 	@Test
 	public void maskCanBeCustomized() throws Exception {
 		assertThat(
-				new LinkMaskingContentModifier("custom").modifyContent(
-						formattedAtomPayloadWithLinks(this.links), null),
+				new LinkMaskingContentModifier("custom")
+						.modifyContent(formattedAtomPayloadWithLinks(this.links), null),
 				is(equalTo(formattedAtomPayloadWithLinks(new Link("a", "custom"),
 						new Link("b", "custom")))));
 	}

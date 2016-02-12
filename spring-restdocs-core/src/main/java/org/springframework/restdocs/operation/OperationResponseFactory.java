@@ -36,7 +36,8 @@ public class OperationResponseFactory {
 	 * @param content the content of the request
 	 * @return the {@code OperationResponse}
 	 */
-	public OperationResponse create(HttpStatus status, HttpHeaders headers, byte[] content) {
+	public OperationResponse create(HttpStatus status, HttpHeaders headers,
+			byte[] content) {
 		return new StandardOperationResponse(status, augmentHeaders(headers, content),
 				content);
 	}
@@ -53,8 +54,8 @@ public class OperationResponseFactory {
 	 * @return The new response with the new content
 	 */
 	public OperationResponse createFrom(OperationResponse original, byte[] newContent) {
-		return new StandardOperationResponse(original.getStatus(), getUpdatedHeaders(
-				original.getHeaders(), newContent), newContent);
+		return new StandardOperationResponse(original.getStatus(),
+				getUpdatedHeaders(original.getHeaders(), newContent), newContent);
 	}
 
 	/**
@@ -66,7 +67,8 @@ public class OperationResponseFactory {
 	 *
 	 * @return The new response with the new headers
 	 */
-	public OperationResponse createFrom(OperationResponse original, HttpHeaders newHeaders) {
+	public OperationResponse createFrom(OperationResponse original,
+			HttpHeaders newHeaders) {
 		return new StandardOperationResponse(original.getStatus(), newHeaders,
 				original.getContent());
 	}
@@ -78,8 +80,8 @@ public class OperationResponseFactory {
 
 	private HttpHeaders getUpdatedHeaders(HttpHeaders originalHeaders,
 			byte[] updatedContent) {
-		return new HttpHeadersHelper(originalHeaders).updateContentLengthHeaderIfPresent(
-				updatedContent).getHeaders();
+		return new HttpHeadersHelper(originalHeaders)
+				.updateContentLengthHeaderIfPresent(updatedContent).getHeaders();
 	}
 
 }

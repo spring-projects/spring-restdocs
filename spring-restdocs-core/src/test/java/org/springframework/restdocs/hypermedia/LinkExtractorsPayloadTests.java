@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
@@ -100,7 +101,8 @@ public class LinkExtractorsPayloadTests {
 		assertLinks(Collections.<Link>emptyList(), links);
 	}
 
-	private void assertLinks(List<Link> expectedLinks, Map<String, List<Link>> actualLinks) {
+	private void assertLinks(List<Link> expectedLinks,
+			Map<String, List<Link>> actualLinks) {
 		MultiValueMap<String, Link> expectedLinksByRel = new LinkedMultiValueMap<>();
 		for (Link expectedLink : expectedLinks) {
 			expectedLinksByRel.add(expectedLink.getRel(), expectedLink);

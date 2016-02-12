@@ -15,8 +15,7 @@
  */
 
 /**
- * Operation API that describes a request that was sent and the response that was
- * received when calling a RESTful API.
+ * Operation API that describes a request that was sent and the response that was received
+ * when calling a RESTful API.
  */
 package org.springframework.restdocs.operation;
-

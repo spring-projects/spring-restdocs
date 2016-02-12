@@ -90,8 +90,8 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	}
 
 	private String extractUrlTemplate(Operation operation) {
-		String urlTemplate = (String) operation.getAttributes().get(
-				"org.springframework.restdocs.urlTemplate");
+		String urlTemplate = (String) operation.getAttributes()
+				.get("org.springframework.restdocs.urlTemplate");
 		Assert.notNull(urlTemplate,
 				"urlTemplate not found. Did you use RestDocumentationRequestBuilders to "
 						+ "build the request?");

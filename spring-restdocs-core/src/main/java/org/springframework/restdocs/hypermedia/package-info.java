@@ -18,4 +18,3 @@
  * Documenting a RESTful API that uses hypermedia.
  */
 package org.springframework.restdocs.hypermedia;
-

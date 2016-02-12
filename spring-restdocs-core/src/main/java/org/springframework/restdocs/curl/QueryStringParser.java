@@ -64,8 +64,8 @@ public class QueryStringParser {
 			parameters.add(decode(name), decode(value));
 		}
 		else {
-			throw new IllegalArgumentException("The parameter '" + parameter
-					+ "' is malformed");
+			throw new IllegalArgumentException(
+					"The parameter '" + parameter + "' is malformed");
 		}
 	}
 
@@ -74,8 +74,8 @@ public class QueryStringParser {
 			return URLDecoder.decode(encoded, "UTF-8");
 		}
 		catch (UnsupportedEncodingException ex) {
-			throw new IllegalStateException("Unable to URL encode " + encoded
-					+ " using UTF-8", ex);
+			throw new IllegalStateException(
+					"Unable to URL encode " + encoded + " using UTF-8", ex);
 		}
 
 	}

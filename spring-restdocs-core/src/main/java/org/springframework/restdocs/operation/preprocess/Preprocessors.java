@@ -90,7 +90,8 @@ public final class Preprocessors {
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor maskLinks() {
-		return new ContentModifyingOperationPreprocessor(new LinkMaskingContentModifier());
+		return new ContentModifyingOperationPreprocessor(
+				new LinkMaskingContentModifier());
 	}
 
 	/**
@@ -101,8 +102,8 @@ public final class Preprocessors {
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor maskLinks(String mask) {
-		return new ContentModifyingOperationPreprocessor(new LinkMaskingContentModifier(
-				mask));
+		return new ContentModifyingOperationPreprocessor(
+				new LinkMaskingContentModifier(mask));
 	}
 
 	/**
@@ -114,7 +115,8 @@ public final class Preprocessors {
 	 * @param replacement the replacement
 	 * @return the preprocessor
 	 */
-	public static OperationPreprocessor replacePattern(Pattern pattern, String replacement) {
+	public static OperationPreprocessor replacePattern(Pattern pattern,
+			String replacement) {
 		return new ContentModifyingOperationPreprocessor(
 				new PatternReplacingContentModifier(pattern, replacement));
 	}

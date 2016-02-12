@@ -88,8 +88,8 @@ public class Link {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("rel", this.rel)
-				.append("href", this.href).toString();
+		return new ToStringCreator(this).append("rel", this.rel).append("href", this.href)
+				.toString();
 	}
 
 }

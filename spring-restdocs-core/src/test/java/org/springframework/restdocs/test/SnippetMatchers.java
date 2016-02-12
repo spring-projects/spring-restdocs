@@ -29,6 +29,7 @@ import java.util.List;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
@@ -71,8 +72,8 @@ public final class SnippetMatchers {
 		return new AsciidoctorCodeBlockMatcher(language);
 	}
 
-	private static abstract class AbstractSnippetContentMatcher extends
-			BaseMatcher<String> {
+	private static abstract class AbstractSnippetContentMatcher
+			extends BaseMatcher<String> {
 
 		private List<String> lines = new ArrayList<>();
 
@@ -149,8 +150,8 @@ public final class SnippetMatchers {
 	 *
 	 * @param <T> The type of the matcher
 	 */
-	public static abstract class HttpMatcher<T extends HttpMatcher<T>> extends
-			AsciidoctorCodeBlockMatcher<HttpMatcher<T>> {
+	public static abstract class HttpMatcher<T extends HttpMatcher<T>>
+			extends AsciidoctorCodeBlockMatcher<HttpMatcher<T>> {
 
 		private int headerOffset = 3;
 
@@ -175,8 +176,8 @@ public final class SnippetMatchers {
 	/**
 	 * A {@link Matcher} for an HTTP response.
 	 */
-	public static final class HttpResponseMatcher extends
-			HttpMatcher<HttpResponseMatcher> {
+	public static final class HttpResponseMatcher
+			extends HttpMatcher<HttpResponseMatcher> {
 
 		private HttpResponseMatcher(HttpStatus status) {
 			this.content("HTTP/1.1 " + status.value() + " " + status.getReasonPhrase());
@@ -200,17 +201,16 @@ public final class SnippetMatchers {
 	/**
 	 * A {@link Matcher} for an Asciidoctor table.
 	 */
-	public static final class AsciidoctorTableMatcher extends
-			AbstractSnippetContentMatcher {
+	public static final class AsciidoctorTableMatcher
+			extends AbstractSnippetContentMatcher {
 
 		private AsciidoctorTableMatcher(String title, String... columns) {
 			if (StringUtils.hasText(title)) {
 				this.addLine("." + title);
 			}
 			this.addLine("|===");
-			String header = "|"
-					+ StringUtils
-							.collectionToDelimitedString(Arrays.asList(columns), "|");
+			String header = "|" + StringUtils
+					.collectionToDelimitedString(Arrays.asList(columns), "|");
 			this.addLine(header);
 			this.addLine("");
 			this.addLine("|===");
@@ -258,8 +258,8 @@ public final class SnippetMatchers {
 		}
 
 		private String read(File snippetFile) throws IOException {
-			return FileCopyUtils.copyToString(new InputStreamReader(new FileInputStream(
-					snippetFile), "UTF-8"));
+			return FileCopyUtils.copyToString(
+					new InputStreamReader(new FileInputStream(snippetFile), "UTF-8"));
 		}
 
 		@Override
@@ -269,12 +269,12 @@ public final class SnippetMatchers {
 			}
 			else if (this.expectedContents != null) {
 				try {
-					this.expectedContents
-							.describeMismatch(read((File) item), description);
+					this.expectedContents.describeMismatch(read((File) item),
+							description);
 				}
 				catch (IOException e) {
-					description.appendText("The contents of " + item
-							+ " cound not be read");
+					description
+							.appendText("The contents of " + item + " cound not be read");
 				}
 			}
 		}

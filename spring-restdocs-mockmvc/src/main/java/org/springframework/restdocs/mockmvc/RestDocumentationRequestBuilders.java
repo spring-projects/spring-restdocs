@@ -54,8 +54,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 */
 	public static MockHttpServletRequestBuilder get(String urlTemplate,
 			Object... urlVariables) {
-		return MockMvcRequestBuilders.get(urlTemplate, urlVariables).requestAttr(
-				ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return MockMvcRequestBuilders.get(urlTemplate, urlVariables)
+				.requestAttr(ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
 	}
 
 	/**
@@ -78,8 +78,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 */
 	public static MockHttpServletRequestBuilder post(String urlTemplate,
 			Object... urlVariables) {
-		return MockMvcRequestBuilders.post(urlTemplate, urlVariables).requestAttr(
-				ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return MockMvcRequestBuilders.post(urlTemplate, urlVariables)
+				.requestAttr(ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
 	}
 
 	/**
@@ -102,8 +102,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 */
 	public static MockHttpServletRequestBuilder put(String urlTemplate,
 			Object... urlVariables) {
-		return MockMvcRequestBuilders.put(urlTemplate, urlVariables).requestAttr(
-				ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return MockMvcRequestBuilders.put(urlTemplate, urlVariables)
+				.requestAttr(ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
 	}
 
 	/**
@@ -126,8 +126,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 */
 	public static MockHttpServletRequestBuilder patch(String urlTemplate,
 			Object... urlVariables) {
-		return MockMvcRequestBuilders.patch(urlTemplate, urlVariables).requestAttr(
-				ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return MockMvcRequestBuilders.patch(urlTemplate, urlVariables)
+				.requestAttr(ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
 	}
 
 	/**
@@ -150,8 +150,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 */
 	public static MockHttpServletRequestBuilder delete(String urlTemplate,
 			Object... urlVariables) {
-		return MockMvcRequestBuilders.delete(urlTemplate, urlVariables).requestAttr(
-				ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return MockMvcRequestBuilders.delete(urlTemplate, urlVariables)
+				.requestAttr(ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
 	}
 
 	/**
@@ -174,8 +174,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 */
 	public static MockHttpServletRequestBuilder options(String urlTemplate,
 			Object... urlVariables) {
-		return MockMvcRequestBuilders.options(urlTemplate, urlVariables).requestAttr(
-				ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return MockMvcRequestBuilders.options(urlTemplate, urlVariables)
+				.requestAttr(ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
 	}
 
 	/**
@@ -198,8 +198,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 */
 	public static MockHttpServletRequestBuilder head(String urlTemplate,
 			Object... urlVariables) {
-		return MockMvcRequestBuilders.head(urlTemplate, urlVariables).requestAttr(
-				ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return MockMvcRequestBuilders.head(urlTemplate, urlVariables)
+				.requestAttr(ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
 	}
 
 	/**
@@ -249,8 +249,8 @@ public abstract class RestDocumentationRequestBuilders {
 	public static MockMultipartHttpServletRequestBuilder fileUpload(String urlTemplate,
 			Object... urlVariables) {
 		return (MockMultipartHttpServletRequestBuilder) MockMvcRequestBuilders
-				.fileUpload(urlTemplate, urlVariables).requestAttr(
-						ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+				.fileUpload(urlTemplate, urlVariables)
+				.requestAttr(ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
 	}
 
 	/**

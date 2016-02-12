@@ -23,6 +23,7 @@ import java.util.Arrays;
 import javax.servlet.http.Part;
 
 import org.junit.Test;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -53,8 +54,8 @@ public class MockMvcOperationRequestFactoryTests {
 
 	@Test
 	public void httpRequest() throws Exception {
-		OperationRequest request = createOperationRequest(MockMvcRequestBuilders
-				.get("/foo"));
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.get("/foo"));
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.GET));
 	}
@@ -71,8 +72,8 @@ public class MockMvcOperationRequestFactoryTests {
 
 	@Test
 	public void requestWithContextPath() throws Exception {
-		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.get(
-				"/foo/bar").contextPath("/foo"));
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.get("/foo/bar").contextPath("/foo"));
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo/bar")));
 		assertThat(request.getMethod(), is(HttpMethod.GET));
 	}
@@ -124,8 +125,8 @@ public class MockMvcOperationRequestFactoryTests {
 
 	@Test
 	public void getRequestWithQueryStringPopulatesParameters() throws Exception {
-		OperationRequest request = createOperationRequest(MockMvcRequestBuilders
-				.get("/foo?a=alpha&b=bravo"));
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.get("/foo?a=alpha&b=bravo"));
 		assertThat(request.getUri(),
 				is(URI.create("http://localhost/foo?a=alpha&b=bravo")));
 		assertThat(request.getParameters().size(), is(2));
@@ -148,9 +149,9 @@ public class MockMvcOperationRequestFactoryTests {
 
 	@Test
 	public void mockMultipartFileUpload() throws Exception {
-		OperationRequest request = createOperationRequest(MockMvcRequestBuilders
-				.fileUpload("/foo").file(
-						new MockMultipartFile("file", new byte[] { 1, 2, 3, 4 })));
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.fileUpload("/foo")
+						.file(new MockMultipartFile("file", new byte[] { 1, 2, 3, 4 })));
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.POST));
 		assertThat(request.getParts().size(), is(1));
@@ -164,10 +165,9 @@ public class MockMvcOperationRequestFactoryTests {
 
 	@Test
 	public void mockMultipartFileUploadWithContentType() throws Exception {
-		OperationRequest request = createOperationRequest(MockMvcRequestBuilders
-				.fileUpload("/foo").file(
-						new MockMultipartFile("file", "original", "image/png",
-								new byte[] { 1, 2, 3, 4 })));
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.fileUpload("/foo").file(new MockMultipartFile(
+						"file", "original", "image/png", new byte[] { 1, 2, 3, 4 })));
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.POST));
 		assertThat(request.getParts().size(), is(1));
@@ -186,8 +186,8 @@ public class MockMvcOperationRequestFactoryTests {
 		given(mockPart.getHeaderNames()).willReturn(Arrays.asList("a", "b"));
 		given(mockPart.getHeaders("a")).willReturn(Arrays.asList("alpha"));
 		given(mockPart.getHeaders("b")).willReturn(Arrays.asList("bravo", "banana"));
-		given(mockPart.getInputStream()).willReturn(
-				new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }));
+		given(mockPart.getInputStream())
+				.willReturn(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }));
 		given(mockPart.getName()).willReturn("part-name");
 		given(mockPart.getSubmittedFileName()).willReturn("submitted.txt");
 		mockRequest.addPart(mockPart);
@@ -210,8 +210,8 @@ public class MockMvcOperationRequestFactoryTests {
 		given(mockPart.getHeaderNames()).willReturn(Arrays.asList("a", "b"));
 		given(mockPart.getHeaders("a")).willReturn(Arrays.asList("alpha"));
 		given(mockPart.getHeaders("b")).willReturn(Arrays.asList("bravo", "banana"));
-		given(mockPart.getInputStream()).willReturn(
-				new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }));
+		given(mockPart.getInputStream())
+				.willReturn(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }));
 		given(mockPart.getName()).willReturn("part-name");
 		given(mockPart.getSubmittedFileName()).willReturn("submitted.png");
 		given(mockPart.getContentType()).willReturn("image/png");
@@ -229,8 +229,8 @@ public class MockMvcOperationRequestFactoryTests {
 
 	private OperationRequest createOperationRequest(MockHttpServletRequestBuilder builder)
 			throws Exception {
-		return this.factory.createOperationRequest(builder
-				.buildRequest(new MockServletContext()));
+		return this.factory
+				.createOperationRequest(builder.buildRequest(new MockServletContext()));
 	}
 
 }

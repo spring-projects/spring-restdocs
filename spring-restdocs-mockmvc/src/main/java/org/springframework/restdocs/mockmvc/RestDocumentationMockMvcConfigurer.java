@@ -108,7 +108,8 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 	 * @param templateEngine the template engine to use
 	 * @return {@code this}
 	 */
-	public RestDocumentationMockMvcConfigurer templateEngine(TemplateEngine templateEngine) {
+	public RestDocumentationMockMvcConfigurer templateEngine(
+			TemplateEngine templateEngine) {
 		this.templateEngineConfigurer.setTemplateEngine(templateEngine);
 		return this;
 	}
@@ -120,7 +121,8 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 	 * @param writerResolver The writer resolver to use
 	 * @return {@code this}
 	 */
-	public RestDocumentationMockMvcConfigurer writerResolver(WriterResolver writerResolver) {
+	public RestDocumentationMockMvcConfigurer writerResolver(
+			WriterResolver writerResolver) {
 		this.writerResolverConfigurer.setWriterResolver(writerResolver);
 		return this;
 	}
@@ -157,9 +159,8 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 			if (resolverToUse == null) {
 				resolverToUse = new StandardWriterResolver(
 						new RestDocumentationContextPlaceholderResolver(
-								(RestDocumentationContext) request
-										.getAttribute(RestDocumentationContext.class
-												.getName())));
+								(RestDocumentationContext) request.getAttribute(
+										RestDocumentationContext.class.getName())));
 			}
 			request.setAttribute(WriterResolver.class.getName(), resolverToUse);
 		}
@@ -170,8 +171,8 @@ public class RestDocumentationMockMvcConfigurer extends MockMvcConfigurerAdapter
 
 	}
 
-	private static final class ConfigurerApplyingRequestPostProcessor implements
-			RequestPostProcessor {
+	private static final class ConfigurerApplyingRequestPostProcessor
+			implements RequestPostProcessor {
 
 		private final RestDocumentation restDocumentation;
 

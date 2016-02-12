@@ -59,14 +59,14 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	RestDocumentationResultHandler(String identifier,
 			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
-		this(identifier, requestPreprocessor,
-				new IdentityOperationResponsePreprocessor(), snippets);
+		this(identifier, requestPreprocessor, new IdentityOperationResponsePreprocessor(),
+				snippets);
 	}
 
 	RestDocumentationResultHandler(String identifier,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		this(identifier, new IdentityOperationRequestPreprocessor(),
-				responsePreprocessor, snippets);
+		this(identifier, new IdentityOperationRequestPreprocessor(), responsePreprocessor,
+				snippets);
 	}
 
 	RestDocumentationResultHandler(String identifier,
@@ -116,15 +116,15 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	@SuppressWarnings("unchecked")
 	private List<Snippet> getSnippets(MvcResult result) {
-		List<Snippet> combinedSnippets = new ArrayList<>((List<Snippet>) result
-				.getRequest().getAttribute(
+		List<Snippet> combinedSnippets = new ArrayList<>(
+				(List<Snippet>) result.getRequest().getAttribute(
 						"org.springframework.restdocs.mockmvc.defaultSnippets"));
 		combinedSnippets.addAll(this.snippets);
 		return combinedSnippets;
 	}
 
-	private static final class IdentityOperationRequestPreprocessor implements
-			OperationRequestPreprocessor {
+	private static final class IdentityOperationRequestPreprocessor
+			implements OperationRequestPreprocessor {
 
 		@Override
 		public OperationRequest preprocess(OperationRequest request) {
@@ -133,8 +133,8 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	}
 
-	private static final class IdentityOperationResponsePreprocessor implements
-			OperationResponsePreprocessor {
+	private static final class IdentityOperationResponsePreprocessor
+			implements OperationResponsePreprocessor {
 
 		@Override
 		public OperationResponse preprocess(OperationResponse response) {

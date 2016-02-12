@@ -24,6 +24,7 @@ import java.util.concurrent.Callable;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.core.io.Resource;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -47,8 +48,8 @@ public class StandardTemplateResourceResolverTests {
 	@Test
 	public void customSnippetResolution() throws Exception {
 		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/test.snippet", getClass()
-						.getResource("test.snippet"));
+				"org/springframework/restdocs/templates/test.snippet",
+				getClass().getResource("test.snippet"));
 		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
 				new Callable<Resource>() {
 
@@ -66,8 +67,8 @@ public class StandardTemplateResourceResolverTests {
 	@Test
 	public void fallsBackToDefaultSnippet() throws Exception {
 		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/default-test.snippet", getClass()
-						.getResource("test.snippet"));
+				"org/springframework/restdocs/templates/default-test.snippet",
+				getClass().getResource("test.snippet"));
 		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
 				new Callable<Resource>() {
 

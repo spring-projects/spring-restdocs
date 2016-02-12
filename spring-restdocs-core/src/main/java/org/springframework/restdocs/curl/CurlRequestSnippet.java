@@ -48,6 +48,7 @@ import org.springframework.util.StringUtils;
 public class CurlRequestSnippet extends TemplatedSnippet {
 
 	private static final Set<HeaderFilter> HEADER_FILTERS;
+
 	static {
 		Set<HeaderFilter> headerFilters = new HashSet<>();
 		headerFilters.add(new NamedHeaderFilter(HttpHeaders.HOST));
@@ -102,7 +103,8 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		writer.print("-i");
 	}
 
-	private void writeUserOptionIfNecessary(OperationRequest request, PrintWriter writer) {
+	private void writeUserOptionIfNecessary(OperationRequest request,
+			PrintWriter writer) {
 		List<String> headerValue = request.getHeaders().get(HttpHeaders.AUTHORIZATION);
 		if (BasicAuthHeaderFilter.isBasicAuthHeader(headerValue)) {
 			String credentials = BasicAuthHeaderFilter.decodeBasicAuthHeader(headerValue);
@@ -110,7 +112,8 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writeHttpMethodIfNecessary(OperationRequest request, PrintWriter writer) {
+	private void writeHttpMethodIfNecessary(OperationRequest request,
+			PrintWriter writer) {
 		if (!HttpMethod.GET.equals(request.getMethod())) {
 			writer.print(String.format(" -X %s", request.getMethod()));
 		}
@@ -145,8 +148,8 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 				writer.printf("@%s", part.getSubmittedFileName());
 			}
 			if (part.getHeaders().getContentType() != null) {
-				writer.append(";type=").append(
-						part.getHeaders().getContentType().toString());
+				writer.append(";type=")
+						.append(part.getHeaders().getContentType().toString());
 			}
 
 			writer.append("'");
@@ -170,7 +173,8 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writeContentUsingParameters(OperationRequest request, PrintWriter writer) {
+	private void writeContentUsingParameters(OperationRequest request,
+			PrintWriter writer) {
 		Parameters uniqueParameters = getUniqueParameters(request);
 		String queryString = uniqueParameters.toQueryString();
 		if (StringUtils.hasText(queryString)) {

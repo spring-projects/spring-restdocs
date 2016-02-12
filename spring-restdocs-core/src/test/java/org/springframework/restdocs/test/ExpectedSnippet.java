@@ -23,6 +23,7 @@ import org.hamcrest.Matcher;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.restdocs.test.SnippetMatchers.SnippetMatcher;
 
@@ -48,8 +49,8 @@ public class ExpectedSnippet implements TestRule {
 
 	@Override
 	public Statement apply(final Statement base, Description description) {
-		this.outputDirectory = new File("build/"
-				+ description.getTestClass().getSimpleName());
+		this.outputDirectory = new File(
+				"build/" + description.getTestClass().getSimpleName());
 		return new ExpectedSnippetStatement(base);
 	}
 

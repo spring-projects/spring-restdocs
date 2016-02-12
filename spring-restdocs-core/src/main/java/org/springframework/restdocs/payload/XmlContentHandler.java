@@ -63,7 +63,8 @@ class XmlContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public List<FieldDescriptor> findMissingFields(List<FieldDescriptor> fieldDescriptors) {
+	public List<FieldDescriptor> findMissingFields(
+			List<FieldDescriptor> fieldDescriptors) {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
 		Document payload = readPayload();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
@@ -78,7 +79,8 @@ class XmlContentHandler implements ContentHandler {
 		return missingFields;
 	}
 
-	private NodeList findMatchingNodes(FieldDescriptor fieldDescriptor, Document payload) {
+	private NodeList findMatchingNodes(FieldDescriptor fieldDescriptor,
+			Document payload) {
 		try {
 			return (NodeList) createXPath(fieldDescriptor.getPath()).evaluate(payload,
 					XPathConstants.NODESET);
@@ -90,15 +92,16 @@ class XmlContentHandler implements ContentHandler {
 
 	private Document readPayload() {
 		try {
-			return this.documentBuilder.parse(new InputSource(new ByteArrayInputStream(
-					this.rawContent)));
+			return this.documentBuilder
+					.parse(new InputSource(new ByteArrayInputStream(this.rawContent)));
 		}
 		catch (Exception ex) {
 			throw new PayloadHandlingException(ex);
 		}
 	}
 
-	private XPathExpression createXPath(String fieldPath) throws XPathExpressionException {
+	private XPathExpression createXPath(String fieldPath)
+			throws XPathExpressionException {
 		return XPathFactory.newInstance().newXPath().compile(fieldPath);
 	}
 
