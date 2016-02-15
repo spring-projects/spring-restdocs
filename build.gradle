@@ -154,6 +154,7 @@ configure(subprojects - project(":docs")) { subproject ->
 samples {
 	dependOn 'spring-restdocs-core:install'
 	dependOn 'spring-restdocs-mockmvc:install'
+	dependOn 'spring-restdocs-restassured:install'
 
 	restNotesSpringHateoas {
 		workingDir "$projectDir/samples/rest-notes-spring-hateoas"
