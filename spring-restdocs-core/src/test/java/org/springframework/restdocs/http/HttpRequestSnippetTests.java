@@ -76,10 +76,9 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(httpRequest(RequestMethod.GET, "/foo?bar")
 						.header(HttpHeaders.HOST, "localhost"));
 
-		new HttpRequestSnippet().document(
-				new OperationBuilder("get-request-with-query-string-with-no-value",
-						this.snippet.getOutputDirectory())
-								.request("http://localhost/foo?bar").build());
+		new HttpRequestSnippet()
+				.document(operationBuilder("get-request-with-query-string-with-no-value")
+						.request("http://localhost/foo?bar").build());
 	}
 
 	@Test
@@ -132,10 +131,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 						.header("Content-Type", "application/x-www-form-urlencoded")
 						.content("bar="));
 
-		new HttpRequestSnippet()
-				.document(new OperationBuilder("post-request-with-parameter",
-						this.snippet.getOutputDirectory()).request("http://localhost/foo")
-								.method("POST").param("bar").build());
+		new HttpRequestSnippet().document(operationBuilder("post-request-with-parameter")
+				.request("http://localhost/foo").method("POST").param("bar").build());
 	}
 
 	@Test
@@ -226,14 +223,12 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(
-				new OperationBuilder("multipart-post-with-parameter-with-no-value",
-						this.snippet.getOutputDirectory())
-								.request("http://localhost/upload").method("POST")
-								.header(HttpHeaders.CONTENT_TYPE,
-										MediaType.MULTIPART_FORM_DATA_VALUE)
-								.param("a").part("image", "<< data >>".getBytes())
-								.build());
+		new HttpRequestSnippet()
+				.document(operationBuilder("multipart-post-with-parameter-with-no-value")
+						.request("http://localhost/upload").method("POST")
+						.header(HttpHeaders.CONTENT_TYPE,
+								MediaType.MULTIPART_FORM_DATA_VALUE)
+						.param("a").part("image", "<< data >>".getBytes()).build());
 	}
 
 	@Test

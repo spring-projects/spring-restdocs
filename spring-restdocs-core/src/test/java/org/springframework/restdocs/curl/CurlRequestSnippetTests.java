@@ -93,9 +93,8 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash")
 						.content("$ curl 'http://localhost/foo?param' -i"));
 		new CurlRequestSnippet()
-				.document(new OperationBuilder("request-with-query-string-with-no-value",
-						this.snippet.getOutputDirectory())
-								.request("http://localhost/foo?param").build());
+				.document(operationBuilder("request-with-query-string-with-no-value")
+						.request("http://localhost/foo?param").build());
 	}
 
 	@Test
@@ -114,11 +113,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 		this.snippet.expectCurlRequest("post-request-with-query-string-with-no-value")
 				.withContents(codeBlock("bash")
 						.content("$ curl 'http://localhost/foo?param' -i -X POST"));
-		new CurlRequestSnippet().document(
-				new OperationBuilder("post-request-with-query-string-with-no-value",
-						this.snippet.getOutputDirectory())
-								.request("http://localhost/foo?param").method("POST")
-								.build());
+		new CurlRequestSnippet()
+				.document(operationBuilder("post-request-with-query-string-with-no-value")
+						.request("http://localhost/foo?param").method("POST").build());
 	}
 
 	@Test
@@ -138,9 +135,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash")
 						.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1='"));
 		new CurlRequestSnippet().document(
-				new OperationBuilder("post-request-with-one-parameter-with-no-value",
-						this.snippet.getOutputDirectory()).request("http://localhost/foo")
-								.method("POST").param("k1").build());
+				operationBuilder("post-request-with-one-parameter-with-no-value")
+						.request("http://localhost/foo").method("POST").param("k1")
+						.build());
 	}
 
 	@Test

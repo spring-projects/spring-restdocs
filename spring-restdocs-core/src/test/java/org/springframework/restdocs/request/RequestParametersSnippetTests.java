@@ -65,9 +65,8 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 						tableWithHeader("Parameter", "Description").row("a", "one"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one")))
-						.document(new OperationBuilder("request-parameter-with-no-value",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost").param("a").build());
+						.document(operationBuilder("request-parameter-with-no-value")
+								.request("http://localhost").param("a").build());
 	}
 
 	@Test
