@@ -17,8 +17,8 @@
 package org.springframework.restdocs.operation.preprocess;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +60,7 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 		if (originalContent.length > 0) {
 			for (PrettyPrinter prettyPrinter : PRETTY_PRINTERS) {
 				try {
-					return prettyPrinter.prettyPrint(originalContent).getBytes();
+					return prettyPrinter.prettyPrint(originalContent);
 				}
 				catch (Exception ex) {
 					// Continue
@@ -72,24 +72,25 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 	private interface PrettyPrinter {
 
-		String prettyPrint(byte[] content) throws Exception;
+		byte[] prettyPrint(byte[] content) throws Exception;
 
 	}
 
 	private static final class XmlPrettyPrinter implements PrettyPrinter {
 
 		@Override
-		public String prettyPrint(byte[] original) throws Exception {
+		public byte[] prettyPrint(byte[] original) throws Exception {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
 					"4");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
-			StringWriter transformed = new StringWriter();
+			ByteArrayOutputStream transformed = new ByteArrayOutputStream();
 			transformer.setErrorListener(new SilentErrorListener());
 			transformer.transform(createSaxSource(original),
 					new StreamResult(transformed));
-			return transformed.toString();
+
+			return transformed.toByteArray();
 		}
 
 		private SAXSource createSaxSource(byte[] original)
@@ -145,11 +146,13 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 	private static final class JsonPrettyPrinter implements PrettyPrinter {
 
+		private final ObjectMapper objectMapper = new ObjectMapper()
+				.configure(SerializationFeature.INDENT_OUTPUT, true);
+
 		@Override
-		public String prettyPrint(byte[] original) throws IOException {
-			ObjectMapper objectMapper = new ObjectMapper()
-					.configure(SerializationFeature.INDENT_OUTPUT, true);
-			return objectMapper.writeValueAsString(objectMapper.readTree(original));
+		public byte[] prettyPrint(byte[] original) throws IOException {
+			return this.objectMapper
+					.writeValueAsBytes(this.objectMapper.readTree(original));
 		}
 	}
 
