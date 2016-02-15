@@ -4,8 +4,9 @@ Andy Wilkinson;
 :icons: font
 :source-highlighter: highlightjs
 
-This sample application demonstrates how to use Spring REST Docs with TestNG.
-`SampleTestNgApplication` makes a call to a very simple service and produces three
+Sample application demonstrating how to use Spring REST Docs with TestNG.
+
+`SampleTestNgApplicationTests` makes a call to a very simple service and produces three
 documentation snippets.
 
 One showing how to make a request using cURL:

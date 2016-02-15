@@ -166,6 +166,10 @@ samples {
 	testNg {
 		workingDir "$projectDir/samples/testng"
 	}
+
+	restAssured {
+		workingDir "$projectDir/samples/rest-assured"
+	}
 }
 
 task api (type: Javadoc) {

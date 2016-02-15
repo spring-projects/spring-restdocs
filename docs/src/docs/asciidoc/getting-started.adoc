@@ -8,20 +8,31 @@ This section describes how to get started with Spring REST Docs.
 [[getting-started-sample-applications]]
 === Sample applications
 
-If you want to jump straight in, there are two sample applications available.
-{samples}/rest-notes-spring-hateoas[One sample] uses
-http://projects.spring.io/spring-hateoas/[Spring HATEOAS] and
-{samples}/rest-notes-spring-data-rest[the other] uses
-http://projects.spring.io/spring-data-rest/[Spring Data REST]. Both samples use
-Spring REST Docs to produce a detailed API guide and a getting started walkthrough.
+If you want to jump straight in, a number of sample applications are available:
 
-Each sample contains a file named `api-guide.adoc` that produces an API guide for the
-service, and a file named `getting-started-guide.adoc` that produces a getting started
-guide that provides an introductory walkthrough.
+[cols="3,2,10"]
+|===
+| Sample | Build system | Description
 
-The code that produces the generated snippets can be found in `src/test/java`.
-`ApiDocumentation.java` produces the snippets for the API guide.
-`GettingStartedDocumentation.java` produces the snippets for the getting started guide.
+| {samples}/rest-assured[REST Assured]
+| Gradle
+| Demonstrates the use of Spring REST Docs with REST Assured.
+
+| {samples}/rest-notes-spring-data-rest[Spring Data REST]
+| Maven
+| Demonstrates the creation of a getting started guide and an API guide for a service
+  implemented using Spring Data REST.
+
+| {samples}/rest-notes-spring-hateoas[Spring HATEOAS]
+| Gradle
+| Demonstrates the creation of a getting started guide and an API guide for a service
+  implemented using Spring HATEOAS.
+
+| {samples}/testng[TestNG]
+| Gradle
+| Demonstrates the use of Spring REST Docs with TestNG.
+
+|===
 
 
 
