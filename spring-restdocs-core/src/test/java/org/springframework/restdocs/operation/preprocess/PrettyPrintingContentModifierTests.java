@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,17 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Rule;
 import org.junit.Test;
 
 import org.springframework.restdocs.test.OutputCapture;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertThat;
 
@@ -67,5 +72,17 @@ public class PrettyPrintingContentModifierTests {
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(),
 				null), equalTo(content.getBytes()));
 
+	}
+
+	@Test
+	public void encodingIsPreserved() throws Exception {
+		Map<String, String> input = new HashMap<>();
+		input.put("japanese", "\u30b3\u30f3\u30c6\u30f3\u30c4");
+		ObjectMapper objectMapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
+		Map<String, String> output = objectMapper
+				.readValue(new PrettyPrintingContentModifier().modifyContent(
+						objectMapper.writeValueAsBytes(input), null), Map.class);
+		assertThat(output, is(equalTo(input)));
 	}
 }
