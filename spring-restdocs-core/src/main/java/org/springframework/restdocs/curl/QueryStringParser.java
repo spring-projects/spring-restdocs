@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package org.springframework.restdocs.curl;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.springframework.restdocs.operation.Parameters;
@@ -58,10 +60,18 @@ public class QueryStringParser {
 
 	private void processParameter(String parameter, Parameters parameters) {
 		String[] components = parameter.split("=");
-		if (components.length == 2) {
-			String name = components[0];
-			String value = components[1];
-			parameters.add(decode(name), decode(value));
+		if (components.length > 0 && components.length < 3) {
+			if (components.length == 2) {
+				String name = components[0];
+				String value = components[1];
+				parameters.add(decode(name), decode(value));
+			}
+			else {
+				List<String> values = parameters.get(components[0]);
+				if (values == null) {
+					parameters.put(components[0], new LinkedList<String>());
+				}
+			}
 		}
 		else {
 			throw new IllegalArgumentException(

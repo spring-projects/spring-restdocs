@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,6 +88,17 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void getRequestWithQueryStringWithNoValue() throws IOException {
+		this.snippet.expectCurlRequest("request-with-query-string-with-no-value")
+				.withContents(codeBlock("bash")
+						.content("$ curl 'http://localhost/foo?param' -i"));
+		new CurlRequestSnippet()
+				.document(new OperationBuilder("request-with-query-string-with-no-value",
+						this.snippet.getOutputDirectory())
+								.request("http://localhost/foo?param").build());
+	}
+
+	@Test
 	public void postRequestWithQueryString() throws IOException {
 		this.snippet.expectCurlRequest("post-request-with-query-string")
 				.withContents(codeBlock("bash")
@@ -99,6 +110,18 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void postRequestWithQueryStringWithNoValue() throws IOException {
+		this.snippet.expectCurlRequest("post-request-with-query-string-with-no-value")
+				.withContents(codeBlock("bash")
+						.content("$ curl 'http://localhost/foo?param' -i -X POST"));
+		new CurlRequestSnippet().document(
+				new OperationBuilder("post-request-with-query-string-with-no-value",
+						this.snippet.getOutputDirectory())
+								.request("http://localhost/foo?param").method("POST")
+								.build());
+	}
+
+	@Test
 	public void postRequestWithOneParameter() throws IOException {
 		this.snippet.expectCurlRequest("post-request-with-one-parameter")
 				.withContents(codeBlock("bash")
@@ -107,6 +130,17 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.document(operationBuilder("post-request-with-one-parameter")
 						.request("http://localhost/foo").method("POST").param("k1", "v1")
 						.build());
+	}
+
+	@Test
+	public void postRequestWithOneParameterWithNoValue() throws IOException {
+		this.snippet.expectCurlRequest("post-request-with-one-parameter-with-no-value")
+				.withContents(codeBlock("bash")
+						.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1='"));
+		new CurlRequestSnippet().document(
+				new OperationBuilder("post-request-with-one-parameter-with-no-value",
+						this.snippet.getOutputDirectory()).request("http://localhost/foo")
+								.method("POST").param("k1").build());
 	}
 
 	@Test

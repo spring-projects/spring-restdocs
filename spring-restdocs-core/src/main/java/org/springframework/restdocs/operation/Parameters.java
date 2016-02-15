@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,15 +40,31 @@ public class Parameters extends LinkedMultiValueMap<String, String> {
 	public String toQueryString() {
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, List<String>> entry : entrySet()) {
-			for (String value : entry.getValue()) {
-				if (sb.length() > 0) {
-					sb.append("&");
+			if (entry.getValue().isEmpty()) {
+				append(sb, entry.getKey());
+			}
+			else {
+				for (String value : entry.getValue()) {
+					append(sb, entry.getKey(), value);
 				}
-				sb.append(urlEncodeUTF8(entry.getKey())).append('=')
-						.append(urlEncodeUTF8(value));
 			}
 		}
 		return sb.toString();
+	}
+
+	private static void append(StringBuilder sb, String key) {
+		append(sb, key, "");
+	}
+
+	private static void append(StringBuilder sb, String key, String value) {
+		doAppend(sb, urlEncodeUTF8(key) + "=" + urlEncodeUTF8(value));
+	}
+
+	private static void doAppend(StringBuilder sb, String toAppend) {
+		if (sb.length() > 0) {
+			sb.append("&");
+		}
+		sb.append(toAppend);
 	}
 
 	private static String urlEncodeUTF8(String s) {

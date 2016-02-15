@@ -127,10 +127,16 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	private void writeParts(OperationRequest request, PrintWriter writer) {
 		writer.println();
 		for (Entry<String, List<String>> parameter : request.getParameters().entrySet()) {
-			for (String value : parameter.getValue()) {
+			if (parameter.getValue().isEmpty()) {
 				writePartBoundary(writer);
-				writePart(parameter.getKey(), value, null, writer);
-				writer.println();
+				writePart(parameter.getKey(), "", null, writer);
+			}
+			else {
+				for (String value : parameter.getValue()) {
+					writePartBoundary(writer);
+					writePart(parameter.getKey(), value, null, writer);
+					writer.println();
+				}
 			}
 		}
 		for (OperationRequestPart part : request.getParts()) {

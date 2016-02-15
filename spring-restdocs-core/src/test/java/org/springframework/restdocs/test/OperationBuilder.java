@@ -19,6 +19,7 @@ package org.springframework.restdocs.test;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,8 +160,13 @@ public class OperationBuilder {
 		}
 
 		public OperationRequestBuilder param(String name, String... values) {
-			for (String value : values) {
-				this.parameters.add(name, value);
+			if (values.length > 0) {
+				for (String value : values) {
+					this.parameters.add(name, value);
+				}
+			}
+			else {
+				this.parameters.put(name, Collections.<String>emptyList());
 			}
 			return this;
 		}
