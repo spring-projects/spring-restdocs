@@ -22,9 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -95,8 +94,8 @@ public class JsonFieldProcessorTests {
 		Map<String, String> entry1 = createEntry("id:1");
 		Map<String, String> entry2 = createEntry("id:2");
 		Map<String, String> entry3 = createEntry("id:3");
-		List<List<Map<String, String>>> alpha = Arrays.asList(
-				Arrays.asList(entry1, entry2), Arrays.asList(entry3));
+		List<List<Map<String, String>>> alpha = Arrays
+				.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[][]"), payload),
 				equalTo((Object) Arrays.asList(entry1, entry2, entry3)));
@@ -108,8 +107,8 @@ public class JsonFieldProcessorTests {
 		Map<String, String> entry1 = createEntry("id:1");
 		Map<String, String> entry2 = createEntry("id:2");
 		Map<String, String> entry3 = createEntry("id:3");
-		List<List<Map<String, String>>> alpha = Arrays.asList(
-				Arrays.asList(entry1, entry2), Arrays.asList(entry3));
+		List<List<Map<String, String>>> alpha = Arrays
+				.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
 		assertThat(
 				this.fieldProcessor.extract(JsonFieldPath.compile("a[][].id"), payload),
@@ -122,12 +121,13 @@ public class JsonFieldProcessorTests {
 		Map<String, Object> entry1 = createEntry("ids", Arrays.asList(1, 2));
 		Map<String, Object> entry2 = createEntry("ids", Arrays.asList(3));
 		Map<String, Object> entry3 = createEntry("ids", Arrays.asList(4));
-		List<List<Map<String, Object>>> alpha = Arrays.asList(
-				Arrays.asList(entry1, entry2), Arrays.asList(entry3));
+		List<List<Map<String, Object>>> alpha = Arrays
+				.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[][].ids"),
-				payload), equalTo((Object) Arrays.asList(Arrays.asList(1, 2),
-				Arrays.asList(3), Arrays.asList(4))));
+		assertThat(
+				this.fieldProcessor.extract(JsonFieldPath.compile("a[][].ids"), payload),
+				equalTo((Object) Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3),
+						Arrays.asList(4))));
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
@@ -202,8 +202,8 @@ public class JsonFieldProcessorTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void removeItemsInArray() throws IOException {
-		Map<String, Object> payload = new ObjectMapper().readValue(
-				"{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}", Map.class);
+		Map<String, Object> payload = new ObjectMapper()
+				.readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}", Map.class);
 		this.fieldProcessor.remove(JsonFieldPath.compile("a[].b"), payload);
 		assertThat(payload.size(), equalTo(0));
 	}
@@ -211,8 +211,8 @@ public class JsonFieldProcessorTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void removeItemsInNestedArray() throws IOException {
-		Map<String, Object> payload = new ObjectMapper().readValue(
-				"{\"a\": [[{\"id\":1},{\"id\":2}], [{\"id\":3}]]}", Map.class);
+		Map<String, Object> payload = new ObjectMapper()
+				.readValue("{\"a\": [[{\"id\":1},{\"id\":2}], [{\"id\":3}]]}", Map.class);
 		this.fieldProcessor.remove(JsonFieldPath.compile("a[][].id"), payload);
 		assertThat(payload.size(), equalTo(0));
 	}
@@ -223,8 +223,8 @@ public class JsonFieldProcessorTests {
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a.key", alpha);
 		alpha.put("b.key", "bravo");
-		assertThat(this.fieldProcessor.extract(
-				JsonFieldPath.compile("['a.key']['b.key']"), payload),
+		assertThat(this.fieldProcessor
+				.extract(JsonFieldPath.compile("['a.key']['b.key']"), payload),
 				equalTo((Object) "bravo"));
 	}
 

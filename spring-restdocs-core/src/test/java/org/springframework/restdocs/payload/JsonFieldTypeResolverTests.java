@@ -19,11 +19,10 @@ package org.springframework.restdocs.payload;
 import java.io.IOException;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -73,30 +72,33 @@ public class JsonFieldTypeResolverTests {
 
 	@Test
 	public void nestedField() throws IOException {
-		assertThat(this.fieldTypeResolver.resolveFieldType("a.b.c",
-				createPayload("{\"a\":{\"b\":{\"c\":{}}}}")),
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a.b.c",
+						createPayload("{\"a\":{\"b\":{\"c\":{}}}}")),
 				equalTo(JsonFieldType.OBJECT));
 	}
 
 	@Test
 	public void multipleFieldsWithSameType() throws IOException {
-		assertThat(this.fieldTypeResolver.resolveFieldType("a[].id",
-				createPayload("{\"a\":[{\"id\":1},{\"id\":2}]}")),
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a[].id",
+						createPayload("{\"a\":[{\"id\":1},{\"id\":2}]}")),
 				equalTo(JsonFieldType.NUMBER));
 	}
 
 	@Test
 	public void multipleFieldsWithDifferentTypes() throws IOException {
-		assertThat(this.fieldTypeResolver.resolveFieldType("a[].id",
-				createPayload("{\"a\":[{\"id\":1},{\"id\":true}]}")),
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a[].id",
+						createPayload("{\"a\":[{\"id\":1},{\"id\":true}]}")),
 				equalTo(JsonFieldType.VARIES));
 	}
 
 	@Test
 	public void nonExistentFieldProducesIllegalArgumentException() throws IOException {
 		this.thrownException.expect(FieldDoesNotExistException.class);
-		this.thrownException
-				.expectMessage("The payload does not contain a field with the path 'a.b'");
+		this.thrownException.expectMessage(
+				"The payload does not contain a field with the path 'a.b'");
 		this.fieldTypeResolver.resolveFieldType("a.b", createPayload("{\"a\":{}}"));
 	}
 

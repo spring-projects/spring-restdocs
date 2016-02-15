@@ -218,8 +218,8 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		return combinedSnippets;
 	}
 
-	private static final class IdentityOperationRequestPreprocessor implements
-			OperationRequestPreprocessor {
+	private static final class IdentityOperationRequestPreprocessor
+			implements OperationRequestPreprocessor {
 
 		@Override
 		public OperationRequest preprocess(OperationRequest request) {
@@ -228,8 +228,8 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 
 	}
 
-	private static final class IdentityOperationResponsePreprocessor implements
-			OperationResponsePreprocessor {
+	private static final class IdentityOperationResponsePreprocessor
+			implements OperationResponsePreprocessor {
 
 		@Override
 		public OperationResponse preprocess(OperationResponse response) {

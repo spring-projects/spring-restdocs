@@ -22,6 +22,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.jayway.restassured.response.Header;
+import com.jayway.restassured.specification.FilterableRequestSpecification;
+import com.jayway.restassured.specification.MultiPartSpecification;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -32,18 +36,14 @@ import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestConverter;
 
-import com.jayway.restassured.response.Header;
-import com.jayway.restassured.specification.FilterableRequestSpecification;
-import com.jayway.restassured.specification.MultiPartSpecification;
-
 /**
  * A converter for creating an {@link OperationRequest} from a REST Assured
  * {@link FilterableRequestSpecification}.
  *
  * @author Andy Wilkinson
  */
-class RestAssuredRequestConverter implements
-		RequestConverter<FilterableRequestSpecification> {
+class RestAssuredRequestConverter
+		implements RequestConverter<FilterableRequestSpecification> {
 
 	@Override
 	public OperationRequest convert(FilterableRequestSpecification requestSpec) {
@@ -68,8 +68,8 @@ class RestAssuredRequestConverter implements
 			return new byte[0];
 		}
 		else {
-			throw new IllegalStateException("Unsupported request content: "
-					+ content.getClass().getName());
+			throw new IllegalStateException(
+					"Unsupported request content: " + content.getClass().getName());
 		}
 	}
 
@@ -100,8 +100,9 @@ class RestAssuredRequestConverter implements
 		List<OperationRequestPart> parts = new ArrayList<>();
 		for (MultiPartSpecification multiPartSpec : requestSpec.getMultiPartParams()) {
 			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(multiPartSpec.getMimeType() == null ? MediaType.TEXT_PLAIN
-					: MediaType.parseMediaType(multiPartSpec.getMimeType()));
+			headers.setContentType(
+					multiPartSpec.getMimeType() == null ? MediaType.TEXT_PLAIN
+							: MediaType.parseMediaType(multiPartSpec.getMimeType()));
 			parts.add(new OperationRequestPartFactory().create(
 					multiPartSpec.getControlName(), multiPartSpec.getFileName(),
 					convertContent(multiPartSpec.getContent()), headers));

@@ -21,6 +21,7 @@ import java.net.URI;
 import javax.servlet.ServletContext;
 
 import org.junit.Test;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
@@ -144,8 +145,8 @@ public class RestDocumentationRequestBuildersTests {
 			HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
 		assertThat(
-				(String) request
-						.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE),
+				(String) request.getAttribute(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE),
 				is(equalTo("{template}")));
 		assertThat(request.getRequestURI(), is(equalTo("t")));
 		assertThat(request.getMethod(), is(equalTo(httpMethod.name())));

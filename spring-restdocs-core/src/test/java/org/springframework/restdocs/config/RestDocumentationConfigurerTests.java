@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.curl.CurlDocumentation;
 import org.springframework.restdocs.curl.CurlRequestSnippet;
@@ -58,30 +59,22 @@ public class RestDocumentationConfigurerTests {
 		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.apply(configuration, context);
-		assertThat(
-				configuration,
-				hasEntry(equalTo(TemplateEngine.class.getName()),
-						instanceOf(MustacheTemplateEngine.class)));
-		assertThat(
-				configuration,
-				hasEntry(equalTo(WriterResolver.class.getName()),
-						instanceOf(StandardWriterResolver.class)));
-		assertThat(
-				configuration,
+		assertThat(configuration, hasEntry(equalTo(TemplateEngine.class.getName()),
+				instanceOf(MustacheTemplateEngine.class)));
+		assertThat(configuration, hasEntry(equalTo(WriterResolver.class.getName()),
+				instanceOf(StandardWriterResolver.class)));
+		assertThat(configuration,
 				hasEntry(
 						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-		assertThat(
-				defaultSnippets,
+		assertThat(defaultSnippets,
 				contains(instanceOf(CurlRequestSnippet.class),
 						instanceOf(HttpRequestSnippet.class),
 						instanceOf(HttpResponseSnippet.class)));
-		assertThat(
-				configuration,
-				hasEntry(equalTo(SnippetConfiguration.class.getName()),
-						instanceOf(SnippetConfiguration.class)));
+		assertThat(configuration, hasEntry(equalTo(SnippetConfiguration.class.getName()),
+				instanceOf(SnippetConfiguration.class)));
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getEncoding(), is(equalTo("UTF-8")));
@@ -115,8 +108,7 @@ public class RestDocumentationConfigurerTests {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippets().withDefaults(CurlDocumentation.curlRequest())
 				.apply(configuration, context);
-		assertThat(
-				configuration,
+		assertThat(configuration,
 				hasEntry(
 						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
@@ -130,12 +122,10 @@ public class RestDocumentationConfigurerTests {
 	public void customSnippetEncoding() {
 		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
-		this.configurer.snippets().withEncoding("ISO 8859-1")
-				.apply(configuration, context);
-		assertThat(
-				configuration,
-				hasEntry(equalTo(SnippetConfiguration.class.getName()),
-						instanceOf(SnippetConfiguration.class)));
+		this.configurer.snippets().withEncoding("ISO 8859-1").apply(configuration,
+				context);
+		assertThat(configuration, hasEntry(equalTo(SnippetConfiguration.class.getName()),
+				instanceOf(SnippetConfiguration.class)));
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getEncoding(), is(equalTo("ISO 8859-1")));
@@ -147,18 +137,15 @@ public class RestDocumentationConfigurerTests {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippets().withTemplateFormat(TemplateFormats.markdown())
 				.apply(configuration, context);
-		assertThat(
-				configuration,
-				hasEntry(equalTo(SnippetConfiguration.class.getName()),
-						instanceOf(SnippetConfiguration.class)));
+		assertThat(configuration, hasEntry(equalTo(SnippetConfiguration.class.getName()),
+				instanceOf(SnippetConfiguration.class)));
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getTemplateFormat(),
 				is(equalTo(TemplateFormats.markdown())));
 	}
 
-	private static final class TestRestDocumentationConfigurer
-			extends
+	private static final class TestRestDocumentationConfigurer extends
 			RestDocumentationConfigurer<TestSnippetConfigurer, TestRestDocumentationConfigurer> {
 
 		private final TestSnippetConfigurer snippetConfigurer = new TestSnippetConfigurer(

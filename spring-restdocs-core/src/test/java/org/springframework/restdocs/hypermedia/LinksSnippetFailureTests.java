@@ -23,6 +23,7 @@ import java.util.Collections;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
@@ -47,11 +48,12 @@ public class LinksSnippetFailureTests {
 	@Test
 	public void undocumentedLink() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Links with the following relations were not"
-				+ " documented: [foo]"));
+		this.thrown.expectMessage(equalTo(
+				"Links with the following relations were not" + " documented: [foo]"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
-				Collections.<LinkDescriptor>emptyList()).document(new OperationBuilder(
-				"undocumented-link", this.snippet.getOutputDirectory()).build());
+				Collections.<LinkDescriptor>emptyList())
+						.document(new OperationBuilder("undocumented-link",
+								this.snippet.getOutputDirectory()).build());
 	}
 
 	@Test
@@ -59,9 +61,10 @@ public class LinksSnippetFailureTests {
 		this.thrown.expect(SnippetException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
 				+ " found in the response: [foo]"));
-		new LinksSnippet(new StubLinkExtractor(), Arrays.asList(new LinkDescriptor("foo")
-				.description("bar"))).document(new OperationBuilder("missing-link",
-				this.snippet.getOutputDirectory()).build());
+		new LinksSnippet(new StubLinkExtractor(),
+				Arrays.asList(new LinkDescriptor("foo").description("bar")))
+						.document(new OperationBuilder("missing-link",
+								this.snippet.getOutputDirectory()).build());
 	}
 
 	@Test
@@ -71,9 +74,9 @@ public class LinksSnippetFailureTests {
 				+ " documented: [a]. Links with the following relations were not"
 				+ " found in the response: [foo]"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha")),
-				Arrays.asList(new LinkDescriptor("foo").description("bar")))
-				.document(new OperationBuilder("undocumented-link-and-missing-link",
-						this.snippet.getOutputDirectory()).build());
+				Arrays.asList(new LinkDescriptor("foo").description("bar"))).document(
+						new OperationBuilder("undocumented-link-and-missing-link",
+								this.snippet.getOutputDirectory()).build());
 	}
 
 }

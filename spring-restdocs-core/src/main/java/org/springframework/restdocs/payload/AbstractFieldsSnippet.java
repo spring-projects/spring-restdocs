@@ -57,9 +57,10 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath(), "Field descriptors must have a path");
 			if (!descriptor.isIgnored()) {
-				Assert.notNull(descriptor.getDescription(), "The descriptor for field '"
-						+ descriptor.getPath() + "' must either have a description or"
-						+ " be marked as " + "ignored");
+				Assert.notNull(descriptor.getDescription(),
+						"The descriptor for field '" + descriptor.getPath()
+								+ "' must either have a description or" + " be marked as "
+								+ "ignored");
 			}
 
 		}

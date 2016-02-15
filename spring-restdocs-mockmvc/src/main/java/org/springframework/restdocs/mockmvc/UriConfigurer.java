@@ -31,9 +31,9 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * @author Andy Wilkinson
  */
-public class UriConfigurer extends
-		AbstractNestedConfigurer<MockMvcRestDocumentationConfigurer> implements
-		MockMvcConfigurer {
+public class UriConfigurer
+		extends AbstractNestedConfigurer<MockMvcRestDocumentationConfigurer>
+		implements MockMvcConfigurer {
 
 	/**
 	 * The default scheme for documented URIs.
@@ -103,7 +103,8 @@ public class UriConfigurer extends
 	}
 
 	@Override
-	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
+	public void apply(Map<String, Object> configuration,
+			RestDocumentationContext context) {
 		MockHttpServletRequest request = (MockHttpServletRequest) configuration
 				.get(MockHttpServletRequest.class.getName());
 		request.setScheme(this.scheme);

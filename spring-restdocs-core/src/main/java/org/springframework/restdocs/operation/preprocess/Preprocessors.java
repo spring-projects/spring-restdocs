@@ -83,8 +83,8 @@ public final class Preprocessors {
 	 * @see String#equals(Object)
 	 */
 	public static OperationPreprocessor removeHeaders(String... headerNames) {
-		return new HeaderRemovingOperationPreprocessor(new ExactMatchHeaderFilter(
-				headerNames));
+		return new HeaderRemovingOperationPreprocessor(
+				new ExactMatchHeaderFilter(headerNames));
 	}
 
 	/**
@@ -98,8 +98,8 @@ public final class Preprocessors {
 	 */
 	public static OperationPreprocessor removeMatchingHeaders(
 			String... headerNamePatterns) {
-		return new HeaderRemovingOperationPreprocessor(new PatternMatchHeaderFilter(
-				headerNamePatterns));
+		return new HeaderRemovingOperationPreprocessor(
+				new PatternMatchHeaderFilter(headerNamePatterns));
 	}
 
 	/**
@@ -109,7 +109,8 @@ public final class Preprocessors {
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor maskLinks() {
-		return new ContentModifyingOperationPreprocessor(new LinkMaskingContentModifier());
+		return new ContentModifyingOperationPreprocessor(
+				new LinkMaskingContentModifier());
 	}
 
 	/**
@@ -120,8 +121,8 @@ public final class Preprocessors {
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor maskLinks(String mask) {
-		return new ContentModifyingOperationPreprocessor(new LinkMaskingContentModifier(
-				mask));
+		return new ContentModifyingOperationPreprocessor(
+				new LinkMaskingContentModifier(mask));
 	}
 
 	/**
@@ -133,7 +134,8 @@ public final class Preprocessors {
 	 * @param replacement the replacement
 	 * @return the preprocessor
 	 */
-	public static OperationPreprocessor replacePattern(Pattern pattern, String replacement) {
+	public static OperationPreprocessor replacePattern(Pattern pattern,
+			String replacement) {
 		return new ContentModifyingOperationPreprocessor(
 				new PatternReplacingContentModifier(pattern, replacement));
 	}

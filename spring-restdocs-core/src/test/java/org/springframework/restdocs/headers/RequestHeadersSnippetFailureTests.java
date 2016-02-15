@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
@@ -51,9 +52,11 @@ public class RequestHeadersSnippetFailureTests {
 		this.thrown
 				.expectMessage(equalTo("Headers with the following names were not found"
 						+ " in the request: [Accept]"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description(
-				"one"))).document(new OperationBuilder("missing-request-headers",
-				this.snippet.getOutputDirectory()).request("http://localhost").build());
+		new RequestHeadersSnippet(
+				Arrays.asList(headerWithName("Accept").description("one")))
+						.document(new OperationBuilder("missing-request-headers",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost").build());
 	}
 
 	@Test
@@ -62,11 +65,13 @@ public class RequestHeadersSnippetFailureTests {
 		this.thrown
 				.expectMessage(endsWith("Headers with the following names were not found"
 						+ " in the request: [Accept]"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description(
-				"one"))).document(new OperationBuilder(
-				"undocumented-request-header-and-missing-request-header", this.snippet
-						.getOutputDirectory()).request("http://localhost")
-				.header("X-Test", "test").build());
+		new RequestHeadersSnippet(
+				Arrays.asList(headerWithName("Accept").description("one")))
+						.document(new OperationBuilder(
+								"undocumented-request-header-and-missing-request-header",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost")
+										.header("X-Test", "test").build());
 	}
 
 }

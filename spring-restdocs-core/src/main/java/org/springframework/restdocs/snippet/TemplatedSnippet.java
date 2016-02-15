@@ -57,10 +57,10 @@ public abstract class TemplatedSnippet implements Snippet {
 	public void document(Operation operation) throws IOException {
 		RestDocumentationContext context = (RestDocumentationContext) operation
 				.getAttributes().get(RestDocumentationContext.class.getName());
-		WriterResolver writerResolver = (WriterResolver) operation.getAttributes().get(
-				WriterResolver.class.getName());
-		try (Writer writer = writerResolver.resolve(operation.getName(),
-				this.snippetName, context)) {
+		WriterResolver writerResolver = (WriterResolver) operation.getAttributes()
+				.get(WriterResolver.class.getName());
+		try (Writer writer = writerResolver.resolve(operation.getName(), this.snippetName,
+				context)) {
 			Map<String, Object> model = createModel(operation);
 			model.putAll(this.attributes);
 			TemplateEngine templateEngine = (TemplateEngine) operation.getAttributes()

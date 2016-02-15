@@ -18,4 +18,3 @@
  * Classes that drive the generation of the documentaiton snippets.
  */
 package org.springframework.restdocs.generate;
-

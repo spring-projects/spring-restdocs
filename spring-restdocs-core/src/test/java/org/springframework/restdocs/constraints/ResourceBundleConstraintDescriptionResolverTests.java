@@ -70,8 +70,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	public void defaultMessageDecimalMax() {
 		Map<String, Object> configuration = new HashMap<>();
 		configuration.put("value", "9.875");
-		String description = this.resolver.resolveDescription(new Constraint(
-				DecimalMax.class.getName(), configuration));
+		String description = this.resolver.resolveDescription(
+				new Constraint(DecimalMax.class.getName(), configuration));
 		assertThat(description, is(equalTo("Must be at most 9.875")));
 	}
 
@@ -79,8 +79,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	public void defaultMessageDecimalMin() {
 		Map<String, Object> configuration = new HashMap<>();
 		configuration.put("value", "1.5");
-		String description = this.resolver.resolveDescription(new Constraint(
-				DecimalMin.class.getName(), configuration));
+		String description = this.resolver.resolveDescription(
+				new Constraint(DecimalMin.class.getName(), configuration));
 		assertThat(description, is(equalTo("Must be at least 1.5")));
 	}
 
@@ -89,16 +89,16 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		Map<String, Object> configuration = new HashMap<>();
 		configuration.put("integer", "2");
 		configuration.put("fraction", "5");
-		String description = this.resolver.resolveDescription(new Constraint(Digits.class
-				.getName(), configuration));
-		assertThat(description, is(equalTo("Must have at most 2 integral digits and 5 "
-				+ "fractional digits")));
+		String description = this.resolver.resolveDescription(
+				new Constraint(Digits.class.getName(), configuration));
+		assertThat(description, is(equalTo(
+				"Must have at most 2 integral digits and 5 " + "fractional digits")));
 	}
 
 	@Test
 	public void defaultMessageFuture() {
-		String description = this.resolver.resolveDescription(new Constraint(Future.class
-				.getName(), Collections.<String, Object>emptyMap()));
+		String description = this.resolver.resolveDescription(new Constraint(
+				Future.class.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Must be in the future")));
 	}
 
@@ -106,8 +106,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	public void defaultMessageMax() {
 		Map<String, Object> configuration = new HashMap<>();
 		configuration.put("value", 10);
-		String description = this.resolver.resolveDescription(new Constraint(Max.class
-				.getName(), configuration));
+		String description = this.resolver
+				.resolveDescription(new Constraint(Max.class.getName(), configuration));
 		assertThat(description, is(equalTo("Must be at most 10")));
 	}
 
@@ -115,8 +115,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	public void defaultMessageMin() {
 		Map<String, Object> configuration = new HashMap<>();
 		configuration.put("value", 10);
-		String description = this.resolver.resolveDescription(new Constraint(Min.class
-				.getName(), configuration));
+		String description = this.resolver
+				.resolveDescription(new Constraint(Min.class.getName(), configuration));
 		assertThat(description, is(equalTo("Must be at least 10")));
 	}
 
@@ -129,15 +129,15 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessageNull() {
-		String description = this.resolver.resolveDescription(new Constraint(Null.class
-				.getName(), Collections.<String, Object>emptyMap()));
+		String description = this.resolver.resolveDescription(new Constraint(
+				Null.class.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Must be null")));
 	}
 
 	@Test
 	public void defaultMessagePast() {
-		String description = this.resolver.resolveDescription(new Constraint(Past.class
-				.getName(), Collections.<String, Object>emptyMap()));
+		String description = this.resolver.resolveDescription(new Constraint(
+				Past.class.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Must be in the past")));
 	}
 
@@ -145,8 +145,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	public void defaultMessagePattern() {
 		Map<String, Object> configuration = new HashMap<>();
 		configuration.put("regexp", "[A-Z][a-z]+");
-		String description = this.resolver.resolveDescription(new Constraint(
-				Pattern.class.getName(), configuration));
+		String description = this.resolver.resolveDescription(
+				new Constraint(Pattern.class.getName(), configuration));
 		assertThat(description,
 				is(equalTo("Must match the regular expression '[A-Z][a-z]+'")));
 	}
@@ -156,8 +156,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		Map<String, Object> configuration = new HashMap<>();
 		configuration.put("min", 2);
 		configuration.put("max", 10);
-		String description = this.resolver.resolveDescription(new Constraint(Size.class
-				.getName(), configuration));
+		String description = this.resolver
+				.resolveDescription(new Constraint(Size.class.getName(), configuration));
 		assertThat(description, is(equalTo("Size must be between 2 and 10 inclusive")));
 	}
 
@@ -167,9 +167,10 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 			@Override
 			public URL getResource(String name) {
-				if (name.startsWith("org/springframework/restdocs/constraints/ConstraintDescriptions")) {
-					return super
-							.getResource("org/springframework/restdocs/constraints/TestConstraintDescriptions.properties");
+				if (name.startsWith(
+						"org/springframework/restdocs/constraints/ConstraintDescriptions")) {
+					return super.getResource(
+							"org/springframework/restdocs/constraints/TestConstraintDescriptions.properties");
 				}
 				return super.getResource(name);
 			}
@@ -194,14 +195,14 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 			@Override
 			protected Object[][] getContents() {
-				return new String[][] { { NotNull.class.getName() + ".description",
-						"Not null" } };
+				return new String[][] {
+						{ NotNull.class.getName() + ".description", "Not null" } };
 			}
 
 		};
 		String description = new ResourceBundleConstraintDescriptionResolver(bundle)
-				.resolveDescription(new Constraint(NotNull.class.getName(), Collections
-						.<String, Object>emptyMap()));
+				.resolveDescription(new Constraint(NotNull.class.getName(),
+						Collections.<String, Object>emptyMap()));
 		assertThat(description, is(equalTo("Not null")));
 	}
 

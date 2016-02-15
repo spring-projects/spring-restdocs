@@ -87,8 +87,8 @@ final class JsonFieldPath {
 		List<String> segments = new ArrayList<>();
 		while (matcher.find()) {
 			if (previous != matcher.start()) {
-				segments.addAll(extractDotSeparatedSegments(path.substring(previous,
-						matcher.start())));
+				segments.addAll(extractDotSeparatedSegments(
+						path.substring(previous, matcher.start())));
 			}
 			if (matcher.group(1) != null) {
 				segments.add(matcher.group(1));

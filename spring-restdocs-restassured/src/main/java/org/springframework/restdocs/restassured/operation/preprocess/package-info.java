@@ -19,4 +19,3 @@
  * documented.
  */
 package org.springframework.restdocs.restassured.operation.preprocess;
-

@@ -23,10 +23,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.specification.FilterableRequestSpecification;
+import com.jayway.restassured.specification.RequestSpecification;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.IntegrationTest;
@@ -41,10 +45,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.specification.FilterableRequestSpecification;
-import com.jayway.restassured.specification.RequestSpecification;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -189,8 +189,8 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void objectBody() {
-		RequestSpecification requestSpec = RestAssured.given()
-				.body(new ObjectBody("bar")).port(this.port);
+		RequestSpecification requestSpec = RestAssured.given().body(new ObjectBody("bar"))
+				.port(this.port);
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
@@ -203,8 +203,8 @@ public class RestAssuredRequestConverterTests {
 				.body(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }))
 				.port(this.port);
 		requestSpec.post();
-		this.thrown
-				.expectMessage(equalTo("Unsupported request content: java.io.ByteArrayInputStream"));
+		this.thrown.expectMessage(
+				equalTo("Unsupported request content: java.io.ByteArrayInputStream"));
 		this.factory.convert((FilterableRequestSpecification) requestSpec);
 	}
 

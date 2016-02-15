@@ -34,8 +34,7 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * @author Andy Wilkinson
  */
-public class MockMvcRestDocumentationConfigurer
-		extends
+public class MockMvcRestDocumentationConfigurer extends
 		RestDocumentationConfigurer<MockMvcSnippetConfigurer, MockMvcRestDocumentationConfigurer>
 		implements MockMvcConfigurer {
 
@@ -76,8 +75,8 @@ public class MockMvcRestDocumentationConfigurer
 		return this.snippetConfigurer;
 	}
 
-	private final class ConfigurerApplyingRequestPostProcessor implements
-			RequestPostProcessor {
+	private final class ConfigurerApplyingRequestPostProcessor
+			implements RequestPostProcessor {
 
 		private final RestDocumentationContextProvider contextManager;
 
@@ -91,9 +90,9 @@ public class MockMvcRestDocumentationConfigurer
 			RestDocumentationContext context = this.contextManager.beforeOperation();
 			Map<String, Object> configuration = new HashMap<>();
 			configuration.put(MockHttpServletRequest.class.getName(), request);
-			configuration
-					.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-							request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE));
+			configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+					request.getAttribute(
+							RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE));
 			configuration.put(RestDocumentationContext.class.getName(), context);
 			request.setAttribute(
 					RestDocumentationResultHandler.ATTRIBUTE_NAME_CONFIGURATION,

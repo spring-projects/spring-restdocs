@@ -24,6 +24,7 @@ import java.util.concurrent.Callable;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.core.io.Resource;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -52,12 +53,11 @@ public class StandardTemplateResourceResolverTests {
 				"org/springframework/restdocs/templates/asciidoctor/test.snippet",
 				getClass().getResource("test-format-specific-custom.snippet"));
 		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/test.snippet", getClass()
-						.getResource("test-custom.snippet"));
-		this.classLoader
-				.addResource(
-						"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
-						getClass().getResource("test-default.snippet"));
+				"org/springframework/restdocs/templates/test.snippet",
+				getClass().getResource("test-custom.snippet"));
+		this.classLoader.addResource(
+				"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
+				getClass().getResource("test-default.snippet"));
 		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
 				new Callable<Resource>() {
 
@@ -69,21 +69,19 @@ public class StandardTemplateResourceResolverTests {
 
 				});
 
-		assertThat(
-				snippet.getURL(),
-				is(equalTo(getClass().getResource("test-format-specific-custom.snippet"))));
+		assertThat(snippet.getURL(), is(
+				equalTo(getClass().getResource("test-format-specific-custom.snippet"))));
 	}
 
 	@Test
 	public void generalCustomSnippetIsUsedInAbsenceOfFormatSpecificCustomSnippet()
 			throws Exception {
 		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/test.snippet", getClass()
-						.getResource("test-custom.snippet"));
-		this.classLoader
-				.addResource(
-						"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
-						getClass().getResource("test-default.snippet"));
+				"org/springframework/restdocs/templates/test.snippet",
+				getClass().getResource("test-custom.snippet"));
+		this.classLoader.addResource(
+				"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
+				getClass().getResource("test-default.snippet"));
 		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
 				new Callable<Resource>() {
 
@@ -101,10 +99,9 @@ public class StandardTemplateResourceResolverTests {
 
 	@Test
 	public void defaultSnippetIsUsedInAbsenceOfCustomSnippets() throws Exception {
-		this.classLoader
-				.addResource(
-						"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
-						getClass().getResource("test-default.snippet"));
+		this.classLoader.addResource(
+				"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
+				getClass().getResource("test-default.snippet"));
 		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
 				new Callable<Resource>() {
 

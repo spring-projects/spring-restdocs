@@ -23,6 +23,7 @@ import java.util.Map;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,8 +48,8 @@ public class ContentTypeLinkExtractorTests {
 	@Test
 	public void extractionFailsWithNullContentType() throws IOException {
 		this.thrown.expect(IllegalStateException.class);
-		new ContentTypeLinkExtractor().extractLinks(this.responseFactory.create(
-				HttpStatus.OK, new HttpHeaders(), null));
+		new ContentTypeLinkExtractor().extractLinks(
+				this.responseFactory.create(HttpStatus.OK, new HttpHeaders(), null));
 	}
 
 	@Test

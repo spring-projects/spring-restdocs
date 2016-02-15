@@ -20,6 +20,7 @@ import java.net.URI;
 
 import org.junit.Rule;
 import org.junit.Test;
+
 import org.springframework.hateoas.mvc.BasicLinkBuilder;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.JUnitRestDocumentation;
@@ -58,7 +59,7 @@ public class MockMvcRestDocumentationConfigurerTests {
 	public void customScheme() {
 		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
 				this.restDocumentation).uris().withScheme("https")
-				.beforeMockMvcCreated(null, null);
+						.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 
 		assertUriConfiguration("https", "localhost", 8080);
@@ -68,7 +69,7 @@ public class MockMvcRestDocumentationConfigurerTests {
 	public void customHost() {
 		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
 				this.restDocumentation).uris().withHost("api.example.com")
-				.beforeMockMvcCreated(null, null);
+						.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 
 		assertUriConfiguration("http", "api.example.com", 8080);
@@ -77,8 +78,8 @@ public class MockMvcRestDocumentationConfigurerTests {
 	@Test
 	public void customPort() {
 		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).uris().withPort(8081)
-				.beforeMockMvcCreated(null, null);
+				this.restDocumentation).uris().withPort(8081).beforeMockMvcCreated(null,
+						null);
 		postProcessor.postProcessRequest(this.request);
 
 		assertUriConfiguration("http", "localhost", 8081);
@@ -87,8 +88,8 @@ public class MockMvcRestDocumentationConfigurerTests {
 	@Test
 	public void noContentLengthHeaderWhenRequestHasNotContent() {
 		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).uris().withPort(8081)
-				.beforeMockMvcCreated(null, null);
+				this.restDocumentation).uris().withPort(8081).beforeMockMvcCreated(null,
+						null);
 		postProcessor.postProcessRequest(this.request);
 		assertThat(this.request.getHeader("Content-Length"), is(nullValue()));
 	}
@@ -97,8 +98,8 @@ public class MockMvcRestDocumentationConfigurerTests {
 		assertEquals(scheme, this.request.getScheme());
 		assertEquals(host, this.request.getServerName());
 		assertEquals(port, this.request.getServerPort());
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(
-				this.request));
+		RequestContextHolder
+				.setRequestAttributes(new ServletRequestAttributes(this.request));
 		try {
 			URI uri = BasicLinkBuilder.linkToCurrentMapping().toUri();
 			assertEquals(scheme, uri.getScheme());

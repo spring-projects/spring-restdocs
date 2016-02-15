@@ -137,8 +137,9 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 		Matcher matcher = CAMEL_CASE_PATTERN.matcher(string);
 		StringBuffer result = new StringBuffer();
 		while (matcher.find()) {
-			String replacement = (matcher.start() > 0) ? separator
-					+ matcher.group(1).toLowerCase() : matcher.group(1).toLowerCase();
+			String replacement = (matcher.start() > 0)
+					? separator + matcher.group(1).toLowerCase()
+					: matcher.group(1).toLowerCase();
 			matcher.appendReplacement(result, replacement);
 		}
 		matcher.appendTail(result);

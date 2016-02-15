@@ -64,8 +64,8 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  *
  * @author Andy Wilkinson
  */
-public class ResourceBundleConstraintDescriptionResolver implements
-		ConstraintDescriptionResolver {
+public class ResourceBundleConstraintDescriptionResolver
+		implements ConstraintDescriptionResolver {
 
 	private final PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper(
 			"${", "}");
@@ -99,8 +99,8 @@ public class ResourceBundleConstraintDescriptionResolver implements
 		try {
 			return ResourceBundle.getBundle(
 					ResourceBundleConstraintDescriptionResolver.class.getPackage()
-							.getName() + "." + name, Locale.getDefault(), Thread
-							.currentThread().getContextClassLoader());
+							.getName() + "." + name,
+					Locale.getDefault(), Thread.currentThread().getContextClassLoader());
 		}
 		catch (MissingResourceException ex) {
 			return null;
@@ -126,8 +126,8 @@ public class ResourceBundleConstraintDescriptionResolver implements
 		return this.defaultDescriptions.getString(key);
 	}
 
-	private static final class ConstraintPlaceholderResolver implements
-			PlaceholderResolver {
+	private static final class ConstraintPlaceholderResolver
+			implements PlaceholderResolver {
 
 		private final Constraint constraint;
 

@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import org.junit.Rule;
 import org.junit.Test;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormats;
@@ -48,8 +49,8 @@ public class AsciidoctorRequestFieldsSnippetTests {
 	@Test
 	public void requestFieldsWithListDescription() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-fields")).willReturn(
-				snippetResource("request-fields-with-list-description"));
+		given(resolver.resolveTemplateResource("request-fields"))
+				.willReturn(snippetResource("request-fields-with-list-description"));
 		this.snippet.expectRequestFields("request-fields-with-list-description")
 				.withContents(
 						tableWithHeader(asciidoctor(), "Path", "Type", "Description")
@@ -57,13 +58,14 @@ public class AsciidoctorRequestFieldsSnippetTests {
 								.row("a", "String", String.format(" - one%n - two"))
 								.configuration("[cols=\"1,1,1a\"]"));
 
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description(
-				Arrays.asList("one", "two"))))
-				.document(new OperationBuilder("request-fields-with-list-description",
-						this.snippet.getOutputDirectory())
-						.attribute(TemplateEngine.class.getName(),
-								new MustacheTemplateEngine(resolver))
-						.request("http://localhost").content("{\"a\": \"foo\"}").build());
+		new RequestFieldsSnippet(Arrays.asList(
+				fieldWithPath("a").description(Arrays.asList("one", "two")))).document(
+						new OperationBuilder("request-fields-with-list-description",
+								this.snippet.getOutputDirectory())
+										.attribute(TemplateEngine.class.getName(),
+												new MustacheTemplateEngine(resolver))
+										.request("http://localhost")
+										.content("{\"a\": \"foo\"}").build());
 	}
 
 	private FileSystemResource snippetResource(String name) {

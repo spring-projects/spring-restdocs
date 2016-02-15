@@ -28,8 +28,8 @@ import org.springframework.http.HttpMethod;
  *
  * @author Andy Wilkinson
  */
-class StandardOperationRequest extends AbstractOperationMessage implements
-		OperationRequest {
+class StandardOperationRequest extends AbstractOperationMessage
+		implements OperationRequest {
 
 	private HttpMethod method;
 

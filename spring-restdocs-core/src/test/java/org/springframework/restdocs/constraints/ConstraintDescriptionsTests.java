@@ -129,8 +129,7 @@ public class ConstraintDescriptionsTests {
 
 	@Test
 	public void sizeList() {
-		assertThat(
-				this.constraintDescriptions.descriptionsForProperty("sizeList"),
+		assertThat(this.constraintDescriptions.descriptionsForProperty("sizeList"),
 				contains("Size must be between 1 and 4 inclusive",
 						"Size must be between 8 and 10 inclusive"));
 	}

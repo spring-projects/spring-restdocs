@@ -34,15 +34,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.springframework.http.MediaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.http.MediaType;
 
 /**
  * A {@link ContentModifier} that modifies the content by pretty printing it.
@@ -52,8 +52,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class PrettyPrintingContentModifier implements ContentModifier {
 
 	private static final List<PrettyPrinter> PRETTY_PRINTERS = Collections
-			.unmodifiableList(Arrays.asList(new JsonPrettyPrinter(),
-					new XmlPrettyPrinter()));
+			.unmodifiableList(
+					Arrays.asList(new JsonPrettyPrinter(), new XmlPrettyPrinter()));
 
 	@Override
 	public byte[] modifyContent(byte[] originalContent, MediaType contentType) {
@@ -98,8 +98,8 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 			SAXParser parser = parserFactory.newSAXParser();
 			XMLReader xmlReader = parser.getXMLReader();
 			xmlReader.setErrorHandler(new SilentErrorHandler());
-			return new SAXSource(xmlReader, new InputSource(new ByteArrayInputStream(
-					original)));
+			return new SAXSource(xmlReader,
+					new InputSource(new ByteArrayInputStream(original)));
 		}
 
 		private static final class SilentErrorListener implements ErrorListener {
@@ -111,7 +111,8 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 			}
 
 			@Override
-			public void error(TransformerException exception) throws TransformerException {
+			public void error(TransformerException exception)
+					throws TransformerException {
 				// Suppress
 			}
 
@@ -146,8 +147,8 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 		@Override
 		public String prettyPrint(byte[] original) throws IOException {
-			ObjectMapper objectMapper = new ObjectMapper().configure(
-					SerializationFeature.INDENT_OUTPUT, true);
+			ObjectMapper objectMapper = new ObjectMapper()
+					.configure(SerializationFeature.INDENT_OUTPUT, true);
 			return objectMapper.writeValueAsString(objectMapper.readTree(original));
 		}
 	}

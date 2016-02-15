@@ -44,13 +44,13 @@ class JsonContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public List<FieldDescriptor> findMissingFields(List<FieldDescriptor> fieldDescriptors) {
+	public List<FieldDescriptor> findMissingFields(
+			List<FieldDescriptor> fieldDescriptors) {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
 		Object payload = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-			if (!fieldDescriptor.isOptional()
-					&& !this.fieldProcessor.hasField(
-							JsonFieldPath.compile(fieldDescriptor.getPath()), payload)) {
+			if (!fieldDescriptor.isOptional() && !this.fieldProcessor.hasField(
+					JsonFieldPath.compile(fieldDescriptor.getPath()), payload)) {
 				missingFields.add(fieldDescriptor);
 			}
 		}

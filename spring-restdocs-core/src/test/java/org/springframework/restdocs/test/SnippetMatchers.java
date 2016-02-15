@@ -29,6 +29,7 @@ import java.util.List;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
@@ -73,15 +74,15 @@ public final class SnippetMatchers {
 			return new HttpRequestMatcher(requestMethod, uri,
 					new AsciidoctorCodeBlockMatcher<>("http"), 3);
 		}
-		return new HttpRequestMatcher(requestMethod, uri, new MarkdownCodeBlockMatcher<>(
-				"http"), 2);
+		return new HttpRequestMatcher(requestMethod, uri,
+				new MarkdownCodeBlockMatcher<>("http"), 2);
 	}
 
 	public static HttpResponseMatcher httpResponse(TemplateFormat format,
 			HttpStatus status) {
 		if ("adoc".equals(format.getFileExtension())) {
-			return new HttpResponseMatcher(status, new AsciidoctorCodeBlockMatcher<>(
-					"http"), 3);
+			return new HttpResponseMatcher(status,
+					new AsciidoctorCodeBlockMatcher<>("http"), 3);
 		}
 		return new HttpResponseMatcher(status, new MarkdownCodeBlockMatcher<>("http"), 2);
 	}
@@ -94,8 +95,8 @@ public final class SnippetMatchers {
 		return new MarkdownCodeBlockMatcher(language);
 	}
 
-	private static abstract class AbstractSnippetContentMatcher extends
-			BaseMatcher<String> {
+	private static abstract class AbstractSnippetContentMatcher
+			extends BaseMatcher<String> {
 
 		private final TemplateFormat templateFormat;
 
@@ -156,8 +157,8 @@ public final class SnippetMatchers {
 	 *
 	 * @param <T> The type of the matcher
 	 */
-	public static class CodeBlockMatcher<T extends CodeBlockMatcher<T>> extends
-			AbstractSnippetContentMatcher {
+	public static class CodeBlockMatcher<T extends CodeBlockMatcher<T>>
+			extends AbstractSnippetContentMatcher {
 
 		protected CodeBlockMatcher(TemplateFormat templateFormat) {
 			super(templateFormat);
@@ -209,8 +210,8 @@ public final class SnippetMatchers {
 	 *
 	 * @param <T> The type of the matcher
 	 */
-	public static abstract class HttpMatcher<T extends HttpMatcher<T>> extends
-			BaseMatcher<String> {
+	public static abstract class HttpMatcher<T extends HttpMatcher<T>>
+			extends BaseMatcher<String> {
 
 		private final CodeBlockMatcher<?> delegate;
 
@@ -254,8 +255,8 @@ public final class SnippetMatchers {
 	/**
 	 * A {@link Matcher} for an HTTP response.
 	 */
-	public static final class HttpResponseMatcher extends
-			HttpMatcher<HttpResponseMatcher> {
+	public static final class HttpResponseMatcher
+			extends HttpMatcher<HttpResponseMatcher> {
 
 		private HttpResponseMatcher(HttpStatus status, CodeBlockMatcher<?> delegate,
 				int headerOffset) {
@@ -285,8 +286,8 @@ public final class SnippetMatchers {
 	 *
 	 * @param <T> The concrete type of the matcher
 	 */
-	public static abstract class TableMatcher<T extends TableMatcher<T>> extends
-			AbstractSnippetContentMatcher {
+	public static abstract class TableMatcher<T extends TableMatcher<T>>
+			extends AbstractSnippetContentMatcher {
 
 		protected TableMatcher(TemplateFormat templateFormat) {
 			super(templateFormat);
@@ -301,8 +302,8 @@ public final class SnippetMatchers {
 	/**
 	 * A {@link Matcher} for an Asciidoctor table.
 	 */
-	public static final class AsciidoctorTableMatcher extends
-			TableMatcher<AsciidoctorTableMatcher> {
+	public static final class AsciidoctorTableMatcher
+			extends TableMatcher<AsciidoctorTableMatcher> {
 
 		private AsciidoctorTableMatcher(String title, String... columns) {
 			super(TemplateFormats.asciidoctor());
@@ -310,9 +311,8 @@ public final class SnippetMatchers {
 				this.addLine("." + title);
 			}
 			this.addLine("|===");
-			String header = "|"
-					+ StringUtils
-							.collectionToDelimitedString(Arrays.asList(columns), "|");
+			String header = "|" + StringUtils
+					.collectionToDelimitedString(Arrays.asList(columns), "|");
 			this.addLine(header);
 			this.addLine("");
 			this.addLine("|===");
@@ -338,16 +338,16 @@ public final class SnippetMatchers {
 	/**
 	 * A {@link Matcher} for a Markdown table.
 	 */
-	public static final class MarkdownTableMatcher extends
-			TableMatcher<MarkdownTableMatcher> {
+	public static final class MarkdownTableMatcher
+			extends TableMatcher<MarkdownTableMatcher> {
 
 		private MarkdownTableMatcher(String title, String... columns) {
 			super(TemplateFormats.asciidoctor());
 			if (StringUtils.hasText(title)) {
 				this.addLine(title);
 			}
-			String header = StringUtils.collectionToDelimitedString(
-					Arrays.asList(columns), " | ");
+			String header = StringUtils
+					.collectionToDelimitedString(Arrays.asList(columns), " | ");
 			this.addLine(header);
 			List<String> components = new ArrayList<>();
 			for (String column : columns) {
@@ -363,8 +363,8 @@ public final class SnippetMatchers {
 
 		@Override
 		public MarkdownTableMatcher row(String... entries) {
-			this.addLine(-1, StringUtils.collectionToDelimitedString(
-					Arrays.asList(entries), " | "));
+			this.addLine(-1, StringUtils
+					.collectionToDelimitedString(Arrays.asList(entries), " | "));
 			return this;
 		}
 
@@ -410,8 +410,8 @@ public final class SnippetMatchers {
 		}
 
 		private String read(File snippetFile) throws IOException {
-			return FileCopyUtils.copyToString(new InputStreamReader(new FileInputStream(
-					snippetFile), "UTF-8"));
+			return FileCopyUtils.copyToString(
+					new InputStreamReader(new FileInputStream(snippetFile), "UTF-8"));
 		}
 
 		@Override
@@ -421,12 +421,12 @@ public final class SnippetMatchers {
 			}
 			else if (this.expectedContents != null) {
 				try {
-					this.expectedContents
-							.describeMismatch(read((File) item), description);
+					this.expectedContents.describeMismatch(read((File) item),
+							description);
 				}
 				catch (IOException e) {
-					description.appendText("The contents of " + item
-							+ " cound not be read");
+					description
+							.appendText("The contents of " + item + " cound not be read");
 				}
 			}
 		}
@@ -437,8 +437,8 @@ public final class SnippetMatchers {
 				this.expectedContents.describeTo(description);
 			}
 			else {
-				description.appendText(this.templateFormat.getFileExtension()
-						+ " snippet");
+				description
+						.appendText(this.templateFormat.getFileExtension() + " snippet");
 			}
 		}
 

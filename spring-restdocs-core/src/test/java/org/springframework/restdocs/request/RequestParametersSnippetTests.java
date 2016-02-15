@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
+
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
@@ -46,14 +47,15 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestParameters() throws IOException {
-		this.snippet.expectRequestParameters("request-parameters").withContents(
-				tableWithHeader("Parameter", "Description").row("a", "one").row("b",
-						"two"));
-		new RequestParametersSnippet(Arrays.asList(
-				parameterWithName("a").description("one"), parameterWithName("b")
-						.description("two"))).document(operationBuilder("request-parameters")
-				.request("http://localhost").param("a", "bravo").param("b", "bravo")
-				.build());
+		this.snippet.expectRequestParameters("request-parameters")
+				.withContents(tableWithHeader("Parameter", "Description").row("a", "one")
+						.row("b", "two"));
+		new RequestParametersSnippet(
+				Arrays.asList(parameterWithName("a").description("one"),
+						parameterWithName("b").description("two")))
+								.document(operationBuilder("request-parameters")
+										.request("http://localhost").param("a", "bravo")
+										.param("b", "bravo").build());
 	}
 
 	@Test
@@ -61,50 +63,58 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 		this.snippet.expectRequestParameters("ignored-request-parameter").withContents(
 				tableWithHeader("Parameter", "Description").row("b", "two"));
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
-				parameterWithName("b").description("two"))).document(operationBuilder(
-				"ignored-request-parameter").request("http://localhost")
-				.param("a", "bravo").param("b", "bravo").build());
+				parameterWithName("b").description("two")))
+						.document(operationBuilder("ignored-request-parameter")
+								.request("http://localhost").param("a", "bravo")
+								.param("b", "bravo").build());
 	}
 
 	@Test
 	public void requestParametersWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-parameters")).willReturn(
-				snippetResource("request-parameters-with-title"));
+		given(resolver.resolveTemplateResource("request-parameters"))
+				.willReturn(snippetResource("request-parameters-with-title"));
 		this.snippet.expectRequestParameters("request-parameters-with-custom-attributes")
 				.withContents(containsString("The title"));
 
-		new RequestParametersSnippet(Arrays.asList(
-				parameterWithName("a").description("one").attributes(
-						key("foo").value("alpha")),
-				parameterWithName("b").description("two").attributes(
-						key("foo").value("bravo"))), attributes(key("title").value(
-				"The title"))).document(operationBuilder(
-				"request-parameters-with-custom-attributes")
-				.attribute(TemplateEngine.class.getName(),
-						new MustacheTemplateEngine(resolver)).request("http://localhost")
-				.param("a", "alpha").param("b", "bravo").build());
+		new RequestParametersSnippet(
+				Arrays.asList(
+						parameterWithName("a").description("one")
+								.attributes(key("foo").value("alpha")),
+				parameterWithName("b").description("two")
+						.attributes(key("foo").value("bravo"))),
+				attributes(key("title").value("The title"))).document(
+						operationBuilder("request-parameters-with-custom-attributes")
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(resolver))
+								.request("http://localhost").param("a", "alpha")
+								.param("b", "bravo").build());
 	}
 
 	@Test
 	public void requestParametersWithCustomDescriptorAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-parameters")).willReturn(
-				snippetResource("request-parameters-with-extra-column"));
-		this.snippet.expectRequestParameters(
-				"request-parameters-with-custom-descriptor-attributes").withContents(
-				tableWithHeader("Parameter", "Description", "Foo").row("a", "one",
-						"alpha").row("b", "two", "bravo"));
+		given(resolver.resolveTemplateResource("request-parameters"))
+				.willReturn(snippetResource("request-parameters-with-extra-column"));
+		this.snippet
+				.expectRequestParameters(
+						"request-parameters-with-custom-descriptor-attributes")
+				.withContents(tableWithHeader("Parameter", "Description", "Foo")
+						.row("a", "one", "alpha").row("b", "two", "bravo"));
 
 		new RequestParametersSnippet(Arrays.asList(
-				parameterWithName("a").description("one").attributes(
-						key("foo").value("alpha")),
-				parameterWithName("b").description("two").attributes(
-						key("foo").value("bravo")))).document(operationBuilder(
-				"request-parameters-with-custom-descriptor-attributes")
-				.attribute(TemplateEngine.class.getName(),
-						new MustacheTemplateEngine(resolver)).request("http://localhost")
-				.param("a", "alpha").param("b", "bravo").build());
+				parameterWithName("a").description("one")
+						.attributes(key("foo").value("alpha")),
+				parameterWithName("b").description("two")
+						.attributes(key("foo").value("bravo"))))
+								.document(operationBuilder(
+										"request-parameters-with-custom-descriptor-attributes")
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.request("http://localhost")
+												.param("a", "alpha").param("b", "bravo")
+												.build());
 	}
 
 }

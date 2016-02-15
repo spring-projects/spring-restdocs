@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
+
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
@@ -47,10 +48,12 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	public void ignoredLink() throws IOException {
 		this.snippet.expectLinks("ignored-link").withContents(
 				tableWithHeader("Relation", "Description").row("b", "Link b"));
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-				new Link("b", "bravo")), Arrays.asList(new LinkDescriptor("a").ignored(),
-				new LinkDescriptor("b").description("Link b"))).document(operationBuilder(
-				"ignored-link").build());
+		new LinksSnippet(
+				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+						new Link("b", "bravo")),
+				Arrays.asList(new LinkDescriptor("a").ignored(),
+						new LinkDescriptor("b").description("Link b")))
+								.document(operationBuilder("ignored-link").build());
 	}
 
 	@Test
@@ -59,65 +62,74 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 				tableWithHeader("Relation", "Description").row("foo", "bar"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "blah")),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
-				.document(operationBuilder("documented-optional-link").build());
+						.document(operationBuilder("documented-optional-link").build());
 	}
 
 	@Test
 	public void missingOptionalLink() throws IOException {
 		this.snippet.expectLinks("missing-optional-link").withContents(
 				tableWithHeader("Relation", "Description").row("foo", "bar"));
-		new LinksSnippet(new StubLinkExtractor(), Arrays.asList(new LinkDescriptor("foo")
-				.description("bar").optional()))
-				.document(operationBuilder("missing-optional-link").build());
+		new LinksSnippet(new StubLinkExtractor(),
+				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
+						.document(operationBuilder("missing-optional-link").build());
 	}
 
 	@Test
 	public void documentedLinks() throws IOException {
-		this.snippet.expectLinks("documented-links").withContents(
-				tableWithHeader("Relation", "Description").row("a", "one")
+		this.snippet.expectLinks("documented-links")
+				.withContents(tableWithHeader("Relation", "Description").row("a", "one")
 						.row("b", "two"));
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-				new Link("b", "bravo")), Arrays.asList(
-				new LinkDescriptor("a").description("one"),
-				new LinkDescriptor("b").description("two"))).document(operationBuilder(
-				"documented-links").build());
+		new LinksSnippet(
+				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+						new Link("b", "bravo")),
+				Arrays.asList(new LinkDescriptor("a").description("one"),
+						new LinkDescriptor("b").description("two")))
+								.document(operationBuilder("documented-links").build());
 	}
 
 	@Test
 	public void linksWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("links")).willReturn(
-				snippetResource("links-with-title"));
-		this.snippet.expectLinks("links-with-custom-attributes").withContents(
-				containsString("Title for the links"));
+		given(resolver.resolveTemplateResource("links"))
+				.willReturn(snippetResource("links-with-title"));
+		this.snippet.expectLinks("links-with-custom-attributes")
+				.withContents(containsString("Title for the links"));
 
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-				new Link("b", "bravo")), Arrays.asList(
-				new LinkDescriptor("a").description("one"),
-				new LinkDescriptor("b").description("two")), attributes(key("title")
-				.value("Title for the links"))).document(operationBuilder(
-				"links-with-custom-attributes").attribute(TemplateEngine.class.getName(),
-				new MustacheTemplateEngine(resolver)).build());
+		new LinksSnippet(
+				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+						new Link("b", "bravo")),
+				Arrays.asList(new LinkDescriptor("a").description("one"),
+						new LinkDescriptor("b").description("two")),
+				attributes(key("title").value("Title for the links")))
+						.document(
+								operationBuilder("links-with-custom-attributes")
+										.attribute(TemplateEngine.class.getName(),
+												new MustacheTemplateEngine(resolver))
+										.build());
 	}
 
 	@Test
 	public void linksWithCustomDescriptorAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("links")).willReturn(
-				snippetResource("links-with-extra-column"));
-		this.snippet.expectLinks("links-with-custom-descriptor-attributes").withContents(
-				tableWithHeader("Relation", "Description", "Foo")
+		given(resolver.resolveTemplateResource("links"))
+				.willReturn(snippetResource("links-with-extra-column"));
+		this.snippet.expectLinks("links-with-custom-descriptor-attributes")
+				.withContents(tableWithHeader("Relation", "Description", "Foo")
 						.row("a", "one", "alpha").row("b", "two", "bravo"));
 
-		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-				new Link("b", "bravo")), Arrays.asList(
-				new LinkDescriptor("a").description("one").attributes(
-						key("foo").value("alpha")),
-				new LinkDescriptor("b").description("two").attributes(
-						key("foo").value("bravo")))).document(operationBuilder(
-				"links-with-custom-descriptor-attributes").attribute(
-				TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-				.build());
+		new LinksSnippet(
+				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+						new Link("b", "bravo")),
+				Arrays.asList(
+						new LinkDescriptor("a").description("one")
+								.attributes(key("foo").value("alpha")),
+						new LinkDescriptor("b").description("two").attributes(
+								key("foo").value("bravo")))).document(operationBuilder(
+										"links-with-custom-descriptor-attributes")
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.build());
 	}
 
 }

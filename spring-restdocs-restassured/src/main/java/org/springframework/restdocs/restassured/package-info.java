@@ -18,4 +18,3 @@
  * Core classes for using Spring REST Docs with REST Assured.
  */
 package org.springframework.restdocs.restassured;
-

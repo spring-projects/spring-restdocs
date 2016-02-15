@@ -18,6 +18,7 @@ package org.springframework.restdocs.operation.preprocess;
 
 import org.junit.Rule;
 import org.junit.Test;
+
 import org.springframework.restdocs.test.OutputCapture;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -37,25 +38,25 @@ public class PrettyPrintingContentModifierTests {
 
 	@Test
 	public void prettyPrintJson() throws Exception {
-		assertThat(new PrettyPrintingContentModifier().modifyContent(
-				"{\"a\":5}".getBytes(), null), equalTo(String.format("{%n  \"a\" : 5%n}")
-				.getBytes()));
+		assertThat(new PrettyPrintingContentModifier()
+				.modifyContent("{\"a\":5}".getBytes(), null),
+				equalTo(String.format("{%n  \"a\" : 5%n}").getBytes()));
 	}
 
 	@Test
 	public void prettyPrintXml() throws Exception {
-		assertThat(new PrettyPrintingContentModifier().modifyContent(
-				"<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null),
-				equalTo(String.format(
-						"<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
+		assertThat(
+				new PrettyPrintingContentModifier().modifyContent(
+						"<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null),
+				equalTo(String
+						.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
 								+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n")
-						.getBytes()));
+								.getBytes()));
 	}
 
 	@Test
 	public void empytContentIsHandledGracefully() throws Exception {
-		assertThat(
-				new PrettyPrintingContentModifier().modifyContent("".getBytes(), null),
+		assertThat(new PrettyPrintingContentModifier().modifyContent("".getBytes(), null),
 				equalTo("".getBytes()));
 	}
 

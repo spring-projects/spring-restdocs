@@ -80,13 +80,15 @@ public final class StandardWriterResolver implements WriterResolver {
 	@Override
 	public Writer resolve(String operationName, String snippetName,
 			RestDocumentationContext context) throws IOException {
-		File outputFile = resolveFile(this.propertyPlaceholderHelper.replacePlaceholders(
-				operationName, this.placeholderResolver), snippetName + "."
-				+ this.templateFormat.getFileExtension(), context);
+		File outputFile = resolveFile(
+				this.propertyPlaceholderHelper.replacePlaceholders(operationName,
+						this.placeholderResolver),
+				snippetName + "." + this.templateFormat.getFileExtension(), context);
 
 		if (outputFile != null) {
 			createDirectoriesIfNecessary(outputFile);
-			return new OutputStreamWriter(new FileOutputStream(outputFile), this.encoding);
+			return new OutputStreamWriter(new FileOutputStream(outputFile),
+					this.encoding);
 		}
 		else {
 			return new OutputStreamWriter(System.out, this.encoding);
@@ -119,7 +121,8 @@ public final class StandardWriterResolver implements WriterResolver {
 	private void createDirectoriesIfNecessary(File outputFile) {
 		File parent = outputFile.getParentFile();
 		if (!parent.isDirectory() && !parent.mkdirs()) {
-			throw new IllegalStateException("Failed to create directory '" + parent + "'");
+			throw new IllegalStateException(
+					"Failed to create directory '" + parent + "'");
 		}
 	}
 

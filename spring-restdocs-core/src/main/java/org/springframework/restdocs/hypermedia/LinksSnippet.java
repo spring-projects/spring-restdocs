@@ -56,7 +56,8 @@ public class LinksSnippet extends TemplatedSnippet {
 	 * @param linkExtractor the link extractor
 	 * @param descriptors the link descriptors
 	 */
-	protected LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
+	protected LinksSnippet(LinkExtractor linkExtractor,
+			List<LinkDescriptor> descriptors) {
 		this(linkExtractor, descriptors, null);
 	}
 
@@ -76,9 +77,10 @@ public class LinksSnippet extends TemplatedSnippet {
 		for (LinkDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getRel(), "Link descriptors must have a rel");
 			if (!descriptor.isIgnored()) {
-				Assert.notNull(descriptor.getDescription(), "The descriptor for link '"
-						+ descriptor.getRel() + "' must either have a description or be"
-						+ " marked as " + "ignored");
+				Assert.notNull(descriptor.getDescription(),
+						"The descriptor for link '" + descriptor.getRel()
+								+ "' must either have a description or be" + " marked as "
+								+ "ignored");
 			}
 			this.descriptorsByRel.put(descriptor.getRel(), descriptor);
 		}

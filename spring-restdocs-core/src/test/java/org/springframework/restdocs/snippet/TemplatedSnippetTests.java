@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+
 import org.springframework.restdocs.operation.Operation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -55,10 +56,8 @@ public class TemplatedSnippetTests {
 
 	@Test
 	public void snippetName() {
-		assertThat(
-				new TestTemplatedSnippet(Collections.<String, Object>emptyMap())
-						.getSnippetName(),
-				is(equalTo("test")));
+		assertThat(new TestTemplatedSnippet(Collections.<String, Object>emptyMap())
+				.getSnippetName(), is(equalTo("test")));
 	}
 
 	private static class TestTemplatedSnippet extends TemplatedSnippet {

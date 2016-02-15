@@ -89,26 +89,30 @@ final class JsonFieldProcessor {
 		}
 	}
 
-	private void handleListPayload(ProcessingContext context, MatchCallback matchCallback) {
+	private void handleListPayload(ProcessingContext context,
+			MatchCallback matchCallback) {
 		List<?> list = context.getPayload();
 		final Iterator<?> items = list.iterator();
 		if (context.isLeaf()) {
 			while (items.hasNext()) {
 				Object item = items.next();
-				matchCallback.foundMatch(new ListMatch(items, list, item, context
-						.getParentMatch()));
+				matchCallback.foundMatch(
+						new ListMatch(items, list, item, context.getParentMatch()));
 			}
 		}
 		else {
 			while (items.hasNext()) {
 				Object item = items.next();
-				traverse(context.descend(item, new ListMatch(items, list, item,
-						context.parent)), matchCallback);
+				traverse(
+						context.descend(item,
+								new ListMatch(items, list, item, context.parent)),
+						matchCallback);
 			}
 		}
 	}
 
-	private void handleMapPayload(ProcessingContext context, MatchCallback matchCallback) {
+	private void handleMapPayload(ProcessingContext context,
+			MatchCallback matchCallback) {
 		Map<?, ?> map = context.getPayload();
 		Object item = map.get(context.getSegment());
 		MapMatch mapMatch = new MapMatch(item, map, context.getSegment(),
@@ -238,8 +242,8 @@ final class JsonFieldProcessor {
 		}
 
 		private ProcessingContext descend(Object payload, Match match) {
-			return new ProcessingContext(payload, this.path, this.segments.subList(1,
-					this.segments.size()), match);
+			return new ProcessingContext(payload, this.path,
+					this.segments.subList(1, this.segments.size()), match);
 		}
 	}
 

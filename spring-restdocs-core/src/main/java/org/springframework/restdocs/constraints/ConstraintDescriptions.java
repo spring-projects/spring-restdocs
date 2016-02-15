@@ -56,7 +56,8 @@ public class ConstraintDescriptions {
 	 * @param constraintResolver the constraint resolver
 	 */
 	public ConstraintDescriptions(Class<?> clazz, ConstraintResolver constraintResolver) {
-		this(clazz, constraintResolver, new ResourceBundleConstraintDescriptionResolver());
+		this(clazz, constraintResolver,
+				new ResourceBundleConstraintDescriptionResolver());
 	}
 
 	/**
@@ -95,8 +96,8 @@ public class ConstraintDescriptions {
 	 * @return the list of constraint descriptions
 	 */
 	public List<String> descriptionsForProperty(String property) {
-		List<Constraint> constraints = this.constraintResolver.resolveForProperty(
-				property, this.clazz);
+		List<Constraint> constraints = this.constraintResolver
+				.resolveForProperty(property, this.clazz);
 		List<String> descriptions = new ArrayList<>();
 		for (Constraint constraint : constraints) {
 			descriptions.add(this.descriptionResolver.resolveDescription(constraint));

@@ -27,7 +27,8 @@ import org.junit.runners.model.Statement;
  * @author Andy Wilkinson
  * @since 1.1.0
  */
-public class JUnitRestDocumentation implements RestDocumentationContextProvider, TestRule {
+public class JUnitRestDocumentation
+		implements RestDocumentationContextProvider, TestRule {
 
 	private final ManualRestDocumentation delegate;
 

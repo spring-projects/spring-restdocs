@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
+
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
@@ -48,38 +49,45 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithHeaders() throws IOException {
-		this.snippet.expectResponseHeaders("response-headers").withContents(
-				tableWithHeader("Name", "Description").row("X-Test", "one")
+		this.snippet.expectResponseHeaders("response-headers")
+				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one")
 						.row("Content-Type", "two").row("Etag", "three")
 						.row("Cache-Control", "five").row("Vary", "six"));
-		new ResponseHeadersSnippet(Arrays.asList(
-				headerWithName("X-Test").description("one"),
-				headerWithName("Content-Type").description("two"), headerWithName("Etag")
-						.description("three"), headerWithName("Cache-Control")
-						.description("five"), headerWithName("Vary").description("six")))
-				.document(operationBuilder("response-headers").response().header("X-Test", "test")
-						.header("Content-Type", "application/json")
-						.header("Etag", "lskjadldj3ii32l2ij23")
-						.header("Cache-Control", "max-age=0")
-						.header("Vary", "User-Agent").build());
+		new ResponseHeadersSnippet(
+				Arrays.asList(headerWithName("X-Test").description("one"),
+						headerWithName("Content-Type").description("two"),
+						headerWithName("Etag").description("three"),
+						headerWithName("Cache-Control").description("five"),
+						headerWithName("Vary").description("six")))
+								.document(
+										operationBuilder("response-headers").response()
+												.header("X-Test", "test")
+												.header("Content-Type",
+														"application/json")
+										.header("Etag", "lskjadldj3ii32l2ij23")
+										.header("Cache-Control", "max-age=0")
+										.header("Vary", "User-Agent").build());
 	}
 
 	@Test
 	public void caseInsensitiveResponseHeaders() throws IOException {
-		this.snippet
-				.expectResponseHeaders("case-insensitive-response-headers")
-				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one"));
-		new ResponseHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
-				"one"))).document(operationBuilder("case-insensitive-response-headers").response()
-				.header("X-test", "test").build());
+		this.snippet.expectResponseHeaders("case-insensitive-response-headers")
+				.withContents(
+						tableWithHeader("Name", "Description").row("X-Test", "one"));
+		new ResponseHeadersSnippet(
+				Arrays.asList(headerWithName("X-Test").description("one")))
+						.document(operationBuilder("case-insensitive-response-headers")
+								.response().header("X-test", "test").build());
 	}
 
 	@Test
 	public void undocumentedResponseHeader() throws IOException {
-		new ResponseHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
-				"one"))).document(new OperationBuilder("undocumented-response-header",
-				this.snippet.getOutputDirectory()).response().header("X-Test", "test")
-				.header("Content-Type", "*/*").build());
+		new ResponseHeadersSnippet(
+				Arrays.asList(headerWithName("X-Test").description("one")))
+						.document(new OperationBuilder("undocumented-response-header",
+								this.snippet.getOutputDirectory()).response()
+										.header("X-Test", "test")
+										.header("Content-Type", "*/*").build());
 	}
 
 	@Test
@@ -87,39 +95,42 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 		this.snippet.expectResponseHeaders("response-headers-with-custom-attributes")
 				.withContents(containsString("Custom title"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("response-headers")).willReturn(
-				snippetResource("response-headers-with-title"));
-		new ResponseHeadersSnippet(Arrays.asList(headerWithName("X-Test").description(
-				"one")), attributes(key("title").value("Custom title")))
-				.document(operationBuilder("response-headers-with-custom-attributes")
-						.attribute(TemplateEngine.class.getName(),
-								new MustacheTemplateEngine(resolver)).response()
-						.header("X-Test", "test").build());
+		given(resolver.resolveTemplateResource("response-headers"))
+				.willReturn(snippetResource("response-headers-with-title"));
+		new ResponseHeadersSnippet(
+				Arrays.asList(headerWithName("X-Test").description("one")),
+				attributes(key("title").value("Custom title"))).document(
+						operationBuilder("response-headers-with-custom-attributes")
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(resolver))
+								.response().header("X-Test", "test").build());
 	}
 
 	@Test
 	public void responseHeadersWithCustomDescriptorAttributes() throws IOException {
 		this.snippet.expectResponseHeaders("response-headers-with-custom-attributes")
-				.withContents(
-						tableWithHeader("Name", "Description", "Foo")
-								.row("X-Test", "one", "alpha")
-								.row("Content-Type", "two", "bravo")
-								.row("Etag", "three", "charlie"));
+				.withContents(tableWithHeader("Name", "Description", "Foo")
+						.row("X-Test", "one", "alpha").row("Content-Type", "two", "bravo")
+						.row("Etag", "three", "charlie"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("response-headers")).willReturn(
-				snippetResource("response-headers-with-extra-column"));
+		given(resolver.resolveTemplateResource("response-headers"))
+				.willReturn(snippetResource("response-headers-with-extra-column"));
 		new ResponseHeadersSnippet(Arrays.asList(
-				headerWithName("X-Test").description("one").attributes(
-						key("foo").value("alpha")),
-				headerWithName("Content-Type").description("two").attributes(
-						key("foo").value("bravo")),
-				headerWithName("Etag").description("three").attributes(
-						key("foo").value("charlie")))).document(operationBuilder(
-				"response-headers-with-custom-attributes")
-				.attribute(TemplateEngine.class.getName(),
-						new MustacheTemplateEngine(resolver)).response()
-				.header("X-Test", "test").header("Content-Type", "application/json")
-				.header("Etag", "lskjadldj3ii32l2ij23").build());
+				headerWithName("X-Test").description("one")
+						.attributes(key("foo").value("alpha")),
+				headerWithName("Content-Type").description("two")
+						.attributes(key("foo").value("bravo")),
+				headerWithName("Etag").description("three")
+						.attributes(key("foo").value("charlie"))))
+								.document(operationBuilder(
+										"response-headers-with-custom-attributes")
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.response().header("X-Test", "test")
+												.header("Content-Type",
+														"application/json")
+										.header("Etag", "lskjadldj3ii32l2ij23").build());
 	}
 
 }

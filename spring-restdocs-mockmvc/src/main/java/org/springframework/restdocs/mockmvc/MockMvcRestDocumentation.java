@@ -56,7 +56,8 @@ public abstract class MockMvcRestDocumentation {
 	@Deprecated
 	public static MockMvcRestDocumentationConfigurer documentationConfiguration(
 			RestDocumentation restDocumentation) {
-		return documentationConfiguration((RestDocumentationContextProvider) restDocumentation);
+		return documentationConfiguration(
+				(RestDocumentationContextProvider) restDocumentation);
 	}
 
 	/**
@@ -102,9 +103,9 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(new RestDocumentationGenerator<>(
-				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, requestPreprocessor,
-				snippets));
+		return new RestDocumentationResultHandler(
+				new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+						RESPONSE_CONVERTER, requestPreprocessor, snippets));
 	}
 
 	/**
@@ -121,9 +122,9 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(new RestDocumentationGenerator<>(
-				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, responsePreprocessor,
-				snippets));
+		return new RestDocumentationResultHandler(
+				new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+						RESPONSE_CONVERTER, responsePreprocessor, snippets));
 	}
 
 	/**

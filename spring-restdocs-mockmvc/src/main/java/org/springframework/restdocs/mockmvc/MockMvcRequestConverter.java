@@ -73,14 +73,13 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 					&& "GET".equals(mockRequest.getMethod())) {
 				queryString = parameters.toQueryString();
 			}
-			return new OperationRequestFactory()
-					.create(URI
-							.create(getRequestUri(mockRequest)
-									+ (StringUtils.hasText(queryString) ? "?"
-											+ queryString : "")),
-							HttpMethod.valueOf(mockRequest.getMethod()), FileCopyUtils
-									.copyToByteArray(mockRequest.getInputStream()),
-							headers, parameters, parts);
+			return new OperationRequestFactory().create(
+					URI.create(
+							getRequestUri(mockRequest) + (StringUtils.hasText(queryString)
+									? "?" + queryString : "")),
+					HttpMethod.valueOf(mockRequest.getMethod()),
+					FileCopyUtils.copyToByteArray(mockRequest.getInputStream()), headers,
+					parameters, parts);
 		}
 		catch (Exception ex) {
 			throw new ConversionException(ex);
@@ -92,7 +91,8 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		List<OperationRequestPart> parts = new ArrayList<>();
 		parts.addAll(extractServletRequestParts(servletRequest));
 		if (servletRequest instanceof MockMultipartHttpServletRequest) {
-			parts.addAll(extractMultipartRequestParts((MockMultipartHttpServletRequest) servletRequest));
+			parts.addAll(extractMultipartRequestParts(
+					(MockMultipartHttpServletRequest) servletRequest));
 		}
 		return parts;
 	}
@@ -106,24 +106,24 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		return parts;
 	}
 
-	private OperationRequestPart createOperationRequestPart(Part part) throws IOException {
+	private OperationRequestPart createOperationRequestPart(Part part)
+			throws IOException {
 		HttpHeaders partHeaders = extractHeaders(part);
 		List<String> contentTypeHeader = partHeaders.get(HttpHeaders.CONTENT_TYPE);
 		if (part.getContentType() != null && contentTypeHeader == null) {
 			partHeaders.setContentType(MediaType.parseMediaType(part.getContentType()));
 		}
-		return new OperationRequestPartFactory()
-				.create(part.getName(),
-						StringUtils.hasText(part.getSubmittedFileName()) ? part
-								.getSubmittedFileName() : null, FileCopyUtils
-								.copyToByteArray(part.getInputStream()), partHeaders);
+		return new OperationRequestPartFactory().create(part.getName(),
+				StringUtils.hasText(part.getSubmittedFileName())
+						? part.getSubmittedFileName() : null,
+				FileCopyUtils.copyToByteArray(part.getInputStream()), partHeaders);
 	}
 
 	private List<OperationRequestPart> extractMultipartRequestParts(
 			MockMultipartHttpServletRequest multipartRequest) throws IOException {
 		List<OperationRequestPart> parts = new ArrayList<>();
-		for (Entry<String, List<MultipartFile>> entry : multipartRequest
-				.getMultiFileMap().entrySet()) {
+		for (Entry<String, List<MultipartFile>> entry : multipartRequest.getMultiFileMap()
+				.entrySet()) {
 			for (MultipartFile file : entry.getValue()) {
 				parts.add(createOperationRequestPart(file));
 			}
@@ -137,8 +137,9 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		if (StringUtils.hasText(file.getContentType())) {
 			partHeaders.setContentType(MediaType.parseMediaType(file.getContentType()));
 		}
-		return new OperationRequestPartFactory().create(file.getName(), StringUtils
-				.hasText(file.getOriginalFilename()) ? file.getOriginalFilename() : null,
+		return new OperationRequestPartFactory().create(file.getName(),
+				StringUtils.hasText(file.getOriginalFilename())
+						? file.getOriginalFilename() : null,
 				file.getBytes(), partHeaders);
 	}
 
@@ -173,8 +174,10 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 	}
 
 	private boolean isNonStandardPort(MockHttpServletRequest request) {
-		return (SCHEME_HTTP.equals(request.getScheme()) && request.getServerPort() != STANDARD_PORT_HTTP)
-				|| (SCHEME_HTTPS.equals(request.getScheme()) && request.getServerPort() != STANDARD_PORT_HTTPS);
+		return (SCHEME_HTTP.equals(request.getScheme())
+				&& request.getServerPort() != STANDARD_PORT_HTTP)
+				|| (SCHEME_HTTPS.equals(request.getScheme())
+						&& request.getServerPort() != STANDARD_PORT_HTTPS);
 	}
 
 	private String getRequestUri(MockHttpServletRequest request) {

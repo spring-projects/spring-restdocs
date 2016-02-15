@@ -18,4 +18,3 @@
  * Classes for configuring Spring REST Docs.
  */
 package org.springframework.restdocs.config;
-

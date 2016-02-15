@@ -19,23 +19,22 @@ package org.springframework.restdocs.restassured;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.config.RestDocumentationConfigurer;
-
 import com.jayway.restassured.filter.Filter;
 import com.jayway.restassured.filter.FilterContext;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.FilterableRequestSpecification;
 import com.jayway.restassured.specification.FilterableResponseSpecification;
 
+import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.config.RestDocumentationConfigurer;
+
 /**
  * A REST Assured-specific {@link RestDocumentationConfigurer}.
  *
  * @author Andy Wilkinson
  */
-public final class RestAssuredRestDocumentationConfigurer
-		extends
+public final class RestAssuredRestDocumentationConfigurer extends
 		RestDocumentationConfigurer<RestAssuredSnippetConfigurer, RestAssuredRestDocumentationConfigurer>
 		implements Filter {
 

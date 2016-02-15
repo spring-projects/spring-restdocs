@@ -19,24 +19,24 @@ package org.springframework.restdocs.config;
 /**
  * Base class for {@link NestedConfigurer} implementations.
  *
- * @param <P> The type of the configurer's parent
+ * @param <PARENT> The type of the configurer's parent
  * @author Andy Wilkinson
  */
-public abstract class AbstractNestedConfigurer<P> extends AbstractConfigurer implements
-		NestedConfigurer<P> {
+public abstract class AbstractNestedConfigurer<PARENT> extends AbstractConfigurer
+		implements NestedConfigurer<PARENT> {
 
-	private final P parent;
+	private final PARENT parent;
 
 	/**
 	 * Creates a new {@code AbstractNestedConfigurer} with the given {@code parent}.
 	 * @param parent the parent
 	 */
-	protected AbstractNestedConfigurer(P parent) {
+	protected AbstractNestedConfigurer(PARENT parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public final P and() {
+	public final PARENT and() {
 		return this.parent;
 	}
 

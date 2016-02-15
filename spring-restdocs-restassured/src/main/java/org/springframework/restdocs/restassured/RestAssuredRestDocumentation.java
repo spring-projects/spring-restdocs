@@ -45,7 +45,8 @@ public abstract class RestAssuredRestDocumentation {
 	 * @param snippets the snippets that will document the API call
 	 * @return a {@link RestDocumentationFilter} that will produce the documentation
 	 */
-	public static RestDocumentationFilter document(String identifier, Snippet... snippets) {
+	public static RestDocumentationFilter document(String identifier,
+			Snippet... snippets) {
 		return new RestDocumentationFilter(new RestDocumentationGenerator<>(identifier,
 				REQUEST_CONVERTER, RESPONSE_CONVERTER, snippets));
 	}

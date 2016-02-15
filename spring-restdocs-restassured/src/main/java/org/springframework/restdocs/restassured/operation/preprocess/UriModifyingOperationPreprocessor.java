@@ -139,17 +139,17 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 		if (this.host != null) {
 			modifiedHeaders.set(HttpHeaders.HOST, this.host);
 		}
-		return this.contentModifyingDelegate.preprocess(new OperationRequestFactory()
-				.create(uriBuilder.build().toUri(), request.getMethod(),
-						request.getContent(), modifiedHeaders, request.getParameters(),
-						modify(request.getParts())));
+		return this.contentModifyingDelegate.preprocess(
+				new OperationRequestFactory().create(uriBuilder.build().toUri(),
+						request.getMethod(), request.getContent(), modifiedHeaders,
+						request.getParameters(), modify(request.getParts())));
 	}
 
 	@Override
 	public OperationResponse preprocess(OperationResponse response) {
-		return this.contentModifyingDelegate.preprocess(new OperationResponseFactory()
-				.create(response.getStatus(), modify(response.getHeaders()),
-						response.getContent()));
+		return this.contentModifyingDelegate
+				.preprocess(new OperationResponseFactory().create(response.getStatus(),
+						modify(response.getHeaders()), response.getContent()));
 	}
 
 	private HttpHeaders modify(HttpHeaders headers) {
@@ -162,13 +162,15 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 		return modified;
 	}
 
-	private Collection<OperationRequestPart> modify(Collection<OperationRequestPart> parts) {
+	private Collection<OperationRequestPart> modify(
+			Collection<OperationRequestPart> parts) {
 		List<OperationRequestPart> modifiedParts = new ArrayList<>();
 		OperationRequestPartFactory factory = new OperationRequestPartFactory();
 		for (OperationRequestPart part : parts) {
 			modifiedParts.add(factory.create(part.getName(), part.getSubmittedFileName(),
-					this.contentModifier.modifyContent(part.getContent(), part
-							.getHeaders().getContentType()), modify(part.getHeaders())));
+					this.contentModifier.modifyContent(part.getContent(),
+							part.getHeaders().getContentType()),
+					modify(part.getHeaders())));
 		}
 		return modifiedParts;
 	}
@@ -225,8 +227,8 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 					if (matcher.start(i) >= 0) {
 						previous = matcher.end(i);
 					}
-					builder.append(getReplacement(matcher.group(i),
-							replacements.get(i - 1)));
+					builder.append(
+							getReplacement(matcher.group(i), replacements.get(i - 1)));
 				}
 			}
 

@@ -249,8 +249,8 @@ public abstract class RestDocumentationRequestBuilders {
 	public static MockMultipartHttpServletRequestBuilder fileUpload(String urlTemplate,
 			Object... urlVariables) {
 		return (MockMultipartHttpServletRequestBuilder) MockMvcRequestBuilders
-				.fileUpload(urlTemplate, urlVariables).requestAttr(
-						RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+				.fileUpload(urlTemplate, urlVariables)
+				.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
 						urlTemplate);
 	}
 

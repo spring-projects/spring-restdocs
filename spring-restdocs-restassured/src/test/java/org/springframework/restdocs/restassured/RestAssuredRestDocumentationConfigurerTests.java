@@ -19,17 +19,17 @@ package org.springframework.restdocs.restassured;
 import java.util.List;
 import java.util.Map;
 
+import com.jayway.restassured.filter.FilterContext;
+import com.jayway.restassured.specification.FilterableRequestSpecification;
+import com.jayway.restassured.specification.FilterableResponseSpecification;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
-
-import com.jayway.restassured.filter.FilterContext;
-import com.jayway.restassured.specification.FilterableRequestSpecification;
-import com.jayway.restassured.specification.FilterableResponseSpecification;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -48,11 +48,14 @@ import static org.mockito.Mockito.verify;
 public class RestAssuredRestDocumentationConfigurerTests {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
+			"build");
 
-	private final FilterableRequestSpecification requestSpec = mock(FilterableRequestSpecification.class);
+	private final FilterableRequestSpecification requestSpec = mock(
+			FilterableRequestSpecification.class);
 
-	private final FilterableResponseSpecification responseSpec = mock(FilterableResponseSpecification.class);
+	private final FilterableResponseSpecification responseSpec = mock(
+			FilterableResponseSpecification.class);
 
 	private final FilterContext filterContext = mock(FilterContext.class);
 
@@ -76,16 +79,11 @@ public class RestAssuredRestDocumentationConfigurerTests {
 				configurationCaptor.capture());
 		@SuppressWarnings("unchecked")
 		Map<String, Object> configuration = configurationCaptor.getValue();
-		assertThat(
-				configuration,
-				hasEntry(equalTo(TemplateEngine.class.getName()),
-						instanceOf(TemplateEngine.class)));
-		assertThat(
-				configuration,
-				hasEntry(equalTo(WriterResolver.class.getName()),
-						instanceOf(WriterResolver.class)));
-		assertThat(
-				configuration,
+		assertThat(configuration, hasEntry(equalTo(TemplateEngine.class.getName()),
+				instanceOf(TemplateEngine.class)));
+		assertThat(configuration, hasEntry(equalTo(WriterResolver.class.getName()),
+				instanceOf(WriterResolver.class)));
+		assertThat(configuration,
 				hasEntry(
 						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));

@@ -16,14 +16,14 @@
 
 package org.springframework.restdocs.restassured;
 
+import com.jayway.restassured.response.Header;
+import com.jayway.restassured.response.Response;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
-
-import com.jayway.restassured.response.Header;
-import com.jayway.restassured.response.Response;
 
 /**
  * A converter for creating an {@link OperationResponse} from a REST Assured

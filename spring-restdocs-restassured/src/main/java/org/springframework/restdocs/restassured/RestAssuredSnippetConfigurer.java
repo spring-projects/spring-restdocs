@@ -16,13 +16,13 @@
 
 package org.springframework.restdocs.restassured;
 
-import org.springframework.restdocs.config.SnippetConfigurer;
-
 import com.jayway.restassured.filter.Filter;
 import com.jayway.restassured.filter.FilterContext;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.FilterableRequestSpecification;
 import com.jayway.restassured.specification.FilterableResponseSpecification;
+
+import org.springframework.restdocs.config.SnippetConfigurer;
 
 /**
  * A configurer that can be used to configure the generated documentation snippets when
@@ -30,8 +30,7 @@ import com.jayway.restassured.specification.FilterableResponseSpecification;
  *
  * @author Andy Wilkinson
  */
-public final class RestAssuredSnippetConfigurer
-		extends
+public final class RestAssuredSnippetConfigurer extends
 		SnippetConfigurer<RestAssuredRestDocumentationConfigurer, RestAssuredSnippetConfigurer>
 		implements Filter {
 

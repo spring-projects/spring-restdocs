@@ -31,15 +31,15 @@ import org.springframework.restdocs.templates.TemplateFormats;
 /**
  * A configurer that can be used to configure the generated documentation snippets.
  *
- * @param <P> The type of the configurer's parent
- * @param <T> The concrete type of the configurer to be returned from chained methods
+ * @param <PARENT> The type of the configurer's parent
+ * @param <TYPE> The concrete type of the configurer to be returned from chained methods
  * @author Andy Wilkinson
  */
-public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P> {
+public abstract class SnippetConfigurer<PARENT, TYPE>
+		extends AbstractNestedConfigurer<PARENT> {
 
-	private List<Snippet> defaultSnippets = Arrays.asList(
-			CurlDocumentation.curlRequest(), HttpDocumentation.httpRequest(),
-			HttpDocumentation.httpResponse());
+	private List<Snippet> defaultSnippets = Arrays.asList(CurlDocumentation.curlRequest(),
+			HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse());
 
 	/**
 	 * The default encoding for documentation snippets.
@@ -65,14 +65,15 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 	 *
 	 * @param parent the parent
 	 */
-	protected SnippetConfigurer(P parent) {
+	protected SnippetConfigurer(PARENT parent) {
 		super(parent);
 	}
 
 	@Override
-	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
-		configuration.put(SnippetConfiguration.class.getName(), new SnippetConfiguration(
-				this.snippetEncoding, this.templateFormat));
+	public void apply(Map<String, Object> configuration,
+			RestDocumentationContext context) {
+		configuration.put(SnippetConfiguration.class.getName(),
+				new SnippetConfiguration(this.snippetEncoding, this.templateFormat));
 		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS,
 				this.defaultSnippets);
 	}
@@ -85,9 +86,9 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 	 * @return {@code this}
 	 */
 	@SuppressWarnings("unchecked")
-	public T withEncoding(String encoding) {
+	public TYPE withEncoding(String encoding) {
 		this.snippetEncoding = encoding;
-		return (T) this;
+		return (TYPE) this;
 	}
 
 	/**
@@ -97,9 +98,9 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 	 * @return {@code this}
 	 */
 	@SuppressWarnings("unchecked")
-	public T withDefaults(Snippet... defaultSnippets) {
+	public TYPE withDefaults(Snippet... defaultSnippets) {
 		this.defaultSnippets = Arrays.asList(defaultSnippets);
-		return (T) this;
+		return (TYPE) this;
 	}
 
 	/**
@@ -109,9 +110,9 @@ public abstract class SnippetConfigurer<P, T> extends AbstractNestedConfigurer<P
 	 * @return {@code this}
 	 */
 	@SuppressWarnings("unchecked")
-	public T withTemplateFormat(TemplateFormat format) {
+	public TYPE withTemplateFormat(TemplateFormat format) {
 		this.templateFormat = format;
-		return (T) this;
+		return (TYPE) this;
 	}
 
 }

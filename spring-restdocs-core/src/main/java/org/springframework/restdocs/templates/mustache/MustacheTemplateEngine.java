@@ -68,8 +68,8 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	public Template compileTemplate(String name) throws IOException {
 		Resource templateResource = this.templateResourceResolver
 				.resolveTemplateResource(name);
-		return new MustacheTemplate(this.compiler.compile(new InputStreamReader(
-				templateResource.getInputStream())));
+		return new MustacheTemplate(this.compiler
+				.compile(new InputStreamReader(templateResource.getInputStream())));
 	}
 
 	/**

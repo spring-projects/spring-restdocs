@@ -18,4 +18,3 @@
  * JMustache-based implementation of the template API.
  */
 package org.springframework.restdocs.templates.mustache;
-

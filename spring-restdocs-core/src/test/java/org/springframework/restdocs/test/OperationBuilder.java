@@ -68,7 +68,8 @@ public class OperationBuilder {
 		this(name, outputDirectory, TemplateFormats.asciidoctor());
 	}
 
-	public OperationBuilder(String name, File outputDirectory, TemplateFormat templateFormat) {
+	public OperationBuilder(String name, File outputDirectory,
+			TemplateFormat templateFormat) {
 		this.name = name;
 		this.outputDirectory = outputDirectory;
 		this.templateFormat = templateFormat;
@@ -91,19 +92,20 @@ public class OperationBuilder {
 	public Operation build() {
 		if (this.attributes.get(TemplateEngine.class.getName()) == null) {
 			this.attributes.put(TemplateEngine.class.getName(),
-					new MustacheTemplateEngine(new StandardTemplateResourceResolver(
-							this.templateFormat)));
+					new MustacheTemplateEngine(
+							new StandardTemplateResourceResolver(this.templateFormat)));
 		}
 		RestDocumentationContext context = new RestDocumentationContext(null, null,
 				this.outputDirectory);
 		this.attributes.put(RestDocumentationContext.class.getName(), context);
-		this.attributes.put(WriterResolver.class.getName(), new StandardWriterResolver(
-				new RestDocumentationContextPlaceholderResolver(context), "UTF-8",
-				this.templateFormat));
+		this.attributes.put(WriterResolver.class.getName(),
+				new StandardWriterResolver(
+						new RestDocumentationContextPlaceholderResolver(context), "UTF-8",
+						this.templateFormat));
 		return new StandardOperation(this.name,
-				(this.requestBuilder == null ? new OperationRequestBuilder(
-						"http://localhost/").buildRequest() : this.requestBuilder
-						.buildRequest()),
+				(this.requestBuilder == null
+						? new OperationRequestBuilder("http://localhost/").buildRequest()
+						: this.requestBuilder.buildRequest()),
 				this.responseBuilder.buildResponse(), this.attributes);
 	}
 
@@ -193,7 +195,8 @@ public class OperationBuilder {
 				this.content = content;
 			}
 
-			public OperationRequestPartBuilder submittedFileName(String submittedFileName) {
+			public OperationRequestPartBuilder submittedFileName(
+					String submittedFileName) {
 				this.submittedFileName = submittedFileName;
 				return this;
 			}

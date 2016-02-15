@@ -66,12 +66,9 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	protected Map<String, Object> createModel(Operation operation) {
 		Map<String, Object> model = new HashMap<>();
 		model.put("method", operation.getRequest().getMethod());
-		model.put(
-				"path",
-				operation.getRequest().getUri().getRawPath()
-						+ (StringUtils.hasText(operation.getRequest().getUri()
-								.getRawQuery()) ? "?"
-								+ operation.getRequest().getUri().getRawQuery() : ""));
+		model.put("path", operation.getRequest().getUri().getRawPath()
+				+ (StringUtils.hasText(operation.getRequest().getUri().getRawQuery())
+						? "?" + operation.getRequest().getUri().getRawQuery() : ""));
 		model.put("headers", getHeaders(operation.getRequest()));
 		model.put("requestBody", getRequestBody(operation.getRequest()));
 		return model;
@@ -149,8 +146,8 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writePart(OperationRequestPart part, PrintWriter writer) {
-		writePart(part.getName(), part.getContentAsString(), part.getHeaders()
-				.getContentType(), writer);
+		writePart(part.getName(), part.getContentAsString(),
+				part.getHeaders().getContentType(), writer);
 	}
 
 	private void writePart(String name, String value, MediaType contentType,

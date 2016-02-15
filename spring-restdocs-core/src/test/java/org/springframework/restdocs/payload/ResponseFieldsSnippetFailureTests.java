@@ -23,6 +23,7 @@ import java.util.Collections;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.snippet.SnippetException;
@@ -52,92 +53,99 @@ public class ResponseFieldsSnippetFailureTests {
 	@Test
 	public void undocumentedXmlResponseField() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(startsWith("The following parts of the payload were not"
-						+ " documented:"));
-		new ResponseFieldsSnippet(Collections.<FieldDescriptor>emptyList())
-				.document(new OperationBuilder("undocumented-xml-response-field",
-						this.snippet.getOutputDirectory())
-						.response()
-						.content("<a><b>5</b></a>")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-						.build());
+		this.thrown.expectMessage(startsWith(
+				"The following parts of the payload were not" + " documented:"));
+		new ResponseFieldsSnippet(
+				Collections.<FieldDescriptor>emptyList())
+						.document(
+								new OperationBuilder("undocumented-xml-response-field",
+										this.snippet.getOutputDirectory()).response()
+												.content("<a><b>5</b></a>")
+												.header(HttpHeaders.CONTENT_TYPE,
+														MediaType.APPLICATION_XML_VALUE)
+										.build());
 	}
 
 	@Test
 	public void missingXmlAttribute() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(equalTo("Fields with the following paths were not found"
-						+ " in the payload: [a/@id]"));
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")
-				.type("b"), fieldWithPath("a/@id").description("two").type("c")))
-				.document(new OperationBuilder("missing-xml-attribute", this.snippet
-						.getOutputDirectory())
-						.response()
-						.content("<a>foo</a>")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-						.build());
+		this.thrown.expectMessage(equalTo("Fields with the following paths were not found"
+				+ " in the payload: [a/@id]"));
+		new ResponseFieldsSnippet(
+				Arrays.asList(fieldWithPath("a").description("one").type("b"),
+						fieldWithPath("a/@id").description("two").type("c")))
+								.document(new OperationBuilder("missing-xml-attribute",
+										this.snippet.getOutputDirectory()).response()
+												.content("<a>foo</a>")
+												.header(HttpHeaders.CONTENT_TYPE,
+														MediaType.APPLICATION_XML_VALUE)
+										.build());
 	}
 
 	@Test
 	public void documentedXmlAttributesAreRemoved() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo(String
-				.format("The following parts of the payload were not documented:"
+		this.thrown.expectMessage(equalTo(
+				String.format("The following parts of the payload were not documented:"
 						+ "%n<a>bar</a>%n")));
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/@id").description("one")
-				.type("a"))).document(new OperationBuilder(
-				"documented-attribute-is-removed", this.snippet.getOutputDirectory())
-				.response().content("<a id=\"foo\">bar</a>")
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-				.build());
+		new ResponseFieldsSnippet(
+				Arrays.asList(
+						fieldWithPath("a/@id").description("one")
+								.type("a"))).document(new OperationBuilder(
+										"documented-attribute-is-removed",
+										this.snippet.getOutputDirectory()).response()
+												.content("<a id=\"foo\">bar</a>")
+												.header(HttpHeaders.CONTENT_TYPE,
+														MediaType.APPLICATION_XML_VALUE)
+										.build());
 	}
 
 	@Test
 	public void xmlResponseFieldWithNoType() throws IOException {
 		this.thrown.expect(FieldTypeRequiredException.class);
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
-				.document(new OperationBuilder("xml-response-no-field-type", this.snippet
-						.getOutputDirectory())
-						.response()
-						.content("<a>5</a>")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-						.build());
+				.document(new OperationBuilder("xml-response-no-field-type",
+						this.snippet.getOutputDirectory()).response().content("<a>5</a>")
+								.header(HttpHeaders.CONTENT_TYPE,
+										MediaType.APPLICATION_XML_VALUE)
+								.build());
 	}
 
 	@Test
 	public void missingXmlResponseField() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(equalTo("Fields with the following paths were not found"
-						+ " in the payload: [a/b]"));
+		this.thrown.expectMessage(equalTo("Fields with the following paths were not found"
+				+ " in the payload: [a/b]"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one"),
-				fieldWithPath("a").description("one"))).document(new OperationBuilder(
-				"missing-xml-response-field", this.snippet.getOutputDirectory())
-				.response().content("<a></a>")
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-				.build());
+				fieldWithPath("a").description("one")))
+						.document(
+								new OperationBuilder("missing-xml-response-field",
+										this.snippet.getOutputDirectory()).response()
+												.content("<a></a>")
+												.header(HttpHeaders.CONTENT_TYPE,
+														MediaType.APPLICATION_XML_VALUE)
+										.build());
 	}
 
 	@Test
 	public void undocumentedXmlResponseFieldAndMissingXmlResponseField()
 			throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(startsWith("The following parts of the payload were not"
-						+ " documented:"));
+		this.thrown.expectMessage(startsWith(
+				"The following parts of the payload were not" + " documented:"));
 		this.thrown
 				.expectMessage(endsWith("Fields with the following paths were not found"
 						+ " in the payload: [a/b]"));
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
-				.document(new OperationBuilder(
-						"undocumented-xml-request-field-and-missing-xml-request-field",
-						this.snippet.getOutputDirectory())
-						.response()
-						.content("<a><c>5</c></a>")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-						.build());
+		new ResponseFieldsSnippet(
+				Arrays.asList(fieldWithPath("a/b").description("one")))
+						.document(
+								new OperationBuilder(
+										"undocumented-xml-request-field-and-missing-xml-request-field",
+										this.snippet.getOutputDirectory()).response()
+												.content("<a><c>5</c></a>")
+												.header(HttpHeaders.CONTENT_TYPE,
+														MediaType.APPLICATION_XML_VALUE)
+										.build());
 	}
 
 }

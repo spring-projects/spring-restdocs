@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
+
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.templates.TemplateEngine;
@@ -48,14 +49,13 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void pathParameters() throws IOException {
 		this.snippet.expectPathParameters("path-parameters").withContents(
-				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description").row("a",
-						"one").row("b", "two"));
-		new PathParametersSnippet(Arrays.asList(
-				parameterWithName("a").description("one"), parameterWithName("b")
-						.description("two")))
-				.document(operationBuilder("path-parameters").attribute(
-						RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-						"/{a}/{b}").build());
+				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description")
+						.row("a", "one").row("b", "two"));
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
+				parameterWithName("b").description("two")))
+						.document(operationBuilder("path-parameters").attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}").build());
 	}
 
 	@Test
@@ -64,10 +64,10 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description").row("b",
 						"two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
-				parameterWithName("b").description("two"))).document(operationBuilder(
-				"ignored-path-parameter").attribute(
-				RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
-				.build());
+				parameterWithName("b").description("two")))
+						.document(operationBuilder("ignored-path-parameter").attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}").build());
 	}
 
 	@Test
@@ -76,54 +76,60 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				.withContents(
 						tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description")
 								.row("a", "one").row("b", "two"));
-		new PathParametersSnippet(Arrays.asList(
-				parameterWithName("a").description("one"), parameterWithName("b")
-						.description("two"))).document(operationBuilder(
-				"path-parameters-with-query-string").attribute(
-				RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-				"/{a}/{b}?foo=bar").build());
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
+				parameterWithName("b").description("two"))).document(
+						operationBuilder("path-parameters-with-query-string").attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}?foo=bar").build());
 	}
 
 	@Test
 	public void pathParametersWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("path-parameters")).willReturn(
-				snippetResource("path-parameters-with-title"));
+		given(resolver.resolveTemplateResource("path-parameters"))
+				.willReturn(snippetResource("path-parameters-with-title"));
 		this.snippet.expectPathParameters("path-parameters-with-custom-attributes")
 				.withContents(containsString("The title"));
 
-		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")
-				.attributes(key("foo").value("alpha")), parameterWithName("b")
-				.description("two").attributes(key("foo").value("bravo"))),
-				attributes(key("title").value("The title"))).document(operationBuilder(
-				"path-parameters-with-custom-attributes")
-				.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-						"/{a}/{b}")
-				.attribute(TemplateEngine.class.getName(),
-						new MustacheTemplateEngine(resolver)).build());
+		new PathParametersSnippet(
+				Arrays.asList(
+						parameterWithName("a").description("one")
+								.attributes(key("foo").value("alpha")),
+				parameterWithName("b").description("two")
+						.attributes(key("foo").value("bravo"))),
+				attributes(key("title").value("The title"))).document(
+						operationBuilder("path-parameters-with-custom-attributes")
+								.attribute(
+										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+										"/{a}/{b}")
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(resolver))
+								.build());
 
 	}
 
 	@Test
 	public void pathParametersWithCustomDescriptorAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("path-parameters")).willReturn(
-				snippetResource("path-parameters-with-extra-column"));
-		this.snippet.expectPathParameters(
-				"path-parameters-with-custom-descriptor-attributes").withContents(
-				tableWithHeader("Parameter", "Description", "Foo").row("a", "one",
-						"alpha").row("b", "two", "bravo"));
+		given(resolver.resolveTemplateResource("path-parameters"))
+				.willReturn(snippetResource("path-parameters-with-extra-column"));
+		this.snippet
+				.expectPathParameters("path-parameters-with-custom-descriptor-attributes")
+				.withContents(tableWithHeader("Parameter", "Description", "Foo")
+						.row("a", "one", "alpha").row("b", "two", "bravo"));
 
-		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")
-				.attributes(key("foo").value("alpha")), parameterWithName("b")
-				.description("two").attributes(key("foo").value("bravo"))))
-				.document(operationBuilder(
-						"path-parameters-with-custom-descriptor-attributes")
-						.attribute(
-								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-								"/{a}/{b}")
-						.attribute(TemplateEngine.class.getName(),
-								new MustacheTemplateEngine(resolver)).build());
+		new PathParametersSnippet(Arrays.asList(
+				parameterWithName("a").description("one")
+						.attributes(key("foo").value("alpha")),
+				parameterWithName("b").description("two").attributes(
+						key("foo").value("bravo")))).document(operationBuilder(
+								"path-parameters-with-custom-descriptor-attributes")
+										.attribute(
+												RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+												"/{a}/{b}")
+										.attribute(TemplateEngine.class.getName(),
+												new MustacheTemplateEngine(resolver))
+										.build());
 	}
 
 }

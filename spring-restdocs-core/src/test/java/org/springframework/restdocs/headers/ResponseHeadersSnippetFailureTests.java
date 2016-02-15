@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
@@ -51,10 +52,10 @@ public class ResponseHeadersSnippetFailureTests {
 		this.thrown
 				.expectMessage(equalTo("Headers with the following names were not found"
 						+ " in the response: [Content-Type]"));
-		new ResponseHeadersSnippet(Arrays.asList(headerWithName("Content-Type")
-				.description("one"))).document(new OperationBuilder(
-				"missing-response-headers", this.snippet.getOutputDirectory()).response()
-				.build());
+		new ResponseHeadersSnippet(
+				Arrays.asList(headerWithName("Content-Type").description("one")))
+						.document(new OperationBuilder("missing-response-headers",
+								this.snippet.getOutputDirectory()).response().build());
 	}
 
 	@Test
@@ -63,11 +64,12 @@ public class ResponseHeadersSnippetFailureTests {
 		this.thrown
 				.expectMessage(endsWith("Headers with the following names were not found"
 						+ " in the response: [Content-Type]"));
-		new ResponseHeadersSnippet(Arrays.asList(headerWithName("Content-Type")
-				.description("one"))).document(new OperationBuilder(
-				"undocumented-response-header-and-missing-response-header", this.snippet
-						.getOutputDirectory()).response().header("X-Test", "test")
-				.build());
+		new ResponseHeadersSnippet(
+				Arrays.asList(headerWithName("Content-Type").description("one")))
+						.document(new OperationBuilder(
+								"undocumented-response-header-and-missing-response-header",
+								this.snippet.getOutputDirectory()).response()
+										.header("X-Test", "test").build());
 	}
 
 }

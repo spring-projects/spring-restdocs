@@ -19,15 +19,15 @@ package org.springframework.restdocs.config;
 /**
  * A configurer that is nested and, therefore, has a parent.
  *
- * @param <P> The parent's type
+ * @param <PARENT> The parent's type
  * @author Andy Wilkinson
  */
-interface NestedConfigurer<P> {
+interface NestedConfigurer<PARENT> {
 
 	/**
 	 * Returns the configurer's parent.
 	 *
 	 * @return the parent
 	 */
-	P and();
+	PARENT and();
 }

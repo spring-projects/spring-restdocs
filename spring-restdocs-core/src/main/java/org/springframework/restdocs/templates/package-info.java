@@ -18,4 +18,3 @@
  * Template API used to render documentation snippets.
  */
 package org.springframework.restdocs.templates;
-

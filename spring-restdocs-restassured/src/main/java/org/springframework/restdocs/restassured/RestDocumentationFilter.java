@@ -19,16 +19,16 @@ package org.springframework.restdocs.restassured;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.generate.RestDocumentationGenerator;
-import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.util.Assert;
-
 import com.jayway.restassured.filter.Filter;
 import com.jayway.restassured.filter.FilterContext;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.FilterableRequestSpecification;
 import com.jayway.restassured.specification.FilterableResponseSpecification;
+
+import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
+import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.util.Assert;
 
 /**
  * A REST Assured {@link Filter} for documenting RESTful APIs.
@@ -54,9 +54,9 @@ public final class RestDocumentationFilter implements Filter {
 
 		Map<String, Object> configuration = new HashMap<>(
 				context.<Map<String, Object>>getValue(CONTEXT_KEY_CONFIGURATION));
-		configuration.put(RestDocumentationContext.class.getName(), context
-				.<RestDocumentationContext>getValue(RestDocumentationContext.class
-						.getName()));
+		configuration.put(RestDocumentationContext.class.getName(),
+				context.<RestDocumentationContext>getValue(
+						RestDocumentationContext.class.getName()));
 		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
 				requestSpec.getUserDefinedPath());
 

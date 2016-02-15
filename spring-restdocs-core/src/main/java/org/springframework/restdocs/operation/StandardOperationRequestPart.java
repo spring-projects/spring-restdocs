@@ -23,8 +23,8 @@ import org.springframework.http.HttpHeaders;
  *
  * @author Andy Wilkinson
  */
-class StandardOperationRequestPart extends AbstractOperationMessage implements
-		OperationRequestPart {
+class StandardOperationRequestPart extends AbstractOperationMessage
+		implements OperationRequestPart {
 
 	private final String name;
 

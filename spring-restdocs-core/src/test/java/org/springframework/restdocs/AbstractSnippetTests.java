@@ -23,6 +23,7 @@ import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.templates.TemplateFormat;
@@ -53,8 +54,8 @@ public abstract class AbstractSnippetTests {
 
 	@Parameters(name = "{0}")
 	public static List<Object[]> parameters() {
-		return Arrays.asList(new Object[] { "Asciidoctor", asciidoctor() }, new Object[] {
-				"Markdown", markdown() });
+		return Arrays.asList(new Object[] { "Asciidoctor", asciidoctor() },
+				new Object[] { "Markdown", markdown() });
 	}
 
 	public AbstractSnippetTests(String name, TemplateFormat templateFormat) {

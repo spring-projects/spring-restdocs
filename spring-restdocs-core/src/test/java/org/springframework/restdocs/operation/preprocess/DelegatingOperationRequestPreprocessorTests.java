@@ -19,6 +19,7 @@ package org.springframework.restdocs.operation.preprocess;
 import java.util.Arrays;
 
 import org.junit.Test;
+
 import org.springframework.restdocs.operation.OperationRequest;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -44,14 +45,14 @@ public class DelegatingOperationRequestPreprocessorTests {
 		OperationRequest preprocessedRequest3 = mock(OperationRequest.class);
 
 		given(preprocessor1.preprocess(originalRequest)).willReturn(preprocessedRequest1);
-		given(preprocessor2.preprocess(preprocessedRequest1)).willReturn(
-				preprocessedRequest2);
-		given(preprocessor3.preprocess(preprocessedRequest2)).willReturn(
-				preprocessedRequest3);
+		given(preprocessor2.preprocess(preprocessedRequest1))
+				.willReturn(preprocessedRequest2);
+		given(preprocessor3.preprocess(preprocessedRequest2))
+				.willReturn(preprocessedRequest3);
 
 		OperationRequest result = new DelegatingOperationRequestPreprocessor(
 				Arrays.asList(preprocessor1, preprocessor2, preprocessor3))
-				.preprocess(originalRequest);
+						.preprocess(originalRequest);
 
 		assertThat(result, is(preprocessedRequest3));
 	}

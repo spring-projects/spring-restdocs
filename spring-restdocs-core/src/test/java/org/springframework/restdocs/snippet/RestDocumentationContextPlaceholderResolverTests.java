@@ -17,6 +17,7 @@
 package org.springframework.restdocs.snippet;
 
 import org.junit.Test;
+
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
@@ -33,22 +34,19 @@ public class RestDocumentationContextPlaceholderResolverTests {
 
 	@Test
 	public void kebabCaseMethodName() throws Exception {
-		assertThat(
-				createResolver("dashSeparatedMethodName").resolvePlaceholder(
-						"method-name"), equalTo("dash-separated-method-name"));
+		assertThat(createResolver("dashSeparatedMethodName").resolvePlaceholder(
+				"method-name"), equalTo("dash-separated-method-name"));
 	}
 
 	@Test
 	public void snakeCaseMethodName() throws Exception {
-		assertThat(
-				createResolver("underscoreSeparatedMethodName").resolvePlaceholder(
-						"method_name"), equalTo("underscore_separated_method_name"));
+		assertThat(createResolver("underscoreSeparatedMethodName").resolvePlaceholder(
+				"method_name"), equalTo("underscore_separated_method_name"));
 	}
 
 	@Test
 	public void camelCaseMethodName() throws Exception {
-		assertThat(
-				createResolver("camelCaseMethodName").resolvePlaceholder("methodName"),
+		assertThat(createResolver("camelCaseMethodName").resolvePlaceholder("methodName"),
 				equalTo("camelCaseMethodName"));
 	}
 
