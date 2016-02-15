@@ -46,6 +46,11 @@ use `RestDocumentationMockMvcConfigurer` to configure it:
 include::{examples-dir}/com/example/CustomEncoding.java[tags=custom-encoding]
 ----
 
+TIP: When Spring REST Docs converts a request or response's content to a String, the
+`charset` specified in the `Content-Type` header will be used if it is available. In its
+absence, the JVM's default `Charset` will be used. The JVM's default `Charset` can be
+configured using the `file.encoding` system property.
+
 
 
 [[configuration-default-snippets]]
