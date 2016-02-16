@@ -171,6 +171,11 @@ samples {
 	restAssured {
 		workingDir "$projectDir/samples/rest-assured"
 	}
+
+	slate {
+		workingDir "$projectDir/samples/rest-notes-slate"
+		build false
+	}
 }
 
 task api (type: Javadoc) {

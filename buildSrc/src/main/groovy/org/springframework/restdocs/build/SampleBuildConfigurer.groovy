@@ -29,7 +29,7 @@ public class SampleBuildConfigurer {
 
 	private String workingDir
 
-	private boolean verifyIncludes = true
+	private boolean build = true
 
 	SampleBuildConfigurer(String name) {
 		this.name = name
@@ -39,31 +39,41 @@ public class SampleBuildConfigurer {
 		this.workingDir = workingDir
 	}
 
+	void build(boolean build) {
+		this.build = build
+	}
+
 	Task createTask(Project project, Object... dependencies) {
 		File sampleDir = new File(this.workingDir).absoluteFile
+
 		Task sampleBuild = project.tasks.create name
 		sampleBuild.description = "Builds the ${name} sample"
 		sampleBuild.group = "Build"
+
 		if (new File(sampleDir, 'build.gradle').isFile()) {
-			Task gradleBuild = createGradleBuild(project, dependencies)
-			if (verifyIncludes) {
+			if (build) {
+				Task gradleBuild = createGradleBuild(project, dependencies)
 				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'build/asciidoc'))
 				verifyIncludesTask.dependsOn gradleBuild
 				sampleBuild.dependsOn verifyIncludesTask
 			}
-			else {
-				sampleBuild.dependsOn gradleBuild
+			sampleBuild.doFirst {
+				replaceVersion(new File(this.workingDir, 'build.gradle'),
+						"springRestdocsVersion = '.*'",
+						"springRestdocsVersion = '${project.version}'")
 			}
 		}
 		else if (new File(sampleDir, 'pom.xml').isFile()) {
-			Task mavenBuild = createMavenBuild(project, sampleDir, dependencies)
-			if (verifyIncludes) {
+			if (build) {
+				Task mavenBuild = createMavenBuild(project, sampleDir, dependencies)
 				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'target/generated-docs'))
 				verifyIncludesTask.dependsOn(mavenBuild)
 				sampleBuild.dependsOn verifyIncludesTask
 			}
-			else {
-				sampleBuild.dependsOn mavenBuild
+			sampleBuild.doFirst {
+				replaceVersion(new File(this.workingDir, 'pom.xml'),
+					'<spring-restdocs.version>.*</spring-restdocs.version>',
+					"<spring-restdocs.version>${project.version}</spring-restdocs.version>")
 			}
 		}
 		else {
@@ -79,13 +89,6 @@ public class SampleBuildConfigurer {
 		mavenBuild.workingDir = this.workingDir
 		mavenBuild.commandLine = [isWindows() ? "${sampleDir.absolutePath}/mvnw.cmd" : './mvnw', 'clean', 'package']
 		mavenBuild.dependsOn dependencies
-
-		mavenBuild.doFirst {
-			replaceVersion(new File(this.workingDir, 'pom.xml'),
-					'<spring-restdocs.version>.*</spring-restdocs.version>',
-					"<spring-restdocs.version>${project.version}</spring-restdocs.version>")
-		}
-
 		return mavenBuild
 	}
 
@@ -100,13 +103,6 @@ public class SampleBuildConfigurer {
 		gradleBuild.dir = this.workingDir
 		gradleBuild.tasks = ['clean', 'build']
 		gradleBuild.dependsOn dependencies
-
-		gradleBuild.doFirst {
-			replaceVersion(new File(this.workingDir, 'build.gradle'),
-					"springRestdocsVersion = '.*'",
-					"springRestdocsVersion = '${project.version}'")
-		}
-
 		return gradleBuild
 	}
 
