@@ -2,11 +2,13 @@ buildscript {
 	repositories {
 		jcenter()
 		maven { url 'https://repo.spring.io/plugins-release' }
+		maven { url 'https://plugins.gradle.org/m2/' }
 	}
 	dependencies {
 		classpath 'io.spring.gradle:dependency-management-plugin:0.5.5.RELEASE'
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 		classpath 'io.spring.gradle:spring-io-plugin:0.0.5.RELEASE'
+		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:1.2'
 	}
 }
 
@@ -18,10 +20,10 @@ allprojects {
 }
 
 apply plugin: 'samples'
-apply plugin: 'sonar-runner'
+apply plugin: 'org.sonarqube'
 
-sonarRunner {
-	sonarProperties {
+sonarqube {
+	properties {
 		property 'sonar.jacoco.reportPath', "${buildDir.name}/jacoco.exec"
 		property 'sonar.java.coveragePlugin', 'jacoco'
 		property 'sonar.links.ci', 'https://build.spring.io/browse/SRD'
