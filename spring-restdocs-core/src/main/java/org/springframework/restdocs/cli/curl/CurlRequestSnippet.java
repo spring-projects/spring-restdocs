@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.curl;
+package org.springframework.restdocs.cli.curl;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.restdocs.cli.AbstractCliSnippet;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.restdocs.snippet.TemplatedSnippet;
-import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -45,17 +41,7 @@ import org.springframework.util.StringUtils;
  * @see CurlDocumentation#curlRequest()
  * @see CurlDocumentation#curlRequest(Map)
  */
-public class CurlRequestSnippet extends TemplatedSnippet {
-
-	private static final Set<HeaderFilter> HEADER_FILTERS;
-
-	static {
-		Set<HeaderFilter> headerFilters = new HashSet<>();
-		headerFilters.add(new NamedHeaderFilter(HttpHeaders.HOST));
-		headerFilters.add(new NamedHeaderFilter(HttpHeaders.CONTENT_LENGTH));
-		headerFilters.add(new BasicAuthHeaderFilter());
-		HEADER_FILTERS = Collections.unmodifiableSet(headerFilters);
-	}
+public class CurlRequestSnippet extends AbstractCliSnippet {
 
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with no additional attributes.
@@ -106,8 +92,8 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	private void writeUserOptionIfNecessary(OperationRequest request,
 			PrintWriter writer) {
 		List<String> headerValue = request.getHeaders().get(HttpHeaders.AUTHORIZATION);
-		if (BasicAuthHeaderFilter.isBasicAuthHeader(headerValue)) {
-			String credentials = BasicAuthHeaderFilter.decodeBasicAuthHeader(headerValue);
+		if (isBasicAuthHeader(headerValue)) {
+			String credentials = decodeBasicAuthHeader(headerValue);
 			writer.print(String.format(" -u '%s'", credentials));
 		}
 	}
@@ -127,15 +113,6 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 				}
 			}
 		}
-	}
-
-	private boolean allowedHeader(Entry<String, List<String>> header) {
-		for (HeaderFilter headerFilter : HEADER_FILTERS) {
-			if (!headerFilter.allow(header.getKey(), header.getValue())) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private void writePartsIfNecessary(OperationRequest request, PrintWriter writer) {
@@ -181,78 +158,4 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 			writer.print(String.format(" -d '%s'", queryString));
 		}
 	}
-
-	private Parameters getUniqueParameters(OperationRequest request) {
-		Parameters queryStringParameters = new QueryStringParser()
-				.parse(request.getUri());
-		Parameters uniqueParameters = new Parameters();
-
-		for (Entry<String, List<String>> parameter : request.getParameters().entrySet()) {
-			addIfUnique(parameter, queryStringParameters, uniqueParameters);
-		}
-		return uniqueParameters;
-	}
-
-	private void addIfUnique(Entry<String, List<String>> parameter,
-			Parameters queryStringParameters, Parameters uniqueParameters) {
-		if (!queryStringParameters.containsKey(parameter.getKey())) {
-			uniqueParameters.put(parameter.getKey(), parameter.getValue());
-		}
-		else {
-			List<String> candidates = parameter.getValue();
-			List<String> existing = queryStringParameters.get(parameter.getKey());
-			for (String candidate : candidates) {
-				if (!existing.contains(candidate)) {
-					uniqueParameters.add(parameter.getKey(), candidate);
-				}
-			}
-		}
-	}
-
-	private boolean isPutOrPost(OperationRequest request) {
-		return HttpMethod.PUT.equals(request.getMethod())
-				|| HttpMethod.POST.equals(request.getMethod());
-	}
-
-	private interface HeaderFilter {
-
-		boolean allow(String name, List<String> value);
-	}
-
-	private static final class BasicAuthHeaderFilter implements HeaderFilter {
-
-		@Override
-		public boolean allow(String name, List<String> value) {
-			if (HttpHeaders.AUTHORIZATION.equals(name) && isBasicAuthHeader(value)) {
-				return false;
-			}
-			return true;
-		}
-
-		static boolean isBasicAuthHeader(List<String> value) {
-			return value != null && (!value.isEmpty())
-					&& value.get(0).startsWith("Basic ");
-		}
-
-		static String decodeBasicAuthHeader(List<String> value) {
-			return new String(Base64Utils.decodeFromString(value.get(0).substring(6)));
-		}
-
-	}
-
-	private static final class NamedHeaderFilter implements HeaderFilter {
-
-		private final String name;
-
-		private NamedHeaderFilter(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public boolean allow(String name, List<String> value) {
-			return !this.name.equalsIgnoreCase(name);
-		}
-
-	}
-
 }

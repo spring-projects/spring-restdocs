@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.curl;
+package org.springframework.restdocs.cli;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;

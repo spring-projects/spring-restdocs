@@ -19,12 +19,11 @@ package com.example.restassured;
 import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.RestDocumentation;
 
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.specification.RequestSpecification;
 
-import static org.springframework.restdocs.curl.CurlDocumentation.curlRequest;
+import static org.springframework.restdocs.cli.curl.CurlDocumentation.curlRequest;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
 public class CustomDefaultSnippets {

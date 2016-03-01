@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.curl;
+package org.springframework.restdocs.cli.curl;
 
 import java.util.Map;
 

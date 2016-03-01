@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.curl.CurlDocumentation;
+import org.springframework.restdocs.cli.curl.CurlDocumentation;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpDocumentation;
 import org.springframework.restdocs.snippet.Snippet;

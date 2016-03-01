@@ -24,8 +24,8 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.curl.CurlDocumentation;
-import org.springframework.restdocs.curl.CurlRequestSnippet;
+import org.springframework.restdocs.cli.curl.CurlDocumentation;
+import org.springframework.restdocs.cli.curl.CurlRequestSnippet;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpRequestSnippet;
 import org.springframework.restdocs.http.HttpResponseSnippet;
