@@ -159,7 +159,6 @@ public class MockMvcRestDocumentationIntegrationTests {
 	public void curlSnippetWithQueryStringOnPost() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
-
 		mockMvc.perform(post("/?foo=bar").param("foo", "bar").param("a", "alpha")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andDo(document("curl-snippet-with-query-string"));
@@ -341,14 +340,12 @@ public class MockMvcRestDocumentationIntegrationTests {
 				+ "\"href\":\"href\"}]}";
 		assertThat(
 				new File("build/generated-snippets/original-response/http-response.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(
-								httpResponse(asciidoctor(), HttpStatus.OK)
-										.header("a", "alpha")
-										.header("Content-Type", "application/json")
-										.header(HttpHeaders.CONTENT_LENGTH,
-												original.getBytes().length)
-										.content(original))));
+				is(snippet(asciidoctor()).withContents(
+						httpResponse(asciidoctor(), HttpStatus.OK).header("a", "alpha")
+								.header("Content-Type", "application/json;charset=UTF-8")
+								.header(HttpHeaders.CONTENT_LENGTH,
+										original.getBytes().length)
+								.content(original))));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
 				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
 		assertThat(
@@ -356,7 +353,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 						"build/generated-snippets/preprocessed-response/http-response.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(httpResponse(asciidoctor(), HttpStatus.OK)
-								.header("Content-Type", "application/json")
+								.header("Content-Type", "application/json;charset=UTF-8")
 								.header(HttpHeaders.CONTENT_LENGTH,
 										prettyPrinted.getBytes().length)
 								.content(prettyPrinted))));
@@ -428,7 +425,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	@RestController
 	private static class TestController {
 
-		@RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+		@RequestMapping(value = "/", produces = "application/json;charset=UTF-8")
 		public ResponseEntity<Map<String, Object>> foo() {
 			Map<String, Object> response = new HashMap<>();
 			response.put("a", "alpha");
