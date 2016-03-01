@@ -17,4 +17,4 @@
 /**
  * Documenting the curl command required to make a request to a RESTful API.
  */
-package org.springframework.restdocs.curl;
+package org.springframework.restdocs.cli.curl;

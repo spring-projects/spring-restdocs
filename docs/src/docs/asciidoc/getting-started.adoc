@@ -371,9 +371,10 @@ static `document` method on
 <4> Invoke the root (`/`) of the service.
 <5> Assert that the service produce the expected response.
 
-By default, three snippets are written:
+By default, four snippets are written:
 
  * `<output-directory>/index/curl-request.adoc`
+ * `<output-directory>/index/httpie-request.adoc`
  * `<output-directory>/index/http-request.adoc`
  * `<output-directory>/index/http-response.adoc`
 
