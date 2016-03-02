@@ -76,6 +76,11 @@ public class ExpectedSnippet implements TestRule {
 		return this;
 	}
 
+	public ExpectedSnippet expectHttpieRequest(String name) {
+		expect(name, "httpie-request");
+		return this;
+	}
+
 	public ExpectedSnippet expectRequestFields(String name) {
 		expect(name, "request-fields");
 		return this;

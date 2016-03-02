@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.cli.curl.CurlDocumentation;
 import org.springframework.restdocs.cli.curl.CurlRequestSnippet;
+import org.springframework.restdocs.cli.httpie.HttpieRequestSnippet;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpRequestSnippet;
 import org.springframework.restdocs.http.HttpResponseSnippet;
@@ -71,6 +72,7 @@ public class RestDocumentationConfigurerTests {
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		assertThat(defaultSnippets,
 				contains(instanceOf(CurlRequestSnippet.class),
+						instanceOf(HttpieRequestSnippet.class),
 						instanceOf(HttpRequestSnippet.class),
 						instanceOf(HttpResponseSnippet.class)));
 		assertThat(configuration, hasEntry(equalTo(SnippetConfiguration.class.getName()),

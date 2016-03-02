@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.cli.curl.CurlDocumentation;
+import org.springframework.restdocs.cli.httpie.HttpieDocumentation;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpDocumentation;
 import org.springframework.restdocs.snippet.Snippet;
@@ -38,8 +39,12 @@ import org.springframework.restdocs.templates.TemplateFormats;
 public abstract class SnippetConfigurer<PARENT, TYPE>
 		extends AbstractNestedConfigurer<PARENT> {
 
-	private List<Snippet> defaultSnippets = Arrays.asList(CurlDocumentation.curlRequest(),
-			HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse());
+	private List<Snippet> defaultSnippets = Arrays.asList(
+			CurlDocumentation.curlRequest(),
+			HttpieDocumentation.httpieRequest(),
+			HttpDocumentation.httpRequest(),
+			HttpDocumentation.httpResponse()
+	);
 
 	/**
 	 * The default encoding for documentation snippets.
