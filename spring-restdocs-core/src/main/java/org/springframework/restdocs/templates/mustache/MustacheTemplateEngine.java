@@ -52,7 +52,7 @@ public class MustacheTemplateEngine implements TemplateEngine {
 
 	/**
 	 * Creates a new {@code MustacheTemplateEngine} that will use the given
-	 * {@code  tempalteResourceResolver} to resolve templates and the given
+	 * {@code templateResourceResolver} to resolve templates and the given
 	 * {@code compiler} to compile them.
 	 *
 	 * @param templateResourceResolver the resolver to use
