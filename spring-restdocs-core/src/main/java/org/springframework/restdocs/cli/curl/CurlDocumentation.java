@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.curl;
+package org.springframework.restdocs.cli.curl;
 
 import java.util.Map;
 
@@ -24,14 +24,11 @@ import org.springframework.restdocs.snippet.Snippet;
  * Static factory methods for documenting a RESTful API as if it were being driven using
  * the cURL command-line utility.
  *
- * @deprecated Since 1.1 in favor of {@link org.springframework.restdocs.cli.curl.CurlDocumentation}.
- *
  * @author Andy Wilkinson
  * @author Yann Le Guern
  * @author Dmitriy Mayboroda
  * @author Jonathan Pearlin
  */
-@Deprecated
 public abstract class CurlDocumentation {
 
 	private CurlDocumentation() {
@@ -43,8 +40,6 @@ public abstract class CurlDocumentation {
 	 * operation.
 	 *
 	 * @return the snippet that will document the curl request
-	 *
-	 * @deprecated Since 1.1 in favor of {@link org.springframework.restdocs.cli.curl.CurlDocumentation}.
 	 */
 	public static Snippet curlRequest() {
 		return new CurlRequestSnippet();
@@ -57,8 +52,6 @@ public abstract class CurlDocumentation {
 	 *
 	 * @param attributes the attributes
 	 * @return the snippet that will document the curl request
-	 *
-	 * @deprecated Since 1.1 in favor of {@link org.springframework.restdocs.cli.curl.CurlDocumentation}.
 	 */
 	public static Snippet curlRequest(Map<String, Object> attributes) {
 		return new CurlRequestSnippet(attributes);

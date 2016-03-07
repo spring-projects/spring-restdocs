@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.curl;
+package org.springframework.restdocs.cli;
 
 import java.net.URI;
 import java.util.Arrays;
