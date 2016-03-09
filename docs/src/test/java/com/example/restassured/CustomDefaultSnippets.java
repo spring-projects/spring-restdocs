@@ -16,21 +16,21 @@
 
 package com.example.restassured;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.RestDocumentation;
-
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.specification.RequestSpecification;
+import org.junit.Before;
+import org.junit.Rule;
 
-import static org.springframework.restdocs.curl.CurlDocumentation.curlRequest;
+import org.springframework.restdocs.JUnitRestDocumentation;
+
+import static org.springframework.restdocs.cli.CliDocumentation.curlRequest;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
 public class CustomDefaultSnippets {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
+			"build");
 
 	private RequestSpecification spec;
 
@@ -38,8 +38,8 @@ public class CustomDefaultSnippets {
 	public void setUp() {
 		// tag::custom-default-snippets[]
 		this.spec = new RequestSpecBuilder()
-				.addFilter(documentationConfiguration(this.restDocumentation)
-						.snippets().withDefaults(curlRequest()))
+				.addFilter(documentationConfiguration(this.restDocumentation).snippets()
+						.withDefaults(curlRequest()))
 				.build();
 		// end::custom-default-snippets[]
 	}
