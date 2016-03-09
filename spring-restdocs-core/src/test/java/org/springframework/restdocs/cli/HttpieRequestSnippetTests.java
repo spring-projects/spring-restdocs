@@ -236,8 +236,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void multipartPostWithNoSubmittedFileName() throws IOException {
-		String expectedContent = "$ http --form POST 'http://localhost/upload' \\\n"
-				+ "  'metadata'@<(echo '{\"description\": \"foo\"}')";
+		String expectedContent = String
+				.format("$ http --form POST 'http://localhost/upload' \\%n"
+						+ "  'metadata'@<(echo '{\"description\": \"foo\"}')");
 		this.snippet.expectHttpieRequest("multipart-post-no-original-filename")
 				.withContents(codeBlock("bash").content(expectedContent));
 		new HttpieRequestSnippet()
@@ -252,8 +253,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void multipartPostWithContentType() throws IOException {
 		// httpie does not yet support manually set content type by part
-		String expectedContent = "$ http --form POST 'http://localhost/upload' \\\n"
-				+ "  'image'@'documents/images/example.png'";
+		String expectedContent = String
+				.format("$ http --form POST 'http://localhost/upload' \\%n"
+						+ "  'image'@'documents/images/example.png'");
 		this.snippet.expectHttpieRequest("multipart-post-with-content-type")
 				.withContents(codeBlock("bash").content(expectedContent));
 		new HttpieRequestSnippet()
@@ -268,8 +270,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void multipartPost() throws IOException {
-		String expectedContent = "$ http --form POST 'http://localhost/upload' \\\n"
-				+ "  'image'@'documents/images/example.png'";
+		String expectedContent = String
+				.format("$ http --form POST 'http://localhost/upload' \\%n"
+						+ "  'image'@'documents/images/example.png'");
 		this.snippet.expectHttpieRequest("multipart-post")
 				.withContents(codeBlock("bash").content(expectedContent));
 		new HttpieRequestSnippet()
@@ -283,8 +286,10 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void multipartPostWithParameters() throws IOException {
-		String expectedContent = "$ http --form POST 'http://localhost/upload' \\\n"
-				+ "  'image'@'documents/images/example.png' 'a=apple' 'a=avocado' 'b=banana'";
+		String expectedContent = String
+				.format("$ http --form POST 'http://localhost/upload' \\%n"
+						+ "  'image'@'documents/images/example.png' 'a=apple' 'a=avocado'"
+						+ " 'b=banana'");
 		this.snippet.expectHttpieRequest("multipart-post-with-parameters")
 				.withContents(codeBlock("bash").content(expectedContent));
 		new HttpieRequestSnippet()
