@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.cli.curl;
+package org.springframework.restdocs.cli;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,14 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.restdocs.cli.AbstractCliSnippet;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.StringUtils;
 
 /**
@@ -38,10 +37,10 @@ import org.springframework.util.StringUtils;
  *
  * @author Andy Wilkinson
  * @author Paul-Christian Volkmer
- * @see CurlDocumentation#curlRequest()
- * @see CurlDocumentation#curlRequest(Map)
+ * @see CliDocumentation#curlRequest()
+ * @see CliDocumentation#curlRequest(Map)
  */
-public class CurlRequestSnippet extends AbstractCliSnippet {
+public class CurlRequestSnippet extends TemplatedSnippet {
 
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with no additional attributes.
@@ -76,11 +75,12 @@ public class CurlRequestSnippet extends AbstractCliSnippet {
 		StringWriter command = new StringWriter();
 		PrintWriter printer = new PrintWriter(command);
 		writeIncludeHeadersInOutputOption(printer);
-		writeUserOptionIfNecessary(operation.getRequest(), printer);
-		writeHttpMethodIfNecessary(operation.getRequest(), printer);
-		writeHeaders(operation.getRequest().getHeaders(), printer);
-		writePartsIfNecessary(operation.getRequest(), printer);
-		writeContent(operation.getRequest(), printer);
+		CliOperationRequest request = new CliOperationRequest(operation.getRequest());
+		writeUserOptionIfNecessary(request, printer);
+		writeHttpMethodIfNecessary(request, printer);
+		writeHeaders(request, printer);
+		writePartsIfNecessary(request, printer);
+		writeContent(request, printer);
 
 		return command.toString();
 	}
@@ -89,11 +89,10 @@ public class CurlRequestSnippet extends AbstractCliSnippet {
 		writer.print("-i");
 	}
 
-	private void writeUserOptionIfNecessary(OperationRequest request,
+	private void writeUserOptionIfNecessary(CliOperationRequest request,
 			PrintWriter writer) {
-		List<String> headerValue = request.getHeaders().get(HttpHeaders.AUTHORIZATION);
-		if (isBasicAuthHeader(headerValue)) {
-			String credentials = decodeBasicAuthHeader(headerValue);
+		String credentials = request.getBasicAuthCredentials();
+		if (credentials != null) {
 			writer.print(String.format(" -u '%s'", credentials));
 		}
 	}
@@ -105,12 +104,10 @@ public class CurlRequestSnippet extends AbstractCliSnippet {
 		}
 	}
 
-	private void writeHeaders(HttpHeaders headers, PrintWriter writer) {
-		for (Entry<String, List<String>> entry : headers.entrySet()) {
-			if (allowedHeader(entry)) {
-				for (String header : entry.getValue()) {
-					writer.print(String.format(" -H '%s: %s'", entry.getKey(), header));
-				}
+	private void writeHeaders(CliOperationRequest request, PrintWriter writer) {
+		for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
+			for (String header : entry.getValue()) {
+				writer.print(String.format(" -H '%s: %s'", entry.getKey(), header));
 			}
 		}
 	}
@@ -133,7 +130,7 @@ public class CurlRequestSnippet extends AbstractCliSnippet {
 		}
 	}
 
-	private void writeContent(OperationRequest request, PrintWriter writer) {
+	private void writeContent(CliOperationRequest request, PrintWriter writer) {
 		String content = request.getContentAsString();
 		if (StringUtils.hasText(content)) {
 			writer.print(String.format(" -d '%s'", content));
@@ -145,17 +142,18 @@ public class CurlRequestSnippet extends AbstractCliSnippet {
 				}
 			}
 		}
-		else if (isPutOrPost(request)) {
+		else if (request.isPutOrPost()) {
 			writeContentUsingParameters(request, writer);
 		}
 	}
 
-	private void writeContentUsingParameters(OperationRequest request,
+	private void writeContentUsingParameters(CliOperationRequest request,
 			PrintWriter writer) {
-		Parameters uniqueParameters = getUniqueParameters(request);
+		Parameters uniqueParameters = request.getUniqueParameters();
 		String queryString = uniqueParameters.toQueryString();
 		if (StringUtils.hasText(queryString)) {
 			writer.print(String.format(" -d '%s'", queryString));
 		}
 	}
+
 }

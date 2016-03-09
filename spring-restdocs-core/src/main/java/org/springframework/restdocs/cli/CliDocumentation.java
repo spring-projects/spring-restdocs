@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2012-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.cli.curl;
+package org.springframework.restdocs.cli;
 
 import java.util.Map;
 
 import org.springframework.restdocs.snippet.Snippet;
 
 /**
- * Static factory methods for documenting a RESTful API as if it were being driven using
- * the cURL command-line utility.
+ * Static factory methods for documenting a RESTful API as if it were being driven using a
+ * command-line utility such as curl or HTTPie.
  *
  * @author Andy Wilkinson
- * @author Yann Le Guern
- * @author Dmitriy Mayboroda
- * @author Jonathan Pearlin
+ * @author Paul-Christian Volkmer
+ * @author Raman Gupta
  */
-public abstract class CurlDocumentation {
+public abstract class CliDocumentation {
 
-	private CurlDocumentation() {
+	private CliDocumentation() {
 
 	}
 
@@ -55,6 +54,28 @@ public abstract class CurlDocumentation {
 	 */
 	public static Snippet curlRequest(Map<String, Object> attributes) {
 		return new CurlRequestSnippet(attributes);
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the HTTPie request for the API
+	 * operation.
+	 *
+	 * @return the snippet that will document the HTTPie request
+	 */
+	public static Snippet httpieRequest() {
+		return new HttpieRequestSnippet();
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the HTTPie request for the API
+	 * operation. The given {@code attributes} will be available during snippet
+	 * generation.
+	 *
+	 * @param attributes the attributes
+	 * @return the snippet that will document the HTTPie request
+	 */
+	public static Snippet httpieRequest(Map<String, Object> attributes) {
+		return new HttpieRequestSnippet(attributes);
 	}
 
 }

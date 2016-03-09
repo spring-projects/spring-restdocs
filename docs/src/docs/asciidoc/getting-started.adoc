@@ -374,9 +374,9 @@ static `document` method on
 By default, four snippets are written:
 
  * `<output-directory>/index/curl-request.adoc`
- * `<output-directory>/index/httpie-request.adoc`
  * `<output-directory>/index/http-request.adoc`
  * `<output-directory>/index/http-response.adoc`
+ * `<output-directory>/index/httpie-request.adoc`
 
 Refer to <<documenting-your-api>> for more information about these and other snippets
 that can be produced by Spring REST Docs.

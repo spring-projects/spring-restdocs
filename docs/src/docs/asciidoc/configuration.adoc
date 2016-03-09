@@ -87,11 +87,12 @@ include::{examples-dir}/com/example/restassured/CustomFormat.java[tags=custom-fo
 [[configuration-default-snippets]]
 === Default snippets
 
-Three snippets are produced by default:
+Four snippets are produced by default:
 
 - `curl-request`
 - `http-request`
 - `http-response`
+- `httpie-request`
 
 You can change the default snippet configuration during setup using the
 `RestDocumentationConfigurer` API. For example, to only produce the `curl-request`

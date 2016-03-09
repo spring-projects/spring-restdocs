@@ -16,5 +16,8 @@
 
 /**
  * Documenting the curl command required to make a request to a RESTful API.
+ *
+ * @deprecated Since 1.1 in favor of functionality in
+ * {@code org.springframework.restdocs.cli}
  */
-package org.springframework.restdocs.cli.curl;
+package org.springframework.restdocs.curl;

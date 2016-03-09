@@ -24,9 +24,9 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.cli.curl.CurlDocumentation;
-import org.springframework.restdocs.cli.curl.CurlRequestSnippet;
-import org.springframework.restdocs.cli.httpie.HttpieRequestSnippet;
+import org.springframework.restdocs.cli.CliDocumentation;
+import org.springframework.restdocs.cli.CurlRequestSnippet;
+import org.springframework.restdocs.cli.HttpieRequestSnippet;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpRequestSnippet;
 import org.springframework.restdocs.http.HttpResponseSnippet;
@@ -108,7 +108,7 @@ public class RestDocumentationConfigurerTests {
 	public void customDefaultSnippets() {
 		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
-		this.configurer.snippets().withDefaults(CurlDocumentation.curlRequest())
+		this.configurer.snippets().withDefaults(CliDocumentation.curlRequest())
 				.apply(configuration, context);
 		assertThat(configuration,
 				hasEntry(

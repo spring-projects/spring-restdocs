@@ -56,7 +56,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.restdocs.cli.curl.CurlDocumentation.curlRequest;
+import static org.springframework.restdocs.cli.CliDocumentation.curlRequest;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -169,6 +169,38 @@ public class MockMvcRestDocumentationIntegrationTests {
 						.withContents(codeBlock(asciidoctor(), "bash").content("$ curl "
 								+ "'http://localhost:8080/?foo=bar' -i -X POST "
 								+ "-H 'Accept: application/json' -d 'a=alpha'"))));
+	}
+
+	@Test
+	public void httpieSnippetWithContent() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+
+		mockMvc.perform(post("/").accept(MediaType.APPLICATION_JSON).content("content"))
+				.andExpect(status().isOk())
+				.andDo(document("httpie-snippet-with-content"));
+		assertThat(
+				new File(
+						"build/generated-snippets/httpie-snippet-with-content/httpie-request.adoc"),
+				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
+						.content("$ echo 'content' | http POST 'http://localhost:8080/'"
+								+ " 'Accept:application/json'"))));
+	}
+
+	@Test
+	public void httpieSnippetWithQueryStringOnPost() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+		mockMvc.perform(post("/?foo=bar").param("foo", "bar").param("a", "alpha")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andDo(document("httpie-snippet-with-query-string"));
+		assertThat(
+				new File(
+						"build/generated-snippets/httpie-snippet-with-query-string/httpie-request.adoc"),
+				is(snippet(asciidoctor())
+						.withContents(codeBlock(asciidoctor(), "bash").content("$ http "
+								+ "--form POST 'http://localhost:8080/?foo=bar' "
+								+ "'Accept:application/json' 'a=alpha'"))));
 	}
 
 	@Test

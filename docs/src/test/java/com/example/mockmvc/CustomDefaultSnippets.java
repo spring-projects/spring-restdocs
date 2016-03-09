@@ -18,19 +18,21 @@ package com.example.mockmvc;
 
 import org.junit.Before;
 import org.junit.Rule;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.restdocs.cli.curl.CurlDocumentation.curlRequest;
+import static org.springframework.restdocs.cli.CliDocumentation.curlRequest;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 public class CustomDefaultSnippets {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
+			"build");
 
 	@Autowired
 	private WebApplicationContext context;
@@ -41,8 +43,8 @@ public class CustomDefaultSnippets {
 	public void setUp() {
 		// tag::custom-default-snippets[]
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(this.restDocumentation)
-						.snippets().withDefaults(curlRequest()))
+				.apply(documentationConfiguration(this.restDocumentation).snippets()
+						.withDefaults(curlRequest()))
 				.build();
 		// end::custom-default-snippets[]
 	}

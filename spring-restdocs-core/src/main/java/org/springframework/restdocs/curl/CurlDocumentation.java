@@ -24,8 +24,8 @@ import org.springframework.restdocs.snippet.Snippet;
  * Static factory methods for documenting a RESTful API as if it were being driven using
  * the cURL command-line utility.
  *
- * @deprecated Since 1.1 in favor of {@link org.springframework.restdocs.cli.curl.CurlDocumentation}.
- *
+ * @deprecated Since 1.1 in favor of
+ * {@link org.springframework.restdocs.cli.CliDocumentation}.
  * @author Andy Wilkinson
  * @author Yann Le Guern
  * @author Dmitriy Mayboroda
@@ -44,8 +44,10 @@ public abstract class CurlDocumentation {
 	 *
 	 * @return the snippet that will document the curl request
 	 *
-	 * @deprecated Since 1.1 in favor of {@link org.springframework.restdocs.cli.curl.CurlDocumentation}.
+	 * @deprecated Since 1.1 in favor of
+	 * {@link org.springframework.restdocs.cli.CliDocumentation#curlRequest()}.
 	 */
+	@Deprecated
 	public static Snippet curlRequest() {
 		return new CurlRequestSnippet();
 	}
@@ -58,8 +60,10 @@ public abstract class CurlDocumentation {
 	 * @param attributes the attributes
 	 * @return the snippet that will document the curl request
 	 *
-	 * @deprecated Since 1.1 in favor of {@link org.springframework.restdocs.cli.curl.CurlDocumentation}.
+	 * @deprecated Since 1.1 in favor of
+	 * {@link org.springframework.restdocs.cli.CliDocumentation#curlRequest(Map)}.
 	 */
+	@Deprecated
 	public static Snippet curlRequest(Map<String, Object> attributes) {
 		return new CurlRequestSnippet(attributes);
 	}

@@ -23,16 +23,23 @@ import org.springframework.restdocs.snippet.Snippet;
 /**
  * A {@link Snippet} that documents the curl command for a request.
  *
+ * @author Andy Wilkinson
+ * @author Paul-Christian Volkmer
  * @author Raman Gupta
- * @deprecated Since 1.1 in favor of {@link org.springframework.restdocs.cli.curl.CurlRequestSnippet}.
+ * @deprecated Since 1.1 in favor of
+ * {@link org.springframework.restdocs.cli.CurlRequestSnippet}.
  */
-public class CurlRequestSnippet extends org.springframework.restdocs.cli.curl.CurlRequestSnippet {
+@Deprecated
+public class CurlRequestSnippet
+		extends org.springframework.restdocs.cli.CurlRequestSnippet {
 
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with no additional attributes.
 	 *
-	 * @deprecated Since 1.1 in favor of {@link org.springframework.restdocs.cli.curl.CurlRequestSnippet}.
+	 * @deprecated Since 1.1 in favor of
+	 * {@link org.springframework.restdocs.cli.CurlRequestSnippet}.
 	 */
+	@Deprecated
 	protected CurlRequestSnippet() {
 		super();
 	}
@@ -41,8 +48,10 @@ public class CurlRequestSnippet extends org.springframework.restdocs.cli.curl.Cu
 	 * Creates a new {@code CurlRequestSnippet} with additional attributes.
 	 * @param attributes The additional attributes.
 	 *
-	 * @deprecated Since 1.1 in favor of {@link org.springframework.restdocs.cli.curl.CurlRequestSnippet}.
+	 * @deprecated Since 1.1 in favor of
+	 * {@link org.springframework.restdocs.cli.CurlRequestSnippet}.
 	 */
+	@Deprecated
 	protected CurlRequestSnippet(final Map<String, Object> attributes) {
 		super(attributes);
 	}

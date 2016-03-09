@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2012-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,30 @@
 
 package org.springframework.restdocs.cli;
 
+import java.net.URI;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
-import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.Base64Utils;
 
 /**
- * An abstract {@link Snippet} that for CLI requests.
+ * An {@link OperationRequest} wrapper with methods that are useful when producing a
+ * snippet containing a CLI command for a request.
  *
  * @author Andy Wilkinson
- * @author Paul-Christian Volkmer
  * @author Raman Gupta
  */
-public abstract class AbstractCliSnippet extends TemplatedSnippet {
+final class CliOperationRequest implements OperationRequest {
 
 	private static final Set<HeaderFilter> HEADER_FILTERS;
 
@@ -50,33 +51,19 @@ public abstract class AbstractCliSnippet extends TemplatedSnippet {
 		HEADER_FILTERS = Collections.unmodifiableSet(headerFilters);
 	}
 
-	/**
-	 * Create a new abstract cli snippet with the given name and attributes.
-	 * @param snippetName The snippet name.
-	 * @param attributes The snippet attributes.
-	 */
-	protected AbstractCliSnippet(String snippetName, Map<String, Object> attributes) {
-		super(snippetName, attributes);
+	private final OperationRequest delegate;
+
+	CliOperationRequest(OperationRequest delegate) {
+		this.delegate = delegate;
 	}
 
-	/**
-	 * Create the model which will be passed to the template for rendering.
-	 * @param operation The operation
-	 * @return The model.
-	 */
-	protected abstract Map<String, Object> createModel(Operation operation);
-
-	/**
-	 * Gets the unique parameters given a request.
-	 * @param request The operation request.
-	 * @return The unique parameters.
-	 */
-	protected Parameters getUniqueParameters(OperationRequest request) {
+	Parameters getUniqueParameters() {
 		Parameters queryStringParameters = new QueryStringParser()
-				.parse(request.getUri());
+				.parse(this.delegate.getUri());
 		Parameters uniqueParameters = new Parameters();
 
-		for (Map.Entry<String, List<String>> parameter : request.getParameters().entrySet()) {
+		for (Map.Entry<String, List<String>> parameter : this.delegate.getParameters()
+				.entrySet()) {
 			addIfUnique(parameter, queryStringParameters, uniqueParameters);
 		}
 		return uniqueParameters;
@@ -98,23 +85,42 @@ public abstract class AbstractCliSnippet extends TemplatedSnippet {
 		}
 	}
 
-	/**
-	 * Whether the request operation is a PUT or a POST.
-	 * @param request The request.
-	 * @return boolean
-	 */
-	protected boolean isPutOrPost(OperationRequest request) {
-		return HttpMethod.PUT.equals(request.getMethod())
-				|| HttpMethod.POST.equals(request.getMethod());
+	boolean isPutOrPost() {
+		return HttpMethod.PUT.equals(this.delegate.getMethod())
+				|| HttpMethod.POST.equals(this.delegate.getMethod());
 	}
 
-	/**
-	 * Whether the passed header is allowed according to the configured
-	 * header filters.
-	 * @param header The header to test.
-	 * @return boolean
-	 */
-	protected boolean allowedHeader(Map.Entry<String, List<String>> header) {
+	String getBasicAuthCredentials() {
+		List<String> headerValue = this.delegate.getHeaders()
+				.get(HttpHeaders.AUTHORIZATION);
+		if (BasicAuthHeaderFilter.isBasicAuthHeader(headerValue)) {
+			return BasicAuthHeaderFilter.decodeBasicAuthHeader(headerValue);
+		}
+		return null;
+	}
+
+	@Override
+	public byte[] getContent() {
+		return this.delegate.getContent();
+	}
+
+	@Override
+	public String getContentAsString() {
+		return this.delegate.getContentAsString();
+	}
+
+	@Override
+	public HttpHeaders getHeaders() {
+		HttpHeaders filteredHeaders = new HttpHeaders();
+		for (Entry<String, List<String>> header : this.delegate.getHeaders().entrySet()) {
+			if (allowedHeader(header)) {
+				filteredHeaders.put(header.getKey(), header.getValue());
+			}
+		}
+		return HttpHeaders.readOnlyHttpHeaders(filteredHeaders);
+	}
+
+	private boolean allowedHeader(Map.Entry<String, List<String>> header) {
 		for (HeaderFilter headerFilter : HEADER_FILTERS) {
 			if (!headerFilter.allow(header.getKey(), header.getValue())) {
 				return false;
@@ -123,22 +129,24 @@ public abstract class AbstractCliSnippet extends TemplatedSnippet {
 		return true;
 	}
 
-	/**
-	 * Determine if the header passed is a basic auth header.
-	 * @param headerValue The header to test.
-	 * @return boolean
-	 */
-	protected boolean isBasicAuthHeader(List<String> headerValue) {
-		return BasicAuthHeaderFilter.isBasicAuthHeader(headerValue);
+	@Override
+	public HttpMethod getMethod() {
+		return this.delegate.getMethod();
 	}
 
-	/**
-	 * Decodes a basic auth header into name:password credentials.
-	 * @param headerValue The encoded header value.
-	 * @return name:password credentials.
-	 */
-	protected String decodeBasicAuthHeader(List<String> headerValue) {
-		return BasicAuthHeaderFilter.decodeBasicAuthHeader(headerValue);
+	@Override
+	public Parameters getParameters() {
+		return this.delegate.getParameters();
+	}
+
+	@Override
+	public Collection<OperationRequestPart> getParts() {
+		return this.delegate.getParts();
+	}
+
+	@Override
+	public URI getUri() {
+		return this.delegate.getUri();
 	}
 
 	private interface HeaderFilter {
