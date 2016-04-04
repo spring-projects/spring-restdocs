@@ -82,7 +82,8 @@ the configuration are described below.
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<phase>package</phase> <6>
+						<phase>package</phase>
+						<!-- <phase>prepare-package</phase> --> <6>
 						<goals>
 							<goal>process-asciidoc</goal>
 						</goals>
@@ -167,7 +168,14 @@ static content] by Spring Boot. To do so, configure your project's build so that
 	<plugin> <1>
 		<groupId>org.asciidoctor</groupId>
 		<artifactId>asciidoctor-maven-plugin</artifactId>
-		<!-- … -->
+		<version>1.5.2</version>
+		<executions>
+			<execution>
+				<id>generate-docs</id>
+				<phase>prepare-package</phase>
+				<!-- … -->
+			</execution>
+		</executions>
 	</plugin>
 	<plugin> <2>
 		<artifactId>maven-resources-plugin</artifactId>
