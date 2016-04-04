@@ -25,6 +25,7 @@ import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
@@ -49,7 +50,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void pathParameters() throws IOException {
 		this.snippet.expectPathParameters("path-parameters").withContents(
-				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description")
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
 						.row("a", "one").row("b", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
 				parameterWithName("b").description("two")))
@@ -61,7 +62,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void ignoredPathParameter() throws IOException {
 		this.snippet.expectPathParameters("ignored-path-parameter").withContents(
-				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description").row("b",
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("b",
 						"two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
 				parameterWithName("b").description("two")))
@@ -74,7 +75,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	public void pathParametersWithQueryString() throws IOException {
 		this.snippet.expectPathParameters("path-parameters-with-query-string")
 				.withContents(
-						tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description")
+						tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
 								.row("a", "one").row("b", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
 				parameterWithName("b").description("two"))).document(
@@ -130,6 +131,11 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 										.attribute(TemplateEngine.class.getName(),
 												new MustacheTemplateEngine(resolver))
 										.build());
+	}
+
+	private String getTitle() {
+		return this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}/{b}"
+				: "`/{a}/{b}`";
 	}
 
 }

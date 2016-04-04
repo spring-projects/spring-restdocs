@@ -345,6 +345,7 @@ public final class SnippetMatchers {
 			super(TemplateFormats.asciidoctor());
 			if (StringUtils.hasText(title)) {
 				this.addLine(title);
+				this.addLine("");
 			}
 			String header = StringUtils
 					.collectionToDelimitedString(Arrays.asList(columns), " | ");
