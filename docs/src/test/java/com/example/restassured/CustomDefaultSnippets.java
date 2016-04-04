@@ -32,6 +32,7 @@ public class CustomDefaultSnippets {
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
 			"build");
 
+	@SuppressWarnings("unused")
 	private RequestSpecification spec;
 
 	@Before

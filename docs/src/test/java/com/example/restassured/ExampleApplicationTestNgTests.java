@@ -32,6 +32,7 @@ public class ExampleApplicationTestNgTests {
 	private final ManualRestDocumentation restDocumentation = new ManualRestDocumentation(
 			"build/generated-snippets");
 
+	@SuppressWarnings("unused")
 	// tag::setup[]
 	private RequestSpecification spec;
 

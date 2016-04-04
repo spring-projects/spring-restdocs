@@ -20,11 +20,11 @@ import java.io.File;
 
 import org.junit.Test;
 
+import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
@@ -43,17 +43,11 @@ public class StandardWriterResolverTests {
 			this.placeholderResolver, "UTF-8", asciidoctor());
 
 	@Test
-	public void noConfiguredOutputDirectoryAndRelativeInput() {
-		assertThat(this.resolver.resolveFile("foo", "bar.txt",
-				new RestDocumentationContext(null, null, null)), is(nullValue()));
-	}
-
-	@Test
 	public void absoluteInput() {
 		String absolutePath = new File("foo").getAbsolutePath();
 		assertThat(
 				this.resolver.resolveFile(absolutePath, "bar.txt",
-						new RestDocumentationContext(null, null, null)),
+						createContext(absolutePath)),
 				is(new File(absolutePath, "bar.txt")));
 	}
 
@@ -62,7 +56,7 @@ public class StandardWriterResolverTests {
 		File outputDir = new File("foo").getAbsoluteFile();
 		assertThat(
 				this.resolver.resolveFile("bar", "baz.txt",
-						new RestDocumentationContext(null, null, outputDir)),
+						createContext(outputDir.getAbsolutePath())),
 				is(new File(outputDir, "bar/baz.txt")));
 	}
 
@@ -72,8 +66,16 @@ public class StandardWriterResolverTests {
 		String absolutePath = new File("bar").getAbsolutePath();
 		assertThat(
 				this.resolver.resolveFile(absolutePath, "baz.txt",
-						new RestDocumentationContext(null, null, outputDir)),
+						createContext(outputDir.getAbsolutePath())),
 				is(new File(absolutePath, "baz.txt")));
+	}
+
+	private RestDocumentationContext createContext(String outputDir) {
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
+				outputDir);
+		manualRestDocumentation.beforeTest(getClass(), null);
+		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
+		return context;
 	}
 
 }

@@ -32,11 +32,12 @@ public class ExampleApplicationTestNgTests {
 
 	public final ManualRestDocumentation restDocumentation = new ManualRestDocumentation(
 			"target/generated-snippets");
+	@SuppressWarnings("unused")
 	// tag::setup[]
+	private MockMvc mockMvc;
+	
 	@Autowired
 	private WebApplicationContext context;
-
-	private MockMvc mockMvc;
 
 	@BeforeMethod
 	public void setUp(Method method) {

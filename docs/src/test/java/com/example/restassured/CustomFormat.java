@@ -19,7 +19,6 @@ package com.example.restassured;
 import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.templates.TemplateFormats;
 
 import com.jayway.restassured.builder.RequestSpecBuilder;
@@ -31,7 +30,8 @@ public class CustomFormat {
 
 	@Rule
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
-
+	
+	@SuppressWarnings("unused")
 	private RequestSpecification spec;
 
 	@Before

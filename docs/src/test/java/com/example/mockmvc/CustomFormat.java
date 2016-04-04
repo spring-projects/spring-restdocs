@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -36,6 +35,7 @@ public class CustomFormat {
 	@Autowired
 	private WebApplicationContext context;
 
+	@SuppressWarnings("unused")
 	private MockMvc mockMvc;
 
 	@Before

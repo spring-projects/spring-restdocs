@@ -96,6 +96,7 @@ public final class StandardWriterResolver implements WriterResolver {
 	}
 
 	@Override
+	@Deprecated
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}

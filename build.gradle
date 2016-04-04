@@ -90,6 +90,10 @@ subprojects {
 		}
 	}
 
+	compileJava {
+		options.compilerArgs = [ '-Xlint:deprecation', '-Xlint:-options', '-Werror' ]
+	}
+
 }
 
 configure(subprojects - project(":docs")) { subproject ->

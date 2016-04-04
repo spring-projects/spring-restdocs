@@ -19,7 +19,6 @@ package com.example.restassured;
 import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.RestDocumentation;
 
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.specification.RequestSpecification;
@@ -33,6 +32,7 @@ public class ParameterizedOutput {
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
 			"build/generated-snippets");
 
+	@SuppressWarnings("unused")
 	private RequestSpecification spec;
 
 	// tag::parameterized-output[]

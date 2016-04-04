@@ -27,6 +27,7 @@ import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -96,8 +97,7 @@ public class OperationBuilder {
 					new MustacheTemplateEngine(
 							new StandardTemplateResourceResolver(this.templateFormat)));
 		}
-		RestDocumentationContext context = new RestDocumentationContext(null, null,
-				this.outputDirectory);
+		RestDocumentationContext context = createContext();
 		this.attributes.put(RestDocumentationContext.class.getName(), context);
 		this.attributes.put(WriterResolver.class.getName(),
 				new StandardWriterResolver(
@@ -108,6 +108,14 @@ public class OperationBuilder {
 						? new OperationRequestBuilder("http://localhost/").buildRequest()
 						: this.requestBuilder.buildRequest()),
 				this.responseBuilder.buildResponse(), this.attributes);
+	}
+
+	private RestDocumentationContext createContext() {
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
+				this.outputDirectory.getAbsolutePath());
+		manualRestDocumentation.beforeTest(null, null);
+		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
+		return context;
 	}
 
 	/**

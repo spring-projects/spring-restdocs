@@ -23,6 +23,7 @@ import java.util.Map;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.cli.CliDocumentation;
 import org.springframework.restdocs.cli.CurlRequestSnippet;
@@ -57,9 +58,8 @@ public class RestDocumentationConfigurerTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void defaultConfiguration() {
-		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
-		this.configurer.apply(configuration, context);
+		this.configurer.apply(configuration, createContext());
 		assertThat(configuration, hasEntry(equalTo(TemplateEngine.class.getName()),
 				instanceOf(MustacheTemplateEngine.class)));
 		assertThat(configuration, hasEntry(equalTo(WriterResolver.class.getName()),
@@ -86,30 +86,29 @@ public class RestDocumentationConfigurerTests {
 
 	@Test
 	public void customTemplateEngine() {
-		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
 		TemplateEngine templateEngine = mock(TemplateEngine.class);
-		this.configurer.templateEngine(templateEngine).apply(configuration, context);
+		this.configurer.templateEngine(templateEngine).apply(configuration,
+				createContext());
 		assertThat(configuration, Matchers.<String, Object>hasEntry(
 				TemplateEngine.class.getName(), templateEngine));
 	}
 
 	@Test
 	public void customWriterResolver() {
-		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
 		WriterResolver writerResolver = mock(WriterResolver.class);
-		this.configurer.writerResolver(writerResolver).apply(configuration, context);
+		this.configurer.writerResolver(writerResolver).apply(configuration,
+				createContext());
 		assertThat(configuration, Matchers.<String, Object>hasEntry(
 				WriterResolver.class.getName(), writerResolver));
 	}
 
 	@Test
 	public void customDefaultSnippets() {
-		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippets().withDefaults(CliDocumentation.curlRequest())
-				.apply(configuration, context);
+				.apply(configuration, createContext());
 		assertThat(configuration,
 				hasEntry(
 						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
@@ -122,10 +121,9 @@ public class RestDocumentationConfigurerTests {
 
 	@Test
 	public void customSnippetEncoding() {
-		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippets().withEncoding("ISO 8859-1").apply(configuration,
-				context);
+				createContext());
 		assertThat(configuration, hasEntry(equalTo(SnippetConfiguration.class.getName()),
 				instanceOf(SnippetConfiguration.class)));
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
@@ -135,16 +133,23 @@ public class RestDocumentationConfigurerTests {
 
 	@Test
 	public void customTemplateFormat() {
-		RestDocumentationContext context = new RestDocumentationContext(null, null, null);
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippets().withTemplateFormat(TemplateFormats.markdown())
-				.apply(configuration, context);
+				.apply(configuration, createContext());
 		assertThat(configuration, hasEntry(equalTo(SnippetConfiguration.class.getName()),
 				instanceOf(SnippetConfiguration.class)));
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getTemplateFormat(),
 				is(equalTo(TemplateFormats.markdown())));
+	}
+
+	private RestDocumentationContext createContext() {
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
+				"build");
+		manualRestDocumentation.beforeTest(null, null);
+		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
+		return context;
 	}
 
 	private static final class TestRestDocumentationConfigurer extends

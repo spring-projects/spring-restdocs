@@ -37,6 +37,7 @@ public class CustomDefaultSnippets {
 	@Autowired
 	private WebApplicationContext context;
 
+	@SuppressWarnings("unused")
 	private MockMvc mockMvc;
 
 	@Before

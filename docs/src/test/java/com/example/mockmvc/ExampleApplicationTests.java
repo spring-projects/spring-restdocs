@@ -18,6 +18,7 @@ package com.example.mockmvc;
 
 import org.junit.Before;
 import org.junit.Rule;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,11 +32,13 @@ public class ExampleApplicationTests {
 	@Rule
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
 			"target/generated-snippets");
+
+	@SuppressWarnings("unused")
 	// tag::setup[]
+	private MockMvc mockMvc;
+
 	@Autowired
 	private WebApplicationContext context;
-
-	private MockMvc mockMvc;
 
 	@Before
 	public void setUp() {

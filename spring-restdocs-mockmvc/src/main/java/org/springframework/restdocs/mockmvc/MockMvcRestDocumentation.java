@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
@@ -32,7 +31,6 @@ import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
  *
  * @author Andy Wilkinson
  */
-@SuppressWarnings("deprecation")
 public abstract class MockMvcRestDocumentation {
 
 	private static final MockMvcRequestConverter REQUEST_CONVERTER = new MockMvcRequestConverter();
@@ -55,7 +53,7 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	@Deprecated
 	public static MockMvcRestDocumentationConfigurer documentationConfiguration(
-			RestDocumentation restDocumentation) {
+			org.springframework.restdocs.RestDocumentation restDocumentation) {
 		return documentationConfiguration(
 				(RestDocumentationContextProvider) restDocumentation);
 	}

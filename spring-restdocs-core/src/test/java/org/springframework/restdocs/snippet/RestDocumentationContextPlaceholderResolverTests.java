@@ -18,6 +18,7 @@ package org.springframework.restdocs.snippet;
 
 import org.junit.Test;
 
+import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
@@ -70,17 +71,23 @@ public class RestDocumentationContextPlaceholderResolverTests {
 
 	@Test
 	public void stepCount() throws Exception {
-		assertThat(createResolver("stepCount").resolvePlaceholder("step"), equalTo("0"));
+		assertThat(createResolver("stepCount").resolvePlaceholder("step"), equalTo("1"));
 	}
 
 	private PlaceholderResolver createResolver() {
-		return new RestDocumentationContextPlaceholderResolver(
-				new RestDocumentationContext(getClass(), null, null));
+		return createResolver(null);
 	}
 
 	private PlaceholderResolver createResolver(String methodName) {
-		return new RestDocumentationContextPlaceholderResolver(
-				new RestDocumentationContext(getClass(), methodName, null));
+		return new RestDocumentationContextPlaceholderResolver(createContext(methodName));
+	}
+
+	private RestDocumentationContext createContext(String methodName) {
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
+				"build");
+		manualRestDocumentation.beforeTest(getClass(), methodName);
+		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
+		return context;
 	}
 
 }

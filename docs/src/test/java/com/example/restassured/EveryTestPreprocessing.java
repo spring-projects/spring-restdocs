@@ -19,7 +19,6 @@ package com.example.restassured;
 import org.junit.Before;
 import org.junit.Rule;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.RestDocumentation;
 import org.springframework.restdocs.restassured.RestDocumentationFilter;
 
 import com.jayway.restassured.RestAssured;
