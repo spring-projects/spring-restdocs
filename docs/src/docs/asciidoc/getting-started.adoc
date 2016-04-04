@@ -134,7 +134,7 @@ described below.
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<phase>package</phase> <6>
+						<phase>prepare-package</phase> <6>
 						<goals>
 							<goal>process-asciidoc</goal>
 						</goals>
@@ -159,9 +159,8 @@ described below.
 <4> Add the Asciidoctor plugin
 <5> Define an attribute named `snippets` that can be used when including the generated
 	snippets in your documentation.
-<6> [[getting-started-build-configuration-maven-plugin-phase]] If you want to
-<<getting-started-build-configuration-maven-packaging, package the documentation>> in your
-project's jar you should use the `prepare-package` phase.
+<6> Using `prepare-package` allows the documentation to be
+	<<getting-started-build-configuration-maven-packaging, included in the package>>.
 
 [[getting-started-build-configuration-maven-packaging]]
 ==== Packaging the documentation
@@ -170,10 +169,8 @@ You may want to package the generated documentation in your project's jar file, 
 example to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
 static content] by Spring Boot.
 
-First, configure the Asciidoctor plugin so that it runs in the `prepare-package` phase, as
-<<getting-started-build-configuration-maven-plugin-phase, described above>>. Now configure
-Maven's resources plugin to copy the generated documentation into a location where it'll
-be included in the project's jar:
+Configure Maven's resources plugin to copy the generated documentation into a location
+where it'll be included in the project's jar:
 
 [source,xml,indent=0]
 ----
