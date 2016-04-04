@@ -307,6 +307,16 @@ public class UriModifyingOperationPreprocessorTests {
 				is(equalTo("The uri 'http://api.example.com:12345' should be used")));
 	}
 
+	@Test
+	public void modifiedUriDoesNotGetDoubleEncoded() {
+		this.preprocessor.scheme("https");
+		OperationRequest processed = this.preprocessor
+				.preprocess(createRequestWithUri("http://localhost:12345?foo=%7B%7D"));
+		assertThat(processed.getUri(),
+				is(equalTo(URI.create("https://localhost:12345?foo=%7B%7D"))));
+
+	}
+
 	private OperationRequest createRequestWithUri(String uri) {
 		return this.requestFactory.create(URI.create(uri), HttpMethod.GET, new byte[0],
 				new HttpHeaders(), new Parameters(),

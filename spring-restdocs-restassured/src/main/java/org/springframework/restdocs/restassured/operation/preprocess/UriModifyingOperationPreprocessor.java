@@ -140,7 +140,7 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 			modifiedHeaders.set(HttpHeaders.HOST, this.host);
 		}
 		return this.contentModifyingDelegate.preprocess(
-				new OperationRequestFactory().create(uriBuilder.build().toUri(),
+				new OperationRequestFactory().create(uriBuilder.build(true).toUri(),
 						request.getMethod(), request.getContent(), modifiedHeaders,
 						request.getParameters(), modify(request.getParts())));
 	}
