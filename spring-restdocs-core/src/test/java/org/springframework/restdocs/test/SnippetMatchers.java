@@ -72,7 +72,7 @@ public final class SnippetMatchers {
 			RequestMethod requestMethod, String uri) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new HttpRequestMatcher(requestMethod, uri,
-					new AsciidoctorCodeBlockMatcher<>("http"), 3);
+					new AsciidoctorCodeBlockMatcher<>("http", "nowrap"), 3);
 		}
 		return new HttpRequestMatcher(requestMethod, uri,
 				new MarkdownCodeBlockMatcher<>("http"), 2);
@@ -82,7 +82,7 @@ public final class SnippetMatchers {
 			HttpStatus status) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new HttpResponseMatcher(status,
-					new AsciidoctorCodeBlockMatcher<>("http"), 3);
+					new AsciidoctorCodeBlockMatcher<>("http", "nowrap"), 3);
 		}
 		return new HttpResponseMatcher(status, new MarkdownCodeBlockMatcher<>("http"), 2);
 	}
@@ -90,7 +90,7 @@ public final class SnippetMatchers {
 	@SuppressWarnings({ "rawtypes" })
 	public static CodeBlockMatcher<?> codeBlock(TemplateFormat format, String language) {
 		if ("adoc".equals(format.getFileExtension())) {
-			return new AsciidoctorCodeBlockMatcher(language);
+			return new AsciidoctorCodeBlockMatcher(language, null);
 		}
 		return new MarkdownCodeBlockMatcher(language);
 	}
@@ -180,9 +180,10 @@ public final class SnippetMatchers {
 	public static class AsciidoctorCodeBlockMatcher<T extends AsciidoctorCodeBlockMatcher<T>>
 			extends CodeBlockMatcher<T> {
 
-		protected AsciidoctorCodeBlockMatcher(String language) {
+		protected AsciidoctorCodeBlockMatcher(String language, String options) {
 			super(TemplateFormats.asciidoctor());
-			this.addLine("[source," + language + "]");
+			this.addLine("[source," + language
+					+ (options == null ? "" : ",options=\"" + options + "\"") + "]");
 			this.addLine("----");
 			this.addLine("----");
 		}
