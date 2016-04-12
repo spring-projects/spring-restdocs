@@ -160,4 +160,20 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 								.build());
 	}
 
+	@Test
+	public void additionalDescriptors() throws IOException {
+		this.snippet.expectRequestFields("additional-descriptors")
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("a.b", "Number", "one").row("a.c", "String", "two")
+						.row("a", "Object", "three"));
+
+		PayloadDocumentation
+				.requestFields(fieldWithPath("a.b").description("one"),
+						fieldWithPath("a.c").description("two"))
+				.and(fieldWithPath("a").description("three"))
+				.document(operationBuilder("additional-descriptors")
+						.request("http://localhost")
+						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
+	}
+
 }

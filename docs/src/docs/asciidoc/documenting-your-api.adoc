@@ -445,6 +445,45 @@ When documenting HTTP Headers, the test will fail if a documented header is not 
 the request or response.
 
 
+
+[[documenting-your-api-reusing-snippets]]
+=== Reusing snippets
+
+It's common for an API that's being documented to have some features that are common
+across several of its resources. To avoid repetition when documenting such resources a
+`Snippet` configured with the common elements can be reused.
+
+First, create the `Snippet` that describes the common elements. For example:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/SnippetReuse.java[tags=field]
+----
+
+Second, use this snippet and add further descriptors that are resource-specific. For
+example:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/MockMvcSnippetReuse.java[tags=use]
+----
+<1> Reuse the `pagingLinks` `Snippet` calling `and` to add descriptors that are specific
+	to the resource that is being documented.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/RestAssuredSnippetReuse.java[tags=use]
+----
+<1> Reuse the `pagingLinks` `Snippet` calling `and` to add descriptors that are specific
+	to the resource that is being documented.
+
+The result of the example is that links with the rels `first`, `last`, `next`, `previous`,
+`alpha`, and `bravo` are all documented.
+
+
+
 [[documenting-your-api-constraints]]
 === Documenting constraints
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package org.springframework.restdocs.hypermedia;
 
 import java.util.Arrays;
 import java.util.Map;
-
-import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * Static factory methods for documenting a RESTful API that utilizes Hypermedia.
@@ -59,7 +57,7 @@ public abstract class HypermediaDocumentation {
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
 	 */
-	public static Snippet links(LinkDescriptor... descriptors) {
+	public static LinksSnippet links(LinkDescriptor... descriptors) {
 		return new LinksSnippet(new ContentTypeLinkExtractor(),
 				Arrays.asList(descriptors));
 	}
@@ -83,7 +81,7 @@ public abstract class HypermediaDocumentation {
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
 	 */
-	public static Snippet links(Map<String, Object> attributes,
+	public static LinksSnippet links(Map<String, Object> attributes,
 			LinkDescriptor... descriptors) {
 		return new LinksSnippet(new ContentTypeLinkExtractor(),
 				Arrays.asList(descriptors), attributes);
@@ -107,7 +105,7 @@ public abstract class HypermediaDocumentation {
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
 	 */
-	public static Snippet links(LinkExtractor linkExtractor,
+	public static LinksSnippet links(LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
 		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors));
 	}
@@ -132,7 +130,7 @@ public abstract class HypermediaDocumentation {
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
 	 */
-	public static Snippet links(LinkExtractor linkExtractor,
+	public static LinksSnippet links(LinkExtractor linkExtractor,
 			Map<String, Object> attributes, LinkDescriptor... descriptors) {
 		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors), attributes);
 	}

@@ -133,6 +133,19 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 										.build());
 	}
 
+	@Test
+	public void additionalDescriptors() throws IOException {
+		this.snippet.expectPathParameters("additional-descriptors").withContents(
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
+						.row("a", "one").row("b", "two"));
+		RequestDocumentation.pathParameters(parameterWithName("a").description("one"))
+				.and(parameterWithName("b").description("two"))
+				.document(operationBuilder("additional-descriptors")
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}")
+						.build());
+	}
+
 	private String getTitle() {
 		return this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}/{b}"
 				: "`/{a}/{b}`";

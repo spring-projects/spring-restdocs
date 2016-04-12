@@ -143,4 +143,27 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 										.header("Accept", "*/*").build());
 	}
 
+	@Test
+	public void additionalDescriptors() throws IOException {
+		this.snippet.expectRequestHeaders("additional-descriptors")
+				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one")
+						.row("Accept", "two").row("Accept-Encoding", "three")
+						.row("Accept-Language", "four").row("Cache-Control", "five")
+						.row("Connection", "six"));
+		HeaderDocumentation
+				.requestHeaders(headerWithName("X-Test").description("one"),
+						headerWithName("Accept").description("two"),
+						headerWithName("Accept-Encoding").description("three"),
+						headerWithName("Accept-Language").description("four"))
+				.and(headerWithName("Cache-Control").description("five"),
+						headerWithName("Connection").description("six"))
+				.document(operationBuilder("additional-descriptors")
+						.request("http://localhost").header("X-Test", "test")
+						.header("Accept", "*/*")
+						.header("Accept-Encoding", "gzip, deflate")
+						.header("Accept-Language", "en-US,en;q=0.5")
+						.header("Cache-Control", "max-age=0")
+						.header("Connection", "keep-alive").build());
+	}
+
 }

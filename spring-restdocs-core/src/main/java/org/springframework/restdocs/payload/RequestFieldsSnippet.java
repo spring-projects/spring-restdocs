@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +66,20 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	@Override
 	protected byte[] getContent(Operation operation) throws IOException {
 		return operation.getRequest().getContent();
+	}
+
+	/**
+	 * Returns a new {@code RequestFieldsSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public RequestFieldsSnippet and(FieldDescriptor... additionalDescriptors) {
+		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
+		combinedDescriptors.addAll(getFieldDescriptors());
+		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+		return new RequestFieldsSnippet(combinedDescriptors, this.getAttributes());
 	}
 
 }

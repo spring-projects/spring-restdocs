@@ -128,4 +128,16 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 												.build());
 	}
 
+	@Test
+	public void additionalDescriptors() throws IOException {
+		this.snippet.expectRequestParameters("additional-descriptors")
+				.withContents(tableWithHeader("Parameter", "Description").row("a", "one")
+						.row("b", "two"));
+		RequestDocumentation.requestParameters(parameterWithName("a").description("one"))
+				.and(parameterWithName("b").description("two"))
+				.document(operationBuilder("additional-descriptors")
+						.request("http://localhost").param("a", "bravo")
+						.param("b", "bravo").build());
+	}
+
 }

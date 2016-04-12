@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.request;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +122,20 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 					+ "the request: " + missingParameters;
 		}
 		throw new SnippetException(message);
+	}
+
+	/**
+	 * Returns a new {@code PathParametersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public PathParametersSnippet and(ParameterDescriptor... additionalDescriptors) {
+		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>();
+		combinedDescriptors.addAll(getParameterDescriptors().values());
+		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+		return new PathParametersSnippet(combinedDescriptors, this.getAttributes());
 	}
 
 }

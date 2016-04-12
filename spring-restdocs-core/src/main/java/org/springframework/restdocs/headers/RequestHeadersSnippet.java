@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.headers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +29,7 @@ import org.springframework.restdocs.snippet.Snippet;
  * A {@link Snippet} that documents the headers in a request.
  *
  * @author Andreas Evers
+ * @author Andy Wilkinson
  * @see HeaderDocumentation#requestHeaders(HeaderDescriptor...)
  * @see HeaderDocumentation#requestHeaders(Map, HeaderDescriptor...)
  */
@@ -58,6 +61,20 @@ public class RequestHeadersSnippet extends AbstractHeadersSnippet {
 	@Override
 	protected Set<String> extractActualHeaders(Operation operation) {
 		return operation.getRequest().getHeaders().keySet();
+	}
+
+	/**
+	 * Returns a new {@code RequestHeadersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public RequestHeadersSnippet and(HeaderDescriptor... additionalDescriptors) {
+		List<HeaderDescriptor> combinedDescriptors = new ArrayList<>();
+		combinedDescriptors.addAll(this.getHeaderDescriptors());
+		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+		return new RequestHeadersSnippet(combinedDescriptors, getAttributes());
 	}
 
 }

@@ -122,8 +122,21 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * {@link ParameterDescriptor#getName()}.
 	 *
 	 * @return the map of path descriptors
+	 * @deprecated since 1.1.0 in favor of {@link #getParameterDescriptors()}
 	 */
+	@Deprecated
 	protected final Map<String, ParameterDescriptor> getFieldDescriptors() {
+		return this.descriptorsByName;
+	}
+
+	/**
+	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will
+	 * be used to generate the documentation key by their
+	 * {@link ParameterDescriptor#getName()}.
+	 *
+	 * @return the map of path descriptors
+	 */
+	protected final Map<String, ParameterDescriptor> getParameterDescriptors() {
 		return this.descriptorsByName;
 	}
 

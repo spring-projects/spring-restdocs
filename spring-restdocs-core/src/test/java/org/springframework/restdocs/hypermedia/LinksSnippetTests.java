@@ -132,4 +132,16 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 												.build());
 	}
 
+	@Test
+	public void additionalDescriptors() throws IOException {
+		this.snippet.expectLinks("additional-descriptors")
+				.withContents(tableWithHeader("Relation", "Description").row("a", "one")
+						.row("b", "two"));
+		HypermediaDocumentation
+				.links(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+						new Link("b", "bravo")),
+				new LinkDescriptor("a").description("one"))
+				.and(new LinkDescriptor("b").description("two"))
+				.document(operationBuilder("additional-descriptors").build());
+	}
 }

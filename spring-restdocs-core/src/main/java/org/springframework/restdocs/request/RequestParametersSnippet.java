@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.request;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,6 +84,20 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 	@Override
 	protected Set<String> extractActualParameters(Operation operation) {
 		return operation.getRequest().getParameters().keySet();
+	}
+
+	/**
+	 * Returns a new {@code RequestParametersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public RequestParametersSnippet and(ParameterDescriptor... additionalDescriptors) {
+		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>();
+		combinedDescriptors.addAll(getParameterDescriptors().values());
+		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+		return new RequestParametersSnippet(combinedDescriptors, this.getAttributes());
 	}
 
 }

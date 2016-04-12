@@ -133,4 +133,25 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 										.header("Etag", "lskjadldj3ii32l2ij23").build());
 	}
 
+	@Test
+	public void additionalDescriptors() throws IOException {
+		this.snippet.expectResponseHeaders("additional-descriptors")
+				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one")
+						.row("Content-Type", "two").row("Etag", "three")
+						.row("Cache-Control", "five").row("Vary", "six"));
+		HeaderDocumentation
+				.responseHeaders(headerWithName("X-Test").description("one"),
+						headerWithName("Content-Type").description("two"),
+						headerWithName("Etag").description("three"))
+				.and(headerWithName("Cache-Control").description("five"),
+						headerWithName("Vary")
+								.description("six"))
+				.document(operationBuilder("additional-descriptors").response()
+						.header("X-Test", "test")
+						.header("Content-Type", "application/json")
+						.header("Etag", "lskjadldj3ii32l2ij23")
+						.header("Cache-Control", "max-age=0").header("Vary", "User-Agent")
+						.build());
+	}
+
 }

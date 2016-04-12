@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.restdocs.operation.OperationRequest;
-import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * Static factory methods for documenting aspects of a request sent to a RESTful API.
@@ -61,7 +60,8 @@ public abstract class RequestDocumentation {
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
-	public static Snippet pathParameters(ParameterDescriptor... descriptors) {
+	public static PathParametersSnippet pathParameters(
+			ParameterDescriptor... descriptors) {
 		return new PathParametersSnippet(Arrays.asList(descriptors));
 	}
 
@@ -84,7 +84,7 @@ public abstract class RequestDocumentation {
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
-	public static Snippet pathParameters(Map<String, Object> attributes,
+	public static PathParametersSnippet pathParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {
 		return new PathParametersSnippet(Arrays.asList(descriptors), attributes);
 	}
@@ -107,7 +107,8 @@ public abstract class RequestDocumentation {
 	 * @return the snippet
 	 * @see OperationRequest#getParameters()
 	 */
-	public static Snippet requestParameters(ParameterDescriptor... descriptors) {
+	public static RequestParametersSnippet requestParameters(
+			ParameterDescriptor... descriptors) {
 		return new RequestParametersSnippet(Arrays.asList(descriptors));
 	}
 
@@ -131,8 +132,8 @@ public abstract class RequestDocumentation {
 	 * @return the snippet that will document the parameters
 	 * @see OperationRequest#getParameters()
 	 */
-	public static Snippet requestParameters(Map<String, Object> attributes,
-			ParameterDescriptor... descriptors) {
+	public static RequestParametersSnippet requestParameters(
+			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
 		return new RequestParametersSnippet(Arrays.asList(descriptors), attributes);
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package org.springframework.restdocs.payload;
 
 import java.util.Arrays;
 import java.util.Map;
-
-import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * Static factory methods for documenting a RESTful API's request and response payloads.
@@ -117,7 +115,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
 	 */
-	public static Snippet requestFields(FieldDescriptor... descriptors) {
+	public static RequestFieldsSnippet requestFields(FieldDescriptor... descriptors) {
 		return new RequestFieldsSnippet(Arrays.asList(descriptors));
 	}
 
@@ -142,7 +140,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
 	 */
-	public static Snippet requestFields(Map<String, Object> attributes,
+	public static RequestFieldsSnippet requestFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
 		return new RequestFieldsSnippet(Arrays.asList(descriptors), attributes);
 	}
@@ -167,7 +165,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
 	 */
-	public static Snippet responseFields(FieldDescriptor... descriptors) {
+	public static ResponseFieldsSnippet responseFields(FieldDescriptor... descriptors) {
 		return new ResponseFieldsSnippet(Arrays.asList(descriptors));
 	}
 
@@ -192,7 +190,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
 	 */
-	public static Snippet responseFields(Map<String, Object> attributes,
+	public static ResponseFieldsSnippet responseFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
 		return new ResponseFieldsSnippet(Arrays.asList(descriptors), attributes);
 	}

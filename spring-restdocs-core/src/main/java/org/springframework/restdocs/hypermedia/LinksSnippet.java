@@ -18,6 +18,7 @@ package org.springframework.restdocs.hypermedia;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -168,6 +169,20 @@ public class LinksSnippet extends TemplatedSnippet {
 		model.put("optional", descriptor.isOptional());
 		model.putAll(descriptor.getAttributes());
 		return model;
+	}
+
+	/**
+	 * Returns a new {@code RequestHeadersSnippet} configured with this snippet's link
+	 * extractor and attributes, and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public LinksSnippet and(LinkDescriptor... additionalDescriptors) {
+		List<LinkDescriptor> combinedDescriptors = new ArrayList<>();
+		combinedDescriptors.addAll(this.descriptorsByRel.values());
+		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+		return new LinksSnippet(this.linkExtractor, combinedDescriptors, getAttributes());
 	}
 
 }

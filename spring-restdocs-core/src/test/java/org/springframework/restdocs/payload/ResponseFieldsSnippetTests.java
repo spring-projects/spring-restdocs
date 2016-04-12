@@ -211,4 +211,25 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 								.build());
 	}
 
+	@Test
+	public void additionalDescriptors() throws IOException {
+		this.snippet.expectResponseFields("additional-descriptors")
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("id", "Number", "one").row("date", "String", "two")
+						.row("assets", "Array", "three").row("assets[]", "Object", "four")
+						.row("assets[].id", "Number", "five")
+						.row("assets[].name", "String", "six"));
+		PayloadDocumentation
+				.responseFields(fieldWithPath("id").description("one"),
+						fieldWithPath("date").description("two"),
+						fieldWithPath("assets").description("three"))
+				.and(fieldWithPath("assets[]").description("four"),
+						fieldWithPath("assets[].id").description("five"),
+						fieldWithPath("assets[].name").description("six"))
+				.document(operationBuilder("additional-descriptors").response()
+						.content("{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
+								+ " [{\"id\":356,\"name\": \"sample\"}]}")
+						.build());
+	}
+
 }
