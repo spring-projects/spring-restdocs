@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,9 +54,9 @@ class HalLinkExtractor extends AbstractJsonLinkExtractor {
 		List<Link> links = new ArrayList<>();
 		if (object instanceof Collection) {
 			@SuppressWarnings("unchecked")
-			Collection<Object> hrefObjects = (Collection<Object>) object;
-			for (Object hrefObject : hrefObjects) {
-				maybeAddLink(maybeCreateLink(rel, hrefObject), links);
+			Collection<Object> possibleLinkObjects = (Collection<Object>) object;
+			for (Object possibleLinkObject : possibleLinkObjects) {
+				maybeAddLink(maybeCreateLink(rel, possibleLinkObject), links);
 			}
 		}
 		else {
@@ -65,9 +65,12 @@ class HalLinkExtractor extends AbstractJsonLinkExtractor {
 		return links;
 	}
 
-	private static Link maybeCreateLink(String rel, Object possibleHref) {
-		if (possibleHref instanceof String) {
-			return new Link(rel, (String) possibleHref);
+	private static Link maybeCreateLink(String rel, Object possibleLinkObject) {
+		if (possibleLinkObject instanceof Map) {
+			Object hrefObject = ((Map<?, ?>) possibleLinkObject).get("href");
+			if (hrefObject instanceof String) {
+				return new Link(rel, (String) hrefObject);
+			}
 		}
 		return null;
 	}
