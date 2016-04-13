@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ public class ParameterDescriptor extends IgnorableDescriptor<ParameterDescriptor
 
 	private final String name;
 
+	private boolean optional;
+
 	/**
 	 * Creates a new {@code ParameterDescriptor} describing the parameter with the given
 	 * {@code name}.
@@ -40,12 +42,33 @@ public class ParameterDescriptor extends IgnorableDescriptor<ParameterDescriptor
 	}
 
 	/**
+	 * Marks the parameter as optional.
+	 *
+	 * @return {@code this}
+	 */
+	public final ParameterDescriptor optional() {
+		this.optional = true;
+		return this;
+	}
+
+	/**
 	 * Returns the name of the parameter being described by this descriptor.
 	 *
 	 * @return the name of the parameter
 	 */
 	public final String getName() {
 		return this.name;
+	}
+
+	/**
+	 * Returns {@code true} if the described parameter is optional, otherwise
+	 * {@code false}.
+	 *
+	 * @return {@code true} if the described parameter is optional, otherwise
+	 * {@code false}
+	 */
+	public final boolean isOptional() {
+		return this.optional;
 	}
 
 }

@@ -348,7 +348,8 @@ table describing the parameters that are supported by the resource.
 
 When documenting request parameters, the test will fail if an undocumented request
 parameter is used in the request. Similarly, the test will also fail if a documented
-request parameter is not found in the request.
+request parameter is not found in the request and the request parameter has not been
+marked as optional.
 
 If you do not want to document a request parameter, you can mark it as ignored. This will
 prevent it from appearing in the generated snippet while avoiding the failure described
@@ -396,7 +397,7 @@ built using one of the methods on `RestDocumentationRequestBuilders` rather than
 
 When documenting path parameters, the test will fail if an undocumented path parameter
 is used in the request. Similarly, the test will also fail if a documented path parameter
-is not found in the request.
+is not found in the request and the path parameter has not been marked as optional.
 
 If you do not want to document a path parameter, you can mark it as ignored. This will
 prevent it from appearing in the generated snippet while avoiding the failure described

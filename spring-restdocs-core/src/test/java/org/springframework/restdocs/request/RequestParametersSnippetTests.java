@@ -81,6 +81,19 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void missingOptionalRequestParameter() throws IOException {
+		this.snippet.expectRequestParameters("missing-optional-request-parameter")
+				.withContents(tableWithHeader("Parameter", "Description").row("a", "one")
+						.row("b", "two"));
+		new RequestParametersSnippet(
+				Arrays.asList(parameterWithName("a").description("one").optional(),
+						parameterWithName("b").description("two"))).document(
+								operationBuilder("missing-optional-request-parameter")
+										.request("http://localhost").param("b", "bravo")
+										.build());
+	}
+
+	@Test
 	public void requestParametersWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))

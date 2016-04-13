@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,22 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 						.document(operationBuilder("ignored-path-parameter").attribute(
 								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
 								"/{a}/{b}").build());
+	}
+
+	@Test
+	public void missingOptionalPathParameter() throws IOException {
+		this.snippet
+				.expectPathParameters(
+						"missing-optional-path-parameter")
+				.withContents(tableWithTitleAndHeader(
+						this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}"
+								: "`/{a}`",
+						"Parameter", "Description").row("a", "one").row("b", "two"));
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
+				parameterWithName("b").description("two").optional())).document(
+						operationBuilder("missing-optional-path-parameter").attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}").build());
 	}
 
 	@Test

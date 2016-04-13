@@ -85,7 +85,13 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 
 	private void verifyParameterDescriptors(Operation operation) {
 		Set<String> actualParameters = extractActualParameters(operation);
-		Set<String> expectedParameters = this.descriptorsByName.keySet();
+		Set<String> expectedParameters = new HashSet<>();
+		for (Entry<String, ParameterDescriptor> entry : this.descriptorsByName
+				.entrySet()) {
+			if (!entry.getValue().isOptional()) {
+				expectedParameters.add(entry.getKey());
+			}
+		}
 		Set<String> undocumentedParameters = new HashSet<>(actualParameters);
 		undocumentedParameters.removeAll(expectedParameters);
 		Set<String> missingParameters = new HashSet<>(expectedParameters);
