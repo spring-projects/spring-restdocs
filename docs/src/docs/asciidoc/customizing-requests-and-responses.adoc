@@ -109,12 +109,21 @@ the name is equal to any of the given header names.
 response where the name matches any of the given regular expression patterns.
 
 
+
 [[customizing-requests-and-responses-preprocessors-replace-patterns]]
 ==== Replacing patterns
 
 `replacePattern` on `Preprocessors` provides a general purpose mechanism for
 replacing content in a request or response. Any occurrences of a regular expression are
 replaced.
+
+
+
+[[customizing-requests-and-responses-preprocessors-modify-request-parameters]]
+==== Modifying request parameters
+
+`modifyParameters` on `Preprocessors` can be used to add, set, and remove request
+parameters.
 
 
 

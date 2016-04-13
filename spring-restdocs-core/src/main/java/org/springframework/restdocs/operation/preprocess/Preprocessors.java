@@ -127,7 +127,7 @@ public final class Preprocessors {
 
 	/**
 	 * Returns an {@code OperationPreprocessor} that will modify the content of the
-	 * request or response by replacing occurences of the given {@code pattern} with the
+	 * request or response by replacing occurrences of the given {@code pattern} with the
 	 * given {@code replacement}.
 	 *
 	 * @param pattern the pattern
@@ -138,6 +138,17 @@ public final class Preprocessors {
 			String replacement) {
 		return new ContentModifyingOperationPreprocessor(
 				new PatternReplacingContentModifier(pattern, replacement));
+	}
+
+	/**
+	 * Returns a {@code ParametersModifyingOperationPreprocessor} that can then be
+	 * configured to modify the parameters of the request.
+	 *
+	 * @return the preprocessor
+	 * @since 1.1.0
+	 */
+	public static ParametersModifyingOperationPreprocessor modifyParameters() {
+		return new ParametersModifyingOperationPreprocessor();
 	}
 
 }
