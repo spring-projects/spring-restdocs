@@ -53,6 +53,10 @@ public abstract class HypermediaDocumentation {
 	 * If you do not want to document a link, a link descriptor can be marked as
 	 * {@link LinkDescriptor#ignored}. This will prevent it from appearing in the
 	 * generated snippet while avoiding the failure described above.
+	 * <p>
+	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
+	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
+	 * link does not have a title a failure will occur.
 	 *
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links

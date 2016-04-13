@@ -88,6 +88,20 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void linkDescriptionFromTitleInPayload() throws IOException {
+		this.snippet.expectLinks("link-description-from-title-in-payload")
+				.withContents(tableWithHeader("Relation", "Description").row("a", "one")
+						.row("b", "Link b"));
+		new LinksSnippet(
+				new StubLinkExtractor().withLinks(new Link("a", "alpha", "Link a"),
+						new Link("b", "bravo", "Link b")),
+				Arrays.asList(new LinkDescriptor("a").description("one"),
+						new LinkDescriptor("b"))).document(
+								operationBuilder("link-description-from-title-in-payload")
+										.build());
+	}
+
+	@Test
 	public void linksWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("links"))

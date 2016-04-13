@@ -79,4 +79,16 @@ public class LinksSnippetFailureTests {
 								this.snippet.getOutputDirectory()).build());
 	}
 
+	@Test
+	public void linkWithNoDescription() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown.expectMessage(
+				equalTo("No description was provided for the link with rel 'foo' and no"
+						+ " title was available from the link in the payload"));
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
+				Arrays.asList(new LinkDescriptor("foo")))
+						.document(new OperationBuilder("link-with-no-description",
+								this.snippet.getOutputDirectory()).build());
+	}
+
 }

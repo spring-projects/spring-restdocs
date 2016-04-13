@@ -67,9 +67,12 @@ class HalLinkExtractor extends AbstractJsonLinkExtractor {
 
 	private static Link maybeCreateLink(String rel, Object possibleLinkObject) {
 		if (possibleLinkObject instanceof Map) {
-			Object hrefObject = ((Map<?, ?>) possibleLinkObject).get("href");
+			Map<?, ?> possibleLinkMap = (Map<?, ?>) possibleLinkObject;
+			Object hrefObject = possibleLinkMap.get("href");
 			if (hrefObject instanceof String) {
-				return new Link(rel, (String) hrefObject);
+				Object titleObject = possibleLinkMap.get("title");
+				return new Link(rel, (String) hrefObject,
+						titleObject instanceof String ? (String) titleObject : null);
 			}
 		}
 		return null;

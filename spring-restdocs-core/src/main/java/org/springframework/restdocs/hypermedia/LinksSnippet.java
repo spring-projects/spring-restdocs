@@ -77,12 +77,6 @@ public class LinksSnippet extends TemplatedSnippet {
 		this.linkExtractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getRel(), "Link descriptors must have a rel");
-			if (!descriptor.isIgnored()) {
-				Assert.notNull(descriptor.getDescription(),
-						"The descriptor for link '" + descriptor.getRel()
-								+ "' must either have a description or be" + " marked as "
-								+ "ignored");
-			}
 			this.descriptorsByRel.put(descriptor.getRel(), descriptor);
 		}
 	}
@@ -90,14 +84,16 @@ public class LinksSnippet extends TemplatedSnippet {
 	@Override
 	protected Map<String, Object> createModel(Operation operation) {
 		OperationResponse response = operation.getResponse();
+		Map<String, List<Link>> links;
 		try {
-			validate(this.linkExtractor.extractLinks(response));
+			links = this.linkExtractor.extractLinks(response);
+			validate(links);
 		}
 		catch (IOException ex) {
 			throw new ModelCreationException(ex);
 		}
 		Map<String, Object> model = new HashMap<>();
-		model.put("links", createLinksModel());
+		model.put("links", createLinksModel(links));
 		return model;
 	}
 
@@ -135,15 +131,46 @@ public class LinksSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private List<Map<String, Object>> createLinksModel() {
+	private List<Map<String, Object>> createLinksModel(Map<String, List<Link>> links) {
 		List<Map<String, Object>> model = new ArrayList<>();
 		for (Entry<String, LinkDescriptor> entry : this.descriptorsByRel.entrySet()) {
 			LinkDescriptor descriptor = entry.getValue();
 			if (!descriptor.isIgnored()) {
+				if (descriptor.getDescription() == null) {
+					descriptor = createDescriptor(
+							getDescriptionFromLinkTitle(links, descriptor.getRel()),
+							descriptor);
+				}
 				model.add(createModelForDescriptor(descriptor));
 			}
 		}
 		return model;
+	}
+
+	private String getDescriptionFromLinkTitle(Map<String, List<Link>> links,
+			String rel) {
+		List<Link> linksForRel = links.get(rel);
+		if (linksForRel != null) {
+			for (Link link : linksForRel) {
+				if (link.getTitle() != null) {
+					return link.getTitle();
+				}
+			}
+		}
+		throw new SnippetException("No description was provided for the link with rel '"
+				+ rel + "' and no title was available from the link in the payload");
+	}
+
+	private LinkDescriptor createDescriptor(String description, LinkDescriptor source) {
+		LinkDescriptor newDescriptor = new LinkDescriptor(source.getRel())
+				.description(description);
+		if (source.isOptional()) {
+			newDescriptor.optional();
+		}
+		if (source.isIgnored()) {
+			newDescriptor.ignored();
+		}
+		return newDescriptor;
 	}
 
 	/**

@@ -29,6 +29,8 @@ public class Link {
 
 	private final String href;
 
+	private final String title;
+
 	/**
 	 * Creates a new {@code Link} with the given {@code rel} and {@code href}.
 	 *
@@ -36,8 +38,21 @@ public class Link {
 	 * @param href The link's href
 	 */
 	public Link(String rel, String href) {
+		this(rel, href, null);
+	}
+
+	/**
+	 * Creates a new {@code Link} with the given {@code rel}, {@code href}, and
+	 * {@code title}.
+	 *
+	 * @param rel The link's rel
+	 * @param href The link's href
+	 * @param title The link's title
+	 */
+	public Link(String rel, String href, String title) {
 		this.rel = rel;
 		this.href = href;
+		this.title = title;
 	}
 
 	/**
@@ -56,12 +71,21 @@ public class Link {
 		return this.href;
 	}
 
+	/**
+	 * Returns the link's {@code title}, or {@code null} if it does not have a title.
+	 * @return the link's {@code title} or {@code null}
+	 */
+	public String getTitle() {
+		return this.title;
+	}
+
 	@Override
 	public int hashCode() {
-		int prime = 31;
+		final int prime = 31;
 		int result = 1;
 		result = prime * result + this.href.hashCode();
 		result = prime * result + this.rel.hashCode();
+		result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
 		return result;
 	}
 
@@ -83,13 +107,21 @@ public class Link {
 		if (!this.rel.equals(other.rel)) {
 			return false;
 		}
+		if (this.title == null) {
+			if (other.title != null) {
+				return false;
+			}
+		}
+		else if (!this.title.equals(other.title)) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringCreator(this).append("rel", this.rel).append("href", this.href)
-				.toString();
+				.append("title", this.title).toString();
 	}
 
 }

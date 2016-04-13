@@ -38,7 +38,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.hypermedia.Link;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentationIntegrationTests.TestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -461,7 +460,10 @@ public class MockMvcRestDocumentationIntegrationTests {
 		public ResponseEntity<Map<String, Object>> foo() {
 			Map<String, Object> response = new HashMap<>();
 			response.put("a", "alpha");
-			response.put("links", Arrays.asList(new Link("rel", "href")));
+			Map<String, String> link = new HashMap<>();
+			link.put("rel", "rel");
+			link.put("href", "href");
+			response.put("links", Arrays.asList(link));
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("a", "alpha");
 			return new ResponseEntity<>(response, headers, HttpStatus.OK);
