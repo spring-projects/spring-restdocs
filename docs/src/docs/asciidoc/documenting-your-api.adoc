@@ -534,6 +534,21 @@ Default descriptions are provided for all of the Bean Validation 1.1's constrain
 * Pattern
 * Size
 
+Default descriptions are also provided for constraints from Hibernate Validator:
+
+* CreditCardNumber
+* EAN
+* Email
+* Length
+* LuhnCheck
+* Mod10Check
+* Mod11Check
+* NotBlank
+* NotEmpty
+* Range
+* SafeHtml
+* URL
+
 To override the default descriptions, or to provide a new description, create a resource
 bundle with the base name
 `org.springframework.restdocs.constraints.ConstraintDescriptions`.  The Spring
