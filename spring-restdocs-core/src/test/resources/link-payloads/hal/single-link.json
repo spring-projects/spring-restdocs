@@ -1,5 +1,7 @@
 {
 	"_links": {
-		"alpha": "http://alpha.example.com"
+		"alpha": {
+		    "href": "http://alpha.example.com"
+		}
 	}
 }
