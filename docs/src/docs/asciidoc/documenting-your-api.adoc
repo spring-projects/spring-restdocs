@@ -84,6 +84,22 @@ If your API represents its links in a format other than Atom or HAL, you can pro
 own implementation of the `LinkExtractor` interface to extract the links from the
 response.
 
+
+
+[[documenting-your-api-hypermedia-ignoring-common-links]]
+==== Ignoring common links
+
+Rather than documenting links that are common to every response, such as `_self` and
+`curies` when using HAL, you may want to document them once in an overview section and
+then ignore them in the rest of your API's documentation. To do so, you can build on the
+<<documenting-your-api-reusing-snippets,support for reusing snippets>> to add link
+descriptors to a snippet that's preconfigured to ignore certain links. For example:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Hypermedia.java[tags=ignore-links]
+----
+
 [[documenting-your-api-request-response-payloads]]
 === Request and response payloads
 
