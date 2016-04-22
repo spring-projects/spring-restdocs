@@ -27,6 +27,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -68,6 +69,26 @@ public class Payload {
 							.attributes(key("constraints")
 									.value("Must be a valid email address"))))); // <3>
 			// end::constraints[]
+	}
+
+	public void descriptorReuse() throws Exception {
+		FieldDescriptor[] book = new FieldDescriptor[] {
+				fieldWithPath("title").description("Title of the book"),
+				fieldWithPath("author").description("Author of the book") };
+
+		// tag::single-book[]
+		this.mockMvc.perform(get("/books/1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("book", responseFields(book))); // <1>
+				// end::single-book[]
+
+		// tag::book-array[]
+		this.mockMvc.perform(get("/books").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("book", responseFields(
+						fieldWithPath("[]").description("An array of books")) // <1>
+						.andWithPrefix("[].", book))); // <2>
+		// end::book-array[]
 	}
 
 }

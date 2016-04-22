@@ -176,4 +176,19 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
 	}
 
+	@Test
+	public void prefixedAdditionalDescriptors() throws IOException {
+		this.snippet.expectRequestFields("prefixed-additional-descriptors")
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("a", "Object", "one").row("a.b", "Number", "two")
+						.row("a.c", "String", "three"));
+
+		PayloadDocumentation.requestFields(fieldWithPath("a").description("one"))
+				.andWithPrefix("a.", fieldWithPath("b").description("two"),
+						fieldWithPath("c").description("three"))
+				.document(operationBuilder("prefixed-additional-descriptors")
+						.request("http://localhost")
+						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
+	}
+
 }

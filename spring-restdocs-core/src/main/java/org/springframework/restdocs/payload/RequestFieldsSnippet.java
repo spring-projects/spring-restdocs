@@ -72,13 +72,30 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * Returns a new {@code RequestFieldsSnippet} configured with this snippet's
 	 * attributes and its descriptors combined with the given
 	 * {@code additionalDescriptors}.
+	 *
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
 	public RequestFieldsSnippet and(FieldDescriptor... additionalDescriptors) {
+		return andWithPrefix("", additionalDescriptors);
+	}
+
+	/**
+	 * Returns a new {@code RequestFieldsSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}. The given {@code pathPrefix} is applied to the path
+	 * of each additional descriptor.
+	 *
+	 * @param pathPrefix the prefix to apply to the additional descriptors
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public RequestFieldsSnippet andWithPrefix(String pathPrefix,
+			FieldDescriptor... additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
 		combinedDescriptors.addAll(getFieldDescriptors());
-		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+		combinedDescriptors.addAll(
+				applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
 		return new RequestFieldsSnippet(combinedDescriptors, this.getAttributes());
 	}
 

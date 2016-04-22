@@ -296,6 +296,85 @@ method will be used in the documentation.
 
 
 
+[[documenting-your-api-request-response-payloads-reusing-field-descriptors]]
+==== Reusing field descriptors
+
+In addition to the general support for <<documenting-your-api-reusing-snippets,reusing
+snippets>>, the request and response snippets allow additional descriptors to be
+configured with a path prefix. This allows the descriptors for a repeated portion of a
+request or response payload to be created once and then reused.
+
+Consider an endpoint that returns a book:
+
+[source,json,indent=0]
+----
+	{
+		"title": "Pride and Prejudice",
+		"author": "Jane Austen"
+	}
+----
+
+The paths for `title` and `author` are simply `title` and `author` respectively.
+
+Now consider an endpoint that returns an array of books:
+
+[source,json,indent=0]
+----
+	[{
+		"title": "Pride and Prejudice",
+		"author": "Jane Austen"
+	},
+	{
+		"title": "To Kill a Mockingbird",
+		"author": "Harper Lee"
+	}]
+----
+
+The paths for `title` and `author` are `[].title` and `[].author` respectively. The only
+difference between the single book and the array of books is that the fields' paths now
+have a `[].` prefix.
+
+The descriptors that document a book can be created:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Payload.java[tags=book-descriptors]
+----
+
+They can then be used to document a single book:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=single-book]
+----
+<1> Document `title` and `author` using existing descriptors
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Payload.java[tags=single-book]
+----
+<1> Document `title` and `author` using existing descriptors
+
+And an array of books:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=book-array]
+----
+<1> Document the array
+<2> Document `[].title` and `[].author` using the existing descriptors prefixed with `[].`
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Payload.java[tags=book-array]
+----
+<1> Document the array
+<2> Document `[].title` and `[].author` using the existing descriptors prefixed with `[].`
+
 [[documenting-your-api-request-parameters]]
 === Request parameters
 

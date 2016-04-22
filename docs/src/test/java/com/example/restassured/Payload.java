@@ -16,6 +16,7 @@
 
 package com.example.restassured;
 
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.jayway.restassured.RestAssured;
@@ -70,6 +71,29 @@ public class Payload {
 		// end::constraints[]
 		.when().post("/users")
 		.then().assertThat().statusCode(is(200));
+	}
+
+	public void descriptorReuse() throws Exception {
+		FieldDescriptor[] book = new FieldDescriptor[] {
+				fieldWithPath("title").description("Title of the book"),
+				fieldWithPath("author").description("Author of the book") };
+
+		// tag::single-book[]
+		RestAssured.given(this.spec).accept("application/json")
+			.filter(document("book", responseFields(book))) // <1>
+			.when().get("/books/1")
+			.then().assertThat().statusCode(is(200));
+		// end::single-book[]
+
+		// tag::book-array[]
+		RestAssured.given(this.spec).accept("application/json")
+			.filter(document("books", responseFields(
+				fieldWithPath("[]").description("An array of books")) // <1>
+				.andWithPrefix("[].", book))) // <2>
+		.when().get("/books/1")
+		.then().assertThat().statusCode(is(200));
+		// end::book-array[]
+
 	}
 
 }

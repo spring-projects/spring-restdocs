@@ -232,4 +232,18 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 						.build());
 	}
 
+	@Test
+	public void prefixedAdditionalDescriptors() throws IOException {
+		this.snippet.expectResponseFields("prefixed-additional-descriptors")
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("a", "Object", "one").row("a.b", "Number", "two")
+						.row("a.c", "String", "three"));
+
+		PayloadDocumentation.responseFields(fieldWithPath("a").description("one"))
+				.andWithPrefix("a.", fieldWithPath("b").description("two"),
+						fieldWithPath("c").description("three"))
+				.document(operationBuilder("prefixed-additional-descriptors").response()
+						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
+	}
+
 }
