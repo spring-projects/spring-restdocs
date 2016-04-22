@@ -37,25 +37,57 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 
 	/**
 	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
-	 * response using the given {@code descriptors}.
+	 * response using the given {@code descriptors}. Undocumented fields will trigger a
+	 * failure.
 	 *
 	 * @param descriptors the descriptors
 	 */
 	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors) {
-		this(descriptors, null);
+		this(descriptors, null, false);
+	}
+
+	/**
+	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
+	 * response using the given {@code descriptors}. If {@code ignoreUndocumentedFields}
+	 * is {@code true}, undocumented fields will be ignored and will not trigger a
+	 * failure.
+	 *
+	 * @param descriptors the descriptors
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 */
+	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors,
+			boolean ignoreUndocumentedFields) {
+		this(descriptors, null, ignoreUndocumentedFields);
 	}
 
 	/**
 	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
 	 * response using the given {@code descriptors}. The given {@code attributes} will be
-	 * included in the model during template rendering.
+	 * included in the model during template rendering. Undocumented fields will trigger a
+	 * failure.
 	 *
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
 	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors,
 			Map<String, Object> attributes) {
-		super("response", descriptors, attributes);
+		this(descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
+	 * response using the given {@code descriptors}. The given {@code attributes} will be
+	 * included in the model during template rendering. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 */
+	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+		super("response", descriptors, attributes, ignoreUndocumentedFields);
 	}
 
 	@Override

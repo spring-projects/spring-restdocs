@@ -39,20 +39,42 @@ import org.springframework.util.StringUtils;
  */
 public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
-	private List<FieldDescriptor> fieldDescriptors;
+	private final List<FieldDescriptor> fieldDescriptors;
+
+	private final boolean ignoreUndocumentedFields;
 
 	/**
 	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
 	 * {@code <type>-fields}. The fields will be documented using the given
 	 * {@code  descriptors} and the given {@code attributes} will be included in the model
-	 * during template rendering.
+	 * during template rendering. Undocumented fields will trigger a failure.
 	 *
 	 * @param type the type of the fields
 	 * @param descriptors the field descriptors
 	 * @param attributes the additional attributes
+	 * @deprecated since 1.1 in favor of
+	 * {@link #AbstractFieldsSnippet(String, List, Map, boolean)}
 	 */
+	@Deprecated
 	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
 			Map<String, Object> attributes) {
+		this(type, descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
+	 * {@code <type>-fields}. The fields will be documented using the given
+	 * {@code  descriptors} and the given {@code attributes} will be included in the model
+	 * during template rendering. If {@code ignoreUndocumentedFields} is {@code true},
+	 * undocumented fields will be ignored and will not trigger a failure.
+	 *
+	 * @param type the type of the fields
+	 * @param descriptors the field descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 */
+	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
 		super(type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath(), "Field descriptors must have a path");
@@ -65,6 +87,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 		}
 		this.fieldDescriptors = descriptors;
+		this.ignoreUndocumentedFields = ignoreUndocumentedFields;
 	}
 
 	@Override
@@ -111,8 +134,9 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	private void validateFieldDocumentation(ContentHandler payloadHandler) {
 		List<FieldDescriptor> missingFields = payloadHandler
 				.findMissingFields(this.fieldDescriptors);
-		String undocumentedPayload = payloadHandler
-				.getUndocumentedContent(this.fieldDescriptors);
+
+		String undocumentedPayload = this.ignoreUndocumentedFields ? null
+				: payloadHandler.getUndocumentedContent(this.fieldDescriptors);
 
 		if (!missingFields.isEmpty() || StringUtils.hasText(undocumentedPayload)) {
 			String message = "";

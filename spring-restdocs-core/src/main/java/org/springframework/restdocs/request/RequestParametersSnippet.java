@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,25 +42,60 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 
 	/**
 	 * Creates a new {@code RequestParametersSnippet} that will document the request's
-	 * parameters using the given {@code descriptors}.
+	 * parameters using the given {@code descriptors}. Undocumented parameters will
+	 * trigger a failure.
 	 *
 	 * @param descriptors the parameter descriptors
 	 */
 	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors) {
-		this(descriptors, null);
+		this(descriptors, null, false);
+	}
+
+	/**
+	 * Creates a new {@code RequestParametersSnippet} that will document the request's
+	 * parameters using the given {@code descriptors}. If
+	 * {@code ignoreUndocumentedParameters} is {@code true}, undocumented parameters will
+	 * be ignored and will not trigger a failure.
+	 *
+	 * @param descriptors the parameter descriptors
+	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
+	 * ignored
+	 */
+	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors,
+			boolean ignoreUndocumentedParameters) {
+		this(descriptors, null, ignoreUndocumentedParameters);
 	}
 
 	/**
 	 * Creates a new {@code RequestParametersSnippet} that will document the request's
 	 * parameters using the given {@code descriptors}. The given {@code attributes} will
-	 * be included in the model during template rendering.
+	 * be included in the model during template rendering. Undocumented parameters will
+	 * trigger a failure.
 	 *
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */
 	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors,
 			Map<String, Object> attributes) {
-		super("request-parameters", descriptors, attributes);
+		this(descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code RequestParametersSnippet} that will document the request's
+	 * parameters using the given {@code descriptors}. The given {@code attributes} will
+	 * be included in the model during template rendering. If
+	 * {@code ignoreUndocumentedParameters} is {@code true}, undocumented parameters will
+	 * be ignored and will not trigger a failure.
+	 *
+	 * @param descriptors the parameter descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
+	 * ignored
+	 */
+	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedParameters) {
+		super("request-parameters", descriptors, attributes,
+				ignoreUndocumentedParameters);
 	}
 
 	@Override

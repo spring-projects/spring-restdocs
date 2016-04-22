@@ -106,6 +106,18 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void allUndocumentedFieldsCanBeIgnored() throws IOException {
+		this.snippet.expectResponseFields("ignore-all-undocumented")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("b",
+						"Number", "Field b"));
+
+		new ResponseFieldsSnippet(
+				Arrays.asList(fieldWithPath("b").description("Field b")), true)
+						.document(operationBuilder("ignore-all-undocumented").response()
+								.content("{\"a\": 5, \"b\": 4}").build());
+	}
+
+	@Test
 	public void responseFieldsWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-fields"))

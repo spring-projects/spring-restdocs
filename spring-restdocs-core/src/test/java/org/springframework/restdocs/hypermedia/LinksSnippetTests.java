@@ -57,6 +57,17 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void allUndocumentedLinksCanBeIgnored() throws IOException {
+		this.snippet.expectLinks("ignore-all-undocumented").withContents(
+				tableWithHeader("Relation", "Description").row("b", "Link b"));
+		new LinksSnippet(
+				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
+						new Link("b", "bravo")),
+				Arrays.asList(new LinkDescriptor("b").description("Link b")), true)
+						.document(operationBuilder("ignore-all-undocumented").build());
+	}
+
+	@Test
 	public void documentedOptionalLink() throws IOException {
 		this.snippet.expectLinks("documented-optional-link").withContents(
 				tableWithHeader("Relation", "Description").row("foo", "bar"));

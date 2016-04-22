@@ -81,6 +81,17 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void allUndocumentedRequestParametersCanBeIgnored() throws IOException {
+		this.snippet.expectRequestParameters("ignore-all-undocumented").withContents(
+				tableWithHeader("Parameter", "Description").row("b", "two"));
+		new RequestParametersSnippet(
+				Arrays.asList(parameterWithName("b").description("two")), true)
+						.document(operationBuilder("ignore-all-undocumented")
+								.request("http://localhost").param("a", "bravo")
+								.param("b", "bravo").build());
+	}
+
+	@Test
 	public void missingOptionalRequestParameter() throws IOException {
 		this.snippet.expectRequestParameters("missing-optional-request-parameter")
 				.withContents(tableWithHeader("Parameter", "Description").row("a", "one")

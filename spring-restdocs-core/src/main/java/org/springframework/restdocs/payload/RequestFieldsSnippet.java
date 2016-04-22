@@ -37,25 +37,56 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 
 	/**
 	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
-	 * request using the given {@code descriptors}.
+	 * request using the given {@code descriptors}. Undocumented fields will trigger a
+	 * failure.
 	 *
 	 * @param descriptors the descriptors
 	 */
 	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors) {
-		this(descriptors, null);
+		this(descriptors, null, false);
+	}
+
+	/**
+	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
+	 * request using the given {@code descriptors}. If {@code ignoreUndocumentedFields} is
+	 * {@code true}, undocumented fields will be ignored and will not trigger a failure.
+	 *
+	 * @param descriptors the descriptors
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 */
+	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors,
+			boolean ignoreUndocumentedFields) {
+		this(descriptors, null, ignoreUndocumentedFields);
 	}
 
 	/**
 	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
 	 * request using the given {@code descriptors}. The given {@code attributes} will be
-	 * included in the model during template rendering.
+	 * included in the model during template rendering. Undocumented fields will trigger a
+	 * failure.
 	 *
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
 	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors,
 			Map<String, Object> attributes) {
-		super("request", descriptors, attributes);
+		this(descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
+	 * request using the given {@code descriptors}. The given {@code attributes} will be
+	 * included in the model during template rendering. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 */
+	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+		super("request", descriptors, attributes, ignoreUndocumentedFields);
 	}
 
 	@Override

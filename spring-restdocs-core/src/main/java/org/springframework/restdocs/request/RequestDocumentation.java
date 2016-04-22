@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,22 @@ public abstract class RequestDocumentation {
 
 	/**
 	 * Returns a {@code Snippet} that will document the path parameters from the API
+	 * operation's request. The parameters will be documented using the given
+	 * {@code descriptors}.
+	 * <p>
+	 * If a parameter is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented parameters will be ignored.
+	 *
+	 * @param descriptors the descriptions of the parameters in the request's path
+	 * @return the snippet that will document the parameters
+	 */
+	public static PathParametersSnippet relaxedPathParameters(
+			ParameterDescriptor... descriptors) {
+		return new PathParametersSnippet(Arrays.asList(descriptors), true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the path parameters from the API
 	 * operation's request. The given {@code attributes} will be available during snippet
 	 * rendering and the parameters will be documented using the given {@code descriptors}
 	 * .
@@ -87,6 +103,24 @@ public abstract class RequestDocumentation {
 	public static PathParametersSnippet pathParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {
 		return new PathParametersSnippet(Arrays.asList(descriptors), attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the path parameters from the API
+	 * operation's request. The given {@code attributes} will be available during snippet
+	 * rendering and the parameters will be documented using the given {@code descriptors}
+	 * .
+	 * <p>
+	 * If a parameter is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented parameters will be ignored.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the parameters in the request's path
+	 * @return the snippet that will document the parameters
+	 */
+	public static PathParametersSnippet relaxedPathParameters(
+			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
+		return new PathParametersSnippet(Arrays.asList(descriptors), attributes, true);
 	}
 
 	/**
@@ -114,6 +148,23 @@ public abstract class RequestDocumentation {
 
 	/**
 	 * Returns a {@code Snippet} that will document the parameters from the API
+	 * operation's request. The parameters will be documented using the given
+	 * {@code descriptors}.
+	 * <p>
+	 * If a parameter is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented parameters will be ignored.
+	 *
+	 * @param descriptors The descriptions of the request's parameters
+	 * @return the snippet
+	 * @see OperationRequest#getParameters()
+	 */
+	public static RequestParametersSnippet relaxedRequestParameters(
+			ParameterDescriptor... descriptors) {
+		return new RequestParametersSnippet(Arrays.asList(descriptors), true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the parameters from the API
 	 * operation's request. The given {@code attributes} will be available during snippet
 	 * rendering and the parameters will be documented using the given {@code descriptors}
 	 * .
@@ -135,6 +186,25 @@ public abstract class RequestDocumentation {
 	public static RequestParametersSnippet requestParameters(
 			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
 		return new RequestParametersSnippet(Arrays.asList(descriptors), attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the parameters from the API
+	 * operation's request. The given {@code attributes} will be available during snippet
+	 * rendering and the parameters will be documented using the given {@code descriptors}
+	 * .
+	 * <p>
+	 * If a parameter is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented parameters will be ignored.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request's parameters
+	 * @return the snippet that will document the parameters
+	 * @see OperationRequest#getParameters()
+	 */
+	public static RequestParametersSnippet relaxedRequestParameters(
+			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
+		return new RequestParametersSnippet(Arrays.asList(descriptors), attributes, true);
 	}
 
 }

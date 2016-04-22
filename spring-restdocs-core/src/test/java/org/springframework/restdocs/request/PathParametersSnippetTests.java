@@ -72,6 +72,19 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void allUndocumentedPathParametersCanBeIgnored() throws IOException {
+		this.snippet.expectPathParameters("ignore-all-undocumented").withContents(
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("b",
+						"two"));
+		new PathParametersSnippet(
+				Arrays.asList(parameterWithName("b").description("two")),
+				true).document(operationBuilder("ignore-all-undocumented")
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}")
+						.build());
+	}
+
+	@Test
 	public void missingOptionalPathParameter() throws IOException {
 		this.snippet
 				.expectPathParameters(

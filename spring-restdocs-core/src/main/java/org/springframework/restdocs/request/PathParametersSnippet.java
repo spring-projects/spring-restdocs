@@ -44,25 +44,59 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 
 	/**
 	 * Creates a new {@code PathParametersSnippet} that will document the request's path
-	 * parameters using the given {@code descriptors}.
+	 * parameters using the given {@code descriptors}. Undocumented parameters will
+	 * trigger a failure.
 	 *
 	 * @param descriptors the parameter descriptors
 	 */
 	protected PathParametersSnippet(List<ParameterDescriptor> descriptors) {
-		this(descriptors, null);
+		this(descriptors, null, false);
+	}
+
+	/**
+	 * Creates a new {@code PathParametersSnippet} that will document the request's path
+	 * parameters using the given {@code descriptors}. If
+	 * {@code ignoreUndocumentedParameters} is {@code true}, undocumented parameters will
+	 * be ignored and will not trigger a failure.
+	 *
+	 * @param descriptors the parameter descriptors
+	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
+	 * ignored
+	 */
+	protected PathParametersSnippet(List<ParameterDescriptor> descriptors,
+			boolean ignoreUndocumentedParameters) {
+		this(descriptors, null, ignoreUndocumentedParameters);
 	}
 
 	/**
 	 * Creates a new {@code PathParametersSnippet} that will document the request's path
 	 * parameters using the given {@code descriptors}. The given {@code attributes} will
-	 * be included in the model during template rendering.
+	 * be included in the model during template rendering. Undocumented parameters will
+	 * trigger a failure.
 	 *
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */
 	protected PathParametersSnippet(List<ParameterDescriptor> descriptors,
 			Map<String, Object> attributes) {
-		super("path-parameters", descriptors, attributes);
+		this(descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code PathParametersSnippet} that will document the request's path
+	 * parameters using the given {@code descriptors}. The given {@code attributes} will
+	 * be included in the model during template rendering. If
+	 * {@code ignoreUndocumentedParameters} is {@code true}, undocumented parameters will
+	 * be ignored and will not trigger a failure.
+	 *
+	 * @param descriptors the parameter descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
+	 * ignored
+	 */
+	protected PathParametersSnippet(List<ParameterDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedParameters) {
+		super("path-parameters", descriptors, attributes, ignoreUndocumentedParameters);
 	}
 
 	@Override

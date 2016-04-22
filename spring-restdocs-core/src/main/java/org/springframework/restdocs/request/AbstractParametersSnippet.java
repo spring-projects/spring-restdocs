@@ -17,6 +17,7 @@
 package org.springframework.restdocs.request;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -40,18 +41,42 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 
 	private final Map<String, ParameterDescriptor> descriptorsByName = new LinkedHashMap<>();
 
+	private final boolean ignoreUndocumentedParameters;
+
 	/**
 	 * Creates a new {@code AbstractParametersSnippet} that will produce a snippet with
 	 * the given {@code snippetName} that will document parameters using the given
 	 * {@code descriptors}. The given {@code attributes} will be included in the model
-	 * during template rendering.
+	 * during template rendering. Undocumented parameters will trigger a failure.
 	 *
 	 * @param snippetName The snippet name
 	 * @param descriptors The descriptors
 	 * @param attributes The additional attributes
+	 * @deprecated since 1.1 in favour of
+	 * {@link #AbstractParametersSnippet(String, List, Map, boolean)}
 	 */
+	@Deprecated
 	protected AbstractParametersSnippet(String snippetName,
 			List<ParameterDescriptor> descriptors, Map<String, Object> attributes) {
+		this(snippetName, descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code AbstractParametersSnippet} that will produce a snippet with
+	 * the given {@code snippetName} that will document parameters using the given
+	 * {@code descriptors}. The given {@code attributes} will be included in the model
+	 * during template rendering. If {@code ignoreUndocumentedParameters} is {@code true},
+	 * undocumented parameters will be ignored and will not trigger a failure.
+	 *
+	 * @param snippetName The snippet name
+	 * @param descriptors The descriptors
+	 * @param attributes The additional attributes
+	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
+	 * ignored
+	 */
+	protected AbstractParametersSnippet(String snippetName,
+			List<ParameterDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedParameters) {
 		super(snippetName, attributes);
 		for (ParameterDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getName(),
@@ -64,6 +89,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 			}
 			this.descriptorsByName.put(descriptor.getName(), descriptor);
 		}
+		this.ignoreUndocumentedParameters = ignoreUndocumentedParameters;
 	}
 
 	@Override
@@ -92,8 +118,14 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 				expectedParameters.add(entry.getKey());
 			}
 		}
-		Set<String> undocumentedParameters = new HashSet<>(actualParameters);
-		undocumentedParameters.removeAll(expectedParameters);
+		Set<String> undocumentedParameters;
+		if (this.ignoreUndocumentedParameters) {
+			undocumentedParameters = Collections.emptySet();
+		}
+		else {
+			undocumentedParameters = new HashSet<>(actualParameters);
+			undocumentedParameters.removeAll(expectedParameters);
+		}
 		Set<String> missingParameters = new HashSet<>(expectedParameters);
 		missingParameters.removeAll(actualParameters);
 

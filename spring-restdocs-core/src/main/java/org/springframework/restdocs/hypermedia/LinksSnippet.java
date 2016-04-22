@@ -19,6 +19,7 @@ package org.springframework.restdocs.hypermedia;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -50,22 +51,41 @@ public class LinksSnippet extends TemplatedSnippet {
 
 	private final LinkExtractor linkExtractor;
 
+	private final boolean ignoreUndocumentedLinks;
+
 	/**
 	 * Creates a new {@code LinksSnippet} that will extract links using the given
 	 * {@code linkExtractor} and document them using the given {@code descriptors}.
+	 * Undocumented links will trigger a failure.
 	 *
 	 * @param linkExtractor the link extractor
 	 * @param descriptors the link descriptors
 	 */
 	protected LinksSnippet(LinkExtractor linkExtractor,
 			List<LinkDescriptor> descriptors) {
-		this(linkExtractor, descriptors, null);
+		this(linkExtractor, descriptors, null, false);
+	}
+
+	/**
+	 * Creates a new {@code LinksSnippet} that will extract links using the given
+	 * {@code linkExtractor} and document them using the given {@code descriptors}. If
+	 * {@code ignoreUndocumentedLinks} is {@code true}, undocumented links will be ignored
+	 * and will not trigger a failure.
+	 *
+	 * @param linkExtractor the link extractor
+	 * @param descriptors the link descriptors
+	 * @param ignoreUndocumentedLinks whether undocumented links should be ignored
+	 */
+	protected LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors,
+			boolean ignoreUndocumentedLinks) {
+		this(linkExtractor, descriptors, null, ignoreUndocumentedLinks);
 	}
 
 	/**
 	 * Creates a new {@code LinksSnippet} that will extract links using the given
 	 * {@code linkExtractor} and document them using the given {@code descriptors}. The
 	 * given {@code attributes} will be included in the model during template rendering.
+	 * Undocumented links will trigger a failure.
 	 *
 	 * @param linkExtractor the link extractor
 	 * @param descriptors the link descriptors
@@ -73,12 +93,30 @@ public class LinksSnippet extends TemplatedSnippet {
 	 */
 	protected LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors,
 			Map<String, Object> attributes) {
+		this(linkExtractor, descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code LinksSnippet} that will extract links using the given
+	 * {@code linkExtractor} and document them using the given {@code descriptors}. The
+	 * given {@code attributes} will be included in the model during template rendering.
+	 * If {@code ignoreUndocumentedLinks} is {@code true}, undocumented links will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param linkExtractor the link extractor
+	 * @param descriptors the link descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedLinks whether undocumented links should be ignored
+	 */
+	protected LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedLinks) {
 		super("links", attributes);
 		this.linkExtractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getRel(), "Link descriptors must have a rel");
 			this.descriptorsByRel.put(descriptor.getRel(), descriptor);
 		}
+		this.ignoreUndocumentedLinks = ignoreUndocumentedLinks;
 	}
 
 	@Override
@@ -100,8 +138,14 @@ public class LinksSnippet extends TemplatedSnippet {
 	private void validate(Map<String, List<Link>> links) {
 		Set<String> actualRels = links.keySet();
 
-		Set<String> undocumentedRels = new HashSet<>(actualRels);
-		undocumentedRels.removeAll(this.descriptorsByRel.keySet());
+		Set<String> undocumentedRels;
+		if (this.ignoreUndocumentedLinks) {
+			undocumentedRels = Collections.emptySet();
+		}
+		else {
+			undocumentedRels = new HashSet<>(actualRels);
+			undocumentedRels.removeAll(this.descriptorsByRel.keySet());
+		}
 
 		Set<String> requiredRels = new HashSet<>();
 		for (Entry<String, LinkDescriptor> relAndDescriptor : this.descriptorsByRel

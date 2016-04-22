@@ -94,6 +94,19 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void allUndocumentedRequestFieldsCanBeIgnored() throws IOException {
+		this.snippet.expectRequestFields("ignore-all-undocumented")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("b",
+						"Number", "Field b"));
+
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("b").description("Field b")),
+				true).document(
+						operationBuilder("ignore-all-undocumented")
+								.request("http://localhost")
+								.content("{\"a\": 5, \"b\": 4}").build());
+	}
+
+	@Test
 	public void requestFieldsWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-fields"))
