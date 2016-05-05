@@ -68,12 +68,12 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void documentedOptionalLink() throws IOException {
-		this.snippet.expectLinks("documented-optional-link").withContents(
+	public void presentOptionalLink() throws IOException {
+		this.snippet.expectLinks("present-optional-link").withContents(
 				tableWithHeader("Relation", "Description").row("foo", "bar"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "blah")),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
-						.document(operationBuilder("documented-optional-link").build());
+						.document(operationBuilder("present-optional-link").build());
 	}
 
 	@Test

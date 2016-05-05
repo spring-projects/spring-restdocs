@@ -98,12 +98,34 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		this.snippet.expectRequestFields("ignore-all-undocumented")
 				.withContents(tableWithHeader("Path", "Type", "Description").row("b",
 						"Number", "Field b"));
-
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("b").description("Field b")),
 				true).document(
 						operationBuilder("ignore-all-undocumented")
 								.request("http://localhost")
 								.content("{\"a\": 5, \"b\": 4}").build());
+	}
+
+	@Test
+	public void missingOptionalRequestField() throws IOException {
+		this.snippet.expectRequestFields("missing-optional-request-field")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
+						"String", "one"));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
+				.type(JsonFieldType.STRING).optional()))
+						.document(operationBuilder("missing-optional-request-field")
+								.request("http://localhost").content("{}").build());
+	}
+
+	@Test
+	public void presentOptionalRequestField() throws IOException {
+		this.snippet.expectRequestFields("present-optional-request-field")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
+						"String", "one"));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
+				.type(JsonFieldType.STRING).optional()))
+						.document(operationBuilder("present-optional-request-field")
+								.request("http://localhost")
+								.content("{\"a\": { \"b\": \"bravo\"}}").build());
 	}
 
 	@Test
