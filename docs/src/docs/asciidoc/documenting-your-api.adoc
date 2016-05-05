@@ -49,6 +49,11 @@ response and the link has not been marked as optional.
 If you do not want to document a link, you can mark it as ignored. This will prevent it
 from appearing in the generated snippet while avoiding the failure described above.
 
+Links can also be documented in a relaxed mode where any undocumented links will not cause
+a test failure. To do so, use the `relaxedLinks` method on
+`org.springframework.restdocs.hypermedia.HypermediaDocumentation`. This can be useful when
+documenting a particular scenario where you only want to focus on a subset of the links.
+
 
 
 [[documenting-your-api-hypermedia-link-formats]]
@@ -143,6 +148,12 @@ treated as having been documented.
 
 If you do not want to document a field, you can mark it as ignored. This will prevent it
 from appearing in the generated snippet while avoiding the failure described above.
+
+Fields can also be documented in a relaxed mode where any undocumented fields will not
+cause a test failure. To do so, use the `relaxedRequestFields` and `relaxedResponseFields`
+methods on
+`org.springframework.restdocs.payload.PayloadDocumentation`. This can be useful when
+documenting a particular scenario where you only want to focus on a subset of the payload.
 
 TIP: By default, Spring REST Docs will assume that the payload you are documenting is
 JSON. If you want to document an XML payload the content type of the request or response
@@ -454,6 +465,12 @@ If you do not want to document a request parameter, you can mark it as ignored. 
 prevent it from appearing in the generated snippet while avoiding the failure described
 above.
 
+Request parameters can also be documented in a relaxed mode where any undocumented
+parameters will not cause a test failure. To do so, use the `relaxedRequestParameters`
+method on `org.springframework.restdocs.request.RequestDocumentation`. This can be useful
+when documenting a particular scenario where you only want to focus on a subset of the
+request parameters.
+
 
 
 [[documenting-your-api-path-parameters]]
@@ -497,6 +514,12 @@ built using one of the methods on `RestDocumentationRequestBuilders` rather than
 When documenting path parameters, the test will fail if an undocumented path parameter
 is used in the request. Similarly, the test will also fail if a documented path parameter
 is not found in the request and the path parameter has not been marked as optional.
+
+Path parameters can also be documented in a relaxed mode where any undocumented
+parameters will not cause a test failure. To do so, use the `relaxedPathParameters`
+method on `org.springframework.restdocs.request.RequestDocumentation`. This can be useful
+when documenting a particular scenario where you only want to focus on a subset of the
+path parameters.
 
 If you do not want to document a path parameter, you can mark it as ignored. This will
 prevent it from appearing in the generated snippet while avoiding the failure described
