@@ -130,6 +130,32 @@ public class RequestFieldsSnippetTests {
 	}
 
 	@Test
+	public void missingOptionalRequestField() throws IOException {
+		this.snippet.expectRequestFields("missing-optional-request-field")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
+						"String", "one"));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
+				.type(JsonFieldType.STRING).optional()))
+						.document(new OperationBuilder("missing-optional-request-field",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost").content("{}")
+										.build());
+	}
+
+	@Test
+	public void presentOptionalRequestField() throws IOException {
+		this.snippet.expectRequestFields("present-optional-request-field")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
+						"String", "one"));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
+				.type(JsonFieldType.STRING).optional()))
+						.document(new OperationBuilder("present-optional-request-field",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost")
+										.content("{\"a\": { \"b\": \"bravo\"}}").build());
+	}
+
+	@Test
 	public void missingOptionalRequestFieldWithNoTypeProvided() throws IOException {
 		this.thrown.expect(FieldTypeRequiredException.class);
 		new RequestFieldsSnippet(

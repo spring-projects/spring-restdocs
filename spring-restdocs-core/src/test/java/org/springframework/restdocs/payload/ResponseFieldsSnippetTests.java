@@ -122,6 +122,30 @@ public class ResponseFieldsSnippetTests {
 	}
 
 	@Test
+	public void missingOptionalResponseField() throws IOException {
+		this.snippet.expectResponseFields("missing-optional-response-field")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
+						"String", "one"));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
+				.type(JsonFieldType.STRING).optional()))
+						.document(new OperationBuilder("missing-optional-response-field",
+								this.snippet.getOutputDirectory()).response()
+										.content("{}").build());
+	}
+
+	@Test
+	public void presentOptionalResponseField() throws IOException {
+		this.snippet.expectResponseFields("present-optional-response-field")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
+						"String", "one"));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
+				.type(JsonFieldType.STRING).optional()))
+						.document(new OperationBuilder("present-optional-response-field",
+								this.snippet.getOutputDirectory()).response()
+										.content("{\"a\": { \"b\": \"bravo\"}}").build());
+	}
+
+	@Test
 	public void responseFieldsWithCustomDescriptorAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-fields"))
