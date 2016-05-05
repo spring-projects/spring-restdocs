@@ -105,6 +105,17 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void presentOptionalRequestParameter() throws IOException {
+		this.snippet.expectRequestParameters("present-optional-request-parameter")
+				.withContents(
+						tableWithHeader("Parameter", "Description").row("a", "one"));
+		new RequestParametersSnippet(
+				Arrays.asList(parameterWithName("a").description("one").optional()))
+						.document(operationBuilder("present-optional-request-parameter")
+								.request("http://localhost").param("a", "one").build());
+	}
+
+	@Test
 	public void requestParametersWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))

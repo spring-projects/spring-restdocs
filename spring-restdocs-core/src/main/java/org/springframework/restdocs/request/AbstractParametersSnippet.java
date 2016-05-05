@@ -124,7 +124,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 		}
 		else {
 			undocumentedParameters = new HashSet<>(actualParameters);
-			undocumentedParameters.removeAll(expectedParameters);
+			undocumentedParameters.removeAll(this.descriptorsByName.keySet());
 		}
 		Set<String> missingParameters = new HashSet<>(expectedParameters);
 		missingParameters.removeAll(actualParameters);

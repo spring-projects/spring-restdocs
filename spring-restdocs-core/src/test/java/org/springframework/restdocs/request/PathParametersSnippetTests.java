@@ -100,6 +100,24 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void presentOptionalPathParameter() throws IOException {
+		this.snippet
+				.expectPathParameters(
+						"present-optional-path-parameter")
+				.withContents(tableWithTitleAndHeader(
+						this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}"
+								: "`/{a}`",
+						"Parameter", "Description").row("a", "one"));
+		new PathParametersSnippet(
+				Arrays.asList(parameterWithName("a").description("one").optional()))
+						.document(operationBuilder("present-optional-path-parameter")
+								.attribute(
+										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+										"/{a}")
+								.build());
+	}
+
+	@Test
 	public void pathParametersWithQueryString() throws IOException {
 		this.snippet.expectPathParameters("path-parameters-with-query-string")
 				.withContents(
