@@ -1,6 +1,6 @@
 sudo: false
 language: java
 jdk:
-  - oraclejdk7
+  - oraclejdk8
 script:
   - "./gradlew build buildSamples --stacktrace --info --no-daemon"
