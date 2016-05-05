@@ -39,7 +39,18 @@ If you want to jump straight in, a number of sample applications are available:
 
 |===
 
+[[getting-started-requirements]]
+=== Requirements
 
+Spring REST Docs has the following minimum requirements:
+
+- Java 7
+- Spring Framework 4.2
+
+Additionally, the `spring-restdocs-restassured` module has the following minimum
+requirements:
+
+- REST Assured 2.8
 
 [[getting-started-build-configuration]]
 === Build configuration
