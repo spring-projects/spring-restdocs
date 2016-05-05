@@ -1,6 +1,6 @@
 buildscript {
 	repositories {
-		jcenter()
+		mavenCentral()
 		maven { url 'https://repo.spring.io/plugins-release' }
 		maven { url 'https://plugins.gradle.org/m2/' }
 	}
@@ -15,7 +15,7 @@ buildscript {
 allprojects {
 	group = 'org.springframework.restdocs'
 	repositories {
-		jcenter()
+		mavenCentral()
 	}
 }
 
