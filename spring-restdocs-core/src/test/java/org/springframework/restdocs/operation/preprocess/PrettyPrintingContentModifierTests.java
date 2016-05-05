@@ -56,7 +56,7 @@ public class PrettyPrintingContentModifierTests {
 				equalTo(String
 						.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
 								+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n")
-								.getBytes()));
+						.getBytes()));
 	}
 
 	@Test

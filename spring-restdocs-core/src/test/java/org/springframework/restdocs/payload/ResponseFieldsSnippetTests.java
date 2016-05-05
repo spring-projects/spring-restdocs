@@ -94,7 +94,7 @@ public class ResponseFieldsSnippetTests {
 										.response()
 										.content(
 												"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
-												.build());
+										.build());
 	}
 
 	@Test
@@ -141,14 +141,17 @@ public class ResponseFieldsSnippetTests {
 						.attributes(key("foo").value("charlie"))))
 								.document(new OperationBuilder(
 										"response-fields-with-custom-attributes",
-										this.snippet.getOutputDirectory())
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.response()
-												.content(
-														"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
-												.build());
+										this.snippet
+												.getOutputDirectory())
+														.attribute(
+																TemplateEngine.class
+																		.getName(),
+																new MustacheTemplateEngine(
+																		resolver))
+														.response()
+														.content(
+																"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
+														.build());
 	}
 
 	@Test
@@ -172,8 +175,8 @@ public class ResponseFieldsSnippetTests {
 	public void xmlResponseFields() throws IOException {
 		this.snippet.expectResponseFields("xml-response")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a/b", "b", "one").row("a/c", "c", "two")
-						.row("a", "a", "three"));
+						.row("a/b", "b", "one").row("a/c", "c", "two").row("a", "a",
+								"three"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
 						fieldWithPath("a/c").description("two").type("c"),
@@ -183,7 +186,7 @@ public class ResponseFieldsSnippetTests {
 												.content("<a><b>5</b><c>charlie</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -199,7 +202,7 @@ public class ResponseFieldsSnippetTests {
 												.content("<a><b>5</b></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -215,7 +218,7 @@ public class ResponseFieldsSnippetTests {
 												.content("<a id=\"1\">foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -231,7 +234,7 @@ public class ResponseFieldsSnippetTests {
 												.content("<a>foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -263,7 +266,7 @@ public class ResponseFieldsSnippetTests {
 												.content("<a id=\"foo\">bar</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -273,15 +276,14 @@ public class ResponseFieldsSnippetTests {
 				String.format("The following parts of the payload were not documented:"
 						+ "%n<a>bar</a>%n")));
 		new ResponseFieldsSnippet(
-				Arrays.asList(
-						fieldWithPath("a/@id").description("one")
-								.type("a"))).document(new OperationBuilder(
-										"documented-attribute-is-removed",
+				Arrays.asList(fieldWithPath("a/@id").description("one").type("a")))
+						.document(
+								new OperationBuilder("documented-attribute-is-removed",
 										this.snippet.getOutputDirectory()).response()
 												.content("<a id=\"foo\">bar</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -308,7 +310,7 @@ public class ResponseFieldsSnippetTests {
 												.content("<a></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -329,7 +331,7 @@ public class ResponseFieldsSnippetTests {
 												.content("<a><c>5</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	private FileSystemResource snippetResource(String name) {

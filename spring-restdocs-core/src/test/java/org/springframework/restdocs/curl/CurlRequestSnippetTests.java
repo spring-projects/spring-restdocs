@@ -262,8 +262,8 @@ public class CurlRequestSnippetTests {
 								.request("http://localhost/upload").method("POST")
 								.header(HttpHeaders.CONTENT_TYPE,
 										MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("metadata", "{\"description\": \"foo\"}".getBytes())
-						.build());
+								.part("metadata", "{\"description\": \"foo\"}".getBytes())
+								.build());
 	}
 
 	@Test
@@ -279,9 +279,11 @@ public class CurlRequestSnippetTests {
 								.request("http://localhost/upload").method("POST")
 								.header(HttpHeaders.CONTENT_TYPE,
 										MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", new byte[0])
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
-						.submittedFileName("documents/images/example.png").build());
+								.part("image", new byte[0])
+								.header(HttpHeaders.CONTENT_TYPE,
+										MediaType.IMAGE_PNG_VALUE)
+								.submittedFileName("documents/images/example.png")
+								.build());
 	}
 
 	@Test
@@ -314,9 +316,10 @@ public class CurlRequestSnippetTests {
 								.request("http://localhost/upload").method("POST")
 								.header(HttpHeaders.CONTENT_TYPE,
 										MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", new byte[0])
-						.submittedFileName("documents/images/example.png").and()
-						.param("a", "apple", "avocado").param("b", "banana").build());
+								.part("image", new byte[0])
+								.submittedFileName("documents/images/example.png").and()
+								.param("a", "apple", "avocado").param("b", "banana")
+								.build());
 	}
 
 	@Test

@@ -92,8 +92,8 @@ public class HttpRequestSnippetTests {
 		String content = "Hello, world";
 		this.snippet.expectHttpRequest("post-request-with-content")
 				.withContents(httpRequest(RequestMethod.POST, "/foo")
-						.header(HttpHeaders.HOST, "localhost").content(content)
-						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content).header(
+								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet()
 				.document(new OperationBuilder("post-request-with-content",
@@ -154,8 +154,8 @@ public class HttpRequestSnippetTests {
 		String content = "Hello, world";
 		this.snippet.expectHttpRequest("put-request-with-content")
 				.withContents(httpRequest(RequestMethod.PUT, "/foo")
-						.header(HttpHeaders.HOST, "localhost").content(content)
-						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content).header(
+								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet().document(new OperationBuilder("put-request-with-content",
 				this.snippet.getOutputDirectory()).request("http://localhost/foo")
@@ -223,8 +223,8 @@ public class HttpRequestSnippetTests {
 								.request("http://localhost/upload").method("POST")
 								.header(HttpHeaders.CONTENT_TYPE,
 										MediaType.MULTIPART_FORM_DATA_VALUE)
-						.param("a", "apple", "avocado").param("b", "banana")
-						.part("image", "<< data >>".getBytes()).build());
+								.param("a", "apple", "avocado").param("b", "banana")
+								.part("image", "<< data >>".getBytes()).build());
 	}
 
 	@Test
@@ -269,9 +269,10 @@ public class HttpRequestSnippetTests {
 								.request("http://localhost/upload").method("POST")
 								.header(HttpHeaders.CONTENT_TYPE,
 										MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", "<< data >>".getBytes())
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
-						.build());
+								.part("image", "<< data >>".getBytes())
+								.header(HttpHeaders.CONTENT_TYPE,
+										MediaType.IMAGE_PNG_VALUE)
+								.build());
 	}
 
 	@Test

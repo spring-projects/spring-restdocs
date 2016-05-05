@@ -217,9 +217,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 
 		mockMvc.perform(get("/").param("foo", "bar").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andDo(document("links",
-						responseFields(fieldWithPath("a")
-								.description("The description"),
+				.andDo(document("links", responseFields(
+						fieldWithPath("a").description("The description"),
 						fieldWithPath("links").description("Links to other resources"))));
 
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),

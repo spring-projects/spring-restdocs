@@ -72,9 +72,9 @@ public class ResponseHeadersSnippetTests {
 												.header("X-Test", "test")
 												.header("Content-Type",
 														"application/json")
-										.header("Etag", "lskjadldj3ii32l2ij23")
-										.header("Cache-Control", "max-age=0")
-										.header("Vary", "User-Agent").build());
+												.header("Etag", "lskjadldj3ii32l2ij23")
+												.header("Cache-Control", "max-age=0")
+												.header("Vary", "User-Agent").build());
 	}
 
 	@Test
@@ -107,15 +107,20 @@ public class ResponseHeadersSnippetTests {
 						.attributes(key("foo").value("charlie"))))
 								.document(new OperationBuilder(
 										"response-headers-with-custom-attributes",
-										this.snippet.getOutputDirectory())
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.response().header("X-Test", "test")
-												.header("Content-Type",
-														"application/json")
-												.header("Etag", "lskjadldj3ii32l2ij23")
-												.build());
+										this.snippet
+												.getOutputDirectory())
+														.attribute(
+																TemplateEngine.class
+																		.getName(),
+																new MustacheTemplateEngine(
+																		resolver))
+														.response()
+														.header("X-Test", "test")
+														.header("Content-Type",
+																"application/json")
+														.header("Etag",
+																"lskjadldj3ii32l2ij23")
+														.build());
 	}
 
 	@Test

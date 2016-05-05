@@ -62,20 +62,18 @@ public class RequestHeadersSnippetTests {
 						.row("Accept", "two").row("Accept-Encoding", "three")
 						.row("Accept-Language", "four").row("Cache-Control", "five")
 						.row("Connection", "six"));
-		new RequestHeadersSnippet(
-				Arrays.asList(headerWithName("X-Test").description("one"),
-						headerWithName("Accept").description("two"),
-						headerWithName("Accept-Encoding").description("three"),
-						headerWithName("Accept-Language").description("four"),
-						headerWithName("Cache-Control").description("five"),
-						headerWithName("Connection").description("six")))
-								.document(new OperationBuilder("request-with-headers",
-										this.snippet.getOutputDirectory())
-												.request("http://localhost")
-												.header("X-Test", "test")
-												.header("Accept", "*/*")
-												.header("Accept-Encoding",
-														"gzip, deflate")
+		new RequestHeadersSnippet(Arrays.asList(
+				headerWithName("X-Test").description("one"),
+				headerWithName("Accept").description("two"),
+				headerWithName("Accept-Encoding").description("three"),
+				headerWithName("Accept-Language").description("four"),
+				headerWithName("Cache-Control").description("five"),
+				headerWithName("Connection").description("six")))
+						.document(new OperationBuilder("request-with-headers",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost")
+										.header("X-Test", "test").header("Accept", "*/*")
+										.header("Accept-Encoding", "gzip, deflate")
 										.header("Accept-Language", "en-US,en;q=0.5")
 										.header("Cache-Control", "max-age=0")
 										.header("Connection", "keep-alive").build());
@@ -143,14 +141,15 @@ public class RequestHeadersSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-headers"))
 				.willReturn(snippetResource("request-headers-with-extra-column"));
-		new RequestHeadersSnippet(Arrays.asList(
-				headerWithName("X-Test").description("one")
-						.attributes(key("foo").value("alpha")),
-				headerWithName("Accept-Encoding").description("two")
-						.attributes(key("foo").value("bravo")),
-				headerWithName("Accept").description("three")
-						.attributes(key("foo").value("charlie"))))
-								.document(new OperationBuilder(
+		new RequestHeadersSnippet(
+				Arrays.asList(
+						headerWithName("X-Test").description("one")
+								.attributes(key("foo").value(
+										"alpha")),
+						headerWithName("Accept-Encoding").description("two")
+								.attributes(key("foo").value("bravo")),
+						headerWithName("Accept").description("three").attributes(key(
+								"foo").value("charlie")))).document(new OperationBuilder(
 										"request-headers-with-custom-attributes",
 										this.snippet.getOutputDirectory())
 												.attribute(TemplateEngine.class.getName(),

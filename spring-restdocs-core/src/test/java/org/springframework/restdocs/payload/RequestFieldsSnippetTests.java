@@ -61,8 +61,8 @@ public class RequestFieldsSnippetTests {
 	public void mapRequestWithFields() throws IOException {
 		this.snippet.expectRequestFields("map-request-with-fields")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a.b", "Number", "one").row("a.c", "String", "two")
-						.row("a", "Object", "three"));
+						.row("a.b", "Number", "one").row("a.c", "String", "two").row("a",
+								"Object", "three"));
 
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one"),
 				fieldWithPath("a.c").description("two"),
@@ -132,11 +132,13 @@ public class RequestFieldsSnippetTests {
 	@Test
 	public void missingOptionalRequestFieldWithNoTypeProvided() throws IOException {
 		this.thrown.expect(FieldTypeRequiredException.class);
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
-				.optional())).document(new OperationBuilder(
-						"missing-optional-request-field-with-no-type",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.content("{ }").build());
+		new RequestFieldsSnippet(
+				Arrays.asList(fieldWithPath("a.b").description("one").optional()))
+						.document(new OperationBuilder(
+								"missing-optional-request-field-with-no-type",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost").content("{ }")
+										.build());
 	}
 
 	@Test
@@ -175,14 +177,17 @@ public class RequestFieldsSnippetTests {
 						.attributes(key("foo").value("charlie"))))
 								.document(new OperationBuilder(
 										"request-fields-with-custom-descriptor-attributes",
-										this.snippet.getOutputDirectory())
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.request("http://localhost")
-												.content(
-														"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
-										.build());
+										this.snippet
+												.getOutputDirectory())
+														.attribute(
+																TemplateEngine.class
+																		.getName(),
+																new MustacheTemplateEngine(
+																		resolver))
+														.request("http://localhost")
+														.content(
+																"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
+														.build());
 	}
 
 	@Test
@@ -228,8 +233,8 @@ public class RequestFieldsSnippetTests {
 	public void xmlRequestFields() throws IOException {
 		this.snippet.expectRequestFields("xml-request")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a/b", "b", "one").row("a/c", "c", "two")
-						.row("a", "a", "three"));
+						.row("a/b", "b", "one").row("a/c", "c", "two").row("a", "a",
+								"three"));
 
 		new RequestFieldsSnippet(
 				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
@@ -241,7 +246,7 @@ public class RequestFieldsSnippetTests {
 												.content("<a><b>5</b><c>charlie</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -283,7 +288,7 @@ public class RequestFieldsSnippetTests {
 												.content("<a></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-								.build());
+												.build());
 	}
 
 	@Test

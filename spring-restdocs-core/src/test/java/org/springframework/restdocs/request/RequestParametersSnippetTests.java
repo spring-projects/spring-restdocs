@@ -151,13 +151,16 @@ public class RequestParametersSnippetTests {
 						.attributes(key("foo").value("bravo"))))
 								.document(new OperationBuilder(
 										"request-parameters-with-custom-descriptor-attributes",
-										this.snippet.getOutputDirectory())
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.request("http://localhost")
-												.param("a", "alpha").param("b", "bravo")
-												.build());
+										this.snippet
+												.getOutputDirectory())
+														.attribute(
+																TemplateEngine.class
+																		.getName(),
+																new MustacheTemplateEngine(
+																		resolver))
+														.request("http://localhost")
+														.param("a", "alpha")
+														.param("b", "bravo").build());
 	}
 
 	@Test
@@ -172,8 +175,8 @@ public class RequestParametersSnippetTests {
 				Arrays.asList(
 						parameterWithName("a").description("one")
 								.attributes(key("foo").value("alpha")),
-				parameterWithName("b").description("two")
-						.attributes(key("foo").value("bravo"))),
+						parameterWithName("b").description("two")
+								.attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title"))).document(
 						new OperationBuilder("request-parameters-with-custom-attributes",
 								this.snippet.getOutputDirectory())

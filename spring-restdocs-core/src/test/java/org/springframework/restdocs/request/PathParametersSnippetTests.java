@@ -79,7 +79,7 @@ public class PathParametersSnippetTests {
 						.document(new OperationBuilder("missing-path-parameter",
 								this.snippet.getOutputDirectory()).attribute(
 										"org.springframework.restdocs.urlTemplate", "/")
-								.build());
+										.build());
 	}
 
 	@Test
@@ -104,11 +104,13 @@ public class PathParametersSnippetTests {
 				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description")
 						.row("a", "one").row("b", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
-				parameterWithName("b").description("two"))).document(new OperationBuilder(
-						"path-parameters", this.snippet.getOutputDirectory())
-								.attribute("org.springframework.restdocs.urlTemplate",
-										"/{a}/{b}")
-								.build());
+				parameterWithName("b").description("two")))
+						.document(new OperationBuilder(
+								"path-parameters", this.snippet.getOutputDirectory())
+										.attribute(
+												"org.springframework.restdocs.urlTemplate",
+												"/{a}/{b}")
+										.build());
 	}
 
 	@Test
@@ -117,11 +119,14 @@ public class PathParametersSnippetTests {
 				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description").row("b",
 						"two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
-				parameterWithName("b").description("two"))).document(new OperationBuilder(
-						"ignored-path-parameter", this.snippet.getOutputDirectory())
-								.attribute("org.springframework.restdocs.urlTemplate",
-										"/{a}/{b}")
-								.build());
+				parameterWithName("b").description("two")))
+						.document(new OperationBuilder(
+								"ignored-path-parameter",
+								this.snippet.getOutputDirectory())
+										.attribute(
+												"org.springframework.restdocs.urlTemplate",
+												"/{a}/{b}")
+										.build());
 	}
 
 	@Test
@@ -156,9 +161,10 @@ public class PathParametersSnippetTests {
 				parameterWithName("b").description("two").attributes(
 						key("foo").value("bravo")))).document(new OperationBuilder(
 								"path-parameters-with-custom-descriptor-attributes",
-								this.snippet.getOutputDirectory()).attribute(
-										"org.springframework.restdocs.urlTemplate",
-										"/{a}/{b}")
+								this.snippet.getOutputDirectory())
+										.attribute(
+												"org.springframework.restdocs.urlTemplate",
+												"/{a}/{b}")
 										.attribute(TemplateEngine.class.getName(),
 												new MustacheTemplateEngine(resolver))
 										.build());
@@ -176,8 +182,8 @@ public class PathParametersSnippetTests {
 				Arrays.asList(
 						parameterWithName("a").description("one")
 								.attributes(key("foo").value("alpha")),
-				parameterWithName("b").description("two")
-						.attributes(key("foo").value("bravo"))),
+						parameterWithName("b").description("two")
+								.attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title"))).document(
 						new OperationBuilder("path-parameters-with-custom-attributes",
 								this.snippet.getOutputDirectory())
