@@ -59,8 +59,8 @@ public class SampleBuildConfigurer {
 			}
 			sampleBuild.doFirst {
 				replaceVersion(new File(this.workingDir, 'build.gradle'),
-						"springRestdocsVersion = '.*'",
-						"springRestdocsVersion = '${project.version}'")
+						"ext\\['spring-restdocs.version'\\] = '.*'",
+						"ext['spring-restdocs.version'] = '${project.version}'")
 			}
 		}
 		else if (new File(sampleDir, 'pom.xml').isFile()) {

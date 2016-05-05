@@ -138,6 +138,10 @@ include::{snippets}/notes-list-example/curl-request.adoc[]
 
 include::{snippets}/notes-list-example/http-response.adoc[]
 
+[[resources-notes-list-links]]
+==== Links
+
+include::{snippets}/notes-list-example/links.adoc[]
 
 
 [[resources-notes-create]]
@@ -182,6 +186,11 @@ include::{snippets}/tags-list-example/curl-request.adoc[]
 ==== Example response
 
 include::{snippets}/tags-list-example/http-response.adoc[]
+
+[[resources-tags-list-links]]
+==== Links
+
+include::{snippets}/tags-list-example/links.adoc[]
 
 
 

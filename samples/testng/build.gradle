@@ -3,7 +3,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.3.3.RELEASE'
 	}
 }
 
@@ -28,8 +28,8 @@ targetCompatibility = 1.7
 
 ext {
 	snippetsDir = file('build/generated-snippets')
-	springRestdocsVersion = '1.1.0.BUILD-SNAPSHOT'
 }
+ext['spring-restdocs.version'] = '1.1.0.BUILD-SNAPSHOT'
 
 dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-web'
@@ -37,7 +37,7 @@ dependencies {
 		exclude group: 'junit', module: 'junit;'
 	}
 	testCompile 'org.testng:testng:6.9.10'
-	testCompile "org.springframework.restdocs:spring-restdocs-mockmvc:$springRestdocsVersion"
+	testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 test {

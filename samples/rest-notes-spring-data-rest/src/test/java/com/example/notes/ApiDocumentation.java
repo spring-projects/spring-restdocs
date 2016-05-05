@@ -133,8 +133,12 @@ public class ApiDocumentation {
 		this.mockMvc.perform(get("/notes"))
 			.andExpect(status().isOk())
 			.andDo(document("notes-list-example",
+					links(
+							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
-							fieldWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"))));
+							fieldWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"),
+							fieldWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
 	}
 
 	@Test
@@ -195,9 +199,11 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("body", is(note.get("body"))))
 			.andExpect(jsonPath("_links.self.href", is(noteLocation)))
 			.andExpect(jsonPath("_links.tags", is(notNullValue())))
+			.andDo(print())
 			.andDo(document("note-get-example",
 					links(
-							linkWithRel("self").description("This <<resources-note,note>>"),
+							linkWithRel("self").description("Canonical link for this <<resources-note,note>>"),
+							linkWithRel("note").description("This <<resources-note,note>>"),
 							linkWithRel("tags").description("This note's tags")),
 					responseFields(
 							fieldWithPath("title").description("The title of the note"),
@@ -217,8 +223,12 @@ public class ApiDocumentation {
 		this.mockMvc.perform(get("/tags"))
 			.andExpect(status().isOk())
 			.andDo(document("tags-list-example",
+					links(
+							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
-							fieldWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"))));
+							fieldWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"),
+							fieldWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
 	}
 
 	@Test
@@ -295,7 +305,8 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("name", is(tag.get("name"))))
 			.andDo(document("tag-get-example",
 					links(
-							linkWithRel("self").description("This <<resources-tag,tag>>"),
+							linkWithRel("self").description("Canonical link for this <<resources-tag,tag>>"),
+							linkWithRel("tag").description("This <<resources-tag,tag>>"),
 							linkWithRel("notes").description("The <<resources-tagged-notes,notes>> that have this tag")),
 					responseFields(
 							fieldWithPath("name").description("The name of the tag"),
