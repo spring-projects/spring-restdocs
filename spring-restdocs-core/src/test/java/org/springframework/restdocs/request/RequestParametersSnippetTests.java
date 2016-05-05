@@ -164,6 +164,25 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void requestParametersWithOptionalColumn() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("request-parameters"))
+				.willReturn(snippetResource("request-parameters-with-optional-column"));
+		this.snippet.expectRequestParameters("request-parameters-with-optional-column")
+				.withContents(tableWithHeader("Parameter", "Optional", "Description")
+						.row("a", "true", "one").row("b", "false", "two"));
+
+		new RequestParametersSnippet(Arrays.asList(
+				parameterWithName("a").description("one").optional(),
+				parameterWithName("b").description("two"))).document(
+						operationBuilder("request-parameters-with-optional-column")
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(resolver))
+								.request("http://localhost").param("a", "alpha")
+								.param("b", "bravo").build());
+	}
+
+	@Test
 	public void additionalDescriptors() throws IOException {
 		this.snippet.expectRequestParameters("additional-descriptors")
 				.withContents(tableWithHeader("Parameter", "Description").row("a", "one")

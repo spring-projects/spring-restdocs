@@ -189,6 +189,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 		Map<String, Object> model = new HashMap<>();
 		model.put("name", descriptor.getName());
 		model.put("description", descriptor.getDescription());
+		model.put("optional", descriptor.isOptional());
 		model.putAll(descriptor.getAttributes());
 		return model;
 	}
