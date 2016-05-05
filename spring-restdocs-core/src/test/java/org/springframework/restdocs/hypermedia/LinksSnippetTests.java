@@ -149,12 +149,14 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 						new LinkDescriptor("a").description("one")
 								.attributes(key("foo").value("alpha")),
 						new LinkDescriptor("b").description("two").attributes(
-								key("foo").value("bravo")))).document(operationBuilder(
-										"links-with-custom-descriptor-attributes")
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.build());
+								key("foo").value("bravo"))))
+										.document(operationBuilder(
+												"links-with-custom-descriptor-attributes")
+														.attribute(TemplateEngine.class
+																.getName(),
+																new MustacheTemplateEngine(
+																		resolver))
+														.build());
 	}
 
 	@Test
@@ -165,7 +167,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 		HypermediaDocumentation
 				.links(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
-				new LinkDescriptor("a").description("one"))
+						new LinkDescriptor("a").description("one"))
 				.and(new LinkDescriptor("b").description("two"))
 				.document(operationBuilder("additional-descriptors").build());
 	}

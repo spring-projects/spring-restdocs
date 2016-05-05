@@ -75,11 +75,13 @@ public class RequestFieldsSnippetFailureTests {
 	@Test
 	public void missingOptionalRequestFieldWithNoTypeProvided() throws IOException {
 		this.thrown.expect(FieldTypeRequiredException.class);
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
-				.optional())).document(new OperationBuilder(
-						"missing-optional-request-field-with-no-type",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.content("{ }").build());
+		new RequestFieldsSnippet(
+				Arrays.asList(fieldWithPath("a.b").description("one").optional()))
+						.document(new OperationBuilder(
+								"missing-optional-request-field-with-no-type",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost").content("{ }")
+										.build());
 	}
 
 	@Test
@@ -136,7 +138,7 @@ public class RequestFieldsSnippetFailureTests {
 												.content("<a></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-								.build());
+												.build());
 	}
 
 	@Test

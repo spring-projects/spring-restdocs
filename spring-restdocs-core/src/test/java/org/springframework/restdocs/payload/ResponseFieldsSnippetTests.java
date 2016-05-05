@@ -80,7 +80,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 						operationBuilder("array-response-with-fields").response()
 								.content(
 										"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
-										.build());
+								.build());
 	}
 
 	@Test
@@ -145,8 +145,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 						.row("a", "Object", "three", "charlie"));
 
 		new ResponseFieldsSnippet(Arrays.asList(
-				fieldWithPath("a.b").description("one")
-						.attributes(key("foo").value("alpha")),
+				fieldWithPath("a.b").description("one").attributes(key("foo")
+						.value("alpha")),
 				fieldWithPath("a.c").description("two")
 						.attributes(key("foo").value("bravo")),
 				fieldWithPath("a").description("three")
@@ -164,8 +164,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void xmlResponseFields() throws IOException {
 		this.snippet.expectResponseFields("xml-response")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a/b", "b", "one").row("a/c", "c", "two")
-						.row("a", "a", "three"));
+						.row("a/b", "b", "one").row("a/c", "c", "two").row("a", "a",
+								"three"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
 						fieldWithPath("a/c").description("two").type("c"),
@@ -175,7 +175,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.content("<a><b>5</b><c>charlie</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -191,7 +191,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.content("<a id=\"1\">foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -207,7 +207,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.response().content("<a>foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -248,8 +248,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void prefixedAdditionalDescriptors() throws IOException {
 		this.snippet.expectResponseFields("prefixed-additional-descriptors")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a", "Object", "one").row("a.b", "Number", "two")
-						.row("a.c", "String", "three"));
+						.row("a", "Object", "one").row("a.b", "Number", "two").row("a.c",
+								"String", "three"));
 
 		PayloadDocumentation.responseFields(fieldWithPath("a").description("one"))
 				.andWithPrefix("a.", fieldWithPath("b").description("two"),

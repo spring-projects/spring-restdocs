@@ -51,8 +51,8 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	public void mapRequestWithFields() throws IOException {
 		this.snippet.expectRequestFields("map-request-with-fields")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a.b", "Number", "one").row("a.c", "String", "two")
-						.row("a", "Object", "three"));
+						.row("a.b", "Number", "one").row("a.c", "String", "two").row("a",
+								"Object", "three"));
 
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one"),
 				fieldWithPath("a.c").description("two"),
@@ -150,15 +150,15 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 												.request("http://localhost")
 												.content(
 														"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
-										.build());
+												.build());
 	}
 
 	@Test
 	public void xmlRequestFields() throws IOException {
 		this.snippet.expectRequestFields("xml-request")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a/b", "b", "one").row("a/c", "c", "two")
-						.row("a", "a", "three"));
+						.row("a/b", "b", "one").row("a/c", "c", "two").row("a", "a",
+								"three"));
 
 		new RequestFieldsSnippet(
 				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
@@ -170,15 +170,15 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 												.content("<a><b>5</b><c>charlie</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-								.build());
+												.build());
 	}
 
 	@Test
 	public void additionalDescriptors() throws IOException {
 		this.snippet.expectRequestFields("additional-descriptors")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a.b", "Number", "one").row("a.c", "String", "two")
-						.row("a", "Object", "three"));
+						.row("a.b", "Number", "one").row("a.c", "String", "two").row("a",
+								"Object", "three"));
 
 		PayloadDocumentation
 				.requestFields(fieldWithPath("a.b").description("one"),
@@ -193,8 +193,8 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	public void prefixedAdditionalDescriptors() throws IOException {
 		this.snippet.expectRequestFields("prefixed-additional-descriptors")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a", "Object", "one").row("a.b", "Number", "two")
-						.row("a.c", "String", "three"));
+						.row("a", "Object", "one").row("a.b", "Number", "two").row("a.c",
+								"String", "three"));
 
 		PayloadDocumentation.requestFields(fieldWithPath("a").description("one"))
 				.andWithPrefix("a.", fieldWithPath("b").description("two"),

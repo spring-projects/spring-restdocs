@@ -77,11 +77,10 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("b",
 						"two"));
 		new PathParametersSnippet(
-				Arrays.asList(parameterWithName("b").description("two")),
-				true).document(operationBuilder("ignore-all-undocumented")
-						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-								"/{a}/{b}")
-						.build());
+				Arrays.asList(parameterWithName("b").description("two")), true)
+						.document(operationBuilder("ignore-all-undocumented").attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}").build());
 	}
 
 	@Test
@@ -125,8 +124,8 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				Arrays.asList(
 						parameterWithName("a").description("one")
 								.attributes(key("foo").value("alpha")),
-				parameterWithName("b").description("two")
-						.attributes(key("foo").value("bravo"))),
+						parameterWithName("b").description("two")
+								.attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title"))).document(
 						operationBuilder("path-parameters-with-custom-attributes")
 								.attribute(

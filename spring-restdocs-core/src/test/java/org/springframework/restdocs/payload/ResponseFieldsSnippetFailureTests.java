@@ -63,7 +63,7 @@ public class ResponseFieldsSnippetFailureTests {
 												.content("<a><b>5</b></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class ResponseFieldsSnippetFailureTests {
 												.content("<a>foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -89,15 +89,14 @@ public class ResponseFieldsSnippetFailureTests {
 				String.format("The following parts of the payload were not documented:"
 						+ "%n<a>bar</a>%n")));
 		new ResponseFieldsSnippet(
-				Arrays.asList(
-						fieldWithPath("a/@id").description("one")
-								.type("a"))).document(new OperationBuilder(
-										"documented-attribute-is-removed",
+				Arrays.asList(fieldWithPath("a/@id").description("one").type("a")))
+						.document(
+								new OperationBuilder("documented-attribute-is-removed",
 										this.snippet.getOutputDirectory()).response()
 												.content("<a id=\"foo\">bar</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -124,7 +123,7 @@ public class ResponseFieldsSnippetFailureTests {
 												.content("<a></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -145,7 +144,7 @@ public class ResponseFieldsSnippetFailureTests {
 												.content("<a><c>5</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 }

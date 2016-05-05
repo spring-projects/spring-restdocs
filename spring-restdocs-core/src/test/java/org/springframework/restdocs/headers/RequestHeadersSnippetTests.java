@@ -61,16 +61,13 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 						headerWithName("Accept-Language").description("four"),
 						headerWithName("Cache-Control").description("five"),
 						headerWithName("Connection").description("six")))
-								.document(
-										operationBuilder("request-with-headers")
-												.request("http://localhost")
-												.header("X-Test", "test")
-												.header("Accept", "*/*")
-												.header("Accept-Encoding",
-														"gzip, deflate")
-								.header("Accept-Language", "en-US,en;q=0.5")
-								.header("Cache-Control", "max-age=0")
-								.header("Connection", "keep-alive").build());
+								.document(operationBuilder("request-with-headers")
+										.request("http://localhost")
+										.header("X-Test", "test").header("Accept", "*/*")
+										.header("Accept-Encoding", "gzip, deflate")
+										.header("Accept-Language", "en-US,en;q=0.5")
+										.header("Cache-Control", "max-age=0")
+										.header("Connection", "keep-alive").build());
 	}
 
 	@Test
@@ -140,7 +137,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 												.header("X-Test", "test")
 												.header("Accept-Encoding",
 														"gzip, deflate")
-										.header("Accept", "*/*").build());
+												.header("Accept", "*/*").build());
 	}
 
 	@Test

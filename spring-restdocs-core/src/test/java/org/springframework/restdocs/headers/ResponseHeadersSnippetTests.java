@@ -64,9 +64,9 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 												.header("X-Test", "test")
 												.header("Content-Type",
 														"application/json")
-										.header("Etag", "lskjadldj3ii32l2ij23")
-										.header("Cache-Control", "max-age=0")
-										.header("Vary", "User-Agent").build());
+												.header("Etag", "lskjadldj3ii32l2ij23")
+												.header("Cache-Control", "max-age=0")
+												.header("Vary", "User-Agent").build());
 	}
 
 	@Test
@@ -130,7 +130,8 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 												.response().header("X-Test", "test")
 												.header("Content-Type",
 														"application/json")
-										.header("Etag", "lskjadldj3ii32l2ij23").build());
+												.header("Etag", "lskjadldj3ii32l2ij23")
+												.build());
 	}
 
 	@Test

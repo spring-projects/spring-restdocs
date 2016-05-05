@@ -116,8 +116,8 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 				Arrays.asList(
 						parameterWithName("a").description("one")
 								.attributes(key("foo").value("alpha")),
-				parameterWithName("b").description("two")
-						.attributes(key("foo").value("bravo"))),
+						parameterWithName("b").description("two")
+								.attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title"))).document(
 						operationBuilder("request-parameters-with-custom-attributes")
 								.attribute(TemplateEngine.class.getName(),

@@ -86,8 +86,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String content = "Hello, world";
 		this.snippet.expectHttpRequest("post-request-with-content")
 				.withContents(httpRequest(RequestMethod.POST, "/foo")
-						.header(HttpHeaders.HOST, "localhost").content(content)
-						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content).header(
+								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet().document(operationBuilder("post-request-with-content")
 				.request("http://localhost/foo").method("POST").content(content).build());
@@ -140,8 +140,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String content = "Hello, world";
 		this.snippet.expectHttpRequest("put-request-with-content")
 				.withContents(httpRequest(RequestMethod.PUT, "/foo")
-						.header(HttpHeaders.HOST, "localhost").content(content)
-						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content).header(
+								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet().document(operationBuilder("put-request-with-content")
 				.request("http://localhost/foo").method("PUT").content(content).build());
@@ -176,7 +176,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 						.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", "<< data >>".getBytes()).build());
+						.part("image", "<< data >>".getBytes()).build());
 	}
 
 	@Test

@@ -280,8 +280,8 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 						.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", new byte[0])
-				.submittedFileName("documents/images/example.png").build());
+						.part("image", new byte[0])
+						.submittedFileName("documents/images/example.png").build());
 	}
 
 	@Test
@@ -311,7 +311,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 						.header(HttpHeaders.AUTHORIZATION,
 								"Basic " + Base64Utils
 										.encodeToString("user:secret".getBytes()))
-				.build());
+						.build());
 	}
 
 	@Test
