@@ -16,12 +16,14 @@
 
 package org.springframework.restdocs.build
 
+import org.gradle.StartParameter
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.GradleBuild
+import org.gradle.logging.ShowStacktrace
 
 public class SampleBuildConfigurer {
 
@@ -100,9 +102,12 @@ public class SampleBuildConfigurer {
 		Task gradleBuild = project.tasks.create("${name}Gradle", GradleBuild)
 		gradleBuild.description = "Builds the ${name} sample with Gradle"
 		gradleBuild.group = "Build"
-		gradleBuild.dir = this.workingDir
-		gradleBuild.tasks = ['clean', 'build']
 		gradleBuild.dependsOn dependencies
+		StartParameter startParameter = new StartParameter()
+		startParameter.showStacktrace = ShowStacktrace.ALWAYS
+		startParameter.taskNames = ['clean', 'build']
+		startParameter.currentDir = new File(this.workingDir)
+		gradleBuild.startParameter = startParameter
 		return gradleBuild
 	}
 
