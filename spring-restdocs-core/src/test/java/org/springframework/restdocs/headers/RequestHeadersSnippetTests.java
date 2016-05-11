@@ -50,10 +50,11 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void requestWithHeaders() throws IOException {
 		this.snippet.expectRequestHeaders("request-with-headers")
-				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one")
-						.row("Accept", "two").row("Accept-Encoding", "three")
-						.row("Accept-Language", "four").row("Cache-Control", "five")
-						.row("Connection", "six"));
+				.withContents(tableWithHeader("Name", "Description")
+						.row("`X-Test`", "one").row("`Accept`", "two")
+						.row("`Accept-Encoding`", "three")
+						.row("`Accept-Language`", "four").row("`Cache-Control`", "five")
+						.row("`Connection`", "six"));
 		new RequestHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one"),
 						headerWithName("Accept").description("two"),
@@ -74,7 +75,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 	public void caseInsensitiveRequestHeaders() throws IOException {
 		this.snippet.expectRequestHeaders("case-insensitive-request-headers")
 				.withContents(
-						tableWithHeader("Name", "Description").row("X-Test", "one"));
+						tableWithHeader("Name", "Description").row("`X-Test`", "one"));
 		new RequestHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one")))
 						.document(operationBuilder("case-insensitive-request-headers")
@@ -143,10 +144,11 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void additionalDescriptors() throws IOException {
 		this.snippet.expectRequestHeaders("additional-descriptors")
-				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one")
-						.row("Accept", "two").row("Accept-Encoding", "three")
-						.row("Accept-Language", "four").row("Cache-Control", "five")
-						.row("Connection", "six"));
+				.withContents(tableWithHeader("Name", "Description")
+						.row("`X-Test`", "one").row("`Accept`", "two")
+						.row("`Accept-Encoding`", "three")
+						.row("`Accept-Language`", "four").row("`Cache-Control`", "five")
+						.row("`Connection`", "six"));
 		HeaderDocumentation
 				.requestHeaders(headerWithName("X-Test").description("one"),
 						headerWithName("Accept").description("two"),

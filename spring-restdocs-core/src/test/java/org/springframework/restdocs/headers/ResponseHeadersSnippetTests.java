@@ -49,10 +49,10 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithHeaders() throws IOException {
-		this.snippet.expectResponseHeaders("response-headers")
-				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one")
-						.row("Content-Type", "two").row("Etag", "three")
-						.row("Cache-Control", "five").row("Vary", "six"));
+		this.snippet.expectResponseHeaders("response-headers").withContents(
+				tableWithHeader("Name", "Description").row("`X-Test`", "one")
+						.row("`Content-Type`", "two").row("`Etag`", "three")
+						.row("`Cache-Control`", "five").row("`Vary`", "six"));
 		new ResponseHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one"),
 						headerWithName("Content-Type").description("two"),
@@ -73,7 +73,7 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 	public void caseInsensitiveResponseHeaders() throws IOException {
 		this.snippet.expectResponseHeaders("case-insensitive-response-headers")
 				.withContents(
-						tableWithHeader("Name", "Description").row("X-Test", "one"));
+						tableWithHeader("Name", "Description").row("`X-Test`", "one"));
 		new ResponseHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one")))
 						.document(operationBuilder("case-insensitive-response-headers")
@@ -136,10 +136,10 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectResponseHeaders("additional-descriptors")
-				.withContents(tableWithHeader("Name", "Description").row("X-Test", "one")
-						.row("Content-Type", "two").row("Etag", "three")
-						.row("Cache-Control", "five").row("Vary", "six"));
+		this.snippet.expectResponseHeaders("additional-descriptors").withContents(
+				tableWithHeader("Name", "Description").row("`X-Test`", "one")
+						.row("`Content-Type`", "two").row("`Etag`", "three")
+						.row("`Cache-Control`", "five").row("`Vary`", "six"));
 		HeaderDocumentation
 				.responseHeaders(headerWithName("X-Test").description("one"),
 						headerWithName("Content-Type").description("two"),

@@ -51,10 +51,11 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void mapResponseWithFields() throws IOException {
 		this.snippet.expectResponseFields("map-response-with-fields")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("id", "Number", "one").row("date", "String", "two")
-						.row("assets", "Array", "three").row("assets[]", "Object", "four")
-						.row("assets[].id", "Number", "five")
-						.row("assets[].name", "String", "six"));
+						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
+						.row("`assets`", "`Array`", "three")
+						.row("`assets[]`", "`Object`", "four")
+						.row("`assets[].id`", "`Number`", "five")
+						.row("`assets[].name`", "`String`", "six"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("id").description("one"),
 				fieldWithPath("date").description("two"),
 				fieldWithPath("assets").description("three"),
@@ -72,8 +73,9 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void arrayResponseWithFields() throws IOException {
 		this.snippet.expectResponseFields("array-response-with-fields")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("[]a.b", "Number", "one").row("[]a.c", "String", "two")
-						.row("[]a", "Object", "three"));
+						.row("`[]a.b`", "`Number`", "one")
+						.row("`[]a.c`", "`String`", "two")
+						.row("`[]a`", "`Object`", "three"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b").description("one"),
 				fieldWithPath("[]a.c").description("two"),
 				fieldWithPath("[]a").description("three"))).document(
@@ -86,8 +88,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void arrayResponse() throws IOException {
 		this.snippet.expectResponseFields("array-response")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("[]",
-						"String", "one"));
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`[]`",
+						"`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]").description("one")))
 				.document(operationBuilder("array-response").response()
 						.content("[\"a\", \"b\", \"c\"]").build());
@@ -96,8 +98,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void ignoredResponseField() throws IOException {
 		this.snippet.expectResponseFields("ignored-response-field")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("b",
-						"Number", "Field b"));
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
+						"`Number`", "Field b"));
 
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").ignored(),
 				fieldWithPath("b").description("Field b")))
@@ -108,8 +110,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void allUndocumentedFieldsCanBeIgnored() throws IOException {
 		this.snippet.expectResponseFields("ignore-all-undocumented")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("b",
-						"Number", "Field b"));
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
+						"`Number`", "Field b"));
 
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("b").description("Field b")), true)
@@ -136,8 +138,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void missingOptionalResponseField() throws IOException {
 		this.snippet.expectResponseFields("missing-optional-response-field")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
-						"String", "one"));
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
+						"`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
 				.type(JsonFieldType.STRING).optional()))
 						.document(operationBuilder("missing-optional-response-field")
@@ -147,8 +149,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void presentOptionalResponseField() throws IOException {
 		this.snippet.expectResponseFields("present-optional-response-field")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
-						"String", "one"));
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
+						"`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
 				.type(JsonFieldType.STRING).optional())).document(
 						operationBuilder("present-optional-response-field").response()
@@ -186,8 +188,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void xmlResponseFields() throws IOException {
 		this.snippet.expectResponseFields("xml-response")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a/b", "b", "one").row("a/c", "c", "two").row("a", "a",
-								"three"));
+						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two").row("`a`",
+								"`a`", "three"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
 						fieldWithPath("a/c").description("two").type("c"),
@@ -204,7 +206,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void xmlAttribute() throws IOException {
 		this.snippet.expectResponseFields("xml-attribute")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a", "b", "one").row("a/@id", "c", "two"));
+						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one").type("b"),
 						fieldWithPath("a/@id").description("two").type("c")))
@@ -220,7 +222,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void missingOptionalXmlAttribute() throws IOException {
 		this.snippet.expectResponseFields("missing-optional-xml-attribute")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a", "b", "one").row("a/@id", "c", "two"));
+						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one").type("b"),
 						fieldWithPath("a/@id").description("two").type("c").optional()))
@@ -235,7 +237,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void undocumentedAttributeDoesNotCauseFailure() throws IOException {
 		this.snippet.expectResponseFields("undocumented-attribute").withContents(
-				tableWithHeader("Path", "Type", "Description").row("a", "a", "one"));
+				tableWithHeader("Path", "Type", "Description").row("`a`", "`a`", "one"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one").type("a")))
 						.document(operationBuilder("undocumented-attribute").response()
@@ -249,10 +251,11 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void additionalDescriptors() throws IOException {
 		this.snippet.expectResponseFields("additional-descriptors")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("id", "Number", "one").row("date", "String", "two")
-						.row("assets", "Array", "three").row("assets[]", "Object", "four")
-						.row("assets[].id", "Number", "five")
-						.row("assets[].name", "String", "six"));
+						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
+						.row("`assets`", "`Array`", "three")
+						.row("`assets[]`", "`Object`", "four")
+						.row("`assets[].id`", "`Number`", "five")
+						.row("`assets[].name`", "`String`", "six"));
 		PayloadDocumentation
 				.responseFields(fieldWithPath("id").description("one"),
 						fieldWithPath("date").description("two"),
@@ -270,8 +273,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void prefixedAdditionalDescriptors() throws IOException {
 		this.snippet.expectResponseFields("prefixed-additional-descriptors")
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a", "Object", "one").row("a.b", "Number", "two").row("a.c",
-								"String", "three"));
+						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
+						.row("`a.c`", "`String`", "three"));
 
 		PayloadDocumentation.responseFields(fieldWithPath("a").description("one"))
 				.andWithPrefix("a.", fieldWithPath("b").description("two"),

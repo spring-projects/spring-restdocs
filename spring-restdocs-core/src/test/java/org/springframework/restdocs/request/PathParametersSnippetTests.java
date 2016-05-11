@@ -51,7 +51,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	public void pathParameters() throws IOException {
 		this.snippet.expectPathParameters("path-parameters").withContents(
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
-						.row("a", "one").row("b", "two"));
+						.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
 				parameterWithName("b").description("two")))
 						.document(operationBuilder("path-parameters").attribute(
@@ -62,7 +62,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void ignoredPathParameter() throws IOException {
 		this.snippet.expectPathParameters("ignored-path-parameter").withContents(
-				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("b",
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`",
 						"two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
 				parameterWithName("b").description("two")))
@@ -74,7 +74,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void allUndocumentedPathParametersCanBeIgnored() throws IOException {
 		this.snippet.expectPathParameters("ignore-all-undocumented").withContents(
-				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("b",
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`",
 						"two"));
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("b").description("two")), true)
@@ -91,7 +91,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				.withContents(tableWithTitleAndHeader(
 						this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}"
 								: "`/{a}`",
-						"Parameter", "Description").row("a", "one").row("b", "two"));
+						"Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
 				parameterWithName("b").description("two").optional())).document(
 						operationBuilder("missing-optional-path-parameter").attribute(
@@ -107,7 +107,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				.withContents(tableWithTitleAndHeader(
 						this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}"
 								: "`/{a}`",
-						"Parameter", "Description").row("a", "one"));
+						"Parameter", "Description").row("`a`", "one"));
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").optional()))
 						.document(operationBuilder("present-optional-path-parameter")
@@ -122,7 +122,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 		this.snippet.expectPathParameters("path-parameters-with-query-string")
 				.withContents(
 						tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
-								.row("a", "one").row("b", "two"));
+								.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
 				parameterWithName("b").description("two"))).document(
 						operationBuilder("path-parameters-with-query-string").attribute(
@@ -183,7 +183,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	public void additionalDescriptors() throws IOException {
 		this.snippet.expectPathParameters("additional-descriptors").withContents(
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
-						.row("a", "one").row("b", "two"));
+						.row("`a`", "one").row("`b`", "two"));
 		RequestDocumentation.pathParameters(parameterWithName("a").description("one"))
 				.and(parameterWithName("b").description("two"))
 				.document(operationBuilder("additional-descriptors")

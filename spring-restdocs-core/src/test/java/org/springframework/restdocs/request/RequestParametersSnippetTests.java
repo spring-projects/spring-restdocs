@@ -48,8 +48,8 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void requestParameters() throws IOException {
 		this.snippet.expectRequestParameters("request-parameters")
-				.withContents(tableWithHeader("Parameter", "Description").row("a", "one")
-						.row("b", "two"));
+				.withContents(tableWithHeader("Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one"),
 						parameterWithName("b").description("two")))
@@ -62,7 +62,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	public void requestParameterWithNoValue() throws IOException {
 		this.snippet.expectRequestParameters("request-parameter-with-no-value")
 				.withContents(
-						tableWithHeader("Parameter", "Description").row("a", "one"));
+						tableWithHeader("Parameter", "Description").row("`a`", "one"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one")))
 						.document(operationBuilder("request-parameter-with-no-value")
@@ -72,7 +72,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void ignoredRequestParameter() throws IOException {
 		this.snippet.expectRequestParameters("ignored-request-parameter").withContents(
-				tableWithHeader("Parameter", "Description").row("b", "two"));
+				tableWithHeader("Parameter", "Description").row("`b`", "two"));
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
 				parameterWithName("b").description("two")))
 						.document(operationBuilder("ignored-request-parameter")
@@ -83,7 +83,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void allUndocumentedRequestParametersCanBeIgnored() throws IOException {
 		this.snippet.expectRequestParameters("ignore-all-undocumented").withContents(
-				tableWithHeader("Parameter", "Description").row("b", "two"));
+				tableWithHeader("Parameter", "Description").row("`b`", "two"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("b").description("two")), true)
 						.document(operationBuilder("ignore-all-undocumented")
@@ -94,8 +94,8 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void missingOptionalRequestParameter() throws IOException {
 		this.snippet.expectRequestParameters("missing-optional-request-parameter")
-				.withContents(tableWithHeader("Parameter", "Description").row("a", "one")
-						.row("b", "two"));
+				.withContents(tableWithHeader("Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").optional(),
 						parameterWithName("b").description("two"))).document(
@@ -108,7 +108,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	public void presentOptionalRequestParameter() throws IOException {
 		this.snippet.expectRequestParameters("present-optional-request-parameter")
 				.withContents(
-						tableWithHeader("Parameter", "Description").row("a", "one"));
+						tableWithHeader("Parameter", "Description").row("`a`", "one"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").optional()))
 						.document(operationBuilder("present-optional-request-parameter")
@@ -185,8 +185,8 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void additionalDescriptors() throws IOException {
 		this.snippet.expectRequestParameters("additional-descriptors")
-				.withContents(tableWithHeader("Parameter", "Description").row("a", "one")
-						.row("b", "two"));
+				.withContents(tableWithHeader("Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
 		RequestDocumentation.requestParameters(parameterWithName("a").description("one"))
 				.and(parameterWithName("b").description("two"))
 				.document(operationBuilder("additional-descriptors")

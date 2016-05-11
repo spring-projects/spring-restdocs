@@ -47,7 +47,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void ignoredLink() throws IOException {
 		this.snippet.expectLinks("ignored-link").withContents(
-				tableWithHeader("Relation", "Description").row("b", "Link b"));
+				tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
@@ -59,7 +59,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void allUndocumentedLinksCanBeIgnored() throws IOException {
 		this.snippet.expectLinks("ignore-all-undocumented").withContents(
-				tableWithHeader("Relation", "Description").row("b", "Link b"));
+				tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
@@ -70,7 +70,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void presentOptionalLink() throws IOException {
 		this.snippet.expectLinks("present-optional-link").withContents(
-				tableWithHeader("Relation", "Description").row("foo", "bar"));
+				tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "blah")),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
 						.document(operationBuilder("present-optional-link").build());
@@ -79,7 +79,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void missingOptionalLink() throws IOException {
 		this.snippet.expectLinks("missing-optional-link").withContents(
-				tableWithHeader("Relation", "Description").row("foo", "bar"));
+				tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 		new LinksSnippet(new StubLinkExtractor(),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
 						.document(operationBuilder("missing-optional-link").build());
@@ -88,8 +88,8 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void documentedLinks() throws IOException {
 		this.snippet.expectLinks("documented-links")
-				.withContents(tableWithHeader("Relation", "Description").row("a", "one")
-						.row("b", "two"));
+				.withContents(tableWithHeader("Relation", "Description").row("`a`", "one")
+						.row("`b`", "two"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
@@ -101,8 +101,8 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void linkDescriptionFromTitleInPayload() throws IOException {
 		this.snippet.expectLinks("link-description-from-title-in-payload")
-				.withContents(tableWithHeader("Relation", "Description").row("a", "one")
-						.row("b", "Link b"));
+				.withContents(tableWithHeader("Relation", "Description").row("`a`", "one")
+						.row("`b`", "Link b"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha", "Link a"),
 						new Link("b", "bravo", "Link b")),
@@ -162,8 +162,8 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void additionalDescriptors() throws IOException {
 		this.snippet.expectLinks("additional-descriptors")
-				.withContents(tableWithHeader("Relation", "Description").row("a", "one")
-						.row("b", "two"));
+				.withContents(tableWithHeader("Relation", "Description").row("`a`", "one")
+						.row("`b`", "two"));
 		HypermediaDocumentation
 				.links(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
