@@ -71,8 +71,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
@@ -81,6 +83,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.SnippetMatchers.snippet;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -260,6 +263,20 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void requestPartsSnippet() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+
+		mockMvc.perform(fileUpload("/upload").file("foo", "bar".getBytes()))
+				.andExpect(status().isOk()).andDo(document("request-parts", requestParts(
+						partWithName("foo").description("The description"))));
+
+		assertExpectedSnippetFilesExist(
+				new File("build/generated-snippets/request-parts"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc", "request-parts.adoc");
+	}
+
+	@Test
 	public void responseFieldsSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
@@ -432,6 +449,15 @@ public class MockMvcRestDocumentationIntegrationTests {
 								"$ curl 'http://localhost:8080/custom/' -i -H 'Accept: application/json'"))));
 	}
 
+	@Test
+	public void multiPart() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+		mockMvc.perform(fileUpload("/upload").file("test", "content".getBytes()))
+				.andExpect(status().isOk()).andDo(document("upload",
+						requestParts(partWithName("test").description("Foo"))));
+	}
+
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
 		for (String snippet : snippets) {
 			assertTrue(new File(directory, snippet).isFile());
@@ -471,6 +497,11 @@ public class MockMvcRestDocumentationIntegrationTests {
 		@RequestMapping(value = "/company/5", produces = MediaType.APPLICATION_JSON_VALUE)
 		public String bar() {
 			return "{\"companyName\": \"FooBar\",\"employee\": [{\"name\": \"Lorem\",\"age\": \"42\"},{\"name\": \"Ipsum\",\"age\": \"24\"}]}";
+		}
+
+		@RequestMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+		public void upload() {
+
 		}
 
 	}

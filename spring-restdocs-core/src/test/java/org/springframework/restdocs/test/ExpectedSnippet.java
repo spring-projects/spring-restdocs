@@ -126,6 +126,11 @@ public class ExpectedSnippet implements TestRule {
 		return this;
 	}
 
+	public ExpectedSnippet expectRequestParts(String name) {
+		expect(name, "request-parts");
+		return this;
+	}
+
 	private ExpectedSnippet expect(String name, String type) {
 		this.expectedName = name;
 		this.expectedType = type;

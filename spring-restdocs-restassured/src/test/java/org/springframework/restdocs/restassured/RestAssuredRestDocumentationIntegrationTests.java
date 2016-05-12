@@ -64,8 +64,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.restassured.operation.preprocess.RestAssuredPreprocessors.modifyUris;
@@ -183,6 +185,17 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertExpectedSnippetFilesExist(
 				new File("build/generated-snippets/request-fields"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc", "request-fields.adoc");
+	}
+
+	@Test
+	public void requestPartsSnippet() throws Exception {
+		given().port(this.port).filter(documentationConfiguration(this.restDocumentation))
+				.filter(document("request-parts",
+						requestParts(partWithName("a").description("The description"))))
+				.multiPart("a", "foo").post("/upload").then().statusCode(200);
+		assertExpectedSnippetFilesExist(
+				new File("build/generated-snippets/request-parts"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc", "request-parts.adoc");
 	}
 
 	@Test
@@ -341,6 +354,11 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		@RequestMapping(value = "/company/5", produces = MediaType.APPLICATION_JSON_VALUE)
 		public String bar() {
 			return "{\"companyName\": \"FooBar\",\"employee\": [{\"name\": \"Lorem\",\"age\": \"42\"},{\"name\": \"Ipsum\",\"age\": \"24\"}]}";
+		}
+
+		@RequestMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+		public void upload() {
+
 		}
 
 	}

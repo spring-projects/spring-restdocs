@@ -44,6 +44,17 @@ public abstract class RequestDocumentation {
 	}
 
 	/**
+	 * Creates a {@link RequestPartDescriptor} that describes a request part with the
+	 * given {@code name}.
+	 *
+	 * @param name The name of the request part
+	 * @return a {@link RequestPartDescriptor} ready for further configuration
+	 */
+	public static RequestPartDescriptor partWithName(String name) {
+		return new RequestPartDescriptor(name);
+	}
+
+	/**
 	 * Returns a {@code Snippet} that will document the path parameters from the API
 	 * operation's request. The parameters will be documented using the given
 	 * {@code descriptors}.
@@ -205,6 +216,85 @@ public abstract class RequestDocumentation {
 	public static RequestParametersSnippet relaxedRequestParameters(
 			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
 		return new RequestParametersSnippet(Arrays.asList(descriptors), attributes, true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the parts from the API operation's
+	 * request. The parts will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a part is present in the request, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a part
+	 * is documented, is not marked as optional, and is not present in the request, a
+	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a part, a part descriptor can be marked as
+	 * {@link RequestPartDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param descriptors The descriptions of the request's parts
+	 * @return the snippet
+	 * @see OperationRequest#getParts()
+	 */
+	public static RequestPartsSnippet requestParts(RequestPartDescriptor... descriptors) {
+		return new RequestPartsSnippet(Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the parts from the API operation's
+	 * request. The parameters will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a part is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented parts will be ignored.
+	 *
+	 * @param descriptors The descriptions of the request's parts
+	 * @return the snippet
+	 * @see OperationRequest#getParts()
+	 */
+	public static RequestPartsSnippet relaxedRequestParts(
+			RequestPartDescriptor... descriptors) {
+		return new RequestPartsSnippet(Arrays.asList(descriptors), true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the parts from the API operation's
+	 * request. The given {@code attributes} will be available during snippet rendering
+	 * and the parts will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a part is present in the request, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a part
+	 * is documented, is not marked as optional, and is not present in the request, a
+	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a part, a part descriptor can be marked as
+	 * {@link RequestPartDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request's parts
+	 * @return the snippet
+	 * @see OperationRequest#getParts()
+	 */
+	public static RequestPartsSnippet requestParts(Map<String, Object> attributes,
+			RequestPartDescriptor... descriptors) {
+		return new RequestPartsSnippet(Arrays.asList(descriptors), attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the parts from the API operation's
+	 * request. The given {@code attributes} will be available during snippet rendering
+	 * and the parts will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a part is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented parts will be ignored.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request's parts
+	 * @return the snippet
+	 * @see OperationRequest#getParameters()
+	 */
+	public static RequestPartsSnippet relaxedRequestParts(Map<String, Object> attributes,
+			RequestPartDescriptor... descriptors) {
+		return new RequestPartsSnippet(Arrays.asList(descriptors), attributes, true);
 	}
 
 }
