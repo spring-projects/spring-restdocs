@@ -31,9 +31,7 @@ public class MustacheTemplate implements Template {
 	private final org.springframework.restdocs.mustache.Template delegate;
 
 	/**
-	 * Creates a new {@code MustacheTemplate} that adapts the given {@code delegate}. When
-	 * rendered, the given {@code defaultContext} will be combined with the render context
-	 * prior to executing the delegate.
+	 * Creates a new {@code MustacheTemplate} that adapts the given {@code delegate}.
 	 *
 	 * @param delegate The delegate to adapt
 	 */
