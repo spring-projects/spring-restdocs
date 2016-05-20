@@ -1,5 +1,7 @@
 # Spring REST Docs [![Build status][1]][2]
 
+[![Join the chat at https://gitter.im/spring-projects/spring-restdocs](https://badges.gitter.im/spring-projects/spring-restdocs.svg)](https://gitter.im/spring-projects/spring-restdocs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Overview
 
 The primary goal of this project is to make it easy to document RESTful services by
