@@ -39,7 +39,7 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.StandardOperation;
-import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
+import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolverFactory;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
@@ -107,7 +107,7 @@ public class OperationBuilder {
 		this.attributes.put(RestDocumentationContext.class.getName(), context);
 		this.attributes.put(WriterResolver.class.getName(),
 				new StandardWriterResolver(
-						new RestDocumentationContextPlaceholderResolver(context), "UTF-8",
+						new RestDocumentationContextPlaceholderResolverFactory(), "UTF-8",
 						this.templateFormat));
 		return new StandardOperation(this.name,
 				(this.requestBuilder == null

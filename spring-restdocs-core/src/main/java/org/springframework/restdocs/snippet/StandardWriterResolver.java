@@ -35,7 +35,7 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  */
 public final class StandardWriterResolver implements WriterResolver {
 
-	private final PlaceholderResolver placeholderResolver;
+	private final PlaceholderResolverFactory placeholderResolverFactory;
 
 	private final PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper(
 			"{", "}");
@@ -52,27 +52,29 @@ public final class StandardWriterResolver implements WriterResolver {
 	 *
 	 * @param placeholderResolver the placeholder resolver
 	 * @deprecated since 1.1.0 in favor of
-	 * {@link #StandardWriterResolver(PropertyPlaceholderHelper.PlaceholderResolver, String, TemplateFormat)}
+	 * {@link #StandardWriterResolver(PlaceholderResolverFactory, String, TemplateFormat)}
 	 */
 	@Deprecated
 	public StandardWriterResolver(PlaceholderResolver placeholderResolver) {
-		this(placeholderResolver, "UTF-8", TemplateFormats.asciidoctor());
+		this(new SingleInstancePlaceholderResolverFactory(placeholderResolver), "UTF-8",
+				TemplateFormats.asciidoctor());
 	}
 
 	/**
-	 * Creates a new {@code StandardWriterResolver} that will use the given
-	 * {@code placeholderResolver} to resolve any placeholders in the
+	 * Creates a new {@code StandardWriterResolver} that will use a
+	 * {@link PlaceholderResolver} created from the given
+	 * {@code placeholderResolverFactory} to resolve any placeholders in the
 	 * {@code operationName}. Writers will use the given {@code encoding} and, when
 	 * writing to a file, will use a filename appropriate for content generated from
 	 * templates in the given {@code templateFormat}.
 	 *
-	 * @param placeholderResolver the placeholder resolver
+	 * @param placeholderResolverFactory the placeholder resolver factory
 	 * @param encoding the encoding
 	 * @param templateFormat the snippet format
 	 */
-	public StandardWriterResolver(PlaceholderResolver placeholderResolver,
+	public StandardWriterResolver(PlaceholderResolverFactory placeholderResolverFactory,
 			String encoding, TemplateFormat templateFormat) {
-		this.placeholderResolver = placeholderResolver;
+		this.placeholderResolverFactory = placeholderResolverFactory;
 		this.encoding = encoding;
 		this.templateFormat = templateFormat;
 	}
@@ -82,7 +84,7 @@ public final class StandardWriterResolver implements WriterResolver {
 			RestDocumentationContext context) throws IOException {
 		File outputFile = resolveFile(
 				this.propertyPlaceholderHelper.replacePlaceholders(operationName,
-						this.placeholderResolver),
+						this.placeholderResolverFactory.create(context)),
 				snippetName + "." + this.templateFormat.getFileExtension(), context);
 
 		if (outputFile != null) {
@@ -125,6 +127,23 @@ public final class StandardWriterResolver implements WriterResolver {
 			throw new IllegalStateException(
 					"Failed to create directory '" + parent + "'");
 		}
+	}
+
+	private static final class SingleInstancePlaceholderResolverFactory
+			implements PlaceholderResolverFactory {
+
+		private final PlaceholderResolver placeholderResolver;
+
+		private SingleInstancePlaceholderResolverFactory(
+				PlaceholderResolver placeholderResolver) {
+			this.placeholderResolver = placeholderResolver;
+		}
+
+		@Override
+		public PlaceholderResolver create(RestDocumentationContext context) {
+			return this.placeholderResolver;
+		}
+
 	}
 
 }

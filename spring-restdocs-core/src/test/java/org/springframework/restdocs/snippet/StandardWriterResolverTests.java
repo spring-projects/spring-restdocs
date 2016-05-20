@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -36,11 +35,11 @@ import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor
  */
 public class StandardWriterResolverTests {
 
-	private final PlaceholderResolver placeholderResolver = mock(
-			PlaceholderResolver.class);
+	private final PlaceholderResolverFactory placeholderResolverFactory = mock(
+			PlaceholderResolverFactory.class);
 
 	private final StandardWriterResolver resolver = new StandardWriterResolver(
-			this.placeholderResolver, "UTF-8", asciidoctor());
+			this.placeholderResolverFactory, "UTF-8", asciidoctor());
 
 	@Test
 	public void absoluteInput() {

@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.mustache.Mustache;
-import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
+import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolverFactory;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
@@ -138,7 +138,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 				SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 						.get(SnippetConfiguration.class.getName());
 				resolverToUse = new StandardWriterResolver(
-						new RestDocumentationContextPlaceholderResolver(context),
+						new RestDocumentationContextPlaceholderResolverFactory(),
 						snippetConfiguration.getEncoding(),
 						snippetConfiguration.getTemplateFormat());
 			}
