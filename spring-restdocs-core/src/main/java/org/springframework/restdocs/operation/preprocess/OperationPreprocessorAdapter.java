@@ -21,7 +21,7 @@ import org.springframework.restdocs.operation.OperationResponse;
 
 /**
  * An implementation of {@link OperationPreprocessor} that returns the request and
- * response as-is. To be subclasses by preprocessor implementations that only modify the
+ * response as-is. To be subclassed by preprocessor implementations that only modify the
  * request or the response.
  *
  * @author Andy Wilkinson
