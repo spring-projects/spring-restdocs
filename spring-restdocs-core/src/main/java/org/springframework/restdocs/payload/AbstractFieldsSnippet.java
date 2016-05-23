@@ -204,30 +204,4 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		return model;
 	}
 
-	/**
-	 * Creates a copy of the given {@code descriptors} with the given {@code pathPrefix}
-	 * applied to their paths.
-	 *
-	 * @param pathPrefix the path prefix
-	 * @param descriptors the descriptors to copy
-	 * @return the copied descriptors with the prefix applied
-	 */
-	protected final List<FieldDescriptor> applyPathPrefix(String pathPrefix,
-			List<FieldDescriptor> descriptors) {
-		List<FieldDescriptor> prefixedDescriptors = new ArrayList<>();
-		for (FieldDescriptor descriptor : descriptors) {
-			FieldDescriptor prefixedDescriptor = new FieldDescriptor(
-					pathPrefix + descriptor.getPath())
-							.description(descriptor.getDescription())
-							.type(descriptor.getType());
-			if (descriptor.isIgnored()) {
-				prefixedDescriptor.ignored();
-			}
-			if (descriptor.isOptional()) {
-				prefixedDescriptor.optional();
-			}
-			prefixedDescriptors.add(prefixedDescriptor);
-		}
-		return prefixedDescriptors;
-	}
 }
