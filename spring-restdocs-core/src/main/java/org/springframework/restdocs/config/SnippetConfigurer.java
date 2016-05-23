@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +39,9 @@ import org.springframework.restdocs.templates.TemplateFormats;
 public abstract class SnippetConfigurer<PARENT, TYPE>
 		extends AbstractNestedConfigurer<PARENT> {
 
-	private List<Snippet> defaultSnippets = Arrays.asList(CliDocumentation.curlRequest(),
-			CliDocumentation.httpieRequest(), HttpDocumentation.httpRequest(),
-			HttpDocumentation.httpResponse());
+	private List<Snippet> defaultSnippets = new ArrayList<>(Arrays.asList(
+			CliDocumentation.curlRequest(), CliDocumentation.httpieRequest(),
+			HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse()));
 
 	/**
 	 * The default encoding for documentation snippets.
@@ -97,10 +98,24 @@ public abstract class SnippetConfigurer<PARENT, TYPE>
 	 *
 	 * @param defaultSnippets the default snippets
 	 * @return {@code this}
+	 * @see #withAdditionalDefaults(Snippet...)
 	 */
 	@SuppressWarnings("unchecked")
 	public TYPE withDefaults(Snippet... defaultSnippets) {
-		this.defaultSnippets = Arrays.asList(defaultSnippets);
+		this.defaultSnippets = new ArrayList<>(Arrays.asList(defaultSnippets));
+		return (TYPE) this;
+	}
+
+	/**
+	 * Configures additional documentation snippets that will be produced by default.
+	 *
+	 * @param additionalDefaultSnippets the additional default snippets
+	 * @return {@code this}
+	 * @see #withDefaults(Snippet...)
+	 */
+	@SuppressWarnings("unchecked")
+	public TYPE withAdditionalDefaults(Snippet... additionalDefaultSnippets) {
+		this.defaultSnippets.addAll(Arrays.asList(additionalDefaultSnippets));
 		return (TYPE) this;
 	}
 

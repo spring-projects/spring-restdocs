@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,6 +117,26 @@ public class RestDocumentationConfigurerTests {
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		assertThat(defaultSnippets, contains(instanceOf(CurlRequestSnippet.class)));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void additionalDefaultSnippets() {
+		Map<String, Object> configuration = new HashMap<>();
+		Snippet snippet = mock(Snippet.class);
+		this.configurer.snippets().withAdditionalDefaults(snippet).apply(configuration,
+				createContext());
+		assertThat(configuration,
+				hasEntry(
+						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
+						instanceOf(List.class)));
+		List<Snippet> defaultSnippets = (List<Snippet>) configuration
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+		assertThat(defaultSnippets,
+				contains(instanceOf(CurlRequestSnippet.class),
+						instanceOf(HttpieRequestSnippet.class),
+						instanceOf(HttpRequestSnippet.class),
+						instanceOf(HttpResponseSnippet.class), equalTo(snippet)));
 	}
 
 	@Test
