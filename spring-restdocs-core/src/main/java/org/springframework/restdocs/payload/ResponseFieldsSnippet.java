@@ -108,7 +108,19 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public ResponseFieldsSnippet and(FieldDescriptor... additionalDescriptors) {
+	public final ResponseFieldsSnippet and(FieldDescriptor... additionalDescriptors) {
+		return andWithPrefix("", additionalDescriptors);
+	}
+
+	/**
+	 * Returns a new {@code ResponseFieldsSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 *
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final ResponseFieldsSnippet and(List<FieldDescriptor> additionalDescriptors) {
 		return andWithPrefix("", additionalDescriptors);
 	}
 
@@ -122,12 +134,30 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public ResponseFieldsSnippet andWithPrefix(String pathPrefix,
+	public final ResponseFieldsSnippet andWithPrefix(String pathPrefix,
 			FieldDescriptor... additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
 		combinedDescriptors.addAll(getFieldDescriptors());
 		combinedDescriptors.addAll(
 				applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
+		return new ResponseFieldsSnippet(combinedDescriptors, this.getAttributes());
+	}
+
+	/**
+	 * Returns a new {@code ResponseFieldsSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}. The given {@code pathPrefix} is applied to the path
+	 * of each additional descriptor.
+	 *
+	 * @param pathPrefix the prefix to apply to the additional descriptors
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final ResponseFieldsSnippet andWithPrefix(String pathPrefix,
+			List<FieldDescriptor> additionalDescriptors) {
+		List<FieldDescriptor> combinedDescriptors = new ArrayList<>(
+				getFieldDescriptors());
+		combinedDescriptors.addAll(applyPathPrefix(pathPrefix, additionalDescriptors));
 		return new ResponseFieldsSnippet(combinedDescriptors, this.getAttributes());
 	}
 

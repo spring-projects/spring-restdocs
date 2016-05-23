@@ -70,10 +70,21 @@ public class RequestHeadersSnippet extends AbstractHeadersSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public RequestHeadersSnippet and(HeaderDescriptor... additionalDescriptors) {
-		List<HeaderDescriptor> combinedDescriptors = new ArrayList<>();
-		combinedDescriptors.addAll(this.getHeaderDescriptors());
-		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+	public final RequestHeadersSnippet and(HeaderDescriptor... additionalDescriptors) {
+		return and(Arrays.asList(additionalDescriptors));
+	}
+
+	/**
+	 * Returns a new {@code RequestHeadersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final RequestHeadersSnippet and(List<HeaderDescriptor> additionalDescriptors) {
+		List<HeaderDescriptor> combinedDescriptors = new ArrayList<>(
+				this.getHeaderDescriptors());
+		combinedDescriptors.addAll(additionalDescriptors);
 		return new RequestHeadersSnippet(combinedDescriptors, getAttributes());
 	}
 

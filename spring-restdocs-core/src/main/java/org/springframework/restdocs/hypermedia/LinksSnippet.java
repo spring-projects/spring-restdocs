@@ -249,10 +249,21 @@ public class LinksSnippet extends TemplatedSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public LinksSnippet and(LinkDescriptor... additionalDescriptors) {
-		List<LinkDescriptor> combinedDescriptors = new ArrayList<>();
-		combinedDescriptors.addAll(this.descriptorsByRel.values());
-		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+	public final LinksSnippet and(LinkDescriptor... additionalDescriptors) {
+		return and(Arrays.asList(additionalDescriptors));
+	}
+
+	/**
+	 * Returns a new {@code RequestHeadersSnippet} configured with this snippet's link
+	 * extractor and attributes, and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final LinksSnippet and(List<LinkDescriptor> additionalDescriptors) {
+		List<LinkDescriptor> combinedDescriptors = new ArrayList<>(
+				this.descriptorsByRel.values());
+		combinedDescriptors.addAll(additionalDescriptors);
 		return new LinksSnippet(this.linkExtractor, combinedDescriptors, getAttributes());
 	}
 

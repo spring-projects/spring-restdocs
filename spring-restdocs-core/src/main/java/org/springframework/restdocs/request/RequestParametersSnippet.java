@@ -129,9 +129,20 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 	 * @return the new snippet
 	 */
 	public RequestParametersSnippet and(ParameterDescriptor... additionalDescriptors) {
-		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>();
-		combinedDescriptors.addAll(getParameterDescriptors().values());
-		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+		return and(Arrays.asList(additionalDescriptors));
+	}
+
+	/**
+	 * Returns a new {@code RequestParametersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public RequestParametersSnippet and(List<ParameterDescriptor> additionalDescriptors) {
+		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>(
+				getParameterDescriptors().values());
+		combinedDescriptors.addAll(additionalDescriptors);
 		return new RequestParametersSnippet(combinedDescriptors, this.getAttributes());
 	}
 

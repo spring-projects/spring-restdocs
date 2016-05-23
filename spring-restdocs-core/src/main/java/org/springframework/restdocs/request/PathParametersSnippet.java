@@ -165,10 +165,22 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public PathParametersSnippet and(ParameterDescriptor... additionalDescriptors) {
-		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>();
-		combinedDescriptors.addAll(getParameterDescriptors().values());
-		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+	public final PathParametersSnippet and(ParameterDescriptor... additionalDescriptors) {
+		return and(Arrays.asList(additionalDescriptors));
+	}
+
+	/**
+	 * Returns a new {@code PathParametersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final PathParametersSnippet and(
+			List<ParameterDescriptor> additionalDescriptors) {
+		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>(
+				getParameterDescriptors().values());
+		combinedDescriptors.addAll(additionalDescriptors);
 		return new PathParametersSnippet(combinedDescriptors, this.getAttributes());
 	}
 

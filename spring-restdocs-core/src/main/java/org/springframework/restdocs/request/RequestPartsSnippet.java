@@ -115,14 +115,24 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	/**
 	 * Returns a new {@code RequestPartsSnippet} configured with this snippet's attributes
 	 * and its descriptors combined with the given {@code additionalDescriptors}.
-	 *
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public RequestPartsSnippet and(RequestPartDescriptor... additionalDescriptors) {
-		List<RequestPartDescriptor> combinedDescriptors = new ArrayList<>();
-		combinedDescriptors.addAll(this.descriptorsByName.values());
-		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+	public final RequestPartsSnippet and(RequestPartDescriptor... additionalDescriptors) {
+		return and(Arrays.asList(additionalDescriptors));
+	}
+
+	/**
+	 * Returns a new {@code RequestPartsSnippet} configured with this snippet's attributes
+	 * and its descriptors combined with the given {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final RequestPartsSnippet and(
+			List<RequestPartDescriptor> additionalDescriptors) {
+		List<RequestPartDescriptor> combinedDescriptors = new ArrayList<>(
+				this.descriptorsByName.values());
+		combinedDescriptors.addAll(additionalDescriptors);
 		return new RequestPartsSnippet(combinedDescriptors, this.getAttributes());
 	}
 

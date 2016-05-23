@@ -71,9 +71,21 @@ public class ResponseHeadersSnippet extends AbstractHeadersSnippet {
 	 * @return the new snippet
 	 */
 	public final ResponseHeadersSnippet and(HeaderDescriptor... additionalDescriptors) {
-		List<HeaderDescriptor> combinedDescriptors = new ArrayList<>();
-		combinedDescriptors.addAll(this.getHeaderDescriptors());
-		combinedDescriptors.addAll(Arrays.asList(additionalDescriptors));
+		return and(Arrays.asList(additionalDescriptors));
+	}
+
+	/**
+	 * Returns a new {@code ResponseHeadersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final ResponseHeadersSnippet and(
+			List<HeaderDescriptor> additionalDescriptors) {
+		List<HeaderDescriptor> combinedDescriptors = new ArrayList<>(
+				this.getHeaderDescriptors());
+		combinedDescriptors.addAll(additionalDescriptors);
 		return new ResponseHeadersSnippet(combinedDescriptors, getAttributes());
 	}
 
