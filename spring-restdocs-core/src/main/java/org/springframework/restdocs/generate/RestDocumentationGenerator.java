@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,8 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	private final OperationResponsePreprocessor responsePreprocessor;
 
 	private final List<Snippet> snippets;
+
+	private final List<Snippet> additionalSnippets;
 
 	private final RequestConverter<REQ> requestConverter;
 
@@ -167,6 +169,7 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		this.requestPreprocessor = requestPreprocessor;
 		this.responsePreprocessor = responsePreprocessor;
 		this.snippets = new ArrayList<>(Arrays.asList(snippets));
+		this.additionalSnippets = new ArrayList<>();
 	}
 
 	/**
@@ -204,7 +207,7 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * @param snippets the snippets to add
 	 */
 	public void addSnippets(Snippet... snippets) {
-		this.snippets.addAll(Arrays.asList(snippets));
+		this.additionalSnippets.addAll(Arrays.asList(snippets));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -215,6 +218,8 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		if (defaultSnippets != null) {
 			combinedSnippets.addAll(defaultSnippets);
 		}
+		combinedSnippets.addAll(this.additionalSnippets);
+		this.additionalSnippets.clear();
 		return combinedSnippets;
 	}
 

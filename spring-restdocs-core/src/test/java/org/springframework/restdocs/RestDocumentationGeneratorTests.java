@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
@@ -116,18 +117,25 @@ public class RestDocumentationGeneratorTests {
 		generator.addSnippets(additionalSnippet1, additionalSnippet2);
 		HashMap<String, Object> configuration = new HashMap<>();
 		generator.handle(this.request, this.response, configuration);
-		verifySnippetInvocation(this.snippet, configuration);
+		generator.handle(this.request, this.response, configuration);
+		verifySnippetInvocation(this.snippet, configuration, 2);
 		verifySnippetInvocation(additionalSnippet1, configuration);
 		verifySnippetInvocation(additionalSnippet2, configuration);
 	}
 
 	private void verifySnippetInvocation(Snippet snippet, Map<String, Object> attributes)
 			throws IOException {
+		verifySnippetInvocation(snippet, attributes, 1);
+	}
+
+	private void verifySnippetInvocation(Snippet snippet, Map<String, Object> attributes,
+			int times) throws IOException {
 		ArgumentCaptor<Operation> operation = ArgumentCaptor.forClass(Operation.class);
-		verify(snippet).document(operation.capture());
+		verify(snippet, Mockito.times(times)).document(operation.capture());
 		assertThat(this.operationRequest, is(equalTo(operation.getValue().getRequest())));
 		assertThat(this.operationResponse,
 				is(equalTo(operation.getValue().getResponse())));
 		assertThat(attributes, is(equalTo(operation.getValue().getAttributes())));
 	}
+
 }
