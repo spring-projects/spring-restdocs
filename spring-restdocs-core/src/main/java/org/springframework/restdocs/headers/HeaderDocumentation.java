@@ -107,7 +107,7 @@ public abstract class HeaderDocumentation {
 	 * @see #headerWithName(String)
 	 */
 	public static RequestHeadersSnippet requestHeaders(Map<String, Object> attributes,
-													   List<HeaderDescriptor> descriptors) {
+			List<HeaderDescriptor> descriptors) {
 		return new RequestHeadersSnippet(descriptors, attributes);
 	}
 
@@ -158,7 +158,7 @@ public abstract class HeaderDocumentation {
 	 * @see #headerWithName(String)
 	 */
 	public static ResponseHeadersSnippet responseHeaders(Map<String, Object> attributes,
-														 HeaderDescriptor... descriptors) {
+			HeaderDescriptor... descriptors) {
 		return new ResponseHeadersSnippet(Arrays.asList(descriptors), attributes);
 	}
 

@@ -184,7 +184,7 @@ public abstract class HypermediaDocumentation {
 	 * @return the snippet that will document the links
 	 */
 	public static LinksSnippet links(Map<String, Object> attributes,
-									 List<LinkDescriptor> descriptors) {
+			List<LinkDescriptor> descriptors) {
 		return new LinksSnippet(new ContentTypeLinkExtractor(), descriptors, attributes);
 	}
 
@@ -283,7 +283,7 @@ public abstract class HypermediaDocumentation {
 	 * @return the snippet that will document the links
 	 */
 	public static LinksSnippet links(LinkExtractor linkExtractor,
-									 List<LinkDescriptor> descriptors) {
+			List<LinkDescriptor> descriptors) {
 		return new LinksSnippet(linkExtractor, descriptors);
 	}
 
@@ -383,7 +383,7 @@ public abstract class HypermediaDocumentation {
 	 * @return the snippet that will document the links
 	 */
 	public static LinksSnippet links(LinkExtractor linkExtractor,
-									 Map<String, Object> attributes, List<LinkDescriptor> descriptors) {
+			Map<String, Object> attributes, List<LinkDescriptor> descriptors) {
 		return new LinksSnippet(linkExtractor, descriptors, attributes);
 	}
 

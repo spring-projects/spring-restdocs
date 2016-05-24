@@ -175,7 +175,7 @@ public abstract class RequestDocumentation {
 	 * @return the snippet that will document the parameters
 	 */
 	public static PathParametersSnippet pathParameters(Map<String, Object> attributes,
-													   List<ParameterDescriptor> descriptors) {
+			List<ParameterDescriptor> descriptors) {
 		return new PathParametersSnippet(descriptors, attributes);
 	}
 
@@ -501,7 +501,7 @@ public abstract class RequestDocumentation {
 	 * @see OperationRequest#getParts()
 	 */
 	public static RequestPartsSnippet requestParts(Map<String, Object> attributes,
-												   List<RequestPartDescriptor> descriptors) {
+			List<RequestPartDescriptor> descriptors) {
 		return new RequestPartsSnippet(descriptors, attributes);
 	}
 
@@ -537,7 +537,7 @@ public abstract class RequestDocumentation {
 	 * @see OperationRequest#getParameters()
 	 */
 	public static RequestPartsSnippet relaxedRequestParts(Map<String, Object> attributes,
-														  List<RequestPartDescriptor> descriptors) {
+			List<RequestPartDescriptor> descriptors) {
 		return new RequestPartsSnippet(descriptors, attributes, true);
 	}
 

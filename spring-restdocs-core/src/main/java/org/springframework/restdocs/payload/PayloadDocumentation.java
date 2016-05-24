@@ -223,7 +223,7 @@ public abstract class PayloadDocumentation {
 	 * @see #fieldWithPath(String)
 	 */
 	public static RequestFieldsSnippet requestFields(Map<String, Object> attributes,
-													 List<FieldDescriptor> descriptors) {
+			List<FieldDescriptor> descriptors) {
 		return new RequestFieldsSnippet(descriptors, attributes);
 	}
 
@@ -393,7 +393,7 @@ public abstract class PayloadDocumentation {
 	 * @see #fieldWithPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(Map<String, Object> attributes,
-													   List<FieldDescriptor> descriptors) {
+			List<FieldDescriptor> descriptors) {
 		return new ResponseFieldsSnippet(descriptors, attributes);
 	}
 
