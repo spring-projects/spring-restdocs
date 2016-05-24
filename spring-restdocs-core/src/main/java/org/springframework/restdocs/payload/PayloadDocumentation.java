@@ -17,6 +17,7 @@
 package org.springframework.restdocs.payload;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -123,6 +124,29 @@ public abstract class PayloadDocumentation {
 	 * Returns a {@code Snippet} that will document the fields of the API operations's
 	 * request payload. The fields will be documented using the given {@code descriptors}.
 	 * <p>
+	 * If a field is present in the request payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request,
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field is sufficient for all of its descendants to also be treated as having been
+	 * documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @see #fieldWithPath(String)
+	 */
+	public static RequestFieldsSnippet requestFields(List<FieldDescriptor> descriptors) {
+		return new RequestFieldsSnippet(descriptors);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the API operations's
+	 * request payload. The fields will be documented using the given {@code descriptors}.
+	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
 	 *
@@ -133,6 +157,22 @@ public abstract class PayloadDocumentation {
 	public static RequestFieldsSnippet relaxedRequestFields(
 			FieldDescriptor... descriptors) {
 		return new RequestFieldsSnippet(Arrays.asList(descriptors), true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the API operations's
+	 * request payload. The fields will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @see #fieldWithPath(String)
+	 */
+	public static RequestFieldsSnippet relaxedRequestFields(
+			List<FieldDescriptor> descriptors) {
+		return new RequestFieldsSnippet(descriptors, true);
 	}
 
 	/**
@@ -166,6 +206,32 @@ public abstract class PayloadDocumentation {
 	 * request payload. The fields will be documented using the given {@code descriptors}
 	 * and the given {@code attributes} will be available during snippet generation.
 	 * <p>
+	 * If a field is present in the request payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @see #fieldWithPath(String)
+	 */
+	public static RequestFieldsSnippet requestFields(Map<String, Object> attributes,
+													 List<FieldDescriptor> descriptors) {
+		return new RequestFieldsSnippet(descriptors, attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
+	 * request payload. The fields will be documented using the given {@code descriptors}
+	 * and the given {@code attributes} will be available during snippet generation.
+	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
 	 *
@@ -177,6 +243,24 @@ public abstract class PayloadDocumentation {
 	public static RequestFieldsSnippet relaxedRequestFields(
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
 		return new RequestFieldsSnippet(Arrays.asList(descriptors), attributes, true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
+	 * request payload. The fields will be documented using the given {@code descriptors}
+	 * and the given {@code attributes} will be available during snippet generation.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @see #fieldWithPath(String)
+	 */
+	public static RequestFieldsSnippet relaxedRequestFields(
+			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
+		return new RequestFieldsSnippet(descriptors, attributes, true);
 	}
 
 	/**
@@ -208,6 +292,30 @@ public abstract class PayloadDocumentation {
 	 * response payload. The fields will be documented using the given {@code descriptors}
 	 * .
 	 * <p>
+	 * If a field is present in the response payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @see #fieldWithPath(String)
+	 */
+	public static ResponseFieldsSnippet responseFields(List<FieldDescriptor> descriptors) {
+		return new ResponseFieldsSnippet(descriptors);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
+	 * response payload. The fields will be documented using the given {@code descriptors}
+	 * .
+	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
 	 *
@@ -218,6 +326,23 @@ public abstract class PayloadDocumentation {
 	public static ResponseFieldsSnippet relaxedResponseFields(
 			FieldDescriptor... descriptors) {
 		return new ResponseFieldsSnippet(Arrays.asList(descriptors), true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
+	 * response payload. The fields will be documented using the given {@code descriptors}
+	 * .
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @see #fieldWithPath(String)
+	 */
+	public static ResponseFieldsSnippet relaxedResponseFields(
+			List<FieldDescriptor> descriptors) {
+		return new ResponseFieldsSnippet(descriptors, true);
 	}
 
 	/**
@@ -251,6 +376,32 @@ public abstract class PayloadDocumentation {
 	 * response payload. The fields will be documented using the given {@code descriptors}
 	 * and the given {@code attributes} will be available during snippet generation.
 	 * <p>
+	 * If a field is present in the response payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @see #fieldWithPath(String)
+	 */
+	public static ResponseFieldsSnippet responseFields(Map<String, Object> attributes,
+													   List<FieldDescriptor> descriptors) {
+		return new ResponseFieldsSnippet(descriptors, attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
+	 * response payload. The fields will be documented using the given {@code descriptors}
+	 * and the given {@code attributes} will be available during snippet generation.
+	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
 	 *
@@ -262,6 +413,24 @@ public abstract class PayloadDocumentation {
 	public static ResponseFieldsSnippet relaxedResponseFields(
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
 		return new ResponseFieldsSnippet(Arrays.asList(descriptors), attributes, true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
+	 * response payload. The fields will be documented using the given {@code descriptors}
+	 * and the given {@code attributes} will be available during snippet generation.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @see #fieldWithPath(String)
+	 */
+	public static ResponseFieldsSnippet relaxedResponseFields(
+			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
+		return new ResponseFieldsSnippet(descriptors, attributes, true);
 	}
 
 }
