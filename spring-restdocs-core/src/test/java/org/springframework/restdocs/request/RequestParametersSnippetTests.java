@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
@@ -192,6 +193,25 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 				.document(operationBuilder("additional-descriptors")
 						.request("http://localhost").param("a", "bravo")
 						.param("b", "bravo").build());
+	}
+
+	@Test
+	public void requestParametersWithEscapedContent() throws IOException {
+		this.snippet.expectRequestParameters("request-parameters-with-escaped-content")
+				.withContents(tableWithHeader("Parameter", "Description").row(
+						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+
+		RequestDocumentation
+				.requestParameters(parameterWithName("Foo|Bar").description("one|two"))
+				.document(operationBuilder("request-parameters-with-escaped-content")
+						.request("http://localhost").param("Foo|Bar", "baz").build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
 	}
 
 }

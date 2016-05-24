@@ -118,7 +118,7 @@ public class ConstraintDescriptionsTests {
 	@Test
 	public void pattern() {
 		assertThat(this.constraintDescriptions.descriptionsForProperty("pattern"),
-				contains("Must match the regular expression '[A-Z][a-z]+'"));
+				contains("Must match the regular expression `[A-Z][a-z]+`"));
 	}
 
 	@Test

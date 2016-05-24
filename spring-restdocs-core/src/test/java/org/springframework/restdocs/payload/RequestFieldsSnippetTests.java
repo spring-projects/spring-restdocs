@@ -26,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
@@ -225,6 +226,27 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 				.document(operationBuilder("prefixed-additional-descriptors")
 						.request("http://localhost")
 						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
+	}
+
+	@Test
+	public void requestWithFieldsWithEscapedContent() throws IOException {
+		this.snippet.expectRequestFields("request-fields-with-escaped-content")
+				.withContents(tableWithHeader("Path", "Type", "Description").row(
+						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("`one|two`"),
+						escapeIfNecessary("three|four")));
+
+		new RequestFieldsSnippet(Arrays.asList(
+				fieldWithPath("Foo|Bar").type("one|two").description("three|four")))
+						.document(operationBuilder("request-fields-with-escaped-content")
+								.request("http://localhost").content("{\"Foo|Bar\": 5}")
+								.build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
 	}
 
 }

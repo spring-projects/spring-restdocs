@@ -29,6 +29,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.mustache.Mustache;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
@@ -45,6 +46,7 @@ import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
+import org.springframework.restdocs.templates.mustache.AsciidoctorTableCellContentLambda;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
 /**
@@ -93,9 +95,13 @@ public class OperationBuilder {
 
 	public Operation build() {
 		if (this.attributes.get(TemplateEngine.class.getName()) == null) {
+			Map<String, Object> templateContext = new HashMap<>();
+			templateContext.put("tableCellContent",
+					new AsciidoctorTableCellContentLambda());
 			this.attributes.put(TemplateEngine.class.getName(),
 					new MustacheTemplateEngine(
-							new StandardTemplateResourceResolver(this.templateFormat)));
+							new StandardTemplateResourceResolver(this.templateFormat),
+							Mustache.compiler().escapeHTML(false), templateContext));
 		}
 		RestDocumentationContext context = createContext();
 		this.attributes.put(RestDocumentationContext.class.getName(), context);

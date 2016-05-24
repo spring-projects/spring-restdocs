@@ -18,6 +18,8 @@ package org.springframework.restdocs.templates.mustache;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.Map;
 
 import org.springframework.core.io.Resource;
 import org.springframework.restdocs.mustache.Mustache;
@@ -36,9 +38,11 @@ import org.springframework.restdocs.templates.TemplateResourceResolver;
  */
 public class MustacheTemplateEngine implements TemplateEngine {
 
+	private final TemplateResourceResolver templateResourceResolver;
+
 	private final Compiler compiler;
 
-	private final TemplateResourceResolver templateResourceResolver;
+	private final Map<String, Object> context;
 
 	/**
 	 * Creates a new {@code MustacheTemplateEngine} that will use the given
@@ -60,16 +64,36 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver,
 			Compiler compiler) {
+		this(templateResourceResolver, compiler, Collections.<String, Object>emptyMap());
+	}
+
+	/**
+	 * Creates a new {@code MustacheTemplateEngine} that will use the given
+	 * {@code templateResourceResolver} to resolve templates and the given
+	 * {@code compiler} to compile them. Compiled templates will be created with the given
+	 * {@code context}.
+	 *
+	 * @param templateResourceResolver the resolver to use
+	 * @param compiler the compiler to use
+	 * @param context the context to pass to compiled templates
+	 * @see MustacheTemplate#MustacheTemplate(org.springframework.restdocs.mustache.Template,
+	 * Map)
+	 */
+	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver,
+			Compiler compiler, Map<String, Object> context) {
 		this.templateResourceResolver = templateResourceResolver;
 		this.compiler = compiler;
+		this.context = context;
 	}
 
 	@Override
 	public Template compileTemplate(String name) throws IOException {
 		Resource templateResource = this.templateResourceResolver
 				.resolveTemplateResource(name);
-		return new MustacheTemplate(this.compiler
-				.compile(new InputStreamReader(templateResource.getInputStream())));
+		return new MustacheTemplate(
+				this.compiler.compile(
+						new InputStreamReader(templateResource.getInputStream())),
+				this.context);
 	}
 
 	/**

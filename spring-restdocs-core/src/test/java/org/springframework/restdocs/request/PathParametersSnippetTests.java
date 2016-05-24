@@ -192,9 +192,37 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 						.build());
 	}
 
+	@Test
+	public void pathParametersWithEscapedContent() throws IOException {
+		this.snippet.expectPathParameters("path-parameters-with-escaped-content")
+				.withContents(tableWithTitleAndHeader(getTitle("{Foo|Bar}"), "Parameter",
+						"Description").row(escapeIfNecessary("`Foo|Bar`"),
+								escapeIfNecessary("one|two")));
+
+		RequestDocumentation
+				.pathParameters(parameterWithName("Foo|Bar").description("one|two"))
+				.document(operationBuilder("path-parameters-with-escaped-content")
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"{Foo|Bar}")
+						.build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
+	}
+
 	private String getTitle() {
-		return this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}/{b}"
-				: "`/{a}/{b}`";
+		return getTitle("/{a}/{b}");
+	}
+
+	private String getTitle(String title) {
+		if (this.templateFormat.equals(TemplateFormats.asciidoctor())) {
+			return title;
+		}
+		return "`" + title + "`";
 	}
 
 }

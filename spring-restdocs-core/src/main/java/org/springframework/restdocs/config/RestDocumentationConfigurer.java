@@ -17,15 +17,19 @@
 package org.springframework.restdocs.config;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.mustache.Mustache;
 import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormats;
+import org.springframework.restdocs.templates.mustache.AsciidoctorTableCellContentLambda;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
 /**
@@ -102,9 +106,16 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 			if (engineToUse == null) {
 				SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 						.get(SnippetConfiguration.class.getName());
+				Map<String, Object> templateContext = new HashMap<>();
+				if (snippetConfiguration.getTemplateFormat().getId()
+						.equals(TemplateFormats.asciidoctor().getId())) {
+					templateContext.put("tableCellContent",
+							new AsciidoctorTableCellContentLambda());
+				}
 				engineToUse = new MustacheTemplateEngine(
 						new StandardTemplateResourceResolver(
-								snippetConfiguration.getTemplateFormat()));
+								snippetConfiguration.getTemplateFormat()),
+						Mustache.compiler().escapeHTML(false), templateContext);
 			}
 			configuration.put(TemplateEngine.class.getName(), engineToUse);
 		}

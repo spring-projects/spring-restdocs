@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
@@ -178,6 +179,25 @@ public class RequestPartsSnippetTests extends AbstractSnippetTests {
 				.document(operationBuilder("additional-descriptors")
 						.request("http://localhost").part("a", "bravo".getBytes()).and()
 						.part("b", "bravo".getBytes()).build());
+	}
+
+	@Test
+	public void requestPartsWithEscapedContent() throws IOException {
+		this.snippet.expectRequestParts("request-parts-with-escaped-content")
+				.withContents(tableWithHeader("Part", "Description").row(
+						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+
+		RequestDocumentation.requestParts(partWithName("Foo|Bar").description("one|two"))
+				.document(operationBuilder("request-parts-with-escaped-content")
+						.request("http://localhost").part("Foo|Bar", "baz".getBytes())
+						.build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
 	}
 
 }

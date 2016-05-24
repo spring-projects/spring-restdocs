@@ -36,7 +36,9 @@ import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormats;
+import org.springframework.restdocs.templates.mustache.AsciidoctorTableCellContentLambda;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -162,6 +164,34 @@ public class RestDocumentationConfigurerTests {
 				.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getTemplateFormat(),
 				is(equalTo(TemplateFormats.markdown())));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void asciidoctorTableCellContentLambaIsInstalledWhenUsingAsciidoctorTemplateFormat() {
+		Map<String, Object> configuration = new HashMap<>();
+		this.configurer.apply(configuration, createContext());
+		TemplateEngine templateEngine = (TemplateEngine) configuration
+				.get(TemplateEngine.class.getName());
+		MustacheTemplateEngine mustacheTemplateEngine = (MustacheTemplateEngine) templateEngine;
+		Map<String, Object> templateContext = (Map<String, Object>) ReflectionTestUtils
+				.getField(mustacheTemplateEngine, "context");
+		assertThat(templateContext, hasEntry(equalTo("tableCellContent"),
+				instanceOf(AsciidoctorTableCellContentLambda.class)));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void asciidoctorTableCellContentLambaIsNotInstalledWhenUsingNonAsciidoctorTemplateFormat() {
+		Map<String, Object> configuration = new HashMap<>();
+		this.configurer.snippetConfigurer.withTemplateFormat(TemplateFormats.markdown());
+		this.configurer.apply(configuration, createContext());
+		TemplateEngine templateEngine = (TemplateEngine) configuration
+				.get(TemplateEngine.class.getName());
+		MustacheTemplateEngine mustacheTemplateEngine = (MustacheTemplateEngine) templateEngine;
+		Map<String, Object> templateContext = (Map<String, Object>) ReflectionTestUtils
+				.getField(mustacheTemplateEngine, "context");
+		assertThat(templateContext.size(), equalTo(0));
 	}
 
 	private RestDocumentationContext createContext() {

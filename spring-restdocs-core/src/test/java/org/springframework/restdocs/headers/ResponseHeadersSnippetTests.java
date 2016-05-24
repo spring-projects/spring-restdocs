@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.OperationBuilder;
@@ -153,6 +154,24 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 						.header("Etag", "lskjadldj3ii32l2ij23")
 						.header("Cache-Control", "max-age=0").header("Vary", "User-Agent")
 						.build());
+	}
+
+	@Test
+	public void tableCellContentIsEscapedWhenNecessary() throws IOException {
+		this.snippet.expectResponseHeaders("response-with-escaped-headers").withContents(
+				tableWithHeader("Name", "Description").row(escapeIfNecessary("`Foo|Bar`"),
+						escapeIfNecessary("one|two")));
+		new ResponseHeadersSnippet(
+				Arrays.asList(headerWithName("Foo|Bar").description("one|two")))
+						.document(operationBuilder("response-with-escaped-headers")
+								.response().header("Foo|Bar", "baz").build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
 	}
 
 }

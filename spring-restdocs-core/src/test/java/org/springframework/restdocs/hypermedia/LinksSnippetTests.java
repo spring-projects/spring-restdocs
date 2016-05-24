@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
@@ -171,4 +172,22 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 				.and(new LinkDescriptor("b").description("two"))
 				.document(operationBuilder("additional-descriptors").build());
 	}
+
+	@Test
+	public void tableCellContentIsEscapedWhenNecessary() throws IOException {
+		this.snippet.expectLinks("links-with-escaped-content")
+				.withContents(tableWithHeader("Relation", "Description").row(
+						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("Foo|Bar", "foo")),
+				Arrays.asList(new LinkDescriptor("Foo|Bar").description("one|two")))
+						.document(operationBuilder("links-with-escaped-content").build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
+	}
+
 }

@@ -137,7 +137,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessagePattern() {
 		assertThat(constraintDescriptionForField("pattern"),
-				is(equalTo("Must match the regular expression '[A-Z][a-z]+'")));
+				is(equalTo("Must match the regular expression `[A-Z][a-z]+`")));
 	}
 
 	@Test

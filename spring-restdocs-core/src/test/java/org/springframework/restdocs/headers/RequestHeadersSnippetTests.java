@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.OperationBuilder;
@@ -163,6 +164,25 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 						.header("Accept-Language", "en-US,en;q=0.5")
 						.header("Cache-Control", "max-age=0")
 						.header("Connection", "keep-alive").build());
+	}
+
+	@Test
+	public void tableCellContentIsEscapedWhenNecessary() throws IOException {
+		this.snippet.expectRequestHeaders("request-with-escaped-headers").withContents(
+				tableWithHeader("Name", "Description").row(escapeIfNecessary("`Foo|Bar`"),
+						escapeIfNecessary("one|two")));
+		new RequestHeadersSnippet(
+				Arrays.asList(headerWithName("Foo|Bar").description("one|two")))
+						.document(operationBuilder("request-with-escaped-headers")
+								.request("http://localhost").header("Foo|Bar", "baz")
+								.build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
 	}
 
 }
