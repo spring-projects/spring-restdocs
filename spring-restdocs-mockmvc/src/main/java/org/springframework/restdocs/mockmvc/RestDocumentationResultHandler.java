@@ -44,6 +44,8 @@ import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
  */
 public class RestDocumentationResultHandler implements ResultHandler {
 
+	private final List<Snippet> additionalSnippets;
+
 	private final String identifier;
 
 	private final OperationRequestPreprocessor requestPreprocessor;
@@ -80,6 +82,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		this.requestPreprocessor = requestPreprocessor;
 		this.responsePreprocessor = responsePreprocessor;
 		this.snippets = new ArrayList<>(Arrays.asList(snippets));
+		this.additionalSnippets = new ArrayList<>();
 	}
 
 	@Override
@@ -110,7 +113,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 * @return this {@code ResultDocumentationResultHandler}
 	 */
 	public RestDocumentationResultHandler snippets(Snippet... snippets) {
-		this.snippets.addAll(Arrays.asList(snippets));
+		this.additionalSnippets.addAll(Arrays.asList(snippets));
 		return this;
 	}
 
@@ -120,6 +123,8 @@ public class RestDocumentationResultHandler implements ResultHandler {
 				(List<Snippet>) result.getRequest().getAttribute(
 						"org.springframework.restdocs.mockmvc.defaultSnippets"));
 		combinedSnippets.addAll(this.snippets);
+		combinedSnippets.addAll(this.additionalSnippets);
+		this.additionalSnippets.clear();
 		return combinedSnippets;
 	}
 
