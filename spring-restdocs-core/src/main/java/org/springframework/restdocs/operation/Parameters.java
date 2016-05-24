@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.StringUtils;
 
 /**
  * The parameters received in a request.
@@ -68,6 +69,9 @@ public class Parameters extends LinkedMultiValueMap<String, String> {
 	}
 
 	private static String urlEncodeUTF8(String s) {
+		if (!StringUtils.hasLength(s)) {
+			return "";
+		}
 		try {
 			return URLEncoder.encode(s, "UTF-8");
 		}
