@@ -139,7 +139,7 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
 		combinedDescriptors.addAll(getFieldDescriptors());
 		combinedDescriptors.addAll(
-				applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
+				PayloadDocumentation.applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
 		return new ResponseFieldsSnippet(combinedDescriptors, this.getAttributes());
 	}
 
@@ -157,7 +157,8 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 			List<FieldDescriptor> additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>(
 				getFieldDescriptors());
-		combinedDescriptors.addAll(applyPathPrefix(pathPrefix, additionalDescriptors));
+		combinedDescriptors.addAll(
+				PayloadDocumentation.applyPathPrefix(pathPrefix, additionalDescriptors));
 		return new ResponseFieldsSnippet(combinedDescriptors, this.getAttributes());
 	}
 
