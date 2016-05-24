@@ -26,6 +26,7 @@ import org.springframework.restdocs.operation.OperationRequest;
  * Static factory methods for documenting aspects of a request sent to a RESTful API.
  *
  * @author Andy Wilkinson
+ * @author Marcel Overdijk
  */
 public abstract class RequestDocumentation {
 
@@ -74,7 +75,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static PathParametersSnippet pathParameters(
 			ParameterDescriptor... descriptors) {
-		return new PathParametersSnippet(Arrays.asList(descriptors));
+		return pathParameters(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -112,7 +113,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static PathParametersSnippet relaxedPathParameters(
 			ParameterDescriptor... descriptors) {
-		return new PathParametersSnippet(Arrays.asList(descriptors), true);
+		return relaxedPathParameters(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -152,7 +153,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static PathParametersSnippet pathParameters(Map<String, Object> attributes,
 			ParameterDescriptor... descriptors) {
-		return new PathParametersSnippet(Arrays.asList(descriptors), attributes);
+		return pathParameters(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -194,7 +195,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static PathParametersSnippet relaxedPathParameters(
 			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		return new PathParametersSnippet(Arrays.asList(descriptors), attributes, true);
+		return relaxedPathParameters(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -235,7 +236,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static RequestParametersSnippet requestParameters(
 			ParameterDescriptor... descriptors) {
-		return new RequestParametersSnippet(Arrays.asList(descriptors));
+		return requestParameters(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -275,7 +276,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static RequestParametersSnippet relaxedRequestParameters(
 			ParameterDescriptor... descriptors) {
-		return new RequestParametersSnippet(Arrays.asList(descriptors), true);
+		return relaxedRequestParameters(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -317,7 +318,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static RequestParametersSnippet requestParameters(
 			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		return new RequestParametersSnippet(Arrays.asList(descriptors), attributes);
+		return requestParameters(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -361,7 +362,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static RequestParametersSnippet relaxedRequestParameters(
 			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
-		return new RequestParametersSnippet(Arrays.asList(descriptors), attributes, true);
+		return relaxedRequestParameters(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -401,7 +402,7 @@ public abstract class RequestDocumentation {
 	 * @see OperationRequest#getParts()
 	 */
 	public static RequestPartsSnippet requestParts(RequestPartDescriptor... descriptors) {
-		return new RequestPartsSnippet(Arrays.asList(descriptors));
+		return requestParts(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -421,7 +422,8 @@ public abstract class RequestDocumentation {
 	 * @return the snippet
 	 * @see OperationRequest#getParts()
 	 */
-	public static RequestPartsSnippet requestParts(List<RequestPartDescriptor> descriptors) {
+	public static RequestPartsSnippet requestParts(
+			List<RequestPartDescriptor> descriptors) {
 		return new RequestPartsSnippet(descriptors);
 	}
 
@@ -438,7 +440,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static RequestPartsSnippet relaxedRequestParts(
 			RequestPartDescriptor... descriptors) {
-		return new RequestPartsSnippet(Arrays.asList(descriptors), true);
+		return relaxedRequestParts(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -478,7 +480,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static RequestPartsSnippet requestParts(Map<String, Object> attributes,
 			RequestPartDescriptor... descriptors) {
-		return new RequestPartsSnippet(Arrays.asList(descriptors), attributes);
+		return requestParts(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -520,7 +522,7 @@ public abstract class RequestDocumentation {
 	 */
 	public static RequestPartsSnippet relaxedRequestParts(Map<String, Object> attributes,
 			RequestPartDescriptor... descriptors) {
-		return new RequestPartsSnippet(Arrays.asList(descriptors), attributes, true);
+		return relaxedRequestParts(attributes, Arrays.asList(descriptors));
 	}
 
 	/**

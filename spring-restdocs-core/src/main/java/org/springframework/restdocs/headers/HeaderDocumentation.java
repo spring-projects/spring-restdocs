@@ -27,6 +27,7 @@ import org.springframework.restdocs.snippet.Snippet;
  *
  * @author Andreas Evers
  * @author Andy Wilkinson
+ * @author Marcel Overdijk
  */
 public abstract class HeaderDocumentation {
 
@@ -57,7 +58,7 @@ public abstract class HeaderDocumentation {
 	 * @see #headerWithName(String)
 	 */
 	public static RequestHeadersSnippet requestHeaders(HeaderDescriptor... descriptors) {
-		return new RequestHeadersSnippet(Arrays.asList(descriptors));
+		return requestHeaders(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -71,7 +72,8 @@ public abstract class HeaderDocumentation {
 	 * @return the snippet that will document the request headers
 	 * @see #headerWithName(String)
 	 */
-	public static RequestHeadersSnippet requestHeaders(List<HeaderDescriptor> descriptors) {
+	public static RequestHeadersSnippet requestHeaders(
+			List<HeaderDescriptor> descriptors) {
 		return new RequestHeadersSnippet(descriptors);
 	}
 
@@ -90,7 +92,7 @@ public abstract class HeaderDocumentation {
 	 */
 	public static RequestHeadersSnippet requestHeaders(Map<String, Object> attributes,
 			HeaderDescriptor... descriptors) {
-		return new RequestHeadersSnippet(Arrays.asList(descriptors), attributes);
+		return requestHeaders(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -124,7 +126,7 @@ public abstract class HeaderDocumentation {
 	 */
 	public static ResponseHeadersSnippet responseHeaders(
 			HeaderDescriptor... descriptors) {
-		return new ResponseHeadersSnippet(Arrays.asList(descriptors));
+		return responseHeaders(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -159,7 +161,7 @@ public abstract class HeaderDocumentation {
 	 */
 	public static ResponseHeadersSnippet responseHeaders(Map<String, Object> attributes,
 			HeaderDescriptor... descriptors) {
-		return new ResponseHeadersSnippet(Arrays.asList(descriptors), attributes);
+		return responseHeaders(attributes, Arrays.asList(descriptors));
 	}
 
 	/**

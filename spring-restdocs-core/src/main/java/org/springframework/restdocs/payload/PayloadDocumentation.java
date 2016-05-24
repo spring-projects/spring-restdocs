@@ -26,6 +26,7 @@ import java.util.Map;
  *
  * @author Andreas Evers
  * @author Andy Wilkinson
+ * @author Marcel Overdijk
  */
 public abstract class PayloadDocumentation {
 
@@ -118,7 +119,7 @@ public abstract class PayloadDocumentation {
 	 * @see #fieldWithPath(String)
 	 */
 	public static RequestFieldsSnippet requestFields(FieldDescriptor... descriptors) {
-		return new RequestFieldsSnippet(Arrays.asList(descriptors));
+		return requestFields(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -157,7 +158,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
 			FieldDescriptor... descriptors) {
-		return new RequestFieldsSnippet(Arrays.asList(descriptors), true);
+		return relaxedRequestFields(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -199,7 +200,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static RequestFieldsSnippet requestFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
-		return new RequestFieldsSnippet(Arrays.asList(descriptors), attributes);
+		return requestFields(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -243,7 +244,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
-		return new RequestFieldsSnippet(Arrays.asList(descriptors), attributes, true);
+		return relaxedRequestFields(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -285,7 +286,7 @@ public abstract class PayloadDocumentation {
 	 * @see #fieldWithPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(FieldDescriptor... descriptors) {
-		return new ResponseFieldsSnippet(Arrays.asList(descriptors));
+		return responseFields(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -308,7 +309,8 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
 	 */
-	public static ResponseFieldsSnippet responseFields(List<FieldDescriptor> descriptors) {
+	public static ResponseFieldsSnippet responseFields(
+			List<FieldDescriptor> descriptors) {
 		return new ResponseFieldsSnippet(descriptors);
 	}
 
@@ -326,7 +328,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
 			FieldDescriptor... descriptors) {
-		return new ResponseFieldsSnippet(Arrays.asList(descriptors), true);
+		return relaxedResponseFields(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -369,7 +371,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static ResponseFieldsSnippet responseFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
-		return new ResponseFieldsSnippet(Arrays.asList(descriptors), attributes);
+		return responseFields(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -413,10 +415,11 @@ public abstract class PayloadDocumentation {
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
-		return new ResponseFieldsSnippet(Arrays.asList(descriptors), attributes, true);
+		return relaxedResponseFields(attributes, Arrays.asList(descriptors));
 	}
 
-	/** Returns a {@code Snippet} that will document the fields of the API operation's
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the API operation's
 	 * response payload. The fields will be documented using the given {@code descriptors}
 	 * and the given {@code attributes} will be available during snippet generation.
 	 * <p>
@@ -447,8 +450,8 @@ public abstract class PayloadDocumentation {
 		for (FieldDescriptor descriptor : descriptors) {
 			FieldDescriptor prefixedDescriptor = new FieldDescriptor(
 					pathPrefix + descriptor.getPath())
-					.description(descriptor.getDescription())
-					.type(descriptor.getType());
+							.description(descriptor.getDescription())
+							.type(descriptor.getType());
 			if (descriptor.isIgnored()) {
 				prefixedDescriptor.ignored();
 			}

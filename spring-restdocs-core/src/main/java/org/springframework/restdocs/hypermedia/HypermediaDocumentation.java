@@ -24,6 +24,7 @@ import java.util.Map;
  * Static factory methods for documenting a RESTful API that utilizes Hypermedia.
  *
  * @author Andy Wilkinson
+ * @author Marcel Overdijk
  */
 public abstract class HypermediaDocumentation {
 
@@ -63,8 +64,7 @@ public abstract class HypermediaDocumentation {
 	 * @return the snippet that will document the links
 	 */
 	public static LinksSnippet links(LinkDescriptor... descriptors) {
-		return new LinksSnippet(new ContentTypeLinkExtractor(),
-				Arrays.asList(descriptors));
+		return links(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -108,8 +108,7 @@ public abstract class HypermediaDocumentation {
 	 * @return the snippet that will document the links
 	 */
 	public static LinksSnippet relaxedLinks(LinkDescriptor... descriptors) {
-		return new LinksSnippet(new ContentTypeLinkExtractor(),
-				Arrays.asList(descriptors), true);
+		return relaxedLinks(Arrays.asList(descriptors));
 	}
 
 	/**
@@ -156,8 +155,7 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static LinksSnippet links(Map<String, Object> attributes,
 			LinkDescriptor... descriptors) {
-		return new LinksSnippet(new ContentTypeLinkExtractor(),
-				Arrays.asList(descriptors), attributes);
+		return links(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -207,8 +205,7 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static LinksSnippet relaxedLinks(Map<String, Object> attributes,
 			LinkDescriptor... descriptors) {
-		return new LinksSnippet(new ContentTypeLinkExtractor(),
-				Arrays.asList(descriptors), attributes, true);
+		return relaxedLinks(attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -229,8 +226,9 @@ public abstract class HypermediaDocumentation {
 	 * @return the snippet that will document the links
 	 */
 	public static LinksSnippet relaxedLinks(Map<String, Object> attributes,
-											List<LinkDescriptor> descriptors) {
-		return new LinksSnippet(new ContentTypeLinkExtractor(), descriptors, attributes, true);
+			List<LinkDescriptor> descriptors) {
+		return new LinksSnippet(new ContentTypeLinkExtractor(), descriptors, attributes,
+				true);
 	}
 
 	/**
@@ -257,7 +255,7 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static LinksSnippet links(LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
-		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors));
+		return links(linkExtractor, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -305,7 +303,7 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static LinksSnippet relaxedLinks(LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
-		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors), true);
+		return relaxedLinks(linkExtractor, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -325,7 +323,7 @@ public abstract class HypermediaDocumentation {
 	 * @return the snippet that will document the links
 	 */
 	public static LinksSnippet relaxedLinks(LinkExtractor linkExtractor,
-											List<LinkDescriptor> descriptors) {
+			List<LinkDescriptor> descriptors) {
 		return new LinksSnippet(linkExtractor, descriptors, true);
 	}
 
@@ -355,7 +353,7 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static LinksSnippet links(LinkExtractor linkExtractor,
 			Map<String, Object> attributes, LinkDescriptor... descriptors) {
-		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors), attributes);
+		return links(linkExtractor, attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -407,8 +405,7 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static LinksSnippet relaxedLinks(LinkExtractor linkExtractor,
 			Map<String, Object> attributes, LinkDescriptor... descriptors) {
-		return new LinksSnippet(linkExtractor, Arrays.asList(descriptors), attributes,
-				true);
+		return relaxedLinks(linkExtractor, attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -430,7 +427,7 @@ public abstract class HypermediaDocumentation {
 	 * @return the snippet that will document the links
 	 */
 	public static LinksSnippet relaxedLinks(LinkExtractor linkExtractor,
-											Map<String, Object> attributes, List<LinkDescriptor> descriptors) {
+			Map<String, Object> attributes, List<LinkDescriptor> descriptors) {
 		return new LinksSnippet(linkExtractor, descriptors, attributes, true);
 	}
 
