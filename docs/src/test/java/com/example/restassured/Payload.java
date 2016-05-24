@@ -68,9 +68,9 @@ public class Payload {
 					fieldWithPath("email").description("The user's email address")
 							.attributes(key("constraints")
 									.value("Must be a valid email address"))))) // <3>
-		// end::constraints[]
-		.when().post("/users")
-		.then().assertThat().statusCode(is(200));
+			// end::constraints[]
+			.when().post("/users")
+			.then().assertThat().statusCode(is(200));
 	}
 
 	public void descriptorReuse() throws Exception {
@@ -90,10 +90,9 @@ public class Payload {
 			.filter(document("books", responseFields(
 				fieldWithPath("[]").description("An array of books")) // <1>
 				.andWithPrefix("[].", book))) // <2>
-		.when().get("/books/1")
-		.then().assertThat().statusCode(is(200));
+			.when().get("/books/1")
+			.then().assertThat().statusCode(is(200));
 		// end::book-array[]
-
 	}
 
 }

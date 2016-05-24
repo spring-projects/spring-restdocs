@@ -80,7 +80,7 @@ public class Payload {
 		this.mockMvc.perform(get("/books/1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("book", responseFields(book))); // <1>
-				// end::single-book[]
+		// end::single-book[]
 
 		// tag::book-array[]
 		this.mockMvc.perform(get("/books").accept(MediaType.APPLICATION_JSON))

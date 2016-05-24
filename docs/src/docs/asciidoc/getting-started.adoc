@@ -171,7 +171,7 @@ static content] by Spring Boot. To do so, configure your project's build so that
 1. The documentation is generated before the jar is built
 2. The generated documentation is included in the jar
 
-[source,xml,indent=0,role="primary",role="primary"]
+[source,xml,indent=0,role="primary"]
 .Maven
 ----
 	<plugin> <1>
@@ -253,7 +253,7 @@ When using JUnit, the first step in generating documentation snippets is to decl
 snippets should be written. This output directory should match the snippets directory that
 you have configured in your `build.gradle` or `pom.xml` file.
 
-For Maven (`pom.xml` that will typically be `target/generated-snippets` and for
+For Maven (`pom.xml`) that will typically be `target/generated-snippets` and for
 Gradle (`build.gradle`) it will typically be `build/generated-snippets`:
 
 [source,java,indent=0,role="primary"]
