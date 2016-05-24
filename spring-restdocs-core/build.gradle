@@ -34,10 +34,10 @@ dependencies {
 	optional 'commons-codec:commons-codec'
 	optional 'javax.validation:validation-api'
 	optional 'junit:junit'
+	optional 'org.hibernate:hibernate-validator'
 	testCompile 'org.mockito:mockito-core'
 	testCompile 'org.hamcrest:hamcrest-core'
 	testCompile 'org.hamcrest:hamcrest-library'
-	testCompile 'org.hibernate:hibernate-validator'
 	testCompile 'org.springframework:spring-test'
 	testRuntime 'org.glassfish:javax.el:3.0.0'
 }

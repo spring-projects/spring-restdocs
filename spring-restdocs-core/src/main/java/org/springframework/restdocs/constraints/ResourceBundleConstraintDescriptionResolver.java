@@ -34,6 +34,19 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.CreditCardNumber;
+import org.hibernate.validator.constraints.EAN;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.LuhnCheck;
+import org.hibernate.validator.constraints.Mod10Check;
+import org.hibernate.validator.constraints.Mod11Check;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.SafeHtml;
+import org.hibernate.validator.constraints.URL;
+
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
@@ -60,6 +73,24 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * <li>{@link Past}
  * <li>{@link Pattern}
  * <li>{@link Size}
+ * </ul>
+ *
+ * <p>
+ * Default descriptions are also provided for Hibernate Validator's constraints:
+ *
+ * <ul>
+ * <li>{@link CreditCardNumber}
+ * <li>{@link EAN}
+ * <li>{@link Email}
+ * <li>{@link Length}
+ * <li>{@link LuhnCheck}
+ * <li>{@link Mod10Check}
+ * <li>{@link Mod11Check}
+ * <li>{@link NotBlank}
+ * <li>{@link NotEmpty}
+ * <li>{@link Range}
+ * <li>{@link SafeHtml}
+ * <li>{@link URL}
  * </ul>
  *
  * @author Andy Wilkinson
