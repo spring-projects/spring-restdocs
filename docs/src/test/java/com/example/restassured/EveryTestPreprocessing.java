@@ -44,16 +44,16 @@ public class EveryTestPreprocessing {
 	// tag::setup[]
 	private RequestSpecification spec;
 
-	private RestDocumentationFilter document;
+	private RestDocumentationFilter documentationFilter;
 
 	@Before
 	public void setup() {
-		this.document = document("{method-name}",
+		this.documentationFilter = document("{method-name}",
 				preprocessRequest(removeHeaders("Foo")),
 				preprocessResponse(prettyPrint())); // <1>
 		this.spec = new RequestSpecBuilder()
 				.addFilter(documentationConfiguration(this.restDocumentation))
-				.addFilter(this.document)// <2>
+				.addFilter(this.documentationFilter)// <2>
 				.build();
 	}
 
@@ -61,9 +61,9 @@ public class EveryTestPreprocessing {
 
 	public void use() throws Exception {
 		// tag::use[]
-		this.document.snippets( // <1>
-				links(linkWithRel("self").description("Canonical self link")));
-		RestAssured.given(this.spec) // <2>
+		RestAssured.given(this.spec) // <1>
+			.filter(this.documentationFilter.document( // <2>
+					links(linkWithRel("self").description("Canonical self link"))))
 			.when().get("/")
 			.then().assertThat().statusCode(is(200));
 		// end::use[]

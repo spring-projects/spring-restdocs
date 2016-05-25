@@ -52,6 +52,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.maskLinks;
@@ -238,6 +240,23 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertExpectedSnippetFilesExist(
 				new File("build/generated-snippets/multi-step-3/"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc");
+	}
+
+	@Test
+	public void additionalSnippets() throws Exception {
+		RestDocumentationFilter documentation = document("{method-name}-{step}");
+		RequestSpecification spec = new RequestSpecBuilder().setPort(this.port)
+				.addFilter(documentationConfiguration(this.restDocumentation))
+				.addFilter(documentation).build();
+		given(spec)
+				.filter(documentation
+						.document(responseHeaders(headerWithName("a").description("one"),
+								headerWithName("Foo").description("two"))))
+				.get("/").then().statusCode(200);
+		assertExpectedSnippetFilesExist(
+				new File("build/generated-snippets/additional-snippets-1/"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
+				"response-headers.adoc");
 	}
 
 	@Test

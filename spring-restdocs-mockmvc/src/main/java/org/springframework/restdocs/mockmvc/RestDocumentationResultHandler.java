@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.mockmvc;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -59,10 +60,44 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 *
 	 * @param snippets the snippets to add
 	 * @return this {@code RestDocumentationResultHandler}
+	 * @deprecated since 1.1 in favor of {@link #document(Snippet...)}
 	 */
+	@Deprecated
 	public RestDocumentationResultHandler snippets(Snippet... snippets) {
 		this.delegate.addSnippets(snippets);
 		return this;
 	}
 
+	/**
+	 * Creates a new {@link RestDocumentationResultHandler} that will produce
+	 * documentation using the given {@code snippets}.
+	 *
+	 * @param snippets the snippets
+	 * @return the new result handler
+	 */
+	public RestDocumentationResultHandler document(Snippet... snippets) {
+		return new RestDocumentationResultHandler(this.delegate.withSnippets(snippets)) {
+
+			@Override
+			public void handle(MvcResult result) throws Exception {
+				@SuppressWarnings("unchecked")
+				Map<String, Object> configuration = new HashMap<>(
+						(Map<String, Object>) result.getRequest()
+								.getAttribute(ATTRIBUTE_NAME_CONFIGURATION));
+				configuration.remove(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+				getDelegate().handle(result.getRequest(), result.getResponse(),
+						configuration);
+			}
+		};
+	}
+
+	/**
+	 * Returns the {@link RestDocumentationGenerator} that is used as a delegate.
+	 *
+	 * @return the delegate
+	 */
+	protected final RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> getDelegate() {
+		return this.delegate;
+	}
 }

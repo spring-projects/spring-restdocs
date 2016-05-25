@@ -35,7 +35,7 @@ import org.springframework.util.Assert;
  *
  * @author Andy Wilkinson
  */
-public final class RestDocumentationFilter implements Filter {
+public class RestDocumentationFilter implements Filter {
 
 	static final String CONTEXT_KEY_CONFIGURATION = "org.springframework.restdocs.configuration";
 
@@ -48,10 +48,27 @@ public final class RestDocumentationFilter implements Filter {
 	}
 
 	@Override
-	public Response filter(FilterableRequestSpecification requestSpec,
+	public final Response filter(FilterableRequestSpecification requestSpec,
 			FilterableResponseSpecification responseSpec, FilterContext context) {
 		Response response = context.next(requestSpec, responseSpec);
 
+		Map<String, Object> configuration = getConfiguration(requestSpec, context);
+
+		this.delegate.handle(requestSpec, response, configuration);
+
+		return response;
+	}
+
+	/**
+	 * Returns the configuration that should be used when calling the delgate. The
+	 * configuration is derived from the given {@code requestSpec} and {@code context}.
+	 *
+	 * @param requestSpec the request specification
+	 * @param context the filter context
+	 * @return the configuration
+	 */
+	protected Map<String, Object> getConfiguration(
+			FilterableRequestSpecification requestSpec, FilterContext context) {
 		Map<String, Object> configuration = new HashMap<>(
 				context.<Map<String, Object>>getValue(CONTEXT_KEY_CONFIGURATION));
 		configuration.put(RestDocumentationContext.class.getName(),
@@ -59,10 +76,7 @@ public final class RestDocumentationFilter implements Filter {
 						RestDocumentationContext.class.getName()));
 		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
 				requestSpec.getUserDefinedPath());
-
-		this.delegate.handle(requestSpec, response, configuration);
-
-		return response;
+		return configuration;
 	}
 
 	/**
@@ -71,10 +85,35 @@ public final class RestDocumentationFilter implements Filter {
 	 *
 	 * @param snippets the snippets to add
 	 * @return this {@code RestDocumentationFilter}
+	 * @deprecated since 1.1 in favor of {@link #document(Snippet...)}
 	 */
-	public RestDocumentationFilter snippets(Snippet... snippets) {
+	@Deprecated
+	public final RestDocumentationFilter snippets(Snippet... snippets) {
 		this.delegate.addSnippets(snippets);
 		return this;
+	}
+
+	/**
+	 * Creates a new {@link RestDocumentationFilter} that will produce documentation using
+	 * the given {@code snippets}.
+	 *
+	 * @param snippets the snippets
+	 * @return the new result handler
+	 */
+	public final RestDocumentationFilter document(Snippet... snippets) {
+		return new RestDocumentationFilter(this.delegate.withSnippets(snippets)) {
+
+			@Override
+			protected Map<String, Object> getConfiguration(
+					FilterableRequestSpecification requestSpec, FilterContext context) {
+				Map<String, Object> configuration = super.getConfiguration(requestSpec,
+						context);
+				configuration.remove(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+				return configuration;
+			}
+
+		};
 	}
 
 }

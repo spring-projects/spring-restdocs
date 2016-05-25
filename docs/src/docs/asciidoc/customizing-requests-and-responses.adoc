@@ -58,17 +58,17 @@ Then, in each test, any configuration specific to that test can be performed. Fo
 ----
 include::{examples-dir}/com/example/mockmvc/EveryTestPreprocessing.java[tags=use]
 ----
-<1> Document the links specific to the resource that is being tested
-<2> The request and response will be preprocessed due to the use of `alwaysDo` above.
+<1> The request and response will be preprocessed due to the use of `alwaysDo` above.
+<2> Document the links specific to the resource that is being tested
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags=use]
 ----
-<1> Document the links specific to the resource that is being tested
-<2> The request and response will be preprocessed due to the configuration of the
+<1> The request and response will be preprocessed due to the configuration of the
 `RequestSpecification` in the `setUp` method.
+<2> Document the links specific to the resource that is being tested
 
 Various built in preprocessors, including those illustrated above, are available via the
 static methods on `Preprocessors`. See <<Preprocessors, below>> for further details.

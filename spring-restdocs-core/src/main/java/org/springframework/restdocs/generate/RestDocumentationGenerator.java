@@ -41,6 +41,7 @@ import org.springframework.util.Assert;
  * @param <REQ> the request type that can be handled
  * @param <RESP> the response type that can be handled
  * @author Andy Wilkinson
+ * @since 1.1
  */
 public final class RestDocumentationGenerator<REQ, RESP> {
 
@@ -205,9 +206,25 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * called.
 	 *
 	 * @param snippets the snippets to add
+	 * @deprecated since 1.1 in favor of {@link #withSnippets(Snippet...)}
 	 */
+	@Deprecated
 	public void addSnippets(Snippet... snippets) {
 		this.additionalSnippets.addAll(Arrays.asList(snippets));
+	}
+
+	/**
+	 * Creates a new {@link RestDocumentationGenerator} with the same configuration as
+	 * this one other than its snippets. The new generator will use the given
+	 * {@code snippets}.
+	 *
+	 * @param snippets the snippets
+	 * @return the new generator
+	 */
+	public RestDocumentationGenerator<REQ, RESP> withSnippets(Snippet... snippets) {
+		return new RestDocumentationGenerator<>(this.identifier, this.requestConverter,
+				this.responseConverter, this.requestPreprocessor,
+				this.responsePreprocessor, snippets);
 	}
 
 	@SuppressWarnings("unchecked")

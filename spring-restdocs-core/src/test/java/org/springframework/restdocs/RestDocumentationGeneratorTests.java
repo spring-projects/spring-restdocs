@@ -35,6 +35,8 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.RequestConverter;
 import org.springframework.restdocs.operation.ResponseConverter;
+import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
+import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.snippet.Snippet;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -43,6 +45,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * Tests for {@link RestDocumentationGenerator}.
@@ -105,6 +108,7 @@ public class RestDocumentationGeneratorTests {
 	}
 
 	@Test
+	@Deprecated
 	public void additionalSnippetsAreCalled() throws IOException {
 		given(this.requestConverter.convert(this.request))
 				.willReturn(this.operationRequest);
@@ -119,6 +123,33 @@ public class RestDocumentationGeneratorTests {
 		generator.handle(this.request, this.response, configuration);
 		generator.handle(this.request, this.response, configuration);
 		verifySnippetInvocation(this.snippet, configuration, 2);
+		verifySnippetInvocation(additionalSnippet1, configuration);
+		verifySnippetInvocation(additionalSnippet2, configuration);
+	}
+
+	@Test
+	public void newGeneratorOnlyCallsItsSnippets() throws IOException {
+		OperationRequestPreprocessor requestPreprocessor = mock(
+				OperationRequestPreprocessor.class);
+		OperationResponsePreprocessor responsePreprocessor = mock(
+				OperationResponsePreprocessor.class);
+		given(this.requestConverter.convert(this.request))
+				.willReturn(this.operationRequest);
+		given(this.responseConverter.convert(this.response))
+				.willReturn(this.operationResponse);
+		given(requestPreprocessor.preprocess(this.operationRequest))
+				.willReturn(this.operationRequest);
+		given(responsePreprocessor.preprocess(this.operationResponse))
+				.willReturn(this.operationResponse);
+		Snippet additionalSnippet1 = mock(Snippet.class);
+		Snippet additionalSnippet2 = mock(Snippet.class);
+		RestDocumentationGenerator<Object, Object> generator = new RestDocumentationGenerator<>(
+				"id", this.requestConverter, this.responseConverter, requestPreprocessor,
+				responsePreprocessor, this.snippet);
+		HashMap<String, Object> configuration = new HashMap<>();
+		generator.withSnippets(additionalSnippet1, additionalSnippet2)
+				.handle(this.request, this.response, configuration);
+		verifyNoMoreInteractions(this.snippet);
 		verifySnippetInvocation(additionalSnippet1, configuration);
 		verifySnippetInvocation(additionalSnippet2, configuration);
 	}

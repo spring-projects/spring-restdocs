@@ -56,6 +56,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.restdocs.cli.CliDocumentation.curlRequest;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -327,6 +329,24 @@ public class MockMvcRestDocumentationIntegrationTests {
 		assertExpectedSnippetFilesExist(
 				new File("build/generated-snippets/multi-step-3/"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc");
+	}
+
+	@Test
+	public void alwaysDoWithAdditionalSnippets() throws Exception {
+		RestDocumentationResultHandler documentation = document("{method-name}-{step}");
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation))
+				.alwaysDo(documentation).build();
+
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(documentation.document(
+						responseHeaders(headerWithName("a").description("one"))));
+
+		assertExpectedSnippetFilesExist(
+				new File(
+						"build/generated-snippets/always-do-with-additional-snippets-1/"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
+				"response-headers.adoc");
 	}
 
 	@Test

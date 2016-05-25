@@ -46,16 +46,16 @@ public class EveryTestPreprocessing {
 	// tag::setup[]
 	private MockMvc mockMvc;
 
-	private RestDocumentationResultHandler document;
+	private RestDocumentationResultHandler documentationHandler;
 
 	@Before
 	public void setup() {
-		this.document = document("{method-name}", // <1>
+		this.documentationHandler = document("{method-name}", // <1>
 				preprocessRequest(removeHeaders("Foo")),
 				preprocessResponse(prettyPrint()));
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation))
-				.alwaysDo(this.document) // <2>
+				.alwaysDo(this.documentationHandler) // <2>
 				.build();
 	}
 
@@ -63,10 +63,11 @@ public class EveryTestPreprocessing {
 
 	public void use() throws Exception {
 		// tag::use[]
-		this.document.snippets( // <1>
-				links(linkWithRel("self").description("Canonical self link")));
-		this.mockMvc.perform(get("/")) // <2>
-				.andExpect(status().isOk());
+		this.mockMvc.perform(get("/")) // <1>
+				.andExpect(status().isOk())
+				.andDo(this.documentationHandler.document( // <2>
+						links(linkWithRel("self").description("Canonical self link"))
+				));
 		// end::use[]
 	}
 
