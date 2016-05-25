@@ -22,9 +22,9 @@ package org.springframework.restdocs.operation;
  * during conversion.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  * @see RequestConverter#convert(Object)
  * @see ResponseConverter#convert(Object)
- * @since 1.1.0
  */
 public class ConversionException extends RuntimeException {
 

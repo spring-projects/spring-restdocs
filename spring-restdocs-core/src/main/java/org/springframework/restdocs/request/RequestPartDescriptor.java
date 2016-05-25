@@ -22,8 +22,8 @@ import org.springframework.restdocs.snippet.IgnorableDescriptor;
  * A descriptor of a request part.
  *
  * @author Andy Wilkinson
- * @see RequestDocumentation#partWithName
  * @since 1.1.0
+ * @see RequestDocumentation#partWithName
  */
 public class RequestPartDescriptor extends IgnorableDescriptor<RequestPartDescriptor> {
 
