@@ -33,6 +33,12 @@ There are several that you can contribute to Spring REST Docs:
  - Ask and answer questions on Stack Overflow using the [`spring-restdocs`][15] tag.
  - Chat with fellow users [on Gitter][16].
 
+## Third-party extensions
+
+| Name | Description |
+| ---- | ----------- |
+| [restdocs-wiremock][17] | Auto-generate [WireMock][18] stubs as part of documenting your RESTful API |
+
 ## Licence
 
 Spring REST Docs is open source software released under the [Apache 2.0 license][14].
@@ -53,3 +59,5 @@ Spring REST Docs is open source software released under the [Apache 2.0 license]
 [14]: http://www.apache.org/licenses/LICENSE-2.0.html
 [15]: http://stackoverflow.com/tags/spring-restdocs
 [16]: https://gitter.im/spring-projects/spring-restdocs
+[17]: https://github.com/ePages-de/restdocs-wiremock
+[18]: http://wiremock.org/
