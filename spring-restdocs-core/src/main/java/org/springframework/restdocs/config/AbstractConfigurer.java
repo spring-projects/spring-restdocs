@@ -25,6 +25,7 @@ import org.springframework.restdocs.RestDocumentationContext;
  * configuration implementation.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public abstract class AbstractConfigurer {
 

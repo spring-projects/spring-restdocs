@@ -39,6 +39,7 @@ import org.springframework.util.StringUtils;
  * @author Paul-Christian Volkmer
  * @see CliDocumentation#curlRequest()
  * @see CliDocumentation#curlRequest(Map)
+ * @since 1.1.0
  */
 public class CurlRequestSnippet extends TemplatedSnippet {
 

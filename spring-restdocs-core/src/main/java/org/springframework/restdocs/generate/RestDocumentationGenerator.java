@@ -41,7 +41,7 @@ import org.springframework.util.Assert;
  * @param <REQ> the request type that can be handled
  * @param <RESP> the response type that can be handled
  * @author Andy Wilkinson
- * @since 1.1
+ * @since 1.1.0
  */
 public final class RestDocumentationGenerator<REQ, RESP> {
 

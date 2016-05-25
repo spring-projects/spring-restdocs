@@ -21,6 +21,7 @@ package org.springframework.restdocs.config;
  *
  * @param <PARENT> The type of the configurer's parent
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public abstract class AbstractNestedConfigurer<PARENT> extends AbstractConfigurer
 		implements NestedConfigurer<PARENT> {

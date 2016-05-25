@@ -21,6 +21,7 @@ package org.springframework.restdocs.config;
  *
  * @param <PARENT> The parent's type
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 interface NestedConfigurer<PARENT> {
 

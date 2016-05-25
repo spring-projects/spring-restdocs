@@ -23,7 +23,7 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * A factory for creating {@link PlaceholderResolver} instances.
  *
  * @author Andy Wilkinson
- * @since 1.1
+ * @since 1.1.0
  */
 public interface PlaceholderResolverFactory {
 

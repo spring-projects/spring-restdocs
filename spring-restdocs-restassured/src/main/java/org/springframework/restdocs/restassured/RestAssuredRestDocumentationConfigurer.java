@@ -33,6 +33,7 @@ import org.springframework.restdocs.config.RestDocumentationConfigurer;
  * A REST Assured-specific {@link RestDocumentationConfigurer}.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public final class RestAssuredRestDocumentationConfigurer extends
 		RestDocumentationConfigurer<RestAssuredSnippetConfigurer, RestAssuredRestDocumentationConfigurer>

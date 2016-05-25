@@ -35,6 +35,7 @@ import org.springframework.restdocs.templates.TemplateFormats;
  * @param <PARENT> The type of the configurer's parent
  * @param <TYPE> The concrete type of the configurer to be returned from chained methods
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public abstract class SnippetConfigurer<PARENT, TYPE>
 		extends AbstractNestedConfigurer<PARENT> {

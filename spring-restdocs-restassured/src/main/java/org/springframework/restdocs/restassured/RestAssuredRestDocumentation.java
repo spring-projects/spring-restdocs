@@ -26,6 +26,7 @@ import org.springframework.restdocs.snippet.Snippet;
  * Static factory methods for documenting RESTful APIs using REST Assured.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public abstract class RestAssuredRestDocumentation {
 

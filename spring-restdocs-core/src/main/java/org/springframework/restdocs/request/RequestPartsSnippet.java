@@ -42,6 +42,7 @@ import org.springframework.util.Assert;
  * @see RequestDocumentation#requestParts(Map, RequestPartDescriptor...)
  * @see RequestDocumentation#relaxedRequestParts(RequestPartDescriptor...)
  * @see RequestDocumentation#relaxedRequestParts(Map, RequestPartDescriptor...)
+ * @since 1.1.0
  */
 public class RequestPartsSnippet extends TemplatedSnippet {
 

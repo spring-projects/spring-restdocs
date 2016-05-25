@@ -50,7 +50,6 @@ import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
  * {@link MockHttpServletRequest}.
  *
  * @author Andy Wilkinson
- *
  */
 class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest> {
 

@@ -39,6 +39,7 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
  * @param <T> The concrete type of this configurer, to be returned from methods that
  * support chaining
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, T> {
 

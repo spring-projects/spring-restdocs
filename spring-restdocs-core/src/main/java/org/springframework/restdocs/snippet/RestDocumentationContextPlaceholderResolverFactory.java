@@ -24,7 +24,7 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * {@link RestDocumentationContextPlaceholderResolver} instances.
  *
  * @author Andy Wilkinson
- * @since 1.1
+ * @since 1.1.0
  */
 public final class RestDocumentationContextPlaceholderResolverFactory
 		implements PlaceholderResolverFactory {

@@ -22,6 +22,7 @@ import org.springframework.restdocs.templates.TemplateFormat;
  * An encapsulation of the configuration for documentation snippets.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 class SnippetConfiguration {
 

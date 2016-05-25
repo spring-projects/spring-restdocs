@@ -21,6 +21,7 @@ package org.springframework.restdocs.templates;
  * as Asciidoctor or Markdown.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public interface TemplateFormat {
 

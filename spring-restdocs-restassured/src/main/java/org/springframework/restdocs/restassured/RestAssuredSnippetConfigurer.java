@@ -29,6 +29,7 @@ import org.springframework.restdocs.config.SnippetConfigurer;
  * using REST Assured.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public final class RestAssuredSnippetConfigurer extends
 		SnippetConfigurer<RestAssuredRestDocumentationConfigurer, RestAssuredSnippetConfigurer>

@@ -27,6 +27,7 @@ import org.springframework.restdocs.mustache.Template.Fragment;
  * formatting.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public final class AsciidoctorTableCellContentLambda implements Lambda {
 

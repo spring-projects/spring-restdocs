@@ -40,6 +40,7 @@ import org.springframework.util.StringUtils;
  * @author Andy Wilkinson
  * @see CliDocumentation#httpieRequest()
  * @see CliDocumentation#httpieRequest(Map)
+ * @since 1.1.0
  */
 public class HttpieRequestSnippet extends TemplatedSnippet {
 

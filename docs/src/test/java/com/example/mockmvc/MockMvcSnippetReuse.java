@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class MockMvcSnippetReuse extends SnippetReuse {
-	
+
 	private MockMvc mockMvc;
-	
+
 	public void documentation() throws Exception {
 		// tag::use[]
 		this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))

@@ -34,6 +34,7 @@ import org.springframework.util.Assert;
  * A REST Assured {@link Filter} for documenting RESTful APIs.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
 public class RestDocumentationFilter implements Filter {
 

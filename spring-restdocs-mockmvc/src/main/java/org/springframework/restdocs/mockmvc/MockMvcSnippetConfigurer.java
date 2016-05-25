@@ -26,8 +26,9 @@ import org.springframework.web.context.WebApplicationContext;
  * A configurer that can be used to configure the generated documentation snippets.
  *
  * @author Andy Wilkinson
+ * @since 1.1.0
  */
-public class MockMvcSnippetConfigurer extends
+public final class MockMvcSnippetConfigurer extends
 		SnippetConfigurer<MockMvcRestDocumentationConfigurer, MockMvcSnippetConfigurer>
 		implements MockMvcConfigurer {
 
