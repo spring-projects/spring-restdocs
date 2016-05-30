@@ -1,0 +1,148 @@
+= Grails RESTful Notes API Guide
+Andy Wilkinson; Jenn Strater
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[overview]]
+= Overview
+
+[[overview-http-verbs]]
+== HTTP verbs
+
+Grails RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
+use of HTTP verbs.
+
+|===
+| Verb | Usage
+
+| `GET`
+| Used to retrieve a resource
+
+| `POST`
+| Used to create a new resource
+
+| `PATCH`
+| Used to update an existing resource, including partial updates
+
+| `DELETE`
+| Used to delete an existing resource
+|===
+
+[[overview-http-status-codes]]
+== HTTP status codes
+
+Grails RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
+use of HTTP status codes.
+
+|===
+| Status code | Usage
+
+| `200 OK`
+| The request completed successfully
+
+| `201 Created`
+| A new resource has been created successfully. The resource's URI is available from the response's
+`Location` header
+
+| `204 No Content`
+| An update to an existing resource has been applied successfully
+
+| `400 Bad Request`
+| The request was malformed. The response body will include an error providing further information
+
+| `404 Not Found`
+| The requested resource did not exist
+|===
+
+[[resources]]
+= Resources
+
+
+[[resources-index]]
+== Index
+
+The index provides the entry point into the service.
+
+
+
+[[resources-index-access]]
+=== Accessing the index
+
+A `GET` request is used to access the index
+
+==== Example request
+
+include::{snippets}/index-example/curl-request.adoc[]
+
+==== Response structure
+
+include::{snippets}/index-example/response-fields.adoc[]
+
+==== Example response
+
+include::{snippets}/index-example/http-response.adoc[]
+
+
+[[resources-notes]]
+== Notes
+
+The Notes resources is used to create and list notes
+
+
+
+[[resources-notes-list]]
+=== Listing notes
+
+A `GET` request will list all of the service's notes.
+
+==== Response structure
+
+include::{snippets}/notes-list-example/response-fields.adoc[]
+
+==== Example request
+
+include::{snippets}/notes-list-example/curl-request.adoc[]
+
+==== Example response
+
+include::{snippets}/notes-list-example/http-response.adoc[]
+
+
+
+[[resources-notes-create]]
+=== Creating a note
+
+A `POST` request is used to create a note
+
+==== Request structure
+
+include::{snippets}/notes-create-example/request-fields.adoc[]
+
+==== Example request
+
+include::{snippets}/notes-create-example/curl-request.adoc[]
+
+==== Example response
+
+include::{snippets}/notes-create-example/http-response.adoc[]
+
+[[resources-note-retrieve]]
+=== Retrieve a note
+
+A `GET` request will retrieve the details of a note
+
+==== Response structure
+
+include::{snippets}/note-get-example/response-fields.adoc[]
+
+==== Example request
+
+include::{snippets}/note-get-example/curl-request.adoc[]
+
+==== Example response
+
+include::{snippets}/note-get-example/http-response.adoc[]

@@ -1,0 +1,17 @@
+Thumbs.db
+.DS_Store
+.gradle
+build/
+classes/
+.idea
+*.iml
+*.ipr
+*.iws
+.project
+.settings
+.classpath
+gradlew*
+gradle/wrapper
+
+
+src/docs/generated-snippets
