@@ -1,22 +1,22 @@
 buildscript {
-    ext {
-        grailsVersion = project.grailsVersion
-    }
-    repositories {
-        mavenLocal()
-        maven { url "https://repo.grails.org/grails/core" }
-        maven { url 'https://repo.spring.io/libs-snapshot' }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "org.grails.plugins:hibernate:4.3.10.5"
-        classpath 'org.ajoberstar:gradle-git:1.1.0'
-    }
+	ext {
+		grailsVersion = project.grailsVersion
+	}
+	repositories {
+		mavenLocal()
+		maven { url "https://repo.grails.org/grails/core" }
+		maven { url 'https://repo.spring.io/libs-snapshot' }
+	}
+	dependencies {
+		classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+		classpath "org.grails.plugins:hibernate:4.3.10.5"
+		classpath 'org.ajoberstar:gradle-git:1.1.0'
+	}
 }
 
 plugins {
-    id "io.spring.dependency-management" version "0.5.4.RELEASE"
-    id 'org.asciidoctor.convert' version '1.5.3'
+	id "io.spring.dependency-management" version "0.5.4.RELEASE"
+	id 'org.asciidoctor.convert' version '1.5.3'
 }
 
 version "0.1"
@@ -29,51 +29,79 @@ apply plugin: 'idea'
 apply plugin: "org.grails.grails-web"
 
 ext {
-    grailsVersion = project.grailsVersion
-    gradleWrapperVersion = project.gradleWrapperVersion
+	grailsVersion = project.grailsVersion
+	gradleWrapperVersion = project.gradleWrapperVersion
+	restDocsVersion = "1.1.0.BUILD-SNAPSHOT"
+	snippetsDir = file('src/docs/generated-snippets')
 }
 
 repositories {
-    mavenLocal()
-    maven { url "https://repo.grails.org/grails/core" }
+	mavenLocal()
+	maven { url 'https://repo.spring.io/libs-snapshot' }
+	maven { url "https://repo.grails.org/grails/core" }
 }
 
 dependencyManagement {
-    imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
-    }
-    applyMavenExclusions false
+	dependencies {
+		dependency "org.springframework.restdocs:spring-restdocs-restassured:$restDocsVersion"
+	}
+	imports {
+		mavenBom "org.grails:grails-bom:$grailsVersion"
+	}
+	applyMavenExclusions false
 }
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.grails:grails-plugin-url-mappings"
-    compile "org.grails:grails-plugin-rest"
-    compile "org.grails:grails-plugin-interceptors"
-    compile "org.grails:grails-plugin-services"
-    compile "org.grails:grails-plugin-datasource"
-    compile "org.grails:grails-plugin-databinding"
-    compile "org.grails:grails-plugin-async"
-    compile "org.grails:grails-web-boot"
-    compile "org.grails:grails-logging"
+	compile "org.springframework.boot:spring-boot-starter-logging"
+	compile "org.springframework.boot:spring-boot-starter-actuator"
+	compile "org.springframework.boot:spring-boot-autoconfigure"
+	compile "org.springframework.boot:spring-boot-starter-tomcat"
+	compile "org.grails:grails-plugin-url-mappings"
+	compile "org.grails:grails-plugin-rest"
+	compile "org.grails:grails-plugin-interceptors"
+	compile "org.grails:grails-plugin-services"
+	compile "org.grails:grails-plugin-datasource"
+	compile "org.grails:grails-plugin-databinding"
+	compile "org.grails:grails-plugin-async"
+	compile "org.grails:grails-web-boot"
+	compile "org.grails:grails-logging"
 
-    compile "org.grails.plugins:hibernate"
-    compile "org.grails.plugins:cache"
-    compile "org.hibernate:hibernate-ehcache"
+	compile "org.grails.plugins:hibernate"
+	compile "org.grails.plugins:cache"
+	compile "org.hibernate:hibernate-ehcache"
 
-    runtime "com.h2database:h2"
+	runtime "com.h2database:h2"
 
-    testCompile "org.grails:grails-plugin-testing"
-    testCompile "org.grails.plugins:geb"
+	testCompile "org.grails:grails-plugin-testing"
+	testCompile "org.grails.plugins:geb"
+	testCompile 'org.springframework.restdocs:spring-restdocs-restassured'
 
-    console "org.grails:grails-console"
+	console "org.grails:grails-console"
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = gradleWrapperVersion
+	gradleVersion = gradleWrapperVersion
 }
 
-apply from: 'gradle/restdocs.gradle'
+ext {
+	snippetsDir = file('src/docs/generated-snippets')
+}
+
+task cleanTempDirs(type: Delete) {
+	delete fileTree(dir: 'src/docs/generated-snippets')
+}
+
+test {
+	dependsOn cleanTempDirs
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	dependsOn integrationTest
+	inputs.dir snippetsDir
+	sourceDir = file('src/docs')
+	separateOutputDirs = false
+	attributes 'snippets': snippetsDir
+}
+
+build.dependsOn asciidoctor

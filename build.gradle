@@ -163,6 +163,10 @@ samples {
 	dependOn 'spring-restdocs-mockmvc:install'
 	dependOn 'spring-restdocs-restassured:install'
 
+	restNotesGrails {
+		workingDir "$projectDir/samples/rest-notes-grails"
+	}
+
 	restNotesSpringHateoas {
 		workingDir "$projectDir/samples/rest-notes-spring-hateoas"
 	}
@@ -183,6 +187,7 @@ samples {
 		workingDir "$projectDir/samples/rest-notes-slate"
 		build false
 	}
+
 }
 
 task api (type: Javadoc) {
