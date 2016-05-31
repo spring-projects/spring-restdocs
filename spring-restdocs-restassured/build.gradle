@@ -1,3 +1,5 @@
+description = 'Spring REST Docs REST Assured'
+
 boolean isPlatformUsingBootOneFour() {
 	def bootVersion = dependencyManagement.springIoTestRuntime.managedVersions['org.springframework.boot:spring-boot']
 	bootVersion.startsWith('1.4')
