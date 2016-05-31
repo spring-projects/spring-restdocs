@@ -35,8 +35,9 @@ import com.jayway.restassured.specification.RequestSpecification
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
 import org.junit.Rule
-import org.springframework.restdocs.JUnitRestDocumentation
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
+import org.springframework.restdocs.JUnitRestDocumentation
 import spock.lang.Specification
 
 @Integration
@@ -45,6 +46,9 @@ class ApiDocumentationSpec extends Specification {
 
 	@Rule
 	JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation('src/docs/generated-snippets')
+
+	@Value('${local.server.port}')
+	Integer serverPort
 
 	protected RequestSpecification documentationSpec
 
@@ -75,7 +79,7 @@ class ApiDocumentationSpec extends Specification {
 						fieldWithPath('plugins').type(JsonFieldType.ARRAY).description('the plugins active for this project'),
 				)))
 				.when()
-				.port(8080)
+				.port(this.serverPort)
 				.get('/')
 				.then()
 				.assertThat()
@@ -99,7 +103,7 @@ class ApiDocumentationSpec extends Specification {
 					fieldWithPath('[].tags').type(JsonFieldType.ARRAY).description('the list of tags associated with the note'),
 				)))
 				.when()
-				.port(8080)
+				.port(this.serverPort)
 				.get('/notes')
 				.then()
 				.assertThat()
@@ -130,7 +134,7 @@ class ApiDocumentationSpec extends Specification {
 				)))
 				.body('{ "body": "My test example", "title": "Eureka!", "tags": [{"name": "testing123"}] }')
 				.when()
-				.port(8080)
+				.port(this.serverPort)
 				.post('/notes')
 				.then()
 				.assertThat()
@@ -154,7 +158,7 @@ class ApiDocumentationSpec extends Specification {
 					fieldWithPath('tags').type(JsonFieldType.ARRAY).description('the list of tags associated with the note'),
 				)))
 				.when()
-				.port(8080)
+				.port(this.serverPort)
 				.get('/notes/1')
 				.then()
 				.assertThat()
