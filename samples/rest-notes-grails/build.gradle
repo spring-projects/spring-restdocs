@@ -31,7 +31,7 @@ apply plugin: "org.grails.grails-web"
 ext {
 	grailsVersion = project.grailsVersion
 	gradleWrapperVersion = project.gradleWrapperVersion
-	restDocsVersion = "1.1.0.BUILD-SNAPSHOT"
+	restDocsVersion = "1.1.0.RELEASE"
 	snippetsDir = file('src/docs/generated-snippets')
 }
 
