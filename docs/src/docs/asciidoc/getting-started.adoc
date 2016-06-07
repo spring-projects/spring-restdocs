@@ -14,9 +14,15 @@ If you want to jump straight in, a number of sample applications are available:
 |===
 | Sample | Build system | Description
 
-| {samples}/rest-assured[REST Assured]
+| {samples}/rest-notes-spring-data-rest[Spring Data REST]
+| Maven
+| Demonstrates the creation of a getting started guide and an API guide for a service
+  implemented using http://projects.spring.io/spring-data-rest/[Spring Data REST].
+
+| {samples}/rest-notes-spring-hateoas[Spring HATEOAS]
 | Gradle
-| Demonstrates the use of Spring REST Docs with http://rest-assured.io[REST Assured].
+| Demonstrates the creation of a getting started guide and an API guide for a service
+  implemented using http://projects.spring.io/spring-hateoas/[Spring HATEOAS].
 
 | {samples}/rest-notes-grails[Grails]
 | Gradle
@@ -27,15 +33,9 @@ If you want to jump straight in, a number of sample applications are available:
 | Demonstrates the use of Spring REST Docs with Markdown and
   http://github.com/tripit/slate[Slate].
 
-| {samples}/rest-notes-spring-data-rest[Spring Data REST]
-| Maven
-| Demonstrates the creation of a getting started guide and an API guide for a service
-  implemented using http://projects.spring.io/spring-data-rest/[Spring Data REST].
-
-| {samples}/rest-notes-spring-hateoas[Spring HATEOAS]
+| {samples}/rest-assured[REST Assured]
 | Gradle
-| Demonstrates the creation of a getting started guide and an API guide for a service
-  implemented using http://projects.spring.io/spring-hateoas/[Spring HATEOAS].
+| Demonstrates the use of Spring REST Docs with http://rest-assured.io[REST Assured].
 
 | {samples}/testng[TestNG]
 | Gradle
