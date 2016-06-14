@@ -109,7 +109,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		List<WriteAction> writeActions = new ArrayList<>();
 		Map<CurlPart, WriteAction> map = getWriteActionMap();
 
-		Iterator<CurlLineGroup> it = lineBreaks.getLinesGroups().iterator();
+		Iterator<CurlLineGroup> it = lineBreaks.getLineGroups().iterator();
 		while (it.hasNext()) {
 			CurlLineGroup lineGroup = it.next();
 			boolean groupHasContent = false;

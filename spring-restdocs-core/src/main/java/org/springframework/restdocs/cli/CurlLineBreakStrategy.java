@@ -33,7 +33,7 @@ public interface CurlLineBreakStrategy {
 	 *
 	 * @return return the list of line groups.
 	 */
-	List<CurlLineGroup> getLinesGroups();
+	List<CurlLineGroup> getLineGroups();
 
 	/**
 	 * Returns whether or not individual headers should be separately split in their

@@ -137,7 +137,7 @@ public final class CurlLineBreakStrategies {
 			implements CurlLineBreakStrategy {
 
 		@Override
-		public List<CurlLineGroup> getLinesGroups() {
+		public List<CurlLineGroup> getLineGroups() {
 			return Arrays.asList(new CurlLineGroup(CurlPart.SHOW_HEADER_OPTION,
 					CurlPart.USER_OPTION, CurlPart.HTTP_METHOD,
 					CurlPart.HEADERS, CurlPart.MULTIPARTS, CurlPart.CONTENT));
@@ -158,7 +158,7 @@ public final class CurlLineBreakStrategies {
 			implements CurlLineBreakStrategy {
 
 		@Override
-		public List<CurlLineGroup> getLinesGroups() {
+		public List<CurlLineGroup> getLineGroups() {
 			CurlLineGroup allButHeaders = new CurlLineGroup(CurlPart.SHOW_HEADER_OPTION,
 					CurlPart.USER_OPTION, CurlPart.HTTP_METHOD,
 					CurlPart.MULTIPARTS, CurlPart.CONTENT);
@@ -181,7 +181,7 @@ public final class CurlLineBreakStrategies {
 			implements CurlLineBreakStrategy {
 
 		@Override
-		public List<CurlLineGroup> getLinesGroups() {
+		public List<CurlLineGroup> getLineGroups() {
 			CurlLineGroup allButParts = new CurlLineGroup(CurlPart.SHOW_HEADER_OPTION,
 					CurlPart.USER_OPTION, CurlPart.HTTP_METHOD,
 					CurlPart.HEADERS, CurlPart.CONTENT);
@@ -204,7 +204,7 @@ public final class CurlLineBreakStrategies {
 			implements CurlLineBreakStrategy {
 
 		@Override
-		public List<CurlLineGroup> getLinesGroups() {
+		public List<CurlLineGroup> getLineGroups() {
 			CurlLineGroup optionsMethodContent = new CurlLineGroup(CurlPart.SHOW_HEADER_OPTION,
 					CurlPart.USER_OPTION, CurlPart.HTTP_METHOD,
 					CurlPart.CONTENT);
@@ -228,7 +228,7 @@ public final class CurlLineBreakStrategies {
 			implements CurlLineBreakStrategy {
 
 		@Override
-		public List<CurlLineGroup> getLinesGroups() {
+		public List<CurlLineGroup> getLineGroups() {
 			CurlLineGroup optionsAndMethod = new CurlLineGroup(CurlPart.SHOW_HEADER_OPTION,
 					CurlPart.USER_OPTION, CurlPart.HTTP_METHOD,
 					CurlPart.MULTIPARTS);
@@ -252,7 +252,7 @@ public final class CurlLineBreakStrategies {
 			implements CurlLineBreakStrategy {
 
 		@Override
-		public List<CurlLineGroup> getLinesGroups() {
+		public List<CurlLineGroup> getLineGroups() {
 			CurlLineGroup allButContent = new CurlLineGroup(CurlPart.SHOW_HEADER_OPTION,
 					CurlPart.USER_OPTION, CurlPart.HTTP_METHOD,
 					CurlPart.HEADERS, CurlPart.MULTIPARTS);

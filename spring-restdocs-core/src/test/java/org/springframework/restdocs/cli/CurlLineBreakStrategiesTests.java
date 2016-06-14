@@ -219,7 +219,7 @@ public class CurlLineBreakStrategiesTests extends AbstractSnippetTests {
 			implements CurlLineBreakStrategy {
 
 		@Override
-		public List<CurlLineGroup> getLinesGroups() {
+		public List<CurlLineGroup> getLineGroups() {
 			CurlLineGroup allButHeaders = new CurlLineGroup(CurlPart.SHOW_HEADER_OPTION,
 					CurlPart.USER_OPTION, CurlPart.HTTP_METHOD,
 					CurlPart.CONTENT);
@@ -243,7 +243,7 @@ public class CurlLineBreakStrategiesTests extends AbstractSnippetTests {
 			implements CurlLineBreakStrategy {
 
 		@Override
-		public List<CurlLineGroup> getLinesGroups() {
+		public List<CurlLineGroup> getLineGroups() {
 			CurlLineGroup allButHeaders = new CurlLineGroup(CurlPart.SHOW_HEADER_OPTION,
 					CurlPart.USER_OPTION, CurlPart.HTTP_METHOD,
 					CurlPart.MULTIPARTS);
