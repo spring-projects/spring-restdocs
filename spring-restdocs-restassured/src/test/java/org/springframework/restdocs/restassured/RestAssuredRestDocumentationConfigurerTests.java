@@ -35,7 +35,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -65,8 +64,7 @@ public class RestAssuredRestDocumentationConfigurerTests {
 	@Test
 	public void nextFilterIsCalled() {
 		this.configurer.filter(this.requestSpec, this.responseSpec, this.filterContext);
-		verify(this.filterContext).setValue(
-				eq(RestDocumentationFilter.CONTEXT_KEY_CONFIGURATION), any(Map.class));
+		verify(this.filterContext).next(this.requestSpec, this.responseSpec);
 	}
 
 	@Test
