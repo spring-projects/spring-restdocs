@@ -10,22 +10,11 @@ This section describes how to get started with Spring REST Docs.
 
 If you want to jump straight in, a number of sample applications are available:
 
+
 [cols="3,2,10"]
+.MockMvc
 |===
 | Sample | Build system | Description
-
-| {samples}/rest-assured[REST Assured]
-| Gradle
-| Demonstrates the use of Spring REST Docs with http://rest-assured.io[REST Assured].
-
-| {samples}/rest-notes-grails[Grails]
-| Gradle
-| Demonstrates the use of Spring REST docs with https://grails.org[Grails] and https://github.com/spockframework/spock[Spock]
-
-| {samples}/rest-notes-slate[Slate]
-| Gradle
-| Demonstrates the use of Spring REST Docs with Markdown and
-  http://github.com/tripit/slate[Slate].
 
 | {samples}/rest-notes-spring-data-rest[Spring Data REST]
 | Maven
@@ -36,6 +25,36 @@ If you want to jump straight in, a number of sample applications are available:
 | Gradle
 | Demonstrates the creation of a getting started guide and an API guide for a service
   implemented using http://projects.spring.io/spring-hateoas/[Spring HATEOAS].
+
+|===
+
+
+[cols="3,2,10"]
+.REST Assured
+|===
+| Sample | Build system | Description
+
+| {samples}/rest-notes-grails[Grails]
+| Gradle
+| Demonstrates the use of Spring REST docs with https://grails.org[Grails] and
+  https://github.com/spockframework/spock[Spock].
+
+| {samples}/rest-assured[REST Assured]
+| Gradle
+| Demonstrates the use of Spring REST Docs with http://rest-assured.io[REST Assured].
+
+|===
+
+
+[cols="3,2,10"]
+.Advanced
+|===
+| Sample | Build system | Description
+
+| {samples}/rest-notes-slate[Slate]
+| Gradle
+| Demonstrates the use of Spring REST Docs with Markdown and
+  http://github.com/tripit/slate[Slate].
 
 | {samples}/testng[TestNG]
 | Gradle
