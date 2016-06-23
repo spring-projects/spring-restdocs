@@ -63,9 +63,11 @@ public class UriModifyingOperationPreprocessorTests {
 	public void requestUriHostCanBeModified() {
 		this.preprocessor.host("api.example.com");
 		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithUri("http://api.example.com:12345"));
+				.preprocess(createRequestWithUri("http://api.foo.com:12345"));
 		assertThat(processed.getUri(),
 				is(equalTo(URI.create("http://api.example.com:12345"))));
+		assertThat(processed.getHeaders().getFirst(HttpHeaders.HOST),
+				is(equalTo("api.example.com:12345")));
 	}
 
 	@Test
@@ -75,6 +77,8 @@ public class UriModifyingOperationPreprocessorTests {
 				.preprocess(createRequestWithUri("http://api.example.com:12345"));
 		assertThat(processed.getUri(),
 				is(equalTo(URI.create("http://api.example.com:23456"))));
+		assertThat(processed.getHeaders().getFirst(HttpHeaders.HOST),
+				is(equalTo("api.example.com:23456")));
 	}
 
 	@Test
@@ -83,6 +87,8 @@ public class UriModifyingOperationPreprocessorTests {
 		OperationRequest processed = this.preprocessor
 				.preprocess(createRequestWithUri("http://api.example.com:12345"));
 		assertThat(processed.getUri(), is(equalTo(URI.create("http://api.example.com"))));
+		assertThat(processed.getHeaders().getFirst(HttpHeaders.HOST),
+				is(equalTo("api.example.com")));
 	}
 
 	@Test

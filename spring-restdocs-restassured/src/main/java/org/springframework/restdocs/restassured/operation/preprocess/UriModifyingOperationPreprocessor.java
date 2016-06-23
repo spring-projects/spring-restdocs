@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.restassured.operation.preprocess;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -125,8 +126,10 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 		if (this.scheme != null) {
 			uriBuilder.scheme(this.scheme);
 		}
+		HttpHeaders modifiedHeaders = modify(request.getHeaders());
 		if (this.host != null) {
 			uriBuilder.host(this.host);
+			modifiedHeaders.set(HttpHeaders.HOST, this.host);
 		}
 		if (this.port != null) {
 			if (StringUtils.hasText(this.port)) {
@@ -136,10 +139,9 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 				uriBuilder.port(null);
 			}
 		}
-		HttpHeaders modifiedHeaders = modify(request.getHeaders());
-		if (this.host != null) {
-			modifiedHeaders.set(HttpHeaders.HOST, this.host);
-		}
+		URI modifiedUri = uriBuilder.build(true).toUri();
+		modifiedHeaders.set(HttpHeaders.HOST, modifiedUri.getHost()
+				+ (modifiedUri.getPort() == -1 ? "" : ":" + modifiedUri.getPort()));
 		return this.contentModifyingDelegate.preprocess(
 				new OperationRequestFactory().create(uriBuilder.build(true).toUri(),
 						request.getMethod(), request.getContent(), modifiedHeaders,

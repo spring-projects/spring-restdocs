@@ -60,6 +60,16 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void getRequestWithPort() throws IOException {
+		this.snippet.expectHttpRequest("get-request")
+				.withContents(httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a")
+						.header(HttpHeaders.HOST, "localhost:8080"));
+
+		new HttpRequestSnippet().document(operationBuilder("get-request")
+				.request("http://localhost:8080/foo").header("Alpha", "a").build());
+	}
+
+	@Test
 	public void getRequestWithQueryString() throws IOException {
 		this.snippet.expectHttpRequest("get-request-with-query-string")
 				.withContents(httpRequest(RequestMethod.GET, "/foo?bar=baz")

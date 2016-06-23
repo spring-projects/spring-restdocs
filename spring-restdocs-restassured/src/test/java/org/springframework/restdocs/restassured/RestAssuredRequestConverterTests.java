@@ -142,7 +142,7 @@ public class RestAssuredRequestConverterTests {
 		assertThat(request.getHeaders().get("Foo"), is(equalTo(Arrays.asList("bar"))));
 		assertThat(request.getHeaders().get("Accept"), is(equalTo(Arrays.asList("*/*"))));
 		assertThat(request.getHeaders().get("Host"),
-				is(equalTo(Arrays.asList("localhost"))));
+				is(equalTo(Arrays.asList("localhost:" + this.port))));
 	}
 
 	@Test

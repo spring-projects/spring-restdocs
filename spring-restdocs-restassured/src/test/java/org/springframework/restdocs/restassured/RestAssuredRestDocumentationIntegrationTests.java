@@ -268,9 +268,9 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.filter(document("original-request"))
 				.filter(document("preprocessed-request",
 						preprocessRequest(prettyPrint(),
-								removeHeaders("a", HttpHeaders.HOST,
-										HttpHeaders.CONTENT_LENGTH),
-								replacePattern(pattern, "\"<<beta>>\""))))
+								replacePattern(pattern, "\"<<beta>>\""),
+								modifyUris().removePort(),
+								removeHeaders("a", HttpHeaders.CONTENT_LENGTH))))
 				.get("/").then().statusCode(200);
 		assertThat(
 				new File("build/generated-snippets/original-request/http-request.adoc"),
@@ -279,7 +279,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 								.header("a", "alpha").header("b", "bravo")
 								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
 								.header("Content-Type", "application/json; charset=UTF-8")
-								.header("Host", "localhost")
+								.header("Host", "localhost:" + this.port)
 								.header("Content-Length", "13")
 								.content("{\"a\":\"alpha\"}"))));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
@@ -291,7 +291,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 								.header("b", "bravo")
 								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
 								.header("Content-Type", "application/json; charset=UTF-8")
-								.content(prettyPrinted))));
+								.header("Host", "localhost").content(prettyPrinted))));
 	}
 
 	@Test

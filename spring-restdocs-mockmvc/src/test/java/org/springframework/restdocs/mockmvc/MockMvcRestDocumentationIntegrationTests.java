@@ -375,7 +375,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 										.header("Content-Type", "application/json")
 										.header("Accept",
 												MediaType.APPLICATION_JSON_VALUE)
-										.header("Host", "localhost")
+										.header("Host", "localhost:8080")
 										.header("Content-Length", "13")
 										.content("{\"a\":\"alpha\"}"))));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");

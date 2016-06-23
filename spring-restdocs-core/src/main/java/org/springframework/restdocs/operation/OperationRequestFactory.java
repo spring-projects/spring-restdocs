@@ -100,8 +100,15 @@ public class OperationRequestFactory {
 	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, URI uri,
 			byte[] content) {
 		return new HttpHeadersHelper(originalHeaders)
-				.addIfAbsent(HttpHeaders.HOST, uri.getHost())
+				.addIfAbsent(HttpHeaders.HOST, createHostHeader(uri))
 				.setContentLengthHeader(content).getHeaders();
+	}
+
+	private String createHostHeader(URI uri) {
+		if (uri.getPort() == -1) {
+			return uri.getHost();
+		}
+		return uri.getHost() + ":" + uri.getPort();
 	}
 
 	private HttpHeaders getUpdatedHeaders(HttpHeaders originalHeaders,
