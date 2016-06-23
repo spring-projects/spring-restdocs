@@ -332,4 +332,18 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 												.request("http://localhost/foo").build());
 	}
 
+	@Test
+	public void customHostHeaderIsIncluded() throws IOException {
+		this.snippet.expectHttpieRequest("custom-host-header")
+				.withContents(codeBlock("bash").content(
+						"$ http GET 'http://localhost/foo' 'Host:api.example.com'"
+								+ " 'Content-Type:application/json' 'a:alpha'"));
+		new HttpieRequestSnippet().document(
+				operationBuilder("custom-host-header").request("http://localhost/foo")
+						.header(HttpHeaders.HOST, "api.example.com")
+						.header(HttpHeaders.CONTENT_TYPE,
+								MediaType.APPLICATION_JSON_VALUE)
+						.header("a", "alpha").build());
+	}
+
 }

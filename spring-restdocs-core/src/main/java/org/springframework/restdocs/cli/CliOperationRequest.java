@@ -17,8 +17,8 @@
 package org.springframework.restdocs.cli;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -41,20 +41,15 @@ import org.springframework.util.Base64Utils;
  */
 final class CliOperationRequest implements OperationRequest {
 
-	private static final Set<HeaderFilter> HEADER_FILTERS;
-
-	static {
-		Set<HeaderFilter> headerFilters = new HashSet<>();
-		headerFilters.add(new NamedHeaderFilter(HttpHeaders.HOST));
-		headerFilters.add(new NamedHeaderFilter(HttpHeaders.CONTENT_LENGTH));
-		headerFilters.add(new BasicAuthHeaderFilter());
-		HEADER_FILTERS = Collections.unmodifiableSet(headerFilters);
-	}
+	private final Set<HeaderFilter> headerFilters;
 
 	private final OperationRequest delegate;
 
 	CliOperationRequest(OperationRequest delegate) {
 		this.delegate = delegate;
+		this.headerFilters = new HashSet<>(Arrays.asList(
+				new NamedHeaderFilter(HttpHeaders.CONTENT_LENGTH),
+				new BasicAuthHeaderFilter(), new HostHeaderFilter(delegate.getUri())));
 	}
 
 	Parameters getUniqueParameters() {
@@ -121,9 +116,18 @@ final class CliOperationRequest implements OperationRequest {
 	}
 
 	private boolean allowedHeader(Map.Entry<String, List<String>> header) {
-		for (HeaderFilter headerFilter : HEADER_FILTERS) {
+		for (HeaderFilter headerFilter : this.headerFilters) {
 			if (!headerFilter.allow(header.getKey(), header.getValue())) {
 				return false;
+			}
+		}
+		if (HttpHeaders.HOST.equalsIgnoreCase(header.getKey())) {
+			if (!header.getValue().isEmpty()) {
+				String value = header.getValue().get(0);
+				if (value.equals(this.delegate.getUri().getHost() + ":"
+						+ this.delegate.getUri().getPort())) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -183,6 +187,29 @@ final class CliOperationRequest implements OperationRequest {
 		@Override
 		public boolean allow(String name, List<String> value) {
 			return !this.name.equalsIgnoreCase(name);
+		}
+
+	}
+
+	private static final class HostHeaderFilter implements HeaderFilter {
+
+		private final URI uri;
+
+		private HostHeaderFilter(URI uri) {
+			this.uri = uri;
+		}
+
+		@Override
+		public boolean allow(String name, List<String> value) {
+			if (value.isEmpty() || this.getImplicitHostHeader().equals(value.get(0))) {
+				return false;
+			}
+			return true;
+		}
+
+		private String getImplicitHostHeader() {
+			return this.uri.getHost()
+					+ ((this.uri.getPort() == -1) ? "" : ":" + this.uri.getPort());
 		}
 
 	}

@@ -330,4 +330,18 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 												.request("http://localhost/foo").build());
 	}
 
+	@Test
+	public void customHostHeaderIsIncluded() throws IOException {
+		this.snippet.expectCurlRequest("custom-host-header")
+				.withContents(codeBlock("bash").content(
+						"$ curl 'http://localhost/foo' -i" + " -H 'Host: api.example.com'"
+								+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
+		new CurlRequestSnippet().document(
+				operationBuilder("custom-host-header").request("http://localhost/foo")
+						.header(HttpHeaders.HOST, "api.example.com")
+						.header(HttpHeaders.CONTENT_TYPE,
+								MediaType.APPLICATION_JSON_VALUE)
+						.header("a", "alpha").build());
+	}
+
 }
