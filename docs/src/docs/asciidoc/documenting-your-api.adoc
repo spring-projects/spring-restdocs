@@ -575,6 +575,12 @@ prevent it from appearing in the generated snippet while avoiding the failure de
 above.
 
 
+[[documenting-your-api-request-parts]]
+=== Request parts content
+
+If you need to document the content of request part that holds Json data, you should use`requestPartsFields`.
+It acts exactly as [[documenting-your-api-request-parts]] but in order to use it, you must specify the part name.
+
 
 [[documenting-your-api-http-headers]]
 === HTTP headers
