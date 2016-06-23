@@ -60,6 +60,17 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void getRequestWithParameters() throws IOException {
+		this.snippet.expectHttpRequest("get-request-with-parameters")
+				.withContents(httpRequest(RequestMethod.GET, "/foo?b=bravo")
+						.header("Alpha", "a").header(HttpHeaders.HOST, "localhost"));
+
+		new HttpRequestSnippet().document(operationBuilder("get-request-with-parameters")
+				.request("http://localhost/foo").header("Alpha", "a").param("b", "bravo")
+				.build());
+	}
+
+	@Test
 	public void getRequestWithPort() throws IOException {
 		this.snippet.expectHttpRequest("get-request")
 				.withContents(httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a")
@@ -101,6 +112,20 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 		new HttpRequestSnippet().document(operationBuilder("post-request-with-content")
 				.request("http://localhost/foo").method("POST").content(content).build());
+	}
+
+	@Test
+	public void postRequestWithContentAndParameters() throws IOException {
+		String content = "Hello, world";
+		this.snippet.expectHttpRequest("post-request-with-content-and-parameters")
+				.withContents(httpRequest(RequestMethod.POST, "/foo?a=alpha")
+						.header(HttpHeaders.HOST, "localhost").content(content).header(
+								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+
+		new HttpRequestSnippet()
+				.document(operationBuilder("post-request-with-content-and-parameters")
+						.request("http://localhost/foo").method("POST")
+						.param("a", "alpha").content(content).build());
 	}
 
 	@Test

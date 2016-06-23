@@ -176,6 +176,22 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void curlSnippetWithContentAndParametersOnPost() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+		mockMvc.perform(post("/").param("a", "alpha").accept(MediaType.APPLICATION_JSON)
+				.content("some content")).andExpect(status().isOk())
+				.andDo(document("curl-snippet-with-content-and-parameters"));
+		assertThat(
+				new File(
+						"build/generated-snippets/curl-snippet-with-content-and-parameters/curl-request.adoc"),
+				is(snippet(asciidoctor())
+						.withContents(codeBlock(asciidoctor(), "bash").content("$ curl "
+								+ "'http://localhost:8080/?a=alpha' -i -X POST "
+								+ "-H 'Accept: application/json' -d 'some content'"))));
+	}
+
+	@Test
 	public void httpieSnippetWithContent() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
@@ -205,6 +221,22 @@ public class MockMvcRestDocumentationIntegrationTests {
 						.withContents(codeBlock(asciidoctor(), "bash").content("$ http "
 								+ "--form POST 'http://localhost:8080/?foo=bar' "
 								+ "'Accept:application/json' 'a=alpha'"))));
+	}
+
+	@Test
+	public void httpieSnippetWithContentAndParametersOnPost() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+		mockMvc.perform(post("/").param("a", "alpha").content("some content")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andDo(document("httpie-snippet-post-with-content-and-parameters"));
+		assertThat(
+				new File(
+						"build/generated-snippets/httpie-snippet-post-with-content-and-parameters/httpie-request.adoc"),
+				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
+						.content("$ echo " + "'some content' | http POST "
+								+ "'http://localhost:8080/?a=alpha' "
+								+ "'Accept:application/json'"))));
 	}
 
 	@Test

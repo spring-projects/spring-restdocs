@@ -66,12 +66,31 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	protected Map<String, Object> createModel(Operation operation) {
 		Map<String, Object> model = new HashMap<>();
 		model.put("method", operation.getRequest().getMethod());
-		model.put("path", operation.getRequest().getUri().getRawPath()
-				+ (StringUtils.hasText(operation.getRequest().getUri().getRawQuery())
-						? "?" + operation.getRequest().getUri().getRawQuery() : ""));
+		model.put("path", getPath(operation.getRequest()));
 		model.put("headers", getHeaders(operation.getRequest()));
 		model.put("requestBody", getRequestBody(operation.getRequest()));
 		return model;
+	}
+
+	private String getPath(OperationRequest request) {
+		String path = request.getUri().getRawPath();
+		String queryString = request.getUri().getRawQuery();
+		if (!request.getParameters().isEmpty() && includeParametersInUri(request)) {
+			if (StringUtils.hasText(queryString)) {
+				queryString = queryString + "&" + request.getParameters().toQueryString();
+			}
+			else {
+				queryString = request.getParameters().toQueryString();
+			}
+		}
+		if (StringUtils.hasText(queryString)) {
+			path = path + "?" + queryString;
+		}
+		return path;
+	}
+
+	private boolean includeParametersInUri(OperationRequest request) {
+		return request.getMethod() == HttpMethod.GET || request.getContent().length > 0;
 	}
 
 	private List<Map<String, String>> getHeaders(OperationRequest request) {
@@ -172,7 +191,8 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private boolean requiresFormEncodingContentTypeHeader(OperationRequest request) {
 		return request.getHeaders().get(HttpHeaders.CONTENT_TYPE) == null
-				&& isPutOrPost(request) && !request.getParameters().isEmpty();
+				&& isPutOrPost(request) && (!request.getParameters().isEmpty()
+						&& !includeParametersInUri(request));
 	}
 
 	private Map<String, String> header(String name, String value) {

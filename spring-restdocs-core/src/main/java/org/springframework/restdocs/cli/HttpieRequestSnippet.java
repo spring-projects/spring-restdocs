@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -89,7 +90,11 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		return options.toString();
 	}
 
-	private String getUrl(OperationRequest request) {
+	private String getUrl(CliOperationRequest request) {
+		if (!request.getUniqueParameters().isEmpty() && includeParametersInUri(request)) {
+			return String.format("'%s?%s'", request.getUri(),
+					request.getParameters().toQueryString());
+		}
 		return String.format("'%s'", request.getUri());
 	}
 
@@ -103,9 +108,14 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeOptions(CliOperationRequest request, PrintWriter writer) {
-		if (!request.getParts().isEmpty() || !request.getUniqueParameters().isEmpty()) {
+		if (!request.getParts().isEmpty() || (!request.getUniqueParameters().isEmpty()
+				&& !includeParametersInUri(request))) {
 			writer.print("--form ");
 		}
+	}
+
+	private boolean includeParametersInUri(CliOperationRequest request) {
+		return request.getMethod() == HttpMethod.GET || request.getContent().length > 0;
 	}
 
 	private void writeUserOptionIfNecessary(CliOperationRequest request,

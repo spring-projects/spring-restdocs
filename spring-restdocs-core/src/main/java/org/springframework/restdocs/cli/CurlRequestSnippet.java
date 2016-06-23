@@ -69,7 +69,16 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	}
 
 	private String getUrl(Operation operation) {
-		return String.format("'%s'", operation.getRequest().getUri());
+		OperationRequest request = operation.getRequest();
+		if (!request.getParameters().isEmpty() && includeParametersInUri(request)) {
+			return String.format("'%s?%s'", request.getUri(),
+					request.getParameters().toQueryString());
+		}
+		return String.format("'%s'", request.getUri());
+	}
+
+	private boolean includeParametersInUri(OperationRequest request) {
+		return request.getMethod() == HttpMethod.GET || request.getContent().length > 0;
 	}
 
 	private String getOptions(Operation operation) {

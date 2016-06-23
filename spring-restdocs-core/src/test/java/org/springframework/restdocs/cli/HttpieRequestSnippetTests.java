@@ -63,6 +63,14 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void getRequestWithParameter() throws IOException {
+		this.snippet.expectHttpieRequest("get-request-with-parameter").withContents(
+				codeBlock("bash").content("$ http GET 'http://localhost/foo?a=alpha'"));
+		new HttpieRequestSnippet().document(operationBuilder("get-request-with-parameter")
+				.request("http://localhost/foo").param("a", "alpha").build());
+	}
+
+	@Test
 	public void nonGetRequest() throws IOException {
 		this.snippet.expectHttpieRequest("non-get-request").withContents(
 				codeBlock("bash").content("$ http POST 'http://localhost/foo'"));
@@ -344,6 +352,18 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.APPLICATION_JSON_VALUE)
 						.header("a", "alpha").build());
+	}
+
+	@Test
+	public void postWithContentAndParameters() throws IOException {
+		this.snippet.expectHttpieRequest("post-with-content-and-parameters").withContents(
+				codeBlock("bash").content("$ echo 'Some content' | http POST "
+						+ "'http://localhost/foo?a=alpha&b=bravo'"));
+		new HttpieRequestSnippet()
+				.document(operationBuilder("post-with-content-and-parameters")
+						.request("http://localhost/foo").method("POST")
+						.param("a", "alpha").param("b", "bravo").content("Some content")
+						.build());
 	}
 
 }
