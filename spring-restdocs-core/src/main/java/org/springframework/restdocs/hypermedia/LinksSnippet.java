@@ -243,7 +243,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	}
 
 	/**
-	 * Returns a new {@code RequestHeadersSnippet} configured with this snippet's link
+	 * Returns a new {@code LinksSnippet} configured with this snippet's link
 	 * extractor and attributes, and its descriptors combined with the given
 	 * {@code additionalDescriptors}.
 	 * @param additionalDescriptors the additional descriptors
@@ -254,7 +254,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	}
 
 	/**
-	 * Returns a new {@code RequestHeadersSnippet} configured with this snippet's link
+	 * Returns a new {@code LinksSnippet} configured with this snippet's link
 	 * extractor and attributes, and its descriptors combined with the given
 	 * {@code additionalDescriptors}.
 	 * @param additionalDescriptors the additional descriptors
