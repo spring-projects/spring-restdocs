@@ -26,6 +26,8 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.restdocs.snippet.SnippetException;
+
 /**
  * A {@link Snippet} that documents the fields in a request.
  *
@@ -99,10 +101,10 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	protected MediaType getContentType(Operation operation) {
 		for (OperationRequestPart candidate : operation.getRequest().getParts()) {
 			if (candidate.getName().equals(this.partName)) {
-				candidate.getHeaders().getContentType();
+				return candidate.getHeaders().getContentType();
 			}
 		}
-		return null;
+		throw new SnippetException(missingPartErrorMessage());
 	}
 
 	@Override
@@ -112,7 +114,16 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 				return candidate.getContent();
 			}
 		}
-		return new byte[0];
+		throw new SnippetException(missingPartErrorMessage());
+	}
+
+	/**
+	 * Prepare the error message because the requested part was not found.
+	 *
+	 * @return see description
+	 */
+	protected String missingPartErrorMessage() {
+		return "Request parts with the following names were not found in the request: " + this.partName;
 	}
 
 	/**
