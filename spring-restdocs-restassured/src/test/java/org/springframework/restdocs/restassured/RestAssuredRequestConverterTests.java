@@ -18,6 +18,8 @@ package org.springframework.restdocs.restassured;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
@@ -198,23 +200,103 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void inputStreamBodyIsNotSupported() {
+	public void byteArrayInputStreamBody() {
 		RequestSpecification requestSpec = RestAssured.given()
 				.body(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }))
 				.port(this.port);
 		requestSpec.post();
-		this.thrown.expectMessage(
-				equalTo("Unsupported request content: java.io.ByteArrayInputStream"));
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getContent(), is(equalTo(new byte[] { 1, 2, 3, 4 })));
+	}
+
+	@Test
+	public void fileBody() {
+		RequestSpecification requestSpec = RestAssured.given()
+				.body(new File("src/test/resources/body.txt")).port(this.port);
+		requestSpec.post();
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getContentAsString(), is(equalTo("file")));
+	}
+
+	@Test
+	public void fileInputStreamBody() throws FileNotFoundException {
+		FileInputStream inputStream = new FileInputStream("src/test/resources/body.txt");
+		RequestSpecification requestSpec = RestAssured.given().body(inputStream)
+				.port(this.port);
+		requestSpec.post();
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Cannot read content from input stream " + inputStream
+				+ " due to reset() failure");
 		this.factory.convert((FilterableRequestSpecification) requestSpec);
 	}
 
 	@Test
-	public void fileBodyIsNotSupported() {
-		RequestSpecification requestSpec = RestAssured.given()
-				.body(new File("src/test/resources/body.txt")).port(this.port);
+	public void multipartWithByteArrayInputStreamBody() {
+		RequestSpecification requestSpec = RestAssured.given().port(this.port)
+				.multiPart("foo", "foo.txt", new ByteArrayInputStream("foo".getBytes()));
 		requestSpec.post();
-		this.thrown.expectMessage(equalTo("Unsupported request content: java.io.File"));
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getParts().iterator().next().getContentAsString(),
+				is(equalTo("foo")));
+	}
+
+	@Test
+	public void multipartWithStringBody() {
+		RequestSpecification requestSpec = RestAssured.given().port(this.port)
+				.multiPart("control", "foo");
+		requestSpec.post();
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getParts().iterator().next().getContentAsString(),
+				is(equalTo("foo")));
+	}
+
+	@Test
+	public void multipartWithByteArrayBody() {
+		RequestSpecification requestSpec = RestAssured.given().port(this.port)
+				.multiPart("control", "file", "foo".getBytes());
+		requestSpec.post();
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getParts().iterator().next().getContentAsString(),
+				is(equalTo("foo")));
+	}
+
+	@Test
+	public void multipartWithFileBody() {
+		RequestSpecification requestSpec = RestAssured.given().port(this.port)
+				.multiPart(new File("src/test/resources/body.txt"));
+		requestSpec.post();
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getParts().iterator().next().getContentAsString(),
+				is(equalTo("file")));
+	}
+
+	@Test
+	public void multipartWithFileInputStreamBody() throws FileNotFoundException {
+		FileInputStream inputStream = new FileInputStream("src/test/resources/body.txt");
+		RequestSpecification requestSpec = RestAssured.given().port(this.port)
+				.multiPart("foo", "foo.txt", inputStream);
+		requestSpec.post();
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Cannot read content from input stream " + inputStream
+				+ " due to reset() failure");
 		this.factory.convert((FilterableRequestSpecification) requestSpec);
+	}
+
+	@Test
+	public void multipartWithObjectBody() {
+		RequestSpecification requestSpec = RestAssured.given().port(this.port)
+				.multiPart("control", new ObjectBody("bar"));
+		requestSpec.post();
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getParts().iterator().next().getContentAsString(),
+				is(equalTo("{\"foo\":\"bar\"}")));
 	}
 
 	/**

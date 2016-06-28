@@ -16,6 +16,9 @@
 
 package org.springframework.restdocs.restassured;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +38,8 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestConverter;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StreamUtils;
 
 /**
  * A converter for creating an {@link OperationRequest} from a REST Assured
@@ -64,12 +69,45 @@ class RestAssuredRequestConverter
 		else if (content instanceof byte[]) {
 			return (byte[]) content;
 		}
+		else if (content instanceof File) {
+			return copyToByteArray((File) content);
+		}
+		else if (content instanceof InputStream) {
+			return copyToByteArray((InputStream) content);
+		}
 		else if (content == null) {
 			return new byte[0];
 		}
 		else {
 			throw new IllegalStateException(
 					"Unsupported request content: " + content.getClass().getName());
+		}
+	}
+
+	private byte[] copyToByteArray(File file) {
+		try {
+			return FileCopyUtils.copyToByteArray(file);
+		}
+		catch (IOException ex) {
+			throw new IllegalStateException("Failed to read content from file " + file,
+					ex);
+		}
+	}
+
+	private byte[] copyToByteArray(InputStream inputStream) {
+		try {
+			inputStream.reset();
+		}
+		catch (IOException ex) {
+			throw new IllegalStateException("Cannot read content from input stream "
+					+ inputStream + " due to reset() failure");
+		}
+		try {
+			return StreamUtils.copyToByteArray(inputStream);
+		}
+		catch (IOException ex) {
+			throw new IllegalStateException(
+					"Failed to read content from input stream " + inputStream, ex);
 		}
 	}
 
