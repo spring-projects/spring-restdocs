@@ -26,7 +26,7 @@ task jmustacheRepackJar(type: Jar) { repackJar ->
 
 dependencies {
 	compile 'com.fasterxml.jackson.core:jackson-databind'
-	compile 'org.springframework:spring-webmvc'
+	compile 'org.springframework:spring-web'
 	compile 'javax.servlet:javax.servlet-api'
 	compile files(jmustacheRepackJar)
 	jarjar 'com.googlecode.jarjar:jarjar:1.3'
