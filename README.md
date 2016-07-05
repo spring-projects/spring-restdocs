@@ -38,6 +38,7 @@ There are several that you can contribute to Spring REST Docs:
 | Name | Description |
 | ---- | ----------- |
 | [restdocs-wiremock][17] | Auto-generate [WireMock][18] stubs as part of documenting your RESTful API |
+| [restdocsext-jersey][19] | Enables Spring REST Docs to be used with [Jersey's test framework][20] |
 
 ## Licence
 
@@ -61,3 +62,5 @@ Spring REST Docs is open source software released under the [Apache 2.0 license]
 [16]: https://gitter.im/spring-projects/spring-restdocs
 [17]: https://github.com/ePages-de/restdocs-wiremock
 [18]: http://wiremock.org/
+[19]: https://github.com/RESTDocsEXT/restdocsext-jersey
+[20]: https://jersey.java.net/documentation/latest/test-framework.html
