@@ -24,6 +24,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.util.Assert;
 
@@ -60,7 +61,8 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 *
 	 * @param snippets the snippets to add
 	 * @return this {@code RestDocumentationResultHandler}
-	 * @deprecated since 1.1 in favor of {@link #document(Snippet...)}
+	 * @deprecated since 1.1 in favor of {@link #document(Snippet...)} and passing the
+	 * return value into {@link ResultActions#andDo(ResultHandler)}
 	 */
 	@Deprecated
 	public RestDocumentationResultHandler snippets(Snippet... snippets) {
@@ -69,8 +71,17 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	}
 
 	/**
-	 * Creates a new {@link RestDocumentationResultHandler} that will produce
-	 * documentation using the given {@code snippets}.
+	 * Creates a new {@link RestDocumentationResultHandler} to be passed into
+	 * {@link ResultActions#andDo(ResultHandler)} that will produce documentation using
+	 * the given {@code snippets}. For example:
+	 *
+	 * <pre>
+	 * this.mockMvc.perform(MockMvcRequestBuilders.get("/search"))
+	 *     .andExpect(status().isOk())
+	 *     .andDo(this.documentationHandler.document(responseFields(
+	 *          fieldWithPath("page").description("The requested Page")
+	 *     ));
+	 * </pre>
 	 *
 	 * @param snippets the snippets
 	 * @return the new result handler
