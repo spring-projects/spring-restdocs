@@ -178,6 +178,34 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void fieldWithExplictExactlyMatchingType() throws IOException {
+		this.snippet
+				.expectRequestFields("request-field-with-explicit-exactly-matching-type")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
+						"`Number`", "one"));
+
+		new RequestFieldsSnippet(Arrays
+				.asList(fieldWithPath("a").description("one").type(JsonFieldType.NUMBER)))
+						.document(operationBuilder(
+								"request-field-with-explicit-exactly-matching-type")
+										.request("http://localhost")
+										.content("{\"a\": 5 }").build());
+	}
+
+	@Test
+	public void fieldWithExplictVariesType() throws IOException {
+		this.snippet.expectRequestFields("request-field-with-explicit-varies-type")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
+						"`Varies`", "one"));
+
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")
+				.type(JsonFieldType.VARIES))).document(
+						operationBuilder("request-field-with-explicit-varies-type")
+								.request("http://localhost").content("{\"a\": 5 }")
+								.build());
+	}
+
+	@Test
 	public void xmlRequestFields() throws IOException {
 		this.snippet.expectRequestFields("xml-request")
 				.withContents(tableWithHeader("Path", "Type", "Description")

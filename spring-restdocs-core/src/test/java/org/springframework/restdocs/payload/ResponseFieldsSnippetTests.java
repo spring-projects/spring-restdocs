@@ -186,6 +186,33 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void fieldWithExplictExactlyMatchingType() throws IOException {
+		this.snippet
+				.expectResponseFields(
+						"response-field-with-explicit-exactly-matching-type")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
+						"`Number`", "one"));
+
+		new ResponseFieldsSnippet(Arrays
+				.asList(fieldWithPath("a").description("one").type(JsonFieldType.NUMBER)))
+						.document(operationBuilder(
+								"response-field-with-explicit-exactly-matching-type")
+										.response().content("{\"a\": 5 }").build());
+	}
+
+	@Test
+	public void fieldWithExplictVariesType() throws IOException {
+		this.snippet.expectResponseFields("response-field-with-explicit-varies-type")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
+						"`Varies`", "one"));
+
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")
+				.type(JsonFieldType.VARIES))).document(
+						operationBuilder("response-field-with-explicit-varies-type")
+								.response().content("{\"a\": 5 }").build());
+	}
+
+	@Test
 	public void xmlResponseFields() throws IOException {
 		this.snippet.expectResponseFields("xml-response")
 				.withContents(tableWithHeader("Path", "Type", "Description")

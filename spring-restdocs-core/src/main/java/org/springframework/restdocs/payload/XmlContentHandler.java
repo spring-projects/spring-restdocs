@@ -153,15 +153,14 @@ class XmlContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public Object determineFieldType(String path) {
-		try {
-			return new JsonFieldTypeResolver().resolveFieldType(path, readPayload());
+	public Object determineFieldType(FieldDescriptor fieldDescriptor) {
+		if (fieldDescriptor.getType() != null) {
+			return fieldDescriptor.getType();
 		}
-		catch (FieldDoesNotExistException ex) {
-			String message = "Cannot determine the type of the field '" + path + "' as"
-					+ " it is not present in the payload. Please provide a type using"
-					+ " FieldDescriptor.type(Object type).";
-			throw new FieldTypeRequiredException(message);
+		else {
+			throw new FieldTypeRequiredException("The type of a field in an XML payload "
+					+ "cannot be determined automatically. Please provide a type using "
+					+ "FieldDescriptor.type(Object type)");
 		}
 	}
 

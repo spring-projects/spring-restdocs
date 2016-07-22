@@ -111,6 +111,33 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
+	public void fieldWithExplicitTypeThatDoesNotMatchThePayload() throws IOException {
+		this.thrown.expect(FieldTypesDoNotMatchException.class);
+		this.thrown.expectMessage(equalTo("The documented type of the field 'a' is"
+				+ " Object but the actual type is Number"));
+		new RequestFieldsSnippet(Arrays
+				.asList(fieldWithPath("a").description("one").type(JsonFieldType.OBJECT)))
+						.document(new OperationBuilder("mismatched-field-types",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost")
+										.content("{ \"a\": 5 }").build());
+	}
+
+	@Test
+	public void fieldWithExplicitSpecificTypeThatActuallyVaries() throws IOException {
+		this.thrown.expect(FieldTypesDoNotMatchException.class);
+		this.thrown.expectMessage(equalTo("The documented type of the field '[].a' is"
+				+ " Object but the actual type is Varies"));
+		new RequestFieldsSnippet(Arrays.asList(
+				fieldWithPath("[].a").description("one").type(JsonFieldType.OBJECT)))
+						.document(new OperationBuilder("mismatched-field-types",
+								this.snippet.getOutputDirectory())
+										.request("http://localhost")
+										.content("[{ \"a\": 5 },{ \"a\": \"b\" }]")
+										.build());
+	}
+
+	@Test
 	public void undocumentedXmlRequestField() throws IOException {
 		this.thrown.expect(SnippetException.class);
 		this.thrown.expectMessage(startsWith(

@@ -57,8 +57,32 @@ public class ResponseFieldsSnippetFailureTests {
 				equalTo("Cannot document response fields as the response body is empty"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
 				.document(new OperationBuilder("no-response-body",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.build());
+						this.snippet.getOutputDirectory()).build());
+	}
+
+	@Test
+	public void fieldWithExplicitTypeThatDoesNotMatchThePayload() throws IOException {
+		this.thrown.expect(FieldTypesDoNotMatchException.class);
+		this.thrown.expectMessage(equalTo("The documented type of the field 'a' is"
+				+ " Object but the actual type is Number"));
+		new ResponseFieldsSnippet(Arrays
+				.asList(fieldWithPath("a").description("one").type(JsonFieldType.OBJECT)))
+						.document(new OperationBuilder("mismatched-field-types",
+								this.snippet.getOutputDirectory()).response()
+										.content("{ \"a\": 5 }}").build());
+	}
+
+	@Test
+	public void fieldWithExplicitSpecificTypeThatActuallyVaries() throws IOException {
+		this.thrown.expect(FieldTypesDoNotMatchException.class);
+		this.thrown.expectMessage(equalTo("The documented type of the field '[].a' is"
+				+ " Object but the actual type is Varies"));
+		new ResponseFieldsSnippet(Arrays.asList(
+				fieldWithPath("[].a").description("one").type(JsonFieldType.OBJECT)))
+						.document(new OperationBuilder("mismatched-field-types",
+								this.snippet.getOutputDirectory()).response()
+										.content("[{ \"a\": 5 },{ \"a\": \"b\" }]")
+										.build());
 	}
 
 	@Test

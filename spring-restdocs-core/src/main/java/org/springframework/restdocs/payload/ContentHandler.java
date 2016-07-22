@@ -50,12 +50,12 @@ interface ContentHandler {
 	String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors);
 
 	/**
-	 * Returns the type of the field with the given {@code path} based on the content of
-	 * the payload.
+	 * Returns the type of the field that is described by the given
+	 * {@code fieldDescriptor} based on the content of the payload.
 	 *
-	 * @param path the field path
+	 * @param fieldDescriptor the field descriptor
 	 * @return the type of the field
 	 */
-	Object determineFieldType(String path);
+	Object determineFieldType(FieldDescriptor fieldDescriptor);
 
 }

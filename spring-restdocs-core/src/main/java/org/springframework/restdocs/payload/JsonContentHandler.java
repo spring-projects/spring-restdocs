@@ -34,6 +34,8 @@ class JsonContentHandler implements ContentHandler {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
+	private final JsonFieldTypeResolver fieldTypeResolver = new JsonFieldTypeResolver();
+
 	private final ObjectMapper objectMapper = new ObjectMapper()
 			.enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -93,15 +95,26 @@ class JsonContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public Object determineFieldType(String path) {
+	public Object determineFieldType(FieldDescriptor fieldDescriptor) {
+		if (fieldDescriptor.getType() == null) {
+			return this.fieldTypeResolver.resolveFieldType(fieldDescriptor.getPath(),
+					readContent());
+		}
+		if (!(fieldDescriptor.getType() instanceof JsonFieldType)) {
+			return fieldDescriptor.getType();
+		}
+		JsonFieldType descriptorFieldType = (JsonFieldType) fieldDescriptor.getType();
 		try {
-			return new JsonFieldTypeResolver().resolveFieldType(path, readContent());
+			JsonFieldType actualFieldType = this.fieldTypeResolver
+					.resolveFieldType(fieldDescriptor.getPath(), readContent());
+			if (descriptorFieldType == JsonFieldType.VARIES
+					|| descriptorFieldType == actualFieldType) {
+				return descriptorFieldType;
+			}
+			throw new FieldTypesDoNotMatchException(fieldDescriptor, actualFieldType);
 		}
 		catch (FieldDoesNotExistException ex) {
-			String message = "Cannot determine the type of the field '" + path + "' as"
-					+ " it is not present in the payload. Please provide a type using"
-					+ " FieldDescriptor.type(Object type).";
-			throw new FieldTypeRequiredException(message);
+			return fieldDescriptor.getType();
 		}
 	}
 
