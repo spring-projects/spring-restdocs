@@ -69,6 +69,24 @@ The title of a table can be specified using a line prefixed by a `.`:
 
 
 
+[[working-with-asciidoctor-customizing-tables-title]]
+==== Avoiding table formatting problems
+
+Asciidoctor uses the `|` character to delimit cells in a table. This can cause problems
+if you want a `|` to appear in a cell's contents. The problem can be avoided by
+escaping the `|` with a backslash, i.e. by using `\|` rather than `|`.
+
+All of the default Asciidoctor snippet templates perform this escaping automatically
+use a Mustache lamba named `tableCellContent`. If you write your own custom templates
+you may want to use this lamba. For example, to escape `|` characters
+in a cell that contains the value of a `description` attribute:
+
+----
+| {{#tableCellContent}}{{description}}{{/tableCellContent}}
+----
+
+
+
 ==== Further reading
 
 Refer to the http://asciidoctor.org/docs/user-manual/#tables[Tables section of
