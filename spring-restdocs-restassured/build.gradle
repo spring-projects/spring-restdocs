@@ -12,7 +12,7 @@ dependencies {
 	testCompile 'org.mockito:mockito-core'
 	testCompile 'org.hamcrest:hamcrest-library'
 	testCompile 'org.springframework.hateoas:spring-hateoas'
-	testCompile 'org.springframework.boot:spring-boot-starter-web:1.3.5.RELEASE'
+	testCompile 'org.springframework.boot:spring-boot-starter-web:1.3.6.RELEASE'
 	testCompile 'org.springframework:spring-test'
 	testCompile project(path: ':spring-restdocs-core', configuration: 'testArtifacts')
 	testRuntime 'commons-logging:commons-logging:1.2'
