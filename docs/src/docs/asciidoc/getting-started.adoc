@@ -419,7 +419,27 @@ that can be produced by Spring REST Docs.
 [[getting-started-using-the-snippets]]
 === Using the snippets
 
-The generated snippets can be included in your documentation using the
+Before using the generated snippets, a `.adoc` source file must be created. You can name
+the file whatever you like as long as it has a `.adoc` suffix. The result HTML file will
+have the same name but with a `.html` suffix. The default location of the source files and
+the resulting HTML files depends on whether you are using Maven or Gradle:
+
+[cols="2,5,8"]
+|===
+| Build tool | Source files | Generated files
+
+| Maven
+| `src/main/asciidoc/*.adoc`
+| `target/generated-docs/*.html`
+
+| Gradle
+| `src/docs/asciidoc/*.adoc`
+| `build/asciidoc/html5/*.html`
+
+|===
+
+The generated snippets can then be included in the manually created Asciidoctor file from
+above using the
 http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
 The `snippets` attribute specified in the <<getting-started-build-configuration, build
 configuration>> can be used to reference the snippets output directory. For example:
