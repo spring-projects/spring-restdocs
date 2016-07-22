@@ -100,6 +100,17 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
+	public void attemptToDocumentFieldsWithNoRequestBody() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown.expectMessage(
+				equalTo("Cannot document request fields as the request body is empty"));
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
+				.document(new OperationBuilder("no-request-body",
+						this.snippet.getOutputDirectory()).request("http://localhost")
+								.build());
+	}
+
+	@Test
 	public void undocumentedXmlRequestField() throws IOException {
 		this.thrown.expect(SnippetException.class);
 		this.thrown.expectMessage(startsWith(

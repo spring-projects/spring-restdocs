@@ -51,6 +51,17 @@ public class ResponseFieldsSnippetFailureTests {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
+	public void attemptToDocumentFieldsWithNoResponseBody() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown.expectMessage(
+				equalTo("Cannot document response fields as the response body is empty"));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
+				.document(new OperationBuilder("no-response-body",
+						this.snippet.getOutputDirectory()).request("http://localhost")
+								.build());
+	}
+
+	@Test
 	public void undocumentedXmlResponseField() throws IOException {
 		this.thrown.expect(SnippetException.class);
 		this.thrown.expectMessage(startsWith(

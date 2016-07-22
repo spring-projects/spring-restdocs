@@ -43,6 +43,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	private final boolean ignoreUndocumentedFields;
 
+	private final String type;
+
 	/**
 	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
 	 * {@code <type>-fields}. The fields will be documented using the given
@@ -88,6 +90,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		}
 		this.fieldDescriptors = descriptors;
 		this.ignoreUndocumentedFields = ignoreUndocumentedFields;
+		this.type = type;
 	}
 
 	@Override
@@ -116,13 +119,19 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	private ContentHandler getContentHandler(Operation operation) {
 		MediaType contentType = getContentType(operation);
 		ContentHandler contentHandler;
+
 		try {
+			byte[] content = getContent(operation);
+			if (content.length == 0) {
+				throw new SnippetException("Cannot document " + this.type
+						+ " fields as the " + this.type + " body is empty");
+			}
 			if (contentType != null
 					&& MediaType.APPLICATION_XML.isCompatibleWith(contentType)) {
-				contentHandler = new XmlContentHandler(getContent(operation));
+				contentHandler = new XmlContentHandler(content);
 			}
 			else {
-				contentHandler = new JsonContentHandler(getContent(operation));
+				contentHandler = new JsonContentHandler(content);
 			}
 		}
 		catch (IOException ex) {
