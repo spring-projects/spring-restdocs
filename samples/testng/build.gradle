@@ -29,7 +29,7 @@ targetCompatibility = 1.7
 ext {
 	snippetsDir = file('build/generated-snippets')
 }
-ext['spring-restdocs.version'] = '1.1.1.BUILD-SNAPSHOT'
+ext['spring-restdocs.version'] = '1.1.1.RELEASE'
 
 dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-web'
