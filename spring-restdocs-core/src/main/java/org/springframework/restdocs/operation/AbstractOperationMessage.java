@@ -63,7 +63,7 @@ abstract class AbstractOperationMessage {
 		if (contentType == null) {
 			return null;
 		}
-		return contentType.getCharSet();
+		return contentType.getCharset();
 	}
 
 }

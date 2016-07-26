@@ -47,6 +47,7 @@ dependencyManagement {
 	}
 	imports {
 		mavenBom "org.grails:grails-bom:$grailsVersion"
+		mavenBom "org.springframework:spring-framework-bom:4.3.1.RELEASE"
 	}
 	applyMavenExclusions false
 }

@@ -34,7 +34,7 @@ sonarqube {
 }
 
 ext {
-	springVersion = '4.2.5.RELEASE'
+	springVersion = '4.3.1.RELEASE'
 	javadocLinks = [
 		'http://docs.oracle.com/javase/8/docs/api/',
 		"http://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
@@ -60,7 +60,7 @@ subprojects {
 			mavenBom "org.springframework:spring-framework-bom:$springVersion"
 		}
 		dependencies {
-			dependency 'com.fasterxml.jackson.core:jackson-databind:2.4.6.1'
+			dependency 'com.fasterxml.jackson.core:jackson-databind:2.5.5'
 			dependency 'com.jayway.restassured:rest-assured:2.8.0'
 			dependency 'com.samskivert:jmustache:1.12'
 			dependency 'commons-codec:commons-codec:1.10'

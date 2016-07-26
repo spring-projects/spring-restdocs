@@ -203,8 +203,8 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 		@Override
 		public byte[] modifyContent(byte[] content, MediaType contentType) {
 			String input;
-			if (contentType != null && contentType.getCharSet() != null) {
-				input = new String(content, contentType.getCharSet());
+			if (contentType != null && contentType.getCharset() != null) {
+				input = new String(content, contentType.getCharset());
 			}
 			else {
 				input = new String(content);

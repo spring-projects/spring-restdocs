@@ -68,7 +68,7 @@ If you want to jump straight in, a number of sample applications are available:
 Spring REST Docs has the following minimum requirements:
 
 - Java 7
-- Spring Framework 4.2
+- Spring Framework 4.3
 
 Additionally, the `spring-restdocs-restassured` module has the following minimum
 requirements:
