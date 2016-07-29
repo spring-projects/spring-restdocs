@@ -103,6 +103,34 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void getWithPartiallyOverlappingQueryStringAndParameters() throws IOException {
+		this.snippet
+				.expectHttpRequest(
+						"get-with-partially-overlapping-query-string-and-parameters")
+				.withContents(httpRequest(RequestMethod.GET, "/foo?a=alpha&b=bravo")
+						.header(HttpHeaders.HOST, "localhost"));
+
+		new HttpRequestSnippet().document(operationBuilder(
+				"get-with-partially-overlapping-query-string-and-parameters")
+						.request("http://localhost/foo?a=alpha").param("a", "alpha")
+						.param("b", "bravo").build());
+	}
+
+	@Test
+	public void getWithTotallyOverlappingQueryStringAndParameters() throws IOException {
+		this.snippet
+				.expectHttpRequest(
+						"get-with-totally-overlapping-query-string-and-parameters")
+				.withContents(httpRequest(RequestMethod.GET, "/foo?a=alpha&b=bravo")
+						.header(HttpHeaders.HOST, "localhost"));
+
+		new HttpRequestSnippet().document(operationBuilder(
+				"get-with-totally-overlapping-query-string-and-parameters")
+						.request("http://localhost/foo?a=alpha&b=bravo")
+						.param("a", "alpha").param("b", "bravo").build());
+	}
+
+	@Test
 	public void postRequestWithContent() throws IOException {
 		String content = "Hello, world";
 		this.snippet.expectHttpRequest("post-request-with-content")
@@ -126,6 +154,59 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 				.document(operationBuilder("post-request-with-content-and-parameters")
 						.request("http://localhost/foo").method("POST")
 						.param("a", "alpha").content(content).build());
+	}
+
+	@Test
+	public void postRequestWithContentAndDisjointQueryStringAndParameters()
+			throws IOException {
+		String content = "Hello, world";
+		this.snippet
+				.expectHttpRequest(
+						"post-request-with-content-and-disjoint-query-string-and-parameters")
+				.withContents(httpRequest(RequestMethod.POST, "/foo?b=bravo&a=alpha")
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+
+		new HttpRequestSnippet().document(operationBuilder(
+				"post-request-with-content-and-disjoint-query-string-and-parameters")
+						.request("http://localhost/foo?b=bravo").method("POST")
+						.param("a", "alpha").content(content).build());
+	}
+
+	@Test
+	public void postRequestWithContentAndPartiallyOverlappingQueryStringAndParameters()
+			throws IOException {
+		String content = "Hello, world";
+		this.snippet
+				.expectHttpRequest(
+						"post-request-with-content-and-partially-overlapping-query-string-and-parameters")
+				.withContents(httpRequest(RequestMethod.POST, "/foo?b=bravo&a=alpha")
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+
+		new HttpRequestSnippet().document(operationBuilder(
+				"post-request-with-content-and-partially-overlapping-query-string-and-parameters")
+						.request("http://localhost/foo?b=bravo").method("POST")
+						.param("a", "alpha").param("b", "bravo").content(content)
+						.build());
+	}
+
+	@Test
+	public void postRequestWithContentAndTotallyOverlappingQueryStringAndParameters()
+			throws IOException {
+		String content = "Hello, world";
+		this.snippet
+				.expectHttpRequest(
+						"post-request-with-content-and-totally-overlapping-query-string-and-parameters")
+				.withContents(httpRequest(RequestMethod.POST, "/foo?b=bravo&a=alpha")
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+
+		new HttpRequestSnippet().document(operationBuilder(
+				"post-request-with-content-and-totally-overlapping-query-string-and-parameters")
+						.request("http://localhost/foo?b=bravo&a=alpha").method("POST")
+						.param("a", "alpha").param("b", "bravo").content(content)
+						.build());
 	}
 
 	@Test

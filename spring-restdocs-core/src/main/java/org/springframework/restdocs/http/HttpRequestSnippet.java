@@ -30,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
+import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.StringUtils;
@@ -75,12 +76,14 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	private String getPath(OperationRequest request) {
 		String path = request.getUri().getRawPath();
 		String queryString = request.getUri().getRawQuery();
-		if (!request.getParameters().isEmpty() && includeParametersInUri(request)) {
+		Parameters uniqueParameters = request.getParameters()
+				.getUniqueParameters(request.getUri());
+		if (!uniqueParameters.isEmpty() && includeParametersInUri(request)) {
 			if (StringUtils.hasText(queryString)) {
-				queryString = queryString + "&" + request.getParameters().toQueryString();
+				queryString = queryString + "&" + uniqueParameters.toQueryString();
 			}
 			else {
-				queryString = request.getParameters().toQueryString();
+				queryString = uniqueParameters.toQueryString();
 			}
 		}
 		if (StringUtils.hasText(queryString)) {
