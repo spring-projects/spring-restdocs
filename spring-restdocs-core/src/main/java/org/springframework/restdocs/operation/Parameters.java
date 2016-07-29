@@ -17,10 +17,12 @@
 package org.springframework.restdocs.operation;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.restdocs.cli.QueryStringParser;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StringUtils;
 
@@ -51,6 +53,39 @@ public class Parameters extends LinkedMultiValueMap<String, String> {
 			}
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Returns a new {@code Parameters} containing only the parameters that do no appear
+	 * in the query string of the given {@code uri}.
+	 *
+	 * @param uri the uri
+	 * @return the unique parameters
+	 */
+	public Parameters getUniqueParameters(URI uri) {
+		Parameters queryStringParameters = new QueryStringParser().parse(uri);
+		Parameters uniqueParameters = new Parameters();
+
+		for (Map.Entry<String, List<String>> parameter : entrySet()) {
+			addIfUnique(parameter, queryStringParameters, uniqueParameters);
+		}
+		return uniqueParameters;
+	}
+
+	private void addIfUnique(Map.Entry<String, List<String>> parameter,
+			Parameters queryStringParameters, Parameters uniqueParameters) {
+		if (!queryStringParameters.containsKey(parameter.getKey())) {
+			uniqueParameters.put(parameter.getKey(), parameter.getValue());
+		}
+		else {
+			List<String> candidates = parameter.getValue();
+			List<String> existing = queryStringParameters.get(parameter.getKey());
+			for (String candidate : candidates) {
+				if (!existing.contains(candidate)) {
+					uniqueParameters.add(parameter.getKey(), candidate);
+				}
+			}
+		}
 	}
 
 	private static void append(StringBuilder sb, String key) {

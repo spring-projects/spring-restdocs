@@ -97,6 +97,47 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void getRequestWithTotallyOverlappingQueryStringAndParameters()
+			throws IOException {
+		this.snippet
+				.expectHttpieRequest(
+						"request-with-totally-overlapping-query-string-and-parameters")
+				.withContents(codeBlock("bash")
+						.content("$ http GET 'http://localhost/foo?param=value'"));
+		new HttpieRequestSnippet().document(operationBuilder(
+				"request-with-totally-overlapping-query-string-and-parameters")
+						.request("http://localhost/foo?param=value")
+						.param("param", "value").build());
+	}
+
+	@Test
+	public void getRequestWithPartiallyOverlappingQueryStringAndParameters()
+			throws IOException {
+		this.snippet
+				.expectHttpieRequest(
+						"request-with-partially-overlapping-query-string-and-parameters")
+				.withContents(codeBlock("bash")
+						.content("$ http GET 'http://localhost/foo?a=alpha&b=bravo'"));
+		new HttpieRequestSnippet().document(operationBuilder(
+				"request-with-partially-overlapping-query-string-and-parameters")
+						.request("http://localhost/foo?a=alpha").param("a", "alpha")
+						.param("b", "bravo").build());
+	}
+
+	@Test
+	public void getRequestWithDisjointQueryStringAndParameters() throws IOException {
+		this.snippet
+				.expectHttpieRequest(
+						"request-with-partially-overlapping-query-string-and-parameters")
+				.withContents(codeBlock("bash")
+						.content("$ http GET 'http://localhost/foo?a=alpha&b=bravo'"));
+		new HttpieRequestSnippet().document(operationBuilder(
+				"request-with-partially-overlapping-query-string-and-parameters")
+						.request("http://localhost/foo?a=alpha").param("b", "bravo")
+						.build());
+	}
+
+	@Test
 	public void getRequestWithQueryStringWithNoValue() throws IOException {
 		this.snippet.expectHttpieRequest("request-with-query-string-with-no-value")
 				.withContents(codeBlock("bash")
@@ -173,25 +214,42 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void postRequestWithQueryStringAndParameter() throws IOException {
-		this.snippet.expectHttpieRequest("post-request-with-query-string-and-parameter")
+	public void postRequestWithDisjointQueryStringAndParameter() throws IOException {
+		this.snippet
+				.expectHttpieRequest(
+						"post-request-with-disjoint-query-string-and-parameter")
 				.withContents(codeBlock("bash").content(
 						"$ http --form POST 'http://localhost/foo?a=alpha' 'b=bravo'"));
-		new HttpieRequestSnippet()
-				.document(operationBuilder("post-request-with-query-string-and-parameter")
+		new HttpieRequestSnippet().document(
+				operationBuilder("post-request-with-disjoint-query-string-and-parameter")
 						.request("http://localhost/foo?a=alpha").method("POST")
 						.param("b", "bravo").build());
 	}
 
 	@Test
-	public void postRequestWithOverlappingQueryStringAndParameters() throws IOException {
+	public void postRequestWithTotallyOverlappingQueryStringAndParameters()
+			throws IOException {
 		this.snippet
 				.expectHttpieRequest(
-						"post-request-with-overlapping-query-string-and-parameters")
+						"post-request-with-totally-overlapping-query-string-and-parameters")
+				.withContents(codeBlock("bash")
+						.content("$ http POST 'http://localhost/foo?a=alpha&b=bravo'"));
+		new HttpieRequestSnippet().document(operationBuilder(
+				"post-request-with-totally-overlapping-query-string-and-parameters")
+						.request("http://localhost/foo?a=alpha&b=bravo").method("POST")
+						.param("a", "alpha").param("b", "bravo").build());
+	}
+
+	@Test
+	public void postRequestWithPartiallyOverlappingQueryStringAndParameters()
+			throws IOException {
+		this.snippet
+				.expectHttpieRequest(
+						"post-request-with-partially-overlapping-query-string-and-parameters")
 				.withContents(codeBlock("bash").content(
 						"$ http --form POST 'http://localhost/foo?a=alpha' 'b=bravo'"));
 		new HttpieRequestSnippet().document(operationBuilder(
-				"post-request-with-overlapping-query-string-and-parameters")
+				"post-request-with-partially-overlapping-query-string-and-parameters")
 						.request("http://localhost/foo?a=alpha").method("POST")
 						.param("a", "alpha").param("b", "bravo").build());
 	}

@@ -70,9 +70,12 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 	private String getUrl(Operation operation) {
 		OperationRequest request = operation.getRequest();
-		if (!request.getParameters().isEmpty() && includeParametersInUri(request)) {
-			return String.format("'%s?%s'", request.getUri(),
-					request.getParameters().toQueryString());
+		Parameters uniqueParameters = request.getParameters()
+				.getUniqueParameters(operation.getRequest().getUri());
+		if (!uniqueParameters.isEmpty() && includeParametersInUri(request)) {
+			return String.format("'%s%s%s'", request.getUri(),
+					StringUtils.hasText(request.getUri().getRawQuery()) ? "&" : "?",
+					uniqueParameters.toQueryString());
 		}
 		return String.format("'%s'", request.getUri());
 	}
@@ -157,9 +160,10 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writeContentUsingParameters(CliOperationRequest request,
+	private void writeContentUsingParameters(OperationRequest request,
 			PrintWriter writer) {
-		Parameters uniqueParameters = request.getUniqueParameters();
+		Parameters uniqueParameters = request.getParameters()
+				.getUniqueParameters(request.getUri());
 		String queryString = uniqueParameters.toQueryString();
 		if (StringUtils.hasText(queryString)) {
 			writer.print(String.format(" -d '%s'", queryString));

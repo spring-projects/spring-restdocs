@@ -52,34 +52,6 @@ final class CliOperationRequest implements OperationRequest {
 				new BasicAuthHeaderFilter(), new HostHeaderFilter(delegate.getUri())));
 	}
 
-	Parameters getUniqueParameters() {
-		Parameters queryStringParameters = new QueryStringParser()
-				.parse(this.delegate.getUri());
-		Parameters uniqueParameters = new Parameters();
-
-		for (Map.Entry<String, List<String>> parameter : this.delegate.getParameters()
-				.entrySet()) {
-			addIfUnique(parameter, queryStringParameters, uniqueParameters);
-		}
-		return uniqueParameters;
-	}
-
-	private void addIfUnique(Map.Entry<String, List<String>> parameter,
-			Parameters queryStringParameters, Parameters uniqueParameters) {
-		if (!queryStringParameters.containsKey(parameter.getKey())) {
-			uniqueParameters.put(parameter.getKey(), parameter.getValue());
-		}
-		else {
-			List<String> candidates = parameter.getValue();
-			List<String> existing = queryStringParameters.get(parameter.getKey());
-			for (String candidate : candidates) {
-				if (!existing.contains(candidate)) {
-					uniqueParameters.add(parameter.getKey(), candidate);
-				}
-			}
-		}
-	}
-
 	boolean isPutOrPost() {
 		return HttpMethod.PUT.equals(this.delegate.getMethod())
 				|| HttpMethod.POST.equals(this.delegate.getMethod());

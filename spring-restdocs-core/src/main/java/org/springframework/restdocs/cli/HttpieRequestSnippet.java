@@ -90,10 +90,13 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		return options.toString();
 	}
 
-	private String getUrl(CliOperationRequest request) {
-		if (!request.getUniqueParameters().isEmpty() && includeParametersInUri(request)) {
-			return String.format("'%s?%s'", request.getUri(),
-					request.getParameters().toQueryString());
+	private String getUrl(OperationRequest request) {
+		Parameters uniqueParameters = request.getParameters()
+				.getUniqueParameters(request.getUri());
+		if (!uniqueParameters.isEmpty() && includeParametersInUri(request)) {
+			return String.format("'%s%s%s'", request.getUri(),
+					StringUtils.hasText(request.getUri().getRawQuery()) ? "&" : "?",
+					uniqueParameters.toQueryString());
 		}
 		return String.format("'%s'", request.getUri());
 	}
@@ -107,14 +110,15 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		return requestItems.toString();
 	}
 
-	private void writeOptions(CliOperationRequest request, PrintWriter writer) {
-		if (!request.getParts().isEmpty() || (!request.getUniqueParameters().isEmpty()
-				&& !includeParametersInUri(request))) {
+	private void writeOptions(OperationRequest request, PrintWriter writer) {
+		if (!request.getParts().isEmpty()
+				|| (!request.getParameters().getUniqueParameters(request.getUri())
+						.isEmpty() && !includeParametersInUri(request))) {
 			writer.print("--form ");
 		}
 	}
 
-	private boolean includeParametersInUri(CliOperationRequest request) {
+	private boolean includeParametersInUri(OperationRequest request) {
 		return request.getMethod() == HttpMethod.GET || request.getContent().length > 0;
 	}
 
@@ -167,7 +171,9 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 			writeContentUsingParameters(request.getParameters(), writer);
 		}
 		else if (request.isPutOrPost()) {
-			writeContentUsingParameters(request.getUniqueParameters(), writer);
+			writeContentUsingParameters(
+					request.getParameters().getUniqueParameters(request.getUri()),
+					writer);
 		}
 	}
 
