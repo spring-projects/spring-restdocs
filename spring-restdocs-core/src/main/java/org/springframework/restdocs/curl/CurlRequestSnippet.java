@@ -223,10 +223,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 		@Override
 		public boolean allow(String name, List<String> value) {
-			if (HttpHeaders.AUTHORIZATION.equals(name) && isBasicAuthHeader(value)) {
-				return false;
-			}
-			return true;
+			return !(HttpHeaders.AUTHORIZATION.equals(name) && isBasicAuthHeader(value));
 		}
 
 		static boolean isBasicAuthHeader(List<String> value) {
