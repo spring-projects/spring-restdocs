@@ -111,10 +111,14 @@ public final class SnippetMatchers {
 		}
 
 		protected void addLine(int index, String line) {
-			if (index < 0) {
-				index = index + this.lines.size();
+			this.lines.add(determineIndex(index), line);
+		}
+
+		private int determineIndex(int index) {
+			if (index >= 0) {
+				return index;
 			}
-			this.lines.add(index, line);
+			return index + this.lines.size();
 		}
 
 		@Override

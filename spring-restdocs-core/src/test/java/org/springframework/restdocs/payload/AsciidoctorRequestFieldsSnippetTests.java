@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.restdocs.templates.TemplateEngine;
-import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.ExpectedSnippet;
@@ -44,7 +43,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 public class AsciidoctorRequestFieldsSnippetTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
+	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
 
 	@Test
 	public void requestFieldsWithListDescription() throws IOException {

@@ -93,16 +93,16 @@ final class CliOperationRequest implements OperationRequest {
 				return false;
 			}
 		}
-		if (HttpHeaders.HOST.equalsIgnoreCase(header.getKey())) {
-			if (!header.getValue().isEmpty()) {
-				String value = header.getValue().get(0);
-				if (value.equals(this.delegate.getUri().getHost() + ":"
-						+ this.delegate.getUri().getPort())) {
-					return false;
-				}
+		if (HttpHeaders.HOST.equalsIgnoreCase(header.getKey())
+				&& (!header.getValue().isEmpty())) {
+			String value = header.getValue().get(0);
+			if (value.equals(this.delegate.getUri().getHost() + ":"
+					+ this.delegate.getUri().getPort())) {
+				return false;
 			}
 		}
 		return true;
+
 	}
 
 	@Override
@@ -173,10 +173,8 @@ final class CliOperationRequest implements OperationRequest {
 
 		@Override
 		public boolean allow(String name, List<String> value) {
-			if (value.isEmpty() || this.getImplicitHostHeader().equals(value.get(0))) {
-				return false;
-			}
-			return true;
+			return !(value.isEmpty()
+					|| this.getImplicitHostHeader().equals(value.get(0)));
 		}
 
 		private String getImplicitHostHeader() {
