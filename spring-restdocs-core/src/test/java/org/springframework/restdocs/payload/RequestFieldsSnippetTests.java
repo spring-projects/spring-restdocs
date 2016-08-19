@@ -119,6 +119,21 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void missingIgnoredOptionalRequestFieldDoesNotRequireAType()
+			throws IOException {
+		this.snippet
+				.expectRequestFields(
+						"missing-ignored-optional-request-field-does-not-require-a-type")
+				.withContents(tableWithHeader("Path", "Type", "Description"));
+		new RequestFieldsSnippet(Arrays
+				.asList(fieldWithPath("a.b").description("one").ignored().optional()))
+						.document(operationBuilder(
+								"missing-ignored-optional-request-field-does-not-require-a-type")
+										.request("http://localhost").content("{}")
+										.build());
+	}
+
+	@Test
 	public void presentOptionalRequestField() throws IOException {
 		this.snippet.expectRequestFields("present-optional-request-field")
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",

@@ -116,7 +116,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 
 	@Override
 	protected Set<String> extractActualParameters(Operation operation) {
-		String urlTemplate = extractUrlTemplate(operation);
+		String urlTemplate = removeQueryStringIfPresent(extractUrlTemplate(operation));
 		Matcher matcher = NAMES_PATTERN.matcher(urlTemplate);
 		Set<String> actualParameters = new HashSet<>();
 		while (matcher.find()) {
@@ -129,9 +129,8 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	private String extractUrlTemplate(Operation operation) {
 		String urlTemplate = (String) operation.getAttributes()
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE);
-		Assert.notNull(urlTemplate,
-				"urlTemplate not found. If you are using MockMvc, did you use RestDocumentationRequestBuilders to "
-						+ "build the request?");
+		Assert.notNull(urlTemplate, "urlTemplate not found. If you are using MockMvc did "
+				+ "you use RestDocumentationRequestBuilders to build the request?");
 		return urlTemplate;
 	}
 

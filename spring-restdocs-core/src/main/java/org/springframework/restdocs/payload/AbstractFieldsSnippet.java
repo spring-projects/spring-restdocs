@@ -100,15 +100,17 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		validateFieldDocumentation(contentHandler);
 
 		for (FieldDescriptor descriptor : this.fieldDescriptors) {
-			try {
-				descriptor.type(contentHandler.determineFieldType(descriptor));
-			}
-			catch (FieldDoesNotExistException ex) {
-				String message = "Cannot determine the type of the field '"
-						+ descriptor.getPath() + "' as it is not present in the "
-						+ "payload. Please provide a type using "
-						+ "FieldDescriptor.type(Object type).";
-				throw new FieldTypeRequiredException(message);
+			if (!descriptor.isIgnored()) {
+				try {
+					descriptor.type(contentHandler.determineFieldType(descriptor));
+				}
+				catch (FieldDoesNotExistException ex) {
+					String message = "Cannot determine the type of the field '"
+							+ descriptor.getPath() + "' as it is not present in the "
+							+ "payload. Please provide a type using "
+							+ "FieldDescriptor.type(Object type).";
+					throw new FieldTypeRequiredException(message);
+				}
 			}
 		}
 
