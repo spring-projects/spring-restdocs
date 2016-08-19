@@ -131,6 +131,23 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void pathParametersWithQueryStringWithParameters() throws IOException {
+		this.snippet
+				.expectPathParameters("path-parameters-with-query-string-with-parameters")
+				.withContents(
+						tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
+								.row("`a`", "one").row("`b`", "two"));
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
+				parameterWithName("b").description("two")))
+						.document(operationBuilder(
+								"path-parameters-with-query-string-with-parameters")
+										.attribute(
+												RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+												"/{a}/{b}?foo={c}")
+										.build());
+	}
+
+	@Test
 	public void pathParametersWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("path-parameters"))

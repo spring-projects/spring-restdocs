@@ -116,7 +116,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 
 	@Override
 	protected Set<String> extractActualParameters(Operation operation) {
-		String urlTemplate = extractUrlTemplate(operation);
+		String urlTemplate = removeQueryStringIfPresent(extractUrlTemplate(operation));
 		Matcher matcher = NAMES_PATTERN.matcher(urlTemplate);
 		Set<String> actualParameters = new HashSet<>();
 		while (matcher.find()) {
