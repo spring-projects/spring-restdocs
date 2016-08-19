@@ -148,6 +148,20 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void missingIgnoredOptionalResponseFieldDoesNotRequireAType()
+			throws IOException {
+		this.snippet
+				.expectResponseFields(
+						"missing-ignored-optional-response-field-does-not-require-a-type")
+				.withContents(tableWithHeader("Path", "Type", "Description"));
+		new ResponseFieldsSnippet(Arrays
+				.asList(fieldWithPath("a.b").description("one").ignored().optional()))
+						.document(operationBuilder(
+								"missing-ignored-optional-response-field-does-not-require-a-type")
+										.response().content("{}").build());
+	}
+
+	@Test
 	public void presentOptionalResponseField() throws IOException {
 		this.snippet.expectResponseFields("present-optional-response-field")
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
