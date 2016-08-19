@@ -129,9 +129,8 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	private String extractUrlTemplate(Operation operation) {
 		String urlTemplate = (String) operation.getAttributes()
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE);
-		Assert.notNull(urlTemplate,
-				"urlTemplate not found. If you are using MockMvc, did you use RestDocumentationRequestBuilders to "
-						+ "build the request?");
+		Assert.notNull(urlTemplate, "urlTemplate not found. If you are using MockMvc did "
+				+ "you use RestDocumentationRequestBuilders to build the request?");
 		return urlTemplate;
 	}
 
