@@ -16,78 +16,15 @@
 
 package org.springframework.restdocs.cli;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-
-import org.springframework.restdocs.operation.Parameters;
-
 /**
  * A parser for the query string of a URI.
  *
  * @author Andy Wilkinson
+ * @deprecated since 1.1.2 in favor of
+ * {@link org.springframework.restdocs.operation.QueryStringParser}
  */
-public class QueryStringParser {
-
-	/**
-	 * Parses the query string of the given {@code uri} and returns the resulting
-	 * {@link Parameters}.
-	 *
-	 * @param uri the uri to parse
-	 * @return the parameters parsed from the query string
-	 */
-	public Parameters parse(URI uri) {
-		String query = uri.getRawQuery();
-		if (query != null) {
-			return parse(query);
-		}
-		return new Parameters();
-	}
-
-	private Parameters parse(String query) {
-		Parameters parameters = new Parameters();
-		try (Scanner scanner = new Scanner(query)) {
-			scanner.useDelimiter("&");
-			while (scanner.hasNext()) {
-				processParameter(scanner.next(), parameters);
-			}
-		}
-		return parameters;
-	}
-
-	private void processParameter(String parameter, Parameters parameters) {
-		String[] components = parameter.split("=");
-		if (components.length > 0 && components.length < 3) {
-			if (components.length == 2) {
-				String name = components[0];
-				String value = components[1];
-				parameters.add(decode(name), decode(value));
-			}
-			else {
-				List<String> values = parameters.get(components[0]);
-				if (values == null) {
-					parameters.put(components[0], new LinkedList<String>());
-				}
-			}
-		}
-		else {
-			throw new IllegalArgumentException(
-					"The parameter '" + parameter + "' is malformed");
-		}
-	}
-
-	private String decode(String encoded) {
-		try {
-			return URLDecoder.decode(encoded, "UTF-8");
-		}
-		catch (UnsupportedEncodingException ex) {
-			throw new IllegalStateException(
-					"Unable to URL encode " + encoded + " using UTF-8", ex);
-		}
-
-	}
+@Deprecated
+public class QueryStringParser
+		extends org.springframework.restdocs.operation.QueryStringParser {
 
 }
