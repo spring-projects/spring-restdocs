@@ -25,12 +25,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for failures when rendering {@link RequestParametersSnippet} due to missing or
@@ -41,7 +41,10 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 public class RequestParametersSnippetFailureTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+
+	@Rule
+	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -53,9 +56,8 @@ public class RequestParametersSnippetFailureTests {
 				.expectMessage(equalTo("Request parameters with the following names were"
 						+ " not documented: [a]"));
 		new RequestParametersSnippet(Collections.<ParameterDescriptor>emptyList())
-				.document(new OperationBuilder("undocumented-parameter",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.param("a", "alpha").build());
+				.document(this.operationBuilder.request("http://localhost")
+						.param("a", "alpha").build());
 	}
 
 	@Test
@@ -65,10 +67,8 @@ public class RequestParametersSnippetFailureTests {
 				.expectMessage(equalTo("Request parameters with the following names were"
 						+ " not found in the request: [a]"));
 		new RequestParametersSnippet(
-				Arrays.asList(parameterWithName("a").description("one")))
-						.document(new OperationBuilder("missing-parameter",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost").build());
+				Arrays.asList(parameterWithName("a").description("one"))).document(
+						this.operationBuilder.request("http://localhost").build());
 	}
 
 	@Test
@@ -79,11 +79,9 @@ public class RequestParametersSnippetFailureTests {
 						+ " not documented: [b]. Request parameters with the following"
 						+ " names were not found in the request: [a]"));
 		new RequestParametersSnippet(
-				Arrays.asList(parameterWithName("a").description("one"))).document(
-						new OperationBuilder("undocumented-and-missing-parameters",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost").param("b", "bravo")
-										.build());
+				Arrays.asList(parameterWithName("a").description("one")))
+						.document(this.operationBuilder.request("http://localhost")
+								.param("b", "bravo").build());
 	}
 
 }

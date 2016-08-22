@@ -50,7 +50,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void mapRequestWithFields() throws IOException {
-		this.snippet.expectRequestFields("map-request-with-fields")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a.b`", "`Number`", "one").row("`a.c`", "`String`", "two")
 						.row("`a`", "`Object`", "three"));
@@ -58,15 +58,14 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one"),
 				fieldWithPath("a.c").description("two"),
 				fieldWithPath("a").description("three")))
-						.document(operationBuilder("map-request-with-fields")
-								.request("http://localhost")
+						.document(this.operationBuilder.request("http://localhost")
 								.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
 								.build());
 	}
 
 	@Test
 	public void arrayRequestWithFields() throws IOException {
-		this.snippet.expectRequestFields("array-request-with-fields")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`[]a.b`", "`Number`", "one")
 						.row("`[]a.c`", "`String`", "two")
@@ -75,8 +74,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b").description("one"),
 				fieldWithPath("[]a.c").description("two"),
 				fieldWithPath("[]a").description("three")))
-						.document(operationBuilder("array-request-with-fields")
-								.request("http://localhost")
+						.document(this.operationBuilder.request("http://localhost")
 								.content(
 										"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
 								.build());
@@ -84,64 +82,57 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void ignoredRequestField() throws IOException {
-		this.snippet.expectRequestFields("ignored-request-field")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
 						"`Number`", "Field b"));
 
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").ignored(),
 				fieldWithPath("b").description("Field b")))
-						.document(operationBuilder("ignored-request-field")
-								.request("http://localhost")
+						.document(this.operationBuilder.request("http://localhost")
 								.content("{\"a\": 5, \"b\": 4}").build());
 	}
 
 	@Test
 	public void allUndocumentedRequestFieldsCanBeIgnored() throws IOException {
-		this.snippet.expectRequestFields("ignore-all-undocumented")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
 						"`Number`", "Field b"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("b").description("Field b")),
 				true).document(
-						operationBuilder("ignore-all-undocumented")
-								.request("http://localhost")
+						this.operationBuilder.request("http://localhost")
 								.content("{\"a\": 5, \"b\": 4}").build());
 	}
 
 	@Test
 	public void missingOptionalRequestField() throws IOException {
-		this.snippet.expectRequestFields("missing-optional-request-field")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
 						"`String`", "one"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
 				.type(JsonFieldType.STRING).optional()))
-						.document(operationBuilder("missing-optional-request-field")
-								.request("http://localhost").content("{}").build());
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{}").build());
 	}
 
 	@Test
 	public void missingIgnoredOptionalRequestFieldDoesNotRequireAType()
 			throws IOException {
-		this.snippet
-				.expectRequestFields(
-						"missing-ignored-optional-request-field-does-not-require-a-type")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description"));
 		new RequestFieldsSnippet(Arrays
 				.asList(fieldWithPath("a.b").description("one").ignored().optional()))
-						.document(operationBuilder(
-								"missing-ignored-optional-request-field-does-not-require-a-type")
-										.request("http://localhost").content("{}")
-										.build());
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{}").build());
 	}
 
 	@Test
 	public void presentOptionalRequestField() throws IOException {
-		this.snippet.expectRequestFields("present-optional-request-field")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
 						"`String`", "one"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
 				.type(JsonFieldType.STRING).optional()))
-						.document(operationBuilder("present-optional-request-field")
-								.request("http://localhost")
+						.document(this.operationBuilder.request("http://localhost")
 								.content("{\"a\": { \"b\": \"bravo\"}}").build());
 	}
 
@@ -150,16 +141,18 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-fields"))
 				.willReturn(snippetResource("request-fields-with-title"));
-		this.snippet.expectRequestFields("request-fields-with-custom-attributes")
-				.withContents(containsString("Custom title"));
+		this.snippet.expectRequestFields().withContents(containsString("Custom title"));
 
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
-				attributes(key("title").value("Custom title"))).document(
-						operationBuilder("request-fields-with-custom-attributes")
-								.attribute(TemplateEngine.class.getName(),
-										new MustacheTemplateEngine(resolver))
-								.request("http://localhost").content("{\"a\": \"foo\"}")
-								.build());
+				attributes(
+						key("title").value("Custom title")))
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.request("http://localhost")
+												.content("{\"a\": \"foo\"}").build());
 	}
 
 	@Test
@@ -167,8 +160,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-fields"))
 				.willReturn(snippetResource("request-fields-with-extra-column"));
-		this.snippet
-				.expectRequestFields("request-fields-with-custom-descriptor-attributes")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description", "Foo")
 						.row("a.b", "Number", "one", "alpha")
 						.row("a.c", "String", "two", "bravo")
@@ -181,8 +173,8 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 						.attributes(key("foo").value("bravo")),
 				fieldWithPath("a").description("three")
 						.attributes(key("foo").value("charlie"))))
-								.document(operationBuilder(
-										"request-fields-with-custom-descriptor-attributes")
+								.document(
+										this.operationBuilder
 												.attribute(TemplateEngine.class.getName(),
 														new MustacheTemplateEngine(
 																resolver))
@@ -194,35 +186,31 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void fieldWithExplictExactlyMatchingType() throws IOException {
-		this.snippet
-				.expectRequestFields("request-field-with-explicit-exactly-matching-type")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
 						"`Number`", "one"));
 
 		new RequestFieldsSnippet(Arrays
 				.asList(fieldWithPath("a").description("one").type(JsonFieldType.NUMBER)))
-						.document(operationBuilder(
-								"request-field-with-explicit-exactly-matching-type")
-										.request("http://localhost")
-										.content("{\"a\": 5 }").build());
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{\"a\": 5 }").build());
 	}
 
 	@Test
 	public void fieldWithExplictVariesType() throws IOException {
-		this.snippet.expectRequestFields("request-field-with-explicit-varies-type")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
 						"`Varies`", "one"));
 
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")
-				.type(JsonFieldType.VARIES))).document(
-						operationBuilder("request-field-with-explicit-varies-type")
-								.request("http://localhost").content("{\"a\": 5 }")
-								.build());
+		new RequestFieldsSnippet(Arrays
+				.asList(fieldWithPath("a").description("one").type(JsonFieldType.VARIES)))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{\"a\": 5 }").build());
 	}
 
 	@Test
 	public void xmlRequestFields() throws IOException {
-		this.snippet.expectRequestFields("xml-request")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two").row("`a`",
 								"`a`", "three"));
@@ -232,8 +220,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 						fieldWithPath("a/c").description("two").type("c"),
 						fieldWithPath("a").description("three").type("a")))
 								.document(
-										operationBuilder("xml-request")
-												.request("http://localhost")
+										this.operationBuilder.request("http://localhost")
 												.content("<a><b>5</b><c>charlie</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
@@ -242,7 +229,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectRequestFields("additional-descriptors")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a.b`", "`Number`", "one").row("`a.c`", "`String`", "two")
 						.row("`a`", "`Object`", "three"));
@@ -251,14 +238,13 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 				.requestFields(fieldWithPath("a.b").description("one"),
 						fieldWithPath("a.c").description("two"))
 				.and(fieldWithPath("a").description("three"))
-				.document(operationBuilder("additional-descriptors")
-						.request("http://localhost")
+				.document(operationBuilder.request("http://localhost")
 						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
 	}
 
 	@Test
 	public void prefixedAdditionalDescriptors() throws IOException {
-		this.snippet.expectRequestFields("prefixed-additional-descriptors")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
 						.row("`a.c`", "`String`", "three"));
@@ -266,23 +252,21 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		PayloadDocumentation.requestFields(fieldWithPath("a").description("one"))
 				.andWithPrefix("a.", fieldWithPath("b").description("two"),
 						fieldWithPath("c").description("three"))
-				.document(operationBuilder("prefixed-additional-descriptors")
-						.request("http://localhost")
+				.document(operationBuilder.request("http://localhost")
 						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
 	}
 
 	@Test
 	public void requestWithFieldsWithEscapedContent() throws IOException {
-		this.snippet.expectRequestFields("request-fields-with-escaped-content")
+		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row(
 						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("`one|two`"),
 						escapeIfNecessary("three|four")));
 
 		new RequestFieldsSnippet(Arrays.asList(
 				fieldWithPath("Foo|Bar").type("one|two").description("three|four")))
-						.document(operationBuilder("request-fields-with-escaped-content")
-								.request("http://localhost").content("{\"Foo|Bar\": 5}")
-								.build());
+						.document(operationBuilder.request("http://localhost")
+								.content("{\"Foo|Bar\": 5}").build());
 	}
 
 	private String escapeIfNecessary(String input) {

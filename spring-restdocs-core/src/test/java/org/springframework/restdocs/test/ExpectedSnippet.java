@@ -71,68 +71,67 @@ public class ExpectedSnippet implements TestRule {
 		}
 	}
 
-	public ExpectedSnippet expectCurlRequest(String name) {
-		expect(name, "curl-request");
+	public ExpectedSnippet expectCurlRequest() {
+		expect("curl-request");
 		return this;
 	}
 
-	public ExpectedSnippet expectHttpieRequest(String name) {
-		expect(name, "httpie-request");
+	public ExpectedSnippet expectHttpieRequest() {
+		expect("httpie-request");
 		return this;
 	}
 
-	public ExpectedSnippet expectRequestFields(String name) {
-		expect(name, "request-fields");
+	public ExpectedSnippet expectRequestFields() {
+		expect("request-fields");
 		return this;
 	}
 
-	public ExpectedSnippet expectResponseFields(String name) {
-		expect(name, "response-fields");
+	public ExpectedSnippet expectResponseFields() {
+		expect("response-fields");
 		return this;
 	}
 
-	public ExpectedSnippet expectRequestHeaders(String name) {
-		expect(name, "request-headers");
+	public ExpectedSnippet expectRequestHeaders() {
+		expect("request-headers");
 		return this;
 	}
 
-	public ExpectedSnippet expectResponseHeaders(String name) {
-		expect(name, "response-headers");
+	public ExpectedSnippet expectResponseHeaders() {
+		expect("response-headers");
 		return this;
 	}
 
-	public ExpectedSnippet expectLinks(String name) {
-		expect(name, "links");
+	public ExpectedSnippet expectLinks() {
+		expect("links");
 		return this;
 	}
 
-	public ExpectedSnippet expectHttpRequest(String name) {
-		expect(name, "http-request");
+	public ExpectedSnippet expectHttpRequest() {
+		expect("http-request");
 		return this;
 	}
 
-	public ExpectedSnippet expectHttpResponse(String name) {
-		expect(name, "http-response");
+	public ExpectedSnippet expectHttpResponse() {
+		expect("http-response");
 		return this;
 	}
 
-	public ExpectedSnippet expectRequestParameters(String name) {
-		expect(name, "request-parameters");
+	public ExpectedSnippet expectRequestParameters() {
+		expect("request-parameters");
 		return this;
 	}
 
-	public ExpectedSnippet expectPathParameters(String name) {
-		expect(name, "path-parameters");
+	public ExpectedSnippet expectPathParameters() {
+		expect("path-parameters");
 		return this;
 	}
 
-	public ExpectedSnippet expectRequestParts(String name) {
-		expect(name, "request-parts");
+	public ExpectedSnippet expectRequestParts() {
+		expect("request-parts");
 		return this;
 	}
 
-	private ExpectedSnippet expect(String name, String type) {
-		this.expectedName = name;
+	private ExpectedSnippet expect(String type) {
 		this.expectedType = type;
 		return this;
 	}

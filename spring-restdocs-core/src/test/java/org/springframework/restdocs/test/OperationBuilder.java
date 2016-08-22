@@ -24,6 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -45,7 +49,6 @@ import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.mustache.AsciidoctorTableCellContentLambda;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
@@ -54,28 +57,21 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
  *
  * @author Andy Wilkinson
  */
-public class OperationBuilder {
+public class OperationBuilder implements TestRule {
 
 	private final Map<String, Object> attributes = new HashMap<>();
 
-	private final OperationResponseBuilder responseBuilder = new OperationResponseBuilder();
+	private OperationResponseBuilder responseBuilder;
 
-	private final String name;
+	private String name;
 
-	private final File outputDirectory;
+	private File outputDirectory;
 
 	private final TemplateFormat templateFormat;
 
 	private OperationRequestBuilder requestBuilder;
 
-	public OperationBuilder(String name, File outputDirectory) {
-		this(name, outputDirectory, TemplateFormats.asciidoctor());
-	}
-
-	public OperationBuilder(String name, File outputDirectory,
-			TemplateFormat templateFormat) {
-		this.name = name;
-		this.outputDirectory = outputDirectory;
+	public OperationBuilder(TemplateFormat templateFormat) {
 		this.templateFormat = templateFormat;
 	}
 
@@ -85,12 +81,21 @@ public class OperationBuilder {
 	}
 
 	public OperationResponseBuilder response() {
+		this.responseBuilder = new OperationResponseBuilder();
 		return this.responseBuilder;
 	}
 
 	public OperationBuilder attribute(String name, Object value) {
 		this.attributes.put(name, value);
 		return this;
+	}
+
+	private void prepare(String operationName, File outputDirectory) {
+		this.name = operationName;
+		this.outputDirectory = outputDirectory;
+		this.requestBuilder = null;
+		this.requestBuilder = null;
+		this.attributes.clear();
 	}
 
 	public Operation build() {
@@ -113,7 +118,10 @@ public class OperationBuilder {
 				(this.requestBuilder == null
 						? new OperationRequestBuilder("http://localhost/").buildRequest()
 						: this.requestBuilder.buildRequest()),
-				this.responseBuilder.buildResponse(), this.attributes);
+				this.responseBuilder == null
+						? new OperationResponseBuilder().buildResponse()
+						: this.responseBuilder.buildResponse(),
+				this.attributes);
 	}
 
 	private RestDocumentationContext createContext() {
@@ -122,6 +130,25 @@ public class OperationBuilder {
 		manualRestDocumentation.beforeTest(null, null);
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;
+	}
+
+	@Override
+	public Statement apply(final Statement base, final Description description) {
+		return new Statement() {
+
+			@Override
+			public void evaluate() throws Throwable {
+				String operationName = description.getMethodName();
+				int index = operationName.indexOf('[');
+				if (index > 0) {
+					operationName = operationName.substring(0, index);
+				}
+				OperationBuilder.this.prepare(operationName,
+						new File("build/" + description.getTestClass().getSimpleName()));
+				base.evaluate();
+			}
+
+		};
 	}
 
 	/**
