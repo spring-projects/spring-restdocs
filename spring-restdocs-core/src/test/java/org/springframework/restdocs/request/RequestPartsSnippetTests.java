@@ -48,59 +48,57 @@ public class RequestPartsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestParts() throws IOException {
-		this.snippet.expectRequestParts("request-parts")
+		this.snippet.expectRequestParts()
 				.withContents(tableWithHeader("Part", "Description").row("`a`", "one")
 						.row("`b`", "two"));
 		new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one"),
 				partWithName("b").description("two")))
-						.document(operationBuilder("request-parts")
-								.request("http://localhost").part("a", "bravo".getBytes())
-								.and().part("b", "bravo".getBytes()).build());
+						.document(this.operationBuilder.request("http://localhost")
+								.part("a", "bravo".getBytes()).and()
+								.part("b", "bravo".getBytes()).build());
 	}
 
 	@Test
 	public void ignoredRequestPart() throws IOException {
-		this.snippet.expectRequestParts("ignored-request-part")
+		this.snippet.expectRequestParts()
 				.withContents(tableWithHeader("Part", "Description").row("`b`", "two"));
 		new RequestPartsSnippet(Arrays.asList(partWithName("a").ignored(),
 				partWithName("b").description("two")))
-						.document(operationBuilder("ignored-request-part")
-								.request("http://localhost").part("a", "bravo".getBytes())
-								.and().part("b", "bravo".getBytes()).build());
+						.document(this.operationBuilder.request("http://localhost")
+								.part("a", "bravo".getBytes()).and()
+								.part("b", "bravo".getBytes()).build());
 	}
 
 	@Test
 	public void allUndocumentedRequestPartsCanBeIgnored() throws IOException {
-		this.snippet.expectRequestParts("ignore-all-undocumented")
+		this.snippet.expectRequestParts()
 				.withContents(tableWithHeader("Part", "Description").row("`b`", "two"));
 		new RequestPartsSnippet(Arrays.asList(partWithName("b").description("two")), true)
-				.document(operationBuilder("ignore-all-undocumented")
-						.request("http://localhost").part("a", "bravo".getBytes()).and()
-						.part("b", "bravo".getBytes()).build());
+				.document(this.operationBuilder.request("http://localhost")
+						.part("a", "bravo".getBytes()).and().part("b", "bravo".getBytes())
+						.build());
 	}
 
 	@Test
 	public void missingOptionalRequestPart() throws IOException {
-		this.snippet.expectRequestParts("missing-optional-request-parts")
+		this.snippet.expectRequestParts()
 				.withContents(tableWithHeader("Part", "Description").row("`a`", "one")
 						.row("`b`", "two"));
 		new RequestPartsSnippet(
 				Arrays.asList(partWithName("a").description("one").optional(),
 						partWithName("b").description("two"))).document(
-								operationBuilder("missing-optional-request-parts")
-										.request("http://localhost")
+								this.operationBuilder.request("http://localhost")
 										.part("b", "bravo".getBytes()).build());
 	}
 
 	@Test
 	public void presentOptionalRequestPart() throws IOException {
-		this.snippet.expectRequestParts("present-optional-request-part")
+		this.snippet.expectRequestParts()
 				.withContents(tableWithHeader("Part", "Description").row("`a`", "one"));
 		new RequestPartsSnippet(
 				Arrays.asList(partWithName("a").description("one").optional()))
-						.document(operationBuilder("present-optional-request-part")
-								.request("http://localhost").part("a", "one".getBytes())
-								.build());
+						.document(this.operationBuilder.request("http://localhost")
+								.part("a", "one".getBytes()).build());
 	}
 
 	@Test
@@ -108,8 +106,7 @@ public class RequestPartsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parts"))
 				.willReturn(snippetResource("request-parts-with-title"));
-		this.snippet.expectRequestParts("request-parts-with-custom-attributes")
-				.withContents(containsString("The title"));
+		this.snippet.expectRequestParts().withContents(containsString("The title"));
 
 		new RequestPartsSnippet(
 				Arrays.asList(
@@ -117,12 +114,16 @@ public class RequestPartsSnippetTests extends AbstractSnippetTests {
 								.attributes(key("foo").value("alpha")),
 						partWithName("b").description("two")
 								.attributes(key("foo").value("bravo"))),
-				attributes(key("title").value("The title")))
-						.document(operationBuilder("request-parts-with-custom-attributes")
-								.attribute(TemplateEngine.class.getName(),
-										new MustacheTemplateEngine(resolver))
-								.request("http://localhost").part("a", "alpha".getBytes())
-								.and().part("b", "bravo".getBytes()).build());
+				attributes(
+						key("title").value("The title")))
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.request("http://localhost")
+												.part("a", "alpha".getBytes()).and()
+												.part("b", "bravo".getBytes()).build());
 	}
 
 	@Test
@@ -130,7 +131,7 @@ public class RequestPartsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parts"))
 				.willReturn(snippetResource("request-parts-with-extra-column"));
-		this.snippet.expectRequestParts("request-parts-with-custom-descriptor-attributes")
+		this.snippet.expectRequestParts()
 				.withContents(tableWithHeader("Part", "Description", "Foo")
 						.row("a", "one", "alpha").row("b", "two", "bravo"));
 
@@ -139,8 +140,8 @@ public class RequestPartsSnippetTests extends AbstractSnippetTests {
 						.attributes(key("foo").value("alpha")),
 				partWithName("b").description("two")
 						.attributes(key("foo").value("bravo"))))
-								.document(operationBuilder(
-										"request-parts-with-custom-descriptor-attributes")
+								.document(
+										this.operationBuilder
 												.attribute(TemplateEngine.class.getName(),
 														new MustacheTemplateEngine(
 																resolver))
@@ -154,43 +155,44 @@ public class RequestPartsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parts"))
 				.willReturn(snippetResource("request-parts-with-optional-column"));
-		this.snippet.expectRequestParts("request-parts-with-optional-column")
+		this.snippet.expectRequestParts()
 				.withContents(tableWithHeader("Part", "Optional", "Description")
 						.row("a", "true", "one").row("b", "false", "two"));
 
 		new RequestPartsSnippet(
 				Arrays.asList(partWithName("a").description("one").optional(),
-						partWithName("b").description("two"))).document(
-								operationBuilder("request-parts-with-optional-column")
-										.attribute(TemplateEngine.class.getName(),
-												new MustacheTemplateEngine(resolver))
-										.request("http://localhost")
-										.part("a", "alpha".getBytes()).and()
-										.part("b", "bravo".getBytes()).build());
+						partWithName("b").description("two")))
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.request("http://localhost")
+												.part("a", "alpha".getBytes()).and()
+												.part("b", "bravo".getBytes()).build());
 	}
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectRequestParts("additional-descriptors")
+		this.snippet.expectRequestParts()
 				.withContents(tableWithHeader("Part", "Description").row("`a`", "one")
 						.row("`b`", "two"));
 		RequestDocumentation.requestParts(partWithName("a").description("one"))
 				.and(partWithName("b").description("two"))
-				.document(operationBuilder("additional-descriptors")
-						.request("http://localhost").part("a", "bravo".getBytes()).and()
-						.part("b", "bravo".getBytes()).build());
+				.document(this.operationBuilder.request("http://localhost")
+						.part("a", "bravo".getBytes()).and().part("b", "bravo".getBytes())
+						.build());
 	}
 
 	@Test
 	public void requestPartsWithEscapedContent() throws IOException {
-		this.snippet.expectRequestParts("request-parts-with-escaped-content")
-				.withContents(tableWithHeader("Part", "Description").row(
-						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+		this.snippet.expectRequestParts().withContents(
+				tableWithHeader("Part", "Description").row(escapeIfNecessary("`Foo|Bar`"),
+						escapeIfNecessary("one|two")));
 
 		RequestDocumentation.requestParts(partWithName("Foo|Bar").description("one|two"))
-				.document(operationBuilder("request-parts-with-escaped-content")
-						.request("http://localhost").part("Foo|Bar", "baz".getBytes())
-						.build());
+				.document(this.operationBuilder.request("http://localhost")
+						.part("Foo|Bar", "baz".getBytes()).build());
 	}
 
 	private String escapeIfNecessary(String input) {

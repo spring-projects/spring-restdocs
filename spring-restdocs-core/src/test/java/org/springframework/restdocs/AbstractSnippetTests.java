@@ -52,6 +52,9 @@ public abstract class AbstractSnippetTests {
 	@Rule
 	public ExpectedSnippet snippet;
 
+	@Rule
+	public OperationBuilder operationBuilder;
+
 	@Parameters(name = "{0}")
 	public static List<Object[]> parameters() {
 		return Arrays.asList(new Object[] { "Asciidoctor", asciidoctor() },
@@ -61,6 +64,7 @@ public abstract class AbstractSnippetTests {
 	public AbstractSnippetTests(String name, TemplateFormat templateFormat) {
 		this.snippet = new ExpectedSnippet(templateFormat);
 		this.templateFormat = templateFormat;
+		this.operationBuilder = new OperationBuilder(this.templateFormat);
 	}
 
 	public CodeBlockMatcher<?> codeBlock(String language) {
@@ -82,11 +86,6 @@ public abstract class AbstractSnippetTests {
 
 	public HttpResponseMatcher httpResponse(HttpStatus responseStatus) {
 		return SnippetMatchers.httpResponse(this.templateFormat, responseStatus);
-	}
-
-	public OperationBuilder operationBuilder(String name) {
-		return new OperationBuilder(name, this.snippet.getOutputDirectory(),
-				this.templateFormat);
 	}
 
 	protected FileSystemResource snippetResource(String name) {

@@ -26,12 +26,12 @@ import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for failures when rendering {@link PathParametersSnippet} due to missing or
@@ -42,7 +42,10 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 public class PathParametersSnippetFailureTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+
+	@Rule
+	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -53,12 +56,10 @@ public class PathParametersSnippetFailureTests {
 		this.thrown.expectMessage(equalTo("Path parameters with the following names were"
 				+ " not documented: [a]"));
 		new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList())
-				.document(new OperationBuilder("undocumented-path-parameter",
-						this.snippet.getOutputDirectory())
-								.attribute(
-										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-										"/{a}/")
-								.build());
+				.document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/")
+						.build());
 	}
 
 	@Test
@@ -68,12 +69,9 @@ public class PathParametersSnippetFailureTests {
 				+ " not found in the request: [a]"));
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one")))
-						.document(new OperationBuilder("missing-path-parameter",
-								this.snippet.getOutputDirectory())
-										.attribute(
-												RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-												"/")
-										.build());
+						.document(this.operationBuilder.attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/").build());
 	}
 
 	@Test
@@ -83,13 +81,10 @@ public class PathParametersSnippetFailureTests {
 				+ " not documented: [b]. Path parameters with the following"
 				+ " names were not found in the request: [a]"));
 		new PathParametersSnippet(
-				Arrays.asList(parameterWithName("a").description("one"))).document(
-						new OperationBuilder("undocumented-and-missing-path-parameters",
-								this.snippet.getOutputDirectory())
-										.attribute(
-												RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-												"/{b}")
-										.build());
+				Arrays.asList(parameterWithName("a").description("one")))
+						.document(this.operationBuilder.attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{b}").build());
 	}
 
 }

@@ -24,13 +24,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for failures when rendering {@link RequestHeadersSnippet} due to missing or
@@ -41,7 +41,10 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 public class RequestHeadersSnippetFailureTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+
+	@Rule
+	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -53,10 +56,8 @@ public class RequestHeadersSnippetFailureTests {
 				.expectMessage(equalTo("Headers with the following names were not found"
 						+ " in the request: [Accept]"));
 		new RequestHeadersSnippet(
-				Arrays.asList(headerWithName("Accept").description("one")))
-						.document(new OperationBuilder("missing-request-headers",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost").build());
+				Arrays.asList(headerWithName("Accept").description("one"))).document(
+						this.operationBuilder.request("http://localhost").build());
 	}
 
 	@Test
@@ -67,11 +68,8 @@ public class RequestHeadersSnippetFailureTests {
 						+ " in the request: [Accept]"));
 		new RequestHeadersSnippet(
 				Arrays.asList(headerWithName("Accept").description("one")))
-						.document(new OperationBuilder(
-								"undocumented-request-header-and-missing-request-header",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost")
-										.header("X-Test", "test").build());
+						.document(this.operationBuilder.request("http://localhost")
+								.header("X-Test", "test").build());
 	}
 
 }

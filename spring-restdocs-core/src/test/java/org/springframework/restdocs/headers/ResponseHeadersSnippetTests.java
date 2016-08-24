@@ -27,7 +27,6 @@ import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
@@ -50,7 +49,7 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithHeaders() throws IOException {
-		this.snippet.expectResponseHeaders("response-headers").withContents(
+		this.snippet.expectResponseHeaders().withContents(
 				tableWithHeader("Name", "Description").row("`X-Test`", "one")
 						.row("`Content-Type`", "two").row("`Etag`", "three")
 						.row("`Cache-Control`", "five").row("`Vary`", "six"));
@@ -61,7 +60,7 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 						headerWithName("Cache-Control").description("five"),
 						headerWithName("Vary").description("six")))
 								.document(
-										operationBuilder("response-headers").response()
+										this.operationBuilder.response()
 												.header("X-Test", "test")
 												.header("Content-Type",
 														"application/json")
@@ -72,44 +71,44 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void caseInsensitiveResponseHeaders() throws IOException {
-		this.snippet.expectResponseHeaders("case-insensitive-response-headers")
-				.withContents(
-						tableWithHeader("Name", "Description").row("`X-Test`", "one"));
+		this.snippet.expectResponseHeaders().withContents(
+				tableWithHeader("Name", "Description").row("`X-Test`", "one"));
 		new ResponseHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one")))
-						.document(operationBuilder("case-insensitive-response-headers")
-								.response().header("X-test", "test").build());
+						.document(this.operationBuilder.response()
+								.header("X-test", "test").build());
 	}
 
 	@Test
 	public void undocumentedResponseHeader() throws IOException {
 		new ResponseHeadersSnippet(
-				Arrays.asList(headerWithName("X-Test").description("one")))
-						.document(new OperationBuilder("undocumented-response-header",
-								this.snippet.getOutputDirectory()).response()
-										.header("X-Test", "test")
-										.header("Content-Type", "*/*").build());
+				Arrays.asList(headerWithName("X-Test").description("one"))).document(
+						this.operationBuilder.response().header("X-Test", "test")
+								.header("Content-Type", "*/*").build());
 	}
 
 	@Test
 	public void responseHeadersWithCustomAttributes() throws IOException {
-		this.snippet.expectResponseHeaders("response-headers-with-custom-attributes")
-				.withContents(containsString("Custom title"));
+		this.snippet.expectResponseHeaders().withContents(containsString("Custom title"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-headers"))
 				.willReturn(snippetResource("response-headers-with-title"));
 		new ResponseHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one")),
-				attributes(key("title").value("Custom title"))).document(
-						operationBuilder("response-headers-with-custom-attributes")
-								.attribute(TemplateEngine.class.getName(),
-										new MustacheTemplateEngine(resolver))
-								.response().header("X-Test", "test").build());
+				attributes(
+						key("title").value("Custom title")))
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.response().header("X-Test", "test")
+												.build());
 	}
 
 	@Test
 	public void responseHeadersWithCustomDescriptorAttributes() throws IOException {
-		this.snippet.expectResponseHeaders("response-headers-with-custom-attributes")
+		this.snippet.expectResponseHeaders()
 				.withContents(tableWithHeader("Name", "Description", "Foo")
 						.row("X-Test", "one", "alpha").row("Content-Type", "two", "bravo")
 						.row("Etag", "three", "charlie"));
@@ -123,8 +122,8 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 						.attributes(key("foo").value("bravo")),
 				headerWithName("Etag").description("three")
 						.attributes(key("foo").value("charlie"))))
-								.document(operationBuilder(
-										"response-headers-with-custom-attributes")
+								.document(
+										this.operationBuilder
 												.attribute(TemplateEngine.class.getName(),
 														new MustacheTemplateEngine(
 																resolver))
@@ -137,7 +136,7 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectResponseHeaders("additional-descriptors").withContents(
+		this.snippet.expectResponseHeaders().withContents(
 				tableWithHeader("Name", "Description").row("`X-Test`", "one")
 						.row("`Content-Type`", "two").row("`Etag`", "three")
 						.row("`Cache-Control`", "five").row("`Vary`", "six"));
@@ -146,10 +145,8 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 						headerWithName("Content-Type").description("two"),
 						headerWithName("Etag").description("three"))
 				.and(headerWithName("Cache-Control").description("five"),
-						headerWithName("Vary")
-								.description("six"))
-				.document(operationBuilder("additional-descriptors").response()
-						.header("X-Test", "test")
+						headerWithName("Vary").description("six"))
+				.document(this.operationBuilder.response().header("X-Test", "test")
 						.header("Content-Type", "application/json")
 						.header("Etag", "lskjadldj3ii32l2ij23")
 						.header("Cache-Control", "max-age=0").header("Vary", "User-Agent")
@@ -158,13 +155,13 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void tableCellContentIsEscapedWhenNecessary() throws IOException {
-		this.snippet.expectResponseHeaders("response-with-escaped-headers").withContents(
+		this.snippet.expectResponseHeaders().withContents(
 				tableWithHeader("Name", "Description").row(escapeIfNecessary("`Foo|Bar`"),
 						escapeIfNecessary("one|two")));
 		new ResponseHeadersSnippet(
 				Arrays.asList(headerWithName("Foo|Bar").description("one|two")))
-						.document(operationBuilder("response-with-escaped-headers")
-								.response().header("Foo|Bar", "baz").build());
+						.document(this.operationBuilder.response()
+								.header("Foo|Bar", "baz").build());
 	}
 
 	private String escapeIfNecessary(String input) {

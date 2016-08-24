@@ -43,6 +43,9 @@ import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 public class AsciidoctorRequestFieldsSnippetTests {
 
 	@Rule
+	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+
+	@Rule
 	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
 
 	@Test
@@ -50,21 +53,22 @@ public class AsciidoctorRequestFieldsSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-fields"))
 				.willReturn(snippetResource("request-fields-with-list-description"));
-		this.snippet.expectRequestFields("request-fields-with-list-description")
-				.withContents(
-						tableWithHeader(asciidoctor(), "Path", "Type", "Description")
-								//
-								.row("a", "String", String.format(" - one%n - two"))
-								.configuration("[cols=\"1,1,1a\"]"));
+		this.snippet.expectRequestFields().withContents(
+				tableWithHeader(asciidoctor(), "Path", "Type", "Description")
+						//
+						.row("a", "String", String.format(" - one%n - two"))
+						.configuration("[cols=\"1,1,1a\"]"));
 
-		new RequestFieldsSnippet(Arrays.asList(
-				fieldWithPath("a").description(Arrays.asList("one", "two")))).document(
-						new OperationBuilder("request-fields-with-list-description",
-								this.snippet.getOutputDirectory())
-										.attribute(TemplateEngine.class.getName(),
-												new MustacheTemplateEngine(resolver))
-										.request("http://localhost")
-										.content("{\"a\": \"foo\"}").build());
+		new RequestFieldsSnippet(
+				Arrays.asList(
+						fieldWithPath("a").description(Arrays.asList("one", "two"))))
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.request("http://localhost")
+												.content("{\"a\": \"foo\"}").build());
 	}
 
 	private FileSystemResource snippetResource(String name) {

@@ -25,11 +25,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for failures when rendering {@link LinksSnippet} due to missing or undocumented
@@ -40,7 +40,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 public class LinksSnippetFailureTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+
+	@Rule
+	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -52,8 +55,7 @@ public class LinksSnippetFailureTests {
 				"Links with the following relations were not" + " documented: [foo]"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
 				Collections.<LinkDescriptor>emptyList())
-						.document(new OperationBuilder("undocumented-link",
-								this.snippet.getOutputDirectory()).build());
+						.document(this.operationBuilder.build());
 	}
 
 	@Test
@@ -63,8 +65,7 @@ public class LinksSnippetFailureTests {
 				+ " found in the response: [foo]"));
 		new LinksSnippet(new StubLinkExtractor(),
 				Arrays.asList(new LinkDescriptor("foo").description("bar")))
-						.document(new OperationBuilder("missing-link",
-								this.snippet.getOutputDirectory()).build());
+						.document(this.operationBuilder.build());
 	}
 
 	@Test
@@ -74,9 +75,8 @@ public class LinksSnippetFailureTests {
 				+ " documented: [a]. Links with the following relations were not"
 				+ " found in the response: [foo]"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha")),
-				Arrays.asList(new LinkDescriptor("foo").description("bar"))).document(
-						new OperationBuilder("undocumented-link-and-missing-link",
-								this.snippet.getOutputDirectory()).build());
+				Arrays.asList(new LinkDescriptor("foo").description("bar")))
+						.document(this.operationBuilder.build());
 	}
 
 	@Test
@@ -87,8 +87,7 @@ public class LinksSnippetFailureTests {
 						+ " title was available from the link in the payload"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
 				Arrays.asList(new LinkDescriptor("foo")))
-						.document(new OperationBuilder("link-with-no-description",
-								this.snippet.getOutputDirectory()).build());
+						.document(this.operationBuilder.build());
 	}
 
 }

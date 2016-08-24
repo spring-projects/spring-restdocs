@@ -25,12 +25,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for failures when rendering {@link RequestPartsSnippet} due to missing or
@@ -41,7 +41,10 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 public class RequestPartsSnippetFailureTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+
+	@Rule
+	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -52,9 +55,8 @@ public class RequestPartsSnippetFailureTests {
 		this.thrown.expectMessage(equalTo(
 				"Request parts with the following names were" + " not documented: [a]"));
 		new RequestPartsSnippet(Collections.<RequestPartDescriptor>emptyList())
-				.document(new OperationBuilder("undocumented-part",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.part("a", "alpha".getBytes()).build());
+				.document(this.operationBuilder.request("http://localhost")
+						.part("a", "alpha".getBytes()).build());
 	}
 
 	@Test
@@ -63,9 +65,7 @@ public class RequestPartsSnippetFailureTests {
 		this.thrown.expectMessage(equalTo("Request parts with the following names were"
 				+ " not found in the request: [a]"));
 		new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
-				.document(new OperationBuilder("missing-part",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.build());
+				.document(this.operationBuilder.request("http://localhost").build());
 	}
 
 	@Test
@@ -75,9 +75,8 @@ public class RequestPartsSnippetFailureTests {
 				+ " not documented: [b]. Request parts with the following"
 				+ " names were not found in the request: [a]"));
 		new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
-				.document(new OperationBuilder("undocumented-and-missing-parts",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.part("b", "bravo".getBytes()).build());
+				.document(this.operationBuilder.request("http://localhost")
+						.part("b", "bravo".getBytes()).build());
 	}
 
 }

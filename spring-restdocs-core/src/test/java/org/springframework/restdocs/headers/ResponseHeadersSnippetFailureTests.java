@@ -24,13 +24,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.ExpectedSnippet;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for failures when rendering {@link ResponseHeadersSnippet} due to missing or
@@ -41,7 +41,10 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 public class ResponseHeadersSnippetFailureTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+
+	@Rule
+	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -54,8 +57,7 @@ public class ResponseHeadersSnippetFailureTests {
 						+ " in the response: [Content-Type]"));
 		new ResponseHeadersSnippet(
 				Arrays.asList(headerWithName("Content-Type").description("one")))
-						.document(new OperationBuilder("missing-response-headers",
-								this.snippet.getOutputDirectory()).response().build());
+						.document(this.operationBuilder.response().build());
 	}
 
 	@Test
@@ -66,10 +68,8 @@ public class ResponseHeadersSnippetFailureTests {
 						+ " in the response: [Content-Type]"));
 		new ResponseHeadersSnippet(
 				Arrays.asList(headerWithName("Content-Type").description("one")))
-						.document(new OperationBuilder(
-								"undocumented-response-header-and-missing-response-header",
-								this.snippet.getOutputDirectory()).response()
-										.header("X-Test", "test").build());
+						.document(this.operationBuilder.response()
+								.header("X-Test", "test").build());
 	}
 
 }

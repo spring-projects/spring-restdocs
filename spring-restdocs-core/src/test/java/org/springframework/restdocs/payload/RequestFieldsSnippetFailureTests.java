@@ -48,6 +48,10 @@ public class RequestFieldsSnippetFailureTests {
 	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
 
 	@Rule
+	public OperationBuilder operationBuilder = new OperationBuilder(
+			TemplateFormats.asciidoctor());
+
+	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
@@ -56,9 +60,8 @@ public class RequestFieldsSnippetFailureTests {
 		this.thrown.expectMessage(startsWith(
 				"The following parts of the payload were not" + " documented:"));
 		new RequestFieldsSnippet(Collections.<FieldDescriptor>emptyList())
-				.document(new OperationBuilder("undocumented-request-field",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.content("{\"a\": 5}").build());
+				.document(this.operationBuilder.request("http://localhost")
+						.content("{\"a\": 5}").build());
 	}
 
 	@Test
@@ -67,9 +70,8 @@ public class RequestFieldsSnippetFailureTests {
 		this.thrown.expectMessage(equalTo("Fields with the following paths were not found"
 				+ " in the payload: [a.b]"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")))
-				.document(new OperationBuilder("missing-request-fields",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.content("{}").build());
+				.document(this.operationBuilder.request("http://localhost").content("{}")
+						.build());
 	}
 
 	@Test
@@ -77,11 +79,8 @@ public class RequestFieldsSnippetFailureTests {
 		this.thrown.expect(FieldTypeRequiredException.class);
 		new RequestFieldsSnippet(
 				Arrays.asList(fieldWithPath("a.b").description("one").optional()))
-						.document(new OperationBuilder(
-								"missing-optional-request-field-with-no-type",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost").content("{ }")
-										.build());
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{ }").build());
 	}
 
 	@Test
@@ -93,10 +92,8 @@ public class RequestFieldsSnippetFailureTests {
 				.expectMessage(endsWith("Fields with the following paths were not found"
 						+ " in the payload: [a.b]"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")))
-				.document(new OperationBuilder(
-						"undocumented-request-field-and-missing-request-field",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.content("{ \"a\": { \"c\": 5 }}").build());
+				.document(this.operationBuilder.request("http://localhost")
+						.content("{ \"a\": { \"c\": 5 }}").build());
 	}
 
 	@Test
@@ -105,9 +102,7 @@ public class RequestFieldsSnippetFailureTests {
 		this.thrown.expectMessage(
 				equalTo("Cannot document request fields as the request body is empty"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
-				.document(new OperationBuilder("no-request-body",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.build());
+				.document(this.operationBuilder.request("http://localhost").build());
 	}
 
 	@Test
@@ -117,10 +112,8 @@ public class RequestFieldsSnippetFailureTests {
 				+ " Object but the actual type is Number"));
 		new RequestFieldsSnippet(Arrays
 				.asList(fieldWithPath("a").description("one").type(JsonFieldType.OBJECT)))
-						.document(new OperationBuilder("mismatched-field-types",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost")
-										.content("{ \"a\": 5 }").build());
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{ \"a\": 5 }").build());
 	}
 
 	@Test
@@ -130,11 +123,8 @@ public class RequestFieldsSnippetFailureTests {
 				+ " Object but the actual type is Varies"));
 		new RequestFieldsSnippet(Arrays.asList(
 				fieldWithPath("[].a").description("one").type(JsonFieldType.OBJECT)))
-						.document(new OperationBuilder("mismatched-field-types",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost")
-										.content("[{ \"a\": 5 },{ \"a\": \"b\" }]")
-										.build());
+						.document(this.operationBuilder.request("http://localhost")
+								.content("[{ \"a\": 5 },{ \"a\": \"b\" }]").build());
 	}
 
 	@Test
@@ -143,23 +133,20 @@ public class RequestFieldsSnippetFailureTests {
 		this.thrown.expectMessage(startsWith(
 				"The following parts of the payload were not" + " documented:"));
 		new RequestFieldsSnippet(Collections.<FieldDescriptor>emptyList())
-				.document(new OperationBuilder("undocumented-xml-request-field",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.content("<a><b>5</b></a>")
-								.header(HttpHeaders.CONTENT_TYPE,
-										MediaType.APPLICATION_XML_VALUE)
-								.build());
+				.document(this.operationBuilder.request("http://localhost")
+						.content("<a><b>5</b></a>").header(HttpHeaders.CONTENT_TYPE,
+								MediaType.APPLICATION_XML_VALUE)
+						.build());
 	}
 
 	@Test
 	public void xmlRequestFieldWithNoType() throws IOException {
 		this.thrown.expect(FieldTypeRequiredException.class);
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
-				.document(new OperationBuilder("missing-xml-request",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.content("<a>5</a>").header(HttpHeaders.CONTENT_TYPE,
-										MediaType.APPLICATION_XML_VALUE)
-								.build());
+				.document(this.operationBuilder.request("http://localhost")
+						.content("<a>5</a>").header(HttpHeaders.CONTENT_TYPE,
+								MediaType.APPLICATION_XML_VALUE)
+						.build());
 	}
 
 	@Test
@@ -168,15 +155,10 @@ public class RequestFieldsSnippetFailureTests {
 		this.thrown.expectMessage(equalTo("Fields with the following paths were not found"
 				+ " in the payload: [a/b]"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one"),
-				fieldWithPath("a").description("one")))
-						.document(
-								new OperationBuilder("missing-xml-request-fields",
-										this.snippet.getOutputDirectory())
-												.request("http://localhost")
-												.content("<a></a>")
-												.header(HttpHeaders.CONTENT_TYPE,
-														MediaType.APPLICATION_XML_VALUE)
-												.build());
+				fieldWithPath("a").description("one"))).document(this.operationBuilder
+						.request("http://localhost").content("<a></a>")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+						.build());
 	}
 
 	@Test
@@ -189,13 +171,10 @@ public class RequestFieldsSnippetFailureTests {
 				.expectMessage(endsWith("Fields with the following paths were not found"
 						+ " in the payload: [a/b]"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
-				.document(new OperationBuilder(
-						"undocumented-xml-request-field-and-missing-xml-request-field",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.content("<a><c>5</c></a>")
-								.header(HttpHeaders.CONTENT_TYPE,
-										MediaType.APPLICATION_XML_VALUE)
-								.build());
+				.document(this.operationBuilder.request("http://localhost")
+						.content("<a><c>5</c></a>").header(HttpHeaders.CONTENT_TYPE,
+								MediaType.APPLICATION_XML_VALUE)
+						.build());
 	}
 
 }
