@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import org.springframework.http.HttpHeaders;
@@ -57,7 +55,7 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
  *
  * @author Andy Wilkinson
  */
-public class OperationBuilder implements TestRule {
+public class OperationBuilder extends OperationTestRule {
 
 	private final Map<String, Object> attributes = new HashMap<>();
 
@@ -133,22 +131,9 @@ public class OperationBuilder implements TestRule {
 	}
 
 	@Override
-	public Statement apply(final Statement base, final Description description) {
-		return new Statement() {
-
-			@Override
-			public void evaluate() throws Throwable {
-				String operationName = description.getMethodName();
-				int index = operationName.indexOf('[');
-				if (index > 0) {
-					operationName = operationName.substring(0, index);
-				}
-				OperationBuilder.this.prepare(operationName,
-						new File("build/" + description.getTestClass().getSimpleName()));
-				base.evaluate();
-			}
-
-		};
+	public Statement apply(Statement base, File outputDirectory, String operationName) {
+		prepare(operationName, outputDirectory);
+		return base;
 	}
 
 	/**

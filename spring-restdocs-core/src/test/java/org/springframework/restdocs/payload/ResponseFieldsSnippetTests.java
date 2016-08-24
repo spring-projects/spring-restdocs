@@ -54,7 +54,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
 						.row("`assets`", "`Array`", "three")
-						.row("`assets[]`", "`Object`", "four")
+						.row("`assets[]`", "`Array`", "four")
 						.row("`assets[].id`", "`Number`", "five")
 						.row("`assets[].name`", "`String`", "six"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("id").description("one"),
@@ -90,7 +90,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void arrayResponse() throws IOException {
 		this.snippet.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`[]`",
-						"`String`", "one"));
+						"`Array`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]").description("one")))
 				.document(this.operationBuilder.response()
 						.content("[\"a\", \"b\", \"c\"]").build());
@@ -291,7 +291,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
 						.row("`assets`", "`Array`", "three")
-						.row("`assets[]`", "`Object`", "four")
+						.row("`assets[]`", "`Array`", "four")
 						.row("`assets[].id`", "`Number`", "five")
 						.row("`assets[].name`", "`String`", "six"));
 		PayloadDocumentation

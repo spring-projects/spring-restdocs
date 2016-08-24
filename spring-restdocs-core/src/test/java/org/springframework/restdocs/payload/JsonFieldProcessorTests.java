@@ -17,6 +17,7 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,17 @@ public class JsonFieldProcessorTests {
 		alpha.put("b", "bravo");
 		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a.b"), payload),
 				equalTo((Object) "bravo"));
+	}
+
+	@Test
+	public void extractTopLevelArray() {
+		List<Map<String, Object>> payload = new ArrayList<>();
+		Map<String, Object> bravo = new HashMap<>();
+		bravo.put("b", "bravo");
+		payload.add(bravo);
+		payload.add(bravo);
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("[]"), payload),
+				equalTo((Object) payload));
 	}
 
 	@Test

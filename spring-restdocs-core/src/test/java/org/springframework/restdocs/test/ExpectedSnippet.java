@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.hamcrest.Matcher;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import org.springframework.restdocs.snippet.TemplatedSnippet;
@@ -38,7 +36,7 @@ import static org.junit.Assert.assertThat;
  * @author Andy Wilkinson
  * @author Andreas Evers
  */
-public class ExpectedSnippet implements TestRule {
+public class ExpectedSnippet extends OperationTestRule {
 
 	private final TemplateFormat templateFormat;
 
@@ -56,9 +54,10 @@ public class ExpectedSnippet implements TestRule {
 	}
 
 	@Override
-	public Statement apply(final Statement base, Description description) {
-		this.outputDirectory = new File(
-				"build/" + description.getTestClass().getSimpleName());
+	public Statement apply(final Statement base, File outputDirectory,
+			String operationName) {
+		this.outputDirectory = outputDirectory;
+		this.expectedName = operationName;
 		return new ExpectedSnippetStatement(base);
 	}
 

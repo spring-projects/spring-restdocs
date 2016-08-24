@@ -57,7 +57,7 @@ final class JsonFieldProcessor {
 		if (matches.isEmpty()) {
 			throw new FieldDoesNotExistException(path);
 		}
-		if (path.isPrecise()) {
+		if ((!path.isArray()) && path.isPrecise()) {
 			return matches.get(0);
 		}
 		else {

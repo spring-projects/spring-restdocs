@@ -17,6 +17,7 @@
 package org.springframework.restdocs.payload;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,14 +43,22 @@ final class JsonFieldPath {
 
 	private final boolean precise;
 
-	private JsonFieldPath(String rawPath, List<String> segments, boolean precise) {
+	private final boolean array;
+
+	private JsonFieldPath(String rawPath, List<String> segments, boolean precise,
+			boolean array) {
 		this.rawPath = rawPath;
 		this.segments = segments;
 		this.precise = precise;
+		this.array = array;
 	}
 
 	boolean isPrecise() {
 		return this.precise;
+	}
+
+	boolean isArray() {
+		return this.array;
 	}
 
 	List<String> getSegments() {
@@ -63,7 +72,8 @@ final class JsonFieldPath {
 
 	static JsonFieldPath compile(String path) {
 		List<String> segments = extractSegments(path);
-		return new JsonFieldPath(path, segments, matchesSingleValue(segments));
+		return new JsonFieldPath(path, segments, matchesSingleValue(segments),
+				isArraySegment(segments.get(segments.size() - 1)));
 	}
 
 	static boolean isArraySegment(String segment) {
@@ -71,8 +81,9 @@ final class JsonFieldPath {
 	}
 
 	static boolean matchesSingleValue(List<String> segments) {
-		for (String segment : segments) {
-			if (isArraySegment(segment)) {
+		Iterator<String> iterator = segments.iterator();
+		while (iterator.hasNext()) {
+			if (isArraySegment(iterator.next()) && iterator.hasNext()) {
 				return false;
 			}
 		}

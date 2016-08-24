@@ -81,6 +81,8 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void undocumentedResponseHeader() throws IOException {
+		this.snippet.expectResponseHeaders().withContents(
+				tableWithHeader("Name", "Description").row("`X-Test`", "one"));
 		new ResponseHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one"))).document(
 						this.operationBuilder.response().header("X-Test", "test")
