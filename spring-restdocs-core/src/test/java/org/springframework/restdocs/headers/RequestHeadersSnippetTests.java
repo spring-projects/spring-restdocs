@@ -93,6 +93,8 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void undocumentedRequestHeader() throws IOException {
+		this.snippet.expectRequestHeaders().withContents(
+				tableWithHeader("Name", "Description").row("`X-Test`", "one"));
 		new RequestHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one")))
 						.document(this.operationBuilder.request("http://localhost")
