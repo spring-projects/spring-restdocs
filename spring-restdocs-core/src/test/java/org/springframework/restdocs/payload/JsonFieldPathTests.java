@@ -32,43 +32,59 @@ import static org.junit.Assert.assertTrue;
 public class JsonFieldPathTests {
 
 	@Test
-	public void singleFieldIsPrecise() {
-		assertTrue(JsonFieldPath.compile("a").isPrecise());
+	public void singleFieldIsPreciseAndNotAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("a");
+		assertTrue(path.isPrecise());
+		assertFalse(path.isArray());
 	}
 
 	@Test
-	public void singleNestedFieldIsPrecise() {
-		assertTrue(JsonFieldPath.compile("a.b").isPrecise());
+	public void singleNestedFieldIsPreciseAndNotAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("a.b");
+		assertTrue(path.isPrecise());
+		assertFalse(path.isArray());
 	}
 
 	@Test
-	public void topLevelArrayIsNotPrecise() {
-		assertFalse(JsonFieldPath.compile("[]").isPrecise());
+	public void topLevelArrayIsPreciseAndAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("[]");
+		assertTrue(path.isPrecise());
+		assertTrue(path.isArray());
 	}
 
 	@Test
-	public void fieldBeneathTopLevelArrayIsNotPrecise() {
-		assertFalse(JsonFieldPath.compile("[]a").isPrecise());
+	public void fieldBeneathTopLevelArrayIsNotPreciseAndNotAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("[]a");
+		assertFalse(path.isPrecise());
+		assertFalse(path.isArray());
 	}
 
 	@Test
-	public void arrayIsNotPrecise() {
-		assertFalse(JsonFieldPath.compile("a[]").isPrecise());
+	public void arrayIsPreciseAndAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("a[]");
+		assertTrue(path.isPrecise());
+		assertTrue(path.isArray());
 	}
 
 	@Test
-	public void nestedArrayIsNotPrecise() {
-		assertFalse(JsonFieldPath.compile("a.b[]").isPrecise());
+	public void nestedArrayIsPreciseAndAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("a.b[]");
+		assertTrue(path.isPrecise());
+		assertTrue(path.isArray());
 	}
 
 	@Test
-	public void arrayOfArraysIsNotPrecise() {
-		assertFalse(JsonFieldPath.compile("a[][]").isPrecise());
+	public void arrayOfArraysIsNotPreciseAndIsAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("a[][]");
+		assertFalse(path.isPrecise());
+		assertTrue(path.isArray());
 	}
 
 	@Test
-	public void fieldBeneathAnArrayIsNotPrecise() {
-		assertFalse(JsonFieldPath.compile("a[].b").isPrecise());
+	public void fieldBeneathAnArrayIsNotPreciseAndIsNotAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("a[].b");
+		assertFalse(path.isPrecise());
+		assertFalse(path.isArray());
 	}
 
 	@Test

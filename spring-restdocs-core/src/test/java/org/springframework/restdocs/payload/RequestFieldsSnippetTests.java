@@ -67,13 +67,14 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	public void arrayRequestWithFields() throws IOException {
 		this.snippet.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`[]a.b`", "`Number`", "one")
-						.row("`[]a.c`", "`String`", "two")
-						.row("`[]a`", "`Object`", "three"));
+						.row("`[]`", "`Array`", "one").row("`[]a.b`", "`Number`", "two")
+						.row("`[]a.c`", "`String`", "three")
+						.row("`[]a`", "`Object`", "four"));
 
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b").description("one"),
-				fieldWithPath("[]a.c").description("two"),
-				fieldWithPath("[]a").description("three")))
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("[]").description("one"),
+				fieldWithPath("[]a.b").description("two"),
+				fieldWithPath("[]a.c").description("three"),
+				fieldWithPath("[]a").description("four")))
 						.document(this.operationBuilder.request("http://localhost")
 								.content(
 										"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
@@ -238,7 +239,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 				.requestFields(fieldWithPath("a.b").description("one"),
 						fieldWithPath("a.c").description("two"))
 				.and(fieldWithPath("a").description("three"))
-				.document(operationBuilder.request("http://localhost")
+				.document(this.operationBuilder.request("http://localhost")
 						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
 	}
 
@@ -252,7 +253,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		PayloadDocumentation.requestFields(fieldWithPath("a").description("one"))
 				.andWithPrefix("a.", fieldWithPath("b").description("two"),
 						fieldWithPath("c").description("three"))
-				.document(operationBuilder.request("http://localhost")
+				.document(this.operationBuilder.request("http://localhost")
 						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
 	}
 
@@ -265,7 +266,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 		new RequestFieldsSnippet(Arrays.asList(
 				fieldWithPath("Foo|Bar").type("one|two").description("three|four")))
-						.document(operationBuilder.request("http://localhost")
+						.document(this.operationBuilder.request("http://localhost")
 								.content("{\"Foo|Bar\": 5}").build());
 	}
 
