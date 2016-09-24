@@ -78,6 +78,21 @@ public abstract class HeaderDocumentation {
 	}
 
 	/**
+	 * Returns a new {@link Snippet} that will document the headers of the API operation's
+	 * request. The headers will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a header is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur.
+	 *
+	 * @param descriptors the descriptions of the request's headers
+	 * @return the snippet that will document the request headers
+	 * @see #headerWithName(String)
+	 */
+	public static RequestHeadersSnippet requestHeaders(List<HeaderDescriptor> descriptors) {
+		return new RequestHeadersSnippet(descriptors);
+	}
+
+	/**
 	 * Returns a new {@link Snippet} that will document the headers of the API
 	 * operations's request. The given {@code attributes} will be available during snippet
 	 * generation and the headers will be documented using the given {@code descriptors}.
@@ -93,6 +108,24 @@ public abstract class HeaderDocumentation {
 	public static RequestHeadersSnippet requestHeaders(Map<String, Object> attributes,
 			HeaderDescriptor... descriptors) {
 		return requestHeaders(attributes, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a new {@link Snippet} that will document the headers of the API
+	 * operations's request. The given {@code attributes} will be available during snippet
+	 * generation and the headers will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a header is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request's headers
+	 * @return the snippet that will document the request headers
+	 * @see #headerWithName(String)
+	 */
+	public static RequestHeadersSnippet requestHeaders(Map<String, Object> attributes,
+			List<HeaderDescriptor> descriptors) {
+		return new RequestHeadersSnippet(descriptors, attributes);
 	}
 
 	/**
@@ -146,6 +179,22 @@ public abstract class HeaderDocumentation {
 	}
 
 	/**
+	 * Returns a new {@link Snippet} that will document the headers of the API operation's
+	 * response. The headers will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a header is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur.
+	 *
+	 * @param descriptors the descriptions of the response's headers
+	 * @return the snippet that will document the response headers
+	 * @see #headerWithName(String)
+	 */
+	public static ResponseHeadersSnippet responseHeaders(
+			List<HeaderDescriptor> descriptors) {
+		return new ResponseHeadersSnippet(descriptors);
+	}
+
+	/**
 	 * Returns a new {@link Snippet} that will document the headers of the API
 	 * operations's response. The given {@code attributes} will be available during
 	 * snippet generation and the headers will be documented using the given
@@ -162,6 +211,25 @@ public abstract class HeaderDocumentation {
 	public static ResponseHeadersSnippet responseHeaders(Map<String, Object> attributes,
 			HeaderDescriptor... descriptors) {
 		return responseHeaders(attributes, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a new {@link Snippet} that will document the headers of the API
+	 * operations's response. The given {@code attributes} will be available during
+	 * snippet generation and the headers will be documented using the given
+	 * {@code descriptors}.
+	 * <p>
+	 * If a header is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response's headers
+	 * @return the snippet that will document the response headers
+	 * @see #headerWithName(String)
+	 */
+	public static ResponseHeadersSnippet responseHeaders(Map<String, Object> attributes,
+			List<HeaderDescriptor> descriptors) {
+		return new ResponseHeadersSnippet(descriptors, attributes);
 	}
 
 	/**

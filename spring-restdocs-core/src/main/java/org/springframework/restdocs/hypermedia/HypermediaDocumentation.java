@@ -97,6 +97,31 @@ public abstract class HypermediaDocumentation {
 	 * response. Links will be extracted from the response automatically based on its
 	 * content type and will be documented using the given {@code descriptors}.
 	 * <p>
+	 * If a link is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
+	 * is documented, is not marked as optional, and is not present in the response, a
+	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a link, a link descriptor can be marked as
+	 * {@link LinkDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 * <p>
+	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
+	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
+	 * link does not have a title a failure will occur.
+	 *
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
+	 */
+	public static LinksSnippet links(List<LinkDescriptor> descriptors) {
+		return new LinksSnippet(new ContentTypeLinkExtractor(), descriptors);
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the links in the API operation's
+	 * response. Links will be extracted from the response automatically based on its
+	 * content type and will be documented using the given {@code descriptors}.
+	 * <p>
 	 * If a link is documented, is not marked as optional, and is not present in the
 	 * response, a failure will occur. Any undocumented links will be ignored.
 	 * <p>
@@ -109,6 +134,25 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static LinksSnippet relaxedLinks(LinkDescriptor... descriptors) {
 		return relaxedLinks(Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the links in the API operation's
+	 * response. Links will be extracted from the response automatically based on its
+	 * content type and will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented links will be ignored.
+	 * <p>
+	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
+	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
+	 * link does not have a title a failure will occur.
+	 *
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
+	 */
+	public static LinksSnippet relaxedLinks(List<LinkDescriptor> descriptors) {
+		return new LinksSnippet(new ContentTypeLinkExtractor(), descriptors, true);
 	}
 
 	/**
@@ -192,6 +236,34 @@ public abstract class HypermediaDocumentation {
 	 * Links will be extracted from the response automatically based on its content type
 	 * and will be documented using the given {@code descriptors}.
 	 * <p>
+	 * If a link is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
+	 * is documented, is not marked as optional, and is not present in the response, a
+	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a link, a link descriptor can be marked as
+	 * {@link LinkDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 * <p>
+	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
+	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
+	 * link does not have a title a failure will occur.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
+	 */
+	public static LinksSnippet links(Map<String, Object> attributes,
+			List<LinkDescriptor> descriptors) {
+		return new LinksSnippet(new ContentTypeLinkExtractor(), descriptors, attributes);
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the links in the API call's
+	 * response. The given {@code attributes} will be available during snippet generation.
+	 * Links will be extracted from the response automatically based on its content type
+	 * and will be documented using the given {@code descriptors}.
+	 * <p>
 	 * If a link is documented, is not marked as optional, and is not present in the
 	 * response, a failure will occur. Any undocumented links will be ignored.
 	 * <p>
@@ -232,6 +304,28 @@ public abstract class HypermediaDocumentation {
 	}
 
 	/**
+	 * Returns a new {@code Snippet} that will document the links in the API call's
+	 * response. The given {@code attributes} will be available during snippet generation.
+	 * Links will be extracted from the response automatically based on its content type
+	 * and will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented links will be ignored.
+	 * <p>
+	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
+	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
+	 * link does not have a title a failure will occur.
+	 *
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
+	 */
+	public static LinksSnippet relaxedLinks(Map<String, Object> attributes,
+											List<LinkDescriptor> descriptors) {
+		return new LinksSnippet(new ContentTypeLinkExtractor(), descriptors, attributes, true);
+	}
+
+	/**
 	 * Returns a new {@code Snippet} that will document the links in the API operation's
 	 * response. Links will be extracted from the response using the given
 	 * {@code linkExtractor} and will be documented using the given {@code descriptors}.
@@ -256,6 +350,33 @@ public abstract class HypermediaDocumentation {
 	public static LinksSnippet links(LinkExtractor linkExtractor,
 			LinkDescriptor... descriptors) {
 		return links(linkExtractor, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the links in the API operation's
+	 * response. Links will be extracted from the response using the given
+	 * {@code linkExtractor} and will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
+	 * is documented, is not marked as optional, and is not present in the response, a
+	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a link, a link descriptor can be marked as
+	 * {@link LinkDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 * <p>
+	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
+	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
+	 * link does not have a title a failure will occur.
+	 *
+	 * @param linkExtractor used to extract the links from the response
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
+	 */
+	public static LinksSnippet links(LinkExtractor linkExtractor,
+			List<LinkDescriptor> descriptors) {
+		return new LinksSnippet(linkExtractor, descriptors);
 	}
 
 	/**
@@ -329,6 +450,27 @@ public abstract class HypermediaDocumentation {
 
 	/**
 	 * Returns a new {@code Snippet} that will document the links in the API operation's
+	 * response. Links will be extracted from the response using the given
+	 * {@code linkExtractor} and will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented links will be ignored.
+	 * <p>
+	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
+	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
+	 * link does not have a title a failure will occur.
+	 *
+	 * @param linkExtractor used to extract the links from the response
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
+	 */
+	public static LinksSnippet relaxedLinks(LinkExtractor linkExtractor,
+											List<LinkDescriptor> descriptors) {
+		return new LinksSnippet(linkExtractor, descriptors, true);
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the links in the API operation's
 	 * response. The given {@code attributes} will be available during snippet generation.
 	 * Links will be extracted from the response using the given {@code linkExtractor} and
 	 * will be documented using the given {@code descriptors}.
@@ -354,6 +496,35 @@ public abstract class HypermediaDocumentation {
 	public static LinksSnippet links(LinkExtractor linkExtractor,
 			Map<String, Object> attributes, LinkDescriptor... descriptors) {
 		return links(linkExtractor, attributes, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the links in the API operation's
+	 * response. The given {@code attributes} will be available during snippet generation.
+	 * Links will be extracted from the response using the given {@code linkExtractor} and
+	 * will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a link
+	 * is documented, is not marked as optional, and is not present in the response, a
+	 * failure will also occur.
+	 * <p>
+	 * If you do not want to document a link, a link descriptor can be marked as
+	 * {@link LinkDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 * <p>
+	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
+	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
+	 * link does not have a title a failure will occur.
+	 *
+	 * @param attributes the attributes
+	 * @param linkExtractor used to extract the links from the response
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
+	 */
+	public static LinksSnippet links(LinkExtractor linkExtractor,
+			Map<String, Object> attributes, List<LinkDescriptor> descriptors) {
+		return new LinksSnippet(linkExtractor, descriptors, attributes);
 	}
 
 	/**
@@ -428,6 +599,29 @@ public abstract class HypermediaDocumentation {
 	 */
 	public static LinksSnippet relaxedLinks(LinkExtractor linkExtractor,
 			Map<String, Object> attributes, List<LinkDescriptor> descriptors) {
+		return new LinksSnippet(linkExtractor, descriptors, attributes, true);
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the links in the API operation's
+	 * response. The given {@code attributes} will be available during snippet generation.
+	 * Links will be extracted from the response using the given {@code linkExtractor} and
+	 * will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a link is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented links will be ignored.
+	 * <p>
+	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
+	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
+	 * link does not have a title a failure will occur.
+	 *
+	 * @param attributes the attributes
+	 * @param linkExtractor used to extract the links from the response
+	 * @param descriptors the descriptions of the response's links
+	 * @return the snippet that will document the links
+	 */
+	public static LinksSnippet relaxedLinks(LinkExtractor linkExtractor,
+											Map<String, Object> attributes, List<LinkDescriptor> descriptors) {
 		return new LinksSnippet(linkExtractor, descriptors, attributes, true);
 	}
 
