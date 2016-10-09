@@ -44,7 +44,7 @@ public class MockMvcRestDocumentationConfigurerTests {
 	private MockHttpServletRequest request = new MockHttpServletRequest();
 
 	@Rule
-	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("test");
+	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@Test
 	public void defaultConfiguration() {

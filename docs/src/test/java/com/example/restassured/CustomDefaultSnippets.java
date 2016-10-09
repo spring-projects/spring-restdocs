@@ -29,8 +29,7 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 public class CustomDefaultSnippets {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
-			"build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@SuppressWarnings("unused")
 	private RequestSpecification spec;

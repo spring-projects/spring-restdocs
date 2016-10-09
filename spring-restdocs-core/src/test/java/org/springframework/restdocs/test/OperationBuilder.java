@@ -123,8 +123,9 @@ public class OperationBuilder extends OperationTestRule {
 	}
 
 	private RestDocumentationContext createContext() {
-		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
+		System.getProperties().put("snippetOutputDirectory",
 				this.outputDirectory.getAbsolutePath());
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation();
 		manualRestDocumentation.beforeTest(null, null);
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;

@@ -34,12 +34,10 @@ public class JUnitRestDocumentation
 
 	/**
 	 * Creates a new {@code JUnitRestDocumentation} instance that will generate snippets
-	 * to the given {@code outputDirectory}.
-	 *
-	 * @param outputDirectory the output directory
+	 * to &lt;gradle/maven build path&gt;/generated-snippet if no runtime property ({@code snippetOutputDirectory}) is set.
 	 */
-	public JUnitRestDocumentation(String outputDirectory) {
-		this.delegate = new ManualRestDocumentation(outputDirectory);
+	public JUnitRestDocumentation() {
+		this.delegate = new ManualRestDocumentation();
 	}
 
 	@Override

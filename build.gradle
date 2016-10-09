@@ -82,6 +82,10 @@ subprojects {
 		}
 	}
 
+	tasks.withType(Test) {
+		systemProperty 'snippetOutputDirectory', 'build/generated-snippets'
+	}
+
 	eclipseJdt {
 		inputFile = rootProject.file('config/eclipse/org.eclipse.jdt.core.prefs')
 		doLast {

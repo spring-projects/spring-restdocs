@@ -83,8 +83,8 @@ public class RestDocumentationContextPlaceholderResolverTests {
 	}
 
 	private RestDocumentationContext createContext(String methodName) {
-		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
-				"build");
+		System.getProperties().put("snippetOutputDirectory", "build");
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation();
 		manualRestDocumentation.beforeTest(getClass(), methodName);
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;

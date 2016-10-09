@@ -17,6 +17,8 @@
 package org.springframework.restdocs;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * {@code ManualRestDocumentation} is used to manually manage the
@@ -31,9 +33,23 @@ import java.io.File;
  */
 public final class ManualRestDocumentation implements RestDocumentationContextProvider {
 
+	private static final String GENERATED_SNIPPETS_PATH = "generated-snippets";
+	private static final String MAVEN_TARGET_PATH = "target" + File.separator + GENERATED_SNIPPETS_PATH;
+	private static final String GRADLE_BUILD_PATH = "build" + File.separator + GENERATED_SNIPPETS_PATH;
+	private static final String MAVEN_POM = "pom.xml";
+	private static final String OUTPUT_DIR_PROPERTY_KEY = "snippetOutputDirectory";
+
 	private final File outputDirectory;
 
 	private RestDocumentationContext context;
+
+	/**
+	 * Creates a new {@code ManualRestDocumentation} instance that will generate snippets
+	 * to &lt;gradle/maven build path&gt;/generated-snippet if no runtime property ({@code snippetOutputDirectory}) is set.
+	 */
+	public ManualRestDocumentation() {
+		this(System.getProperty(OUTPUT_DIR_PROPERTY_KEY, getDefaultOutputDirectory()));
+	}
 
 	/**
 	 * Creates a new {@code ManualRestDocumentation} instance that will generate snippets
@@ -41,7 +57,7 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 	 *
 	 * @param outputDirectory the output directory
 	 */
-	public ManualRestDocumentation(String outputDirectory) {
+	private ManualRestDocumentation(String outputDirectory) {
 		this.outputDirectory = new File(outputDirectory);
 	}
 
@@ -79,4 +95,12 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 		return this.context;
 	}
 
+	private static String getDefaultOutputDirectory() {
+		String executingDirectory = Paths.get(".").toFile().getAbsolutePath();
+
+		if (Files.exists(Paths.get(MAVEN_POM))) {
+			return executingDirectory + File.separator + MAVEN_TARGET_PATH;
+		}
+		return executingDirectory + File.separator + GRADLE_BUILD_PATH;
+	}
 }
