@@ -97,6 +97,10 @@ test {
 	outputs.dir snippetsDir
 }
 
+integrationTest {
+	systemProperty 'snippetOutputDirectory', 'src/docs/generated-snippets'
+}
+
 asciidoctor {
 	dependsOn integrationTest
 	inputs.dir snippetsDir
