@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,13 @@ import static org.junit.Assert.assertThat;
  */
 public class RestDocsSnippetBlockMacroTest {
 
-    @Test
-    public void replaceRestDocsSnippetBlockWithFile() {
-        Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-        asciidoctor.javaExtensionRegistry().blockMacro("restdocs", RestDocsSnippetBlockMacro.class);
+	@Test
+	public void replaceRestDocsSnippetBlockWithFile() {
+		Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+		asciidoctor.javaExtensionRegistry().blockMacro("restdocs", RestDocsSnippetBlockMacro.class);
 
-        assertThat(asciidoctor.convert("restdocs::rest_docs_macro.adoc[]", new Options()),
-                equalTo("<div class=\"paragraph\">\n<p>test text</p>\n</div>"));
-    }
+		assertThat(asciidoctor.convert("restdocs::rest_docs_macro.adoc[]", new Options()),
+				equalTo("<div class=\"paragraph\">\n<p>test text</p>\n</div>"));
+	}
 
 }

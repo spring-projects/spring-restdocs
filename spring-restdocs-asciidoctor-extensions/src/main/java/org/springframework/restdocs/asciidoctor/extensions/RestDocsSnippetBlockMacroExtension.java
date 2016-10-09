@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@ import org.asciidoctor.extension.spi.ExtensionRegistry;
  */
 public class RestDocsSnippetBlockMacroExtension implements ExtensionRegistry {
 
-    /**
-     *  the name that identifies the block macro in the asciidoctor document
-     *  (e.g. <pre><b>restdocs</b>::file_to_include[]</pre>)
-     */
-    private static final String BLOCK_NAME = "restdocs";
+	/**
+	 * the name that identifies the block macro in the asciidoctor document
+	 * (e.g. <pre><b>restdocs</b>::file_to_include[]</pre>)
+	 */
+	private static final String BLOCK_NAME = "restdocs";
 
-    @Override
-    public void register(Asciidoctor asciidoctor) {
-        asciidoctor.javaExtensionRegistry().blockMacro(BLOCK_NAME, RestDocsSnippetBlockMacro.class);
-    }
+	@Override
+	public void register(Asciidoctor asciidoctor) {
+		asciidoctor.javaExtensionRegistry().blockMacro(BLOCK_NAME, RestDocsSnippetBlockMacro.class);
+	}
 }

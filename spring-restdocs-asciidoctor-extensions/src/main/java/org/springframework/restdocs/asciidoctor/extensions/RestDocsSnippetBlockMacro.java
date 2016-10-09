@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,39 +34,39 @@ import org.asciidoctor.extension.BlockMacroProcessor;
  */
 class RestDocsSnippetBlockMacro extends BlockMacroProcessor {
 
-    private static final String GENERATED_SNIPPETS_PATH = "generated-snippets";
-    private static final String MAVEN_TARGET_PATH = "target" + File.separator + GENERATED_SNIPPETS_PATH;
-    private static final String GRADLE_BUILD_PATH = "build" + File.separator + GENERATED_SNIPPETS_PATH;
-    private static final String MAVEN_POM = "pom.xml";
-    private static final String OUTPUT_DIR_PROPERTY_KEY = "snippetOutputDirectory";
+	private static final String GENERATED_SNIPPETS_PATH = "generated-snippets";
+	private static final String MAVEN_TARGET_PATH = "target" + File.separator + GENERATED_SNIPPETS_PATH;
+	private static final String GRADLE_BUILD_PATH = "build" + File.separator + GENERATED_SNIPPETS_PATH;
+	private static final String MAVEN_POM = "pom.xml";
+	private static final String OUTPUT_DIR_PROPERTY_KEY = "snippetOutputDirectory";
 
-    public RestDocsSnippetBlockMacro(String macroName, Map<String, Object> config) {
-        super(macroName, config);
-    }
+	public RestDocsSnippetBlockMacro(String macroName, Map<String, Object> config) {
+		super(macroName, config);
+	}
 
-    @Override
-    protected Object process(AbstractBlock parent, String fileToInclude, Map<String, Object> attributes) {
-        String generatedSnippetPath = getSnippetPath() + File.separator + fileToInclude;
+	@Override
+	protected Object process(AbstractBlock parent, String fileToInclude, Map<String, Object> attributes) {
+		String generatedSnippetPath = getSnippetPath() + File.separator + fileToInclude;
 
-        // since 'pass' context does not convert the content, we have to do this manually
-        String convertedContent = Asciidoctor.Factory.create().convertFile(
-                new File(generatedSnippetPath),
-                OptionsBuilder.options().toFile(false).inPlace(false).get());
+		// since 'pass' context does not convert the content, we have to do this manually
+		String convertedContent = Asciidoctor.Factory.create().convertFile(
+				new File(generatedSnippetPath),
+				OptionsBuilder.options().toFile(false).inPlace(false).get());
 
-        return createBlock(parent, "pass", convertedContent, attributes, getConfig());
-    }
+		return createBlock(parent, "pass", convertedContent, attributes, getConfig());
+	}
 
-    private String getSnippetPath() {
-        return System.getProperty(OUTPUT_DIR_PROPERTY_KEY, getDefaultOutputDirectory());
-    }
+	private String getSnippetPath() {
+		return System.getProperty(OUTPUT_DIR_PROPERTY_KEY, getDefaultOutputDirectory());
+	}
 
 
-    private static String getDefaultOutputDirectory() {
-        String executingDirectory = Paths.get(".").toFile().getAbsolutePath();
+	private static String getDefaultOutputDirectory() {
+		String executingDirectory = Paths.get(".").toFile().getAbsolutePath();
 
-        if (Files.exists(Paths.get(MAVEN_POM))) {
-            return executingDirectory + File.separator + MAVEN_TARGET_PATH;
-        }
-        return executingDirectory + File.separator + GRADLE_BUILD_PATH;
-    }
+		if (Files.exists(Paths.get(MAVEN_POM))) {
+			return executingDirectory + File.separator + MAVEN_TARGET_PATH;
+		}
+		return executingDirectory + File.separator + GRADLE_BUILD_PATH;
+	}
 }
