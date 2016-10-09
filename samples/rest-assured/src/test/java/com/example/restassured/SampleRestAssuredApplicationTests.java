@@ -42,7 +42,7 @@ import com.jayway.restassured.specification.RequestSpecification;
 public class SampleRestAssuredApplicationTests {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build/generated-snippets");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 	
 	private RequestSpecification documentationSpec;
 	

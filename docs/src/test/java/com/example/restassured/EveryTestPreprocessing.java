@@ -38,8 +38,7 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 public class EveryTestPreprocessing {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
-			"target/generated-snippets");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	// tag::setup[]
 	private RequestSpecification spec;
