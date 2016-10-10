@@ -30,7 +30,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 public class CustomFormat {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@Autowired
 	private WebApplicationContext context;

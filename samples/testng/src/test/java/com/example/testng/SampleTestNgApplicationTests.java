@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
 @WebAppConfiguration
 public class SampleTestNgApplicationTests extends AbstractTestNGSpringContextTests {
 
-	private final ManualRestDocumentation restDocumentation = new ManualRestDocumentation("build/generated-snippets");
+	private final ManualRestDocumentation restDocumentation = new ManualRestDocumentation();
 
 	@Autowired
 	private WebApplicationContext context;

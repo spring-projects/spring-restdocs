@@ -34,6 +34,14 @@ public class RestDocumentation implements TestRule, RestDocumentationContextProv
 
 	/**
 	 * Creates a new {@code RestDocumentation} instance that will generate snippets to the
+	 * to &lt;gradle/maven build path&gt;/generated-snippet.
+	 */
+	public RestDocumentation() {
+		this.delegate = new JUnitRestDocumentation();
+	}
+
+	/**
+	 * Creates a new {@code RestDocumentation} instance that will generate snippets to the
 	 * given {@code outputDirectory}.
 	 *
 	 * @param outputDirectory the output directory

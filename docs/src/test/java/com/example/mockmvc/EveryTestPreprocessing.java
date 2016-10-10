@@ -38,8 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EveryTestPreprocessing {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
-			"target/generated-snippets");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	private WebApplicationContext context;
 

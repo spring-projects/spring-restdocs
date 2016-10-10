@@ -47,8 +47,7 @@ import static org.mockito.Mockito.verify;
 public class RestAssuredRestDocumentationConfigurerTests {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
-			"build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	private final FilterableRequestSpecification requestSpec = mock(
 			FilterableRequestSpecification.class);

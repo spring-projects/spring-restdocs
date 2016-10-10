@@ -29,7 +29,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 public class ParameterizedOutput {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@SuppressWarnings("unused")
 	private MockMvc mockMvc;

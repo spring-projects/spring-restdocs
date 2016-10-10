@@ -70,8 +70,7 @@ public class StandardWriterResolverTests {
 	}
 
 	private RestDocumentationContext createContext(String outputDir) {
-		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
-				outputDir);
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(outputDir);
 		manualRestDocumentation.beforeTest(getClass(), null);
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;

@@ -30,8 +30,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 
 public class ExampleApplicationTestNgTests {
 
-	public final ManualRestDocumentation restDocumentation = new ManualRestDocumentation(
-			"target/generated-snippets");
+	public final ManualRestDocumentation restDocumentation = new ManualRestDocumentation();
 	@SuppressWarnings("unused")
 	// tag::setup[]
 	private MockMvc mockMvc;
