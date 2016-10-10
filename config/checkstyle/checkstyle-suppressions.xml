@@ -5,6 +5,5 @@
 <suppressions>
 	<suppress files="[\\/]src[\\/]test[\\/]java[\\/]" checks="JavadocVariable" />
 	<suppress files="[\\/]src[\\/]test[\\/]java[\\/]" checks="JavadocMethod" />
-	<suppress files="[\\/]src[\\/]test[\\/]java[\\/]" checks="JavadocMethod" />
 	<suppress files="RestDocsSnippetBlockMacro\.java" checks="RedundantModifier" />
 </suppressions>

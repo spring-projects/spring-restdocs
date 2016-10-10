@@ -37,7 +37,6 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 	private static final String MAVEN_TARGET_PATH = "target" + File.separator + GENERATED_SNIPPETS_PATH;
 	private static final String GRADLE_BUILD_PATH = "build" + File.separator + GENERATED_SNIPPETS_PATH;
 	private static final String MAVEN_POM = "pom.xml";
-	private static final String OUTPUT_DIR_PROPERTY_KEY = "snippetOutputDirectory";
 
 	private final File outputDirectory;
 
@@ -45,10 +44,10 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 
 	/**
 	 * Creates a new {@code ManualRestDocumentation} instance that will generate snippets
-	 * to &lt;gradle/maven build path&gt;/generated-snippet if no runtime property ({@code snippetOutputDirectory}) is set.
+	 * to &lt;gradle/maven build path&gt;/generated-snippet.
 	 */
 	public ManualRestDocumentation() {
-		this(System.getProperty(OUTPUT_DIR_PROPERTY_KEY, getDefaultOutputDirectory()));
+		this(getDefaultOutputDirectory());
 	}
 
 	/**
@@ -57,7 +56,7 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 	 *
 	 * @param outputDirectory the output directory
 	 */
-	private ManualRestDocumentation(String outputDirectory) {
+	public ManualRestDocumentation(String outputDirectory) {
 		this.outputDirectory = new File(outputDirectory);
 	}
 

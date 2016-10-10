@@ -16,8 +16,13 @@
 
 package org.springframework.restdocs.asciidoctor.extensions;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -30,12 +35,19 @@ import static org.junit.Assert.assertThat;
  */
 public class RestDocsSnippetBlockMacroTest {
 
+	@Before
+	public void prepareIncludeFiles() throws Exception {
+		Files.createDirectories(Paths.get("build/generated-snippets/"));
+		Files.copy(Paths.get("src/test/resources/rest_docs_macro.adoc"),
+				Paths.get("build/generated-snippets/rest_docs_macro.adoc"), StandardCopyOption.REPLACE_EXISTING);
+	}
+
 	@Test
 	public void replaceRestDocsSnippetBlockWithFile() {
 		Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-		asciidoctor.javaExtensionRegistry().blockMacro("restdocs", RestDocsSnippetBlockMacro.class);
+		asciidoctor.javaExtensionRegistry().blockMacro("snippet", RestDocsSnippetBlockMacro.class);
 
-		assertThat(asciidoctor.convert("restdocs::rest_docs_macro.adoc[]", new Options()),
+		assertThat(asciidoctor.convert("snippet::rest_docs_macro.adoc[]", new Options()),
 				equalTo("<div class=\"paragraph\">\n<p>test text</p>\n</div>"));
 	}
 

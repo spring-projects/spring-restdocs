@@ -195,8 +195,7 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	private RestDocumentationContext createContext() {
-		System.getProperties().put("snippetOutputDirectory", "build");
-		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation();
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation("build");
 		manualRestDocumentation.beforeTest(null, null);
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;

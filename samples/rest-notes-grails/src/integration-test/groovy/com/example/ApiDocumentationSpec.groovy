@@ -45,7 +45,7 @@ import spock.lang.Specification
 class ApiDocumentationSpec extends Specification {
 
 	@Rule
-	JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation()
+	JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation('src/docs/generated-snippets')
 
 	@Value('${local.server.port}')
 	Integer serverPort

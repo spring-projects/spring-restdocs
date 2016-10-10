@@ -38,7 +38,6 @@ class RestDocsSnippetBlockMacro extends BlockMacroProcessor {
 	private static final String MAVEN_TARGET_PATH = "target" + File.separator + GENERATED_SNIPPETS_PATH;
 	private static final String GRADLE_BUILD_PATH = "build" + File.separator + GENERATED_SNIPPETS_PATH;
 	private static final String MAVEN_POM = "pom.xml";
-	private static final String OUTPUT_DIR_PROPERTY_KEY = "snippetOutputDirectory";
 
 	public RestDocsSnippetBlockMacro(String macroName, Map<String, Object> config) {
 		super(macroName, config);
@@ -46,7 +45,7 @@ class RestDocsSnippetBlockMacro extends BlockMacroProcessor {
 
 	@Override
 	protected Object process(AbstractBlock parent, String fileToInclude, Map<String, Object> attributes) {
-		String generatedSnippetPath = getSnippetPath() + File.separator + fileToInclude;
+		String generatedSnippetPath = getDefaultOutputDirectory() + File.separator + fileToInclude;
 
 		// since 'pass' context does not convert the content, we have to do this manually
 		String convertedContent = Asciidoctor.Factory.create().convertFile(
@@ -55,11 +54,6 @@ class RestDocsSnippetBlockMacro extends BlockMacroProcessor {
 
 		return createBlock(parent, "pass", convertedContent, attributes, getConfig());
 	}
-
-	private String getSnippetPath() {
-		return System.getProperty(OUTPUT_DIR_PROPERTY_KEY, getDefaultOutputDirectory());
-	}
-
 
 	private static String getDefaultOutputDirectory() {
 		String executingDirectory = Paths.get(".").toFile().getAbsolutePath();
