@@ -163,6 +163,7 @@ samples {
 	dependOn 'spring-restdocs-core:install'
 	dependOn 'spring-restdocs-mockmvc:install'
 	dependOn 'spring-restdocs-restassured:install'
+	dependOn 'spring-restdocs-asciidoctor:install'
 
 	restNotesGrails {
 		workingDir "$projectDir/samples/rest-notes-grails"
