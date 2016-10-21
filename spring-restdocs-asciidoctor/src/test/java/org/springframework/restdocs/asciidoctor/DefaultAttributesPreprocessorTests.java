@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.asciidoctor;
 
+import java.io.File;
+
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
 import org.asciidoctor.Options;
@@ -35,7 +37,8 @@ public class DefaultAttributesPreprocessorTests {
 	public void snippetsAttributeIsSet() {
 		String converted = Asciidoctor.Factory.create().convert("{snippets}",
 				new Options());
-		assertThat(converted, containsString("build/generated-snippets"));
+		assertThat(converted,
+				containsString("build" + File.separatorChar + "generated-snippets"));
 	}
 
 	@Test
