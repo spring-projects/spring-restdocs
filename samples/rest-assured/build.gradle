@@ -37,6 +37,7 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	testCompile "org.springframework.restdocs:spring-restdocs-restassured:${project.ext['spring-restdocs.version']}"
+	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
 }
 
 test {
@@ -44,7 +45,6 @@ test {
 }
 
 asciidoctor {
-	attributes 'snippets': snippetsDir
 	inputs.dir snippetsDir
 	dependsOn test
 }

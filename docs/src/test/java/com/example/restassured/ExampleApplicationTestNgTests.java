@@ -29,8 +29,7 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 
 public class ExampleApplicationTestNgTests {
 
-	private final ManualRestDocumentation restDocumentation = new ManualRestDocumentation(
-			"build/generated-snippets");
+	private final ManualRestDocumentation restDocumentation = new ManualRestDocumentation();
 
 	@SuppressWarnings("unused")
 	// tag::setup[]

@@ -29,8 +29,7 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 public class ParameterizedOutput {
 
 	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
-			"build/generated-snippets");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@SuppressWarnings("unused")
 	private RequestSpecification spec;

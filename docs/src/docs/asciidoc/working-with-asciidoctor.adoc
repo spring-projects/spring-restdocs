@@ -17,10 +17,11 @@ relevant to Spring REST Docs.
 [[working-with-asciidoctor-including-snippets]]
 === Including snippets
 
-The  http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include
+The http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include
 macro] is used to include generated snippets in your documentation. The `snippets`
-attribute specified in the <<getting-started-build-configuration, build configuration>>
-can be used to reference the snippets output directory, for example:
+attribute that is automatically set by `spring-restdocs-asciidoctor` configured in the
+<<getting-started-build-configuration, build configuration>> can be used to reference the
+snippets output directory. For example:
 
 [source,adoc,indent=0]
 ----

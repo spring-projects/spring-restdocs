@@ -101,8 +101,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MockMvcRestDocumentationIntegrationTests {
 
 	@Rule
-	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
-			"build/generated-snippets");
+	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@Autowired
 	private WebApplicationContext context;

@@ -91,8 +91,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.snippet;
 public class RestAssuredRestDocumentationIntegrationTests {
 
 	@Rule
-	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation(
-			"build/generated-snippets");
+	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@Value("${local.server.port}")
 	private int port;

@@ -44,6 +44,7 @@ repositories {
 dependencyManagement {
 	dependencies {
 		dependency "org.springframework.restdocs:spring-restdocs-restassured:$restDocsVersion"
+		dependency "org.springframework.restdocs:spring-restdocs-asciidoctor:$restDocsVersion"
 	}
 	imports {
 		mavenBom "org.grails:grails-bom:$grailsVersion"
@@ -53,6 +54,8 @@ dependencyManagement {
 }
 
 dependencies {
+	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor"
+
 	compile "org.springframework.boot:spring-boot-starter-logging"
 	compile "org.springframework.boot:spring-boot-starter-actuator"
 	compile "org.springframework.boot:spring-boot-autoconfigure"
@@ -85,24 +88,16 @@ task wrapper(type: Wrapper) {
 }
 
 ext {
-	snippetsDir = file('src/docs/generated-snippets')
-}
-
-task cleanTempDirs(type: Delete) {
-	delete fileTree(dir: 'src/docs/generated-snippets')
+	snippetsDir = file('build/generated-snippets')
 }
 
 test {
-	dependsOn cleanTempDirs
 	outputs.dir snippetsDir
 }
 
 asciidoctor {
 	dependsOn integrationTest
 	inputs.dir snippetsDir
-	sourceDir = file('src/docs')
-	separateOutputDirs = false
-	attributes 'snippets': snippetsDir
 }
 
 build.dependsOn asciidoctor

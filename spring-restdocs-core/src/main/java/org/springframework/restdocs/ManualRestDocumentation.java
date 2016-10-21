@@ -37,12 +37,24 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 
 	/**
 	 * Creates a new {@code ManualRestDocumentation} instance that will generate snippets
+	 * to &lt;gradle/maven build path&gt;/generated-snippet.
+	 */
+	public ManualRestDocumentation() {
+		this(getDefaultOutputDirectory());
+	}
+
+	/**
+	 * Creates a new {@code ManualRestDocumentation} instance that will generate snippets
 	 * to the given {@code outputDirectory}.
 	 *
 	 * @param outputDirectory the output directory
 	 */
 	public ManualRestDocumentation(String outputDirectory) {
-		this.outputDirectory = new File(outputDirectory);
+		this(new File(outputDirectory));
+	}
+
+	private ManualRestDocumentation(File outputDirectory) {
+		this.outputDirectory = outputDirectory;
 	}
 
 	/**
@@ -77,6 +89,13 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 	public RestDocumentationContext beforeOperation() {
 		this.context.getAndIncrementStepCount();
 		return this.context;
+	}
+
+	private static File getDefaultOutputDirectory() {
+		if (new File("pom.xml").exists()) {
+			return new File("target/generated-snippets");
+		}
+		return new File("build/generated-snippets");
 	}
 
 }
