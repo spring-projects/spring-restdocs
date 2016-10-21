@@ -83,7 +83,8 @@ public class RestDocumentationContextPlaceholderResolverTests {
 	}
 
 	private RestDocumentationContext createContext(String methodName) {
-		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation("build");
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
+				"build");
 		manualRestDocumentation.beforeTest(getClass(), methodName);
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;

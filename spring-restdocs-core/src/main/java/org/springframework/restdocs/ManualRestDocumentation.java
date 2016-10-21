@@ -17,8 +17,6 @@
 package org.springframework.restdocs;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * {@code ManualRestDocumentation} is used to manually manage the
@@ -32,11 +30,6 @@ import java.nio.file.Paths;
  * @since 1.1.0
  */
 public final class ManualRestDocumentation implements RestDocumentationContextProvider {
-
-	private static final String GENERATED_SNIPPETS_PATH = "generated-snippets";
-	private static final String MAVEN_TARGET_PATH = "target" + File.separator + GENERATED_SNIPPETS_PATH;
-	private static final String GRADLE_BUILD_PATH = "build" + File.separator + GENERATED_SNIPPETS_PATH;
-	private static final String MAVEN_POM = "pom.xml";
 
 	private final File outputDirectory;
 
@@ -57,7 +50,11 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 	 * @param outputDirectory the output directory
 	 */
 	public ManualRestDocumentation(String outputDirectory) {
-		this.outputDirectory = new File(outputDirectory);
+		this(new File(outputDirectory));
+	}
+
+	private ManualRestDocumentation(File outputDirectory) {
+		this.outputDirectory = outputDirectory;
 	}
 
 	/**
@@ -94,12 +91,11 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 		return this.context;
 	}
 
-	private static String getDefaultOutputDirectory() {
-		String executingDirectory = Paths.get(".").toFile().getAbsolutePath();
-
-		if (Files.exists(Paths.get(MAVEN_POM))) {
-			return executingDirectory + File.separator + MAVEN_TARGET_PATH;
+	private static File getDefaultOutputDirectory() {
+		if (new File("pom.xml").exists()) {
+			return new File("target/generated-snippets");
 		}
-		return executingDirectory + File.separator + GRADLE_BUILD_PATH;
+		return new File("build/generated-snippets");
 	}
+
 }

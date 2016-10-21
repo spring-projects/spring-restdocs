@@ -12,6 +12,3 @@ classes/
 .classpath
 gradlew*
 gradle/wrapper
-
-
-src/docs/generated-snippets

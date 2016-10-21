@@ -34,7 +34,10 @@ ext['spring.version']='4.3.1.RELEASE'
 ext['spring-restdocs.version'] = '1.2.0.BUILD-SNAPSHOT'
 
 dependencies {
+	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
+
 	compile 'org.springframework.boot:spring-boot-starter-web'
+
 	testCompile('org.springframework:spring-test') {
 		exclude group: 'junit', module: 'junit;'
 	}
@@ -48,7 +51,6 @@ test {
 }
 
 asciidoctor {
-	attributes 'snippets': snippetsDir
 	inputs.dir snippetsDir
 	dependsOn test
 }

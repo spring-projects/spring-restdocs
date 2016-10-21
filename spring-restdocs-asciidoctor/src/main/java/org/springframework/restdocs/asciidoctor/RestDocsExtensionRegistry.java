@@ -14,32 +14,22 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.asciidoctor.extensions;
+package org.springframework.restdocs.asciidoctor;
 
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.extension.spi.ExtensionRegistry;
 
 /**
- * ExtensionRegistry for the Spring Rest Docs macros to get registered
- * in all projects that include this asciidoctor extension module.
- * <p>
- * Macros provided:
- * <ul>
- * <li>{@link RestDocsSnippetBlockMacro}</li>
- * </ul>
+ * Asciidoctor {@link ExtensionRegistry} for Spring REST Docs.
  *
- * @author Gerrit Meier
+ * @author Andy Wilkinson
  */
-public class RestDocsExtensionRegistry implements ExtensionRegistry {
-
-	/**
-	 * the name that identifies the block macro in the asciidoctor document
-	 * (e.g. <pre><b>snippet</b>::file_to_include[]</pre>)
-	 */
-	private static final String SNIPPET_BLOCK_NAME = "snippet";
+public final class RestDocsExtensionRegistry implements ExtensionRegistry {
 
 	@Override
 	public void register(Asciidoctor asciidoctor) {
-		asciidoctor.javaExtensionRegistry().blockMacro(SNIPPET_BLOCK_NAME, RestDocsSnippetBlockMacro.class);
+		asciidoctor.javaExtensionRegistry()
+				.preprocessor(new DefaultAttributesPreprocessor());
 	}
+
 }

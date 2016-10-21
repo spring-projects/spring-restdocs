@@ -1,6 +1,0 @@
-description = 'Spring REST Docs Asciidoctor Extensions'
-
-dependencies {
-	compile 'org.asciidoctor:asciidoctorj:1.5.2'
-	optional 'junit:junit'
-}

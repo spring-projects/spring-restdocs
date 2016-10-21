@@ -94,13 +94,9 @@ the configuration are described below.
 		<scope>test</scope>
 	</dependency>
 
-	<properties> <2>
-		<snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
-	</properties>
-
 	<build>
 		<plugins>
-			<plugin> <3>
+			<plugin> <2>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -109,26 +105,30 @@ the configuration are described below.
 					</includes>
 				</configuration>
 			</plugin>
-			<plugin> <4>
+			<plugin> <3>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.2</version>
+				<version>1.5.3</version>
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<phase>prepare-package</phase> <6>
+						<phase>prepare-package</phase> <4>
 						<goals>
 							<goal>process-asciidoc</goal>
 						</goals>
 						<configuration>
 							<backend>html</backend>
 							<doctype>book</doctype>
-							<attributes>
-								<snippets>${snippetsDirectory}</snippets> <5>
-							</attributes>
 						</configuration>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency> <5>
+						<groupId>org.springframework.restdocs</groupId>
+						<artifactId>spring-restdocs-asciidoctor</artifactId>
+						<version>{project-version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
@@ -136,49 +136,50 @@ the configuration are described below.
 <1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope. If you want to use
 	REST Assured rather than MockMvc, add a dependency on `spring-restdocs-restassured`
 	instead.
-<2> Configure a property to define the output location for generated snippets.
-<3> Add the SureFire plugin and configure it to include files whose names end with
+<2> Add the SureFire plugin and configure it to include files whose names end with
 	`Documentation.java`.
-<4> Add the Asciidoctor plugin
-<5> Define an attribute named `snippets` that can be used when including the generated
-	snippets in your documentation.
-<6> Using `prepare-package` allows the documentation to be
+<3> Add the Asciidoctor plugin.
+<4> Using `prepare-package` allows the documentation to be
 	<<getting-started-build-configuration-maven-packaging, included in the package>>.
+<5> Add `spring-restdocs-asciidoctor` as a dependency of the Asciidoctor plugin. This
+	will automatically configure the `snippets` attribute for use in your `.adoc` files to
+	point to `target/generated-snippets`.
 
 [source,groovy,indent=0,subs="verbatim,attributes",role="secondary"]
 .Gradle
 ----
 	plugins { <1>
-		id "org.asciidoctor.convert" version "1.5.2"
+		id "org.asciidoctor.convert" version "1.5.3"
 	}
 
-	dependencies { <2>
-		testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}'
+	dependencies {
+		asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}' <2>
+		testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <3>
 	}
 
-	ext { <3>
+	ext { <4>
 		snippetsDir = file('build/generated-snippets')
 	}
 
-	test { <4>
+	test { <5>
 		outputs.dir snippetsDir
 	}
 
-	asciidoctor { <5>
-		attributes 'snippets': snippetsDir <6>
+	asciidoctor { <6>
 		inputs.dir snippetsDir <7>
 		dependsOn test <8>
 	}
 ----
 <1> Apply the Asciidoctor plugin.
-<2> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration. If
+<2> Add a dependency on `spring-restdocs-asciidoctor` in the `asciidoctor` configuration.
+	This will automatically configure the `snippets` attribute for use in your `.adoc`
+	files to point to `build/generated-snippets`.
+<3> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration. If
 	you want to use REST Assured rather than MockMvc, add a dependency on
 	`spring-restdocs-restassured` instead.
-<3> Configure a property to define the output location for generated snippets.
-<4> Configure the `test` task to add the snippets directory as an output.
-<5> Configure the `asciidoctor` task
-<6> Define an attribute named `snippets` that can be used when including the generated
-	snippets in your documentation.
+<4> Configure a property to define the output location for generated snippets.
+<5> Configure the `test` task to add the snippets directory as an output.
+<6> Configure the `asciidoctor` task
 <7> Configure the snippets directory as an input.
 <8> Make the task depend on the test task so that the tests are run before the
 	documentation is created.
@@ -271,28 +272,38 @@ are also supported although slightly more setup is required.
 ===== Setting up your JUnit tests
 
 When using JUnit, the first step in generating documentation snippets is to declare a
-`public` `JUnitRestDocumentation` field that's annotated as a JUnit `@Rule`. The
-`JUnitRestDocumentation` rule is configured with the output directory into which generated
-snippets should be written. This output directory should match the snippets directory that
-you have configured in your `build.gradle` or `pom.xml` file.
+`public` `JUnitRestDocumentation` field that's annotated as a JUnit `@Rule`.
 
-For Maven (`pom.xml`) that will typically be `target/generated-snippets` and for
-Gradle (`build.gradle`) it will typically be `build/generated-snippets`:
 
-[source,java,indent=0,role="primary"]
-.Maven
+[source,java,indent=0]
 ----
 @Rule
-public JUnitRestDocumentation restDocumentation =
-		new JUnitRestDocumentation("target/generated-snippets");
+public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 ----
 
-[source,java,indent=0,role="secondary"]
-.Gradle
+
+By default, the `JUnitRestDocumentation` rule is automatically configured with an output
+directory based on your project's build tool:
+
+[cols="2,5"]
+|===
+| Build tool | Output directory
+
+| Maven
+| `target/generated-snippets`
+
+| Gradle
+| `build/generated-snippets`
+
+|===
+
+The default can be overridden by providing an output directory when creating the
+`JUnitRestDocumentation` instance:
+
+[source,java,indent=0]
 ----
 @Rule
-public JUnitRestDocumentation restDocumentation =
-		new JUnitRestDocumentation("build/generated-snippets");
+public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("custom");
 ----
 
 Next, provide an `@Before` method to configure MockMvc or REST Assured:
@@ -331,18 +342,9 @@ illustrates the approach.
 The first difference is that `ManualRestDocumentation` should be used in place of
 `JUnitRestDocumentation` and there's no need for the `@Rule` annotation:
 
-[source,java,indent=0,role="primary"]
-.Maven
+[source,java,indent=0]
 ----
-private ManualRestDocumentation restDocumentation =
-		new ManualRestDocumentation("target/generated-snippets");
-----
-
-[source,java,indent=0,role="secondary"]
-.Gradle
-----
-private ManualRestDocumentation restDocumentation =
-		new ManualRestDocumentation("build/generated-snippets");
+private ManualRestDocumentation restDocumentation = new ManualRestDocumentation();
 ----
 
 Secondly, `ManualRestDocumentation.beforeTest(Class, String)`
@@ -441,7 +443,8 @@ the resulting HTML files depends on whether you are using Maven or Gradle:
 The generated snippets can then be included in the manually created Asciidoctor file from
 above using the
 http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
-The `snippets` attribute specified in the <<getting-started-build-configuration, build
+The `snippets` attribute that is automatically set by `spring-restdocs-asciidoctor`
+configured in the <<getting-started-build-configuration, build
 configuration>> can be used to reference the snippets output directory. For example:
 
 [source,adoc,indent=0]
