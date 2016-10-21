@@ -145,7 +145,7 @@ the configuration are described below.
 <6> Using `prepare-package` allows the documentation to be
 	<<getting-started-build-configuration-maven-packaging, included in the package>>.
 
-[source,groovy,indent=0,subs="verbatim,attributes",role="secondary"]
+[source,indent=0,subs="verbatim,attributes",role="secondary"]
 .Gradle
 ----
 	plugins { <1>
@@ -235,7 +235,7 @@ Asciidoctor plugin to ensure that the documentation is generated before it's cop
 <3> Copy the generated documentation into the build output's `static/docs` directory,
 from where it will be included in the jar file.
 
-[source,groovy,indent=0,role="secondary"]
+[source,indent=0,role="secondary"]
 .Gradle
 ----
 	jar {
