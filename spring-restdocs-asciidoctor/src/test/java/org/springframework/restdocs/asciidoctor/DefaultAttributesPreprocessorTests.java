@@ -35,8 +35,9 @@ public class DefaultAttributesPreprocessorTests {
 
 	@Test
 	public void snippetsAttributeIsSet() {
-		String converted = Asciidoctor.Factory.create().convert("{snippets}",
-				new Options());
+		Options options = new Options();
+		options.setAttributes(new Attributes("projectdir=../../.."));
+		String converted = Asciidoctor.Factory.create().convert("{snippets}", options);
 		assertThat(converted,
 				containsString("build" + File.separatorChar + "generated-snippets"));
 	}
@@ -44,7 +45,7 @@ public class DefaultAttributesPreprocessorTests {
 	@Test
 	public void snippetsAttributeFromConvertArgumentIsNotOverridden() {
 		Options options = new Options();
-		options.setAttributes(new Attributes("snippets=custom"));
+		options.setAttributes(new Attributes("snippets=custom projectdir=../../.."));
 		String converted = Asciidoctor.Factory.create().convert("{snippets}", options);
 		assertThat(converted, containsString("custom"));
 	}
@@ -52,7 +53,7 @@ public class DefaultAttributesPreprocessorTests {
 	@Test
 	public void snippetsAttributeFromDocumentPreambleIsNotOverridden() {
 		Options options = new Options();
-		options.setAttributes(new Attributes("snippets=custom"));
+		options.setAttributes(new Attributes("projectdir=../../.."));
 		String converted = Asciidoctor.Factory.create()
 				.convert(":snippets: custom\n{snippets}", options);
 		assertThat(converted, containsString("custom"));

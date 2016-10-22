@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -39,19 +40,42 @@ public class SnippetsDirectoryResolverTests {
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
 	@Test
-	public void mavenProjectsUseTargetGeneratedSnippetsRelativeToDocDir()
+	public void mavenProjectsUseTargetGeneratedSnippetsRelativeToDocdir()
 			throws IOException {
 		this.temporaryFolder.newFile("pom.xml");
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("docdir",
 				new File(this.temporaryFolder.getRoot(), "src/main/asciidoc")
 						.getAbsolutePath());
-		File snippetsDirectory = new SnippetsDirectoryResolver(
-				this.temporaryFolder.getRoot()).getSnippetsDirectory(attributes);
+		File snippetsDirectory = getMavenSnippetsDirectory(attributes);
 		assertThat(snippetsDirectory.isAbsolute(), is(false));
 		assertThat(snippetsDirectory,
 				equalTo(new File("../../../target/generated-snippets")));
+	}
+
+	@Test
+	public void illegalStateExceptionWhenMavenPomCannotBeFound() throws IOException {
+		Map<String, Object> attributes = new HashMap<>();
+		String docdir = new File(this.temporaryFolder.getRoot(), "src/main/asciidoc")
+				.getAbsolutePath();
+		attributes.put("docdir", docdir);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown
+				.expectMessage(equalTo("pom.xml not found in '" + docdir + "' or above"));
+		getMavenSnippetsDirectory(attributes);
+	}
+
+	@Test
+	public void illegalStateWhenDocdirAttributeIsNotSetInMavenProject()
+			throws IOException {
+		Map<String, Object> attributes = new HashMap<>();
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage(equalTo("docdir attribute not found"));
+		getMavenSnippetsDirectory(attributes);
 	}
 
 	@Test
@@ -59,10 +83,29 @@ public class SnippetsDirectoryResolverTests {
 			throws IOException {
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("projectdir", "project/dir");
-		File snippetsDirectory = new SnippetsDirectoryResolver(
-				this.temporaryFolder.getRoot()).getSnippetsDirectory(attributes);
+		File snippetsDirectory = new SnippetsDirectoryResolver()
+				.getSnippetsDirectory(attributes);
 		assertThat(snippetsDirectory,
 				equalTo(new File("project/dir/build/generated-snippets")));
+	}
+
+	@Test
+	public void illegalStateWhenProjectdirAttributeIsNotSetInGradleProject()
+			throws IOException {
+		Map<String, Object> attributes = new HashMap<>();
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage(equalTo("projectdir attribute not found"));
+		new SnippetsDirectoryResolver().getSnippetsDirectory(attributes);
+	}
+
+	private File getMavenSnippetsDirectory(Map<String, Object> attributes) {
+		System.setProperty("maven.home", "/maven/home");
+		try {
+			return new SnippetsDirectoryResolver().getSnippetsDirectory(attributes);
+		}
+		finally {
+			System.clearProperty("maven.home");
+		}
 	}
 
 }

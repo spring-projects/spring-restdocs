@@ -16,8 +16,6 @@
 
 package org.springframework.restdocs.asciidoctor;
 
-import java.io.File;
-
 import org.asciidoctor.ast.Document;
 import org.asciidoctor.extension.Preprocessor;
 import org.asciidoctor.extension.PreprocessorReader;
@@ -30,8 +28,7 @@ import org.asciidoctor.extension.PreprocessorReader;
  */
 final class DefaultAttributesPreprocessor extends Preprocessor {
 
-	private final SnippetsDirectoryResolver snippetsDirectoryResolver = new SnippetsDirectoryResolver(
-			new File("."));
+	private final SnippetsDirectoryResolver snippetsDirectoryResolver = new SnippetsDirectoryResolver();
 
 	@Override
 	public PreprocessorReader process(Document document, PreprocessorReader reader) {

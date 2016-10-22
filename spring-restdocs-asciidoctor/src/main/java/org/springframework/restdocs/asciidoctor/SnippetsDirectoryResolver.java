@@ -17,6 +17,7 @@
 package org.springframework.restdocs.asciidoctor;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -30,29 +31,42 @@ import java.util.Map;
  */
 class SnippetsDirectoryResolver {
 
-	private final File root;
-
-	SnippetsDirectoryResolver(File root) {
-		this.root = root;
-	}
-
 	File getSnippetsDirectory(Map<String, Object> attributes) {
-		if (new File(this.root, "pom.xml").exists()) {
+		if (System.getProperty("maven.home") != null) {
 			return getMavenSnippetsDirectory(attributes);
 		}
 		return getGradleSnippetsDirectory(attributes);
 	}
 
 	private File getMavenSnippetsDirectory(Map<String, Object> attributes) {
-		Path rootPath = Paths.get(this.root.getAbsolutePath());
-		Path docDirPath = Paths.get((String) attributes.get("docdir"));
-		Path relativePath = docDirPath.relativize(rootPath);
-		return new File(relativePath.toFile(), "target/generated-snippets");
+		Path docdir = Paths.get(getRequiredAttribute(attributes, "docdir"));
+		return new File(docdir.relativize(findPom(docdir).getParent()).toFile(),
+				"target/generated-snippets");
+	}
+
+	private Path findPom(Path docdir) {
+		Path path = docdir;
+		while (path != null) {
+			Path pom = path.resolve("pom.xml");
+			if (Files.isRegularFile(pom)) {
+				return pom;
+			}
+			path = path.getParent();
+		}
+		throw new IllegalStateException("pom.xml not found in '" + docdir + "' or above");
 	}
 
 	private File getGradleSnippetsDirectory(Map<String, Object> attributes) {
-		return new File((String) attributes.get("projectdir"),
+		return new File(getRequiredAttribute(attributes, "projectdir"),
 				"build/generated-snippets");
+	}
+
+	private String getRequiredAttribute(Map<String, Object> attributes, String name) {
+		String attribute = (String) attributes.get(name);
+		if (attribute == null || attribute.length() == 0) {
+			throw new IllegalStateException(name + " attribute not found");
+		}
+		return attribute;
 	}
 
 }
