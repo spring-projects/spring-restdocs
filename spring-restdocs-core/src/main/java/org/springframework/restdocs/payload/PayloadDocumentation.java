@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.restdocs.snippet.Attributes;
+
 /**
  * Static factory methods for documenting a RESTful API's request and response payloads.
  *
@@ -452,6 +454,7 @@ public abstract class PayloadDocumentation {
 					pathPrefix + descriptor.getPath())
 							.description(descriptor.getDescription())
 							.type(descriptor.getType());
+			prefixedDescriptor.attributes(convertAttributesToArray(descriptor.getAttributes()));
 			if (descriptor.isIgnored()) {
 				prefixedDescriptor.ignored();
 			}
@@ -461,6 +464,14 @@ public abstract class PayloadDocumentation {
 			prefixedDescriptors.add(prefixedDescriptor);
 		}
 		return prefixedDescriptors;
+	}
+
+	private static Attributes.Attribute[] convertAttributesToArray(Map<String, Object> attributes) {
+		List<Attributes.Attribute> attributesAsList = new ArrayList<>();
+		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+			attributesAsList.add(Attributes.key(entry.getKey()).value(entry.getValue()));
+		}
+		return attributesAsList.toArray(new Attributes.Attribute[] {});
 	}
 
 }

@@ -245,16 +245,31 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void prefixedAdditionalDescriptors() throws IOException {
-		this.snippet.expectRequestFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
-						.row("`a.c`", "`String`", "three"));
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("request-fields"))
+				.willReturn(snippetResource("request-fields-with-extra-column"));
 
-		PayloadDocumentation.requestFields(fieldWithPath("a").description("one"))
-				.andWithPrefix("a.", fieldWithPath("b").description("two"),
-						fieldWithPath("c").description("three"))
-				.document(this.operationBuilder.request("http://localhost")
-						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
+		this.snippet.expectRequestFields()
+				.withContents(tableWithHeader("Path", "Type", "Description", "Foo")
+						.row("a", "Object", "one", "alpha")
+						.row("a.b", "Number", "two", "bravo")
+						.row("a.c", "String", "three", "charlie"));
+
+		PayloadDocumentation.requestFields(
+				fieldWithPath("a").description("one").attributes(key("foo").value("alpha")))
+				.andWithPrefix("a.",
+						fieldWithPath("b").description("two")
+								.attributes(key("foo").value("bravo")),
+						fieldWithPath("c").description("three")
+								.attributes(key("foo").value("charlie")))
+				.document(this.operationBuilder
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(
+												resolver))
+								.request("http://localhost")
+								.content(
+										"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
+								.build());
 	}
 
 	@Test
