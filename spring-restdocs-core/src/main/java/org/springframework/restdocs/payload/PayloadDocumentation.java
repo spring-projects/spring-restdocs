@@ -381,7 +381,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
-		return requestPartFields(part, Arrays.asList(descriptors));
+		return requestPartFields(part, attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -409,7 +409,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
 			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
-		return new RequestPartFieldsSnippet(part, descriptors);
+		return new RequestPartFieldsSnippet(part, descriptors, attributes);
 	}
 
 	/**
@@ -429,7 +429,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
-		return relaxedRequestPartFields(part, Arrays.asList(descriptors));
+		return relaxedRequestPartFields(part, attributes, Arrays.asList(descriptors));
 	}
 
 	/**
@@ -449,7 +449,7 @@ public abstract class PayloadDocumentation {
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
 			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
-		return new RequestPartFieldsSnippet(part, descriptors, true);
+		return new RequestPartFieldsSnippet(part, descriptors, attributes, true);
 	}
 
 	/**
