@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,13 +49,13 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void basicResponse() throws IOException {
-		this.snippet.expectHttpResponse().withContents(httpResponse(HttpStatus.OK));
+		this.snippets.expectHttpResponse().withContents(httpResponse(HttpStatus.OK));
 		new HttpResponseSnippet().document(this.operationBuilder.build());
 	}
 
 	@Test
 	public void nonOkResponse() throws IOException {
-		this.snippet.expectHttpResponse()
+		this.snippets.expectHttpResponse()
 				.withContents(httpResponse(HttpStatus.BAD_REQUEST));
 		new HttpResponseSnippet().document(this.operationBuilder.response()
 				.status(HttpStatus.BAD_REQUEST.value()).build());
@@ -63,7 +63,7 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithHeaders() throws IOException {
-		this.snippet.expectHttpResponse().withContents(httpResponse(HttpStatus.OK)
+		this.snippets.expectHttpResponse().withContents(httpResponse(HttpStatus.OK)
 				.header("Content-Type", "application/json").header("a", "alpha"));
 		new HttpResponseSnippet()
 				.document(this.operationBuilder.response()
@@ -75,7 +75,7 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void responseWithContent() throws IOException {
 		String content = "content";
-		this.snippet.expectHttpResponse()
+		this.snippets.expectHttpResponse()
 				.withContents(httpResponse(HttpStatus.OK).content(content)
 						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 		new HttpResponseSnippet()
@@ -86,7 +86,7 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 	public void responseWithCharset() throws IOException {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
-		this.snippet.expectHttpResponse()
+		this.snippets.expectHttpResponse()
 				.withContents(httpResponse(HttpStatus.OK)
 						.header("Content-Type", "text/plain;charset=UTF-8")
 						.content(japaneseContent)
@@ -98,7 +98,7 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithCustomSnippetAttributes() throws IOException {
-		this.snippet.expectHttpResponse()
+		this.snippets.expectHttpResponse()
 				.withContents(containsString("Title for the response"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("http-response"))

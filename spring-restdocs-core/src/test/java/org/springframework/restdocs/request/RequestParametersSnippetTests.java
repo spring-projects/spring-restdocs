@@ -48,7 +48,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestParameters() throws IOException {
-		this.snippet.expectRequestParameters()
+		this.snippets.expectRequestParameters()
 				.withContents(tableWithHeader("Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		new RequestParametersSnippet(
@@ -60,7 +60,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestParameterWithNoValue() throws IOException {
-		this.snippet.expectRequestParameters().withContents(
+		this.snippets.expectRequestParameters().withContents(
 				tableWithHeader("Parameter", "Description").row("`a`", "one"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one")))
@@ -70,7 +70,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void ignoredRequestParameter() throws IOException {
-		this.snippet.expectRequestParameters().withContents(
+		this.snippets.expectRequestParameters().withContents(
 				tableWithHeader("Parameter", "Description").row("`b`", "two"));
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
 				parameterWithName("b").description("two")))
@@ -80,7 +80,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void allUndocumentedRequestParametersCanBeIgnored() throws IOException {
-		this.snippet.expectRequestParameters().withContents(
+		this.snippets.expectRequestParameters().withContents(
 				tableWithHeader("Parameter", "Description").row("`b`", "two"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("b").description("two")), true)
@@ -90,7 +90,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void missingOptionalRequestParameter() throws IOException {
-		this.snippet.expectRequestParameters()
+		this.snippets.expectRequestParameters()
 				.withContents(tableWithHeader("Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		new RequestParametersSnippet(
@@ -102,7 +102,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void presentOptionalRequestParameter() throws IOException {
-		this.snippet.expectRequestParameters().withContents(
+		this.snippets.expectRequestParameters().withContents(
 				tableWithHeader("Parameter", "Description").row("`a`", "one"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").optional()))
@@ -115,7 +115,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))
 				.willReturn(snippetResource("request-parameters-with-title"));
-		this.snippet.expectRequestParameters().withContents(containsString("The title"));
+		this.snippets.expectRequestParameters().withContents(containsString("The title"));
 
 		new RequestParametersSnippet(
 				Arrays.asList(
@@ -140,7 +140,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))
 				.willReturn(snippetResource("request-parameters-with-extra-column"));
-		this.snippet.expectRequestParameters()
+		this.snippets.expectRequestParameters()
 				.withContents(tableWithHeader("Parameter", "Description", "Foo")
 						.row("a", "one", "alpha").row("b", "two", "bravo"));
 
@@ -164,7 +164,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))
 				.willReturn(snippetResource("request-parameters-with-optional-column"));
-		this.snippet.expectRequestParameters()
+		this.snippets.expectRequestParameters()
 				.withContents(tableWithHeader("Parameter", "Optional", "Description")
 						.row("a", "true", "one").row("b", "false", "two"));
 
@@ -183,7 +183,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectRequestParameters()
+		this.snippets.expectRequestParameters()
 				.withContents(tableWithHeader("Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		RequestDocumentation.requestParameters(parameterWithName("a").description("one"))
@@ -194,7 +194,7 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestParametersWithEscapedContent() throws IOException {
-		this.snippet.expectRequestParameters()
+		this.snippets.expectRequestParameters()
 				.withContents(tableWithHeader("Parameter", "Description").row(
 						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
 

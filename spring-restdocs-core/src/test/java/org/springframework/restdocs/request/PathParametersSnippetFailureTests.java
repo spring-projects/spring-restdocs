@@ -26,7 +26,7 @@ import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.restdocs.test.ExpectedSnippet;
+import org.springframework.restdocs.test.ExpectedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -45,7 +45,7 @@ public class PathParametersSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
+	public ExpectedSnippets snippets = new ExpectedSnippets(asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();

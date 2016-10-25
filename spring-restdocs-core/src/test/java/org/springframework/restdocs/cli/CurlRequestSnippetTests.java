@@ -55,7 +55,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequest() throws IOException {
-		this.snippet.expectCurlRequest().withContents(
+		this.snippets.expectCurlRequest().withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo' -i"));
 		new CurlRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo").build());
@@ -63,7 +63,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequestWithParameter() throws IOException {
-		this.snippet.expectCurlRequest().withContents(
+		this.snippets.expectCurlRequest().withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo?a=alpha' -i"));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo").param("a", "alpha").build());
@@ -71,7 +71,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void nonGetRequest() throws IOException {
-		this.snippet.expectCurlRequest().withContents(
+		this.snippets.expectCurlRequest().withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo' -i -X POST"));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo").method("POST").build());
@@ -79,7 +79,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestWithContent() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -d 'content'"));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo").content("content").build());
@@ -87,7 +87,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequestWithQueryString() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?param=value' -i"));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo?param=value").build());
@@ -96,7 +96,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void getRequestWithTotallyOverlappingQueryStringAndParameters()
 			throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?param=value' -i"));
 		new CurlRequestSnippet().document(
 				this.operationBuilder.request("http://localhost/foo?param=value")
@@ -106,7 +106,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void getRequestWithPartiallyOverlappingQueryStringAndParameters()
 			throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i"));
 		new CurlRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
@@ -115,7 +115,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequestWithDisjointQueryStringAndParameters() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i"));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo?a=alpha").param("b", "bravo").build());
@@ -123,7 +123,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequestWithQueryStringWithNoValue() throws IOException {
-		this.snippet.expectCurlRequest().withContents(
+		this.snippets.expectCurlRequest().withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo?param' -i"));
 		new CurlRequestSnippet().document(
 				this.operationBuilder.request("http://localhost/foo?param").build());
@@ -131,7 +131,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithQueryString() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?param=value' -i -X POST"));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo?param=value").method("POST").build());
@@ -139,7 +139,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithQueryStringWithNoValue() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?param' -i -X POST"));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo?param").method("POST").build());
@@ -147,7 +147,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithOneParameter() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
 		new CurlRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo")
@@ -156,7 +156,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithOneParameterWithNoValue() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1='"));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo").method("POST").param("k1").build());
@@ -164,7 +164,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithMultipleParameters() throws IOException {
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash")
 						.content("$ curl 'http://localhost/foo' -i -X POST"
 								+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
@@ -175,7 +175,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithUrlEncodedParameter() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
 		new CurlRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo")
@@ -184,7 +184,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithDisjointQueryStringAndParameter() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash").content(
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash").content(
 				"$ curl 'http://localhost/foo?a=alpha' -i -X POST -d 'b=bravo'"));
 		new CurlRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
@@ -194,7 +194,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void postRequestWithTotallyOverlappingQueryStringAndParameters()
 			throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i -X POST"));
 		new CurlRequestSnippet().document(
 				this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo")
@@ -204,7 +204,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void postRequestWithPartiallyOverlappingQueryStringAndParameters()
 			throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash").content(
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash").content(
 				"$ curl 'http://localhost/foo?a=alpha' -i -X POST -d 'b=bravo'"));
 		new CurlRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
@@ -213,7 +213,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void putRequestWithOneParameter() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=v1'"));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo").method("PUT").param("k1", "v1").build());
@@ -221,7 +221,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void putRequestWithMultipleParameters() throws IOException {
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash")
 						.content("$ curl 'http://localhost/foo' -i -X PUT"
 								+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
@@ -232,7 +232,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void putRequestWithUrlEncodedParameter() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=a%26b'"));
 		new CurlRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo")
@@ -241,7 +241,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestWithHeaders() throws IOException {
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content("$ curl 'http://localhost/foo' -i"
 						+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
 		new CurlRequestSnippet()
@@ -256,7 +256,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
 				+ "'Content-Type: multipart/form-data' -F "
 				+ "'metadata={\"description\": \"foo\"}'";
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
 		new CurlRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/upload").method("POST")
@@ -269,7 +269,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
 				+ "'Content-Type: multipart/form-data' -F "
 				+ "'image=@documents/images/example.png;type=image/png'";
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
 		new CurlRequestSnippet().document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
@@ -285,7 +285,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
 				+ "'Content-Type: multipart/form-data' -F "
 				+ "'image=@documents/images/example.png'";
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
 		new CurlRequestSnippet().document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
@@ -301,7 +301,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "'Content-Type: multipart/form-data' -F "
 				+ "'image=@documents/images/example.png' -F 'a=apple' -F 'a=avocado' "
 				+ "-F 'b=banana'";
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
 		new CurlRequestSnippet().document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
@@ -314,7 +314,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void basicAuthCredentialsAreSuppliedUsingUserOption() throws IOException {
-		this.snippet.expectCurlRequest().withContents(codeBlock("bash")
+		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -u 'user:secret'"));
 		new CurlRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo")
@@ -326,7 +326,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void customAttributes() throws IOException {
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(containsString("curl request title"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("curl-request"))
@@ -344,7 +344,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void customHostHeaderIsIncluded() throws IOException {
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(
 						"$ curl 'http://localhost/foo' -i" + " -H 'Host: api.example.com'"
 								+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
@@ -358,7 +358,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postWithContentAndParameters() throws IOException {
-		this.snippet.expectCurlRequest()
+		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash")
 						.content("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i "
 								+ "-X POST -d 'Some content'"));

@@ -50,7 +50,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void mapRequestWithFields() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a.b`", "`Number`", "one").row("`a.c`", "`String`", "two")
 						.row("`a`", "`Object`", "three"));
@@ -65,7 +65,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void arrayRequestWithFields() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`[]`", "`Array`", "one").row("`[]a.b`", "`Number`", "two")
 						.row("`[]a.c`", "`String`", "three")
@@ -83,7 +83,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void ignoredRequestField() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
 						"`Number`", "Field b"));
 
@@ -95,7 +95,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void allUndocumentedRequestFieldsCanBeIgnored() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
 						"`Number`", "Field b"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("b").description("Field b")),
@@ -106,7 +106,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void missingOptionalRequestField() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
 						"`String`", "one"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
@@ -118,7 +118,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void missingIgnoredOptionalRequestFieldDoesNotRequireAType()
 			throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description"));
 		new RequestFieldsSnippet(Arrays
 				.asList(fieldWithPath("a.b").description("one").ignored().optional()))
@@ -128,7 +128,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void presentOptionalRequestField() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
 						"`String`", "one"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
@@ -142,7 +142,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-fields"))
 				.willReturn(snippetResource("request-fields-with-title"));
-		this.snippet.expectRequestFields().withContents(containsString("Custom title"));
+		this.snippets.expectRequestFields().withContents(containsString("Custom title"));
 
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
 				attributes(
@@ -161,7 +161,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-fields"))
 				.willReturn(snippetResource("request-fields-with-extra-column"));
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description", "Foo")
 						.row("a.b", "Number", "one", "alpha")
 						.row("a.c", "String", "two", "bravo")
@@ -187,7 +187,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void fieldWithExplictExactlyMatchingType() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
 						"`Number`", "one"));
 
@@ -199,7 +199,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void fieldWithExplictVariesType() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
 						"`Varies`", "one"));
 
@@ -211,7 +211,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void xmlRequestFields() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two").row("`a`",
 								"`a`", "three"));
@@ -230,7 +230,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a.b`", "`Number`", "one").row("`a.c`", "`String`", "two")
 						.row("`a`", "`Object`", "three"));
@@ -245,7 +245,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void prefixedAdditionalDescriptors() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
 						.row("`a.c`", "`String`", "three"));
@@ -259,7 +259,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestWithFieldsWithEscapedContent() throws IOException {
-		this.snippet.expectRequestFields()
+		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row(
 						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("`one|two`"),
 						escapeIfNecessary("three|four")));

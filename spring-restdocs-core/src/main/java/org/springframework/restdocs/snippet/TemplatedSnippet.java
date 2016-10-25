@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,15 +38,34 @@ public abstract class TemplatedSnippet implements Snippet {
 
 	private final String snippetName;
 
+	private final String templateName;
+
 	/**
 	 * Creates a new {@code TemplatedSnippet} that will produce a snippet with the given
-	 * {@code snippetName}. The given {@code attributes} will be included in the model
-	 * during rendering of the template.
+	 * {@code snippetName}. The {@code snippetName} will also be used as the name of the
+	 * template. The given {@code attributes} will be included in the model during
+	 * rendering of the template.
 	 *
 	 * @param snippetName The name of the snippet
 	 * @param attributes The additional attributes
+	 * @see #TemplatedSnippet(String, String, Map)
 	 */
 	protected TemplatedSnippet(String snippetName, Map<String, Object> attributes) {
+		this(snippetName, snippetName, attributes);
+	}
+
+	/**
+	 * Creates a new {@code TemplatedSnippet} that will produce a snippet with the given
+	 * {@code snippetName} using a template with the given {@code templateName}. The given
+	 * {@code attributes} will be included in the model during rendering of the template.
+	 *
+	 * @param snippetName The name of the snippet
+	 * @param templateName The name of the template
+	 * @param attributes The additional attributes
+	 */
+	protected TemplatedSnippet(String snippetName, String templateName,
+			Map<String, Object> attributes) {
+		this.templateName = templateName;
 		this.snippetName = snippetName;
 		if (attributes != null) {
 			this.attributes.putAll(attributes);
@@ -65,7 +84,8 @@ public abstract class TemplatedSnippet implements Snippet {
 			model.putAll(this.attributes);
 			TemplateEngine templateEngine = (TemplateEngine) operation.getAttributes()
 					.get(TemplateEngine.class.getName());
-			writer.append(templateEngine.compileTemplate(this.snippetName).render(model));
+			writer.append(
+					templateEngine.compileTemplate(this.templateName).render(model));
 		}
 	}
 

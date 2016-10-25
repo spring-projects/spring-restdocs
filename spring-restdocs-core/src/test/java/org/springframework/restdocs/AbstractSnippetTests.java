@@ -27,7 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.test.ExpectedSnippet;
+import org.springframework.restdocs.test.ExpectedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
 import org.springframework.restdocs.test.SnippetMatchers;
 import org.springframework.restdocs.test.SnippetMatchers.CodeBlockMatcher;
@@ -50,7 +50,7 @@ public abstract class AbstractSnippetTests {
 	protected final TemplateFormat templateFormat;
 
 	@Rule
-	public ExpectedSnippet snippet;
+	public ExpectedSnippets snippets;
 
 	@Rule
 	public OperationBuilder operationBuilder;
@@ -62,7 +62,7 @@ public abstract class AbstractSnippetTests {
 	}
 
 	public AbstractSnippetTests(String name, TemplateFormat templateFormat) {
-		this.snippet = new ExpectedSnippet(templateFormat);
+		this.snippets = new ExpectedSnippets(templateFormat);
 		this.templateFormat = templateFormat;
 		this.operationBuilder = new OperationBuilder(this.templateFormat);
 	}

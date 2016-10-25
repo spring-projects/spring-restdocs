@@ -26,7 +26,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.ExpectedSnippet;
+import org.springframework.restdocs.test.ExpectedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.mockito.BDDMockito.given;
@@ -46,14 +46,14 @@ public class AsciidoctorRequestFieldsSnippetTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(asciidoctor());
+	public ExpectedSnippets snippets = new ExpectedSnippets(asciidoctor());
 
 	@Test
 	public void requestFieldsWithListDescription() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-fields"))
 				.willReturn(snippetResource("request-fields-with-list-description"));
-		this.snippet.expectRequestFields().withContents(
+		this.snippets.expectRequestFields().withContents(
 				tableWithHeader(asciidoctor(), "Path", "Type", "Description")
 						//
 						.row("a", "String", String.format(" - one%n - two"))

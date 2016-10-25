@@ -51,7 +51,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequest() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a")
 						.header(HttpHeaders.HOST, "localhost"));
 
@@ -61,7 +61,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequestWithParameters() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.GET, "/foo?b=bravo")
 						.header("Alpha", "a").header(HttpHeaders.HOST, "localhost"));
 
@@ -72,7 +72,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequestWithPort() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a")
 						.header(HttpHeaders.HOST, "localhost:8080"));
 
@@ -82,7 +82,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequestWithQueryString() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.GET, "/foo?bar=baz")
 						.header(HttpHeaders.HOST, "localhost"));
 
@@ -92,7 +92,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequestWithQueryStringWithNoValue() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.GET, "/foo?bar")
 						.header(HttpHeaders.HOST, "localhost"));
 
@@ -102,7 +102,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getWithPartiallyOverlappingQueryStringAndParameters() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.GET, "/foo?a=alpha&b=bravo")
 						.header(HttpHeaders.HOST, "localhost"));
 
@@ -113,7 +113,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getWithTotallyOverlappingQueryStringAndParameters() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.GET, "/foo?a=alpha&b=bravo")
 						.header(HttpHeaders.HOST, "localhost"));
 
@@ -125,7 +125,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void postRequestWithContent() throws IOException {
 		String content = "Hello, world";
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo")
 						.header(HttpHeaders.HOST, "localhost").content(content).header(
 								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
@@ -137,7 +137,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void postRequestWithContentAndParameters() throws IOException {
 		String content = "Hello, world";
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo?a=alpha")
 						.header(HttpHeaders.HOST, "localhost").content(content).header(
 								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
@@ -151,7 +151,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithContentAndDisjointQueryStringAndParameters()
 			throws IOException {
 		String content = "Hello, world";
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo?b=bravo&a=alpha")
 						.header(HttpHeaders.HOST, "localhost").content(content).header(
 								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
@@ -165,7 +165,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithContentAndPartiallyOverlappingQueryStringAndParameters()
 			throws IOException {
 		String content = "Hello, world";
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo?b=bravo&a=alpha")
 						.header(HttpHeaders.HOST, "localhost").content(content).header(
 								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
@@ -179,7 +179,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithContentAndTotallyOverlappingQueryStringAndParameters()
 			throws IOException {
 		String content = "Hello, world";
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo?b=bravo&a=alpha")
 						.header(HttpHeaders.HOST, "localhost").content(content).header(
 								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
@@ -193,7 +193,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithCharset() throws IOException {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo")
 						.header("Content-Type", "text/plain;charset=UTF-8")
 						.header(HttpHeaders.HOST, "localhost")
@@ -208,7 +208,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithParameter() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "application/x-www-form-urlencoded")
@@ -221,7 +221,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithParameterWithNoValue() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "application/x-www-form-urlencoded")
@@ -234,7 +234,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void putRequestWithContent() throws IOException {
 		String content = "Hello, world";
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.PUT, "/foo")
 						.header(HttpHeaders.HOST, "localhost").content(content).header(
 								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
@@ -245,7 +245,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void putRequestWithParameter() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.PUT, "/foo")
 						.header(HttpHeaders.HOST, "localhost")
 						.header("Content-Type", "application/x-www-form-urlencoded")
@@ -260,7 +260,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	public void multipartPost() throws IOException {
 		String expectedContent = createPart(String.format(
 				"Content-Disposition: " + "form-data; " + "name=image%n%n<< data >>"));
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/upload")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
@@ -286,7 +286,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String filePart = createPart(String
 				.format("Content-Disposition: form-data; " + "name=image%n%n<< data >>"));
 		String expectedContent = param1Part + param2Part + param3Part + filePart;
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/upload")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
@@ -306,7 +306,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String filePart = createPart(String
 				.format("Content-Disposition: form-data; " + "name=image%n%n<< data >>"));
 		String expectedContent = paramPart + filePart;
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/upload")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
@@ -323,7 +323,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String expectedContent = createPart(
 				String.format("Content-Disposition: form-data; name=image%nContent-Type: "
 						+ "image/png%n%n<< data >>"));
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/upload")
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
@@ -339,7 +339,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void getRequestWithCustomHost() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.GET, "/foo")
 						.header(HttpHeaders.HOST, "api.example.com"));
 		new HttpRequestSnippet()
@@ -349,7 +349,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestWithCustomSnippetAttributes() throws IOException {
-		this.snippet.expectHttpRequest()
+		this.snippets.expectHttpRequest()
 				.withContents(containsString("Title for the request"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("http-request"))

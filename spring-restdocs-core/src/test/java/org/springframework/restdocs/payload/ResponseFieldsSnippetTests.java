@@ -50,7 +50,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void mapResponseWithFields() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
 						.row("`assets`", "`Array`", "three")
@@ -72,7 +72,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void arrayResponseWithFields() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`[]a.b`", "`Number`", "one")
 						.row("`[]a.c`", "`String`", "two")
@@ -88,7 +88,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void arrayResponse() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`[]`",
 						"`Array`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]").description("one")))
@@ -98,7 +98,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void ignoredResponseField() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
 						"`Number`", "Field b"));
 
@@ -110,7 +110,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void allUndocumentedFieldsCanBeIgnored() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
 						"`Number`", "Field b"));
 
@@ -125,7 +125,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-fields"))
 				.willReturn(snippetResource("response-fields-with-title"));
-		this.snippet.expectResponseFields().withContents(containsString("Custom title"));
+		this.snippets.expectResponseFields().withContents(containsString("Custom title"));
 
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
 				attributes(
@@ -141,7 +141,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void missingOptionalResponseField() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
 						"`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
@@ -152,7 +152,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void missingIgnoredOptionalResponseFieldDoesNotRequireAType()
 			throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description"));
 		new ResponseFieldsSnippet(Arrays
 				.asList(fieldWithPath("a.b").description("one").ignored().optional()))
@@ -161,7 +161,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void presentOptionalResponseField() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
 						"`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
@@ -175,7 +175,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-fields"))
 				.willReturn(snippetResource("response-fields-with-extra-column"));
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description", "Foo")
 						.row("a.b", "Number", "one", "alpha")
 						.row("a.c", "String", "two", "bravo")
@@ -201,7 +201,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void fieldWithExplictExactlyMatchingType() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
 						"`Number`", "one"));
 
@@ -213,7 +213,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void fieldWithExplictVariesType() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
 						"`Varies`", "one"));
 
@@ -225,7 +225,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void xmlResponseFields() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two").row("`a`",
 								"`a`", "three"));
@@ -243,7 +243,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void xmlAttribute() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 		new ResponseFieldsSnippet(
@@ -259,7 +259,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void missingOptionalXmlAttribute() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 		new ResponseFieldsSnippet(
@@ -275,7 +275,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void undocumentedAttributeDoesNotCauseFailure() throws IOException {
-		this.snippet.expectResponseFields().withContents(
+		this.snippets.expectResponseFields().withContents(
 				tableWithHeader("Path", "Type", "Description").row("`a`", "`a`", "one"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one").type("a"))).document(
@@ -287,7 +287,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
 						.row("`assets`", "`Array`", "three")
@@ -309,7 +309,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void prefixedAdditionalDescriptors() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
 						.row("`a.c`", "`String`", "three"));
@@ -323,7 +323,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithFieldsWithEscapedContent() throws IOException {
-		this.snippet.expectResponseFields()
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row(
 						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("`one|two`"),
 						escapeIfNecessary("three|four")));

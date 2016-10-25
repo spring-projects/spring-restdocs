@@ -28,7 +28,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateFormats;
-import org.springframework.restdocs.test.ExpectedSnippet;
+import org.springframework.restdocs.test.ExpectedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.endsWith;
@@ -45,7 +45,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 public class RequestFieldsSnippetFailureTests {
 
 	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet(TemplateFormats.asciidoctor());
+	public ExpectedSnippets snippets = new ExpectedSnippets(
+			TemplateFormats.asciidoctor());
 
 	@Rule
 	public OperationBuilder operationBuilder = new OperationBuilder(

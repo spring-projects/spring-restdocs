@@ -49,7 +49,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void pathParameters() throws IOException {
-		this.snippet.expectPathParameters().withContents(
+		this.snippets.expectPathParameters().withContents(
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
@@ -63,7 +63,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void ignoredPathParameter() throws IOException {
-		this.snippet.expectPathParameters().withContents(
+		this.snippets.expectPathParameters().withContents(
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`",
 						"two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
@@ -77,7 +77,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void allUndocumentedPathParametersCanBeIgnored() throws IOException {
-		this.snippet.expectPathParameters().withContents(
+		this.snippets.expectPathParameters().withContents(
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`",
 						"two"));
 		new PathParametersSnippet(
@@ -89,7 +89,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void missingOptionalPathParameter() throws IOException {
-		this.snippet.expectPathParameters().withContents(tableWithTitleAndHeader(
+		this.snippets.expectPathParameters().withContents(tableWithTitleAndHeader(
 				this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}" : "`/{a}`",
 				"Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
@@ -101,7 +101,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void presentOptionalPathParameter() throws IOException {
-		this.snippet.expectPathParameters().withContents(tableWithTitleAndHeader(
+		this.snippets.expectPathParameters().withContents(tableWithTitleAndHeader(
 				this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}" : "`/{a}`",
 				"Parameter", "Description").row("`a`", "one"));
 		new PathParametersSnippet(
@@ -113,7 +113,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void pathParametersWithQueryString() throws IOException {
-		this.snippet.expectPathParameters().withContents(
+		this.snippets.expectPathParameters().withContents(
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
@@ -127,7 +127,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void pathParametersWithQueryStringWithParameters() throws IOException {
-		this.snippet.expectPathParameters().withContents(
+		this.snippets.expectPathParameters().withContents(
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
@@ -144,7 +144,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("path-parameters"))
 				.willReturn(snippetResource("path-parameters-with-title"));
-		this.snippet.expectPathParameters().withContents(containsString("The title"));
+		this.snippets.expectPathParameters().withContents(containsString("The title"));
 
 		new PathParametersSnippet(
 				Arrays.asList(
@@ -168,7 +168,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("path-parameters"))
 				.willReturn(snippetResource("path-parameters-with-extra-column"));
-		this.snippet.expectPathParameters()
+		this.snippets.expectPathParameters()
 				.withContents(tableWithHeader("Parameter", "Description", "Foo")
 						.row("a", "one", "alpha").row("b", "two", "bravo"));
 
@@ -188,7 +188,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectPathParameters().withContents(
+		this.snippets.expectPathParameters().withContents(
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		RequestDocumentation.pathParameters(parameterWithName("a").description("one"))
@@ -201,7 +201,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void pathParametersWithEscapedContent() throws IOException {
-		this.snippet.expectPathParameters()
+		this.snippets.expectPathParameters()
 				.withContents(tableWithTitleAndHeader(getTitle("{Foo|Bar}"), "Parameter",
 						"Description").row(escapeIfNecessary("`Foo|Bar`"),
 								escapeIfNecessary("one|two")));

@@ -49,7 +49,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestWithHeaders() throws IOException {
-		this.snippet.expectRequestHeaders()
+		this.snippets.expectRequestHeaders()
 				.withContents(tableWithHeader("Name", "Description")
 						.row("`X-Test`", "one").row("`Accept`", "two")
 						.row("`Accept-Encoding`", "three")
@@ -83,7 +83,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void caseInsensitiveRequestHeaders() throws IOException {
-		this.snippet.expectRequestHeaders().withContents(
+		this.snippets.expectRequestHeaders().withContents(
 				tableWithHeader("Name", "Description").row("`X-Test`", "one"));
 		new RequestHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one")))
@@ -93,7 +93,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void undocumentedRequestHeader() throws IOException {
-		this.snippet.expectRequestHeaders().withContents(
+		this.snippets.expectRequestHeaders().withContents(
 				tableWithHeader("Name", "Description").row("`X-Test`", "one"));
 		new RequestHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one")))
@@ -104,7 +104,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestHeadersWithCustomAttributes() throws IOException {
-		this.snippet.expectRequestHeaders().withContents(containsString("Custom title"));
+		this.snippets.expectRequestHeaders().withContents(containsString("Custom title"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-headers"))
 				.willReturn(snippetResource("request-headers-with-title"));
@@ -123,7 +123,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestHeadersWithCustomDescriptorAttributes() throws IOException {
-		this.snippet.expectRequestHeaders().withContents(//
+		this.snippets.expectRequestHeaders().withContents(//
 				tableWithHeader("Name", "Description", "Foo")
 						.row("X-Test", "one", "alpha")
 						.row("Accept-Encoding", "two", "bravo")
@@ -152,7 +152,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectRequestHeaders()
+		this.snippets.expectRequestHeaders()
 				.withContents(tableWithHeader("Name", "Description")
 						.row("`X-Test`", "one").row("`Accept`", "two")
 						.row("`Accept-Encoding`", "three")
@@ -178,7 +178,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void tableCellContentIsEscapedWhenNecessary() throws IOException {
-		this.snippet.expectRequestHeaders().withContents(
+		this.snippets.expectRequestHeaders().withContents(
 				tableWithHeader("Name", "Description").row(escapeIfNecessary("`Foo|Bar`"),
 						escapeIfNecessary("one|two")));
 		new RequestHeadersSnippet(

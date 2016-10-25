@@ -47,7 +47,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void ignoredLink() throws IOException {
-		this.snippet.expectLinks().withContents(
+		this.snippets.expectLinks().withContents(
 				tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
@@ -59,7 +59,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void allUndocumentedLinksCanBeIgnored() throws IOException {
-		this.snippet.expectLinks().withContents(
+		this.snippets.expectLinks().withContents(
 				tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
@@ -70,7 +70,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void presentOptionalLink() throws IOException {
-		this.snippet.expectLinks().withContents(
+		this.snippets.expectLinks().withContents(
 				tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "blah")),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
@@ -79,7 +79,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void missingOptionalLink() throws IOException {
-		this.snippet.expectLinks().withContents(
+		this.snippets.expectLinks().withContents(
 				tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 		new LinksSnippet(new StubLinkExtractor(),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
@@ -88,7 +88,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void documentedLinks() throws IOException {
-		this.snippet.expectLinks().withContents(tableWithHeader("Relation", "Description")
+		this.snippets.expectLinks().withContents(tableWithHeader("Relation", "Description")
 				.row("`a`", "one").row("`b`", "two"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
@@ -100,7 +100,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void linkDescriptionFromTitleInPayload() throws IOException {
-		this.snippet.expectLinks().withContents(tableWithHeader("Relation", "Description")
+		this.snippets.expectLinks().withContents(tableWithHeader("Relation", "Description")
 				.row("`a`", "one").row("`b`", "Link b"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha", "Link a"),
@@ -114,7 +114,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("links"))
 				.willReturn(snippetResource("links-with-title"));
-		this.snippet.expectLinks().withContents(containsString("Title for the links"));
+		this.snippets.expectLinks().withContents(containsString("Title for the links"));
 
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
@@ -134,7 +134,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("links"))
 				.willReturn(snippetResource("links-with-extra-column"));
-		this.snippet.expectLinks()
+		this.snippets.expectLinks()
 				.withContents(tableWithHeader("Relation", "Description", "Foo")
 						.row("a", "one", "alpha").row("b", "two", "bravo"));
 
@@ -154,7 +154,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippet.expectLinks().withContents(tableWithHeader("Relation", "Description")
+		this.snippets.expectLinks().withContents(tableWithHeader("Relation", "Description")
 				.row("`a`", "one").row("`b`", "two"));
 		HypermediaDocumentation
 				.links(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
@@ -166,7 +166,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void tableCellContentIsEscapedWhenNecessary() throws IOException {
-		this.snippet.expectLinks().withContents(tableWithHeader("Relation", "Description")
+		this.snippets.expectLinks().withContents(tableWithHeader("Relation", "Description")
 				.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("Foo|Bar", "foo")),
 				Arrays.asList(new LinkDescriptor("Foo|Bar").description("one|two")))
