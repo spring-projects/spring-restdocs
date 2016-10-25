@@ -81,6 +81,10 @@ public class ExpectedSnippets extends OperationTestRule {
 		return expect("request-fields");
 	}
 
+	public ExpectedSnippet expectRequestPartFields(String partName) {
+		return expect("request-part-" + partName + "-fields");
+	}
+
 	public ExpectedSnippet expectResponseFields() {
 		return expect("response-fields");
 	}

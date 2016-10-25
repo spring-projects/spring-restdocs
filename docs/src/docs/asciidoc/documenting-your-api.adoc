@@ -415,7 +415,7 @@ include::{examples-dir}/com/example/mockmvc/RequestParameters.java[tags=request-
 ----
 <1> Perform a `GET` request with two parameters, `page` and `per_page` in the query
 	string.
-<2> Configure Spring REST Docs to  produce a snippet describing the request's parameters.
+<2> Configure Spring REST Docs to produce a snippet describing the request's parameters.
 	Uses the static `requestParameters` method on
 	`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the `page` parameter. Uses the static `parameterWithName` method on
@@ -575,6 +575,58 @@ prevent it from appearing in the generated snippet while avoiding the failure de
 above.
 
 
+[[documenting-your-api-request-parts-payloads]]
+=== Request part payloads
+
+The payload of a request part can be documented in much the same way as the
+<<documenting-your-api-request-response-payloads,payload of a request>>:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/RequestPartPayload.java[tags=payload]
+----
+<1> Configure Spring REST docs to produce a snippet describing the fields in the payload
+	of the request part named `metadata`. Uses the static `requestPartFields` method on
+	`PayloadDocumentation`.
+	payload.
+<2> Expect a field with the path `version`. Uses the static `fieldWithPath` method on
+	`org.springframework.restdocs.payload.PayloadDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/RequestPartPayload.java[tags=payload]
+----
+<1> Configure Spring REST docs to produce a snippet describing the fields in the payload
+	of the request part named `metadata`. Uses the static `requestPartFields` method on
+	`PayloadDocumentation`.
+<2> Expect a field with the path `version`. Uses the static `fieldWithPath` method on
+	`org.springframework.restdocs.payload.PayloadDocumentation`.
+
+The result is a snippet that contains a table describing the part's fields. This snippet
+is named `request-part-${part-name}-fields.adoc`. For example, documenting a part named
+`metadata` will produce a snippet named `request-part-metadata-fields.adoc`.
+
+When documenting fields, the test will fail if an undocumented field is found in the
+payload of the part. Similarly, the test will also fail if a documented field is not found
+in the payload of the part and the field has not been marked as optional. For payloads
+with a hierarchical structure, documenting a field is sufficient for all of its
+descendants to also be treated as having been documented.
+
+If you do not want to document a field, you can mark it as ignored. This will prevent it
+from appearing in the generated snippet while avoiding the failure described above.
+
+Fields can also be documented in a relaxed mode where any undocumented fields will not
+cause a test failure. To do so, use the `relaxedRequestPartFields` method on
+`org.springframework.restdocs.payload.PayloadDocumentation`. This can be useful when
+documenting a particular scenario where you only want to focus on a subset of the payload
+of the part.
+
+For further information on describing fields, documenting payloads that use XML,
+and more please refer to the
+<<documenting-your-api-request-response-payloads,section on documenting request and
+response payloads>>.
 
 [[documenting-your-api-http-headers]]
 === HTTP headers

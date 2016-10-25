@@ -65,10 +65,11 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	/**
 	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
-	 * {@code <type>-fields}. The fields will be documented using the given
-	 * {@code  descriptors} and the given {@code attributes} will be included in the model
-	 * during template rendering. If {@code ignoreUndocumentedFields} is {@code true},
-	 * undocumented fields will be ignored and will not trigger a failure.
+	 * {@code <type>-fields} using a template named {@code <type>-fields}. The fields will
+	 * be documented using the given {@code  descriptors} and the given {@code attributes}
+	 * will be included in the model during template rendering. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
 	 *
 	 * @param type the type of the fields
 	 * @param descriptors the field descriptors
@@ -77,7 +78,27 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 */
 	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
 			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
-		super(type + "-fields", attributes);
+		this(type, type, descriptors, attributes, ignoreUndocumentedFields);
+	}
+
+	/**
+	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
+	 * {@code <name>-fields} using a template named {@code <type>-fields}. The fields will
+	 * be documented using the given {@code  descriptors} and the given {@code attributes}
+	 * will be included in the model during template rendering. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param name the name of the snippet
+	 * @param type the type of the fields
+	 * @param descriptors the field descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 */
+	protected AbstractFieldsSnippet(String name, String type,
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
+		super(name + "-fields", type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath(), "Field descriptors must have a path");
 			if (!descriptor.isIgnored()) {
