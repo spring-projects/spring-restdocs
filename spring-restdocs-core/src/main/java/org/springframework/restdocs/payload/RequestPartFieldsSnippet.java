@@ -29,10 +29,12 @@ import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.SnippetException;
 
 /**
- * A {@link Snippet} that documents the fields in a request.
+ * A {@link Snippet} that documents the fields in a request part.
  *
  * @author Mathieu Pousse
+ * @author Andy Wilkinson
  * @see PayloadDocumentation#requestPartFields(String, FieldDescriptor...)
+ * @see PayloadDocumentation#requestPartFields(String, List)
  */
 public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 
@@ -40,27 +42,29 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 
 	/**
 	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in the
-	 * request part using the given {@code descriptors}. Undocumented fields will trigger a
-	 * failure.
+	 * request part using the given {@code descriptors}. Undocumented fields will trigger
+	 * a failure.
 	 *
-	 * @param partName    the part name
+	 * @param partName the part name
 	 * @param descriptors the descriptors
 	 */
-	protected RequestPartFieldsSnippet(String partName, List<FieldDescriptor> descriptors) {
+	protected RequestPartFieldsSnippet(String partName,
+			List<FieldDescriptor> descriptors) {
 		this(partName, descriptors, null, false);
 	}
 
 	/**
 	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in the
-	 * request part using the given {@code descriptors}. If {@code ignoreUndocumentedFields} is
-	 * {@code true}, undocumented fields will be ignored and will not trigger a failure.
+	 * request part using the given {@code descriptors}. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
 	 *
-	 * @param partName                 the part name
-	 * @param descriptors              the descriptors
+	 * @param partName the part name
+	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
 	protected RequestPartFieldsSnippet(String partName, List<FieldDescriptor> descriptors,
-									boolean ignoreUndocumentedFields) {
+			boolean ignoreUndocumentedFields) {
 		this(partName, descriptors, null, ignoreUndocumentedFields);
 	}
 
@@ -70,12 +74,12 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * included in the model during template rendering. Undocumented fields will trigger a
 	 * failure.
 	 *
-	 * @param partName    the part name
+	 * @param partName the part name
 	 * @param descriptors the descriptors
-	 * @param attributes  the additional attributes
+	 * @param attributes the additional attributes
 	 */
 	protected RequestPartFieldsSnippet(String partName, List<FieldDescriptor> descriptors,
-									Map<String, Object> attributes) {
+			Map<String, Object> attributes) {
 		this(partName, descriptors, attributes, false);
 	}
 
@@ -86,44 +90,36 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
 	 *
-	 * @param partName                 the part name
-	 * @param descriptors              the descriptors
-	 * @param attributes               the additional attributes
+	 * @param partName the part name
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
 	protected RequestPartFieldsSnippet(String partName, List<FieldDescriptor> descriptors,
-									Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
-		super("request", descriptors, attributes, ignoreUndocumentedFields);
+			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+		super("request-part-" + partName, "request-part", descriptors, attributes,
+				ignoreUndocumentedFields);
 		this.partName = partName;
 	}
 
 	@Override
 	protected MediaType getContentType(Operation operation) {
-		for (OperationRequestPart candidate : operation.getRequest().getParts()) {
-			if (candidate.getName().equals(this.partName)) {
-				return candidate.getHeaders().getContentType();
-			}
-		}
-		throw new SnippetException(missingPartErrorMessage());
+		return findPart(operation).getHeaders().getContentType();
 	}
 
 	@Override
 	protected byte[] getContent(Operation operation) throws IOException {
-		for (OperationRequestPart candidate : operation.getRequest().getParts()) {
-			if (candidate.getName().equals(this.partName)) {
-				return candidate.getContent();
-			}
-		}
-		throw new SnippetException(missingPartErrorMessage());
+		return findPart(operation).getContent();
 	}
 
-	/**
-	 * Prepare the error message because the requested part was not found.
-	 *
-	 * @return see description
-	 */
-	protected String missingPartErrorMessage() {
-		return "Request parts with the following names were not found in the request: " + this.partName;
+	private OperationRequestPart findPart(Operation operation) {
+		for (OperationRequestPart candidate : operation.getRequest().getParts()) {
+			if (candidate.getName().equals(this.partName)) {
+				return candidate;
+			}
+		}
+		throw new SnippetException("A request part named '" + this.partName
+				+ "' was not found in the request");
 	}
 
 	/**
@@ -146,7 +142,8 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public final RequestPartFieldsSnippet and(List<FieldDescriptor> additionalDescriptors) {
+	public final RequestPartFieldsSnippet and(
+			List<FieldDescriptor> additionalDescriptors) {
 		return andWithPrefix("", additionalDescriptors);
 	}
 
@@ -156,17 +153,18 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * {@code additionalDescriptors}. The given {@code pathPrefix} is applied to the path
 	 * of each additional descriptor.
 	 *
-	 * @param pathPrefix            the prefix to apply to the additional descriptors
+	 * @param pathPrefix the prefix to apply to the additional descriptors
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
 	public final RequestPartFieldsSnippet andWithPrefix(String pathPrefix,
-														FieldDescriptor... additionalDescriptors) {
+			FieldDescriptor... additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
 		combinedDescriptors.addAll(getFieldDescriptors());
-		combinedDescriptors.addAll(
-				PayloadDocumentation.applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
-		return new RequestPartFieldsSnippet(this.partName, combinedDescriptors, this.getAttributes());
+		combinedDescriptors.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix,
+				Arrays.asList(additionalDescriptors)));
+		return new RequestPartFieldsSnippet(this.partName, combinedDescriptors,
+				this.getAttributes());
 	}
 
 	/**
@@ -175,17 +173,18 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * {@code additionalDescriptors}. The given {@code pathPrefix} is applied to the path
 	 * of each additional descriptor.
 	 *
-	 * @param pathPrefix            the prefix to apply to the additional descriptors
+	 * @param pathPrefix the prefix to apply to the additional descriptors
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
 	public final RequestPartFieldsSnippet andWithPrefix(String pathPrefix,
-														List<FieldDescriptor> additionalDescriptors) {
+			List<FieldDescriptor> additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>(
 				getFieldDescriptors());
 		combinedDescriptors.addAll(
 				PayloadDocumentation.applyPathPrefix(pathPrefix, additionalDescriptors));
-		return new RequestPartFieldsSnippet(this.partName, combinedDescriptors, this.getAttributes());
+		return new RequestPartFieldsSnippet(this.partName, combinedDescriptors,
+				this.getAttributes());
 	}
 
 }
