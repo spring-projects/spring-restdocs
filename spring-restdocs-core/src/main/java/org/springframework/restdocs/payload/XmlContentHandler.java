@@ -19,6 +19,7 @@ package org.springframework.restdocs.payload;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -36,6 +37,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -108,6 +110,7 @@ class XmlContentHandler implements ContentHandler {
 	@Override
 	public String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors) {
 		Document payload = readPayload();
+		List<Node> matchedButNotRemoved = new ArrayList<>();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
 			NodeList matchingNodes;
 			try {
@@ -124,15 +127,48 @@ class XmlContentHandler implements ContentHandler {
 					attr.getOwnerElement().removeAttributeNode(attr);
 				}
 				else {
-					node.getParentNode().removeChild(node);
+					if (fieldDescriptor instanceof SubsectionDescriptor
+							|| isLeafNode(node)) {
+						node.getParentNode().removeChild(node);
+					}
+					else {
+						matchedButNotRemoved.add(node);
+					}
 				}
 
 			}
 		}
+		removeLeafNodes(matchedButNotRemoved);
 		if (payload.getChildNodes().getLength() > 0) {
 			return prettyPrint(payload);
 		}
 		return null;
+	}
+
+	private void removeLeafNodes(List<Node> candidates) {
+		boolean changed = true;
+		while (changed) {
+			changed = false;
+			Iterator<Node> iterator = candidates.iterator();
+			while (iterator.hasNext()) {
+				Node node = iterator.next();
+				if (isLeafNode(node)) {
+					node.getParentNode().removeChild(node);
+					iterator.remove();
+					changed = true;
+				}
+			}
+		}
+	}
+
+	private boolean isLeafNode(Node node) {
+		NodeList childNodes = node.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			if (childNodes.item(i) instanceof Element) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private String prettyPrint(Document document) {

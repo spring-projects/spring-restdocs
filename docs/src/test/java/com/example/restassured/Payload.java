@@ -27,6 +27,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.beneathP
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -39,8 +40,18 @@ public class Payload {
 		// tag::response[]
 		RestAssured.given(this.spec).accept("application/json")
 			.filter(document("user", responseFields( // <1>
-					fieldWithPath("contact").description("The user's contact details"), // <2>
+					fieldWithPath("contact.name").description("The user's name"), // <2>
 					fieldWithPath("contact.email").description("The user's email address")))) // <3>
+			.when().get("/user/5")
+			.then().assertThat().statusCode(is(200));
+		// end::response[]
+	}
+	
+	public void subsection() throws Exception {
+		// tag::subsection[]
+		RestAssured.given(this.spec).accept("application/json")
+			.filter(document("user", responseFields(
+					subsectionWithPath("contact").description("The user's contact details")))) // <1>
 			.when().get("/user/5")
 			.then().assertThat().statusCode(is(200));
 		// end::response[]
@@ -96,15 +107,15 @@ public class Payload {
 		// end::book-array[]
 	}
 
-	public void subsection() throws Exception {
-		// tag::subsection[]
+	public void subsectionBeneathPath() throws Exception {
+		// tag::beneath-path[]
 		RestAssured.given(this.spec).accept("application/json")
 			.filter(document("location", responseFields(beneathPath("weather.temperature"), // <1>
 				fieldWithPath("high").description("The forecast high in degrees celcius"), // <2>
 				fieldWithPath("low").description("The forecast low in degrees celcius"))))
 			.when().get("/locations/1")
 			.then().assertThat().statusCode(is(200));
-		// end::subsection[]
+		// end::beneath-path[]
 	}
 
 }

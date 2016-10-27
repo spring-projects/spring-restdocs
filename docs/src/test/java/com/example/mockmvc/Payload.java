@@ -26,6 +26,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
@@ -41,9 +42,18 @@ public class Payload {
 		this.mockMvc.perform(get("/user/5").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("index", responseFields( // <1>
-					fieldWithPath("contact").description("The user's contact details"), // <2>
-					fieldWithPath("contact.email").description("The user's email address")))); // <3>
+					fieldWithPath("contact.email").description("The user's email address"), // <2>
+					fieldWithPath("contact.name").description("The user's name")))); // <3>
 		// end::response[]
+	}
+	
+	public void subsection() throws Exception {
+		// tag::subsection[]
+		this.mockMvc.perform(get("/user/5").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(document("index", responseFields( // <1>
+					subsectionWithPath("contact").description("The user's contact details")))); // <1>
+		// end::subsection[]
 	}
 
 	public void explicitType() throws Exception {
@@ -92,14 +102,14 @@ public class Payload {
 		// end::book-array[]
 	}
 
-	public void subsection() throws Exception {
-		// tag::subsection[]
+	public void subsectionBeneathPath() throws Exception {
+		// tag::beneath-path[]
 		this.mockMvc.perform(get("/locations/1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("location", responseFields(beneathPath("weather.temperature"), // <1>
 						fieldWithPath("high").description("The forecast high in degrees celcius"), // <2>
 						fieldWithPath("low").description("The forecast low in degrees celcius"))));
-		// end::subsection[]
+		// end::beneath-path[]
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,7 +60,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringApplicationConfiguration(classes = RestNotesSpringDataRest.class)
 @WebAppConfiguration
 public class ApiDocumentation {
-	
+
 	@Rule
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
@@ -116,7 +117,7 @@ public class ApiDocumentation {
 							linkWithRel("tags").description("The <<resources-tags,Tags resource>>"),
 							linkWithRel("profile").description("The ALPS profile for the service")),
 					responseFields(
-							fieldWithPath("_links").description("<<resources-index-links,Links>> to other resources"))));
+							subsectionWithPath("_links").description("<<resources-index-links,Links>> to other resources"))));
 
 	}
 
@@ -137,8 +138,8 @@ public class ApiDocumentation {
 							linkWithRel("self").description("Canonical link for this resource"),
 							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
-							fieldWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"),
-							fieldWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
+							subsectionWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"),
+							subsectionWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
 	}
 
 	@Test
@@ -208,7 +209,7 @@ public class ApiDocumentation {
 					responseFields(
 							fieldWithPath("title").description("The title of the note"),
 							fieldWithPath("body").description("The body of the note"),
-							fieldWithPath("_links").description("<<resources-note-links,Links>> to other resources"))));
+							subsectionWithPath("_links").description("<<resources-note-links,Links>> to other resources"))));
 	}
 
 	@Test
@@ -227,8 +228,8 @@ public class ApiDocumentation {
 							linkWithRel("self").description("Canonical link for this resource"),
 							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
-							fieldWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"),
-							fieldWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
+							subsectionWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"),
+							subsectionWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
 	}
 
 	@Test
@@ -310,7 +311,7 @@ public class ApiDocumentation {
 							linkWithRel("notes").description("The <<resources-tagged-notes,notes>> that have this tag")),
 					responseFields(
 							fieldWithPath("name").description("The name of the tag"),
-							fieldWithPath("_links").description("<<resources-tag-links,Links>> to other resources"))));
+							subsectionWithPath("_links").description("<<resources-tag-links,Links>> to other resources"))));
 	}
 
 	@Test

@@ -131,13 +131,27 @@ public class RequestFieldsSnippetFailureTests {
 	@Test
 	public void undocumentedXmlRequestField() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(startsWith(
-				"The following parts of the payload were not" + " documented:"));
+		this.thrown.expectMessage(
+				startsWith("The following parts of the payload were not documented:"));
 		new RequestFieldsSnippet(Collections.<FieldDescriptor>emptyList())
 				.document(this.operationBuilder.request("http://localhost")
 						.content("<a><b>5</b></a>").header(HttpHeaders.CONTENT_TYPE,
 								MediaType.APPLICATION_XML_VALUE)
 						.build());
+	}
+
+	@Test
+	public void xmlDescendentsAreNotDocumentedByFieldDescriptor() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown.expectMessage(
+				startsWith("The following parts of the payload were not documented:"));
+		new RequestFieldsSnippet(
+				Arrays.asList(fieldWithPath("a").type("a").description("one")))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("<a><b>5</b></a>")
+								.header(HttpHeaders.CONTENT_TYPE,
+										MediaType.APPLICATION_XML_VALUE)
+								.build());
 	}
 
 	@Test

@@ -26,6 +26,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath
 import static org.springframework.restdocs.restassured.operation.preprocess.RestAssuredPreprocessors.modifyUris
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration
@@ -75,8 +76,8 @@ class ApiDocumentationSpec extends Specification {
 						fieldWithPath('appprofile').description('the profile of grails used in this project'),
 						fieldWithPath('groovyversion').description('the version of groovy used in this project'),
 						fieldWithPath('jvmversion').description('the version of the jvm used in this project'),
-						fieldWithPath('controllers').type(JsonFieldType.ARRAY).description('the list of available controllers'),
-						fieldWithPath('plugins').type(JsonFieldType.ARRAY).description('the plugins active for this project'),
+						subsectionWithPath('controllers').type(JsonFieldType.ARRAY).description('the list of available controllers'),
+						subsectionWithPath('plugins').type(JsonFieldType.ARRAY).description('the plugins active for this project'),
 				)))
 				.when()
 				.port(this.serverPort)
@@ -123,14 +124,14 @@ class ApiDocumentationSpec extends Specification {
 				requestFields(
 						fieldWithPath('title').description('the title of the note'),
 						fieldWithPath('body').description('the body of the note'),
-						fieldWithPath('tags').type(JsonFieldType.ARRAY).description('a list of tags associated to the note')
+						subsectionWithPath('tags').type(JsonFieldType.ARRAY).description('a list of tags associated to the note')
 				),
 				responseFields(
 					fieldWithPath('class').description('the class of the resource'),
 					fieldWithPath('id').description('the id of the note'),
 					fieldWithPath('title').description('the title of the note'),
 					fieldWithPath('body').description('the body of the note'),
-					fieldWithPath('tags').type(JsonFieldType.ARRAY).description('the list of tags associated with the note'),
+					subsectionWithPath('tags').type(JsonFieldType.ARRAY).description('the list of tags associated with the note')
 				)))
 				.body('{ "body": "My test example", "title": "Eureka!", "tags": [{"name": "testing123"}] }')
 				.when()

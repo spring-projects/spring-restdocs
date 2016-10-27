@@ -65,6 +65,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.re
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -204,7 +205,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		given().port(this.port).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("response-fields",
 						responseFields(fieldWithPath("a").description("The description"),
-								fieldWithPath("links")
+								subsectionWithPath("links")
 										.description("Links to other resources"))))
 				.accept("application/json").get("/").then().statusCode(200);
 

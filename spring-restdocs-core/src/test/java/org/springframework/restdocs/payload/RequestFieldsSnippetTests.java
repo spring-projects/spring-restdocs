@@ -36,6 +36,7 @@ import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -60,6 +61,19 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one"),
 				fieldWithPath("a.c").description("two"),
 				fieldWithPath("a").description("three")))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
+								.build());
+	}
+
+	@Test
+	public void entireSubsectionsCanBeDocumented() throws IOException {
+		this.snippets.expectRequestFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
+						"`Object`", "one"));
+
+		new RequestFieldsSnippet(
+				Arrays.asList(subsectionWithPath("a").description("one")))
 						.document(this.operationBuilder.request("http://localhost")
 								.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
 								.build());
@@ -119,6 +133,18 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 				fieldWithPath("b").description("Field b")))
 						.document(this.operationBuilder.request("http://localhost")
 								.content("{\"a\": 5, \"b\": 4}").build());
+	}
+
+	@Test
+	public void entireSubsectionCanBeIgnored() throws IOException {
+		this.snippets.expectRequestFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`c`",
+						"`Number`", "Field c"));
+
+		new RequestFieldsSnippet(Arrays.asList(subsectionWithPath("a").ignored(),
+				fieldWithPath("c").description("Field c")))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{\"a\": {\"b\": 5}, \"c\": 4}").build());
 	}
 
 	@Test
@@ -254,6 +280,20 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
 												.build());
+	}
+
+	@Test
+	public void entireSubsectionOfXmlPayloadCanBeDocumented() throws IOException {
+		this.snippets.expectRequestFields().withContents(
+				tableWithHeader("Path", "Type", "Description").row("`a`", "`a`", "one"));
+
+		new RequestFieldsSnippet(
+				Arrays.asList(subsectionWithPath("a").description("one").type("a")))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("<a><b>5</b><c>charlie</c></a>")
+								.header(HttpHeaders.CONTENT_TYPE,
+										MediaType.APPLICATION_XML_VALUE)
+								.build());
 	}
 
 	@Test

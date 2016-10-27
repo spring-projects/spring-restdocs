@@ -33,6 +33,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,11 +69,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringApplicationConfiguration(classes = RestNotesSpringHateoas.class)
 @WebAppConfiguration
 public class ApiDocumentation {
-	
+
 	@Rule
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-	
-	private RestDocumentationResultHandler documentationHandler; 
+
+	private RestDocumentationResultHandler documentationHandler;
 
 	@Autowired
 	private NoteRepository noteRepository;
@@ -93,13 +94,13 @@ public class ApiDocumentation {
 		this.documentationHandler = document("{method-name}",
 			preprocessRequest(prettyPrint()),
 			preprocessResponse(prettyPrint()));
-		
+
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.alwaysDo(this.documentationHandler)
 			.build();
 	}
-	
+
 	@Test
 	public void headersExample() throws Exception {
 		this.mockMvc
@@ -140,7 +141,7 @@ public class ApiDocumentation {
 					linkWithRel("notes").description("The <<resources-notes,Notes resource>>"),
 					linkWithRel("tags").description("The <<resources-tags,Tags resource>>")),
 				responseFields(
-					fieldWithPath("_links").description("<<resources-index-links,Links>> to other resources"))));
+					subsectionWithPath("_links").description("<<resources-index-links,Links>> to other resources"))));
 	}
 
 	@Test
@@ -150,13 +151,13 @@ public class ApiDocumentation {
 		createNote("REST maturity model", "http://martinfowler.com/articles/richardsonMaturityModel.html");
 		createNote("Hypertext Application Language (HAL)", "http://stateless.co/hal_specification.html");
 		createNote("Application-Level Profile Semantics (ALPS)", "http://alps.io/spec/");
-		
+
 		this.mockMvc
 			.perform(get("/notes"))
 			.andExpect(status().isOk())
 			.andDo(this.documentationHandler.document(
 				responseFields(
-					fieldWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"))));
+					subsectionWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"))));
 	}
 
 	@Test
@@ -177,7 +178,7 @@ public class ApiDocumentation {
 		note.put("tags", Arrays.asList(tagLocation));
 
 		ConstrainedFields fields = new ConstrainedFields(NoteInput.class);
-		
+
 		this.mockMvc
 			.perform(post("/notes")
 				.contentType(MediaTypes.HAL_JSON)
@@ -214,7 +215,7 @@ public class ApiDocumentation {
 				.content(this.objectMapper.writeValueAsString(note)))
 			.andExpect(status().isCreated())
 			.andReturn().getResponse().getHeader("Location");
-		
+
 		this.mockMvc
 			.perform(get(noteLocation))
 			.andExpect(status().isOk())
@@ -229,7 +230,7 @@ public class ApiDocumentation {
 				responseFields(
 					fieldWithPath("title").description("The title of the note"),
 					fieldWithPath("body").description("The body of the note"),
-					fieldWithPath("_links").description("<<resources-note-links,Links>> to other resources"))));
+					subsectionWithPath("_links").description("<<resources-note-links,Links>> to other resources"))));
 
 	}
 
@@ -241,13 +242,13 @@ public class ApiDocumentation {
 		createTag("REST");
 		createTag("Hypermedia");
 		createTag("HTTP");
-		
+
 		this.mockMvc
 			.perform(get("/tags"))
 			.andExpect(status().isOk())
 			.andDo(this.documentationHandler.document(
 				responseFields(
-					fieldWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"))));
+					subsectionWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"))));
 	}
 
 	@Test
@@ -256,7 +257,7 @@ public class ApiDocumentation {
 		tag.put("name", "REST");
 
 		ConstrainedFields fields = new ConstrainedFields(TagInput.class);
-		
+
 		this.mockMvc
 			.perform(post("/tags")
 				.contentType(MediaTypes.HAL_JSON)
@@ -344,7 +345,7 @@ public class ApiDocumentation {
 					linkWithRel("tagged-notes").description("The <<resources-tagged-notes,notes>> that have this tag")),
 				responseFields(
 					fieldWithPath("name").description("The name of the tag"),
-					fieldWithPath("_links").description("<<resources-tag-links,Links>> to other resources"))));
+					subsectionWithPath("_links").description("<<resources-tag-links,Links>> to other resources"))));
 	}
 
 	@Test
@@ -363,7 +364,7 @@ public class ApiDocumentation {
 		tagUpdate.put("name", "RESTful");
 
 		ConstrainedFields fields = new ConstrainedFields(TagPatchInput.class);
-		
+
 		this.mockMvc
 			.perform(patch(tagLocation)
 				.contentType(MediaTypes.HAL_JSON)

@@ -65,7 +65,12 @@ class JsonContentHandler implements ContentHandler {
 		Object content = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
 			JsonFieldPath path = JsonFieldPath.compile(fieldDescriptor.getPath());
-			this.fieldProcessor.remove(path, content);
+			if (describesSubsection(fieldDescriptor)) {
+				this.fieldProcessor.removeSubsection(path, content);
+			}
+			else {
+				this.fieldProcessor.remove(path, content);
+			}
 		}
 		if (!isEmpty(content)) {
 			try {
@@ -76,6 +81,10 @@ class JsonContentHandler implements ContentHandler {
 			}
 		}
 		return null;
+	}
+
+	private boolean describesSubsection(FieldDescriptor fieldDescriptor) {
+		return fieldDescriptor instanceof SubsectionDescriptor;
 	}
 
 	private Object readContent() {

@@ -76,6 +76,17 @@ final class JsonFieldProcessor {
 		});
 	}
 
+	void removeSubsection(final JsonFieldPath path, Object payload) {
+		traverse(new ProcessingContext(payload, path), new MatchCallback() {
+
+			@Override
+			public void foundMatch(Match match) {
+				match.removeSubsection();
+			}
+
+		});
+	}
+
 	private void traverse(ProcessingContext context, MatchCallback matchCallback) {
 		final String segment = context.getSegment();
 		if (JsonFieldPath.isArraySegment(segment)) {
@@ -149,10 +160,39 @@ final class JsonFieldProcessor {
 
 		@Override
 		public void remove() {
+			Object removalCandidate = this.map.get(this.segment);
+			if (isMapWithEntries(removalCandidate)
+					|| isListWithNonScalarEntries(removalCandidate)) {
+				return;
+			}
 			this.map.remove(this.segment);
 			if (this.map.isEmpty() && this.parent != null) {
 				this.parent.remove();
 			}
+		}
+
+		@Override
+		public void removeSubsection() {
+			this.map.remove(this.segment);
+			if (this.map.isEmpty() && this.parent != null) {
+				this.parent.removeSubsection();
+			}
+		}
+
+		private boolean isMapWithEntries(Object object) {
+			return object instanceof Map && !((Map<?, ?>) object).isEmpty();
+		}
+
+		private boolean isListWithNonScalarEntries(Object object) {
+			if (!(object instanceof List)) {
+				return false;
+			}
+			for (Object entry : (List<?>) object) {
+				if (entry instanceof Map || entry instanceof List) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 	}
@@ -181,10 +221,33 @@ final class JsonFieldProcessor {
 
 		@Override
 		public void remove() {
+			if (!itemIsEmpty()) {
+				return;
+			}
 			this.items.remove();
 			if (this.list.isEmpty() && this.parent != null) {
 				this.parent.remove();
 			}
+		}
+
+		@Override
+		public void removeSubsection() {
+			this.items.remove();
+			if (this.list.isEmpty() && this.parent != null) {
+				this.parent.removeSubsection();
+			}
+		}
+
+		private boolean itemIsEmpty() {
+			return !isMapWithEntries(this.item) && !isListWithEntries(this.item);
+		}
+
+		private boolean isMapWithEntries(Object object) {
+			return object instanceof Map && !((Map<?, ?>) object).isEmpty();
+		}
+
+		private boolean isListWithEntries(Object object) {
+			return object instanceof List && !((List<?>) object).isEmpty();
 		}
 
 	}
@@ -200,6 +263,8 @@ final class JsonFieldProcessor {
 		Object getValue();
 
 		void remove();
+
+		void removeSubsection();
 	}
 
 	private static final class ProcessingContext {

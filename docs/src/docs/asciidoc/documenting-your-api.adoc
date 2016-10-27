@@ -110,7 +110,19 @@ include::{examples-dir}/com/example/Hypermedia.java[tags=ignore-links]
 
 In addition to the hypermedia-specific support <<documenting-your-api-hypermedia,described
 above>>, support for general documentation of request and response payloads is also
-provided. For example:
+provided. Consider the following payload:
+
+[source,json,indent=0]
+----
+	{
+		"contact": {
+			"name": "Jane Doe",
+			"email": "jane.doe@example.com"
+		}
+	}
+----
+
+It can be documented like this:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
@@ -120,9 +132,9 @@ include::{examples-dir}/com/example/mockmvc/Payload.java[tags=response]
 <1> Configure Spring REST docs to produce a snippet describing the fields in the response
 	payload. To document a request `requestFields` can be used. Both are static methods on
 	`org.springframework.restdocs.payload.PayloadDocumentation`.
-<2> Expect a field with the path `contact`. Uses the static `fieldWithPath` method on
-	`org.springframework.restdocs.payload.PayloadDocumentation`.
-<3> Expect a field with the path `contact.email`.
+<2> Expect a field with the path `contact.email`. Uses the static `fieldWithPath` method
+	on `org.springframework.restdocs.payload.PayloadDocumentation`.
+<3> Expect a field with the path `contact.name`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -132,9 +144,9 @@ include::{examples-dir}/com/example/restassured/Payload.java[tags=response]
 <1> Configure Spring REST docs to produce a snippet describing the fields in the response
 	payload. To document a request `requestFields` can be used. Both are static methods on
 	`org.springframework.restdocs.payload.PayloadDocumentation`.
-<2> Expect a field with the path `contact`. Uses the static `fieldWithPath` method on
+<2> Expect a field with the path `contact.email`. Uses the static `fieldWithPath` method on
 	`org.springframework.restdocs.payload.PayloadDocumentation`.
-<3> Expect a field with the path `contact.email`.
+<3> Expect a field with the path `contact.name`.
 
 The result is a snippet that contains a table describing the fields. For requests this
 snippet is named `request-fields.adoc`. For responses this snippet is named
@@ -142,12 +154,36 @@ snippet is named `request-fields.adoc`. For responses this snippet is named
 
 When documenting fields, the test will fail if an undocumented field is found in the
 payload. Similarly, the test will also fail if a documented field is not found in the
-payload and the field has not been marked as optional. For payloads with a hierarchical
-structure, documenting a field is sufficient for all of its descendants to also be
-treated as having been documented.
+payload and the field has not been marked as optional.
 
-If you do not want to document a field, you can mark it as ignored. This will prevent it
-from appearing in the generated snippet while avoiding the failure described above.
+If you don't want to provide detailed documentation for all of the fields, an entire
+subsection of a payload can be documented. For example:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=subsection]
+----
+<1> Document the subsection with the path `contact`. `contact.email` and `contact.name`
+	are now seen has having also been documented. Uses the static `subsectionWithPath`
+	method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Payload.java[tags=subsection]
+----
+<1> Document the subsection with the path `contact`. `contact.email` and `contact.name`
+	are now seen has having also been documented. Uses the static `subsectionWithPath`
+	method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+
+`subsectionWithPath` can be useful for providing a high-level overview of a particular
+section of a payload. Separate, more detailed documentation for a subsection can then
+<<documenting-your-api-request-response-payloads-subsections, be produced>>.
+
+If you do not want to document a field or subsection at all, you can mark it as ignored.
+This will prevent it from appearing in the generated snippet while avoiding the failure
+described above.
 
 Fields can also be documented in a relaxed mode where any undocumented fields will not
 cause a test failure. To do so, use the `relaxedRequestFields` and `relaxedResponseFields`
@@ -233,7 +269,7 @@ The following paths are all present:
 
 |===
 
-A response that uses an array at its root can also be documented. The path `[]` will refer
+A payload that uses an array at its root can also be documented. The path `[]` will refer
 to the entire array. You can then use bracket or dot notation to identify fields within
 the array's entries. For example, `[].id` corresponds to the `id` field of every object
 found in the following array:
@@ -403,7 +439,7 @@ include::{examples-dir}/com/example/restassured/Payload.java[tags=book-array]
 <2> Document `[].title` and `[].author` using the existing descriptors prefixed with `[].`
 
 [[documenting-your-api-request-response-payloads-subsections]]
-==== Documenting a portion of a request or response payload
+==== Documenting a subsection of a request or response payload
 
 If a payload is large or structurally complex, it can be useful to document
 individual sections of the payload. REST Docs allows you to do so by extracting a
@@ -433,7 +469,7 @@ be produced as follows:
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
-include::{examples-dir}/com/example/mockmvc/Payload.java[tags=subsection]
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=beneath-path]
 ----
 <1> Produce a snippet describing the fields in the subsection of the response payload
 	beneath the path `weather.temperature`. Uses the static `beneathPath` method on
@@ -443,7 +479,7 @@ include::{examples-dir}/com/example/mockmvc/Payload.java[tags=subsection]
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=subsection]
+include::{examples-dir}/com/example/restassured/Payload.java[tags=beneath-path]
 ----
 <1> Produce a snippet describing the fields in the subsection of the response payload
 	beneath the path `weather.temperature`. Uses the static `beneathPath` method on
@@ -457,6 +493,7 @@ example, the code above will result in a snippet named
 `response-fields-beneath-weather.temperature.adoc`. The identifier can be customized using
 the `withSubsectionId(String)` method:
 
+[source,java,indent=0]
 ----
 include::{examples-dir}/com/example/Payload.java[tags=custom-subsection-id]
 ----

@@ -103,6 +103,74 @@ public abstract class PayloadDocumentation {
 	}
 
 	/**
+	 * Creates a {@code FieldDescriptor} that describes a subsection, i.e. a field and all
+	 * of its descendants, with the given {@code path}.
+	 * <p>
+	 * When documenting an XML payload, the {@code path} uses XPath, i.e. '/' is used to
+	 * descend to a child node.
+	 * <p>
+	 * When documenting a JSON payload, the {@code path} uses '.' to descend into a child
+	 * object and ' {@code []}' to descend into an array. For example, with this JSON
+	 * payload:
+	 *
+	 * <pre>
+	 * {
+	 *    "a":{
+	 *        "b":[
+	 *            {
+	 *                "c":"one"
+	 *            },
+	 *            {
+	 *                "c":"two"
+	 *            },
+	 *            {
+	 *                "d":"three"
+	 *            }
+	 *        ]
+	 *    }
+	 * }
+	 * </pre>
+	 *
+	 * The following paths are all present:
+	 *
+	 * <table summary="Paths and their values">
+	 * <tr>
+	 * <th>Path</th>
+	 * <th>Value</th>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a}</td>
+	 * <td>An object containing "b"</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a.b}</td>
+	 * <td>An array containing three objects</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a.b[]}</td>
+	 * <td>An array containing three objects</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a.b[].c}</td>
+	 * <td>An array containing the strings "one" and "two"</td>
+	 * </tr>
+	 * <tr>
+	 * <td>{@code a.b[].d}</td>
+	 * <td>The string "three"</td>
+	 * </tr>
+	 * </table>
+	 * <p>
+	 * A subsection descriptor for the array with the path {@code a.b[]} will also
+	 * describe its descendants {@code a.b[].c} and {@code a.b[].d}.
+	 *
+	 * @param path The path of the subsection
+	 * @return a {@code SubsectionDescriptor} ready for further configuration
+	 */
+	public static SubsectionDescriptor subsectionWithPath(String path) {
+		return new SubsectionDescriptor(path);
+	}
+
+	/**
 	 * Returns a {@code Snippet} that will document the fields of the API operations's
 	 * request payload. The fields will be documented using the given {@code descriptors}.
 	 * <p>
@@ -110,16 +178,19 @@ public abstract class PayloadDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * field is documented, is not marked as optional, and is not present in the request,
 	 * a failure will also occur. For payloads with a hierarchical structure, documenting
-	 * a field is sufficient for all of its descendants to also be treated as having been
-	 * documented.
+	 * a field with a {@link #subsectionWithPath(String) subsection descriptor} will mean
+	 * that all of its descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
+	 * @see FieldDescriptor#description(Object)
 	 */
 	public static RequestFieldsSnippet requestFields(FieldDescriptor... descriptors) {
 		return requestFields(Arrays.asList(descriptors));
@@ -133,16 +204,18 @@ public abstract class PayloadDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * field is documented, is not marked as optional, and is not present in the request,
 	 * a failure will also occur. For payloads with a hierarchical structure, documenting
-	 * a field is sufficient for all of its descendants to also be treated as having been
-	 * documented.
+	 * a field with a {@link #subsectionWithPath(String) subsection descriptor} will mean
+	 * that all of its descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestFieldsSnippet requestFields(List<FieldDescriptor> descriptors) {
 		return new RequestFieldsSnippet(descriptors);
@@ -158,6 +231,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
 			FieldDescriptor... descriptors) {
@@ -174,6 +248,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
 			List<FieldDescriptor> descriptors) {
@@ -187,19 +262,21 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is present in the request payload, but is not documented by one of the
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * field is documented, is not marked as optional, and is not present in the request,
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field with a {@link #subsectionWithPath(String) subsection descriptor} will mean
+	 * that all of its descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestFieldsSnippet requestFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
@@ -213,19 +290,21 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is present in the request payload, but is not documented by one of the
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * field is documented, is not marked as optional, and is not present in the request,
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field with a {@link #subsectionWithPath(String) subsection descriptor} will mean
+	 * that all of its descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestFieldsSnippet requestFields(Map<String, Object> attributes,
 			List<FieldDescriptor> descriptors) {
@@ -244,6 +323,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
@@ -262,6 +342,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
 			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
@@ -273,22 +354,25 @@ public abstract class PayloadDocumentation {
 	 * operations's request payload extracted by the given {@code subsectionExtractor}.
 	 * The fields will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the request payload, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request,
-	 * a failure will also occur. For payloads with a hierarchical structure, documenting
-	 * a field is sufficient for all of its descendants to also be treated as having been
-	 * documented.
+	 * If a field is present in the subsection of the request payload, but is not
+	 * documented by one of the descriptors, a failure will occur when the snippet is
+	 * invoked. Similarly, if a field is documented, is not marked as optional, and is not
+	 * present in the subsection, a failure will also occur.For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestFieldsSnippet requestFields(
@@ -302,22 +386,25 @@ public abstract class PayloadDocumentation {
 	 * API operations's request payload extracted by the given {@code subsectionExtractor}
 	 * . The fields will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the request payload, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request,
-	 * a failure will also occur. For payloads with a hierarchical structure, documenting
-	 * a field is sufficient for all of its descendants to also be treated as having been
-	 * documented.
+	 * If a field is present in the subsection of the request payload, but is not
+	 * documented by one of the descriptors, a failure will occur when the snippet is
+	 * invoked. Similarly, if a field is documented, is not marked as optional, and is not
+	 * present in the subsection, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestFieldsSnippet requestFields(
@@ -339,6 +426,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
@@ -360,6 +448,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
@@ -374,16 +463,18 @@ public abstract class PayloadDocumentation {
 	 * The fields will be documented using the given {@code descriptors} and the given
 	 * {@code attributes} will be available during snippet generation.
 	 * <p>
-	 * If a field is present in the request payload, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the subsection of the request payload, but is not
+	 * documented by one of the descriptors, a failure will occur when the snippet is
+	 * invoked. Similarly, if a field is documented, is not marked as optional, and is not
+	 * present in the subsection, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -391,6 +482,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestFieldsSnippet requestFields(
@@ -405,16 +497,18 @@ public abstract class PayloadDocumentation {
 	 * The fields will be documented using the given {@code descriptors} and the given
 	 * {@code attributes} will be available during snippet generation.
 	 * <p>
-	 * If a field is present in the request payload, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the subsection of the request payload, but is not
+	 * documented by one of the descriptors, a failure will occur when the snippet is
+	 * invoked. Similarly, if a field is documented, is not marked as optional, and is not
+	 * present in the subsection, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -422,6 +516,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestFieldsSnippet requestFields(
@@ -445,6 +540,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
@@ -469,6 +565,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestFieldsSnippet relaxedRequestFields(
@@ -483,22 +580,25 @@ public abstract class PayloadDocumentation {
 	 * {@code part} of the API operations's request payload. The fields will be documented
 	 * using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the request part, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * part, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the payload of the request part, but is not documented by
+	 * one of the descriptors, a failure will occur when the snippet is invoked.
+	 * Similarly, if a field is documented, is not marked as optional, and is not present
+	 * in the request part's payload, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param part the part name
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
 			FieldDescriptor... descriptors) {
@@ -510,21 +610,24 @@ public abstract class PayloadDocumentation {
 	 * {@code part} of the API operations's request payload. The fields will be documented
 	 * using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the request part, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * part, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the payload of the request part, but is not documented by
+	 * one of the descriptors, a failure will occur when the snippet is invoked.
+	 * Similarly, if a field is documented, is not marked as optional, and is not present
+	 * in the request part's payload, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param part the part name
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
 			List<FieldDescriptor> descriptors) {
@@ -543,6 +646,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
 			FieldDescriptor... descriptors) {
@@ -561,6 +665,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
 			List<FieldDescriptor> descriptors) {
@@ -573,22 +678,25 @@ public abstract class PayloadDocumentation {
 	 * using the given {@code descriptors} and the given {@code attributes} will be
 	 * available during snippet generation.
 	 * <p>
-	 * If a field is present in the request part, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * part, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the payload of the request part, but is not documented by
+	 * one of the descriptors, a failure will occur when the snippet is invoked.
+	 * Similarly, if a field is documented, is not marked as optional, and is not present
+	 * in the request part's payload, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param part the part name
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
@@ -601,22 +709,25 @@ public abstract class PayloadDocumentation {
 	 * using the given {@code descriptors} and the given {@code attributes} will be
 	 * available during snippet generation.
 	 * <p>
-	 * If a field is present in the request part, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * part, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the payload of the request part, but is not documented by
+	 * one of the descriptors, a failure will occur when the snippet is invoked.
+	 * Similarly, if a field is documented, is not marked as optional, and is not present
+	 * in the request part's payload, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param part the part name
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
 			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
@@ -637,6 +748,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
@@ -657,6 +769,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
 			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
@@ -669,16 +782,18 @@ public abstract class PayloadDocumentation {
 	 * be extracted by the given {@code subsectionExtractor}. The fields will be
 	 * documented using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the request part, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * part, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the subsection of the request part payload, but is not
+	 * documented by one of the descriptors, a failure will occur when the snippet is
+	 * invoked. Similarly, if a field is documented, is not marked as optional, and is not
+	 * present in the subsection, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
@@ -686,6 +801,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
@@ -700,16 +816,18 @@ public abstract class PayloadDocumentation {
 	 * be extracted by the given {@code subsectionExtractor}. The fields will be
 	 * documented using the given {@code descriptors}.
 	 * <p>
-	 * If a field is present in the request part, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * part, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the subsection of the request part payload, but is not
+	 * documented by one of the descriptors, a failure will occur when the snippet is
+	 * invoked. Similarly, if a field is documented, is not marked as optional, and is not
+	 * present in the subsection, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
@@ -717,6 +835,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
@@ -740,6 +859,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
@@ -764,6 +884,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
@@ -779,16 +900,18 @@ public abstract class PayloadDocumentation {
 	 * documented using the given {@code descriptors} and the given {@code attributes}
 	 * will be available during snippet generation.
 	 * <p>
-	 * If a field is present in the request part, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * part, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the subsection of the request part payload, but is not
+	 * documented by one of the descriptors, a failure will occur when the snippet is
+	 * invoked. Similarly, if a field is documented, is not marked as optional, and is not
+	 * present in the subsection, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
@@ -797,6 +920,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
@@ -813,16 +937,18 @@ public abstract class PayloadDocumentation {
 	 * documented using the given {@code descriptors} and the given {@code attributes}
 	 * will be available during snippet generation.
 	 * <p>
-	 * If a field is present in the request part, but is not documented by one of the
-	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the request
-	 * part, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * If a field is present in the subsection of the request part payload, but is not
+	 * documented by one of the descriptors, a failure will occur when the snippet is
+	 * invoked. Similarly, if a field is documented, is not marked as optional, and is not
+	 * present in the subsection, a failure will also occur. For payloads with a
+	 * hierarchical structure, documenting a field with a
+	 * {@link #subsectionWithPath(String) subsection descriptor} will mean that all of its
+	 * descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
@@ -831,6 +957,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
@@ -857,6 +984,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
@@ -883,6 +1011,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
@@ -899,18 +1028,20 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is present in the response payload, but is not documented by one of the
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the response
-	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * field is documented, is not marked as optional, and is not present in the response,
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field with a {@link #subsectionWithPath(String) subsection descriptor} will mean
+	 * that all of its descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(FieldDescriptor... descriptors) {
 		return responseFields(Arrays.asList(descriptors));
@@ -923,19 +1054,21 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is present in the response payload, but is not documented by one of the
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the response
-	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * field is documented, is not marked as optional, and is not present in the response,
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field with a {@link #subsectionWithPath(String) subsection descriptor} will mean
+	 * that all of its descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(
@@ -955,6 +1088,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
@@ -973,6 +1107,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
 			List<FieldDescriptor> descriptors) {
@@ -986,19 +1121,21 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is present in the response payload, but is not documented by one of the
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the response
-	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * field is documented, is not marked as optional, and is not present in the response,
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field with a {@link #subsectionWithPath(String) subsection descriptor} will mean
+	 * that all of its descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(Map<String, Object> attributes,
 			FieldDescriptor... descriptors) {
@@ -1012,19 +1149,21 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is present in the response payload, but is not documented by one of the
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
-	 * field is documented, is not marked as optional, and is not present in the response
-	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * field is documented, is not marked as optional, and is not present in the response,
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field with a {@link #subsectionWithPath(String) subsection descriptor} will mean
+	 * that all of its descendants are also treated as having been documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(Map<String, Object> attributes,
 			List<FieldDescriptor> descriptors) {
@@ -1043,6 +1182,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
 			Map<String, Object> attributes, FieldDescriptor... descriptors) {
@@ -1061,6 +1201,7 @@ public abstract class PayloadDocumentation {
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
 			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
@@ -1077,18 +1218,21 @@ public abstract class PayloadDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * field is documented, is not marked as optional, and is not present in the response
 	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * documenting a field with a {@link #subsectionWithPath(String) subsection
+	 * descriptor} will mean that all of its descendants are also treated as having been
+	 * documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(
@@ -1107,18 +1251,21 @@ public abstract class PayloadDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * field is documented, is not marked as optional, and is not present in the response
 	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * documenting a field with a {@link #subsectionWithPath(String) subsection
+	 * descriptor} will mean that all of its descendants are also treated as having been
+	 * documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(
@@ -1141,6 +1288,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
@@ -1163,6 +1311,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
@@ -1182,12 +1331,14 @@ public abstract class PayloadDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * field is documented, is not marked as optional, and is not present in the response
 	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * documenting a field with a {@link #subsectionWithPath(String) subsection
+	 * descriptor} will mean that all of its descendants are also treated as having been
+	 * documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -1195,6 +1346,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(
@@ -1215,12 +1367,14 @@ public abstract class PayloadDocumentation {
 	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
 	 * field is documented, is not marked as optional, and is not present in the response
 	 * payload, a failure will also occur. For payloads with a hierarchical structure,
-	 * documenting a field is sufficient for all of its descendants to also be treated as
-	 * having been documented.
+	 * documenting a field with a {@link #subsectionWithPath(String) subsection
+	 * descriptor} will mean that all of its descendants are also treated as having been
+	 * documented.
 	 * <p>
-	 * If you do not want to document a field, a field descriptor can be marked as
-	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
-	 * generated snippet while avoiding the failure described above.
+	 * If you do not want to document a field or subsection, a descriptor can be
+	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
+	 * subsection will not appear in the generated snippet and the failure described above
+	 * will not occur.
 	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -1228,6 +1382,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(
@@ -1252,6 +1407,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
@@ -1277,6 +1433,7 @@ public abstract class PayloadDocumentation {
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #subsectionWithPath(String)
 	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
@@ -1298,11 +1455,13 @@ public abstract class PayloadDocumentation {
 			List<FieldDescriptor> descriptors) {
 		List<FieldDescriptor> prefixedDescriptors = new ArrayList<>();
 		for (FieldDescriptor descriptor : descriptors) {
-			FieldDescriptor prefixedDescriptor = new FieldDescriptor(
-					pathPrefix + descriptor.getPath())
-							.description(descriptor.getDescription())
-							.type(descriptor.getType())
-							.attributes(asArray(descriptor.getAttributes()));
+			String prefixedPath = pathPrefix + descriptor.getPath();
+			FieldDescriptor prefixedDescriptor = descriptor instanceof SubsectionDescriptor
+					? new SubsectionDescriptor(prefixedPath)
+					: new FieldDescriptor(prefixedPath);
+			prefixedDescriptor.description(descriptor.getDescription())
+					.type(descriptor.getType())
+					.attributes(asArray(descriptor.getAttributes()));
 			if (descriptor.isIgnored()) {
 				prefixedDescriptor.ignored();
 			}

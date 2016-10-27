@@ -202,6 +202,26 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
+	public void mapWithEntriesIsNotRemovedWhenNotAlsoRemovingDescendants() {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> alpha = new HashMap<>();
+		payload.put("a", alpha);
+		alpha.put("b", "bravo");
+		this.fieldProcessor.remove(JsonFieldPath.compile("a"), payload);
+		assertThat(payload.size(), equalTo(1));
+	}
+
+	@Test
+	public void removeSubsectionRemovesMapWithEntries() {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> alpha = new HashMap<>();
+		payload.put("a", alpha);
+		alpha.put("b", "bravo");
+		this.fieldProcessor.removeSubsection(JsonFieldPath.compile("a"), payload);
+		assertThat(payload.size(), equalTo(0));
+	}
+
+	@Test
 	public void removeNestedMapEntry() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
@@ -226,6 +246,51 @@ public class JsonFieldProcessorTests {
 		Map<String, Object> payload = new ObjectMapper()
 				.readValue("{\"a\": [[{\"id\":1},{\"id\":2}], [{\"id\":3}]]}", Map.class);
 		this.fieldProcessor.remove(JsonFieldPath.compile("a[][].id"), payload);
+		assertThat(payload.size(), equalTo(0));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void removeDoesNotRemoveArrayWithMapEntries() throws IOException {
+		Map<String, Object> payload = new ObjectMapper()
+				.readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}", Map.class);
+		this.fieldProcessor.remove(JsonFieldPath.compile("a[]"), payload);
+		assertThat(payload.size(), equalTo(1));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void removeDoesNotRemoveArrayWithListEntries() throws IOException {
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}",
+				Map.class);
+		this.fieldProcessor.remove(JsonFieldPath.compile("a[]"), payload);
+		assertThat(payload.size(), equalTo(1));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void removeRemovesArrayWithOnlyScalarEntries() throws IOException {
+		Map<String, Object> payload = new ObjectMapper()
+				.readValue("{\"a\": [\"bravo\", \"charlie\"]}", Map.class);
+		this.fieldProcessor.remove(JsonFieldPath.compile("a"), payload);
+		assertThat(payload.size(), equalTo(0));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void removeSubsectionRemovesArrayWithMapEntries() throws IOException {
+		Map<String, Object> payload = new ObjectMapper()
+				.readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}", Map.class);
+		this.fieldProcessor.removeSubsection(JsonFieldPath.compile("a[]"), payload);
+		assertThat(payload.size(), equalTo(0));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void removeSubsectionRemovesArrayWithListEntries() throws IOException {
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}",
+				Map.class);
+		this.fieldProcessor.removeSubsection(JsonFieldPath.compile("a[]"), payload);
 		assertThat(payload.size(), equalTo(0));
 	}
 

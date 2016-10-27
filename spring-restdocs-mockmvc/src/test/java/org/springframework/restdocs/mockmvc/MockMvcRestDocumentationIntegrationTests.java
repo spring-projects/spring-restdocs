@@ -72,6 +72,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.re
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -316,9 +317,10 @@ public class MockMvcRestDocumentationIntegrationTests {
 
 		mockMvc.perform(get("/").param("foo", "bar").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andDo(document("links", responseFields(
-						fieldWithPath("a").description("The description"),
-						fieldWithPath("links").description("Links to other resources"))));
+				.andDo(document("links",
+						responseFields(fieldWithPath("a").description("The description"),
+								subsectionWithPath("links")
+										.description("Links to other resources"))));
 
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
 				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
