@@ -86,7 +86,74 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 */
 	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors,
 			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
-		super("request", descriptors, attributes, ignoreUndocumentedFields);
+		this(null, descriptors, attributes, ignoreUndocumentedFields);
+	}
+
+	/**
+	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
+	 * subsection of the request extracted by the given {@code subsectionExtractor} using
+	 * the given {@code descriptors}. Undocumented fields will trigger a failure.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 * @since 1.2.0
+	 */
+	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors) {
+		this(subsectionExtractor, descriptors, null, false);
+	}
+
+	/**
+	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
+	 * subsection of the request extracted by the given {@code subsectionExtractor} using
+	 * the given {@code descriptors}. If {@code ignoreUndocumentedFields} is {@code true},
+	 * undocumented fields will be ignored and will not trigger a failure.
+	 *
+	 * @param subsectionExtractor the subsection extractor document
+	 * @param descriptors the descriptors
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 * @since 1.2.0
+	 */
+	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, boolean ignoreUndocumentedFields) {
+		this(subsectionExtractor, descriptors, null, ignoreUndocumentedFields);
+	}
+
+	/**
+	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
+	 * subsection of the request extracted by the given {@code subsectionExtractor} using
+	 * the given {@code descriptors}. The given {@code attributes} will be included in the
+	 * model during template rendering. Undocumented fields will trigger a failure.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 * @since 1.2.0
+	 */
+	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
+		this(subsectionExtractor, descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
+	 * subsection of the request extracted by the given {@code subsectionExtractor} using
+	 * the given {@code descriptors}. The given {@code attributes} will be included in the
+	 * model during template rendering. If {@code ignoreUndocumentedFields} is
+	 * {@code true}, undocumented fields will be ignored and will not trigger a failure.
+	 *
+	 * @param subsectionExtractor the path identifying the subsection of the payload to
+	 * document
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 * @since 1.2.0
+	 */
+	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
+		super("request", descriptors, attributes, ignoreUndocumentedFields,
+				subsectionExtractor);
 	}
 
 	@Override
@@ -137,8 +204,8 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 			FieldDescriptor... additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
 		combinedDescriptors.addAll(getFieldDescriptors());
-		combinedDescriptors.addAll(
-				PayloadDocumentation.applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
+		combinedDescriptors.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix,
+				Arrays.asList(additionalDescriptors)));
 		return new RequestFieldsSnippet(combinedDescriptors, this.getAttributes());
 	}
 

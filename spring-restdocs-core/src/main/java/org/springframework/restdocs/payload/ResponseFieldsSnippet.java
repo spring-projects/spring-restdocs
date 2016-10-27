@@ -87,7 +87,77 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 */
 	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors,
 			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
-		super("response", descriptors, attributes, ignoreUndocumentedFields);
+		this(null, descriptors, attributes, ignoreUndocumentedFields);
+	}
+
+	/**
+	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in a
+	 * subsection of the response using the given {@code descriptors}. The subsection will
+	 * be extracted using the given {@code subsectionExtractor}. Undocumented fields will
+	 * trigger a failure.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 * @since 1.2.0
+	 */
+	protected ResponseFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors) {
+		this(subsectionExtractor, descriptors, null, false);
+	}
+
+	/**
+	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
+	 * subsection of the response using the given {@code descriptors}. The subsection will
+	 * be extracted using the given {@code subsectionExtractor}. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 * @since 1.2.0
+	 */
+	protected ResponseFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, boolean ignoreUndocumentedFields) {
+		this(subsectionExtractor, descriptors, null, ignoreUndocumentedFields);
+	}
+
+	/**
+	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in a
+	 * subsection of the response using the given {@code descriptors}. The subsection will
+	 * be extracted using the given {@code subsectionExtractor}. The given
+	 * {@code attributes} will be included in the model during template rendering.
+	 * Undocumented fields will trigger a failure.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 * @since 1.2.0
+	 */
+	protected ResponseFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
+		this(subsectionExtractor, descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in a
+	 * subsection of the response using the given {@code descriptors}. The subsection will
+	 * be extracted using the given {@code subsectionExtractor}. The given
+	 * {@code attributes} will be included in the model during template rendering. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 * @since 1.2.0
+	 */
+	protected ResponseFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
+		super("response", descriptors, attributes, ignoreUndocumentedFields,
+				subsectionExtractor);
 	}
 
 	@Override
@@ -138,8 +208,8 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 			FieldDescriptor... additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
 		combinedDescriptors.addAll(getFieldDescriptors());
-		combinedDescriptors.addAll(
-				PayloadDocumentation.applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
+		combinedDescriptors.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix,
+				Arrays.asList(additionalDescriptors)));
 		return new ResponseFieldsSnippet(combinedDescriptors, this.getAttributes());
 	}
 

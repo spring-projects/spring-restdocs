@@ -23,6 +23,7 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.specification.RequestSpecification;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -93,6 +94,17 @@ public class Payload {
 			.when().get("/books/1")
 			.then().assertThat().statusCode(is(200));
 		// end::book-array[]
+	}
+
+	public void subsection() throws Exception {
+		// tag::subsection[]
+		RestAssured.given(this.spec).accept("application/json")
+			.filter(document("location", responseFields(beneathPath("weather.temperature"), // <1>
+				fieldWithPath("high").description("The forecast high in degrees celcius"), // <2>
+				fieldWithPath("low").description("The forecast low in degrees celcius"))))
+			.when().get("/locations/1")
+			.then().assertThat().statusCode(is(200));
+		// end::subsection[]
 	}
 
 }

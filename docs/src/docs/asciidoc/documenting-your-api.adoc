@@ -402,6 +402,69 @@ include::{examples-dir}/com/example/restassured/Payload.java[tags=book-array]
 <1> Document the array
 <2> Document `[].title` and `[].author` using the existing descriptors prefixed with `[].`
 
+[[documenting-your-api-request-response-payloads-subsections]]
+==== Documenting a portion of a request or response payload
+
+If a payload is large or structurally complex, it can be useful to document
+individual sections of the payload. REST Docs allows you to do so by extracting a
+subsection of the payload and then documenting it.
+
+Consider the following JSON response payload:
+
+[source,json,indent=0]
+----
+	{
+		"weather": {
+			"wind": {
+				"speed": 15.3,
+				"direction": 287.0
+			},
+			"temperature": {
+				"high": 21.2,
+				"low": 14.8
+			}
+		}
+	}
+----
+
+A snippet that documents the fields of the `temperature` object (`high` and `low`) can
+be produced as follows:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=subsection]
+----
+<1> Produce a snippet describing the fields in the subsection of the response payload
+	beneath the path `weather.temperature`. Uses the static `beneathPath` method on
+	`org.springframework.restdocs.payload.PayloadDocumentation`.
+<2> Document the `high` and `low` fields.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Payload.java[tags=subsection]
+----
+<1> Produce a snippet describing the fields in the subsection of the response payload
+	beneath the path `weather.temperature`. Uses the static `beneathPath` method on
+	`org.springframework.restdocs.payload.PayloadDocumentation`.
+<2> Document the `high` and `low` fields.
+
+The result is a snippet that contains a table describing the `high` and `low` fields
+of `weather.temperature`. To make the snippet's name distinct, an identifier for the
+subsection is included. By default, this identifier is `beneath-${path}`. For
+example, the code above will result in a snippet named
+`response-fields-beneath-weather.temperature.adoc`. The identifier can be customized using
+the `withSubsectionId(String)` method:
+
+----
+include::{examples-dir}/com/example/Payload.java[tags=custom-subsection-id]
+----
+
+This example will result in a snippet named `response-fields-temp.adoc`.
+
+
+
 [[documenting-your-api-request-parameters]]
 === Request parameters
 

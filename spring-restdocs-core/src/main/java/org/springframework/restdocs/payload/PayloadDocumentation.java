@@ -269,6 +269,216 @@ public abstract class PayloadDocumentation {
 	}
 
 	/**
+	 * Returns a {@code Snippet} that will document the fields of the subsection of API
+	 * operations's request payload extracted by the given {@code subsectionExtractor}.
+	 * The fields will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a field is present in the request payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request,
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field is sufficient for all of its descendants to also be treated as having been
+	 * documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestFieldsSnippet requestFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			FieldDescriptor... descriptors) {
+		return requestFields(subsectionExtractor, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields in the subsection of the
+	 * API operations's request payload extracted by the given {@code subsectionExtractor}
+	 * . The fields will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a field is present in the request payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request,
+	 * a failure will also occur. For payloads with a hierarchical structure, documenting
+	 * a field is sufficient for all of its descendants to also be treated as having been
+	 * documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestFieldsSnippet requestFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors) {
+		return new RequestFieldsSnippet(subsectionExtractor, descriptors);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the subsection of the
+	 * API operations's request payload extracted by the given {@code subsectionExtractor}
+	 * . The fields will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestFieldsSnippet relaxedRequestFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			FieldDescriptor... descriptors) {
+		return relaxedRequestFields(subsectionExtractor, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the subsection of the
+	 * API operations's request payload extracted by the given {@code subsectionExtractor}
+	 * . The fields will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestFieldsSnippet relaxedRequestFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors) {
+		return new RequestFieldsSnippet(subsectionExtractor, descriptors, true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the subsection of the
+	 * API operation's request payload extracted by the given {@code subsectionExtractor}.
+	 * The fields will be documented using the given {@code descriptors} and the given
+	 * {@code attributes} will be available during snippet generation.
+	 * <p>
+	 * If a field is present in the request payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestFieldsSnippet requestFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		return requestFields(subsectionExtractor, attributes, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the subsection of the
+	 * API operation's request payload extracted by the given {@code subsectionExtractor}.
+	 * The fields will be documented using the given {@code descriptors} and the given
+	 * {@code attributes} will be available during snippet generation.
+	 * <p>
+	 * If a field is present in the request payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestFieldsSnippet requestFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
+		return new RequestFieldsSnippet(subsectionExtractor, descriptors, attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the subsection of the
+	 * API operation's request payload extracted by the given {@code subsectionExtractor}.
+	 * The fields will be documented using the given {@code descriptors} and the given
+	 * {@code attributes} will be available during snippet generation.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestFieldsSnippet relaxedRequestFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		return relaxedRequestFields(subsectionExtractor, attributes,
+				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of the subsection of the
+	 * API operation's request payload extracted by the given {@code subsectionExtractor}.
+	 * The fields will be documented using the given {@code descriptors} and the given
+	 * {@code attributes} will be available during snippet generation.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestFieldsSnippet relaxedRequestFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
+		return new RequestFieldsSnippet(subsectionExtractor, descriptors, attributes,
+				true);
+	}
+
+	/**
 	 * Returns a {@code Snippet} that will document the fields of the specified
 	 * {@code part} of the API operations's request payload. The fields will be documented
 	 * using the given {@code descriptors}.
@@ -287,6 +497,7 @@ public abstract class PayloadDocumentation {
 	 * @param part the part name
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
+	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
 	 */
 	public static RequestPartFieldsSnippet requestPartFields(String part,
@@ -453,6 +664,235 @@ public abstract class PayloadDocumentation {
 	}
 
 	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the
+	 * specified {@code part} of the API operations's request payload. The subsection will
+	 * be extracted by the given {@code subsectionExtractor}. The fields will be
+	 * documented using the given {@code descriptors}.
+	 * <p>
+	 * If a field is present in the request part, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request
+	 * part, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param part the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the subsection's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestPartFieldsSnippet requestPartFields(String part,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			FieldDescriptor... descriptors) {
+		return requestPartFields(part, subsectionExtractor, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the
+	 * specified {@code part} of the API operations's request payload. The subsection will
+	 * be extracted by the given {@code subsectionExtractor}. The fields will be
+	 * documented using the given {@code descriptors}.
+	 * <p>
+	 * If a field is present in the request part, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request
+	 * part, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param part the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the subsection's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestPartFieldsSnippet requestPartFields(String part,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors) {
+		return new RequestPartFieldsSnippet(part, subsectionExtractor, descriptors);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the
+	 * specified {@code part} of the API operations's request payload. The subsection will
+	 * be extracted by the given {@code subsectionExtractor}. The fields will be
+	 * documented using the given {@code descriptors}.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param part the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the request part's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			FieldDescriptor... descriptors) {
+		return relaxedRequestPartFields(part, subsectionExtractor,
+				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the
+	 * specified {@code part} of the API operations's request payload. The subsection will
+	 * be extracted by the given {@code subsectionExtractor}. The fields will be
+	 * documented using the given {@code descriptors}.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param part the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the request part's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors) {
+		return new RequestPartFieldsSnippet(part, subsectionExtractor, descriptors, true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the
+	 * specified {@code part} of the API operations's request payload. The subsection will
+	 * be extracted by the givne {@code subsectionExtractor}. The fields will be
+	 * documented using the given {@code descriptors} and the given {@code attributes}
+	 * will be available during snippet generation.
+	 * <p>
+	 * If a field is present in the request part, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request
+	 * part, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param part the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request part's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestPartFieldsSnippet requestPartFields(String part,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		return requestPartFields(part, subsectionExtractor, attributes,
+				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the
+	 * specified {@code part} of the API operations's request payload. The subsection will
+	 * be extracted by the given {@code subsectionExtractor}. The fields will be
+	 * documented using the given {@code descriptors} and the given {@code attributes}
+	 * will be available during snippet generation.
+	 * <p>
+	 * If a field is present in the request part, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the request
+	 * part, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param part the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request part's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestPartFieldsSnippet requestPartFields(String part,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
+		return new RequestPartFieldsSnippet(part, subsectionExtractor, descriptors,
+				attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the
+	 * specified {@code part} of the API operations's request payload. The subsection will
+	 * be extracted by the given {@code subsectionExtractor}. The fields will be
+	 * documented using the given {@code descriptors} and the given {@code attributes}
+	 * will be available during snippet generation.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param part the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request part's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		return relaxedRequestPartFields(part, subsectionExtractor, attributes,
+				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the
+	 * specified {@code part} of the API operations's request payload. The subsection will
+	 * be extracted by the given {@code subsectionExtractor}. The fields will be
+	 * documented using the given {@code descriptors} and the given {@code attributes}
+	 * will be available during snippet generation.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param part the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request part's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static RequestPartFieldsSnippet relaxedRequestPartFields(String part,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
+		return new RequestPartFieldsSnippet(part, subsectionExtractor, descriptors,
+				attributes, true);
+	}
+
+	/**
 	 * Returns a {@code Snippet} that will document the fields of the API operation's
 	 * response payload. The fields will be documented using the given {@code descriptors}
 	 * .
@@ -494,7 +934,9 @@ public abstract class PayloadDocumentation {
 	 *
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
+	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet responseFields(
 			List<FieldDescriptor> descriptors) {
@@ -511,7 +953,9 @@ public abstract class PayloadDocumentation {
 	 *
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
+	 * @since 1.2.0
 	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
 	 */
 	public static ResponseFieldsSnippet relaxedResponseFields(
 			FieldDescriptor... descriptors) {
@@ -624,6 +1068,225 @@ public abstract class PayloadDocumentation {
 	}
 
 	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The fields will be documented using the given
+	 * {@code descriptors} .
+	 * <p>
+	 * If a field is present in the response payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static ResponseFieldsSnippet responseFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			FieldDescriptor... descriptors) {
+		return responseFields(subsectionExtractor, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The fields will be documented using the given
+	 * {@code descriptors} .
+	 * <p>
+	 * If a field is present in the response payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static ResponseFieldsSnippet responseFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors) {
+		return new ResponseFieldsSnippet(subsectionExtractor, descriptors);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The fields will be documented using the given
+	 * {@code descriptors} .
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static ResponseFieldsSnippet relaxedResponseFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			FieldDescriptor... descriptors) {
+		return relaxedResponseFields(subsectionExtractor, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The fields will be documented using the given
+	 * {@code descriptors} .
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static ResponseFieldsSnippet relaxedResponseFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors) {
+		return new ResponseFieldsSnippet(subsectionExtractor, descriptors, true);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The fields will be documented using the given
+	 * {@code descriptors} and the given {@code attributes} will be available during
+	 * snippet generation.
+	 * <p>
+	 * If a field is present in the response payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static ResponseFieldsSnippet responseFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		return responseFields(subsectionExtractor, attributes,
+				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The fields will be documented using the given
+	 * {@code descriptors} and the given {@code attributes} will be available during
+	 * snippet generation.
+	 * <p>
+	 * If a field is present in the response payload, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * field is documented, is not marked as optional, and is not present in the response
+	 * payload, a failure will also occur. For payloads with a hierarchical structure,
+	 * documenting a field is sufficient for all of its descendants to also be treated as
+	 * having been documented.
+	 * <p>
+	 * If you do not want to document a field, a field descriptor can be marked as
+	 * {@link FieldDescriptor#ignored}. This will prevent it from appearing in the
+	 * generated snippet while avoiding the failure described above.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static ResponseFieldsSnippet responseFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
+		return new ResponseFieldsSnippet(subsectionExtractor, descriptors, attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The fields will be documented using the given
+	 * {@code descriptors} and the given {@code attributes} will be available during
+	 * snippet generation.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static ResponseFieldsSnippet relaxedResponseFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, FieldDescriptor... descriptors) {
+		return relaxedResponseFields(subsectionExtractor, attributes,
+				Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the fields of a subsection of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The fields will be documented using the given
+	 * {@code descriptors} and the given {@code attributes} will be available during
+	 * snippet generation.
+	 * <p>
+	 * If a field is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented fields will be ignored.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response payload's fields
+	 * @return the snippet that will document the fields
+	 * @since 1.2.0
+	 * @see #fieldWithPath(String)
+	 * @see #beneathPath(String)
+	 */
+	public static ResponseFieldsSnippet relaxedResponseFields(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes, List<FieldDescriptor> descriptors) {
+		return new ResponseFieldsSnippet(subsectionExtractor, descriptors, attributes,
+				true);
+	}
+
+	/**
 	 * Creates a copy of the given {@code descriptors} with the given {@code pathPrefix}
 	 * applied to their paths.
 	 *
@@ -649,6 +1312,18 @@ public abstract class PayloadDocumentation {
 			prefixedDescriptors.add(prefixedDescriptor);
 		}
 		return prefixedDescriptors;
+	}
+
+	/**
+	 * Returns a {@link PayloadSubsectionExtractor} that will extract the subsection of
+	 * the JSON payload found beneath the given {@code path}.
+	 *
+	 * @param path the path
+	 * @return the subsection extractor
+	 * @since 1.2.0
+	 */
+	public static PayloadSubsectionExtractor<?> beneathPath(String path) {
+		return new FieldPathPayloadSubsectionExtractor(path);
 	}
 
 	private static Attribute[] asArray(Map<String, Object> attributeMap) {

@@ -33,7 +33,9 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -67,6 +69,18 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 								.content(
 										"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
 												+ " [{\"id\":356,\"name\": \"sample\"}]}")
+								.build());
+	}
+
+	@Test
+	public void subsectionOfMapResponse() throws IOException {
+		this.snippets.expect("response-fields-beneath-a")
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
+		responseFields(beneathPath("a"), fieldWithPath("b").description("one"),
+				fieldWithPath("c").description("two"))
+						.document(this.operationBuilder.response()
+								.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
 								.build());
 	}
 

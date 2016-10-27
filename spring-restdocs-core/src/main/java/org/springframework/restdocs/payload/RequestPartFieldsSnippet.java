@@ -33,6 +33,7 @@ import org.springframework.restdocs.snippet.SnippetException;
  *
  * @author Mathieu Pousse
  * @author Andy Wilkinson
+ * @since 1.2.0
  * @see PayloadDocumentation#requestPartFields(String, FieldDescriptor...)
  * @see PayloadDocumentation#requestPartFields(String, List)
  */
@@ -97,8 +98,81 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 */
 	protected RequestPartFieldsSnippet(String partName, List<FieldDescriptor> descriptors,
 			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+		this(partName, null, descriptors, attributes, ignoreUndocumentedFields);
+	}
+
+	/**
+	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in a
+	 * subsection of the request part using the given {@code descriptors}. The subsection
+	 * will be extracted using the given {@code subsectionExtractor}. Undocumented fields
+	 * will trigger a failure.
+	 *
+	 * @param partName the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 */
+	protected RequestPartFieldsSnippet(String partName,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors) {
+		this(partName, subsectionExtractor, descriptors, null, false);
+	}
+
+	/**
+	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in a
+	 * subsection the request part using the given {@code descriptors}. The subsection
+	 * will be extracted using the given {@code subsectionExtractor}. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param partName the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 */
+	protected RequestPartFieldsSnippet(String partName,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, boolean ignoreUndocumentedFields) {
+		this(partName, subsectionExtractor, descriptors, null, ignoreUndocumentedFields);
+	}
+
+	/**
+	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in a
+	 * subsection of the request part using the given {@code descriptors}. The subsection
+	 * will be extracted using the given {@code subsectionExtractor}. The given
+	 * {@code attributes} will be included in the model during template rendering.
+	 * Undocumented fields will trigger a failure.
+	 *
+	 * @param partName the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 */
+	protected RequestPartFieldsSnippet(String partName,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
+		this(partName, subsectionExtractor, descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in a
+	 * subsection of the request part using the given {@code descriptors}. The subsection
+	 * will be extracted using the given {@code subsectionExtractor}. The given
+	 * {@code attributes} will be included in the model during template rendering. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param partName the part name
+	 * @param subsectionExtractor the subsection extractor
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 */
+	protected RequestPartFieldsSnippet(String partName,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
 		super("request-part-" + partName, "request-part", descriptors, attributes,
-				ignoreUndocumentedFields);
+				ignoreUndocumentedFields, subsectionExtractor);
 		this.partName = partName;
 	}
 

@@ -26,6 +26,7 @@ import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.templates.TemplateFormat;
 
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
 /**
@@ -51,6 +52,25 @@ public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
 				Arrays.asList(fieldWithPath("a.b").description("one"),
 						fieldWithPath("a.c").description("two"), fieldWithPath("a")
 								.description("three")))
+										.document(
+												this.operationBuilder
+														.request("http://localhost")
+														.part("one",
+																"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}"
+																		.getBytes())
+														.build());
+	}
+
+	@Test
+	public void mapRequestPartSubsectionFields() throws IOException {
+		this.snippets.expect("request-part-one-fields-beneath-a")
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
+
+		new RequestPartFieldsSnippet("one",
+				beneathPath("a"), Arrays
+						.asList(fieldWithPath("b").description("one"),
+								fieldWithPath("c").description("two")))
 										.document(
 												this.operationBuilder
 														.request("http://localhost")

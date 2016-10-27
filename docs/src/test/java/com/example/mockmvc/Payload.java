@@ -16,20 +16,21 @@
 
 package com.example.mockmvc;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class Payload {
 
@@ -89,6 +90,16 @@ public class Payload {
 						fieldWithPath("[]").description("An array of books")) // <1>
 						.andWithPrefix("[].", book))); // <2>
 		// end::book-array[]
+	}
+
+	public void subsection() throws Exception {
+		// tag::subsection[]
+		this.mockMvc.perform(get("/locations/1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("location", responseFields(beneathPath("weather.temperature"), // <1>
+						fieldWithPath("high").description("The forecast high in degrees celcius"), // <2>
+						fieldWithPath("low").description("The forecast low in degrees celcius"))));
+		// end::subsection[]
 	}
 
 }

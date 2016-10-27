@@ -45,6 +45,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	private final String type;
 
+	private final PayloadSubsectionExtractor<?> subsectionExtractor;
+
 	/**
 	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
 	 * {@code <type>-fields}. The fields will be documented using the given
@@ -83,6 +85,29 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	/**
 	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
+	 * {@code <type>-fields} using a template named {@code <type>-fields}. The fields in
+	 * the subsection of the payload extracted by the given {@code subsectionExtractor}
+	 * will be documented using the given {@code  descriptors} and the given
+	 * {@code attributes} will be included in the model during template rendering. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param type the type of the fields
+	 * @param descriptors the field descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 * @param subsectionExtractor the subsection extractor
+	 * @since 1.2.0
+	 */
+	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedFields,
+			PayloadSubsectionExtractor<?> subsectionExtractor) {
+		this(type, type, descriptors, attributes, ignoreUndocumentedFields,
+				subsectionExtractor);
+	}
+
+	/**
+	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
 	 * {@code <name>-fields} using a template named {@code <type>-fields}. The fields will
 	 * be documented using the given {@code  descriptors} and the given {@code attributes}
 	 * will be included in the model during template rendering. If
@@ -98,7 +123,35 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	protected AbstractFieldsSnippet(String name, String type,
 			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
 			boolean ignoreUndocumentedFields) {
-		super(name + "-fields", type + "-fields", attributes);
+		this(name, type, descriptors, attributes, ignoreUndocumentedFields, null);
+	}
+
+	/**
+	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
+	 * {@code <name>-fields} using a template named {@code <type>-fields}. The fields in
+	 * the subsection of the payload identified by {@code subsectionPath} will be
+	 * documented using the given {@code  descriptors} and the given {@code attributes}
+	 * will be included in the model during template rendering. If
+	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
+	 * ignored and will not trigger a failure.
+	 *
+	 * @param name the name of the snippet
+	 * @param type the type of the fields
+	 * @param descriptors the field descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
+	 * @param subsectionExtractor the subsection extractor documented. {@code null} or an
+	 * empty string can be used to indicate that the entire payload should be documented.
+	 * @since 1.2.0
+	 */
+	protected AbstractFieldsSnippet(String name, String type,
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields,
+			PayloadSubsectionExtractor<?> subsectionExtractor) {
+		super(name + "-fields"
+				+ (subsectionExtractor != null
+						? "-" + subsectionExtractor.getSubsectionId() : ""),
+				type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath(), "Field descriptors must have a path");
 			if (!descriptor.isIgnored()) {
@@ -112,11 +165,24 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		this.fieldDescriptors = descriptors;
 		this.ignoreUndocumentedFields = ignoreUndocumentedFields;
 		this.type = type;
+		this.subsectionExtractor = subsectionExtractor;
 	}
 
 	@Override
 	protected Map<String, Object> createModel(Operation operation) {
-		ContentHandler contentHandler = getContentHandler(operation);
+		byte[] content;
+		try {
+			content = verifyContent(getContent(operation));
+		}
+		catch (IOException ex) {
+			throw new ModelCreationException(ex);
+		}
+		MediaType contentType = getContentType(operation);
+		if (this.subsectionExtractor != null) {
+			content = verifyContent(
+					this.subsectionExtractor.extractSubsection(content, contentType));
+		}
+		ContentHandler contentHandler = getContentHandler(content, contentType);
 
 		validateFieldDocumentation(contentHandler);
 
@@ -146,28 +212,27 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		return model;
 	}
 
-	private ContentHandler getContentHandler(Operation operation) {
-		MediaType contentType = getContentType(operation);
-		ContentHandler contentHandler;
+	private byte[] verifyContent(byte[] content) {
+		if (content.length == 0) {
+			throw new SnippetException("Cannot document " + this.type + " fields as the "
+					+ this.type + " body is empty");
+		}
+		return content;
+	}
 
+	private ContentHandler getContentHandler(byte[] content, MediaType contentType) {
 		try {
-			byte[] content = getContent(operation);
-			if (content.length == 0) {
-				throw new SnippetException("Cannot document " + this.type
-						+ " fields as the " + this.type + " body is empty");
-			}
 			if (contentType != null
 					&& MediaType.APPLICATION_XML.isCompatibleWith(contentType)) {
-				contentHandler = new XmlContentHandler(content);
+				return new XmlContentHandler(content);
 			}
 			else {
-				contentHandler = new JsonContentHandler(content);
+				return new JsonContentHandler(content);
 			}
 		}
 		catch (IOException ex) {
 			throw new ModelCreationException(ex);
 		}
-		return contentHandler;
 	}
 
 	private void validateFieldDocumentation(ContentHandler payloadHandler) {

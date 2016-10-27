@@ -33,7 +33,9 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -64,6 +66,19 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void subsectionOfMapRequest() throws IOException {
+		this.snippets.expect("request-fields-beneath-a")
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
+
+		requestFields(beneathPath("a"), fieldWithPath("b").description("one"),
+				fieldWithPath("c").description("two"))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
+								.build());
+	}
+
+	@Test
 	public void arrayRequestWithFields() throws IOException {
 		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
@@ -78,6 +93,19 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 						.document(this.operationBuilder.request("http://localhost")
 								.content(
 										"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
+								.build());
+	}
+
+	@Test
+	public void subsectionOfArrayRequest() throws IOException {
+		this.snippets.expect("request-fields-beneath-[].a")
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
+
+		requestFields(beneathPath("[].a"), fieldWithPath("b").description("one"),
+				fieldWithPath("c").description("two"))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("[{\"a\": {\"b\": 5, \"c\": \"charlie\"}}]")
 								.build());
 	}
 

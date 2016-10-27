@@ -18,7 +18,9 @@ package com.example;
 
 import org.springframework.restdocs.payload.FieldDescriptor;
 
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 public class Payload {
 
@@ -29,6 +31,14 @@ public class Payload {
 				fieldWithPath("title").description("Title of the book"),
 				fieldWithPath("author").description("Author of the book") };
 		// end::book-descriptors[]
+	}
+
+	public void customSubsectionId() {
+		// tag::custom-subsection-id[]
+		responseFields(beneathPath("weather.temperature").withSubsectionId("temp"),
+				fieldWithPath("high").description("…"),
+				fieldWithPath("low").description("…"));
+		// end::custom-subsection-id[]
 	}
 
 }
