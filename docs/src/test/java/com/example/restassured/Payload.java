@@ -102,7 +102,7 @@ public class Payload {
 			.filter(document("books", responseFields(
 				fieldWithPath("[]").description("An array of books")) // <1>
 				.andWithPrefix("[].", book))) // <2>
-			.when().get("/books/1")
+			.when().get("/books")
 			.then().assertThat().statusCode(is(200));
 		// end::book-array[]
 	}
