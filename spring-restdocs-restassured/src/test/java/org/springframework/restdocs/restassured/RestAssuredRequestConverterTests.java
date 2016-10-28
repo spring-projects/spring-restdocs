@@ -33,18 +33,16 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
-import org.springframework.restdocs.restassured.RestAssuredRequestConverterTests.TestApplication;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,10 +55,8 @@ import static org.junit.Assert.assertThat;
  *
  * @author Andy Wilkinson
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = TestApplication.class)
-@WebAppConfiguration
-@IntegrationTest("server.port=0")
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class RestAssuredRequestConverterTests {
 
 	@Rule
@@ -68,7 +64,7 @@ public class RestAssuredRequestConverterTests {
 
 	private final RestAssuredRequestConverter factory = new RestAssuredRequestConverter();
 
-	@Value("${local.server.port}")
+	@LocalServerPort
 	private int port;
 
 	@Test

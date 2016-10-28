@@ -11,14 +11,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.3.6.RELEASE</version>
+		<version>1.4.1.RELEASE</version>
 		<relativePath />
 	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.7</java.version>
-		<spring.version>4.3.1.RELEASE</spring.version>
 		<spring-restdocs.version>1.2.0.BUILD-SNAPSHOT</spring-restdocs.version>
 	</properties>
 

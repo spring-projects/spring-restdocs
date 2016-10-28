@@ -27,26 +27,25 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.specification.RequestSpecification;
 
-@SpringApplicationConfiguration(classes=SampleRestAssuredApplication.class)
-@WebIntegrationTest("server.port=0")
+@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SampleRestAssuredApplicationTests {
 
 	@Rule
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-	
+
 	private RequestSpecification documentationSpec;
-	
-	@Value("${local.server.port}")
+
+	@LocalServerPort
 	private int port;
 
 	@Before
@@ -59,7 +58,7 @@ public class SampleRestAssuredApplicationTests {
 	public void sample() throws Exception {
 		given(this.documentationSpec)
 				.accept("text/plain")
-				.filter(document("sample", 
+				.filter(document("sample",
 						preprocessRequest(modifyUris()
 								.scheme("https")
 								.host("api.example.com")
