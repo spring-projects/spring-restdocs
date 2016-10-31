@@ -406,12 +406,14 @@ static `document` method on
 <4> Invoke the root (`/`) of the service.
 <5> Assert that the service produce the expected response.
 
-By default, four snippets are written:
+By default, six snippets are written:
 
  * `<output-directory>/index/curl-request.adoc`
  * `<output-directory>/index/http-request.adoc`
  * `<output-directory>/index/http-response.adoc`
  * `<output-directory>/index/httpie-request.adoc`
+ * `<output-directory>/index/request-body.adoc`
+ * `<output-directory>/index/response-body.adoc`
 
 Refer to <<documenting-your-api>> for more information about these and other snippets
 that can be produced by Spring REST Docs.

@@ -31,6 +31,8 @@ import org.springframework.restdocs.cli.HttpieRequestSnippet;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpRequestSnippet;
 import org.springframework.restdocs.http.HttpResponseSnippet;
+import org.springframework.restdocs.payload.RequestBodySnippet;
+import org.springframework.restdocs.payload.ResponseBodySnippet;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
@@ -76,7 +78,9 @@ public class RestDocumentationConfigurerTests {
 				contains(instanceOf(CurlRequestSnippet.class),
 						instanceOf(HttpieRequestSnippet.class),
 						instanceOf(HttpRequestSnippet.class),
-						instanceOf(HttpResponseSnippet.class)));
+						instanceOf(HttpResponseSnippet.class),
+						instanceOf(RequestBodySnippet.class),
+						instanceOf(ResponseBodySnippet.class)));
 		assertThat(configuration, hasEntry(equalTo(SnippetConfiguration.class.getName()),
 				instanceOf(SnippetConfiguration.class)));
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
@@ -138,7 +142,9 @@ public class RestDocumentationConfigurerTests {
 				contains(instanceOf(CurlRequestSnippet.class),
 						instanceOf(HttpieRequestSnippet.class),
 						instanceOf(HttpRequestSnippet.class),
-						instanceOf(HttpResponseSnippet.class), equalTo(snippet)));
+						instanceOf(HttpResponseSnippet.class),
+						instanceOf(RequestBodySnippet.class),
+						instanceOf(ResponseBodySnippet.class), equalTo(snippet)));
 	}
 
 	@Test

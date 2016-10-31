@@ -26,6 +26,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseBody;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
@@ -46,7 +47,7 @@ public class Payload {
 			.then().assertThat().statusCode(is(200));
 		// end::response[]
 	}
-	
+
 	public void subsection() throws Exception {
 		// tag::subsection[]
 		RestAssured.given(this.spec).accept("application/json")
@@ -107,15 +108,24 @@ public class Payload {
 		// end::book-array[]
 	}
 
-	public void subsectionBeneathPath() throws Exception {
-		// tag::beneath-path[]
+	public void fieldsSubsection() throws Exception {
+		// tag::fields-subsection[]
 		RestAssured.given(this.spec).accept("application/json")
 			.filter(document("location", responseFields(beneathPath("weather.temperature"), // <1>
 				fieldWithPath("high").description("The forecast high in degrees celcius"), // <2>
 				fieldWithPath("low").description("The forecast low in degrees celcius"))))
 			.when().get("/locations/1")
 			.then().assertThat().statusCode(is(200));
-		// end::beneath-path[]
+		// end::fields-subsection[]
+	}
+
+	public void bodySubsection() throws Exception {
+		// tag::body-subsection[]
+		RestAssured.given(this.spec).accept("application/json")
+			.filter(document("location", responseBody(beneathPath("weather.temperature")))) // <1>
+			.when().get("/locations/1")
+			.then().assertThat().statusCode(is(200));
+		// end::body-subsection[]
 	}
 
 }

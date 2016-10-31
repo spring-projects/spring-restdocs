@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartBody;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,8 +31,8 @@ public class RequestPartPayload {
 
 	private MockMvc mockMvc;
 
-	public void response() throws Exception {
-		// tag::payload[]
+	public void fields() throws Exception {
+		// tag::fields[]
 		MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png",
 				"<<png data>>".getBytes());
 		MockMultipartFile metadata = new MockMultipartFile("metadata", "",
@@ -42,7 +43,21 @@ public class RequestPartPayload {
 			.andExpect(status().isOk())
 			.andDo(document("image-upload", requestPartFields("metadata", // <1>
 					fieldWithPath("version").description("The version of the image")))); // <2>
-		// end::payload[]
+		// end::fields[]
+	}
+
+	public void body() throws Exception {
+		// tag::body[]
+		MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png",
+				"<<png data>>".getBytes());
+		MockMultipartFile metadata = new MockMultipartFile("metadata", "",
+				"application/json", "{ \"version\": \"1.0\"}".getBytes());
+
+		this.mockMvc.perform(fileUpload("/images").file(image).file(metadata)
+					.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(document("image-upload", requestPartBody("metadata"))); // <1>
+		// end::body[]
 	}
 
 }

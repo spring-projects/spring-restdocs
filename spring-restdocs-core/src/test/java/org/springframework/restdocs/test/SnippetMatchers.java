@@ -95,6 +95,15 @@ public final class SnippetMatchers {
 		return new MarkdownCodeBlockMatcher(language);
 	}
 
+	@SuppressWarnings({ "rawtypes" })
+	public static CodeBlockMatcher<?> codeBlock(TemplateFormat format, String language,
+			String options) {
+		if ("adoc".equals(format.getFileExtension())) {
+			return new AsciidoctorCodeBlockMatcher(language, options);
+		}
+		return new MarkdownCodeBlockMatcher(language);
+	}
+
 	private static abstract class AbstractSnippetContentMatcher
 			extends BaseMatcher<String> {
 
@@ -186,7 +195,7 @@ public final class SnippetMatchers {
 
 		protected AsciidoctorCodeBlockMatcher(String language, String options) {
 			super(TemplateFormats.asciidoctor());
-			this.addLine("[source," + language
+			this.addLine("[source" + (language == null ? "" : "," + language)
 					+ (options == null ? "" : ",options=\"" + options + "\"") + "]");
 			this.addLine("----");
 			this.addLine("----");
@@ -204,7 +213,7 @@ public final class SnippetMatchers {
 
 		protected MarkdownCodeBlockMatcher(String language) {
 			super(TemplateFormats.markdown());
-			this.addLine("```" + language);
+			this.addLine("```" + (language == null ? "" : language));
 			this.addLine("```");
 		}
 

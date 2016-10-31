@@ -1444,6 +1444,164 @@ public abstract class PayloadDocumentation {
 	}
 
 	/**
+	 * Returns a {@code Snippet} that will document the body of the API operation's
+	 * request payload.
+	 *
+	 * @return the snippet that will document the request body
+	 */
+	public static RequestBodySnippet requestBody() {
+		return new RequestBodySnippet();
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the body of the API operation's
+	 * request payload. The given attributes will be made available during snippet
+	 * generation.
+	 *
+	 * @param attributes the attributes
+	 * @return the snippet that will document the request body
+	 */
+	public static RequestBodySnippet requestBody(Map<String, Object> attributes) {
+		return new RequestBodySnippet(attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document a subsection of the body of the API
+	 * operation's request payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @return the snippet that will document the request body subsection
+	 */
+	public static RequestBodySnippet requestBody(
+			PayloadSubsectionExtractor<?> subsectionExtractor) {
+		return new RequestBodySnippet(subsectionExtractor);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document a subsection of the body of the API
+	 * operation's request payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The given attributes will be made available during
+	 * snippet generation.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @return the snippet that will document the request body subsection
+	 */
+	public static RequestBodySnippet requestBody(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes) {
+		return new RequestBodySnippet(subsectionExtractor, attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the body of the API operation's
+	 * response payload.
+	 *
+	 * @return the snippet that will document the response body
+	 */
+	public static ResponseBodySnippet responseBody() {
+		return new ResponseBodySnippet();
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the body of the API operation's
+	 * response payload. The given attributes will be made available during snippet
+	 * generation.
+	 *
+	 * @param attributes the attributes
+	 * @return the snippet that will document the response body
+	 */
+	public static ResponseBodySnippet responseBody(Map<String, Object> attributes) {
+		return new ResponseBodySnippet(attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document a subsection of the body of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @return the snippet that will document the response body subsection
+	 */
+	public static ResponseBodySnippet responseBody(
+			PayloadSubsectionExtractor<?> subsectionExtractor) {
+		return new ResponseBodySnippet(subsectionExtractor);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document a subsection of the body of the API
+	 * operation's response payload. The subsection will be extracted using the given
+	 * {@code subsectionExtractor}. The given attributes will be made available during
+	 * snippet generation.
+	 *
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @return the snippet that will document the response body subsection
+	 */
+	public static ResponseBodySnippet responseBody(
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes) {
+		return new ResponseBodySnippet(subsectionExtractor, attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the body of specified part of the API
+	 * operation's request payload.
+	 *
+	 * @param partName the name of the request part
+	 * @return the snippet that will document the response body
+	 */
+	public static RequestPartBodySnippet requestPartBody(String partName) {
+		return new RequestPartBodySnippet(partName);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document the body of specified part of the API
+	 * operation's request payload. The given attributes will be made available during
+	 * snippet generation.
+	 *
+	 * @param partName the name of the request part
+	 * @param attributes the attributes
+	 * @return the snippet that will document the response body
+	 */
+	public static RequestPartBodySnippet requestPartBody(String partName,
+			Map<String, Object> attributes) {
+		return new RequestPartBodySnippet(partName, attributes);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document a subsection of the body of specified
+	 * part of the API operation's request payload. The subsection will be extracted using
+	 * the given {@code subsectionExtractor}.
+	 *
+	 * @param partName the name of the request part
+	 * @param subsectionExtractor the subsection extractor
+	 * @return the snippet that will document the response body
+	 */
+	public static RequestPartBodySnippet requestPartBody(String partName,
+			PayloadSubsectionExtractor<?> subsectionExtractor) {
+		return new RequestPartBodySnippet(partName, subsectionExtractor);
+	}
+
+	/**
+	 * Returns a {@code Snippet} that will document a subsection of the body of specified
+	 * part of the API operation's request payload. The subsection will be extracted using
+	 * the given {@code subsectionExtractor}. The given attributes will be made available
+	 * during snippet generation.
+	 *
+	 * @param partName the name of the request part
+	 * @param subsectionExtractor the subsection extractor
+	 * @param attributes the attributes
+	 * @return the snippet that will document the response body
+	 */
+	public static RequestPartBodySnippet requestPartBody(String partName,
+			PayloadSubsectionExtractor<?> subsectionExtractor,
+			Map<String, Object> attributes) {
+		return new RequestPartBodySnippet(partName, subsectionExtractor, attributes);
+	}
+
+	/**
 	 * Creates a copy of the given {@code descriptors} with the given {@code pathPrefix}
 	 * applied to their paths.
 	 *

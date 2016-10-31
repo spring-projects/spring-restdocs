@@ -68,7 +68,11 @@ public abstract class AbstractSnippetTests {
 	}
 
 	public CodeBlockMatcher<?> codeBlock(String language) {
-		return SnippetMatchers.codeBlock(this.templateFormat, language);
+		return this.codeBlock(language, null);
+	}
+
+	public CodeBlockMatcher<?> codeBlock(String language, String options) {
+		return SnippetMatchers.codeBlock(this.templateFormat, language, options);
 	}
 
 	public TableMatcher<?> tableWithHeader(String... headers) {

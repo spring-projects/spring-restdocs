@@ -25,6 +25,7 @@ import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.cli.CliDocumentation;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpDocumentation;
+import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
@@ -42,7 +43,8 @@ public abstract class SnippetConfigurer<PARENT, TYPE>
 
 	private List<Snippet> defaultSnippets = new ArrayList<>(Arrays.asList(
 			CliDocumentation.curlRequest(), CliDocumentation.httpieRequest(),
-			HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse()));
+			HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse(),
+			PayloadDocumentation.requestBody(), PayloadDocumentation.responseBody()));
 
 	/**
 	 * The default encoding for documentation snippets.

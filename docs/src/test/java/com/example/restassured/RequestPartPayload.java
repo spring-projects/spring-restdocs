@@ -25,6 +25,7 @@ import com.jayway.restassured.specification.RequestSpecification;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartBody;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartFields;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
@@ -32,8 +33,8 @@ public class RequestPartPayload {
 
 	private RequestSpecification spec;
 
-	public void response() throws Exception {
-		// tag::payload[]
+	public void fields() throws Exception {
+		// tag::fields[]
 		Map<String, String> metadata = new HashMap<>();
 		metadata.put("version", "1.0");
 		RestAssured.given(this.spec).accept("application/json")
@@ -42,7 +43,19 @@ public class RequestPartPayload {
 			.when().multiPart("image", new File("image.png"), "image/png")
 					.multiPart("metadata", metadata).post("images")
 			.then().assertThat().statusCode(is(200));
-		// end::payload[]
+		// end::fields[]
+	}
+
+	public void body() throws Exception {
+		// tag::body[]
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("version", "1.0");
+		RestAssured.given(this.spec).accept("application/json")
+			.filter(document("image-upload", requestPartBody("metadata"))) // <1>
+			.when().multiPart("image", new File("image.png"), "image/png")
+					.multiPart("metadata", metadata).post("images")
+			.then().assertThat().statusCode(is(200));
+		// end::body[]
 	}
 
 }

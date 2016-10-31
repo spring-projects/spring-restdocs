@@ -105,12 +105,28 @@ descriptors to a snippet that's preconfigured to ignore certain links. For examp
 include::{examples-dir}/com/example/Hypermedia.java[tags=ignore-links]
 ----
 
+
+
 [[documenting-your-api-request-response-payloads]]
 === Request and response payloads
 
 In addition to the hypermedia-specific support <<documenting-your-api-hypermedia,described
 above>>, support for general documentation of request and response payloads is also
-provided. Consider the following payload:
+provided.
+
+By default, Spring REST Docs will automatically generate snippets for the body of the
+request and the body of the response. These snippets are named `request-body.adoc` and
+`response-body.adoc` respectively.
+
+
+
+[[documenting-your-api-request-response-payloads-fields]]
+==== Request and response fields
+
+To provide more detailed documentation of a request or response payload, support for
+documenting the payload's fields is provided.
+
+Consider the following payload:
 
 [source,json,indent=0]
 ----
@@ -122,7 +138,7 @@ provided. Consider the following payload:
 	}
 ----
 
-It can be documented like this:
+Its fields can be documented like this:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
@@ -195,11 +211,11 @@ TIP: By default, Spring REST Docs will assume that the payload you are documenti
 JSON. If you want to document an XML payload the content type of the request or response
 must be compatible with `application/xml`.
 
-[[documenting-your-api-request-response-payloads-json]]
-==== JSON payloads
+[[documenting-your-api-request-response-payloads-fields-json]]
+===== Fields in JSON payloads
 
-[[documenting-your-api-request-response-payloads-json-field-paths]]
-===== JSON field paths
+[[documenting-your-api-request-response-payloads-fields-json-field-paths]]
+====== JSON field paths
 
 JSON field paths use either dot notation or bracket notation. Dot notation uses '.' to
 separate each key in the path; `a.b`, for example. Bracket notation wraps each key in
@@ -288,8 +304,8 @@ found in the following array:
 
 
 
-[[documenting-your-api-request-response-payloads-json-field-types]]
-===== JSON field types
+[[documenting-your-api-request-response-payloads-fields-json-field-types]]
+====== JSON field types
 
 When a field is documented, Spring REST Docs will attempt to determine its type by
 examining the payload. Seven different types are supported:
@@ -340,18 +356,18 @@ include::{examples-dir}/com/example/restassured/Payload.java[tags=explicit-type]
 <1> Set the field's type to `string`.
 
 
-[[documenting-your-api-request-response-payloads-xml]]
-==== XML payloads
+[[documenting-your-api-request-response-payloads-fields-xml]]
+===== XML payloads
 
-[[documenting-your-api-request-response-payloads-xml-field-paths]]
-===== XML field paths
+[[documenting-your-api-request-response-payloads-fields-xml-field-paths]]
+====== XML field paths
 
 XML field paths are described using XPath. `/` is used to descend into a child node.
 
 
 
-[[documenting-your-api-request-response-payloads-xml-field-types]]
-===== XML field types
+[[documenting-your-api-request-response-payloads-fields-xml-field-types]]
+====== XML field types
 
 When documenting an XML payload, you must provide a type for the field using the
 `type(Object)` method on `FieldDescriptor`. The result of the supplied type's `toString`
@@ -359,8 +375,8 @@ method will be used in the documentation.
 
 
 
-[[documenting-your-api-request-response-payloads-reusing-field-descriptors]]
-==== Reusing field descriptors
+[[documenting-your-api-request-response-payloads-fields-reusing-field-descriptors]]
+===== Reusing field descriptors
 
 In addition to the general support for <<documenting-your-api-reusing-snippets,reusing
 snippets>>, the request and response snippets allow additional descriptors to be
@@ -445,7 +461,10 @@ If a payload is large or structurally complex, it can be useful to document
 individual sections of the payload. REST Docs allows you to do so by extracting a
 subsection of the payload and then documenting it.
 
-Consider the following JSON response payload:
+[[documenting-your-api-request-response-payloads-subsections-body]]
+===== Documenting a subsection of a request or response body
+
+Consider the following JSON response body:
 
 [source,json,indent=0]
 ----
@@ -463,13 +482,64 @@ Consider the following JSON response payload:
 	}
 ----
 
-A snippet that documents the fields of the `temperature` object (`high` and `low`) can
-be produced as follows:
+A snippet that documents the `temperature` object can be produces as follows:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
-include::{examples-dir}/com/example/mockmvc/Payload.java[tags=beneath-path]
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=body-subsection]
+----
+<1> Produce a snippet containing a subsection of the response body. Uses the static
+	`responseBody` and `beneathPath` methods on
+	`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet
+	for the request body, `requestBody` can be used in place of `responseBody`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/Payload.java[tags=body-subsection]
+----
+<1> Produce a snippet containing a subsection of the response body. Uses the static
+	`responseBody` and `beneathPath` methods on
+	`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet
+	for the request body, `requestBody` can be used in place of `responseBody`.
+
+The result is a snippet with the following contents:
+
+[source,json,indent=0]
+----
+	{
+		"temperature": {
+			"high": 21.2,
+			"low": 14.8
+		}
+	}
+----
+
+To make the snippet's name distinct, an identifier for the subsection is included. By
+default, this identifier is `beneath-${path}`. For example, the code above will result in
+a snippet named `response-body-beneath-weather.temperature.adoc`. The identifier can
+be customized using the `withSubsectionId(String)` method:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/Payload.java[tags=custom-subsection-id]
+----
+
+This example will result in a snippet named `request-body-temp.adoc`.
+
+
+
+[[documenting-your-api-request-response-payloads-subsections-fields]]
+===== Documenting the fields of a subsection of a request or response
+
+As well as documenting a subsection of a request or response body, it's also possible to
+document the fields in a particular subsection. A snippet that documents the fields of the `temperature` object (`high` and `low`) can be produced as follows:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/Payload.java[tags=fields-subsection]
 ----
 <1> Produce a snippet describing the fields in the subsection of the response payload
 	beneath the path `weather.temperature`. Uses the static `beneathPath` method on
@@ -479,7 +549,7 @@ include::{examples-dir}/com/example/mockmvc/Payload.java[tags=beneath-path]
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=beneath-path]
+include::{examples-dir}/com/example/restassured/Payload.java[tags=fields-subsection]
 ----
 <1> Produce a snippet describing the fields in the subsection of the response payload
 	beneath the path `weather.temperature`. Uses the static `beneathPath` method on
@@ -490,15 +560,7 @@ The result is a snippet that contains a table describing the `high` and `low` fi
 of `weather.temperature`. To make the snippet's name distinct, an identifier for the
 subsection is included. By default, this identifier is `beneath-${path}`. For
 example, the code above will result in a snippet named
-`response-fields-beneath-weather.temperature.adoc`. The identifier can be customized using
-the `withSubsectionId(String)` method:
-
-[source,java,indent=0]
-----
-include::{examples-dir}/com/example/Payload.java[tags=custom-subsection-id]
-----
-
-This example will result in a snippet named `response-fields-temp.adoc`.
+`response-fields-beneath-weather.temperature.adoc`.
 
 
 
@@ -679,12 +741,51 @@ above.
 === Request part payloads
 
 The payload of a request part can be documented in much the same way as the
-<<documenting-your-api-request-response-payloads,payload of a request>>:
+<<documenting-your-api-request-response-payloads,payload of a request>> with support
+for documenting a request part's body and its fields.
+
+
+
+[[documenting-your-api-request-parts-payloads-fields]]
+==== Documenting a request part's body
+
+A snippet containing the body of a request part can be generated:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
-include::{examples-dir}/com/example/mockmvc/RequestPartPayload.java[tags=payload]
+include::{examples-dir}/com/example/mockmvc/RequestPartPayload.java[tags=body]
+----
+<1> Configure Spring REST docs to produce a snippet containing the body of the
+	of the request part named `metadata`. Uses the static `requestPartBody` method on
+	`PayloadDocumentation`.
+	payload.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/RequestPartPayload.java[tags=body]
+----
+<1> Configure Spring REST docs to produce a snippet containing the body of the request
+	part named `metadata`. Uses the static `requestPartBody` method on
+	`PayloadDocumentation`.
+
+The result is a snippet `request-part-${part-name}-body.adoc` that contains the part's
+body. For example, documenting a part named `metadata` will produce a snippet named
+`request-part-metadata-body.adoc`.
+
+
+
+[[documenting-your-api-request-parts-payloads-fields]]
+==== Documenting a request part's fields
+
+A request part's fields can be documented in much the same way as the fields of a request
+or response:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/RequestPartPayload.java[tags=fields]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the fields in the payload
 	of the request part named `metadata`. Uses the static `requestPartFields` method on
@@ -696,7 +797,7 @@ include::{examples-dir}/com/example/mockmvc/RequestPartPayload.java[tags=payload
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
-include::{examples-dir}/com/example/restassured/RequestPartPayload.java[tags=payload]
+include::{examples-dir}/com/example/restassured/RequestPartPayload.java[tags=fields]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the fields in the payload
 	of the request part named `metadata`. Uses the static `requestPartFields` method on
@@ -930,6 +1031,13 @@ documented
 
 | `http-response.adoc`
 | Contains the HTTP response that was returned
+
+| `request-body.adoc`
+| Contains the body of the request that was sent
+
+| `response-body.adoc`
+| Contains the body of the response that was returned
+
 |===
 
 You can configure which snippets are produced by default. Please refer to the
@@ -1077,5 +1185,3 @@ and adds a title:
 <1> Add a title to the table
 <2> Add a new column named "Constraints"
 <3> Include the descriptors' `constraints` attribute in each row of the table
-
-

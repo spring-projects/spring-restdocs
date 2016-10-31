@@ -20,7 +20,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseBody;
 
 public class Payload {
 
@@ -35,9 +35,7 @@ public class Payload {
 
 	public void customSubsectionId() {
 		// tag::custom-subsection-id[]
-		responseFields(beneathPath("weather.temperature").withSubsectionId("temp"),
-				fieldWithPath("high").description("…"),
-				fieldWithPath("low").description("…"));
+		responseBody(beneathPath("weather.temperature").withSubsectionId("temp"));
 		// end::custom-subsection-id[]
 	}
 
