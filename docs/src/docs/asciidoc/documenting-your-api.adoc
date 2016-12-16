@@ -1065,13 +1065,13 @@ are supported:
 | The name of the test method, formatted using snake_case
 
 | {ClassName}
-| The unmodified name of the test class
+| The unmodified simple name of the test class
 
 | {class-name}
-| The name of the test class, formatted using kebab-case
+| The simple name of the test class, formatted using kebab-case
 
 | {class_name}
-| The nome of the test class, formatted using snake_case
+| The simple name of the test class, formatted using snake_case
 
 | {step}
 | The count of calls made to the service in the current test
