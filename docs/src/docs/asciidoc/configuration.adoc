@@ -34,6 +34,9 @@ to change one or more of the defaults to suit your needs:
 include::{examples-dir}/com/example/mockmvc/CustomUriConfiguration.java[tags=custom-uri-configuration]
 ----
 
+NOTE: If the port is set to the default for the configured scheme (port 80 for HTTP or
+port 443 for HTTPS), it will be omitted from any URIs in the generated snippets.
+
 TIP: To configure a request's context path, use the `contextPath` method on
 `MockHttpServletRequestBuilder`.
 
