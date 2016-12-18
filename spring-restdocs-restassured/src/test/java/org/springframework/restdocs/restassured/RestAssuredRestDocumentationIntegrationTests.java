@@ -120,6 +120,25 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void curlSnippetWithCookies() throws Exception {
+		String contentType = "text/plain; charset=UTF-8";
+		given().port(this.port).filter(documentationConfiguration(this.restDocumentation))
+				.filter(document("curl-snippet-with-cookies")).accept("application/json")
+				.contentType(contentType)
+				.cookie("cookieName", "cookieVal").get("/")
+				.then()
+				.statusCode(200);
+		assertThat(
+				new File(
+						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
+				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
+						.content("$ curl 'http://localhost:" + this.port + "/' -i "
+								+ "-H 'Accept: application/json' "
+								+ "-H 'Content-Type: " + contentType + "' "
+								+ "--cookie 'cookieName=cookieVal'"))));
+	}
+
+	@Test
 	public void curlSnippetWithQueryStringOnPost() throws Exception {
 		given().port(this.port).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("curl-snippet-with-query-string"))

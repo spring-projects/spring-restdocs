@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.servlet.http.Cookie;
+
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.specification.FilterableRequestSpecification;
 import com.jayway.restassured.specification.RequestSpecification;
@@ -141,6 +143,27 @@ public class RestAssuredRequestConverterTests {
 		assertThat(request.getHeaders().get("Accept"), is(equalTo(Arrays.asList("*/*"))));
 		assertThat(request.getHeaders().get("Host"),
 				is(equalTo(Arrays.asList("localhost:" + this.port))));
+	}
+
+	@Test
+	public void cookies() {
+		RequestSpecification requestSpec = RestAssured.given().port(this.port)
+				.cookie("cookie1", "cookieVal1")
+				.cookie("cookie2", "cookieVal2");
+		requestSpec.get("/");
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getCookies().size(), is(equalTo(2)));
+
+		Iterator<Cookie> cookieIterator = request.getCookies().iterator();
+		Cookie cookie1 = cookieIterator.next();
+
+		assertThat(cookie1.getName(), is(equalTo("cookie1")));
+		assertThat(cookie1.getValue(), is(equalTo("cookieVal1")));
+
+		Cookie cookie2 = cookieIterator.next();
+		assertThat(cookie2.getName(), is(equalTo("cookie2")));
+		assertThat(cookie2.getValue(), is(equalTo("cookieVal2")));
 	}
 
 	@Test

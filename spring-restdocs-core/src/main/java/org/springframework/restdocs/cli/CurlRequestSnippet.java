@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.Cookie;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -92,10 +94,26 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		writeUserOptionIfNecessary(request, printer);
 		writeHttpMethodIfNecessary(request, printer);
 		writeHeaders(request, printer);
+		writeCookies(request, printer);
 		writePartsIfNecessary(request, printer);
 		writeContent(request, printer);
 
 		return command.toString();
+	}
+
+	private void writeCookies(CliOperationRequest request, PrintWriter printer) {
+		if (request.getCookies() != null && request.getCookies().size() > 0) {
+			printer.print(" --cookie ");
+			StringBuilder cookiesBuilder = new StringBuilder();
+
+			for (Cookie cookie : request.getCookies()) {
+				cookiesBuilder.append(String.format("%s=%s;", cookie.getName(), cookie.getValue()));
+			}
+
+			String cookiesHeader = cookiesBuilder.substring(0, cookiesBuilder.length() - 1); // remove trailing semicolon
+
+			printer.print(String.format("'%s'", cookiesHeader)); // add single quotes
+		}
 	}
 
 	private void writeIncludeHeadersInOutputOption(PrintWriter writer) {

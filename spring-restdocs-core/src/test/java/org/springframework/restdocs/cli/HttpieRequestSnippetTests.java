@@ -253,6 +253,17 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void requestWithCookies() throws IOException {
+		this.snippets.expectHttpieRequest().withContents(
+				codeBlock("bash").content("$ http GET 'http://localhost/foo'" +
+						" 'Cookie:name1=value1' 'Cookie:name2=value2'"));
+		new HttpieRequestSnippet()
+				.document(this.operationBuilder.request("http://localhost/foo")
+						.cookie("name1", "value1")
+						.cookie("name2", "value2").build());
+	}
+
+	@Test
 	public void multipartPostWithNoSubmittedFileName() throws IOException {
 		String expectedContent = String
 				.format("$ http --form POST 'http://localhost/upload' \\%n"

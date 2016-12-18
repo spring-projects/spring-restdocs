@@ -81,6 +81,21 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void getRequestWithCookies() throws IOException {
+		this.snippets.expectHttpRequest()
+				.withContents(httpRequest(RequestMethod.GET, "/foo")
+						.header(HttpHeaders.HOST, "localhost")
+						.header(HttpHeaders.COOKIE, "name1=value1")
+						.header(HttpHeaders.COOKIE, "name2=value2"));
+
+		new HttpRequestSnippet()
+				.document(this.operationBuilder.request("http://localhost/foo")
+				.cookie("name1", "value1")
+				.cookie("name2", "value2")
+				.build());
+	}
+
+	@Test
 	public void getRequestWithQueryString() throws IOException {
 		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.GET, "/foo?bar=baz")

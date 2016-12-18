@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -123,6 +125,11 @@ final class CliOperationRequest implements OperationRequest {
 	@Override
 	public URI getUri() {
 		return this.delegate.getUri();
+	}
+
+	@Override
+	public Collection<Cookie> getCookies() {
+		return this.delegate.getCookies();
 	}
 
 	private interface HeaderFilter {
