@@ -54,7 +54,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 						.row("`X-Test`", "one").row("`Accept`", "two")
 						.row("`Accept-Encoding`", "three")
 						.row("`Accept-Language`", "four").row("`Cache-Control`", "five")
-						.row("`Connection`", "six"));
+						.row("`Connection`", "six").row("`Cookie`", "seven"));
 		new RequestHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one"),
 						headerWithName("Accept").description("two"),
@@ -63,7 +63,8 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 						headerWithName("Cache-Control").description("five"),
 						headerWithName(
 								"Connection")
-										.description("six")))
+										.description("six"),
+						headerWithName("Cookie").description("seven")))
 												.document(
 														this.operationBuilder
 																.request(
@@ -78,6 +79,8 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 																		"max-age=0")
 																.header("Connection",
 																		"keep-alive")
+																.header("Cookie",
+																		"cookie1=cookieVal1; cookie2=cookieVal2")
 																.build());
 	}
 

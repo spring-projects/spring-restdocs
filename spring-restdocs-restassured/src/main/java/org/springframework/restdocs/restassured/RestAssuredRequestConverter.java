@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.jayway.restassured.response.Cookie;
 import com.jayway.restassured.response.Header;
 import com.jayway.restassured.specification.FilterableRequestSpecification;
 import com.jayway.restassured.specification.MultiPartSpecification;
@@ -55,7 +56,18 @@ class RestAssuredRequestConverter
 		return new OperationRequestFactory().create(URI.create(requestSpec.getURI()),
 				HttpMethod.valueOf(requestSpec.getMethod().name()),
 				extractContent(requestSpec), extractHeaders(requestSpec),
-				extractParameters(requestSpec), extractParts(requestSpec));
+				extractParameters(requestSpec), extractParts(requestSpec),
+				extractCookies(requestSpec));
+	}
+
+	private Collection<javax.servlet.http.Cookie> extractCookies(FilterableRequestSpecification requestSpec) {
+		Collection<javax.servlet.http.Cookie> cookies = new ArrayList<>();
+
+		for (Cookie cookie : requestSpec.getCookies()) {
+			cookies.add(new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue()));
+		}
+
+		return cookies;
 	}
 
 	private byte[] extractContent(FilterableRequestSpecification requestSpec) {

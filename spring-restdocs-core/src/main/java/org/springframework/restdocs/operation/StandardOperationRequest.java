@@ -20,6 +20,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.servlet.http.Cookie;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
@@ -39,6 +41,8 @@ class StandardOperationRequest extends AbstractOperationMessage
 
 	private URI uri;
 
+	private Collection<Cookie> cookies;
+
 	/**
 	 * Creates a new request with the given {@code uri} and {@code method}. The request
 	 * will have the given {@code headers}, {@code parameters}, and {@code parts}.
@@ -52,12 +56,14 @@ class StandardOperationRequest extends AbstractOperationMessage
 	 */
 	StandardOperationRequest(URI uri, HttpMethod method, byte[] content,
 			HttpHeaders headers, Parameters parameters,
-			Collection<OperationRequestPart> parts) {
+			Collection<OperationRequestPart> parts,
+			Collection<Cookie> cookies) {
 		super(content, headers);
 		this.uri = uri;
 		this.method = method;
 		this.parameters = parameters;
 		this.parts = parts;
+		this.cookies = cookies;
 	}
 
 	@Override
@@ -78,6 +84,11 @@ class StandardOperationRequest extends AbstractOperationMessage
 	@Override
 	public URI getUri() {
 		return this.uri;
+	}
+
+	@Override
+	public Collection<Cookie> getCookies() {
+		return this.cookies;
 	}
 
 }
