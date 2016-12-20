@@ -16,8 +16,6 @@
 
 package org.springframework.restdocs;
 
-import java.io.File;
-
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -27,13 +25,20 @@ import org.junit.runners.model.Statement;
  * JUnit tests.
  *
  * @author Andy Wilkinson
- *
+ * @deprecated Since 1.1 in favor of {@link JUnitRestDocumentation}
  */
-public class RestDocumentation implements TestRule {
+@Deprecated
+public class RestDocumentation implements TestRule, RestDocumentationContextProvider {
 
-	private final String outputDirectory;
+	private final JUnitRestDocumentation delegate;
 
-	private RestDocumentationContext context;
+	/**
+	 * Creates a new {@code RestDocumentation} instance that will generate snippets to the
+	 * to &lt;gradle/maven build path&gt;/generated-snippet.
+	 */
+	public RestDocumentation() {
+		this.delegate = new JUnitRestDocumentation();
+	}
 
 	/**
 	 * Creates a new {@code RestDocumentation} instance that will generate snippets to the
@@ -42,40 +47,17 @@ public class RestDocumentation implements TestRule {
 	 * @param outputDirectory the output directory
 	 */
 	public RestDocumentation(String outputDirectory) {
-		this.outputDirectory = outputDirectory;
+		this.delegate = new JUnitRestDocumentation(outputDirectory);
 	}
 
 	@Override
 	public Statement apply(final Statement base, final Description description) {
-		return new Statement() {
-
-			@Override
-			public void evaluate() throws Throwable {
-				Class<?> testClass = description.getTestClass();
-				String methodName = description.getMethodName();
-				RestDocumentation.this.context = new RestDocumentationContext(testClass,
-						methodName, new File(RestDocumentation.this.outputDirectory));
-				try {
-					base.evaluate();
-				}
-				finally {
-					RestDocumentation.this.context = null;
-				}
-			}
-
-		};
-
+		return this.delegate.apply(base, description);
 	}
 
-	/**
-	 * Notification that a RESTful operation that should be documented is about to be
-	 * performed. Returns a {@link RestDocumentationContext} for the operation.
-	 *
-	 * @return the context for the operation
-	 */
+	@Override
 	public RestDocumentationContext beforeOperation() {
-		this.context.getAndIncrementStepCount();
-		return this.context;
+		return this.delegate.beforeOperation();
 	}
 
 }

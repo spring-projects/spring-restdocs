@@ -1,0 +1,7 @@
+description = 'Asciidoctor extensions for Spring REST Docs'
+
+dependencies {
+	compileOnly 'org.asciidoctor:asciidoctorj'
+	testCompile 'junit:junit'
+	testCompile 'org.asciidoctor:asciidoctorj'
+}

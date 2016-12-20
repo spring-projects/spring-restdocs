@@ -17,6 +17,7 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +44,22 @@ public class JsonFieldTypeResolverTests {
 	@Test
 	public void arrayField() throws IOException {
 		assertFieldType(JsonFieldType.ARRAY, "[]");
+	}
+
+	@Test
+	public void topLevelArray() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("[]",
+						new ObjectMapper().readValue("[{\"a\":\"alpha\"}]", List.class)),
+				equalTo(JsonFieldType.ARRAY));
+	}
+
+	@Test
+	public void nestedArray() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a[]",
+						createPayload("{\"a\": [{\"b\":\"bravo\"}]}")),
+				equalTo(JsonFieldType.ARRAY));
 	}
 
 	@Test

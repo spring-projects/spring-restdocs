@@ -1,8 +1,6 @@
 sudo: false
 language: java
 jdk:
-  - oraclejdk7
-env:
-  - GRADLE_OPTS=-Dorg.gradle.daemon=false
+  - oraclejdk8
 script:
-  - "./gradlew build buildSamples --stacktrace"
+  - "./gradlew build buildSamples --stacktrace --info --no-daemon"

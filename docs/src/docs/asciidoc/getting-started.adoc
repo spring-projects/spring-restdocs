@@ -8,68 +8,178 @@ This section describes how to get started with Spring REST Docs.
 [[getting-started-sample-applications]]
 === Sample applications
 
-If you want to jump straight in, there are two sample applications available.
-{samples}/rest-notes-spring-hateoas[One sample] uses
-http://projects.spring.io/spring-hateoas/[Spring HATEOAS] and
-{samples}/rest-notes-spring-data-rest[the other] uses
-http://projects.spring.io/spring-data-rest/[Spring Data REST]. Both samples use
-Spring REST Docs to produce a detailed API guide and a getting started walkthrough.
-
-Each sample contains a file named `api-guide.adoc` that produces an API guide for the
-service, and a file named `getting-started-guide.adoc` that produces a getting started
-guide that provides an introductory walkthrough.
-
-The code that produces the generated snippets can be found in `src/test/java`.
-`ApiDocumentation.java` produces the snippets for the API guide.
-`GettingStartedDocumentation.java` produces the snippets for the getting started guide.
+If you want to jump straight in, a number of sample applications are available:
 
 
+[cols="3,2,10"]
+.MockMvc
+|===
+| Sample | Build system | Description
+
+| {samples}/rest-notes-spring-data-rest[Spring Data REST]
+| Maven
+| Demonstrates the creation of a getting started guide and an API guide for a service
+  implemented using http://projects.spring.io/spring-data-rest/[Spring Data REST].
+
+| {samples}/rest-notes-spring-hateoas[Spring HATEOAS]
+| Gradle
+| Demonstrates the creation of a getting started guide and an API guide for a service
+  implemented using http://projects.spring.io/spring-hateoas/[Spring HATEOAS].
+
+|===
+
+
+[cols="3,2,10"]
+.REST Assured
+|===
+| Sample | Build system | Description
+
+| {samples}/rest-notes-grails[Grails]
+| Gradle
+| Demonstrates the use of Spring REST docs with https://grails.org[Grails] and
+  https://github.com/spockframework/spock[Spock].
+
+| {samples}/rest-assured[REST Assured]
+| Gradle
+| Demonstrates the use of Spring REST Docs with http://rest-assured.io[REST Assured].
+
+|===
+
+
+[cols="3,2,10"]
+.Advanced
+|===
+| Sample | Build system | Description
+
+| {samples}/rest-notes-slate[Slate]
+| Gradle
+| Demonstrates the use of Spring REST Docs with Markdown and
+  http://github.com/tripit/slate[Slate].
+
+| {samples}/testng[TestNG]
+| Gradle
+| Demonstrates the use of Spring REST Docs with http://testng.org[TestNG].
+
+|===
+
+[[getting-started-requirements]]
+=== Requirements
+
+Spring REST Docs has the following minimum requirements:
+
+- Java 7
+- Spring Framework 4.3
+
+Additionally, the `spring-restdocs-restassured` module has the following minimum
+requirements:
+
+- REST Assured 2.8
 
 [[getting-started-build-configuration]]
 === Build configuration
 
-The first step in using Spring REST Docs is to configure your project's build.
+The first step in using Spring REST Docs is to configure your project's build. The
+{samples}/rest-notes-spring-hateoas[Spring HATEOAS] and
+{samples}/rest-notes-spring-data-rest[Spring Data REST] samples contain a `build.gradle`
+and `pom.xml` respectively that you may wish to use as a reference. The key parts of
+the configuration are described below.
 
+[source,xml,indent=0,subs="verbatim,attributes",role="primary"]
+.Maven
+----
+	<dependency> <1>
+		<groupId>org.springframework.restdocs</groupId>
+		<artifactId>spring-restdocs-mockmvc</artifactId>
+		<version>{project-version}</version>
+		<scope>test</scope>
+	</dependency>
 
+	<build>
+		<plugins>
+			<plugin> <2>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Documentation.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin> <3>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>1.5.3</version>
+				<executions>
+					<execution>
+						<id>generate-docs</id>
+						<phase>prepare-package</phase> <4>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<backend>html</backend>
+							<doctype>book</doctype>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency> <5>
+						<groupId>org.springframework.restdocs</groupId>
+						<artifactId>spring-restdocs-asciidoctor</artifactId>
+						<version>{project-version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+----
+<1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope. If you want to use
+	REST Assured rather than MockMvc, add a dependency on `spring-restdocs-restassured`
+	instead.
+<2> Add the SureFire plugin and configure it to include files whose names end with
+	`Documentation.java`.
+<3> Add the Asciidoctor plugin.
+<4> Using `prepare-package` allows the documentation to be
+	<<getting-started-build-configuration-maven-packaging, included in the package>>.
+<5> Add `spring-restdocs-asciidoctor` as a dependency of the Asciidoctor plugin. This
+	will automatically configure the `snippets` attribute for use in your `.adoc` files to
+	point to `target/generated-snippets`.
 
-[[getting-started-build-configuration-gradle]]
-==== Gradle build configuration
-
-The {samples}/rest-notes-spring-hateoas[Spring HATEOAS sample] contains a `build.gradle`
-file that you may wish to use as a reference. The key parts of the configuration are
-described below.
-
-[source,groovy,indent=0,subs="verbatim,attributes"]
+[source,indent=0,subs="verbatim,attributes",role="secondary"]
+.Gradle
 ----
 	plugins { <1>
-		id "org.asciidoctor.convert" version "1.5.2"
+		id "org.asciidoctor.convert" version "1.5.3"
 	}
 
-	dependencies { <2>
-		testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}'
+	dependencies {
+		asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}' <2>
+		testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <3>
 	}
 
-	ext { <3>
+	ext { <4>
 		snippetsDir = file('build/generated-snippets')
 	}
 
-	test { <4>
+	test { <5>
 		outputs.dir snippetsDir
 	}
 
-	asciidoctor { <5>
-		attributes 'snippets': snippetsDir <6>
+	asciidoctor { <6>
 		inputs.dir snippetsDir <7>
 		dependsOn test <8>
 	}
 ----
 <1> Apply the Asciidoctor plugin.
-<2> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration.
-<3> Configure a property to define the output location for generated snippets.
-<4> Configure the `test` task to add the snippets directory as an output.
-<5> Configure the `asciidoctor` task
-<6> Define an attribute named `snippets` that can be used when including the generated
-	snippets in your documentation.
+<2> Add a dependency on `spring-restdocs-asciidoctor` in the `asciidoctor` configuration.
+	This will automatically configure the `snippets` attribute for use in your `.adoc`
+	files to point to `build/generated-snippets`.
+<3> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration. If
+	you want to use REST Assured rather than MockMvc, add a dependency on
+	`spring-restdocs-restassured` instead.
+<4> Configure a property to define the output location for generated snippets.
+<5> Configure the `test` task to add the snippets directory as an output.
+<6> Configure the `asciidoctor` task
 <7> Configure the snippets directory as an input.
 <8> Make the task depend on the test task so that the tests are run before the
 	documentation is created.
@@ -80,99 +190,13 @@ described below.
 
 You may want to package the generated documentation in your project's jar file, for
 example to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
-static content] by Spring Boot. You can do so by configuring the `jar` task to depend on
-the `asciidoctor` task and to copy the generated documentation into the jar's static
-directory:
+static content] by Spring Boot. To do so, configure your project's build so that:
 
-[source,groovy,indent=0]
-----
-	jar {
-		dependsOn asciidoctor
-		from ("${asciidoctor.outputDir}/html5") {
-			into 'static/docs'
-		}
-	}
-----
+1. The documentation is generated before the jar is built
+2. The generated documentation is included in the jar
 
-
-
-[[getting-started-build-configuration-maven]]
-==== Maven build configuration
-
-The {samples}/rest-notes-spring-data-rest[Spring Data REST sample] contains a `pom.xml`
-file that you may wish to use as a reference. The key parts of the configuration are
-described below.
-
-[source,xml,indent=0,subs="verbatim,attributes"]
-----
-	<dependency> <1>
-		<groupId>org.springframework.restdocs</groupId>
-		<artifactId>spring-restdocs-mockmvc</artifactId>
-		<version>{project-version}</version>
-		<scope>test</scope>
-	</dependency>
-
-	<properties> <2>
-		<snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
-	</properties>
-
-	<build>
-		<plugins>
-			<plugin> <3>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<includes>
-						<include>**/*Documentation.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-			<plugin> <4>
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.2</version>
-				<executions>
-					<execution>
-						<id>generate-docs</id>
-						<phase>prepare-package</phase> <6>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<backend>html</backend>
-							<doctype>book</doctype>
-							<attributes>
-								<snippets>${snippetsDirectory}</snippets> <5>
-							</attributes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
-----
-<1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope.
-<2> Configure a property to define the output location for generated snippets.
-<3> Add the SureFire plugin and configure it to include files whose names end with
-	`Documentation.java`.
-<4> Add the Asciidoctor plugin
-<5> Define an attribute named `snippets` that can be used when including the generated
-	snippets in your documentation.
-<6> Using `prepare-package` allows the documentation to be
-	<<getting-started-build-configuration-maven-packaging, included in the package>>.
-
-[[getting-started-build-configuration-maven-packaging]]
-==== Packaging the documentation
-
-You may want to package the generated documentation in your project's jar file, for
-example to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
-static content] by Spring Boot.
-
-Configure Maven's resources plugin to copy the generated documentation into a location
-where it'll be included in the project's jar:
-
-[source,xml,indent=0]
+[source,xml,indent=0,role="primary"]
+.Maven
 ----
 	<plugin> <1>
 		<groupId>org.asciidoctor</groupId>
@@ -189,7 +213,7 @@ where it'll be included in the project's jar:
 				<goals>
 					<goal>copy-resources</goal>
 				</goals>
-				<configuration>
+				<configuration> <3>
 					<outputDirectory>
 						${project.build.outputDirectory}/static/docs
 					</outputDirectory>
@@ -208,68 +232,155 @@ where it'll be included in the project's jar:
 <1> The existing declaration for the Asciidoctor plugin.
 <2> The resource plugin must be declared after the Asciidoctor plugin as they are bound
 to the same phase (`prepare-package`) and the resource plugin must run after the
-Asciidoctor plugin.
+Asciidoctor plugin to ensure that the documentation is generated before it's copied.
+<3> Copy the generated documentation into the build output's `static/docs` directory,
+from where it will be included in the jar file.
+
+[source,indent=0,role="secondary"]
+.Gradle
+----
+	jar {
+		dependsOn asciidoctor <1>
+		from ("${asciidoctor.outputDir}/html5") { <2>
+			into 'static/docs'
+		}
+	}
+----
+<1> Ensure that the documentation has been generated before the jar is built.
+<2> Copy the generated documentation into the jar's `static/docs` directory.
 
 
 
 [[getting-started-documentation-snippets]]
 === Generating documentation snippets
-Spring REST Docs uses {spring-framework-docs}/#spring-mvc-test-framework[Spring's MVC Test
-framework] to make requests to the service that you are documenting. It then produces
-documentation snippets for request and resulting response.
+Spring REST Docs uses
+{spring-framework-docs}/#spring-mvc-test-framework[Spring's MVC Test framework] or
+http://www.rest-assured.io[REST Assured] to make requests to the service that you are
+documenting. It then produces documentation snippets for the request and the resulting
+response.
 
 
 
 [[getting-started-documentation-snippets-setup]]
-==== Setting up Spring MVC test
+==== Setting up your tests
 
-The first step in generating documentation snippets is to declare a `public`
-`RestDocumentation` field that's annotated as a JUnit `@Rule`. The `RestDocumentation`
-rule is configured with the output directory into which generated snippets should be
-written. This output directory should match the snippets directory that you have
-configured in your `build.gradle` or `pom.xml` file.
+Exactly how you setup your tests depends on the test framework that you're using.
+Spring REST Docs provides first-class support for JUnit. Other frameworks, such as TestNG,
+are also supported although slightly more setup is required.
 
-For Maven (`pom.xml` that will typically be `target/generated-snippets`:
+[[getting-started-documentation-snippets-setup-junit]]
+===== Setting up your JUnit tests
 
-[source,java,indent=0]
-----
-@Rule
-public RestDocumentation restDocumentation = new RestDocumentation("target/generated-snippets");
-----
+When using JUnit, the first step in generating documentation snippets is to declare a
+`public` `JUnitRestDocumentation` field that's annotated as a JUnit `@Rule`.
 
-And for Gradle (`build.gradle`) it will typically be `build/generated-snippets`:
 
 [source,java,indent=0]
 ----
 @Rule
-public RestDocumentation restDocumentation = new RestDocumentation("build/generated-snippets");
+public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 ----
 
-Next, provide an `@Before` method that creates a `MockMvc` instance:
+
+By default, the `JUnitRestDocumentation` rule is automatically configured with an output
+directory based on your project's build tool:
+
+[cols="2,5"]
+|===
+| Build tool | Output directory
+
+| Maven
+| `target/generated-snippets`
+
+| Gradle
+| `build/generated-snippets`
+
+|===
+
+The default can be overridden by providing an output directory when creating the
+`JUnitRestDocumentation` instance:
 
 [source,java,indent=0]
 ----
-include::{examples-dir}/com/example/ExampleApplicationTests.java[tags=mock-mvc-setup]
+@Rule
+public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("custom");
 ----
 
-The `MockMvc` instance is configured using a `RestDocumentationMockMvcConfigurer`. An
+Next, provide an `@Before` method to configure MockMvc or REST Assured:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/ExampleApplicationTests.java[tags=setup]
+----
+<1> The `MockMvc` instance is configured using a `MockMvcRestDocumentationConfigurer`. An
 instance of this class can be obtained from the static `documentationConfiguration()`
 method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
-`RestDocumentationMockMvcConfigurer` applies sensible defaults and also provides an API
-for customizing the configuration. Refer to the
-<<configuration, configuration section>> for more information.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationTests.java[tags=setup]
+----
+<1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a
+`Filter`. An instance of this class can be obtained from the static
+`documentationConfiguration()` method on
+`org.springframework.restdocs.restassured.RestAssuredRestDocumentation`.
+
+The configurer applies sensible defaults and also provides an API for customizing the
+configuration. Refer to the <<configuration, configuration section>> for more information.
 
 
+
+===== Setting up your tests without JUnit
+[[getting-started-documentation-snippets-setup-manual]]
+
+The configuration when JUnit is not being used is largely similar to when it is being
+used. This section describes the key differences. The {samples}/testng[TestNG sample] also
+illustrates the approach.
+
+The first difference is that `ManualRestDocumentation` should be used in place of
+`JUnitRestDocumentation` and there's no need for the `@Rule` annotation:
+
+[source,java,indent=0]
+----
+private ManualRestDocumentation restDocumentation = new ManualRestDocumentation();
+----
+
+Secondly, `ManualRestDocumentation.beforeTest(Class, String)`
+must be called before each test. This can be done as part of the method that is
+configuring MockMVC or REST Assured:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/ExampleApplicationTestNgTests.java[tags=setup]
+----
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationTestNgTests.java[tags=setup]
+----
+
+Lastly, `ManualRestDocumentation.afterTest` must be called after each test. For example,
+with TestNG:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationTestNgTests.java[tags=teardown]
+----
 
 [[getting-started-documentation-snippets-invoking-the-service]]
 ==== Invoking the RESTful service
 
-Now that a `MockMvc` instance has been created, it can be used to invoke the RESTful
+Now that the testing framework has been configured, it can be used to invoke the RESTful
 service and document the request and response. For example:
 
-[source,java,indent=0]
+[source,java,indent=0,role="primary"]
+.MockMvc
 ----
-include::{examples-dir}/com/example/InvokeService.java[tags=invoke-service]
+include::{examples-dir}/com/example/mockmvc/InvokeService.java[tags=invoke-service]
 ----
 <1> Invoke the root (`/`) of the service and indicate that an `application/json` response
 is required.
@@ -280,11 +391,29 @@ a `RestDocumentationResultHandler`. An instance of this class can be obtained fr
 static `document` method on
 `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
 
-By default, three snippets are written:
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/InvokeService.java[tags=invoke-service]
+----
+<1> Apply the specification that was initialised in the `@Before` method.
+<2> Indicate that an `application/json` response is required.
+<3> Document the call to the service, writing the snippets into a directory named `index`
+that will be located beneath the configured output directory. The snippets are written by
+a `RestDocumentationFilter`. An instance of this class can be obtained from the
+static `document` method on
+`org.springframework.restdocs.restassured.RestAssuredRestDocumentation`.
+<4> Invoke the root (`/`) of the service.
+<5> Assert that the service produce the expected response.
+
+By default, six snippets are written:
 
  * `<output-directory>/index/curl-request.adoc`
  * `<output-directory>/index/http-request.adoc`
  * `<output-directory>/index/http-response.adoc`
+ * `<output-directory>/index/httpie-request.adoc`
+ * `<output-directory>/index/request-body.adoc`
+ * `<output-directory>/index/response-body.adoc`
 
 Refer to <<documenting-your-api>> for more information about these and other snippets
 that can be produced by Spring REST Docs.
@@ -294,9 +423,30 @@ that can be produced by Spring REST Docs.
 [[getting-started-using-the-snippets]]
 === Using the snippets
 
-The generated snippets can be included in your documentation using the
+Before using the generated snippets, a `.adoc` source file must be created. You can name
+the file whatever you like as long as it has a `.adoc` suffix. The result HTML file will
+have the same name but with a `.html` suffix. The default location of the source files and
+the resulting HTML files depends on whether you are using Maven or Gradle:
+
+[cols="2,5,8"]
+|===
+| Build tool | Source files | Generated files
+
+| Maven
+| `src/main/asciidoc/*.adoc`
+| `target/generated-docs/*.html`
+
+| Gradle
+| `src/docs/asciidoc/*.adoc`
+| `build/asciidoc/html5/*.html`
+
+|===
+
+The generated snippets can then be included in the manually created Asciidoctor file from
+above using the
 http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
-The `snippets` attribute specified in the <<getting-started-build-configuration, build
+The `snippets` attribute that is automatically set by `spring-restdocs-asciidoctor`
+configured in the <<getting-started-build-configuration, build
 configuration>> can be used to reference the snippets output directory. For example:
 
 [source,adoc,indent=0]

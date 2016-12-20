@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.snippet.Snippet;
@@ -32,6 +33,10 @@ import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
  */
 public abstract class MockMvcRestDocumentation {
 
+	private static final MockMvcRequestConverter REQUEST_CONVERTER = new MockMvcRequestConverter();
+
+	private static final MockMvcResponseConverter RESPONSE_CONVERTER = new MockMvcResponseConverter();
+
 	private MockMvcRestDocumentation() {
 
 	}
@@ -43,10 +48,27 @@ public abstract class MockMvcRestDocumentation {
 	 * @param restDocumentation the REST documentation
 	 * @return the configurer
 	 * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
+	 * @deprecated Since 1.1 in favor of
+	 * {@link #documentationConfiguration(RestDocumentationContextProvider)}
 	 */
-	public static RestDocumentationMockMvcConfigurer documentationConfiguration(
-			RestDocumentation restDocumentation) {
-		return new RestDocumentationMockMvcConfigurer(restDocumentation);
+	@Deprecated
+	public static MockMvcRestDocumentationConfigurer documentationConfiguration(
+			org.springframework.restdocs.RestDocumentation restDocumentation) {
+		return documentationConfiguration(
+				(RestDocumentationContextProvider) restDocumentation);
+	}
+
+	/**
+	 * Provides access to a {@link MockMvcConfigurer} that can be used to configure a
+	 * {@link MockMvc} instance using the given {@code contextProvider}.
+	 *
+	 * @param contextProvider the context provider
+	 * @return the configurer
+	 * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
+	 */
+	public static MockMvcRestDocumentationConfigurer documentationConfiguration(
+			RestDocumentationContextProvider contextProvider) {
+		return new MockMvcRestDocumentationConfigurer(contextProvider);
 	}
 
 	/**
@@ -61,7 +83,8 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			Snippet... snippets) {
-		return new RestDocumentationResultHandler(identifier, snippets);
+		return new RestDocumentationResultHandler(new RestDocumentationGenerator<>(
+				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, snippets));
 	}
 
 	/**
@@ -78,8 +101,9 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(identifier, requestPreprocessor,
-				snippets);
+		return new RestDocumentationResultHandler(
+				new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+						RESPONSE_CONVERTER, requestPreprocessor, snippets));
 	}
 
 	/**
@@ -96,8 +120,9 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(identifier, responsePreprocessor,
-				snippets);
+		return new RestDocumentationResultHandler(
+				new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+						RESPONSE_CONVERTER, responsePreprocessor, snippets));
 	}
 
 	/**
@@ -117,8 +142,9 @@ public abstract class MockMvcRestDocumentation {
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationRequestPreprocessor requestPreprocessor,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(identifier, requestPreprocessor,
-				responsePreprocessor, snippets);
+		return new RestDocumentationResultHandler(new RestDocumentationGenerator<>(
+				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, requestPreprocessor,
+				responsePreprocessor, snippets));
 	}
 
 }

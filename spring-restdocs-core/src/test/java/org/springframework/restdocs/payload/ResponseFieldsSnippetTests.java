@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,131 +18,170 @@ package org.springframework.restdocs.payload;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.ExpectedSnippet;
-import org.springframework.restdocs.test.OperationBuilder;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 
 /**
  * Tests for {@link ResponseFieldsSnippet}.
  *
  * @author Andy Wilkinson
  */
-public class ResponseFieldsSnippetTests {
+public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
-	@Rule
-	public final ExpectedException thrown = ExpectedException.none();
-
-	@Rule
-	public final ExpectedSnippet snippet = new ExpectedSnippet();
+	public ResponseFieldsSnippetTests(String name, TemplateFormat templateFormat) {
+		super(name, templateFormat);
+	}
 
 	@Test
 	public void mapResponseWithFields() throws IOException {
-		this.snippet.expectResponseFields("map-response-with-fields")
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("id", "Number", "one").row("date", "String", "two")
-						.row("assets", "Array", "three").row("assets[]", "Object", "four")
-						.row("assets[].id", "Number", "five")
-						.row("assets[].name", "String", "six"));
+						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
+						.row("`assets`", "`Array`", "three")
+						.row("`assets[]`", "`Array`", "four")
+						.row("`assets[].id`", "`Number`", "five")
+						.row("`assets[].name`", "`String`", "six"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("id").description("one"),
 				fieldWithPath("date").description("two"),
 				fieldWithPath("assets").description("three"),
 				fieldWithPath("assets[]").description("four"),
 				fieldWithPath("assets[].id").description("five"),
 				fieldWithPath("assets[].name").description("six")))
-						.document(new OperationBuilder("map-response-with-fields",
-								this.snippet.getOutputDirectory())
-										.response()
-										.content(
-												"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
-														+ " [{\"id\":356,\"name\": \"sample\"}]}")
-										.build());
+						.document(this.operationBuilder.response()
+								.content(
+										"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
+												+ " [{\"id\":356,\"name\": \"sample\"}]}")
+								.build());
+	}
+
+	@Test
+	public void subsectionOfMapResponse() throws IOException {
+		this.snippets.expect("response-fields-beneath-a")
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
+		responseFields(beneathPath("a"), fieldWithPath("b").description("one"),
+				fieldWithPath("c").description("two"))
+						.document(this.operationBuilder.response()
+								.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
+								.build());
 	}
 
 	@Test
 	public void arrayResponseWithFields() throws IOException {
-		this.snippet.expectResponseFields("array-response-with-fields")
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("[]a.b", "Number", "one").row("[]a.c", "String", "two")
-						.row("[]a", "Object", "three"));
+						.row("`[]a.b`", "`Number`", "one")
+						.row("`[]a.c`", "`String`", "two")
+						.row("`[]a`", "`Object`", "three"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b").description("one"),
 				fieldWithPath("[]a.c").description("two"),
 				fieldWithPath("[]a").description("three")))
-						.document(new OperationBuilder("array-response-with-fields",
-								this.snippet.getOutputDirectory())
-										.response()
-										.content(
-												"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
-										.build());
+						.document(this.operationBuilder.response()
+								.content(
+										"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
+								.build());
 	}
 
 	@Test
 	public void arrayResponse() throws IOException {
-		this.snippet.expectResponseFields("array-response")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("[]",
-						"String", "one"));
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`[]`",
+						"`Array`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]").description("one")))
-				.document(new OperationBuilder("array-response",
-						this.snippet.getOutputDirectory()).response()
-								.content("[\"a\", \"b\", \"c\"]").build());
+				.document(this.operationBuilder.response()
+						.content("[\"a\", \"b\", \"c\"]").build());
 	}
 
 	@Test
 	public void ignoredResponseField() throws IOException {
-		this.snippet.expectResponseFields("ignored-response-field")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("b",
-						"Number", "Field b"));
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
+						"`Number`", "Field b"));
 
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").ignored(),
 				fieldWithPath("b").description("Field b")))
-						.document(new OperationBuilder("ignored-response-field",
-								this.snippet.getOutputDirectory()).response()
-										.content("{\"a\": 5, \"b\": 4}").build());
+						.document(this.operationBuilder.response()
+								.content("{\"a\": 5, \"b\": 4}").build());
+	}
+
+	@Test
+	public void allUndocumentedFieldsCanBeIgnored() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
+						"`Number`", "Field b"));
+
+		new ResponseFieldsSnippet(
+				Arrays.asList(fieldWithPath("b").description("Field b")), true)
+						.document(this.operationBuilder.response()
+								.content("{\"a\": 5, \"b\": 4}").build());
+	}
+
+	@Test
+	public void responseFieldsWithCustomAttributes() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("response-fields"))
+				.willReturn(snippetResource("response-fields-with-title"));
+		this.snippets.expectResponseFields().withContents(containsString("Custom title"));
+
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
+				attributes(
+						key("title").value("Custom title")))
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.response().content("{\"a\": \"foo\"}")
+												.build());
 	}
 
 	@Test
 	public void missingOptionalResponseField() throws IOException {
-		this.snippet.expectResponseFields("missing-optional-response-field")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
-						"String", "one"));
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
+						"`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
 				.type(JsonFieldType.STRING).optional()))
-						.document(new OperationBuilder("missing-optional-response-field",
-								this.snippet.getOutputDirectory()).response()
-										.content("{}").build());
+						.document(this.operationBuilder.response().content("{}").build());
+	}
+
+	@Test
+	public void missingIgnoredOptionalResponseFieldDoesNotRequireAType()
+			throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description"));
+		new ResponseFieldsSnippet(Arrays
+				.asList(fieldWithPath("a.b").description("one").ignored().optional()))
+						.document(this.operationBuilder.response().content("{}").build());
 	}
 
 	@Test
 	public void presentOptionalResponseField() throws IOException {
-		this.snippet.expectResponseFields("present-optional-response-field")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("a.b",
-						"String", "one"));
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
+						"`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
 				.type(JsonFieldType.STRING).optional()))
-						.document(new OperationBuilder("present-optional-response-field",
-								this.snippet.getOutputDirectory()).response()
-										.content("{\"a\": { \"b\": \"bravo\"}}").build());
+						.document(this.operationBuilder.response()
+								.content("{\"a\": { \"b\": \"bravo\"}}").build());
 	}
 
 	@Test
@@ -150,7 +189,7 @@ public class ResponseFieldsSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-fields"))
 				.willReturn(snippetResource("response-fields-with-extra-column"));
-		this.snippet.expectResponseFields("response-fields-with-custom-attributes")
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description", "Foo")
 						.row("a.b", "Number", "one", "alpha")
 						.row("a.c", "String", "two", "bravo")
@@ -163,50 +202,53 @@ public class ResponseFieldsSnippetTests {
 						.attributes(key("foo").value("bravo")),
 				fieldWithPath("a").description("three")
 						.attributes(key("foo").value("charlie"))))
-								.document(new OperationBuilder(
-										"response-fields-with-custom-attributes",
-										this.snippet
-												.getOutputDirectory())
-														.attribute(
-																TemplateEngine.class
-																		.getName(),
-																new MustacheTemplateEngine(
-																		resolver))
-														.response()
-														.content(
-																"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
-														.build());
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.response()
+												.content(
+														"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
+												.build());
 	}
 
 	@Test
-	public void responseFieldsWithCustomAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("response-fields"))
-				.willReturn(snippetResource("response-fields-with-title"));
-		this.snippet.expectResponseFields("response-fields-with-custom-attributes")
-				.withContents(startsWith(".Custom title"));
+	public void fieldWithExplictExactlyMatchingType() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
+						"`Number`", "one"));
 
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
-				attributes(key("title").value("Custom title"))).document(
-						new OperationBuilder("response-fields-with-custom-attributes",
-								this.snippet.getOutputDirectory())
-										.attribute(TemplateEngine.class.getName(),
-												new MustacheTemplateEngine(resolver))
-										.response().content("{\"a\": \"foo\"}").build());
+		new ResponseFieldsSnippet(Arrays
+				.asList(fieldWithPath("a").description("one").type(JsonFieldType.NUMBER)))
+						.document(this.operationBuilder.response().content("{\"a\": 5 }")
+								.build());
+	}
+
+	@Test
+	public void fieldWithExplictVariesType() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
+						"`Varies`", "one"));
+
+		new ResponseFieldsSnippet(Arrays
+				.asList(fieldWithPath("a").description("one").type(JsonFieldType.VARIES)))
+						.document(this.operationBuilder.response().content("{\"a\": 5 }")
+								.build());
 	}
 
 	@Test
 	public void xmlResponseFields() throws IOException {
-		this.snippet.expectResponseFields("xml-response")
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a/b", "b", "one").row("a/c", "c", "two").row("a", "a",
-								"three"));
+						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two").row("`a`",
+								"`a`", "three"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
 						fieldWithPath("a/c").description("two").type("c"),
-						fieldWithPath("a").description("three")
-								.type("a"))).document(new OperationBuilder("xml-response",
-										this.snippet.getOutputDirectory()).response()
+						fieldWithPath("a").description("three").type("a")))
+								.document(
+										this.operationBuilder.response()
 												.content("<a><b>5</b><c>charlie</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
@@ -214,31 +256,15 @@ public class ResponseFieldsSnippetTests {
 	}
 
 	@Test
-	public void undocumentedXmlResponseField() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(startsWith(
-				"The following parts of the payload were not" + " documented:"));
-		new ResponseFieldsSnippet(
-				Collections.<FieldDescriptor>emptyList())
-						.document(
-								new OperationBuilder("undocumented-xml-response-field",
-										this.snippet.getOutputDirectory()).response()
-												.content("<a><b>5</b></a>")
-												.header(HttpHeaders.CONTENT_TYPE,
-														MediaType.APPLICATION_XML_VALUE)
-												.build());
-	}
-
-	@Test
 	public void xmlAttribute() throws IOException {
-		this.snippet.expectResponseFields("xml-attribute")
+		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a", "b", "one").row("a/@id", "c", "two"));
+						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one").type("b"),
 						fieldWithPath("a/@id").description("two").type("c")))
-								.document(new OperationBuilder("xml-attribute",
-										this.snippet.getOutputDirectory()).response()
+								.document(
+										this.operationBuilder.response()
 												.content("<a id=\"1\">foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
@@ -246,32 +272,15 @@ public class ResponseFieldsSnippetTests {
 	}
 
 	@Test
-	public void missingXmlAttribute() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Fields with the following paths were not found"
-				+ " in the payload: [a/@id]"));
+	public void missingOptionalXmlAttribute() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one").type("b"),
-						fieldWithPath("a/@id").description("two").type("c")))
-								.document(new OperationBuilder("missing-xml-attribute",
-										this.snippet.getOutputDirectory()).response()
-												.content("<a>foo</a>")
-												.header(HttpHeaders.CONTENT_TYPE,
-														MediaType.APPLICATION_XML_VALUE)
-												.build());
-	}
-
-	@Test
-	public void missingOptionalXmlAttribute() throws IOException {
-		this.snippet.expectResponseFields("missing-optional-xml-attribute")
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("a", "b", "one").row("a/@id", "c", "two"));
-		new ResponseFieldsSnippet(Arrays.asList(
-				fieldWithPath("a").description("one").type("b"),
-				fieldWithPath("a/@id").description("two").type("c").optional()))
-						.document(
-								new OperationBuilder("missing-optional-xml-attribute",
-										this.snippet.getOutputDirectory()).response()
+						fieldWithPath("a/@id").description("two").type("c").optional()))
+								.document(
+										this.operationBuilder.response()
 												.content("<a>foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
@@ -280,87 +289,70 @@ public class ResponseFieldsSnippetTests {
 
 	@Test
 	public void undocumentedAttributeDoesNotCauseFailure() throws IOException {
-		this.snippet.expectResponseFields("undocumented-attribute").withContents(
-				tableWithHeader("Path", "Type", "Description").row("a", "a", "one"));
+		this.snippets.expectResponseFields().withContents(
+				tableWithHeader("Path", "Type", "Description").row("`a`", "`a`", "one"));
 		new ResponseFieldsSnippet(
-				Arrays.asList(fieldWithPath("a").description("one").type("a")))
-						.document(
-								new OperationBuilder("undocumented-attribute",
-										this.snippet.getOutputDirectory()).response()
-												.content("<a id=\"foo\">bar</a>")
-												.header(HttpHeaders.CONTENT_TYPE,
-														MediaType.APPLICATION_XML_VALUE)
-												.build());
-	}
-
-	@Test
-	public void documentedXmlAttributesAreRemoved() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo(
-				String.format("The following parts of the payload were not documented:"
-						+ "%n<a>bar</a>%n")));
-		new ResponseFieldsSnippet(
-				Arrays.asList(fieldWithPath("a/@id").description("one").type("a")))
-						.document(
-								new OperationBuilder("documented-attribute-is-removed",
-										this.snippet.getOutputDirectory()).response()
-												.content("<a id=\"foo\">bar</a>")
-												.header(HttpHeaders.CONTENT_TYPE,
-														MediaType.APPLICATION_XML_VALUE)
-												.build());
-	}
-
-	@Test
-	public void xmlResponseFieldWithNoType() throws IOException {
-		this.thrown.expect(FieldTypeRequiredException.class);
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
-				.document(new OperationBuilder("xml-response-no-field-type",
-						this.snippet.getOutputDirectory()).response().content("<a>5</a>")
+				Arrays.asList(fieldWithPath("a").description("one").type("a"))).document(
+						this.operationBuilder.response().content("<a id=\"foo\">bar</a>")
 								.header(HttpHeaders.CONTENT_TYPE,
 										MediaType.APPLICATION_XML_VALUE)
 								.build());
 	}
 
 	@Test
-	public void missingXmlResponseField() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Fields with the following paths were not found"
-				+ " in the payload: [a/b]"));
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one"),
-				fieldWithPath("a").description("one")))
-						.document(
-								new OperationBuilder("missing-xml-response-field",
-										this.snippet.getOutputDirectory()).response()
-												.content("<a></a>")
-												.header(HttpHeaders.CONTENT_TYPE,
-														MediaType.APPLICATION_XML_VALUE)
-												.build());
+	public void additionalDescriptors() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
+						.row("`assets`", "`Array`", "three")
+						.row("`assets[]`", "`Array`", "four")
+						.row("`assets[].id`", "`Number`", "five")
+						.row("`assets[].name`", "`String`", "six"));
+		PayloadDocumentation
+				.responseFields(fieldWithPath("id").description("one"),
+						fieldWithPath("date").description("two"),
+						fieldWithPath("assets").description("three"))
+				.and(fieldWithPath("assets[]").description("four"),
+						fieldWithPath("assets[].id").description("five"),
+						fieldWithPath("assets[].name").description("six"))
+				.document(this.operationBuilder.response()
+						.content("{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
+								+ " [{\"id\":356,\"name\": \"sample\"}]}")
+						.build());
 	}
 
 	@Test
-	public void undocumentedXmlResponseFieldAndMissingXmlResponseField()
-			throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(startsWith(
-				"The following parts of the payload were not" + " documented:"));
-		this.thrown
-				.expectMessage(endsWith("Fields with the following paths were not found"
-						+ " in the payload: [a/b]"));
-		new ResponseFieldsSnippet(
-				Arrays.asList(fieldWithPath("a/b").description("one")))
-						.document(
-								new OperationBuilder(
-										"undocumented-xml-request-field-and-missing-xml-request-field",
-										this.snippet.getOutputDirectory()).response()
-												.content("<a><c>5</c></a>")
-												.header(HttpHeaders.CONTENT_TYPE,
-														MediaType.APPLICATION_XML_VALUE)
-												.build());
+	public void prefixedAdditionalDescriptors() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
+						.row("`a.c`", "`String`", "three"));
+
+		PayloadDocumentation.responseFields(fieldWithPath("a").description("one"))
+				.andWithPrefix("a.", fieldWithPath("b").description("two"),
+						fieldWithPath("c").description("three"))
+				.document(this.operationBuilder.response()
+						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
 	}
 
-	private FileSystemResource snippetResource(String name) {
-		return new FileSystemResource(
-				"src/test/resources/custom-snippet-templates/" + name + ".snippet");
+	@Test
+	public void responseWithFieldsWithEscapedContent() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row(
+						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("`one|two`"),
+						escapeIfNecessary("three|four")));
+
+		new ResponseFieldsSnippet(Arrays.asList(
+				fieldWithPath("Foo|Bar").type("one|two").description("three|four")))
+						.document(this.operationBuilder.response()
+								.content("{\"Foo|Bar\": 5}").build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
 	}
 
 }

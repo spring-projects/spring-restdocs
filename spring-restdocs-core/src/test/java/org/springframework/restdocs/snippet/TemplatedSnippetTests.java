@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,18 @@
 
 package org.springframework.restdocs.snippet;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.springframework.restdocs.operation.Operation;
+import org.springframework.restdocs.templates.TemplateFormats;
+import org.springframework.restdocs.test.ExpectedSnippets;
+import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -37,6 +42,13 @@ import static org.junit.Assert.assertThat;
  * @author Andy Wilkinson
  */
 public class TemplatedSnippetTests {
+
+	@Rule
+	public OperationBuilder operationBuilder = new OperationBuilder(
+			TemplateFormats.asciidoctor());
+
+	@Rule
+	public ExpectedSnippets snippets = new ExpectedSnippets(TemplateFormats.asciidoctor());
 
 	@Test
 	public void attributesAreCopied() {
@@ -60,7 +72,22 @@ public class TemplatedSnippetTests {
 				.getSnippetName(), is(equalTo("test")));
 	}
 
+	@Test
+	public void multipleSnippetsCanBeProducedFromTheSameTemplate() throws IOException {
+		this.snippets.expect("multiple-snippets-one");
+		this.snippets.expect("multiple-snippets-two");
+		new TestTemplatedSnippet("one", "multiple-snippets")
+				.document(this.operationBuilder.build());
+		new TestTemplatedSnippet("two", "multiple-snippets")
+				.document(this.operationBuilder.build());
+	}
+
 	private static class TestTemplatedSnippet extends TemplatedSnippet {
+
+		protected TestTemplatedSnippet(String snippetName, String templateName) {
+			super(templateName + "-" + snippetName, templateName,
+					Collections.<String, Object>emptyMap());
+		}
 
 		protected TestTemplatedSnippet(Map<String, Object> attributes) {
 			super("test", attributes);
@@ -68,7 +95,7 @@ public class TemplatedSnippetTests {
 
 		@Override
 		protected Map<String, Object> createModel(Operation operation) {
-			return null;
+			return new HashMap<>();
 		}
 
 	}

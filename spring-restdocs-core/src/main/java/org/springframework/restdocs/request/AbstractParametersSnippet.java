@@ -17,6 +17,7 @@
 package org.springframework.restdocs.request;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -40,18 +41,42 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 
 	private final Map<String, ParameterDescriptor> descriptorsByName = new LinkedHashMap<>();
 
+	private final boolean ignoreUndocumentedParameters;
+
 	/**
 	 * Creates a new {@code AbstractParametersSnippet} that will produce a snippet with
 	 * the given {@code snippetName} that will document parameters using the given
 	 * {@code descriptors}. The given {@code attributes} will be included in the model
-	 * during template rendering.
+	 * during template rendering. Undocumented parameters will trigger a failure.
 	 *
 	 * @param snippetName The snippet name
 	 * @param descriptors The descriptors
 	 * @param attributes The additional attributes
+	 * @deprecated since 1.1 in favour of
+	 * {@link #AbstractParametersSnippet(String, List, Map, boolean)}
 	 */
+	@Deprecated
 	protected AbstractParametersSnippet(String snippetName,
 			List<ParameterDescriptor> descriptors, Map<String, Object> attributes) {
+		this(snippetName, descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code AbstractParametersSnippet} that will produce a snippet with
+	 * the given {@code snippetName} that will document parameters using the given
+	 * {@code descriptors}. The given {@code attributes} will be included in the model
+	 * during template rendering. If {@code ignoreUndocumentedParameters} is {@code true},
+	 * undocumented parameters will be ignored and will not trigger a failure.
+	 *
+	 * @param snippetName The snippet name
+	 * @param descriptors The descriptors
+	 * @param attributes The additional attributes
+	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
+	 * ignored
+	 */
+	protected AbstractParametersSnippet(String snippetName,
+			List<ParameterDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedParameters) {
 		super(snippetName, attributes);
 		for (ParameterDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getName(),
@@ -64,6 +89,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 			}
 			this.descriptorsByName.put(descriptor.getName(), descriptor);
 		}
+		this.ignoreUndocumentedParameters = ignoreUndocumentedParameters;
 	}
 
 	@Override
@@ -85,9 +111,21 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 
 	private void verifyParameterDescriptors(Operation operation) {
 		Set<String> actualParameters = extractActualParameters(operation);
-		Set<String> expectedParameters = this.descriptorsByName.keySet();
-		Set<String> undocumentedParameters = new HashSet<>(actualParameters);
-		undocumentedParameters.removeAll(expectedParameters);
+		Set<String> expectedParameters = new HashSet<>();
+		for (Entry<String, ParameterDescriptor> entry : this.descriptorsByName
+				.entrySet()) {
+			if (!entry.getValue().isOptional()) {
+				expectedParameters.add(entry.getKey());
+			}
+		}
+		Set<String> undocumentedParameters;
+		if (this.ignoreUndocumentedParameters) {
+			undocumentedParameters = Collections.emptySet();
+		}
+		else {
+			undocumentedParameters = new HashSet<>(actualParameters);
+			undocumentedParameters.removeAll(this.descriptorsByName.keySet());
+		}
 		Set<String> missingParameters = new HashSet<>(expectedParameters);
 		missingParameters.removeAll(actualParameters);
 
@@ -122,8 +160,21 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * {@link ParameterDescriptor#getName()}.
 	 *
 	 * @return the map of path descriptors
+	 * @deprecated since 1.1.0 in favor of {@link #getParameterDescriptors()}
 	 */
+	@Deprecated
 	protected final Map<String, ParameterDescriptor> getFieldDescriptors() {
+		return this.descriptorsByName;
+	}
+
+	/**
+	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will
+	 * be used to generate the documentation key by their
+	 * {@link ParameterDescriptor#getName()}.
+	 *
+	 * @return the map of path descriptors
+	 */
+	protected final Map<String, ParameterDescriptor> getParameterDescriptors() {
 		return this.descriptorsByName;
 	}
 
@@ -138,6 +189,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 		Map<String, Object> model = new HashMap<>();
 		model.put("name", descriptor.getName());
 		model.put("description", descriptor.getDescription());
+		model.put("optional", descriptor.isOptional());
 		model.putAll(descriptor.getAttributes());
 		return model;
 	}

@@ -18,119 +18,121 @@ package org.springframework.restdocs.request;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.ExpectedSnippet;
-import org.springframework.restdocs.test.OperationBuilder;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 
 /**
  * Tests for {@link RequestParametersSnippet}.
  *
  * @author Andy Wilkinson
  */
-public class RequestParametersSnippetTests {
+public class RequestParametersSnippetTests extends AbstractSnippetTests {
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
-	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet();
-
-	@Test
-	public void undocumentedParameter() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(equalTo("Request parameters with the following names were"
-						+ " not documented: [a]"));
-		new RequestParametersSnippet(Collections.<ParameterDescriptor>emptyList())
-				.document(new OperationBuilder("undocumented-parameter",
-						this.snippet.getOutputDirectory()).request("http://localhost")
-								.param("a", "alpha").build());
-	}
-
-	@Test
-	public void missingParameter() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(equalTo("Request parameters with the following names were"
-						+ " not found in the request: [a]"));
-		new RequestParametersSnippet(
-				Arrays.asList(parameterWithName("a").description("one")))
-						.document(new OperationBuilder("missing-parameter",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost").build());
-	}
-
-	@Test
-	public void undocumentedAndMissingParameters() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(equalTo("Request parameters with the following names were"
-						+ " not documented: [b]. Request parameters with the following"
-						+ " names were not found in the request: [a]"));
-		new RequestParametersSnippet(
-				Arrays.asList(parameterWithName("a").description("one"))).document(
-						new OperationBuilder("undocumented-and-missing-parameters",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost").param("b", "bravo")
-										.build());
+	public RequestParametersSnippetTests(String name, TemplateFormat templateFormat) {
+		super(name, templateFormat);
 	}
 
 	@Test
 	public void requestParameters() throws IOException {
-		this.snippet.expectRequestParameters("request-parameters")
-				.withContents(tableWithHeader("Parameter", "Description").row("a", "one")
-						.row("b", "two"));
+		this.snippets.expectRequestParameters()
+				.withContents(tableWithHeader("Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one"),
-						parameterWithName("b").description("two")))
-								.document(new OperationBuilder("request-parameters",
-										this.snippet.getOutputDirectory())
-												.request("http://localhost")
-												.param("a", "bravo").param("b", "bravo")
-												.build());
+						parameterWithName("b").description("two"))).document(
+								this.operationBuilder.request("http://localhost")
+										.param("a", "bravo").param("b", "bravo").build());
 	}
 
 	@Test
 	public void requestParameterWithNoValue() throws IOException {
-		this.snippet.expectRequestParameters("request-parameter-with-no-value")
-				.withContents(
-						tableWithHeader("Parameter", "Description").row("a", "one"));
+		this.snippets.expectRequestParameters().withContents(
+				tableWithHeader("Parameter", "Description").row("`a`", "one"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one")))
-						.document(new OperationBuilder("request-parameter-with-no-value",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost").param("a").build());
+						.document(this.operationBuilder.request("http://localhost")
+								.param("a").build());
 	}
 
 	@Test
 	public void ignoredRequestParameter() throws IOException {
-		this.snippet.expectRequestParameters("ignored-request-parameter").withContents(
-				tableWithHeader("Parameter", "Description").row("b", "two"));
+		this.snippets.expectRequestParameters().withContents(
+				tableWithHeader("Parameter", "Description").row("`b`", "two"));
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
 				parameterWithName("b").description("two")))
-						.document(new OperationBuilder("ignored-request-parameter",
-								this.snippet.getOutputDirectory())
-										.request("http://localhost").param("a", "bravo")
+						.document(this.operationBuilder.request("http://localhost")
+								.param("a", "bravo").param("b", "bravo").build());
+	}
+
+	@Test
+	public void allUndocumentedRequestParametersCanBeIgnored() throws IOException {
+		this.snippets.expectRequestParameters().withContents(
+				tableWithHeader("Parameter", "Description").row("`b`", "two"));
+		new RequestParametersSnippet(
+				Arrays.asList(parameterWithName("b").description("two")), true)
+						.document(this.operationBuilder.request("http://localhost")
+								.param("a", "bravo").param("b", "bravo").build());
+	}
+
+	@Test
+	public void missingOptionalRequestParameter() throws IOException {
+		this.snippets.expectRequestParameters()
+				.withContents(tableWithHeader("Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
+		new RequestParametersSnippet(
+				Arrays.asList(parameterWithName("a").description("one").optional(),
+						parameterWithName("b").description("two"))).document(
+								this.operationBuilder.request("http://localhost")
 										.param("b", "bravo").build());
+	}
+
+	@Test
+	public void presentOptionalRequestParameter() throws IOException {
+		this.snippets.expectRequestParameters().withContents(
+				tableWithHeader("Parameter", "Description").row("`a`", "one"));
+		new RequestParametersSnippet(
+				Arrays.asList(parameterWithName("a").description("one").optional()))
+						.document(this.operationBuilder.request("http://localhost")
+								.param("a", "one").build());
+	}
+
+	@Test
+	public void requestParametersWithCustomAttributes() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("request-parameters"))
+				.willReturn(snippetResource("request-parameters-with-title"));
+		this.snippets.expectRequestParameters().withContents(containsString("The title"));
+
+		new RequestParametersSnippet(
+				Arrays.asList(
+						parameterWithName("a").description("one")
+								.attributes(key("foo").value("alpha")),
+						parameterWithName("b").description("two")
+								.attributes(key("foo").value("bravo"))),
+				attributes(
+						key("title").value("The title")))
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.request("http://localhost")
+												.param("a", "alpha").param("b", "bravo")
+												.build());
 	}
 
 	@Test
@@ -138,9 +140,7 @@ public class RequestParametersSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))
 				.willReturn(snippetResource("request-parameters-with-extra-column"));
-		this.snippet
-				.expectRequestParameters(
-						"request-parameters-with-custom-descriptor-attributes")
+		this.snippets.expectRequestParameters()
 				.withContents(tableWithHeader("Parameter", "Description", "Foo")
 						.row("a", "one", "alpha").row("b", "two", "bravo"));
 
@@ -149,46 +149,66 @@ public class RequestParametersSnippetTests {
 						.attributes(key("foo").value("alpha")),
 				parameterWithName("b").description("two")
 						.attributes(key("foo").value("bravo"))))
-								.document(new OperationBuilder(
-										"request-parameters-with-custom-descriptor-attributes",
-										this.snippet
-												.getOutputDirectory())
-														.attribute(
-																TemplateEngine.class
-																		.getName(),
-																new MustacheTemplateEngine(
-																		resolver))
-														.request("http://localhost")
-														.param("a", "alpha")
-														.param("b", "bravo").build());
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.request("http://localhost")
+												.param("a", "alpha").param("b", "bravo")
+												.build());
 	}
 
 	@Test
-	public void requestParametersWithCustomAttributes() throws IOException {
+	public void requestParametersWithOptionalColumn() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))
-				.willReturn(snippetResource("request-parameters-with-title"));
-		this.snippet.expectRequestParameters("request-parameters-with-custom-attributes")
-				.withContents(startsWith(".The title"));
+				.willReturn(snippetResource("request-parameters-with-optional-column"));
+		this.snippets.expectRequestParameters()
+				.withContents(tableWithHeader("Parameter", "Optional", "Description")
+						.row("a", "true", "one").row("b", "false", "two"));
 
 		new RequestParametersSnippet(
-				Arrays.asList(
-						parameterWithName("a").description("one")
-								.attributes(key("foo").value("alpha")),
-						parameterWithName("b").description("two")
-								.attributes(key("foo").value("bravo"))),
-				attributes(key("title").value("The title"))).document(
-						new OperationBuilder("request-parameters-with-custom-attributes",
-								this.snippet.getOutputDirectory())
-										.attribute(TemplateEngine.class.getName(),
-												new MustacheTemplateEngine(resolver))
-										.request("http://localhost").param("a", "alpha")
-										.param("b", "bravo").build());
+				Arrays.asList(parameterWithName("a").description("one").optional(),
+						parameterWithName("b").description("two")))
+								.document(
+										this.operationBuilder
+												.attribute(TemplateEngine.class.getName(),
+														new MustacheTemplateEngine(
+																resolver))
+												.request("http://localhost")
+												.param("a", "alpha").param("b", "bravo")
+												.build());
 	}
 
-	private FileSystemResource snippetResource(String name) {
-		return new FileSystemResource(
-				"src/test/resources/custom-snippet-templates/" + name + ".snippet");
+	@Test
+	public void additionalDescriptors() throws IOException {
+		this.snippets.expectRequestParameters()
+				.withContents(tableWithHeader("Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
+		RequestDocumentation.requestParameters(parameterWithName("a").description("one"))
+				.and(parameterWithName("b").description("two"))
+				.document(this.operationBuilder.request("http://localhost")
+						.param("a", "bravo").param("b", "bravo").build());
+	}
+
+	@Test
+	public void requestParametersWithEscapedContent() throws IOException {
+		this.snippets.expectRequestParameters()
+				.withContents(tableWithHeader("Parameter", "Description").row(
+						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+
+		RequestDocumentation
+				.requestParameters(parameterWithName("Foo|Bar").description("one|two"))
+				.document(this.operationBuilder.request("http://localhost")
+						.param("Foo|Bar", "baz").build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
 	}
 
 }

@@ -24,10 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.runners.model.Statement;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.mustache.Mustache;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
@@ -37,11 +41,13 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.StandardOperation;
-import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolver;
+import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolverFactory;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.StandardTemplateResourceResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.mustache.AsciidoctorTableCellContentLambda;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
 /**
@@ -49,21 +55,22 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
  *
  * @author Andy Wilkinson
  */
-public class OperationBuilder {
+public class OperationBuilder extends OperationTestRule {
 
 	private final Map<String, Object> attributes = new HashMap<>();
 
-	private final OperationResponseBuilder responseBuilder = new OperationResponseBuilder();
+	private OperationResponseBuilder responseBuilder;
 
-	private final String name;
+	private String name;
 
-	private final File outputDirectory;
+	private File outputDirectory;
+
+	private final TemplateFormat templateFormat;
 
 	private OperationRequestBuilder requestBuilder;
 
-	public OperationBuilder(String name, File outputDirectory) {
-		this.name = name;
-		this.outputDirectory = outputDirectory;
+	public OperationBuilder(TemplateFormat templateFormat) {
+		this.templateFormat = templateFormat;
 	}
 
 	public OperationRequestBuilder request(String uri) {
@@ -72,6 +79,7 @@ public class OperationBuilder {
 	}
 
 	public OperationResponseBuilder response() {
+		this.responseBuilder = new OperationResponseBuilder();
 		return this.responseBuilder;
 	}
 
@@ -80,21 +88,52 @@ public class OperationBuilder {
 		return this;
 	}
 
+	private void prepare(String operationName, File outputDirectory) {
+		this.name = operationName;
+		this.outputDirectory = outputDirectory;
+		this.requestBuilder = null;
+		this.requestBuilder = null;
+		this.attributes.clear();
+	}
+
 	public Operation build() {
 		if (this.attributes.get(TemplateEngine.class.getName()) == null) {
+			Map<String, Object> templateContext = new HashMap<>();
+			templateContext.put("tableCellContent",
+					new AsciidoctorTableCellContentLambda());
 			this.attributes.put(TemplateEngine.class.getName(),
-					new MustacheTemplateEngine(new StandardTemplateResourceResolver()));
+					new MustacheTemplateEngine(
+							new StandardTemplateResourceResolver(this.templateFormat),
+							Mustache.compiler().escapeHTML(false), templateContext));
 		}
-		RestDocumentationContext context = new RestDocumentationContext(null, null,
-				this.outputDirectory);
+		RestDocumentationContext context = createContext();
 		this.attributes.put(RestDocumentationContext.class.getName(), context);
-		this.attributes.put(WriterResolver.class.getName(), new StandardWriterResolver(
-				new RestDocumentationContextPlaceholderResolver(context)));
+		this.attributes.put(WriterResolver.class.getName(),
+				new StandardWriterResolver(
+						new RestDocumentationContextPlaceholderResolverFactory(), "UTF-8",
+						this.templateFormat));
 		return new StandardOperation(this.name,
 				(this.requestBuilder == null
 						? new OperationRequestBuilder("http://localhost/").buildRequest()
 						: this.requestBuilder.buildRequest()),
-				this.responseBuilder.buildResponse(), this.attributes);
+				this.responseBuilder == null
+						? new OperationResponseBuilder().buildResponse()
+						: this.responseBuilder.buildResponse(),
+				this.attributes);
+	}
+
+	private RestDocumentationContext createContext() {
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
+				this.outputDirectory.getAbsolutePath());
+		manualRestDocumentation.beforeTest(null, null);
+		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
+		return context;
+	}
+
+	@Override
+	public Statement apply(Statement base, File outputDirectory, String operationName) {
+		prepare(operationName, outputDirectory);
+		return base;
 	}
 
 	/**

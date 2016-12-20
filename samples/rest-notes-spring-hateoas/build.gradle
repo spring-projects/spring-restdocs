@@ -3,7 +3,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE'
 	}
 }
 
@@ -28,10 +28,13 @@ targetCompatibility = 1.7
 
 ext {
 	snippetsDir = file('build/generated-snippets')
-	springRestdocsVersion = '1.0.2.BUILD-SNAPSHOT'
 }
 
+ext['spring-restdocs.version'] = '1.2.0.BUILD-SNAPSHOT'
+
 dependencies {
+	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
+
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 	compile 'org.springframework.boot:spring-boot-starter-hateoas'
 
@@ -40,7 +43,7 @@ dependencies {
 
 	testCompile 'com.jayway.jsonpath:json-path'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	testCompile "org.springframework.restdocs:spring-restdocs-mockmvc:$springRestdocsVersion"
+	testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 test {
@@ -48,7 +51,6 @@ test {
 }
 
 asciidoctor {
-	attributes 'snippets': snippetsDir
 	inputs.dir snippetsDir
 	dependsOn test
 }

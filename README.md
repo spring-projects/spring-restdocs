@@ -17,7 +17,7 @@ To learn more about Spring REST Docs, please consult the [reference documentatio
 
 ## Building from source
 
-Spring REST Docs requires Java 7 or later and is built using [Gradle][10]:
+You will need Java 7 or later to build Spring REST Docs. It is built using [Gradle][10]:
 
 ```
 ./gradlew build
@@ -26,7 +26,19 @@ Spring REST Docs requires Java 7 or later and is built using [Gradle][10]:
 ## Contributing
 
 Contributors to this project agree to uphold its [code of conduct][11].
-[Pull requests][12] are welcome. Please see the [contributor guidelines][13] for details.
+
+There are several that you can contribute to Spring REST Docs:
+
+ - Open a [pull request][12]. Please see the [contributor guidelines][13] for details.
+ - Ask and answer questions on Stack Overflow using the [`spring-restdocs`][15] tag.
+ - Chat with fellow users [on Gitter][16].
+
+## Third-party extensions
+
+| Name | Description |
+| ---- | ----------- |
+| [restdocs-wiremock][17] | Auto-generate [WireMock][18] stubs as part of documenting your RESTful API |
+| [restdocsext-jersey][19] | Enables Spring REST Docs to be used with [Jersey's test framework][20] |
 
 ## Licence
 
@@ -46,4 +58,9 @@ Spring REST Docs is open source software released under the [Apache 2.0 license]
 [12]: https://help.github.com/articles/using-pull-requests/
 [13]: CONTRIBUTING.md
 [14]: http://www.apache.org/licenses/LICENSE-2.0.html
-
+[15]: http://stackoverflow.com/tags/spring-restdocs
+[16]: https://gitter.im/spring-projects/spring-restdocs
+[17]: https://github.com/ePages-de/restdocs-wiremock
+[18]: http://wiremock.org/
+[19]: https://github.com/RESTDocsEXT/restdocsext-jersey
+[20]: https://jersey.java.net/documentation/latest/test-framework.html

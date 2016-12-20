@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,25 +44,23 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = RestNotesSpringDataRest.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ApiDocumentation {
-	
+
 	@Rule
-	public final RestDocumentation restDocumentation = new RestDocumentation("target/generated-snippets");
+	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@Autowired
 	private NoteRepository noteRepository;
@@ -116,7 +115,7 @@ public class ApiDocumentation {
 							linkWithRel("tags").description("The <<resources-tags,Tags resource>>"),
 							linkWithRel("profile").description("The ALPS profile for the service")),
 					responseFields(
-							fieldWithPath("_links").description("<<resources-index-links,Links>> to other resources"))));
+							subsectionWithPath("_links").description("<<resources-index-links,Links>> to other resources"))));
 
 	}
 
@@ -133,8 +132,12 @@ public class ApiDocumentation {
 		this.mockMvc.perform(get("/notes"))
 			.andExpect(status().isOk())
 			.andDo(document("notes-list-example",
+					links(
+							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
-							fieldWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"))));
+							subsectionWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"),
+							subsectionWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
 	}
 
 	@Test
@@ -195,14 +198,16 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("body", is(note.get("body"))))
 			.andExpect(jsonPath("_links.self.href", is(noteLocation)))
 			.andExpect(jsonPath("_links.tags", is(notNullValue())))
+			.andDo(print())
 			.andDo(document("note-get-example",
 					links(
-							linkWithRel("self").description("This <<resources-note,note>>"),
+							linkWithRel("self").description("Canonical link for this <<resources-note,note>>"),
+							linkWithRel("note").description("This <<resources-note,note>>"),
 							linkWithRel("tags").description("This note's tags")),
 					responseFields(
 							fieldWithPath("title").description("The title of the note"),
 							fieldWithPath("body").description("The body of the note"),
-							fieldWithPath("_links").description("<<resources-note-links,Links>> to other resources"))));
+							subsectionWithPath("_links").description("<<resources-note-links,Links>> to other resources"))));
 	}
 
 	@Test
@@ -217,8 +222,12 @@ public class ApiDocumentation {
 		this.mockMvc.perform(get("/tags"))
 			.andExpect(status().isOk())
 			.andDo(document("tags-list-example",
+					links(
+							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
-							fieldWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"))));
+							subsectionWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"),
+							subsectionWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
 	}
 
 	@Test
@@ -295,11 +304,12 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("name", is(tag.get("name"))))
 			.andDo(document("tag-get-example",
 					links(
-							linkWithRel("self").description("This <<resources-tag,tag>>"),
+							linkWithRel("self").description("Canonical link for this <<resources-tag,tag>>"),
+							linkWithRel("tag").description("This <<resources-tag,tag>>"),
 							linkWithRel("notes").description("The <<resources-tagged-notes,notes>> that have this tag")),
 					responseFields(
 							fieldWithPath("name").description("The name of the tag"),
-							fieldWithPath("_links").description("<<resources-tag-links,Links>> to other resources"))));
+							subsectionWithPath("_links").description("<<resources-tag-links,Links>> to other resources"))));
 	}
 
 	@Test

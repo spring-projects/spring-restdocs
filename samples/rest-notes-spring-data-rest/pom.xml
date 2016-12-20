@@ -11,14 +11,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.2.7.RELEASE</version>
+		<version>1.4.1.RELEASE</version>
 		<relativePath />
 	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.7</java.version>
-		<spring-restdocs.version>1.0.2.BUILD-SNAPSHOT</spring-restdocs.version>
+		<spring-restdocs.version>1.2.0.BUILD-SNAPSHOT</spring-restdocs.version>
 	</properties>
 
 	<dependencies>
@@ -50,7 +50,6 @@
 		<dependency>
 			<groupId>org.springframework.restdocs</groupId>
 			<artifactId>spring-restdocs-mockmvc</artifactId>
-			<version>${spring-restdocs.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -84,12 +83,16 @@
 						<configuration>
 							<backend>html</backend>
 							<doctype>book</doctype>
-							<attributes>
-								<snippets>${project.build.directory}/generated-snippets</snippets>
-							</attributes>
 						</configuration>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.springframework.restdocs</groupId>
+						<artifactId>spring-restdocs-asciidoctor</artifactId>
+						<version>${spring-restdocs.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>

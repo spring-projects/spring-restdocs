@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.springframework.restdocs.templates.mustache;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.Map;
 
 import org.springframework.core.io.Resource;
 import org.springframework.restdocs.mustache.Mustache;
@@ -36,26 +38,81 @@ import org.springframework.restdocs.templates.TemplateResourceResolver;
  */
 public class MustacheTemplateEngine implements TemplateEngine {
 
-	private final Compiler compiler = Mustache.compiler().escapeHTML(false);
-
 	private final TemplateResourceResolver templateResourceResolver;
 
+	private final Compiler compiler;
+
+	private final Map<String, Object> context;
+
 	/**
-	 * Creates a new {@link MustacheTemplateEngine} that will use the given
+	 * Creates a new {@code MustacheTemplateEngine} that will use the given
 	 * {@code templateResourceResolver} to resolve template paths.
 	 *
-	 * @param templateResourceResolver The resolve to use
+	 * @param templateResourceResolver the resolver to use
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver) {
+		this(templateResourceResolver, Mustache.compiler().escapeHTML(false));
+	}
+
+	/**
+	 * Creates a new {@code MustacheTemplateEngine} that will use the given
+	 * {@code templateResourceResolver} to resolve templates and the given
+	 * {@code compiler} to compile them.
+	 *
+	 * @param templateResourceResolver the resolver to use
+	 * @param compiler the compiler to use
+	 */
+	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver,
+			Compiler compiler) {
+		this(templateResourceResolver, compiler, Collections.<String, Object>emptyMap());
+	}
+
+	/**
+	 * Creates a new {@code MustacheTemplateEngine} that will use the given
+	 * {@code templateResourceResolver} to resolve templates and the given
+	 * {@code compiler} to compile them. Compiled templates will be created with the given
+	 * {@code context}.
+	 *
+	 * @param templateResourceResolver the resolver to use
+	 * @param compiler the compiler to use
+	 * @param context the context to pass to compiled templates
+	 * @see MustacheTemplate#MustacheTemplate(org.springframework.restdocs.mustache.Template,
+	 * Map)
+	 */
+	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver,
+			Compiler compiler, Map<String, Object> context) {
 		this.templateResourceResolver = templateResourceResolver;
+		this.compiler = compiler;
+		this.context = context;
 	}
 
 	@Override
 	public Template compileTemplate(String name) throws IOException {
 		Resource templateResource = this.templateResourceResolver
 				.resolveTemplateResource(name);
-		return new MustacheTemplate(this.compiler
-				.compile(new InputStreamReader(templateResource.getInputStream())));
+		return new MustacheTemplate(
+				this.compiler.compile(
+						new InputStreamReader(templateResource.getInputStream())),
+				this.context);
+	}
+
+	/**
+	 * Returns the {@link Compiler} used to compile Mustache templates.
+	 *
+	 * @return the compiler
+	 */
+	protected final Compiler getCompiler() {
+		return this.compiler;
+	}
+
+	/**
+	 * Returns the {@link TemplateResourceResolver} used to resolve the template resources
+	 * prior to compilation.
+	 *
+	 * @return the resolver
+	 */
+	protected final TemplateResourceResolver getTemplateResourceResolver() {
+		return this.templateResourceResolver;
 	}
 
 }

@@ -49,8 +49,8 @@ class PatternReplacingContentModifier implements ContentModifier {
 	@Override
 	public byte[] modifyContent(byte[] content, MediaType contentType) {
 		String original;
-		if (contentType != null && contentType.getCharSet() != null) {
-			original = new String(content, contentType.getCharSet());
+		if (contentType != null && contentType.getCharset() != null) {
+			original = new String(content, contentType.getCharset());
 		}
 		else {
 			original = new String(content);

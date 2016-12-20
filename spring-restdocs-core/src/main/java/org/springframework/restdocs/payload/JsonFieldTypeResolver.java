@@ -44,7 +44,7 @@ class JsonFieldTypeResolver {
 			}
 			return commonType;
 		}
-		return determineFieldType(this.fieldProcessor.extract(fieldPath, payload));
+		return determineFieldType(field);
 	}
 
 	private JsonFieldType determineFieldType(Object fieldValue) {

@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.templates.mustache;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.restdocs.templates.Template;
@@ -30,18 +32,37 @@ public class MustacheTemplate implements Template {
 
 	private final org.springframework.restdocs.mustache.Template delegate;
 
+	private final Map<String, Object> context;
+
 	/**
 	 * Creates a new {@code MustacheTemplate} that adapts the given {@code delegate}.
 	 *
 	 * @param delegate The delegate to adapt
 	 */
 	public MustacheTemplate(org.springframework.restdocs.mustache.Template delegate) {
+		this(delegate, Collections.<String, Object>emptyMap());
+	}
+
+	/**
+	 * Creates a new {@code MustacheTemplate} that adapts the given {@code delegate}.
+	 * During rendering, the given {@code context} and the context passed into
+	 * {@link #render(Map)} will be combined and then passed to the delegate when it is
+	 * {@link org.springframework.restdocs.mustache.Template#execute executed}.
+	 *
+	 * @param delegate The delegate to adapt
+	 * @param context The context
+	 */
+	public MustacheTemplate(org.springframework.restdocs.mustache.Template delegate,
+			Map<String, Object> context) {
 		this.delegate = delegate;
+		this.context = context;
 	}
 
 	@Override
 	public String render(Map<String, Object> context) {
-		return this.delegate.execute(context);
+		Map<String, Object> combinedContext = new HashMap<>(this.context);
+		combinedContext.putAll(context);
+		return this.delegate.execute(combinedContext);
 	}
 
 }

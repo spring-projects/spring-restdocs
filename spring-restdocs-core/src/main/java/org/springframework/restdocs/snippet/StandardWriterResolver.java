@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
@@ -33,29 +35,57 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  */
 public final class StandardWriterResolver implements WriterResolver {
 
-	private String encoding = "UTF-8";
-
-	private final PlaceholderResolver placeholderResolver;
+	private final PlaceholderResolverFactory placeholderResolverFactory;
 
 	private final PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper(
 			"{", "}");
 
+	private String encoding = "UTF-8";
+
+	private TemplateFormat templateFormat;
+
 	/**
 	 * Creates a new {@code StandardWriterResolver} that will use the given
 	 * {@code placeholderResolver} to resolve any placeholders in the
-	 * {@code operationName}.
+	 * {@code operationName}. Writers will use {@code UTF-8} encoding and, when writing to
+	 * a file, will use a filename appropriate for Asciidoctor content.
 	 *
 	 * @param placeholderResolver the placeholder resolver
+	 * @deprecated since 1.1.0 in favor of
+	 * {@link #StandardWriterResolver(PlaceholderResolverFactory, String, TemplateFormat)}
 	 */
+	@Deprecated
 	public StandardWriterResolver(PlaceholderResolver placeholderResolver) {
-		this.placeholderResolver = placeholderResolver;
+		this(new SingleInstancePlaceholderResolverFactory(placeholderResolver), "UTF-8",
+				TemplateFormats.asciidoctor());
+	}
+
+	/**
+	 * Creates a new {@code StandardWriterResolver} that will use a
+	 * {@link PlaceholderResolver} created from the given
+	 * {@code placeholderResolverFactory} to resolve any placeholders in the
+	 * {@code operationName}. Writers will use the given {@code encoding} and, when
+	 * writing to a file, will use a filename appropriate for content generated from
+	 * templates in the given {@code templateFormat}.
+	 *
+	 * @param placeholderResolverFactory the placeholder resolver factory
+	 * @param encoding the encoding
+	 * @param templateFormat the snippet format
+	 */
+	public StandardWriterResolver(PlaceholderResolverFactory placeholderResolverFactory,
+			String encoding, TemplateFormat templateFormat) {
+		this.placeholderResolverFactory = placeholderResolverFactory;
+		this.encoding = encoding;
+		this.templateFormat = templateFormat;
 	}
 
 	@Override
 	public Writer resolve(String operationName, String snippetName,
 			RestDocumentationContext context) throws IOException {
-		File outputFile = resolveFile(this.propertyPlaceholderHelper.replacePlaceholders(
-				operationName, this.placeholderResolver), snippetName + ".adoc", context);
+		File outputFile = resolveFile(
+				this.propertyPlaceholderHelper.replacePlaceholders(operationName,
+						this.placeholderResolverFactory.create(context)),
+				snippetName + "." + this.templateFormat.getFileExtension(), context);
 
 		if (outputFile != null) {
 			createDirectoriesIfNecessary(outputFile);
@@ -68,6 +98,7 @@ public final class StandardWriterResolver implements WriterResolver {
 	}
 
 	@Override
+	@Deprecated
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
@@ -97,4 +128,22 @@ public final class StandardWriterResolver implements WriterResolver {
 					"Failed to create directory '" + parent + "'");
 		}
 	}
+
+	private static final class SingleInstancePlaceholderResolverFactory
+			implements PlaceholderResolverFactory {
+
+		private final PlaceholderResolver placeholderResolver;
+
+		private SingleInstancePlaceholderResolverFactory(
+				PlaceholderResolver placeholderResolver) {
+			this.placeholderResolver = placeholderResolver;
+		}
+
+		@Override
+		public PlaceholderResolver create(RestDocumentationContext context) {
+			return this.placeholderResolver;
+		}
+
+	}
+
 }

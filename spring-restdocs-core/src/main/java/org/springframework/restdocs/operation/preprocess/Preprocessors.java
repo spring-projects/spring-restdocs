@@ -30,6 +30,7 @@ import org.springframework.restdocs.operation.OperationResponse;
  * documented.
  *
  * @author Andy Wilkinson
+ * @author Roland Huss
  */
 public final class Preprocessors {
 
@@ -73,14 +74,32 @@ public final class Preprocessors {
 	}
 
 	/**
-	 * Returns an {@code OperationPreprocessor} that will remove headers from the request
-	 * or response.
+	 * Returns an {@code OperationPreprocessor} that will remove any header from the
+	 * request or response with a name that is equal to one of the given
+	 * {@code headersToRemove}.
 	 *
-	 * @param headersToRemove the names of the headers to remove
+	 * @param headerNames the header names
 	 * @return the preprocessor
+	 * @see String#equals(Object)
 	 */
-	public static OperationPreprocessor removeHeaders(String... headersToRemove) {
-		return new HeaderRemovingOperationPreprocessor(headersToRemove);
+	public static OperationPreprocessor removeHeaders(String... headerNames) {
+		return new HeaderRemovingOperationPreprocessor(
+				new ExactMatchHeaderFilter(headerNames));
+	}
+
+	/**
+	 * Returns an {@code OperationPreprocessor} that will remove any headers from the
+	 * request or response with a name that matches one of the given
+	 * {@code headerNamePatterns} regular expressions.
+	 *
+	 * @param headerNamePatterns the header name patterns
+	 * @return the preprocessor
+	 * @see java.util.regex.Matcher#matches()
+	 */
+	public static OperationPreprocessor removeMatchingHeaders(
+			String... headerNamePatterns) {
+		return new HeaderRemovingOperationPreprocessor(
+				new PatternMatchHeaderFilter(headerNamePatterns));
 	}
 
 	/**
@@ -108,7 +127,7 @@ public final class Preprocessors {
 
 	/**
 	 * Returns an {@code OperationPreprocessor} that will modify the content of the
-	 * request or response by replacing occurences of the given {@code pattern} with the
+	 * request or response by replacing occurrences of the given {@code pattern} with the
 	 * given {@code replacement}.
 	 *
 	 * @param pattern the pattern
@@ -119,6 +138,17 @@ public final class Preprocessors {
 			String replacement) {
 		return new ContentModifyingOperationPreprocessor(
 				new PatternReplacingContentModifier(pattern, replacement));
+	}
+
+	/**
+	 * Returns a {@code ParametersModifyingOperationPreprocessor} that can then be
+	 * configured to modify the parameters of the request.
+	 *
+	 * @return the preprocessor
+	 * @since 1.1.0
+	 */
+	public static ParametersModifyingOperationPreprocessor modifyParameters() {
+		return new ParametersModifyingOperationPreprocessor();
 	}
 
 }

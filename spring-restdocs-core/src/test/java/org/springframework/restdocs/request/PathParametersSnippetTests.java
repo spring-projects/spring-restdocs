@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,156 +18,125 @@ package org.springframework.restdocs.request;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.AbstractSnippetTests;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.ExpectedSnippet;
-import org.springframework.restdocs.test.OperationBuilder;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithTitleAndHeader;
 
 /**
  * Tests for {@link PathParametersSnippet}.
  *
  * @author Andy Wilkinson
- *
  */
-public class PathParametersSnippetTests {
+public class PathParametersSnippetTests extends AbstractSnippetTests {
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
-	@Rule
-	public ExpectedSnippet snippet = new ExpectedSnippet();
-
-	@Test
-	public void undocumentedPathParameter() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Path parameters with the following names were"
-				+ " not documented: [a]"));
-		new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList())
-				.document(new OperationBuilder("undocumented-path-parameter",
-						this.snippet.getOutputDirectory())
-								.attribute("org.springframework.restdocs.urlTemplate",
-										"/{a}/")
-								.build());
-	}
-
-	@Test
-	public void missingPathParameter() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Path parameters with the following names were"
-				+ " not found in the request: [a]"));
-		new PathParametersSnippet(
-				Arrays.asList(parameterWithName("a").description("one")))
-						.document(new OperationBuilder("missing-path-parameter",
-								this.snippet.getOutputDirectory()).attribute(
-										"org.springframework.restdocs.urlTemplate", "/")
-										.build());
-	}
-
-	@Test
-	public void undocumentedAndMissingPathParameters() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Path parameters with the following names were"
-				+ " not documented: [b]. Path parameters with the following"
-				+ " names were not found in the request: [a]"));
-		new PathParametersSnippet(
-				Arrays.asList(parameterWithName("a").description("one"))).document(
-						new OperationBuilder("undocumented-and-missing-path-parameters",
-								this.snippet.getOutputDirectory())
-										.attribute(
-												"org.springframework.restdocs.urlTemplate",
-												"/{b}")
-										.build());
+	public PathParametersSnippetTests(String name, TemplateFormat templateFormat) {
+		super(name, templateFormat);
 	}
 
 	@Test
 	public void pathParameters() throws IOException {
-		this.snippet.expectPathParameters("path-parameters").withContents(
-				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description")
-						.row("a", "one").row("b", "two"));
+		this.snippets.expectPathParameters().withContents(
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
 				parameterWithName("b").description("two")))
-						.document(new OperationBuilder(
-								"path-parameters", this.snippet.getOutputDirectory())
-										.attribute(
-												"org.springframework.restdocs.urlTemplate",
-												"/{a}/{b}")
-										.build());
+						.document(this.operationBuilder
+								.attribute(
+										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+										"/{a}/{b}")
+								.build());
 	}
 
 	@Test
 	public void ignoredPathParameter() throws IOException {
-		this.snippet.expectPathParameters("ignored-path-parameter").withContents(
-				tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description").row("b",
+		this.snippets.expectPathParameters().withContents(
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`",
 						"two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
 				parameterWithName("b").description("two")))
-						.document(new OperationBuilder(
-								"ignored-path-parameter",
-								this.snippet.getOutputDirectory())
-										.attribute(
-												"org.springframework.restdocs.urlTemplate",
-												"/{a}/{b}")
-										.build());
+						.document(this.operationBuilder
+								.attribute(
+										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+										"/{a}/{b}")
+								.build());
+	}
+
+	@Test
+	public void allUndocumentedPathParametersCanBeIgnored() throws IOException {
+		this.snippets.expectPathParameters().withContents(
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`",
+						"two"));
+		new PathParametersSnippet(
+				Arrays.asList(parameterWithName("b").description("two")), true)
+						.document(this.operationBuilder.attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}").build());
+	}
+
+	@Test
+	public void missingOptionalPathParameter() throws IOException {
+		this.snippets.expectPathParameters().withContents(tableWithTitleAndHeader(
+				this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}" : "`/{a}`",
+				"Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
+				parameterWithName("b").description("two").optional()))
+						.document(this.operationBuilder.attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}").build());
+	}
+
+	@Test
+	public void presentOptionalPathParameter() throws IOException {
+		this.snippets.expectPathParameters().withContents(tableWithTitleAndHeader(
+				this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}" : "`/{a}`",
+				"Parameter", "Description").row("`a`", "one"));
+		new PathParametersSnippet(
+				Arrays.asList(parameterWithName("a").description("one").optional()))
+						.document(this.operationBuilder.attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}").build());
 	}
 
 	@Test
 	public void pathParametersWithQueryString() throws IOException {
-		this.snippet.expectPathParameters("path-parameters-with-query-string")
-				.withContents(
-						tableWithTitleAndHeader("/{a}/{b}", "Parameter", "Description")
-								.row("a", "one").row("b", "two"));
+		this.snippets.expectPathParameters().withContents(
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
-				parameterWithName("b").description("two"))).document(
-						new OperationBuilder("path-parameters-with-query-string",
-								this.snippet.getOutputDirectory())
-										.attribute(
-												"org.springframework.restdocs.urlTemplate",
-												"/{a}/{b}?foo=bar")
-										.build());
+				parameterWithName("b").description("two")))
+						.document(this.operationBuilder
+								.attribute(
+										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+										"/{a}/{b}?foo=bar")
+								.build());
 	}
 
 	@Test
-	public void pathParametersWithCustomDescriptorAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("path-parameters"))
-				.willReturn(snippetResource("path-parameters-with-extra-column"));
-		this.snippet
-				.expectPathParameters("path-parameters-with-custom-descriptor-attributes")
-				.withContents(tableWithHeader("Parameter", "Description", "Foo")
-						.row("a", "one", "alpha").row("b", "two", "bravo"));
-
-		new PathParametersSnippet(Arrays.asList(
-				parameterWithName("a").description("one")
-						.attributes(key("foo").value("alpha")),
-				parameterWithName("b").description("two").attributes(
-						key("foo").value("bravo")))).document(new OperationBuilder(
-								"path-parameters-with-custom-descriptor-attributes",
-								this.snippet.getOutputDirectory())
-										.attribute(
-												"org.springframework.restdocs.urlTemplate",
-												"/{a}/{b}")
-										.attribute(TemplateEngine.class.getName(),
-												new MustacheTemplateEngine(resolver))
-										.build());
+	public void pathParametersWithQueryStringWithParameters() throws IOException {
+		this.snippets.expectPathParameters().withContents(
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
+				parameterWithName("b").description("two")))
+						.document(this.operationBuilder
+								.attribute(
+										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+										"/{a}/{b}?foo={c}")
+								.build());
 	}
 
 	@Test
@@ -175,8 +144,7 @@ public class PathParametersSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("path-parameters"))
 				.willReturn(snippetResource("path-parameters-with-title"));
-		this.snippet.expectPathParameters("path-parameters-with-custom-attributes")
-				.withContents(startsWith(".The title"));
+		this.snippets.expectPathParameters().withContents(containsString("The title"));
 
 		new PathParametersSnippet(
 				Arrays.asList(
@@ -184,21 +152,84 @@ public class PathParametersSnippetTests {
 								.attributes(key("foo").value("alpha")),
 						parameterWithName("b").description("two")
 								.attributes(key("foo").value("bravo"))),
-				attributes(key("title").value("The title"))).document(
-						new OperationBuilder("path-parameters-with-custom-attributes",
-								this.snippet.getOutputDirectory())
+				attributes(key("title").value("The title")))
+						.document(this.operationBuilder
+								.attribute(
+										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+										"/{a}/{b}")
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(resolver))
+								.build());
+
+	}
+
+	@Test
+	public void pathParametersWithCustomDescriptorAttributes() throws IOException {
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("path-parameters"))
+				.willReturn(snippetResource("path-parameters-with-extra-column"));
+		this.snippets.expectPathParameters()
+				.withContents(tableWithHeader("Parameter", "Description", "Foo")
+						.row("a", "one", "alpha").row("b", "two", "bravo"));
+
+		new PathParametersSnippet(Arrays.asList(
+				parameterWithName("a").description("one")
+						.attributes(key("foo").value("alpha")),
+				parameterWithName("b").description("two")
+						.attributes(key("foo").value("bravo"))))
+								.document(this.operationBuilder
 										.attribute(
-												"org.springframework.restdocs.urlTemplate",
+												RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
 												"/{a}/{b}")
 										.attribute(TemplateEngine.class.getName(),
 												new MustacheTemplateEngine(resolver))
 										.build());
-
 	}
 
-	private FileSystemResource snippetResource(String name) {
-		return new FileSystemResource(
-				"src/test/resources/custom-snippet-templates/" + name + ".snippet");
+	@Test
+	public void additionalDescriptors() throws IOException {
+		this.snippets.expectPathParameters().withContents(
+				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
+						.row("`a`", "one").row("`b`", "two"));
+		RequestDocumentation.pathParameters(parameterWithName("a").description("one"))
+				.and(parameterWithName("b").description("two"))
+				.document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}")
+						.build());
+	}
+
+	@Test
+	public void pathParametersWithEscapedContent() throws IOException {
+		this.snippets.expectPathParameters()
+				.withContents(tableWithTitleAndHeader(getTitle("{Foo|Bar}"), "Parameter",
+						"Description").row(escapeIfNecessary("`Foo|Bar`"),
+								escapeIfNecessary("one|two")));
+
+		RequestDocumentation
+				.pathParameters(parameterWithName("Foo|Bar").description("one|two"))
+				.document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"{Foo|Bar}")
+						.build());
+	}
+
+	private String escapeIfNecessary(String input) {
+		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+			return input;
+		}
+		return input.replace("|", "\\|");
+	}
+
+	private String getTitle() {
+		return getTitle("/{a}/{b}");
+	}
+
+	private String getTitle(String title) {
+		if (this.templateFormat.equals(TemplateFormats.asciidoctor())) {
+			return title;
+		}
+		return "`" + title + "`";
 	}
 
 }

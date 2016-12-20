@@ -3,6 +3,8 @@ description = 'Spring REST Docs MockMvc'
 dependencies {
 	compile 'org.springframework:spring-test'
 	compile project(':spring-restdocs-core')
+	optional 'junit:junit'
+	runtime 'org.springframework:spring-webmvc'
 
 	testCompile 'org.mockito:mockito-core'
 	testCompile 'org.hamcrest:hamcrest-library'

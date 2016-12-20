@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 package org.springframework.restdocs.http;
 
 import java.util.Map;
-
-import org.springframework.restdocs.snippet.Snippet;
 
 /**
  * Static factory methods for documenting a RESTful API's HTTP requests.
@@ -38,7 +36,7 @@ public abstract class HttpDocumentation {
 	 *
 	 * @return the snippet that will document the HTTP request
 	 */
-	public static Snippet httpRequest() {
+	public static HttpRequestSnippet httpRequest() {
 		return new HttpRequestSnippet();
 	}
 
@@ -50,7 +48,7 @@ public abstract class HttpDocumentation {
 	 * @param attributes the attributes
 	 * @return the snippet that will document the HTTP request
 	 */
-	public static Snippet httpRequest(Map<String, Object> attributes) {
+	public static HttpRequestSnippet httpRequest(Map<String, Object> attributes) {
 		return new HttpRequestSnippet(attributes);
 	}
 
@@ -60,7 +58,7 @@ public abstract class HttpDocumentation {
 	 *
 	 * @return the snippet that will document the HTTP response
 	 */
-	public static Snippet httpResponse() {
+	public static HttpResponseSnippet httpResponse() {
 		return new HttpResponseSnippet();
 	}
 
@@ -72,7 +70,7 @@ public abstract class HttpDocumentation {
 	 * @param attributes the attributes
 	 * @return the snippet that will document the HTTP response
 	 */
-	public static Snippet httpResponse(Map<String, Object> attributes) {
+	public static HttpResponseSnippet httpResponse(Map<String, Object> attributes) {
 		return new HttpResponseSnippet(attributes);
 	}
 

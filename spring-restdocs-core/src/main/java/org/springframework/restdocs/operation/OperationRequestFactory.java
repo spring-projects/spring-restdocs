@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class OperationRequestFactory {
 	 * @param original The original request
 	 * @param newHeaders The new headers
 	 *
-	 * @return The new request with the new content
+	 * @return The new request with the new headers
 	 */
 	public OperationRequest createFrom(OperationRequest original,
 			HttpHeaders newHeaders) {
@@ -81,11 +81,34 @@ public class OperationRequestFactory {
 				original.getParts());
 	}
 
+	/**
+	 * Creates a new {@code OperationRequest} based on the given {@code original} but with
+	 * the given {@code newParameters}.
+	 *
+	 * @param original The original request
+	 * @param newParameters The new parameters
+	 *
+	 * @return The new request with the new parameters
+	 */
+	public OperationRequest createFrom(OperationRequest original,
+			Parameters newParameters) {
+		return new StandardOperationRequest(original.getUri(), original.getMethod(),
+				original.getContent(), original.getHeaders(), newParameters,
+				original.getParts());
+	}
+
 	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, URI uri,
 			byte[] content) {
 		return new HttpHeadersHelper(originalHeaders)
-				.addIfAbsent(HttpHeaders.HOST, uri.getHost())
+				.addIfAbsent(HttpHeaders.HOST, createHostHeader(uri))
 				.setContentLengthHeader(content).getHeaders();
+	}
+
+	private String createHostHeader(URI uri) {
+		if (uri.getPort() == -1) {
+			return uri.getHost();
+		}
+		return uri.getHost() + ":" + uri.getPort();
 	}
 
 	private HttpHeaders getUpdatedHeaders(HttpHeaders originalHeaders,

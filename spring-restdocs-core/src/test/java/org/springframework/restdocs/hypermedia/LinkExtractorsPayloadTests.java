@@ -68,14 +68,15 @@ public class LinkExtractorsPayloadTests {
 	public void singleLink() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("single-link"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com")), links);
+		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com", "Alpha")),
+				links);
 	}
 
 	@Test
 	public void multipleLinksWithDifferentRels() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("multiple-links-different-rels"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com"),
+		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com", "Alpha"),
 				new Link("bravo", "http://bravo.example.com")), links);
 	}
 
@@ -83,7 +84,8 @@ public class LinkExtractorsPayloadTests {
 	public void multipleLinksWithSameRels() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("multiple-links-same-rels"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com/one"),
+		assertLinks(Arrays.asList(
+				new Link("alpha", "http://alpha.example.com/one", "Alpha one"),
 				new Link("alpha", "http://alpha.example.com/two")), links);
 	}
 

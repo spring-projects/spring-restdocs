@@ -1,7 +1,8 @@
 {
 	"links": [ {
 		"rel": "alpha",
-		"href": "http://alpha.example.com/one"
+		"href": "http://alpha.example.com/one",
+		"title": "Alpha one"
 	}, {
 		"rel": "alpha",
 		"href": "http://alpha.example.com/two"

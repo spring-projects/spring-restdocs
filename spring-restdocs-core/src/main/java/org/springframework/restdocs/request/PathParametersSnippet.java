@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.request;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.SnippetException;
@@ -41,25 +44,59 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 
 	/**
 	 * Creates a new {@code PathParametersSnippet} that will document the request's path
-	 * parameters using the given {@code descriptors}.
+	 * parameters using the given {@code descriptors}. Undocumented parameters will
+	 * trigger a failure.
 	 *
 	 * @param descriptors the parameter descriptors
 	 */
 	protected PathParametersSnippet(List<ParameterDescriptor> descriptors) {
-		this(descriptors, null);
+		this(descriptors, null, false);
+	}
+
+	/**
+	 * Creates a new {@code PathParametersSnippet} that will document the request's path
+	 * parameters using the given {@code descriptors}. If
+	 * {@code ignoreUndocumentedParameters} is {@code true}, undocumented parameters will
+	 * be ignored and will not trigger a failure.
+	 *
+	 * @param descriptors the parameter descriptors
+	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
+	 * ignored
+	 */
+	protected PathParametersSnippet(List<ParameterDescriptor> descriptors,
+			boolean ignoreUndocumentedParameters) {
+		this(descriptors, null, ignoreUndocumentedParameters);
 	}
 
 	/**
 	 * Creates a new {@code PathParametersSnippet} that will document the request's path
 	 * parameters using the given {@code descriptors}. The given {@code attributes} will
-	 * be included in the model during template rendering.
+	 * be included in the model during template rendering. Undocumented parameters will
+	 * trigger a failure.
 	 *
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */
 	protected PathParametersSnippet(List<ParameterDescriptor> descriptors,
 			Map<String, Object> attributes) {
-		super("path-parameters", descriptors, attributes);
+		this(descriptors, attributes, false);
+	}
+
+	/**
+	 * Creates a new {@code PathParametersSnippet} that will document the request's path
+	 * parameters using the given {@code descriptors}. The given {@code attributes} will
+	 * be included in the model during template rendering. If
+	 * {@code ignoreUndocumentedParameters} is {@code true}, undocumented parameters will
+	 * be ignored and will not trigger a failure.
+	 *
+	 * @param descriptors the parameter descriptors
+	 * @param attributes the additional attributes
+	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
+	 * ignored
+	 */
+	protected PathParametersSnippet(List<ParameterDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedParameters) {
+		super("path-parameters", descriptors, attributes, ignoreUndocumentedParameters);
 	}
 
 	@Override
@@ -79,7 +116,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 
 	@Override
 	protected Set<String> extractActualParameters(Operation operation) {
-		String urlTemplate = extractUrlTemplate(operation);
+		String urlTemplate = removeQueryStringIfPresent(extractUrlTemplate(operation));
 		Matcher matcher = NAMES_PATTERN.matcher(urlTemplate);
 		Set<String> actualParameters = new HashSet<>();
 		while (matcher.find()) {
@@ -91,10 +128,9 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 
 	private String extractUrlTemplate(Operation operation) {
 		String urlTemplate = (String) operation.getAttributes()
-				.get("org.springframework.restdocs.urlTemplate");
-		Assert.notNull(urlTemplate,
-				"urlTemplate not found. Did you use RestDocumentationRequestBuilders to "
-						+ "build the request?");
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE);
+		Assert.notNull(urlTemplate, "urlTemplate not found. If you are using MockMvc did "
+				+ "you use RestDocumentationRequestBuilders to build the request?");
 		return urlTemplate;
 	}
 
@@ -119,6 +155,32 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 					+ "the request: " + missingParameters;
 		}
 		throw new SnippetException(message);
+	}
+
+	/**
+	 * Returns a new {@code PathParametersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final PathParametersSnippet and(ParameterDescriptor... additionalDescriptors) {
+		return and(Arrays.asList(additionalDescriptors));
+	}
+
+	/**
+	 * Returns a new {@code PathParametersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final PathParametersSnippet and(
+			List<ParameterDescriptor> additionalDescriptors) {
+		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>(
+				getParameterDescriptors().values());
+		combinedDescriptors.addAll(additionalDescriptors);
+		return new PathParametersSnippet(combinedDescriptors, this.getAttributes());
 	}
 
 }

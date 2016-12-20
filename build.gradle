@@ -5,9 +5,9 @@ buildscript {
 		maven { url 'https://plugins.gradle.org/m2/' }
 	}
 	dependencies {
-		classpath 'io.spring.gradle:dependency-management-plugin:0.5.3.RELEASE'
+		classpath 'io.spring.gradle:dependency-management-plugin:0.5.5.RELEASE'
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
-		classpath 'io.spring.gradle:spring-io-plugin:0.0.4.RELEASE'
+		classpath 'io.spring.gradle:spring-io-plugin:0.0.5.RELEASE'
 		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:1.2'
 	}
 }
@@ -24,7 +24,6 @@ apply plugin: 'org.sonarqube'
 
 sonarqube {
 	properties {
-		property 'sonar.branch', '1.0.x'
 		property 'sonar.jacoco.reportPath', "${buildDir.name}/jacoco.exec"
 		property 'sonar.java.coveragePlugin', 'jacoco'
 		property 'sonar.links.ci', 'https://build.spring.io/browse/SRD'
@@ -35,11 +34,12 @@ sonarqube {
 }
 
 ext {
-	springVersion = '4.1.8.RELEASE'
+	springVersion = '4.3.1.RELEASE'
 	javadocLinks = [
 		'http://docs.oracle.com/javase/8/docs/api/',
 		"http://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
-		'https://docs.jboss.org/hibernate/stable/beanvalidation/api/'
+		'https://docs.jboss.org/hibernate/stable/beanvalidation/api/',
+		'https://docs.jboss.org/hibernate/stable/validator/api/'
 	] as String[]
 }
 
@@ -60,18 +60,20 @@ subprojects {
 			mavenBom "org.springframework:spring-framework-bom:$springVersion"
 		}
 		dependencies {
-			dependency 'com.fasterxml.jackson.core:jackson-databind:2.4.6.1'
-			dependency 'com.samskivert:jmustache:1.11'
+			dependency 'com.fasterxml.jackson.core:jackson-databind:2.5.5'
+			dependency 'com.jayway.restassured:rest-assured:2.8.0'
+			dependency 'com.samskivert:jmustache:1.12'
 			dependency 'commons-codec:commons-codec:1.10'
 			dependency 'javax.servlet:javax.servlet-api:3.1.0'
 			dependency 'javax.validation:validation-api:1.1.0.Final'
 			dependency 'junit:junit:4.12'
+			dependency 'org.asciidoctor:asciidoctorj:1.5.3.1'
 			dependency 'org.hamcrest:hamcrest-core:1.3'
 			dependency 'org.hamcrest:hamcrest-library:1.3'
 			dependency 'org.hibernate:hibernate-validator:5.2.2.Final'
 			dependency 'org.mockito:mockito-core:1.10.19'
 			dependency 'org.springframework.hateoas:spring-hateoas:0.19.0.RELEASE'
-			dependency 'org.jacoco:org.jacoco.agent:0.7.5.201505241946'
+			dependency 'org.jacoco:org.jacoco.agent:0.7.7.201606060606'
 		}
 	}
 
@@ -88,6 +90,10 @@ subprojects {
 				writer << rootProject.file('config/eclipse/org.eclipse.jdt.ui.prefs').text
 			}
 		}
+	}
+
+	compileJava {
+		options.compilerArgs = [ '-Xlint:deprecation', '-Xlint:-options', '-Werror' ]
 	}
 
 }
@@ -156,6 +162,12 @@ configure(subprojects - project(":docs")) { subproject ->
 samples {
 	dependOn 'spring-restdocs-core:install'
 	dependOn 'spring-restdocs-mockmvc:install'
+	dependOn 'spring-restdocs-restassured:install'
+	dependOn 'spring-restdocs-asciidoctor:install'
+
+	restNotesGrails {
+		workingDir "$projectDir/samples/rest-notes-grails"
+	}
 
 	restNotesSpringHateoas {
 		workingDir "$projectDir/samples/rest-notes-spring-hateoas"
@@ -164,6 +176,20 @@ samples {
 	restNotesSpringDataRest {
 		workingDir "$projectDir/samples/rest-notes-spring-data-rest"
 	}
+
+	testNg {
+		workingDir "$projectDir/samples/testng"
+	}
+
+	restAssured {
+		workingDir "$projectDir/samples/rest-assured"
+	}
+
+	slate {
+		workingDir "$projectDir/samples/rest-notes-slate"
+		build false
+	}
+
 }
 
 task api (type: Javadoc) {
@@ -209,6 +235,10 @@ task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':api', ':buildSamples'
 
 	from(file('samples/rest-notes-spring-hateoas/build/asciidoc/html5')) {
 		into 'samples/restful-notes'
+	}
+
+	from(file('samples/rest-notes-slate/build/docs')) {
+		into 'samples/slate'
 	}
 }
 

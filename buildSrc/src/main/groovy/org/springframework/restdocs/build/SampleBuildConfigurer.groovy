@@ -29,6 +29,8 @@ public class SampleBuildConfigurer {
 
 	private String workingDir
 
+	private boolean build = true
+
 	SampleBuildConfigurer(String name) {
 		this.name = name
 	}
@@ -37,26 +39,49 @@ public class SampleBuildConfigurer {
 		this.workingDir = workingDir
 	}
 
+	void build(boolean build) {
+		this.build = build
+	}
+
 	Task createTask(Project project, Object... dependencies) {
 		File sampleDir = new File(this.workingDir).absoluteFile
-		Task verifyIncludes
+
+		Task sampleBuild = project.tasks.create name
+		sampleBuild.description = "Builds the ${name} sample"
+		sampleBuild.group = "Build"
+
 		if (new File(sampleDir, 'build.gradle').isFile()) {
-			Task gradleBuild = createGradleBuild(project, dependencies)
-			verifyIncludes = createVerifyIncludes(project, new File(sampleDir, 'build/asciidoc'))
-			verifyIncludes.dependsOn gradleBuild
+			if (build) {
+				Task gradleBuild = createGradleBuild(project, dependencies)
+				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'build/asciidoc'))
+				verifyIncludesTask.dependsOn gradleBuild
+				sampleBuild.dependsOn verifyIncludesTask
+			}
+			sampleBuild.doFirst {
+				replaceVersion(new File(this.workingDir, 'build.gradle'),
+						"ext\\['spring-restdocs.version'\\] = '.*'",
+						"ext['spring-restdocs.version'] = '${project.version}'")
+				replaceVersion(new File(this.workingDir, 'build.gradle'),
+						"restDocsVersion = \".*\"",
+						"restDocsVersion = \"${project.version}\"")
+			}
 		}
 		else if (new File(sampleDir, 'pom.xml').isFile()) {
-			Task mavenBuild = createMavenBuild(project, sampleDir, dependencies)
-			verifyIncludes = createVerifyIncludes(project, new File(sampleDir, 'target/generated-docs'))
-			verifyIncludes.dependsOn(mavenBuild)
+			if (build) {
+				Task mavenBuild = createMavenBuild(project, sampleDir, dependencies)
+				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'target/generated-docs'))
+				verifyIncludesTask.dependsOn(mavenBuild)
+				sampleBuild.dependsOn verifyIncludesTask
+			}
+			sampleBuild.doFirst {
+				replaceVersion(new File(this.workingDir, 'pom.xml'),
+					'<spring-restdocs.version>.*</spring-restdocs.version>',
+					"<spring-restdocs.version>${project.version}</spring-restdocs.version>")
+			}
 		}
 		else {
 			throw new IllegalStateException("No pom.xml or build.gradle was found in $sampleDir")
 		}
-		Task sampleBuild = project.tasks.create name
-		sampleBuild.description = "Builds the ${name} sample"
-		sampleBuild.group = "Build"
-		sampleBuild.dependsOn verifyIncludes
 		return sampleBuild
 	}
 
@@ -67,13 +92,6 @@ public class SampleBuildConfigurer {
 		mavenBuild.workingDir = this.workingDir
 		mavenBuild.commandLine = [isWindows() ? "${sampleDir.absolutePath}/mvnw.cmd" : './mvnw', 'clean', 'package']
 		mavenBuild.dependsOn dependencies
-
-		mavenBuild.doFirst {
-			replaceVersion(new File(this.workingDir, 'pom.xml'),
-					'<spring-restdocs.version>.*</spring-restdocs.version>',
-					"<spring-restdocs.version>${project.version}</spring-restdocs.version>")
-		}
-
 		return mavenBuild
 	}
 
@@ -88,13 +106,6 @@ public class SampleBuildConfigurer {
 		gradleBuild.dir = this.workingDir
 		gradleBuild.tasks = ['clean', 'build']
 		gradleBuild.dependsOn dependencies
-
-		gradleBuild.doFirst {
-			replaceVersion(new File(this.workingDir, 'build.gradle'),
-					"springRestdocsVersion = '.*'",
-					"springRestdocsVersion = '${project.version}'")
-		}
-
 		return gradleBuild
 	}
 
@@ -108,9 +119,9 @@ public class SampleBuildConfigurer {
 	}
 
 	private Task createVerifyIncludes(Project project, File buildDir) {
-		Task verifyIncludes = project.tasks.create("${name}VerifyIncludes")
-		verifyIncludes.description = "Verifies the includes in the ${name} sample"
-		verifyIncludes << {
+		Task verifyIncludesTask = project.tasks.create("${name}VerifyIncludes")
+		verifyIncludesTask.description = "Verifies the includes in the ${name} sample"
+		verifyIncludesTask << {
 			Map unprocessedIncludes = [:]
 			buildDir.eachFileRecurse { file ->
 				if (file.name.endsWith('.html')) {
@@ -132,6 +143,6 @@ public class SampleBuildConfigurer {
 				throw new GradleException(message.toString())
 			}
 		}
-		return verifyIncludes
+		return verifyIncludesTask
 	}
 }

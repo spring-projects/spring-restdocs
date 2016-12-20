@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.springframework.core.io.Resource;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for {@link TemplateResourceResolver}.
@@ -41,34 +42,22 @@ public class StandardTemplateResourceResolverTests {
 	@Rule
 	public final ExpectedException thrown = ExpectedException.none();
 
-	private final TemplateResourceResolver resolver = new StandardTemplateResourceResolver();
+	private final TemplateResourceResolver resolver = new StandardTemplateResourceResolver(
+			asciidoctor());
 
 	private final TestClassLoader classLoader = new TestClassLoader();
 
 	@Test
-	public void customSnippetResolution() throws Exception {
+	public void formatSpecificCustomSnippetHasHighestPrecedence() throws Exception {
+		this.classLoader.addResource(
+				"org/springframework/restdocs/templates/asciidoctor/test.snippet",
+				getClass().getResource("test-format-specific-custom.snippet"));
 		this.classLoader.addResource(
 				"org/springframework/restdocs/templates/test.snippet",
-				getClass().getResource("test.snippet"));
-		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
-				new Callable<Resource>() {
-
-					@Override
-					public Resource call() {
-						return StandardTemplateResourceResolverTests.this.resolver
-								.resolveTemplateResource("test");
-					}
-
-				});
-
-		assertThat(snippet.getURL(), is(equalTo(getClass().getResource("test.snippet"))));
-	}
-
-	@Test
-	public void fallsBackToDefaultSnippet() throws Exception {
+				getClass().getResource("test-custom.snippet"));
 		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/default-test.snippet",
-				getClass().getResource("test.snippet"));
+				"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
+				getClass().getResource("test-default.snippet"));
 		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
 				new Callable<Resource>() {
 
@@ -80,11 +69,56 @@ public class StandardTemplateResourceResolverTests {
 
 				});
 
-		assertThat(snippet.getURL(), is(equalTo(getClass().getResource("test.snippet"))));
+		assertThat(snippet.getURL(), is(
+				equalTo(getClass().getResource("test-format-specific-custom.snippet"))));
 	}
 
 	@Test
-	public void failsIfCustomAndDefaultSnippetDoNotExist() throws Exception {
+	public void generalCustomSnippetIsUsedInAbsenceOfFormatSpecificCustomSnippet()
+			throws Exception {
+		this.classLoader.addResource(
+				"org/springframework/restdocs/templates/test.snippet",
+				getClass().getResource("test-custom.snippet"));
+		this.classLoader.addResource(
+				"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
+				getClass().getResource("test-default.snippet"));
+		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
+				new Callable<Resource>() {
+
+					@Override
+					public Resource call() {
+						return StandardTemplateResourceResolverTests.this.resolver
+								.resolveTemplateResource("test");
+					}
+
+				});
+
+		assertThat(snippet.getURL(),
+				is(equalTo(getClass().getResource("test-custom.snippet"))));
+	}
+
+	@Test
+	public void defaultSnippetIsUsedInAbsenceOfCustomSnippets() throws Exception {
+		this.classLoader.addResource(
+				"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
+				getClass().getResource("test-default.snippet"));
+		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
+				new Callable<Resource>() {
+
+					@Override
+					public Resource call() {
+						return StandardTemplateResourceResolverTests.this.resolver
+								.resolveTemplateResource("test");
+					}
+
+				});
+
+		assertThat(snippet.getURL(),
+				is(equalTo(getClass().getResource("test-default.snippet"))));
+	}
+
+	@Test
+	public void failsIfCustomAndDefaultSnippetsDoNotExist() throws Exception {
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage(equalTo("Template named 'test' could not be resolved"));
 		doWithThreadContextClassLoader(this.classLoader, new Callable<Resource>() {

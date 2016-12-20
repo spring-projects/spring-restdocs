@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.headers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +29,7 @@ import org.springframework.restdocs.snippet.Snippet;
  * A {@link Snippet} that documents the headers in a response.
  *
  * @author Andreas Evers
+ * @author Andy Wilkinson
  * @see HeaderDocumentation#responseHeaders(HeaderDescriptor...)
  * @see HeaderDocumentation#responseHeaders(Map, HeaderDescriptor...)
  */
@@ -58,6 +61,32 @@ public class ResponseHeadersSnippet extends AbstractHeadersSnippet {
 	@Override
 	protected Set<String> extractActualHeaders(Operation operation) {
 		return operation.getResponse().getHeaders().keySet();
+	}
+
+	/**
+	 * Returns a new {@code ResponseHeadersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final ResponseHeadersSnippet and(HeaderDescriptor... additionalDescriptors) {
+		return and(Arrays.asList(additionalDescriptors));
+	}
+
+	/**
+	 * Returns a new {@code ResponseHeadersSnippet} configured with this snippet's
+	 * attributes and its descriptors combined with the given
+	 * {@code additionalDescriptors}.
+	 * @param additionalDescriptors the additional descriptors
+	 * @return the new snippet
+	 */
+	public final ResponseHeadersSnippet and(
+			List<HeaderDescriptor> additionalDescriptors) {
+		List<HeaderDescriptor> combinedDescriptors = new ArrayList<>(
+				this.getHeaderDescriptors());
+		combinedDescriptors.addAll(additionalDescriptors);
+		return new ResponseHeadersSnippet(combinedDescriptors, getAttributes());
 	}
 
 }

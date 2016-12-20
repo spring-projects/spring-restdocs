@@ -1,0 +1,65 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE'
+	}
+}
+
+plugins {
+	id "org.asciidoctor.convert" version "1.5.3"
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+apply plugin: 'eclipse'
+
+repositories {
+	mavenLocal()
+	maven { url 'https://repo.spring.io/libs-snapshot' }
+	mavenCentral()
+}
+
+group = 'com.example'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+ext['spring-restdocs.version'] = '1.2.0.BUILD-SNAPSHOT'
+
+dependencies {
+	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
+
+	compile 'org.springframework.boot:spring-boot-starter-web'
+
+	testCompile('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'junit', module: 'junit;'
+	}
+	testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testCompile 'org.testng:testng:6.9.10'
+}
+
+test {
+	useTestNG()
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+jar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
+}
+
+eclipseJdt.onlyIf { false }
+cleanEclipseJdt.onlyIf { false }

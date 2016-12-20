@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,17 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.restdocs.operation.Operation;
-import org.springframework.restdocs.operation.OperationRequest;
-import org.springframework.restdocs.operation.OperationResponse;
-import org.springframework.restdocs.operation.StandardOperation;
-import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
-import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.util.Assert;
-
-import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
 
 /**
  * A Spring MVC Test {@code ResultHandler} for documenting RESTful APIs.
@@ -44,108 +37,78 @@ import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
  */
 public class RestDocumentationResultHandler implements ResultHandler {
 
-	private final List<Snippet> additionalSnippets;
+	static final String ATTRIBUTE_NAME_CONFIGURATION = "org.springframework.restdocs.configuration";
 
-	private final String identifier;
+	private final RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> delegate;
 
-	private final OperationRequestPreprocessor requestPreprocessor;
-
-	private final OperationResponsePreprocessor responsePreprocessor;
-
-	private final List<Snippet> snippets;
-
-	RestDocumentationResultHandler(String identifier, Snippet... snippets) {
-		this(identifier, new IdentityOperationRequestPreprocessor(),
-				new IdentityOperationResponsePreprocessor(), snippets);
-	}
-
-	RestDocumentationResultHandler(String identifier,
-			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
-		this(identifier, requestPreprocessor, new IdentityOperationResponsePreprocessor(),
-				snippets);
-	}
-
-	RestDocumentationResultHandler(String identifier,
-			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		this(identifier, new IdentityOperationRequestPreprocessor(), responsePreprocessor,
-				snippets);
-	}
-
-	RestDocumentationResultHandler(String identifier,
-			OperationRequestPreprocessor requestPreprocessor,
-			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		Assert.notNull(identifier, "identifier must be non-null");
-		Assert.notNull(requestPreprocessor, "requestPreprocessor must be non-null");
-		Assert.notNull(responsePreprocessor, "responsePreprocessor must be non-null");
-		Assert.notNull(snippets, "snippets must be non-null");
-		this.identifier = identifier;
-		this.requestPreprocessor = requestPreprocessor;
-		this.responsePreprocessor = responsePreprocessor;
-		this.snippets = new ArrayList<>(Arrays.asList(snippets));
-		this.additionalSnippets = new ArrayList<>();
+	RestDocumentationResultHandler(
+			RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> delegate) {
+		Assert.notNull(delegate, "delegate must be non-null");
+		this.delegate = delegate;
 	}
 
 	@Override
 	public void handle(MvcResult result) throws Exception {
-		Map<String, Object> attributes = new HashMap<>();
-		for (String name : iterable(result.getRequest().getAttributeNames())) {
-			attributes.put(name, result.getRequest().getAttribute(name));
-		}
-		OperationRequest request = this.requestPreprocessor
-				.preprocess(new MockMvcOperationRequestFactory()
-						.createOperationRequest(result.getRequest()));
-
-		OperationResponse response = this.responsePreprocessor
-				.preprocess(new MockMvcOperationResponseFactory()
-						.createOperationResponse(result.getResponse()));
-		Operation operation = new StandardOperation(this.identifier, request, response,
-				attributes);
-		for (Snippet snippet : getSnippets(result)) {
-			snippet.document(operation);
-		}
+		@SuppressWarnings("unchecked")
+		Map<String, Object> configuration = (Map<String, Object>) result.getRequest()
+				.getAttribute(ATTRIBUTE_NAME_CONFIGURATION);
+		this.delegate.handle(result.getRequest(), result.getResponse(), configuration);
 	}
 
 	/**
-	 * Adds the given {@code snippets} such that that are documented when this result
+	 * Adds the given {@code snippets} such that they are documented when this result
 	 * handler is called.
 	 *
 	 * @param snippets the snippets to add
-	 * @return this {@code ResultDocumentationResultHandler}
+	 * @return this {@code RestDocumentationResultHandler}
+	 * @deprecated since 1.1 in favor of {@link #document(Snippet...)} and passing the
+	 * return value into {@link ResultActions#andDo(ResultHandler)}
 	 */
+	@Deprecated
 	public RestDocumentationResultHandler snippets(Snippet... snippets) {
-		this.additionalSnippets.addAll(Arrays.asList(snippets));
+		this.delegate.addSnippets(snippets);
 		return this;
 	}
 
-	@SuppressWarnings("unchecked")
-	private List<Snippet> getSnippets(MvcResult result) {
-		List<Snippet> combinedSnippets = new ArrayList<>(
-				(List<Snippet>) result.getRequest().getAttribute(
-						"org.springframework.restdocs.mockmvc.defaultSnippets"));
-		combinedSnippets.addAll(this.snippets);
-		combinedSnippets.addAll(this.additionalSnippets);
-		this.additionalSnippets.clear();
-		return combinedSnippets;
+	/**
+	 * Creates a new {@link RestDocumentationResultHandler} to be passed into
+	 * {@link ResultActions#andDo(ResultHandler)} that will produce documentation using
+	 * the given {@code snippets}. For example:
+	 *
+	 * <pre>
+	 * this.mockMvc.perform(MockMvcRequestBuilders.get("/search"))
+	 *     .andExpect(status().isOk())
+	 *     .andDo(this.documentationHandler.document(responseFields(
+	 *          fieldWithPath("page").description("The requested Page")
+	 *     ));
+	 * </pre>
+	 *
+	 * @param snippets the snippets
+	 * @return the new result handler
+	 */
+	public RestDocumentationResultHandler document(Snippet... snippets) {
+		return new RestDocumentationResultHandler(this.delegate.withSnippets(snippets)) {
+
+			@Override
+			public void handle(MvcResult result) throws Exception {
+				@SuppressWarnings("unchecked")
+				Map<String, Object> configuration = new HashMap<>(
+						(Map<String, Object>) result.getRequest()
+								.getAttribute(ATTRIBUTE_NAME_CONFIGURATION));
+				configuration.remove(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+				getDelegate().handle(result.getRequest(), result.getResponse(),
+						configuration);
+			}
+		};
 	}
 
-	private static final class IdentityOperationRequestPreprocessor
-			implements OperationRequestPreprocessor {
-
-		@Override
-		public OperationRequest preprocess(OperationRequest request) {
-			return request;
-		}
-
+	/**
+	 * Returns the {@link RestDocumentationGenerator} that is used as a delegate.
+	 *
+	 * @return the delegate
+	 */
+	protected final RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> getDelegate() {
+		return this.delegate;
 	}
-
-	private static final class IdentityOperationResponsePreprocessor
-			implements OperationResponsePreprocessor {
-
-		@Override
-		public OperationResponse preprocess(OperationResponse response) {
-			return response;
-		}
-
-	}
-
 }
