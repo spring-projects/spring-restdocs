@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,6 +52,8 @@ class TomcatServer extends ExternalResource {
 		Context context = this.tomcat.addContext("/", null);
 		this.tomcat.addServlet("/", "test", new TestServlet());
 		context.addServletMappingDecoded("/", "test");
+		this.tomcat.addServlet("/", "set-cookie", new CookiesServlet());
+		context.addServletMappingDecoded("/set-cookie", "set-cookie");
 		this.tomcat.start();
 		this.port = this.tomcat.getConnector().getLocalPort();
 	}
@@ -102,6 +105,21 @@ class TomcatServer extends ExternalResource {
 			response.flushBuffer();
 		}
 
+	}
+
+	/**
+	 * {@link HttpServlet} used to handle cookies-related requests in the tests.
+	 */
+	private static final class CookiesServlet extends HttpServlet {
+
+		@Override
+		protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			Cookie cookie = new Cookie("name", "value");
+			cookie.setDomain("localhost");
+			cookie.setHttpOnly(true);
+
+			resp.addCookie(cookie);
+		}
 	}
 
 }
