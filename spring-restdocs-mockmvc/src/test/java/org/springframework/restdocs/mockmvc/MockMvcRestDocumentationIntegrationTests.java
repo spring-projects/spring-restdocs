@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -401,26 +401,30 @@ public class MockMvcRestDocumentationIntegrationTests {
 
 		assertThat(
 				new File("build/generated-snippets/original-request/http-request.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(
-								httpRequest(asciidoctor(), RequestMethod.GET, "/")
-										.header("a", "alpha").header("b", "bravo")
-										.header("Content-Type", "application/json")
-										.header("Accept",
-												MediaType.APPLICATION_JSON_VALUE)
+				is(snippet(
+						asciidoctor())
+								.withContents(
+										httpRequest(asciidoctor(), RequestMethod.GET, "/")
+												.header("Content-Type",
+														"application/json")
+												.header("a", "alpha").header("b", "bravo")
+												.header("Accept",
+														MediaType.APPLICATION_JSON_VALUE)
 										.header("Host", "localhost:8080")
 										.header("Content-Length", "13")
 										.content("{\"a\":\"alpha\"}"))));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
-		assertThat(
-				new File(
-						"build/generated-snippets/preprocessed-request/http-request.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(httpRequest(asciidoctor(), RequestMethod.GET, "/")
-								.header("b", "bravo")
-								.header("Content-Type", "application/json")
-								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
-								.content(prettyPrinted))));
+		assertThat(new File(
+				"build/generated-snippets/preprocessed-request/http-request.adoc"), is(
+						snippet(asciidoctor())
+								.withContents(
+										httpRequest(asciidoctor(), RequestMethod.GET, "/")
+												.header("Content-Type",
+														"application/json")
+												.header("b", "bravo")
+												.header("Accept",
+														MediaType.APPLICATION_JSON_VALUE)
+										.content(prettyPrinted))));
 	}
 
 	@Test
