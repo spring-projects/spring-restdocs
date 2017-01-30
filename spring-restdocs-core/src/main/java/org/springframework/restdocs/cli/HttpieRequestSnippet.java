@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.Cookie;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -159,6 +161,10 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 				}
 				writer.print(String.format(" '%s:%s'", entry.getKey(), header));
 			}
+		}
+
+		for (Cookie cookie : request.getCookies()) {
+			writer.print(String.format(" 'Cookie:%s=%s'", cookie.getName(), cookie.getValue()));
 		}
 	}
 

@@ -19,6 +19,8 @@ package org.springframework.restdocs.operation;
 import java.net.URI;
 import java.util.Collection;
 
+import javax.servlet.http.Cookie;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
@@ -85,5 +87,12 @@ public interface OperationRequest {
 	 * @return the URI
 	 */
 	URI getUri();
+
+	/**
+	 * Returns cookies sent with the request.
+	 *
+	 * @return the cookies
+	 */
+	Collection<Cookie> getCookies();
 
 }

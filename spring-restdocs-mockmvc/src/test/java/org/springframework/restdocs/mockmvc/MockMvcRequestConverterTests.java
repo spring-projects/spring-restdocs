@@ -19,7 +19,9 @@ package org.springframework.restdocs.mockmvc;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Iterator;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.Part;
 
 import org.junit.Test;
@@ -86,6 +88,27 @@ public class MockMvcRequestConverterTests {
 		assertThat(request.getMethod(), is(HttpMethod.GET));
 		assertThat(request.getHeaders(), hasEntry("a", Arrays.asList("alpha", "apple")));
 		assertThat(request.getHeaders(), hasEntry("b", Arrays.asList("bravo")));
+	}
+
+	@Test
+	public void requestWithCookies() throws Exception {
+		OperationRequest request = createOperationRequest(MockMvcRequestBuilders
+				.get("/foo")
+				.cookie(new Cookie("cookieName1", "cookieVal1"),
+						new Cookie("cookieName2", "cookieVal2")));
+		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
+		assertThat(request.getMethod(), is(HttpMethod.GET));
+		assertThat(request.getCookies().size(), is(equalTo(2)));
+
+		Iterator<Cookie> cookieIterator = request.getCookies().iterator();
+
+		Cookie cookie1 = cookieIterator.next();
+		assertThat(cookie1.getName(), is(equalTo("cookieName1")));
+		assertThat(cookie1.getValue(), is(equalTo("cookieVal1")));
+
+		Cookie cookie2 = cookieIterator.next();
+		assertThat(cookie2.getName(), is(equalTo("cookieName2")));
+		assertThat(cookie2.getValue(), is(equalTo("cookieVal2")));
 	}
 
 	@Test

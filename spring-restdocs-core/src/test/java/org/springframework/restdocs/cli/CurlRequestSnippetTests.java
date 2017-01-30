@@ -252,6 +252,17 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void requestWithCookies() throws IOException {
+		this.snippets.expectCurlRequest()
+				.withContents(codeBlock("bash").content("$ curl 'http://localhost/foo' -i" +
+						" --cookie 'name1=value1;name2=value2'"));
+		new CurlRequestSnippet()
+				.document(this.operationBuilder.request("http://localhost/foo")
+						.cookie("name1", "value1")
+						.cookie("name2", "value2").build());
+	}
+
+	@Test
 	public void multipartPostWithNoSubmittedFileName() throws IOException {
 		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
 				+ "'Content-Type: multipart/form-data' -F "

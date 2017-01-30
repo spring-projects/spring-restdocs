@@ -21,10 +21,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.Part;
 
 import org.springframework.http.HttpHeaders;
@@ -67,6 +71,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 			HttpHeaders headers = extractHeaders(mockRequest);
 			Parameters parameters = extractParameters(mockRequest);
 			List<OperationRequestPart> parts = extractParts(mockRequest);
+			Collection<Cookie> cookies = extractCookies(mockRequest);
 			String queryString = mockRequest.getQueryString();
 			if (!StringUtils.hasText(queryString)
 					&& "GET".equals(mockRequest.getMethod())) {
@@ -78,11 +83,19 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 									? "?" + queryString : "")),
 					HttpMethod.valueOf(mockRequest.getMethod()),
 					FileCopyUtils.copyToByteArray(mockRequest.getInputStream()), headers,
-					parameters, parts);
+					parameters, parts, cookies);
 		}
 		catch (Exception ex) {
 			throw new ConversionException(ex);
 		}
+	}
+
+	private Collection<Cookie> extractCookies(MockHttpServletRequest mockRequest) {
+		if (mockRequest.getCookies() != null) {
+			return Arrays.asList(mockRequest.getCookies());
+		}
+
+		return Collections.emptyList();
 	}
 
 	private List<OperationRequestPart> extractParts(MockHttpServletRequest servletRequest)
