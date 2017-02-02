@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,13 +60,13 @@ class RestAssuredRequestConverter
 				extractCookies(requestSpec));
 	}
 
-	private Collection<javax.servlet.http.Cookie> extractCookies(FilterableRequestSpecification requestSpec) {
+	private Collection<javax.servlet.http.Cookie> extractCookies(
+			FilterableRequestSpecification requestSpec) {
 		Collection<javax.servlet.http.Cookie> cookies = new ArrayList<>();
-
 		for (Cookie cookie : requestSpec.getCookies()) {
-			cookies.add(new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue()));
+			cookies.add(
+					new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue()));
 		}
-
 		return cookies;
 	}
 

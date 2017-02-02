@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -254,12 +254,11 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void requestWithCookies() throws IOException {
 		this.snippets.expectCurlRequest()
-				.withContents(codeBlock("bash").content("$ curl 'http://localhost/foo' -i" +
-						" --cookie 'name1=value1;name2=value2'"));
+				.withContents(codeBlock("bash").content("$ curl 'http://localhost/foo' -i"
+						+ " --cookie 'name1=value1;name2=value2'"));
 		new CurlRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo")
-						.cookie("name1", "value1")
-						.cookie("name2", "value2").build());
+						.cookie("name1", "value1").cookie("name2", "value2").build());
 	}
 
 	@Test
@@ -269,9 +268,10 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "'metadata={\"description\": \"foo\"}'";
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new CurlRequestSnippet().document(this.operationBuilder
-				.request("http://localhost/upload").method("POST")
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+		new CurlRequestSnippet().document(
+				this.operationBuilder.request("http://localhost/upload").method("POST")
+						.header(HttpHeaders.CONTENT_TYPE,
+								MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("metadata", "{\"description\": \"foo\"}".getBytes()).build());
 	}
 
@@ -286,9 +286,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", new byte[0])
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
-						.submittedFileName("documents/images/example.png").build());
+				.part("image", new byte[0])
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
+				.submittedFileName("documents/images/example.png").build());
 	}
 
 	@Test
@@ -302,8 +302,8 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", new byte[0])
-						.submittedFileName("documents/images/example.png").build());
+				.part("image", new byte[0])
+				.submittedFileName("documents/images/example.png").build());
 	}
 
 	@Test
@@ -318,9 +318,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", new byte[0])
-						.submittedFileName("documents/images/example.png").and()
-						.param("a", "apple", "avocado").param("b", "banana").build());
+				.part("image", new byte[0])
+				.submittedFileName("documents/images/example.png").and()
+				.param("a", "apple", "avocado").param("b", "banana").build());
 	}
 
 	@Test
@@ -332,7 +332,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 						.header(HttpHeaders.AUTHORIZATION,
 								"Basic " + Base64Utils
 										.encodeToString("user:secret".getBytes()))
-						.build());
+				.build());
 	}
 
 	@Test

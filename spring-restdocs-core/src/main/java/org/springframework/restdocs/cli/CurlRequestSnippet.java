@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -102,17 +103,16 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeCookies(CliOperationRequest request, PrintWriter printer) {
-		if (request.getCookies() != null && request.getCookies().size() > 0) {
-			printer.print(" --cookie ");
+		if (!CollectionUtils.isEmpty(request.getCookies())) {
 			StringBuilder cookiesBuilder = new StringBuilder();
-
 			for (Cookie cookie : request.getCookies()) {
-				cookiesBuilder.append(String.format("%s=%s;", cookie.getName(), cookie.getValue()));
+				if (cookiesBuilder.length() > 0) {
+					cookiesBuilder.append(";");
+				}
+				cookiesBuilder.append(
+						String.format("%s=%s", cookie.getName(), cookie.getValue()));
 			}
-
-			String cookiesHeader = cookiesBuilder.substring(0, cookiesBuilder.length() - 1); // remove trailing semicolon
-
-			printer.print(String.format("'%s'", cookiesHeader)); // add single quotes
+			printer.print(String.format(" --cookie '%s'", cookiesBuilder.toString()));
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 						.row("`X-Test`", "one").row("`Accept`", "two")
 						.row("`Accept-Encoding`", "three")
 						.row("`Accept-Language`", "four").row("`Cache-Control`", "five")
-						.row("`Connection`", "six").row("`Cookie`", "seven"));
+						.row("`Connection`", "six"));
 		new RequestHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one"),
 						headerWithName("Accept").description("two"),
@@ -63,8 +63,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 						headerWithName("Cache-Control").description("five"),
 						headerWithName(
 								"Connection")
-										.description("six"),
-						headerWithName("Cookie").description("seven")))
+										.description("six")))
 												.document(
 														this.operationBuilder
 																.request(
@@ -73,15 +72,9 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 																.header("Accept", "*/*")
 																.header("Accept-Encoding",
 																		"gzip, deflate")
-																.header("Accept-Language",
-																		"en-US,en;q=0.5")
-																.header("Cache-Control",
-																		"max-age=0")
-																.header("Connection",
-																		"keep-alive")
-																.header("Cookie",
-																		"cookie1=cookieVal1; cookie2=cookieVal2")
-																.build());
+										.header("Accept-Language", "en-US,en;q=0.5")
+										.header("Cache-Control", "max-age=0")
+										.header("Connection", "keep-alive").build());
 	}
 
 	@Test
@@ -150,7 +143,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 												.header("X-Test", "test")
 												.header("Accept-Encoding",
 														"gzip, deflate")
-												.header("Accept", "*/*").build());
+								.header("Accept", "*/*").build());
 	}
 
 	@Test

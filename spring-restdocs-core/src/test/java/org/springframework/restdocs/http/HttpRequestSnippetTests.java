@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,9 +90,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 
 		new HttpRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo")
-				.cookie("name1", "value1")
-				.cookie("name2", "value2")
-				.build());
+						.cookie("name1", "value1").cookie("name2", "value2").build());
 	}
 
 	@Test
@@ -142,8 +140,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String content = "Hello, world";
 		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo")
-						.header(HttpHeaders.HOST, "localhost").content(content).header(
-								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo").method("POST").content(content).build());
@@ -154,8 +152,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String content = "Hello, world";
 		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo?a=alpha")
-						.header(HttpHeaders.HOST, "localhost").content(content).header(
-								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo")
@@ -168,8 +166,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String content = "Hello, world";
 		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo?b=bravo&a=alpha")
-						.header(HttpHeaders.HOST, "localhost").content(content).header(
-								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet()
 				.document(this.operationBuilder.request("http://localhost/foo?b=bravo")
@@ -182,8 +180,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String content = "Hello, world";
 		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo?b=bravo&a=alpha")
-						.header(HttpHeaders.HOST, "localhost").content(content).header(
-								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo?b=bravo").method("POST")
@@ -196,8 +194,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String content = "Hello, world";
 		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.POST, "/foo?b=bravo&a=alpha")
-						.header(HttpHeaders.HOST, "localhost").content(content).header(
-								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo?b=bravo&a=alpha").method("POST")
@@ -251,8 +249,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String content = "Hello, world";
 		this.snippets.expectHttpRequest()
 				.withContents(httpRequest(RequestMethod.PUT, "/foo")
-						.header(HttpHeaders.HOST, "localhost").content(content).header(
-								HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 		new HttpRequestSnippet().document(this.operationBuilder
 				.request("http://localhost/foo").method("PUT").content(content).build());
@@ -284,7 +282,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", "<< data >>".getBytes()).build());
+				.part("image", "<< data >>".getBytes()).build());
 	}
 
 	@Test
@@ -310,8 +308,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-						.param("a", "apple", "avocado").param("b", "banana")
-						.part("image", "<< data >>".getBytes()).build());
+				.param("a", "apple", "avocado").param("b", "banana")
+				.part("image", "<< data >>".getBytes()).build());
 	}
 
 	@Test
@@ -347,9 +345,8 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", "<< data >>".getBytes())
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
-						.build());
+				.part("image", "<< data >>".getBytes())
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE).build());
 	}
 
 	@Test

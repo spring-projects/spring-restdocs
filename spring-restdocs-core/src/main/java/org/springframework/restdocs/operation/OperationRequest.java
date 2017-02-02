@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,9 +89,11 @@ public interface OperationRequest {
 	URI getUri();
 
 	/**
-	 * Returns cookies sent with the request.
+	 * Returns {@link Cookie Cookies} sent with the request. If no cookies were sent an
+	 * empty collection is returned.
 	 *
-	 * @return the cookies
+	 * @return the cookies, never {@code null}
+	 * @since 1.2.0
 	 */
 	Collection<Cookie> getCookies();
 

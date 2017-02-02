@@ -166,10 +166,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
 
-		mockMvc.perform(get("/")
-				.accept(MediaType.APPLICATION_JSON)
-				.cookie(new Cookie("cookieName", "cookieVal")))
-				.andExpect(status().isOk()).andDo(document("curl-snippet-with-cookies"));
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)
+				.cookie(new Cookie("cookieName", "cookieVal"))).andExpect(status().isOk())
+				.andDo(document("curl-snippet-with-cookies"));
 		assertThat(
 				new File(
 						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
@@ -231,10 +230,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
 
-		mockMvc.perform(get("/")
-				.accept(MediaType.APPLICATION_JSON)
-				.cookie(new Cookie("cookieName", "cookieVal")))
-				.andExpect(status().isOk())
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)
+				.cookie(new Cookie("cookieName", "cookieVal"))).andExpect(status().isOk())
 				.andDo(document("httpie-snippet-with-cookies"));
 		assertThat(
 				new File(
