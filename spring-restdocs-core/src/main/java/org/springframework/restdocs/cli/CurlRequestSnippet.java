@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.Cookie;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -30,6 +32,7 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -92,10 +95,25 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		writeUserOptionIfNecessary(request, printer);
 		writeHttpMethodIfNecessary(request, printer);
 		writeHeaders(request, printer);
+		writeCookies(request, printer);
 		writePartsIfNecessary(request, printer);
 		writeContent(request, printer);
 
 		return command.toString();
+	}
+
+	private void writeCookies(CliOperationRequest request, PrintWriter printer) {
+		if (!CollectionUtils.isEmpty(request.getCookies())) {
+			StringBuilder cookiesBuilder = new StringBuilder();
+			for (Cookie cookie : request.getCookies()) {
+				if (cookiesBuilder.length() > 0) {
+					cookiesBuilder.append(";");
+				}
+				cookiesBuilder.append(
+						String.format("%s=%s", cookie.getName(), cookie.getValue()));
+			}
+			printer.print(String.format(" --cookie '%s'", cookiesBuilder.toString()));
+		}
 	}
 
 	private void writeIncludeHeadersInOutputOption(PrintWriter writer) {

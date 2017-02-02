@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.servlet.http.Cookie;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -106,6 +108,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		PrintWriter printer = new PrintWriter(requestItems);
 		writeFormDataIfNecessary(request, printer);
 		writeHeaders(request, printer);
+		writeCookies(request, printer);
 		writeParametersIfNecessary(request, printer);
 		return requestItems.toString();
 	}
@@ -159,6 +162,13 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 				}
 				writer.print(String.format(" '%s:%s'", entry.getKey(), header));
 			}
+		}
+	}
+
+	private void writeCookies(OperationRequest request, PrintWriter writer) {
+		for (Cookie cookie : request.getCookies()) {
+			writer.print(String.format(" 'Cookie:%s=%s'", cookie.getName(),
+					cookie.getValue()));
 		}
 	}
 

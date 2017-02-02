@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.Cookie;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -160,6 +162,22 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void curlSnippetWithCookies() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)
+				.cookie(new Cookie("cookieName", "cookieVal"))).andExpect(status().isOk())
+				.andDo(document("curl-snippet-with-cookies"));
+		assertThat(
+				new File(
+						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
+				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
+						.content("$ curl " + "'http://localhost:8080/' -i "
+								+ "-H 'Accept: application/json' --cookie 'cookieName=cookieVal'"))));
+	}
+
+	@Test
 	public void curlSnippetWithQueryStringOnPost() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
@@ -205,6 +223,22 @@ public class MockMvcRestDocumentationIntegrationTests {
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
 						.content("$ echo 'content' | http POST 'http://localhost:8080/'"
 								+ " 'Accept:application/json'"))));
+	}
+
+	@Test
+	public void httpieSnippetWithCookies() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)
+				.cookie(new Cookie("cookieName", "cookieVal"))).andExpect(status().isOk())
+				.andDo(document("httpie-snippet-with-cookies"));
+		assertThat(
+				new File(
+						"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"),
+				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
+						.content("$ http GET 'http://localhost:8080/'"
+								+ " 'Accept:application/json' 'Cookie:cookieName=cookieVal'"))));
 	}
 
 	@Test

@@ -18,6 +18,9 @@ package org.springframework.restdocs.operation;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.Collections;
+
+import javax.servlet.http.Cookie;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -40,13 +43,34 @@ public class OperationRequestFactory {
 	 * @param headers the request's headers
 	 * @param parameters the request's parameters
 	 * @param parts the request's parts
+	 * @param cookies the request's cookies
+	 * @return the {@code OperationRequest}
+	 */
+	public OperationRequest create(URI uri, HttpMethod method, byte[] content,
+			HttpHeaders headers, Parameters parameters,
+			Collection<OperationRequestPart> parts,
+			Collection<Cookie> cookies) {
+		return new StandardOperationRequest(uri, method, content,
+				augmentHeaders(headers, uri, content), parameters, parts, cookies);
+	}
+
+	/**
+	 * Creates a new {@link OperationRequest}. The given {@code headers} will be augmented
+	 * to ensure that they always include a {@code Content-Length} header if the request
+	 * has any content and a {@code Host} header.
+	 *
+	 * @param uri the request's uri
+	 * @param method the request method
+	 * @param content the content of the request
+	 * @param headers the request's headers
+	 * @param parameters the request's parameters
+	 * @param parts the request's parts
 	 * @return the {@code OperationRequest}
 	 */
 	public OperationRequest create(URI uri, HttpMethod method, byte[] content,
 			HttpHeaders headers, Parameters parameters,
 			Collection<OperationRequestPart> parts) {
-		return new StandardOperationRequest(uri, method, content,
-				augmentHeaders(headers, uri, content), parameters, parts);
+		return create(uri, method, content, headers, parameters, parts, Collections.<Cookie>emptyList());
 	}
 
 	/**
@@ -62,7 +86,7 @@ public class OperationRequestFactory {
 	public OperationRequest createFrom(OperationRequest original, byte[] newContent) {
 		return new StandardOperationRequest(original.getUri(), original.getMethod(),
 				newContent, getUpdatedHeaders(original.getHeaders(), newContent),
-				original.getParameters(), original.getParts());
+				original.getParameters(), original.getParts(), original.getCookies());
 	}
 
 	/**
@@ -78,7 +102,7 @@ public class OperationRequestFactory {
 			HttpHeaders newHeaders) {
 		return new StandardOperationRequest(original.getUri(), original.getMethod(),
 				original.getContent(), newHeaders, original.getParameters(),
-				original.getParts());
+				original.getParts(), original.getCookies());
 	}
 
 	/**
@@ -94,7 +118,7 @@ public class OperationRequestFactory {
 			Parameters newParameters) {
 		return new StandardOperationRequest(original.getUri(), original.getMethod(),
 				original.getContent(), original.getHeaders(), newParameters,
-				original.getParts());
+				original.getParts(), original.getCookies());
 	}
 
 	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, URI uri,

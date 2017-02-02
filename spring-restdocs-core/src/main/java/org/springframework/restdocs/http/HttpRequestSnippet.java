@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.Cookie;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -34,6 +36,7 @@ import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.StringUtils;
+
 
 /**
  * A {@link Snippet} that documents an HTTP request.
@@ -112,6 +115,11 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 			}
 		}
+
+		for (Cookie cookie : request.getCookies()) {
+			headers.add(header(HttpHeaders.COOKIE, String.format("%s=%s", cookie.getName(), cookie.getValue())));
+		}
+
 		if (requiresFormEncodingContentTypeHeader(request)) {
 			headers.add(header(HttpHeaders.CONTENT_TYPE,
 					MediaType.APPLICATION_FORM_URLENCODED_VALUE));

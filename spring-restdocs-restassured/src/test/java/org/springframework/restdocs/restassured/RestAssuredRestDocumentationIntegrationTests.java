@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,6 +117,23 @@ public class RestAssuredRestDocumentationIntegrationTests {
 								+ "-X POST -H 'Accept: application/json' "
 								+ "-H 'Content-Type: " + contentType + "' "
 								+ "-d 'content'"))));
+	}
+
+	@Test
+	public void curlSnippetWithCookies() throws Exception {
+		String contentType = "text/plain; charset=UTF-8";
+		given().port(this.port).filter(documentationConfiguration(this.restDocumentation))
+				.filter(document("curl-snippet-with-cookies")).accept("application/json")
+				.contentType(contentType).cookie("cookieName", "cookieVal").get("/")
+				.then().statusCode(200);
+		assertThat(
+				new File(
+						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
+				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
+						.content("$ curl 'http://localhost:" + this.port + "/' -i "
+								+ "-H 'Accept: application/json' " + "-H 'Content-Type: "
+								+ contentType + "' "
+								+ "--cookie 'cookieName=cookieVal'"))));
 	}
 
 	@Test
