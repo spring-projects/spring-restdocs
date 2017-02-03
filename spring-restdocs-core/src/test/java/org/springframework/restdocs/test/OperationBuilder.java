@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
-
 import org.junit.runners.model.Statement;
 
 import org.springframework.http.HttpHeaders;
@@ -43,6 +41,7 @@ import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.operation.StandardOperation;
 import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolverFactory;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
@@ -156,7 +155,7 @@ public class OperationBuilder extends OperationTestRule {
 
 		private List<OperationRequestPartBuilder> partBuilders = new ArrayList<>();
 
-		private Collection<Cookie> cookies = new ArrayList<>();
+		private Collection<RequestCookie> cookies = new ArrayList<>();
 
 		private OperationRequestBuilder(String uri) {
 			this.requestUri = URI.create(uri);
@@ -215,7 +214,7 @@ public class OperationBuilder extends OperationTestRule {
 		}
 
 		public OperationRequestBuilder cookie(String name, String value) {
-			this.cookies.add(new Cookie(name, value));
+			this.cookies.add(new RequestCookie(name, value));
 			return this;
 		}
 

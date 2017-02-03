@@ -21,7 +21,6 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.Part;
 
 import org.junit.Test;
@@ -33,6 +32,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -92,20 +92,22 @@ public class MockMvcRequestConverterTests {
 
 	@Test
 	public void requestWithCookies() throws Exception {
-		OperationRequest request = createOperationRequest(MockMvcRequestBuilders
-				.get("/foo").cookie(new Cookie("cookieName1", "cookieVal1"),
-						new Cookie("cookieName2", "cookieVal2")));
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.get("/foo")
+						.cookie(new javax.servlet.http.Cookie("cookieName1",
+								"cookieVal1"),
+						new javax.servlet.http.Cookie("cookieName2", "cookieVal2")));
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.GET));
 		assertThat(request.getCookies().size(), is(equalTo(2)));
 
-		Iterator<Cookie> cookieIterator = request.getCookies().iterator();
+		Iterator<RequestCookie> cookieIterator = request.getCookies().iterator();
 
-		Cookie cookie1 = cookieIterator.next();
+		RequestCookie cookie1 = cookieIterator.next();
 		assertThat(cookie1.getName(), is(equalTo("cookieName1")));
 		assertThat(cookie1.getValue(), is(equalTo("cookieVal1")));
 
-		Cookie cookie2 = cookieIterator.next();
+		RequestCookie cookie2 = cookieIterator.next();
 		assertThat(cookie2.getName(), is(equalTo("cookieName2")));
 		assertThat(cookie2.getValue(), is(equalTo("cookieVal2")));
 	}

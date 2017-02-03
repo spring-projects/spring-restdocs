@@ -39,6 +39,7 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestConverter;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StreamUtils;
 
@@ -60,12 +61,11 @@ class RestAssuredRequestConverter
 				extractCookies(requestSpec));
 	}
 
-	private Collection<javax.servlet.http.Cookie> extractCookies(
+	private Collection<RequestCookie> extractCookies(
 			FilterableRequestSpecification requestSpec) {
-		Collection<javax.servlet.http.Cookie> cookies = new ArrayList<>();
+		Collection<RequestCookie> cookies = new ArrayList<>();
 		for (Cookie cookie : requestSpec.getCookies()) {
-			cookies.add(
-					new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue()));
+			cookies.add(new RequestCookie(cookie.getName(), cookie.getValue()));
 		}
 		return cookies;
 	}

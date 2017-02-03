@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.Cookie;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -32,6 +30,7 @@ import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.StringUtils;
@@ -166,7 +165,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeCookies(OperationRequest request, PrintWriter writer) {
-		for (Cookie cookie : request.getCookies()) {
+		for (RequestCookie cookie : request.getCookies()) {
 			writer.print(String.format(" 'Cookie:%s=%s'", cookie.getName(),
 					cookie.getValue()));
 		}

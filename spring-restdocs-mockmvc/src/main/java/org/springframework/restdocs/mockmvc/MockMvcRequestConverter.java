@@ -21,14 +21,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.Part;
 
 import org.springframework.http.HttpHeaders;
@@ -43,6 +41,7 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestConverter;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,7 +70,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 			HttpHeaders headers = extractHeaders(mockRequest);
 			Parameters parameters = extractParameters(mockRequest);
 			List<OperationRequestPart> parts = extractParts(mockRequest);
-			Collection<Cookie> cookies = extractCookies(mockRequest);
+			Collection<RequestCookie> cookies = extractCookies(mockRequest);
 			String queryString = mockRequest.getQueryString();
 			if (!StringUtils.hasText(queryString)
 					&& "GET".equals(mockRequest.getMethod())) {
@@ -90,12 +89,16 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		}
 	}
 
-	private Collection<Cookie> extractCookies(MockHttpServletRequest mockRequest) {
-		if (mockRequest.getCookies() != null) {
-			return Arrays.asList(mockRequest.getCookies());
+	private Collection<RequestCookie> extractCookies(MockHttpServletRequest mockRequest) {
+		if (mockRequest.getCookies() == null || mockRequest.getCookies().length == 0) {
+			return Collections.emptyList();
 		}
-
-		return Collections.emptyList();
+		List<RequestCookie> cookies = new ArrayList<>();
+		for (javax.servlet.http.Cookie servletCookie : mockRequest.getCookies()) {
+			cookies.add(
+					new RequestCookie(servletCookie.getName(), servletCookie.getValue()));
+		}
+		return cookies;
 	}
 
 	private List<OperationRequestPart> extractParts(MockHttpServletRequest servletRequest)

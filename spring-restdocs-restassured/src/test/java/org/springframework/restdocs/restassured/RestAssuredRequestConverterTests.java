@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.servlet.http.Cookie;
-
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.specification.FilterableRequestSpecification;
 import com.jayway.restassured.specification.RequestSpecification;
@@ -44,6 +42,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -154,13 +153,13 @@ public class RestAssuredRequestConverterTests {
 				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getCookies().size(), is(equalTo(2)));
 
-		Iterator<Cookie> cookieIterator = request.getCookies().iterator();
-		Cookie cookie1 = cookieIterator.next();
+		Iterator<RequestCookie> cookieIterator = request.getCookies().iterator();
+		RequestCookie cookie1 = cookieIterator.next();
 
 		assertThat(cookie1.getName(), is(equalTo("cookie1")));
 		assertThat(cookie1.getValue(), is(equalTo("cookieVal1")));
 
-		Cookie cookie2 = cookieIterator.next();
+		RequestCookie cookie2 = cookieIterator.next();
 		assertThat(cookie2.getName(), is(equalTo("cookie2")));
 		assertThat(cookie2.getValue(), is(equalTo("cookieVal2")));
 	}

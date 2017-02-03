@@ -25,13 +25,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.util.Base64Utils;
 
 /**
@@ -128,7 +127,7 @@ final class CliOperationRequest implements OperationRequest {
 	}
 
 	@Override
-	public Collection<Cookie> getCookies() {
+	public Collection<RequestCookie> getCookies() {
 		return this.delegate.getCookies();
 	}
 

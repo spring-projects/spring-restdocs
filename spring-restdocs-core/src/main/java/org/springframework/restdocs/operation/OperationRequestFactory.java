@@ -20,8 +20,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.servlet.http.Cookie;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
@@ -48,8 +46,7 @@ public class OperationRequestFactory {
 	 */
 	public OperationRequest create(URI uri, HttpMethod method, byte[] content,
 			HttpHeaders headers, Parameters parameters,
-			Collection<OperationRequestPart> parts,
-			Collection<Cookie> cookies) {
+			Collection<OperationRequestPart> parts, Collection<RequestCookie> cookies) {
 		return new StandardOperationRequest(uri, method, content,
 				augmentHeaders(headers, uri, content), parameters, parts, cookies);
 	}
@@ -70,7 +67,8 @@ public class OperationRequestFactory {
 	public OperationRequest create(URI uri, HttpMethod method, byte[] content,
 			HttpHeaders headers, Parameters parameters,
 			Collection<OperationRequestPart> parts) {
-		return create(uri, method, content, headers, parameters, parts, Collections.<Cookie>emptyList());
+		return create(uri, method, content, headers, parameters, parts,
+				Collections.<RequestCookie>emptyList());
 	}
 
 	/**
