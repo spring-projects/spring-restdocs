@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.springframework.restdocs.test;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,7 @@ import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.operation.StandardOperation;
 import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolverFactory;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
@@ -153,6 +155,8 @@ public class OperationBuilder extends OperationTestRule {
 
 		private List<OperationRequestPartBuilder> partBuilders = new ArrayList<>();
 
+		private Collection<RequestCookie> cookies = new ArrayList<>();
+
 		private OperationRequestBuilder(String uri) {
 			this.requestUri = URI.create(uri);
 		}
@@ -163,7 +167,7 @@ public class OperationBuilder extends OperationTestRule {
 				parts.add(builder.buildPart());
 			}
 			return new OperationRequestFactory().create(this.requestUri, this.method,
-					this.content, this.headers, this.parameters, parts);
+					this.content, this.headers, this.parameters, parts, this.cookies);
 		}
 
 		public Operation build() {
@@ -207,6 +211,11 @@ public class OperationBuilder extends OperationTestRule {
 					name, content);
 			this.partBuilders.add(partBuilder);
 			return partBuilder;
+		}
+
+		public OperationRequestBuilder cookie(String name, String value) {
+			this.cookies.add(new RequestCookie(name, value));
+			return this;
 		}
 
 		/**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.util.Base64Utils;
 
 /**
@@ -123,6 +124,11 @@ final class CliOperationRequest implements OperationRequest {
 	@Override
 	public URI getUri() {
 		return this.delegate.getUri();
+	}
+
+	@Override
+	public Collection<RequestCookie> getCookies() {
+		return this.delegate.getCookies();
 	}
 
 	private interface HeaderFilter {

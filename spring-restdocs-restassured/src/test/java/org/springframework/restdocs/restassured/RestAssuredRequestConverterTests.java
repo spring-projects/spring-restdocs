@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -141,6 +142,26 @@ public class RestAssuredRequestConverterTests {
 		assertThat(request.getHeaders().get("Accept"), is(equalTo(Arrays.asList("*/*"))));
 		assertThat(request.getHeaders().get("Host"),
 				is(equalTo(Arrays.asList("localhost:" + this.port))));
+	}
+
+	@Test
+	public void cookies() {
+		RequestSpecification requestSpec = RestAssured.given().port(this.port)
+				.cookie("cookie1", "cookieVal1").cookie("cookie2", "cookieVal2");
+		requestSpec.get("/");
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getCookies().size(), is(equalTo(2)));
+
+		Iterator<RequestCookie> cookieIterator = request.getCookies().iterator();
+		RequestCookie cookie1 = cookieIterator.next();
+
+		assertThat(cookie1.getName(), is(equalTo("cookie1")));
+		assertThat(cookie1.getValue(), is(equalTo("cookieVal1")));
+
+		RequestCookie cookie2 = cookieIterator.next();
+		assertThat(cookie2.getName(), is(equalTo("cookie2")));
+		assertThat(cookie2.getValue(), is(equalTo("cookieVal2")));
 	}
 
 	@Test

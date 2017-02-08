@@ -31,6 +31,7 @@ import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.StringUtils;
@@ -112,6 +113,12 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 			}
 		}
+
+		for (RequestCookie cookie : request.getCookies()) {
+			headers.add(header(HttpHeaders.COOKIE,
+					String.format("%s=%s", cookie.getName(), cookie.getValue())));
+		}
+
 		if (requiresFormEncodingContentTypeHeader(request)) {
 			headers.add(header(HttpHeaders.CONTENT_TYPE,
 					MediaType.APPLICATION_FORM_URLENCODED_VALUE));

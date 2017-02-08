@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.StringUtils;
@@ -106,6 +107,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		PrintWriter printer = new PrintWriter(requestItems);
 		writeFormDataIfNecessary(request, printer);
 		writeHeaders(request, printer);
+		writeCookies(request, printer);
 		writeParametersIfNecessary(request, printer);
 		return requestItems.toString();
 	}
@@ -159,6 +161,13 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 				}
 				writer.print(String.format(" '%s:%s'", entry.getKey(), header));
 			}
+		}
+	}
+
+	private void writeCookies(OperationRequest request, PrintWriter writer) {
+		for (RequestCookie cookie : request.getCookies()) {
+			writer.print(String.format(" 'Cookie:%s=%s'", cookie.getName(),
+					cookie.getValue()));
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.jayway.restassured.response.Cookie;
 import com.jayway.restassured.response.Header;
 import com.jayway.restassured.specification.FilterableRequestSpecification;
 import com.jayway.restassured.specification.MultiPartSpecification;
@@ -38,6 +39,7 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestConverter;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StreamUtils;
 
@@ -55,7 +57,17 @@ class RestAssuredRequestConverter
 		return new OperationRequestFactory().create(URI.create(requestSpec.getURI()),
 				HttpMethod.valueOf(requestSpec.getMethod().name()),
 				extractContent(requestSpec), extractHeaders(requestSpec),
-				extractParameters(requestSpec), extractParts(requestSpec));
+				extractParameters(requestSpec), extractParts(requestSpec),
+				extractCookies(requestSpec));
+	}
+
+	private Collection<RequestCookie> extractCookies(
+			FilterableRequestSpecification requestSpec) {
+		Collection<RequestCookie> cookies = new ArrayList<>();
+		for (Cookie cookie : requestSpec.getCookies()) {
+			cookies.add(new RequestCookie(cookie.getName(), cookie.getValue()));
+		}
+		return cookies;
 	}
 
 	private byte[] extractContent(FilterableRequestSpecification requestSpec) {

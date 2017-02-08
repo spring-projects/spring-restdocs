@@ -1,6 +1,7 @@
 description = 'Spring REST Docs MockMvc'
 
 dependencies {
+	compile 'javax.servlet:javax.servlet-api'
 	compile 'org.springframework:spring-test'
 	compile project(':spring-restdocs-core')
 	optional 'junit:junit'

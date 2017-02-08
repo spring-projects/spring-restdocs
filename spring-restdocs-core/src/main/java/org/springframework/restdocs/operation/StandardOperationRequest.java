@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,12 @@ class StandardOperationRequest extends AbstractOperationMessage
 
 	private URI uri;
 
+	private Collection<RequestCookie> cookies;
+
 	/**
 	 * Creates a new request with the given {@code uri} and {@code method}. The request
-	 * will have the given {@code headers}, {@code parameters}, and {@code parts}.
+	 * will have the given {@code headers}, {@code parameters}, {@code parts}, and
+	 * {@code cookies}.
 	 *
 	 * @param uri the uri
 	 * @param method the method
@@ -49,15 +52,17 @@ class StandardOperationRequest extends AbstractOperationMessage
 	 * @param headers the headers
 	 * @param parameters the parameters
 	 * @param parts the parts
+	 * @param cookies the cookies
 	 */
 	StandardOperationRequest(URI uri, HttpMethod method, byte[] content,
 			HttpHeaders headers, Parameters parameters,
-			Collection<OperationRequestPart> parts) {
+			Collection<OperationRequestPart> parts, Collection<RequestCookie> cookies) {
 		super(content, headers);
 		this.uri = uri;
 		this.method = method;
 		this.parameters = parameters;
 		this.parts = parts;
+		this.cookies = cookies;
 	}
 
 	@Override
@@ -78,6 +83,11 @@ class StandardOperationRequest extends AbstractOperationMessage
 	@Override
 	public URI getUri() {
 		return this.uri;
+	}
+
+	@Override
+	public Collection<RequestCookie> getCookies() {
+		return this.cookies;
 	}
 
 }

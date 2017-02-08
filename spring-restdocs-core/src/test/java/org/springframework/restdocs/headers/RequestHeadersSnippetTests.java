@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,13 +72,9 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 																.header("Accept", "*/*")
 																.header("Accept-Encoding",
 																		"gzip, deflate")
-																.header("Accept-Language",
-																		"en-US,en;q=0.5")
-																.header("Cache-Control",
-																		"max-age=0")
-																.header("Connection",
-																		"keep-alive")
-																.build());
+										.header("Accept-Language", "en-US,en;q=0.5")
+										.header("Cache-Control", "max-age=0")
+										.header("Connection", "keep-alive").build());
 	}
 
 	@Test
@@ -147,7 +143,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 												.header("X-Test", "test")
 												.header("Accept-Encoding",
 														"gzip, deflate")
-												.header("Accept", "*/*").build());
+								.header("Accept", "*/*").build());
 	}
 
 	@Test
