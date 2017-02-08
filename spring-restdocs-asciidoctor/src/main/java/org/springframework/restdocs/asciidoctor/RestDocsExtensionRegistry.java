@@ -17,6 +17,7 @@
 package org.springframework.restdocs.asciidoctor;
 
 import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.extension.JavaExtensionRegistry;
 import org.asciidoctor.extension.spi.ExtensionRegistry;
 
 /**
@@ -28,8 +29,9 @@ public final class RestDocsExtensionRegistry implements ExtensionRegistry {
 
 	@Override
 	public void register(Asciidoctor asciidoctor) {
-		asciidoctor.javaExtensionRegistry()
-				.preprocessor(new DefaultAttributesPreprocessor());
+		final JavaExtensionRegistry registry = asciidoctor.javaExtensionRegistry();
+		registry.preprocessor(new DefaultAttributesPreprocessor());
+		registry.includeProcessor(RestDocsIncludeProcessor.class);
 	}
 
 }

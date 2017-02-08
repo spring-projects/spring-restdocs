@@ -104,14 +104,7 @@ The index provides the entry point into the service.
 
 A `GET` request is used to access the index
 
-==== Response structure
-
-include::{snippets}/index-example/response-fields.adoc[]
-
-==== Example response
-
-include::{snippets}/index-example/http-response.adoc[]
-
+include::restdocs:index-example[snippets='response-fields, http-response',level=4]
 
 
 [[resources-index-links]]
