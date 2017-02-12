@@ -50,6 +50,8 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 @RunWith(Parameterized.class)
 public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 
+	private CommandFormatter commandFormatter = CliDocumentation.singleLineFormat();
+
 	public HttpieRequestSnippetTests(String name, TemplateFormat templateFormat) {
 		super(name, templateFormat);
 	}
@@ -58,7 +60,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequest() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(
 				codeBlock("bash").content("$ http GET 'http://localhost/foo'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo").build());
 	}
 
@@ -66,7 +68,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequestWithParameter() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(
 				codeBlock("bash").content("$ http GET 'http://localhost/foo?a=alpha'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").param("a", "alpha").build());
 	}
 
@@ -74,7 +76,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void nonGetRequest() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(
 				codeBlock("bash").content("$ http POST 'http://localhost/foo'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("POST").build());
 	}
 
@@ -82,7 +84,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void requestWithContent() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ echo 'content' | http GET 'http://localhost/foo'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").content("content").build());
 	}
 
@@ -90,7 +92,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequestWithQueryString() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http GET 'http://localhost/foo?param=value'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo?param=value").build());
 	}
 
@@ -99,7 +101,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 			throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http GET 'http://localhost/foo?param=value'"));
-		new HttpieRequestSnippet().document(
+		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo?param=value")
 						.param("param", "value").build());
 	}
@@ -109,7 +111,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 			throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http GET 'http://localhost/foo?a=alpha&b=bravo'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
 						.param("a", "alpha").param("b", "bravo").build());
 	}
@@ -118,7 +120,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequestWithDisjointQueryStringAndParameters() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http GET 'http://localhost/foo?a=alpha&b=bravo'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo?a=alpha").param("b", "bravo").build());
 	}
 
@@ -126,7 +128,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequestWithQueryStringWithNoValue() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(
 				codeBlock("bash").content("$ http GET 'http://localhost/foo?param'"));
-		new HttpieRequestSnippet().document(
+		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo?param").build());
 	}
 
@@ -134,7 +136,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithQueryString() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http POST 'http://localhost/foo?param=value'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo?param=value").method("POST").build());
 	}
 
@@ -142,7 +144,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithQueryStringWithNoValue() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(
 				codeBlock("bash").content("$ http POST 'http://localhost/foo?param'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo?param").method("POST").build());
 	}
 
@@ -150,7 +152,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithOneParameter() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --form POST 'http://localhost/foo' 'k1=v1'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.method("POST").param("k1", "v1").build());
 	}
@@ -159,7 +161,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithOneParameterWithNoValue() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --form POST 'http://localhost/foo' 'k1='"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("POST").param("k1").build());
 	}
 
@@ -169,7 +171,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash")
 						.content("$ http --form POST 'http://localhost/foo'"
 								+ " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
-		new HttpieRequestSnippet().document(
+		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo").method("POST")
 						.param("k1", "v1", "v1-bis").param("k2", "v2").build());
 	}
@@ -178,7 +180,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithUrlEncodedParameter() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --form POST 'http://localhost/foo' 'k1=a&b'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.method("POST").param("k1", "a&b").build());
 	}
@@ -187,7 +189,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithDisjointQueryStringAndParameter() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --form POST 'http://localhost/foo?a=alpha' 'b=bravo'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
 						.method("POST").param("b", "bravo").build());
 	}
@@ -197,7 +199,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 			throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http POST 'http://localhost/foo?a=alpha&b=bravo'"));
-		new HttpieRequestSnippet().document(
+		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo")
 						.method("POST").param("a", "alpha").param("b", "bravo").build());
 	}
@@ -207,7 +209,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 			throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --form POST 'http://localhost/foo?a=alpha' 'b=bravo'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
 						.method("POST").param("a", "alpha").param("b", "bravo").build());
 	}
@@ -216,7 +218,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void putRequestWithOneParameter() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --form PUT 'http://localhost/foo' 'k1=v1'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("PUT").param("k1", "v1").build());
 	}
 
@@ -226,7 +228,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash")
 						.content("$ http --form PUT 'http://localhost/foo'"
 								+ " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("PUT").param("k1", "v1")
 				.param("k1", "v1-bis").param("k2", "v2").build());
 	}
@@ -235,7 +237,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void putRequestWithUrlEncodedParameter() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --form PUT 'http://localhost/foo' 'k1=a&b'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.method("PUT").param("k1", "a&b").build());
 	}
@@ -245,7 +247,19 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 		this.snippets.expectHttpieRequest().withContents(
 				codeBlock("bash").content("$ http GET 'http://localhost/foo'"
 						+ " 'Content-Type:application/json' 'a:alpha'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
+				.document(this.operationBuilder.request("http://localhost/foo")
+						.header(HttpHeaders.CONTENT_TYPE,
+								MediaType.APPLICATION_JSON_VALUE)
+						.header("a", "alpha").build());
+	}
+
+	@Test
+	public void requestWithHeadersMultiline() throws IOException {
+		this.snippets.expectHttpieRequest().withContents(
+				codeBlock("bash").content(String.format("$ http GET 'http://localhost/foo'"
+						+ " \\%n 'Content-Type:application/json' \\%n 'a:alpha'")));
+		new HttpieRequestSnippet(CliDocumentation.multiLineFormat())
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.APPLICATION_JSON_VALUE)
@@ -257,84 +271,80 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 		this.snippets.expectHttpieRequest().withContents(
 				codeBlock("bash").content("$ http GET 'http://localhost/foo'"
 						+ " 'Cookie:name1=value1' 'Cookie:name2=value2'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.cookie("name1", "value1").cookie("name2", "value2").build());
 	}
 
 	@Test
 	public void multipartPostWithNoSubmittedFileName() throws IOException {
-		String expectedContent = String
-				.format("$ http --form POST 'http://localhost/upload' \\%n"
-						+ "  'metadata'@<(echo '{\"description\": \"foo\"}')");
+		String expectedContent = "$ http --form POST 'http://localhost/upload'"
+						+ " 'metadata'@<(echo '{\"description\": \"foo\"}')";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new HttpieRequestSnippet().document(
+		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("metadata", "{\"description\": \"foo\"}".getBytes()).build());
+						.part("metadata", "{\"description\": \"foo\"}".getBytes()).build());
 	}
 
 	@Test
 	public void multipartPostWithContentType() throws IOException {
 		// httpie does not yet support manually set content type by part
-		String expectedContent = String
-				.format("$ http --form POST 'http://localhost/upload' \\%n"
-						+ "  'image'@'documents/images/example.png'");
+		String expectedContent = "$ http --form POST 'http://localhost/upload'"
+						+ " 'image'@'documents/images/example.png'";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new HttpieRequestSnippet().document(
+		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", new byte[0])
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
-				.submittedFileName("documents/images/example.png").build());
+						.part("image", new byte[0])
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
+						.submittedFileName("documents/images/example.png").build());
 	}
 
 	@Test
 	public void multipartPost() throws IOException {
-		String expectedContent = String
-				.format("$ http --form POST 'http://localhost/upload' \\%n"
-						+ "  'image'@'documents/images/example.png'");
+		String expectedContent = "$ http --form POST 'http://localhost/upload'"
+						+ " 'image'@'documents/images/example.png'";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new HttpieRequestSnippet().document(
+		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", new byte[0])
-				.submittedFileName("documents/images/example.png").build());
+						.part("image", new byte[0])
+						.submittedFileName("documents/images/example.png").build());
 	}
 
 	@Test
 	public void multipartPostWithParameters() throws IOException {
-		String expectedContent = String
-				.format("$ http --form POST 'http://localhost/upload' \\%n"
-						+ "  'image'@'documents/images/example.png' 'a=apple' 'a=avocado'"
-						+ " 'b=banana'");
+		String expectedContent = "$ http --form POST 'http://localhost/upload'"
+						+ " 'image'@'documents/images/example.png' 'a=apple' 'a=avocado'"
+						+ " 'b=banana'";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new HttpieRequestSnippet().document(
+		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", new byte[0])
-				.submittedFileName("documents/images/example.png").and()
-				.param("a", "apple", "avocado").param("b", "banana").build());
+						.part("image", new byte[0])
+						.submittedFileName("documents/images/example.png").and()
+						.param("a", "apple", "avocado").param("b", "banana").build());
 	}
 
 	@Test
 	public void basicAuthCredentialsAreSuppliedUsingAuthOption() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --auth 'user:secret' GET 'http://localhost/foo'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.header(HttpHeaders.AUTHORIZATION,
 								"Basic " + Base64Utils
 										.encodeToString("user:secret".getBytes()))
-				.build());
+						.build());
 	}
 
 	@Test
@@ -346,13 +356,14 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				.willReturn(snippetResource("httpie-request-with-title"));
 		new HttpieRequestSnippet(
 				attributes(
-						key("title").value("httpie request title")))
-								.document(
-										this.operationBuilder
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.request("http://localhost/foo").build());
+						key("title").value("httpie request title")),
+				this.commandFormatter)
+				.document(
+						this.operationBuilder
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(
+												resolver))
+								.request("http://localhost/foo").build());
 	}
 
 	@Test
@@ -361,7 +372,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash").content(
 						"$ http GET 'http://localhost/foo' 'Host:api.example.com'"
 								+ " 'Content-Type:application/json' 'a:alpha'"));
-		new HttpieRequestSnippet()
+		new HttpieRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.header(HttpHeaders.HOST, "api.example.com")
 						.header(HttpHeaders.CONTENT_TYPE,
@@ -374,7 +385,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 		this.snippets.expectHttpieRequest().withContents(
 				codeBlock("bash").content("$ echo 'Some content' | http POST "
 						+ "'http://localhost/foo?a=alpha&b=bravo'"));
-		new HttpieRequestSnippet().document(this.operationBuilder
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("POST").param("a", "alpha")
 				.param("b", "bravo").content("Some content").build());
 	}

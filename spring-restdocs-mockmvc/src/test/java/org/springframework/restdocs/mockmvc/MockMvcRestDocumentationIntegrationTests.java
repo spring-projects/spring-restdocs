@@ -161,8 +161,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content("$ curl " + "'http://localhost:8080/' -i -X POST "
-								+ "-H 'Accept: application/json' -d 'content'"))));
+						.content(String.format("$ curl " + "'http://localhost:8080/' -i -X POST "
+								+ "\\%n -H 'Accept: application/json' \\%n -d 'content'")))));
 	}
 
 	@Test
@@ -177,8 +177,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content("$ curl " + "'http://localhost:8080/' -i "
-								+ "-H 'Accept: application/json' --cookie 'cookieName=cookieVal'"))));
+						.content(String.format("$ curl " + "'http://localhost:8080/' -i "
+								+ "\\%n -H 'Accept: application/json' \\%n --cookie 'cookieName=cookieVal'")))));
 	}
 
 	@Test
@@ -192,9 +192,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
 				is(snippet(asciidoctor())
-						.withContents(codeBlock(asciidoctor(), "bash").content("$ curl "
+						.withContents(codeBlock(asciidoctor(), "bash").content(String.format("$ curl "
 								+ "'http://localhost:8080/?foo=bar' -i -X POST "
-								+ "-H 'Accept: application/json' -d 'a=alpha'"))));
+								+ "\\%n -H 'Accept: application/json' \\%n -d 'a=alpha'")))));
 	}
 
 	@Test
@@ -208,9 +208,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/curl-snippet-with-content-and-parameters/curl-request.adoc"),
 				is(snippet(asciidoctor())
-						.withContents(codeBlock(asciidoctor(), "bash").content("$ curl "
+						.withContents(codeBlock(asciidoctor(), "bash").content(String.format("$ curl "
 								+ "'http://localhost:8080/?a=alpha' -i -X POST "
-								+ "-H 'Accept: application/json' -d 'some content'"))));
+								+ "\\%n -H 'Accept: application/json' \\%n -d 'some content'")))));
 	}
 
 	@Test
@@ -225,8 +225,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/httpie-snippet-with-content/httpie-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content("$ echo 'content' | http POST 'http://localhost:8080/'"
-								+ " 'Accept:application/json'"))));
+						.content(String.format("$ echo 'content' | http POST 'http://localhost:8080/'"
+								+ " \\%n 'Accept:application/json'")))));
 	}
 
 	@Test
@@ -241,8 +241,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content("$ http GET 'http://localhost:8080/'"
-								+ " 'Accept:application/json' 'Cookie:cookieName=cookieVal'"))));
+						.content(String.format("$ http GET 'http://localhost:8080/'"
+								+ " \\%n 'Accept:application/json' \\%n 'Cookie:cookieName=cookieVal'")))));
 	}
 
 	@Test
@@ -256,9 +256,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/httpie-snippet-with-query-string/httpie-request.adoc"),
 				is(snippet(asciidoctor())
-						.withContents(codeBlock(asciidoctor(), "bash").content("$ http "
+						.withContents(codeBlock(asciidoctor(), "bash").content(String.format("$ http "
 								+ "--form POST 'http://localhost:8080/?foo=bar' "
-								+ "'Accept:application/json' 'a=alpha'"))));
+								+ "\\%n 'Accept:application/json' \\%n 'a=alpha'")))));
 	}
 
 	@Test
@@ -272,9 +272,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/httpie-snippet-post-with-content-and-parameters/httpie-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content("$ echo " + "'some content' | http POST "
+						.content(String.format("$ echo " + "'some content' | http POST "
 								+ "'http://localhost:8080/?a=alpha' "
-								+ "'Accept:application/json'"))));
+								+ "\\%n 'Accept:application/json'")))));
 	}
 
 	@Test
@@ -542,8 +542,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/custom-context-path/curl-request.adoc"),
 				is(snippet(asciidoctor())
-						.withContents(codeBlock(asciidoctor(), "bash").content(
-								"$ curl 'http://localhost:8080/custom/' -i -H 'Accept: application/json'"))));
+						.withContents(codeBlock(asciidoctor(), "bash").content(String.format(
+								"$ curl 'http://localhost:8080/custom/' -i \\%n -H 'Accept: application/json'")))));
 	}
 
 	@Test

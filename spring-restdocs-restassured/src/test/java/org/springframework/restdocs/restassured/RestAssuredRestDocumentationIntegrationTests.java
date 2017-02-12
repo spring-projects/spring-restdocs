@@ -101,10 +101,10 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content("$ curl 'http://localhost:" + tomcat.getPort() + "/' -i "
-								+ "-X POST -H 'Accept: application/json' "
-								+ "-H 'Content-Type: " + contentType + "' "
-								+ "-d 'content'"))));
+						.content(String.format("$ curl 'http://localhost:" + tomcat.getPort() + "/' -i "
+								+ "-X POST \\%n -H 'Accept: application/json' "
+								+ "\\%n -H 'Content-Type: " + contentType + "' "
+								+ "\\%n -d 'content'")))));
 	}
 
 	@Test
@@ -119,10 +119,10 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content("$ curl 'http://localhost:" + tomcat.getPort() + "/' -i "
-								+ "-H 'Accept: application/json' " + "-H 'Content-Type: "
+						.content(String.format("$ curl 'http://localhost:" + tomcat.getPort() + "/' -i "
+								+ "\\%n -H 'Accept: application/json' " + "\\%n -H 'Content-Type: "
 								+ contentType + "' "
-								+ "--cookie 'cookieName=cookieVal'"))));
+								+ "\\%n --cookie 'cookieName=cookieVal'")))));
 	}
 
 	@Test
@@ -137,10 +137,10 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content("$ curl " + "'http://localhost:" + tomcat.getPort()
+						.content(String.format("$ curl " + "'http://localhost:" + tomcat.getPort()
 								+ "/?foo=bar' -i -X POST "
-								+ "-H 'Accept: application/json' " + "-H 'Content-Type: "
-								+ contentType + "' " + "-d 'a=alpha'"))));
+								+ "\\%n -H 'Accept: application/json' " + "\\%n -H 'Content-Type: "
+								+ contentType + "' " + "\\%n -d 'a=alpha'")))));
 	}
 
 	@Test

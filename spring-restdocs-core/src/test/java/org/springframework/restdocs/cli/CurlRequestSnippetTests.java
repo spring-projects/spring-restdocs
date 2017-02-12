@@ -49,6 +49,8 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 @RunWith(Parameterized.class)
 public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
+	private CommandFormatter commandFormatter = CliDocumentation.singleLineFormat();
+
 	public CurlRequestSnippetTests(String name, TemplateFormat templateFormat) {
 		super(name, templateFormat);
 	}
@@ -57,7 +59,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequest() throws IOException {
 		this.snippets.expectCurlRequest().withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo' -i"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo").build());
 	}
 
@@ -65,7 +67,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequestWithParameter() throws IOException {
 		this.snippets.expectCurlRequest().withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo?a=alpha' -i"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").param("a", "alpha").build());
 	}
 
@@ -73,7 +75,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void nonGetRequest() throws IOException {
 		this.snippets.expectCurlRequest().withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo' -i -X POST"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("POST").build());
 	}
 
@@ -81,7 +83,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void requestWithContent() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -d 'content'"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").content("content").build());
 	}
 
@@ -89,7 +91,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequestWithQueryString() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?param=value' -i"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo?param=value").build());
 	}
 
@@ -98,7 +100,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 			throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?param=value' -i"));
-		new CurlRequestSnippet().document(
+		new CurlRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo?param=value")
 						.param("param", "value").build());
 	}
@@ -108,7 +110,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 			throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
 						.param("a", "alpha").param("b", "bravo").build());
 	}
@@ -117,7 +119,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequestWithDisjointQueryStringAndParameters() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo?a=alpha").param("b", "bravo").build());
 	}
 
@@ -125,7 +127,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void getRequestWithQueryStringWithNoValue() throws IOException {
 		this.snippets.expectCurlRequest().withContents(
 				codeBlock("bash").content("$ curl 'http://localhost/foo?param' -i"));
-		new CurlRequestSnippet().document(
+		new CurlRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo?param").build());
 	}
 
@@ -133,7 +135,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithQueryString() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?param=value' -i -X POST"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo?param=value").method("POST").build());
 	}
 
@@ -141,7 +143,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithQueryStringWithNoValue() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?param' -i -X POST"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo?param").method("POST").build());
 	}
 
@@ -149,7 +151,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithOneParameter() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.method("POST").param("k1", "v1").build());
 	}
@@ -158,7 +160,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithOneParameterWithNoValue() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1='"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("POST").param("k1").build());
 	}
 
@@ -168,7 +170,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash")
 						.content("$ curl 'http://localhost/foo' -i -X POST"
 								+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
-		new CurlRequestSnippet().document(
+		new CurlRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo").method("POST")
 						.param("k1", "v1", "v1-bis").param("k2", "v2").build());
 	}
@@ -177,7 +179,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithUrlEncodedParameter() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.method("POST").param("k1", "a&b").build());
 	}
@@ -186,7 +188,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void postRequestWithDisjointQueryStringAndParameter() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash").content(
 				"$ curl 'http://localhost/foo?a=alpha' -i -X POST -d 'b=bravo'"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
 						.method("POST").param("b", "bravo").build());
 	}
@@ -196,7 +198,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 			throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i -X POST"));
-		new CurlRequestSnippet().document(
+		new CurlRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo")
 						.method("POST").param("a", "alpha").param("b", "bravo").build());
 	}
@@ -206,7 +208,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 			throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash").content(
 				"$ curl 'http://localhost/foo?a=alpha' -i -X POST -d 'b=bravo'"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
 						.method("POST").param("a", "alpha").param("b", "bravo").build());
 	}
@@ -215,7 +217,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void putRequestWithOneParameter() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=v1'"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("PUT").param("k1", "v1").build());
 	}
 
@@ -225,7 +227,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash")
 						.content("$ curl 'http://localhost/foo' -i -X PUT"
 								+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("PUT").param("k1", "v1")
 				.param("k1", "v1-bis").param("k2", "v2").build());
 	}
@@ -234,7 +236,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void putRequestWithUrlEncodedParameter() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=a%26b'"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.method("PUT").param("k1", "a&b").build());
 	}
@@ -244,7 +246,19 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content("$ curl 'http://localhost/foo' -i"
 						+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
+				.document(this.operationBuilder.request("http://localhost/foo")
+						.header(HttpHeaders.CONTENT_TYPE,
+								MediaType.APPLICATION_JSON_VALUE)
+						.header("a", "alpha").build());
+	}
+
+	@Test
+	public void requestWithHeadersMultiline() throws IOException {
+		this.snippets.expectCurlRequest()
+				.withContents(codeBlock("bash").content(String.format("$ curl 'http://localhost/foo' -i"
+						+ " \\%n -H 'Content-Type: application/json' \\%n -H 'a: alpha'")));
+		new CurlRequestSnippet(CliDocumentation.multiLineFormat())
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.APPLICATION_JSON_VALUE)
@@ -256,7 +270,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content("$ curl 'http://localhost/foo' -i"
 						+ " --cookie 'name1=value1;name2=value2'"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.cookie("name1", "value1").cookie("name2", "value2").build());
 	}
@@ -268,11 +282,11 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "'metadata={\"description\": \"foo\"}'";
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new CurlRequestSnippet().document(
+		new CurlRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("metadata", "{\"description\": \"foo\"}".getBytes()).build());
+						.part("metadata", "{\"description\": \"foo\"}".getBytes()).build());
 	}
 
 	@Test
@@ -282,13 +296,13 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "'image=@documents/images/example.png;type=image/png'";
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new CurlRequestSnippet().document(
+		new CurlRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", new byte[0])
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
-				.submittedFileName("documents/images/example.png").build());
+						.part("image", new byte[0])
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
+						.submittedFileName("documents/images/example.png").build());
 	}
 
 	@Test
@@ -298,12 +312,12 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "'image=@documents/images/example.png'";
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new CurlRequestSnippet().document(
+		new CurlRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", new byte[0])
-				.submittedFileName("documents/images/example.png").build());
+						.part("image", new byte[0])
+						.submittedFileName("documents/images/example.png").build());
 	}
 
 	@Test
@@ -314,25 +328,25 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "-F 'b=banana'";
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new CurlRequestSnippet().document(
+		new CurlRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE,
 								MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", new byte[0])
-				.submittedFileName("documents/images/example.png").and()
-				.param("a", "apple", "avocado").param("b", "banana").build());
+						.part("image", new byte[0])
+						.submittedFileName("documents/images/example.png").and()
+						.param("a", "apple", "avocado").param("b", "banana").build());
 	}
 
 	@Test
 	public void basicAuthCredentialsAreSuppliedUsingUserOption() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -u 'user:secret'"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.header(HttpHeaders.AUTHORIZATION,
 								"Basic " + Base64Utils
 										.encodeToString("user:secret".getBytes()))
-				.build());
+						.build());
 	}
 
 	@Test
@@ -344,13 +358,14 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.willReturn(snippetResource("curl-request-with-title"));
 		new CurlRequestSnippet(
 				attributes(
-						key("title").value("curl request title")))
-								.document(
-										this.operationBuilder
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.request("http://localhost/foo").build());
+						key("title").value("curl request title")),
+				this.commandFormatter)
+				.document(
+						this.operationBuilder
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(
+												resolver))
+								.request("http://localhost/foo").build());
 	}
 
 	@Test
@@ -359,7 +374,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash").content(
 						"$ curl 'http://localhost/foo' -i" + " -H 'Host: api.example.com'"
 								+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
-		new CurlRequestSnippet()
+		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.header(HttpHeaders.HOST, "api.example.com")
 						.header(HttpHeaders.CONTENT_TYPE,
@@ -373,9 +388,8 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash")
 						.content("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i "
 								+ "-X POST -d 'Some content'"));
-		new CurlRequestSnippet().document(this.operationBuilder
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").param("a", "alpha").method("POST")
 				.param("b", "bravo").content("Some content").build());
 	}
-
 }
