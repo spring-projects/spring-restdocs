@@ -42,6 +42,7 @@ import org.springframework.util.StringUtils;
  *
  * @author Raman Gupta
  * @author Andy Wilkinson
+ * @author Tomasz Kopczynski
  * @since 1.1.0
  * @see CliDocumentation#httpieRequest()
  * @see CliDocumentation#httpieRequest(Map)
@@ -52,6 +53,8 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 
 	/**
 	 * Creates a new {@code HttpieRequestSnippet} with no additional attributes.
+	 *
+	 * @deprecated since 1.2.0 in favor of {@link #HttpieRequestSnippet(CommandFormatter)}
 	 */
 	@Deprecated
 	protected HttpieRequestSnippet() {
@@ -59,9 +62,10 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	/**
-	 * Creates a new {@code HttpieRequestSnippet} with the given {@link CommandFormatter}.
+	 * Creates a new {@code HttpieRequestSnippet} that will use the given
+	 * {@code commandFormatter} to format the HTTPie command.
 	 *
-	 * @param commandFormatter The formatter for generating the snippet
+	 * @param commandFormatter The formatter
 	 */
 	protected HttpieRequestSnippet(CommandFormatter commandFormatter) {
 		this(null, commandFormatter);
@@ -72,6 +76,8 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	 * {@code attributes} that will be included in the model during template rendering.
 	 *
 	 * @param attributes The additional attributes
+	 * @deprecated since 1.2.0 in favor of
+	 * {@link #HttpieRequestSnippet(Map, CommandFormatter)}
 	 */
 	@Deprecated
 	protected HttpieRequestSnippet(Map<String, Object> attributes) {
@@ -80,16 +86,16 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 
 	/**
 	 * Creates a new {@code HttpieRequestSnippet} with the given additional
-	 * {@code attributes} that will be included in the model during template rendering
-	 * and the given {@link CommandFormatter}.
+	 * {@code attributes} that will be included in the model during template rendering.
+	 * The given {@code commandFormaatter} will be used to format the HTTPie command.
 	 *
 	 * @param attributes The additional attributes
 	 * @param commandFormatter The formatter for generating the snippet
 	 */
-	protected HttpieRequestSnippet(Map<String, Object> attributes, CommandFormatter commandFormatter) {
+	protected HttpieRequestSnippet(Map<String, Object> attributes,
+			CommandFormatter commandFormatter) {
 		super("httpie-request", attributes);
-
-		Assert.notNull(commandFormatter, "Command formatter must be set");
+		Assert.notNull(commandFormatter, "Command formatter must not be null");
 		this.commandFormatter = commandFormatter;
 	}
 
@@ -200,8 +206,8 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 
 	private void writeCookies(OperationRequest request, List<String> lines) {
 		for (RequestCookie cookie : request.getCookies()) {
-			lines.add(String.format("'Cookie:%s=%s'", cookie.getName(),
-					cookie.getValue()));
+			lines.add(
+					String.format("'Cookie:%s=%s'", cookie.getName(), cookie.getValue()));
 		}
 	}
 
@@ -215,8 +221,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		}
 		else if (request.isPutOrPost()) {
 			writeContentUsingParameters(
-					request.getParameters().getUniqueParameters(request.getUri()),
-					lines);
+					request.getParameters().getUniqueParameters(request.getUri()), lines);
 		}
 	}
 

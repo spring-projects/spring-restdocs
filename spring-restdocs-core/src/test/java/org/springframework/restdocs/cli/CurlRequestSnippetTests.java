@@ -45,6 +45,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  * @author Dmitriy Mayboroda
  * @author Jonathan Pearlin
  * @author Paul-Christian Volkmer
+ * @author Tomasz Kopczynski
  */
 @RunWith(Parameterized.class)
 public class CurlRequestSnippetTests extends AbstractSnippetTests {
@@ -256,8 +257,10 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void requestWithHeadersMultiline() throws IOException {
 		this.snippets.expectCurlRequest()
-				.withContents(codeBlock("bash").content(String.format("$ curl 'http://localhost/foo' -i"
-						+ " \\%n -H 'Content-Type: application/json' \\%n -H 'a: alpha'")));
+				.withContents(codeBlock("bash")
+						.content(String.format("$ curl 'http://localhost/foo' -i \\%n"
+								+ "    -H 'Content-Type: application/json' \\%n"
+								+ "    -H 'a: alpha'")));
 		new CurlRequestSnippet(CliDocumentation.multiLineFormat())
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.header(HttpHeaders.CONTENT_TYPE,
@@ -360,11 +363,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				attributes(
 						key("title").value("curl request title")),
 				this.commandFormatter)
-				.document(
-						this.operationBuilder
+						.document(this.operationBuilder
 								.attribute(TemplateEngine.class.getName(),
-										new MustacheTemplateEngine(
-												resolver))
+										new MustacheTemplateEngine(resolver))
 								.request("http://localhost/foo").build());
 	}
 

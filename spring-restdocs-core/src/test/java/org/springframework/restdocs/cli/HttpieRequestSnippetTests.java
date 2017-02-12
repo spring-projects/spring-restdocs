@@ -46,6 +46,8 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  * @author Jonathan Pearlin
  * @author Paul-Christian Volkmer
  * @author Raman Gupta
+ * @author Tomasz Kopczynski
+ *
  */
 @RunWith(Parameterized.class)
 public class HttpieRequestSnippetTests extends AbstractSnippetTests {
@@ -256,9 +258,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestWithHeadersMultiline() throws IOException {
-		this.snippets.expectHttpieRequest().withContents(
-				codeBlock("bash").content(String.format("$ http GET 'http://localhost/foo'"
-						+ " \\%n 'Content-Type:application/json' \\%n 'a:alpha'")));
+		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
+				.content(String.format("$ http GET 'http://localhost/foo' \\%n"
+						+ "    'Content-Type:application/json' \\%n    'a:alpha'")));
 		new HttpieRequestSnippet(CliDocumentation.multiLineFormat())
 				.document(this.operationBuilder.request("http://localhost/foo")
 						.header(HttpHeaders.CONTENT_TYPE,
@@ -279,7 +281,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void multipartPostWithNoSubmittedFileName() throws IOException {
 		String expectedContent = "$ http --form POST 'http://localhost/upload'"
-						+ " 'metadata'@<(echo '{\"description\": \"foo\"}')";
+				+ " 'metadata'@<(echo '{\"description\": \"foo\"}')";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
 		new HttpieRequestSnippet(this.commandFormatter).document(
@@ -293,7 +295,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void multipartPostWithContentType() throws IOException {
 		// httpie does not yet support manually set content type by part
 		String expectedContent = "$ http --form POST 'http://localhost/upload'"
-						+ " 'image'@'documents/images/example.png'";
+				+ " 'image'@'documents/images/example.png'";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
 		new HttpieRequestSnippet(this.commandFormatter).document(
@@ -308,7 +310,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void multipartPost() throws IOException {
 		String expectedContent = "$ http --form POST 'http://localhost/upload'"
-						+ " 'image'@'documents/images/example.png'";
+				+ " 'image'@'documents/images/example.png'";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
 		new HttpieRequestSnippet(this.commandFormatter).document(
@@ -322,8 +324,8 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void multipartPostWithParameters() throws IOException {
 		String expectedContent = "$ http --form POST 'http://localhost/upload'"
-						+ " 'image'@'documents/images/example.png' 'a=apple' 'a=avocado'"
-						+ " 'b=banana'";
+				+ " 'image'@'documents/images/example.png' 'a=apple' 'a=avocado'"
+				+ " 'b=banana'";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
 		new HttpieRequestSnippet(this.commandFormatter).document(
@@ -355,14 +357,12 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 		given(resolver.resolveTemplateResource("httpie-request"))
 				.willReturn(snippetResource("httpie-request-with-title"));
 		new HttpieRequestSnippet(
-				attributes(
-						key("title").value("httpie request title")),
+				attributes(key("title")
+						.value("httpie request title")),
 				this.commandFormatter)
-				.document(
-						this.operationBuilder
+						.document(this.operationBuilder
 								.attribute(TemplateEngine.class.getName(),
-										new MustacheTemplateEngine(
-												resolver))
+										new MustacheTemplateEngine(resolver))
 								.request("http://localhost/foo").build());
 	}
 

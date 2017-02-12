@@ -39,9 +39,12 @@ import org.springframework.util.StringUtils;
  *
  * @author Andy Wilkinson
  * @author Paul-Christian Volkmer
+ * @author Tomasz Kopczynski
  * @since 1.1.0
  * @see CliDocumentation#curlRequest()
+ * @see CliDocumentation#curlRequest(CommandFormatter)
  * @see CliDocumentation#curlRequest(Map)
+ * @see CliDocumentation#curlRequest(Map, CommandFormatter)
  */
 public class CurlRequestSnippet extends TemplatedSnippet {
 
@@ -49,16 +52,19 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with no additional attributes.
+	 *
+	 * @deprecated since 1.2.0 in favor of {@link #CurlRequestSnippet(CommandFormatter)}
 	 */
 	@Deprecated
 	protected CurlRequestSnippet() {
-		this(null, null);
+		this(null, CliDocumentation.DEFAULT_COMMAND_FORMATTER);
 	}
 
 	/**
-	 * Creates a new {@code CurlRequestSnippet} with a given {@link CommandFormatter}.
+	 * Creates a new {@code CurlRequestSnippet} that will use the given
+	 * {@code commandFormatter} to format the curl command.
 	 *
-	 * @param commandFormatter The formatter for generating the snippet
+	 * @param commandFormatter The formatter
 	 */
 	protected CurlRequestSnippet(CommandFormatter commandFormatter) {
 		this(null, commandFormatter);
@@ -69,24 +75,26 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	 * {@code attributes} that will be included in the model during template rendering.
 	 *
 	 * @param attributes The additional attributes
+	 * @deprecated since 1.2.0 in favor of
+	 * {@link #CurlRequestSnippet(Map, CommandFormatter)}
 	 */
 	@Deprecated
 	protected CurlRequestSnippet(Map<String, Object> attributes) {
-		this(attributes, null);
+		this(attributes, CliDocumentation.DEFAULT_COMMAND_FORMATTER);
 	}
 
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with the given additional
-	 * {@code attributes} that will be included in the model during template rendering
-	 * and the given {@link CommandFormatter}.
+	 * {@code attributes} that will be included in the model during template rendering.
+	 * The given {@code commandFormaatter} will be used to format the curl command.
 	 *
 	 * @param attributes The additional attributes
 	 * @param commandFormatter The formatter for generating the snippet
 	 */
-	protected CurlRequestSnippet(Map<String, Object> attributes, CommandFormatter commandFormatter) {
+	protected CurlRequestSnippet(Map<String, Object> attributes,
+			CommandFormatter commandFormatter) {
 		super("curl-request", attributes);
-
-		Assert.notNull(commandFormatter, "Command formatter must be set");
+		Assert.notNull(commandFormatter, "Command formatter must not be null");
 		this.commandFormatter = commandFormatter;
 	}
 

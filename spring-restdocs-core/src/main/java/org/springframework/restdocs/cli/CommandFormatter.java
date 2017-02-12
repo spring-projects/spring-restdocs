@@ -19,19 +19,20 @@ package org.springframework.restdocs.cli;
 import java.util.List;
 
 /**
- * Formatter for {@link CurlRequestSnippet} and {@link HttpieRequestSnippet}.
- * Its purpose is to format a command snippet from a list of its parts represented
- * as {@code String}s.
+ * Formatter for CLI commands such as those included in {@link CurlRequestSnippet} and
+ * {@link HttpieRequestSnippet}.
  *
  * @author Tomasz Kopczynski
+ * @since 1.2.0
  */
 public interface CommandFormatter {
 
 	/**
-	 * Formats a list of {@code String}s into a single {@code String}.
+	 * Formats a list of {@code elements} into a single {@code String}.
 	 *
-	 * @param elements A list of {@code String}s to be formatted
-	 * @return A list of {@code String}s formatted as one {@code String}
+	 * @param elements The {@code String} elements to be formatted
+	 * @return A single formatted {@code String}
 	 */
 	String format(List<String> elements);
+
 }

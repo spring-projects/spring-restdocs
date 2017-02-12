@@ -29,27 +29,33 @@ import static org.junit.Assert.assertThat;
  * Tests for {@link CommandFormatter}.
  *
  * @author Tomasz Kopczynski
+ * @author Andy Wilkinson
  */
 public class ConcatenatingCommandFormatterTests {
 
-	private CommandFormatter singleLineFormat = CliDocumentation.singleLineFormat();
-
-	private static final String STR = "test";
+	private CommandFormatter singleLineFormat = new ConcatenatingCommandFormatter(" ");
 
 	@Test
-	public void noElementsTest() {
-		assertThat(this.singleLineFormat.format(Collections.<String>emptyList()), is(equalTo("")));
+	public void formattingAnEmptyListProducesAnEmptyString() {
+		assertThat(this.singleLineFormat.format(Collections.<String>emptyList()),
+				is(equalTo("")));
+	}
+
+	@Test
+	public void formattingNullProducesAnEmptyString() {
 		assertThat(this.singleLineFormat.format(null), is(equalTo("")));
-
 	}
 
 	@Test
-	public void singleElementTest() {
-		assertThat(this.singleLineFormat.format(Collections.singletonList(STR)), is(equalTo(String.format(" %s", STR))));
+	public void formattingASingleElement() {
+		assertThat(this.singleLineFormat.format(Collections.singletonList("alpha")),
+				is(equalTo(" alpha")));
 	}
 
 	@Test
-	public void twoElementsTest() {
-		assertThat(this.singleLineFormat.format(Arrays.asList(STR, STR)), is(equalTo(String.format(" %s %s", STR, STR))));
+	public void formattingMultipleElements() {
+		assertThat(this.singleLineFormat.format(Arrays.asList("alpha", "bravo")),
+				is(equalTo(String.format(" alpha bravo"))));
 	}
+
 }
