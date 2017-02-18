@@ -24,22 +24,38 @@ import org.springframework.restdocs.templates.TemplateFormat;
  * @author Andy Wilkinson
  * @since 1.1.0
  */
-class SnippetConfiguration {
+public class SnippetConfiguration {
 
 	private final String encoding;
 
 	private final TemplateFormat format;
 
-	SnippetConfiguration(String encoding, TemplateFormat templateFormat) {
+	/**
+	 * Creates a new Snippet Configuration with provided encoding and template format.
+	 *
+	 * @param encoding encoding to use
+	 * @param templateFormat template format to use
+	 */
+	public SnippetConfiguration(String encoding, TemplateFormat templateFormat) {
 		this.encoding = encoding;
 		this.format = templateFormat;
 	}
 
-	String getEncoding() {
+	/**
+	 * Returns the encoding.
+	 *
+	 * @return encoding
+	 */
+	public String getEncoding() {
 		return this.encoding;
 	}
 
-	TemplateFormat getTemplateFormat() {
+	/**
+	 * Returns the template format.
+	 *
+	 * @return template format
+	 */
+	public TemplateFormat getTemplateFormat() {
 		return this.format;
 	}
 
