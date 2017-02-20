@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
  * A configurer that can be used to configure the documented URIs.
  *
  * @author Andy Wilkinson
+ * @author Eddú Meléndez
  */
 public class UriConfigurer
 		extends AbstractNestedConfigurer<MockMvcRestDocumentationConfigurer>
@@ -43,7 +44,14 @@ public class UriConfigurer
 	public static final String DEFAULT_SCHEME = "http";
 
 	/**
-	 * The defalt host for documented URIs.
+	 * The HTTPS scheme for documented URIs.
+	 *
+	 * @see #withHttps()
+	 */
+	public static final String HTTPS_SCHEME = "https";
+
+	/**
+	 * The default host for documented URIs.
 	 *
 	 * @see #withHost(String)
 	 */
@@ -52,9 +60,23 @@ public class UriConfigurer
 	/**
 	 * The default port for documented URIs.
 	 *
-	 * @see #withPort(int)
+	 * @see #withHttp(int)
 	 */
 	public static final int DEFAULT_PORT = 8080;
+
+	/**
+	 * The HTTP port for documented URIs.
+	 *
+	 * @see #withHttp(int)
+	 */
+	public static final int HTTP_PORT = 80;
+
+	/**
+	 * The HTTPS port for documented URIs.
+	 *
+	 * @see #withHttps(int)
+	 */
+	public static final int HTTPS_PORT = 443;
 
 	private String scheme = DEFAULT_SCHEME;
 
@@ -72,7 +94,9 @@ public class UriConfigurer
 	 *
 	 * @param scheme The URI scheme
 	 * @return {@code this}
+	 * @deprecated Since 1.2.0 in favor of {@link #withHttp()} or {@link #withHttps()}
 	 */
+	@Deprecated
 	public UriConfigurer withScheme(String scheme) {
 		this.scheme = scheme;
 		return this;
@@ -96,8 +120,56 @@ public class UriConfigurer
 	 *
 	 * @param port The URI port
 	 * @return {@code this}
+	 * @deprecated Since 1.2.0 in favor of {@link #withHttp(int)} or {@link #withHttps(int)}
 	 */
+	@Deprecated
 	public UriConfigurer withPort(int port) {
+		this.port = port;
+		return this;
+	}
+
+	/**
+	 * Configures any documented URIs to use HTTP scheme.  The default port is 8080.
+	 *
+	 * @return {@code this}
+	 */
+	public UriConfigurer withHttp() {
+		this.scheme = DEFAULT_SCHEME;
+		this.port = DEFAULT_PORT;
+		return this;
+	}
+
+	/**
+	 * Configures any documented URIs to use HTTP scheme and the given {@link #port}.
+	 *
+	 * @param port The URI port
+	 * @return {@code this}
+	 */
+	public UriConfigurer withHttp(int port) {
+		this.scheme = DEFAULT_SCHEME;
+		this.port = port;
+		return this;
+	}
+
+	/**
+	 * Configures any documented URIs to use HTTPS scheme. The default port is 443.
+	 *
+	 * @return {@code this}
+	 */
+	public UriConfigurer withHttps() {
+		this.scheme = HTTPS_SCHEME;
+		this.port = HTTPS_PORT;
+		return this;
+	}
+
+	/**
+	 * Configures any documented URIs to use HTTPS scheme and the given {@link #port}.
+	 *
+	 * @param port The URI port
+	 * @return {@code this}
+	 */
+	public UriConfigurer withHttps(int port) {
+		this.scheme = HTTPS_SCHEME;
 		this.port = port;
 		return this;
 	}

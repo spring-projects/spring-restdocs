@@ -58,7 +58,7 @@ public class MockMvcRestDocumentationConfigurerTests {
 	@Test
 	public void customScheme() {
 		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).uris().withScheme("https")
+				this.restDocumentation).uris().withHttps(8080)
 						.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 
@@ -78,7 +78,7 @@ public class MockMvcRestDocumentationConfigurerTests {
 	@Test
 	public void customPort() {
 		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).uris().withPort(8081).beforeMockMvcCreated(null,
+				this.restDocumentation).uris().withHttp(8081).beforeMockMvcCreated(null,
 						null);
 		postProcessor.postProcessRequest(this.request);
 
@@ -88,7 +88,7 @@ public class MockMvcRestDocumentationConfigurerTests {
 	@Test
 	public void noContentLengthHeaderWhenRequestHasNotContent() {
 		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).uris().withPort(8081).beforeMockMvcCreated(null,
+				this.restDocumentation).uris().withHttp(8081).beforeMockMvcCreated(null,
 						null);
 		postProcessor.postProcessRequest(this.request);
 		assertThat(this.request.getHeader("Content-Length"), is(nullValue()));

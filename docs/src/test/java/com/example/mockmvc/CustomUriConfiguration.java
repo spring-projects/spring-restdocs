@@ -42,9 +42,8 @@ public class CustomUriConfiguration {
 		// tag::custom-uri-configuration[]
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation).uris()
-						.withScheme("https")
-						.withHost("example.com")
-						.withPort(443))
+						.withHttps()
+						.withHost("example.com"))
 				.build();
 		// end::custom-uri-configuration[]
 	}
