@@ -4,6 +4,8 @@ buildscript {
 	}
 	dependencies {
 		classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE'
+		classpath 'org.asciidoctor:asciidoctorj:1.5.4'
+		classpath "org.springframework.restdocs:spring-restdocs-asciidoctor:1.2.0.BUILD-SNAPSHOT"
 	}
 }
 

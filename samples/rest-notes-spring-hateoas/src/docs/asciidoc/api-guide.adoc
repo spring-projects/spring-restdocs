@@ -10,6 +10,8 @@ Andy Wilkinson;
 [[overview]]
 = Overview
 
+operation::index-example[snippets='response-fields,http-response', level=2]
+
 [[overview-http-verbs]]
 == HTTP verbs
 
