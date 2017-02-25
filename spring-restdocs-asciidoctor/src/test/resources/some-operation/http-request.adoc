@@ -1,0 +1,6 @@
+[source,http,options="nowrap"]
+----
+GET / HTTP/1.1
+Host: localhost:8080
+
+----
