@@ -121,7 +121,7 @@ public class SampleBuildConfigurer {
 	private Task createVerifyIncludes(Project project, File buildDir) {
 		Task verifyIncludesTask = project.tasks.create("${name}VerifyIncludes")
 		verifyIncludesTask.description = "Verifies the includes in the ${name} sample"
-		verifyIncludesTask << {
+		verifyIncludesTask.doLast {
 			Map unprocessedIncludes = [:]
 			buildDir.eachFileRecurse { file ->
 				if (file.name.endsWith('.html')) {

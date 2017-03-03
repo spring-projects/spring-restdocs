@@ -5,10 +5,14 @@ buildscript {
 		maven { url 'https://plugins.gradle.org/m2/' }
 	}
 	dependencies {
-		classpath 'io.spring.gradle:dependency-management-plugin:0.5.5.RELEASE'
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
-		classpath 'io.spring.gradle:spring-io-plugin:0.0.5.RELEASE'
+		classpath 'io.spring.gradle:spring-io-plugin:0.0.6.RELEASE'
 		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:1.2'
+	}
+	configurations.classpath.resolutionStrategy.eachDependency {
+		if (it.requested.name == 'dependency-management-plugin') {
+			it.useVersion '1.0.0.RELEASE'
+		}
 	}
 }
 
