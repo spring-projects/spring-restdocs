@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,34 +59,6 @@ class ApiDocumentationSpec extends Specification {
 				.build()
 	}
 
-	void 'test and document get request for /index'() {
-		expect:
-		given(this.documentationSpec)
-				.accept(MediaType.APPLICATION_JSON.toString())
-				.filter(document('index-example',
-				preprocessRequest(modifyUris()
-						.host('api.example.com')
-						.removePort()),
-				preprocessResponse(prettyPrint()),
-				responseFields(
-						fieldWithPath('message').description('Welcome to Grails!'),
-						fieldWithPath('environment').description("The running environment"),
-						fieldWithPath('appversion').description('version of the app that is running'),
-						fieldWithPath('grailsversion').description('the version of grails used in this project'),
-						fieldWithPath('appprofile').description('the profile of grails used in this project'),
-						fieldWithPath('groovyversion').description('the version of groovy used in this project'),
-						fieldWithPath('jvmversion').description('the version of the jvm used in this project'),
-						subsectionWithPath('controllers').type(JsonFieldType.ARRAY).description('the list of available controllers'),
-						subsectionWithPath('plugins').type(JsonFieldType.ARRAY).description('the plugins active for this project'),
-				)))
-				.when()
-				.port(this.serverPort)
-				.get('/')
-				.then()
-				.assertThat()
-				.statusCode(is(200))
-	}
-
 	void 'test and document notes list request'() {
 		expect:
 		given(this.documentationSpec)
@@ -97,7 +69,6 @@ class ApiDocumentationSpec extends Specification {
 						.removePort()),
 				preprocessResponse(prettyPrint()),
 				responseFields(
-					fieldWithPath('[].class').description('the class of the resource'),
 					fieldWithPath('[].id').description('the id of the note'),
 					fieldWithPath('[].title').description('the title of the note'),
 					fieldWithPath('[].body').description('the body of the note'),
@@ -127,7 +98,6 @@ class ApiDocumentationSpec extends Specification {
 						subsectionWithPath('tags').type(JsonFieldType.ARRAY).description('a list of tags associated to the note')
 				),
 				responseFields(
-					fieldWithPath('class').description('the class of the resource'),
 					fieldWithPath('id').description('the id of the note'),
 					fieldWithPath('title').description('the title of the note'),
 					fieldWithPath('body').description('the body of the note'),
@@ -152,7 +122,6 @@ class ApiDocumentationSpec extends Specification {
 						.removePort()),
 				preprocessResponse(prettyPrint()),
 				responseFields(
-					fieldWithPath('class').description('the class of the resource'),
 					fieldWithPath('id').description('the id of the note'),
 					fieldWithPath('title').description('the title of the note'),
 					fieldWithPath('body').description('the body of the note'),

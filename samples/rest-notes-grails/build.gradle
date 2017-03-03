@@ -1,36 +1,26 @@
 buildscript {
-	ext {
-		grailsVersion = project.grailsVersion
-	}
 	repositories {
-		mavenLocal()
 		maven { url "https://repo.grails.org/grails/core" }
-		maven { url 'https://repo.spring.io/libs-snapshot' }
 	}
 	dependencies {
 		classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-		classpath "org.grails.plugins:hibernate:4.3.10.5"
-		classpath 'org.ajoberstar:gradle-git:1.1.0'
+		classpath "org.grails.plugins:hibernate5:6.0.7"
 	}
 }
 
 plugins {
-	id "io.spring.dependency-management" version "0.5.4.RELEASE"
 	id 'org.asciidoctor.convert' version '1.5.3'
 }
 
 version "0.1"
 group "com.example"
 
-apply plugin: "spring-boot"
 apply plugin: "war"
-apply plugin: 'eclipse'
-apply plugin: 'idea'
+apply plugin: "eclipse"
+apply plugin: "idea"
 apply plugin: "org.grails.grails-web"
 
 ext {
-	grailsVersion = project.grailsVersion
-	gradleWrapperVersion = project.gradleWrapperVersion
 	restDocsVersion = "1.2.0.BUILD-SNAPSHOT"
 	snippetsDir = file('src/docs/generated-snippets')
 }
@@ -43,12 +33,12 @@ repositories {
 
 dependencyManagement {
 	dependencies {
+		dependency "org.springframework.restdocs:spring-restdocs-core:$restDocsVersion"
 		dependency "org.springframework.restdocs:spring-restdocs-restassured:$restDocsVersion"
 		dependency "org.springframework.restdocs:spring-restdocs-asciidoctor:$restDocsVersion"
 	}
 	imports {
 		mavenBom "org.grails:grails-bom:$grailsVersion"
-		mavenBom "org.springframework:spring-framework-bom:4.3.1.RELEASE"
 	}
 	applyMavenExclusions false
 }
@@ -57,11 +47,13 @@ dependencies {
 	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor"
 
 	compile "org.springframework.boot:spring-boot-starter-logging"
-	compile "org.springframework.boot:spring-boot-starter-actuator"
 	compile "org.springframework.boot:spring-boot-autoconfigure"
+	compile "org.springframework.boot:spring-boot-starter-actuator"
 	compile "org.springframework.boot:spring-boot-starter-tomcat"
+	compile "org.grails:grails-core"
 	compile "org.grails:grails-plugin-url-mappings"
 	compile "org.grails:grails-plugin-rest"
+	compile "org.grails:grails-plugin-codecs"
 	compile "org.grails:grails-plugin-interceptors"
 	compile "org.grails:grails-plugin-services"
 	compile "org.grails:grails-plugin-datasource"
@@ -69,22 +61,25 @@ dependencies {
 	compile "org.grails:grails-plugin-async"
 	compile "org.grails:grails-web-boot"
 	compile "org.grails:grails-logging"
-
-	compile "org.grails.plugins:hibernate"
 	compile "org.grails.plugins:cache"
-	compile "org.hibernate:hibernate-ehcache"
+	compile "org.grails.plugins:hibernate5"
+	compile "org.hibernate:hibernate-core:5.1.2.Final"
+	compile "org.hibernate:hibernate-ehcache:5.1.2.Final"
+	compile "org.grails.plugins:views-json"
+	compile "org.grails.plugins:views-json-templates"
+	console "org.grails:grails-console"
+
+	profile "org.grails.profiles:rest-api"
 
 	runtime "com.h2database:h2"
 
 	testCompile "org.grails:grails-plugin-testing"
 	testCompile "org.grails.plugins:geb"
-	testCompile 'org.springframework.restdocs:spring-restdocs-restassured'
+	testCompile "org.grails:grails-datastore-rest-client"
+	testCompile "org.springframework.restdocs:spring-restdocs-restassured"
 
-	console "org.grails:grails-console"
-}
-
-task wrapper(type: Wrapper) {
-	gradleVersion = gradleWrapperVersion
+	testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
+	testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 }
 
 ext {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,18 @@
 
 package com.example
 
-class NotFoundController {
+class UrlMappings {
 
-	def index() {
-		render(contentType: 'application/json') {
-			error = 404
-			message = "Not Found"
-		}
+	static mappings = {
+		delete "/$controller/$id(.$format)?"(action:"delete")
+		get "/$controller(.$format)?"(action:"index")
+		get "/$controller/$id(.$format)?"(action:"show")
+		post "/$controller(.$format)?"(action:"save")
+		put "/$controller/$id(.$format)?"(action:"update")
+		patch "/$controller/$id(.$format)?"(action:"patch")
+
+		"500"(view: '/error')
+		"404"(view: '/notFound')
 	}
 
 }

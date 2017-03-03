@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import com.example.Note
+package com.example
 
 class BootStrap {
 

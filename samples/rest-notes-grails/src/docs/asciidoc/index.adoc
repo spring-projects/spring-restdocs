@@ -62,30 +62,6 @@ use of HTTP status codes.
 = Resources
 
 
-[[resources-index]]
-== Index
-
-The index provides the entry point into the service.
-
-
-
-[[resources-index-access]]
-=== Accessing the index
-
-A `GET` request is used to access the index
-
-==== Example request
-
-include::{snippets}/index-example/curl-request.adoc[]
-
-==== Response structure
-
-include::{snippets}/index-example/response-fields.adoc[]
-
-==== Example response
-
-include::{snippets}/index-example/http-response.adoc[]
-
 
 [[resources-notes]]
 == Notes
