@@ -4,13 +4,10 @@ dependencies {
 	compile project(':spring-restdocs-core')
 	compile 'com.jayway.restassured:rest-assured'
 
+	testCompile 'org.apache.tomcat.embed:tomcat-embed-core:8.5.11'
 	testCompile 'org.mockito:mockito-core'
 	testCompile 'org.hamcrest:hamcrest-library'
-	testCompile 'org.springframework.hateoas:spring-hateoas'
-	testCompile 'org.springframework.boot:spring-boot-starter-web:1.4.1.RELEASE'
-	testCompile 'org.springframework.boot:spring-boot-test:1.4.1.RELEASE'
 	testCompile project(path: ':spring-restdocs-core', configuration: 'testArtifacts')
-	testRuntime 'commons-logging:commons-logging:1.2'
 }
 
 test {
