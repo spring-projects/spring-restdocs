@@ -27,7 +27,6 @@ ext {
 }
 
 ext['spring-restdocs.version'] = '1.2.0.BUILD-SNAPSHOT'
-ext['spring.version']='4.3.1.RELEASE'
 
 dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-data-jpa'

@@ -28,6 +28,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.templates.TemplateFormats.markdown;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -116,7 +117,7 @@ public class ApiDocumentation {
 							linkWithRel("tags").description("The [Tags](#tags) resource"),
 							linkWithRel("profile").description("The ALPS profile for the service")),
 					responseFields(
-							fieldWithPath("_links").description("Links to other resources"))));
+							subsectionWithPath("_links").description("Links to other resources"))));
 
 	}
 
@@ -134,7 +135,8 @@ public class ApiDocumentation {
 			.andExpect(status().isOk())
 			.andDo(document("notes-list-example",
 					responseFields(
-							fieldWithPath("_embedded.notes").description("An array of [Note](#note) resources"))));
+							subsectionWithPath("_embedded.notes").description("An array of [Note](#note) resources"),
+							subsectionWithPath("_links").description("Links to other resources"))));
 	}
 
 	@Test
@@ -197,12 +199,13 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("_links.tags", is(notNullValue())))
 			.andDo(document("note-get-example",
 					links(
-							linkWithRel("self").description("This note"),
+							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithRel("note").description("This note"),
 							linkWithRel("tags").description("This note's tags")),
 					responseFields(
 							fieldWithPath("title").description("The title of the note"),
 							fieldWithPath("body").description("The body of the note"),
-							fieldWithPath("_links").description("Links to other resources"))));
+							subsectionWithPath("_links").description("Links to other resources"))));
 	}
 
 	@Test
@@ -218,7 +221,8 @@ public class ApiDocumentation {
 			.andExpect(status().isOk())
 			.andDo(document("tags-list-example",
 					responseFields(
-							fieldWithPath("_embedded.tags").description("An array of [Tag](#tag) resources"))));
+							subsectionWithPath("_embedded.tags").description("An array of [Tag](#tag) resources"),
+							subsectionWithPath("_links").description("Links to other resources"))));
 	}
 
 	@Test
@@ -295,11 +299,12 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("name", is(tag.get("name"))))
 			.andDo(document("tag-get-example",
 					links(
-							linkWithRel("self").description("This tag"),
+							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithRel("tag").description("This tag"),
 							linkWithRel("notes").description("The notes that have this tag")),
 					responseFields(
 							fieldWithPath("name").description("The name of the tag"),
-							fieldWithPath("_links").description("Links to other resources"))));
+							subsectionWithPath("_links").description("Links to other resources"))));
 	}
 
 	@Test
