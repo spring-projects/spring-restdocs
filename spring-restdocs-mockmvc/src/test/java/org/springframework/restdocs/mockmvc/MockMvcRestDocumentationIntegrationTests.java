@@ -21,6 +21,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -39,10 +40,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentationIntegrationTests.TestConfiguration;
+import org.springframework.restdocs.test.SnippetMatchers.HttpRequestMatcher;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,6 +63,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -317,8 +321,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 
 		mockMvc.perform(get("/").param("foo", "bar").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andDo(document("links", responseFields(
-						fieldWithPath("a").description("The description"),
+				.andDo(document("links",
+						responseFields(fieldWithPath("a")
+								.description("The description"),
 						fieldWithPath("links").description("Links to other resources"))));
 
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
@@ -388,38 +393,44 @@ public class MockMvcRestDocumentationIntegrationTests {
 
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 
-		mockMvc.perform(get("/").header("a", "alpha").header("b", "bravo")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON).content("{\"a\":\"alpha\"}"))
+		MvcResult result = mockMvc
+				.perform(get("/").header("a", "alpha").header("b", "bravo")
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON).content("{\"a\":\"alpha\"}"))
 				.andExpect(status().isOk()).andDo(document("original-request"))
 				.andDo(document("preprocessed-request",
 						preprocessRequest(prettyPrint(),
 								removeHeaders("a", HttpHeaders.HOST,
 										HttpHeaders.CONTENT_LENGTH),
-								replacePattern(pattern, "\"<<beta>>\""))));
+								replacePattern(pattern, "\"<<beta>>\""))))
+				.andReturn();
 
+		HttpRequestMatcher originalRequest = httpRequest(asciidoctor(), RequestMethod.GET,
+				"/");
+		for (String headerName : iterable(result.getRequest().getHeaderNames())) {
+			originalRequest.header(headerName, result.getRequest().getHeader(headerName));
+		}
 		assertThat(
 				new File("build/generated-snippets/original-request/http-request.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(
-								httpRequest(asciidoctor(), RequestMethod.GET, "/")
-										.header("a", "alpha").header("b", "bravo")
-										.header("Content-Type", "application/json")
-										.header("Accept",
-												MediaType.APPLICATION_JSON_VALUE)
-										.header("Host", "localhost:8080")
-										.header("Content-Length", "13")
-										.content("{\"a\":\"alpha\"}"))));
+				is(snippet(asciidoctor()).withContents(originalRequest
+						.header("Host", "localhost:8080").header("Content-Length", "13")
+						.content("{\"a\":\"alpha\"}"))));
+		HttpRequestMatcher preprocessedRequest = httpRequest(asciidoctor(),
+				RequestMethod.GET, "/");
+		List<String> removedHeaders = Arrays.asList("a", HttpHeaders.HOST,
+				HttpHeaders.CONTENT_LENGTH);
+		for (String headerName : iterable(result.getRequest().getHeaderNames())) {
+			if (!removedHeaders.contains(headerName)) {
+				preprocessedRequest.header(headerName,
+						result.getRequest().getHeader(headerName));
+			}
+		}
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-request/http-request.adoc"),
 				is(snippet(asciidoctor())
-						.withContents(httpRequest(asciidoctor(), RequestMethod.GET, "/")
-								.header("b", "bravo")
-								.header("Content-Type", "application/json")
-								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
-								.content(prettyPrinted))));
+						.withContents(preprocessedRequest.content(prettyPrinted))));
 	}
 
 	@Test
