@@ -5,3 +5,14 @@ dependencies {
 	testCompile 'junit:junit'
 	testCompile 'org.asciidoctor:asciidoctorj'
 }
+
+task copyTestSnippet(type: Copy) {
+	from 'src/test/resources/curl-request.adoc',
+			'src/test/resources/http-request.adoc',
+			'src/test/resources/custom-snippet.adoc'
+	into 'build/generated-snippets/some-operation'
+}
+
+test {
+	dependsOn copyTestSnippet
+}
