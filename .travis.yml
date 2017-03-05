@@ -1,10 +1,8 @@
-sudo: false
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
+sudo: required
+env:
+  - GRADLE_OPTS=-Dorg.gradle.daemon=false
 language: java
 jdk:
   - oraclejdk8
 script:
-  - "./gradlew build buildSamples --stacktrace --no-daemon"
+  - ./gradlew build buildSamples --continue
