@@ -5,3 +5,12 @@ dependencies {
 	testCompile 'junit:junit'
 	testCompile 'org.asciidoctor:asciidoctorj'
 }
+
+task copyTestSnippets(type: Copy) {
+	from 'src/test/resources/some-operation'
+	into 'build/generated-snippets/some-operation'
+}
+
+test {
+	dependsOn copyTestSnippets
+}
