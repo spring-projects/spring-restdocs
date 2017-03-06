@@ -35,9 +35,9 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 /**
- * Tests for ruby based rest docs block macro
+ * Tests for ruby based rest docs block macro.
  * Because there is no java implementation (yet)
- * we can only test the behaviour when rendering
+ * we can only test the behaviour when rendering.
  *
  * @author Gerrit Meier
  */
@@ -60,7 +60,7 @@ public class OperationIncludeBlockMacroTests {
 	@Test
 	public void simpleSnippetInclude() throws Exception {
 		String result = this.asciidoctor.convert(
-						"operation::some-operation[snippets='curl-request']", this.options);
+				"operation::some-operation[snippets='curl-request']", this.options);
 
 		assertThat(result, equalTo(getExpectedContentFromFile("snippet_simple")));
 	}
@@ -68,8 +68,8 @@ public class OperationIncludeBlockMacroTests {
 	@Test
 	public void includeSnippetInSection() throws Exception {
 		String result = this.asciidoctor.convert(
-				"== Section\n"+
-						"operation::some-operation[snippets='curl-request']", this.options);
+				"== Section\n"
+						+ "operation::some-operation[snippets='curl-request']", this.options);
 
 		assertThat(result, equalTo(getExpectedContentFromFile("snippet_in_section")));
 	}
