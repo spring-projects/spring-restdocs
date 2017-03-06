@@ -69,7 +69,7 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
 
   def all_snippets(snippet_dir, operation)
     all_snippet_file_names = []
-    Dir.entries(File.join(snippet_dir.to_s, operation)).select { |file|
+    Dir.entries(File.join(snippet_dir.to_s, operation)).sort.select { |file|
       if file.end_with? '.adoc'
         file.slice!('.adoc')
         all_snippet_file_names << file
