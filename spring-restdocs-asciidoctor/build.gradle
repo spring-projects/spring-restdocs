@@ -4,4 +4,5 @@ dependencies {
 	compileOnly 'org.asciidoctor:asciidoctorj'
 	testCompile 'junit:junit'
 	testCompile 'org.asciidoctor:asciidoctorj'
+	testCompile 'org.springframework:spring-core'
 }

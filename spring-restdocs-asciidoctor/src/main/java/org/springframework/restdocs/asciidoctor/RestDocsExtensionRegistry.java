@@ -30,6 +30,11 @@ public final class RestDocsExtensionRegistry implements ExtensionRegistry {
 	public void register(Asciidoctor asciidoctor) {
 		asciidoctor.javaExtensionRegistry()
 				.preprocessor(new DefaultAttributesPreprocessor());
+		asciidoctor.rubyExtensionRegistry()
+				.loadClass(RestDocsExtensionRegistry.class
+						.getResourceAsStream("/extensions/operation_block_macro.rb"))
+				.blockMacro("operation", "OperationBlockMacro");
+
 	}
 
 }
