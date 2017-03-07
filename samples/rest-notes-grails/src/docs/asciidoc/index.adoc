@@ -6,6 +6,8 @@ Andy Wilkinson; Jenn Strater
 :toc: left
 :toclevels: 4
 :sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
 
 [[overview]]
 = Overview
@@ -75,17 +77,7 @@ The Notes resources is used to create and list notes
 
 A `GET` request will list all of the service's notes.
 
-==== Response structure
-
-include::{snippets}/notes-list-example/response-fields.adoc[]
-
-==== Example request
-
-include::{snippets}/notes-list-example/curl-request.adoc[]
-
-==== Example response
-
-include::{snippets}/notes-list-example/http-response.adoc[]
+operation::notes-list-example[snippets='response-fields,curl-request,http-response']
 
 
 
@@ -94,31 +86,13 @@ include::{snippets}/notes-list-example/http-response.adoc[]
 
 A `POST` request is used to create a note
 
-==== Request structure
+operation::notes-create-example[snippets='request-fields,curl-request,http-response']
 
-include::{snippets}/notes-create-example/request-fields.adoc[]
 
-==== Example request
-
-include::{snippets}/notes-create-example/curl-request.adoc[]
-
-==== Example response
-
-include::{snippets}/notes-create-example/http-response.adoc[]
 
 [[resources-note-retrieve]]
 === Retrieve a note
 
 A `GET` request will retrieve the details of a note
 
-==== Response structure
-
-include::{snippets}/note-get-example/response-fields.adoc[]
-
-==== Example request
-
-include::{snippets}/note-get-example/curl-request.adoc[]
-
-==== Example response
-
-include::{snippets}/note-get-example/http-response.adoc[]
+operation::note-get-example[snippets='response-fields,curl-request,http-response']
