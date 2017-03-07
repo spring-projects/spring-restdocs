@@ -134,7 +134,7 @@ public class OperationBlockMacroTests {
 				this.getClass().getResource("/operations/" + fileName + ".html").toURI());
 		String content = new String(Files.readAllBytes(filePath));
 		if (isWindows()) {
-			return content.replace("\n", "\r\n");
+			return content.replace("\r\n", "\n");
 		}
 		return content;
 	}
