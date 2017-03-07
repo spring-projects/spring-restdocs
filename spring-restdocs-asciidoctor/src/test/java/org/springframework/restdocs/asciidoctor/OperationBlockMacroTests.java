@@ -78,8 +78,7 @@ public class OperationBlockMacroTests {
 	@Test
 	public void includeSnippetInSection() throws Exception {
 		String result = this.asciidoctor.convert(
-				"[[bruce]]\n== Section\n"
-						+ "operation::some-operation[snippets='curl-request']",
+				"== Section\n" + "operation::some-operation[snippets='curl-request']",
 				this.options);
 		assertThat(result, equalTo(getExpectedContentFromFile("snippet-in-section")));
 	}
