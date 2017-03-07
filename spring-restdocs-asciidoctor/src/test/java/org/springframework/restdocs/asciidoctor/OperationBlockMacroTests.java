@@ -78,7 +78,8 @@ public class OperationBlockMacroTests {
 	@Test
 	public void includeSnippetInSection() throws Exception {
 		String result = this.asciidoctor.convert(
-				"== Section\n" + "operation::some-operation[snippets='curl-request']",
+				"[[bruce]]\n== Section\n"
+						+ "operation::some-operation[snippets='curl-request']",
 				this.options);
 		assertThat(result, equalTo(getExpectedContentFromFile("snippet-in-section")));
 	}
@@ -131,6 +132,15 @@ public class OperationBlockMacroTests {
 			throws URISyntaxException, IOException {
 		Path filePath = Paths.get(
 				this.getClass().getResource("/operations/" + fileName + ".html").toURI());
-		return new String(Files.readAllBytes(filePath));
+		String content = new String(Files.readAllBytes(filePath));
+		if (isWindows()) {
+			return content.replace("\n", "\r\n");
+		}
+		return content;
 	}
+
+	private boolean isWindows() {
+		return File.separatorChar == '\\';
+	}
+
 }
