@@ -143,7 +143,8 @@ the configuration are described below.
 	<<getting-started-build-configuration-maven-packaging, included in the package>>.
 <5> Add `spring-restdocs-asciidoctor` as a dependency of the Asciidoctor plugin. This
 	will automatically configure the `snippets` attribute for use in your `.adoc` files to
-	point to `target/generated-snippets`.
+	point to `target/generated-snippets`. It will also allow you to use the `operation`
+	block macro.
 
 [source,indent=0,subs="verbatim,attributes",role="secondary"]
 .Gradle
@@ -173,7 +174,8 @@ the configuration are described below.
 <1> Apply the Asciidoctor plugin.
 <2> Add a dependency on `spring-restdocs-asciidoctor` in the `asciidoctor` configuration.
 	This will automatically configure the `snippets` attribute for use in your `.adoc`
-	files to point to `build/generated-snippets`.
+	files to point to `build/generated-snippets`. It will also allow you to use the
+	`operation` block macro.
 <3> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration. If
 	you want to use REST Assured rather than MockMvc, add a dependency on
 	`spring-restdocs-restassured` instead.

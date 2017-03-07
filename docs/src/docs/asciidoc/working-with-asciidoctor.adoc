@@ -17,8 +17,39 @@ relevant to Spring REST Docs.
 [[working-with-asciidoctor-including-snippets]]
 === Including snippets
 
+[[working-with-asciidoctor-including-snippets-operation]]
+==== Including multiple snippets for an operation
+
+A macro named `operation` can be used to import all or some of the snippets that have
+been generated for a specific operation. It is made available by including
+`spring-restdocs-asciidoctor` in your project's <<getting-started-build-configuration,
+build configuration>>.
+
+The target of the macro is the name of the operation. The `snippets` attribute can be
+used to select the snippets that should be included using a comma-separated list.
+Each entry in the list should be the name of a snippet file, minus the `.adoc` suffix,
+to include. For example, to include the curl, HTTP request and HTTP response snippets
+for the index operation:
+
+[source,indent=0]
+----
+operation::index[snippets=curl-request,http-request,http-response]
+----
+
+To include all of an operation's snippets, the `snippets` attribute can be omitted:
+
+[source,indent=0]
+----
+operation::index[]
+----
+
+
+
+[[working-with-asciidoctor-including-snippets-individual]]
+==== Including individual snippets
+
 The http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include
-macro] is used to include generated snippets in your documentation. The `snippets`
+macro] is used to include individual snippets in your documentation. The `snippets`
 attribute that is automatically set by `spring-restdocs-asciidoctor` configured in the
 <<getting-started-build-configuration, build configuration>> can be used to reference the
 snippets output directory. For example:

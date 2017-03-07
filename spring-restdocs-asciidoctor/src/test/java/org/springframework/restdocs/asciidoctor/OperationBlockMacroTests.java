@@ -27,7 +27,10 @@ import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
 import org.asciidoctor.Options;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import org.springframework.util.FileSystemUtils;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -35,16 +38,24 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 /**
- * Tests for ruby based rest docs block macro.
- * Because there is no java implementation (yet)
- * we can only test the behaviour when rendering.
+ * Tests for Ruby operation block macro.
  *
  * @author Gerrit Meier
+ * @author Andy Wilkinson
  */
-public class OperationIncludeBlockMacroTests {
+public class OperationBlockMacroTests {
 
 	private final Options options = new Options();
+
 	private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+
+	@BeforeClass
+	public static void prepareOperationSnippets() throws IOException {
+		File destination = new File("build/generated-snippets/some-operation");
+		destination.mkdirs();
+		FileSystemUtils.copyRecursively(new File("src/test/resources/some-operation"),
+				destination);
+	}
 
 	@Before
 	public void setUp() {
@@ -61,61 +72,65 @@ public class OperationIncludeBlockMacroTests {
 	public void simpleSnippetInclude() throws Exception {
 		String result = this.asciidoctor.convert(
 				"operation::some-operation[snippets='curl-request']", this.options);
-
-		assertThat(result, equalTo(getExpectedContentFromFile("snippet_simple")));
+		assertThat(result, equalTo(getExpectedContentFromFile("snippet-simple")));
 	}
 
 	@Test
 	public void includeSnippetInSection() throws Exception {
 		String result = this.asciidoctor.convert(
-				"== Section\n"
-						+ "operation::some-operation[snippets='curl-request']", this.options);
-
-		assertThat(result, equalTo(getExpectedContentFromFile("snippet_in_section")));
+				"== Section\n" + "operation::some-operation[snippets='curl-request']",
+				this.options);
+		assertThat(result, equalTo(getExpectedContentFromFile("snippet-in-section")));
 	}
 
 	@Test
 	public void includeMultipleSnippets() throws Exception {
 		String result = this.asciidoctor.convert(
-				"operation::some-operation[snippets='curl-request,http-request']", this.options);
-
-		assertThat(result, equalTo(getExpectedContentFromFile("multiple_snippets")));
+				"operation::some-operation[snippets='curl-request,http-request']",
+				this.options);
+		assertThat(result, equalTo(getExpectedContentFromFile("multiple-snippets")));
 	}
 
 	@Test
 	public void useMacroWithoutSnippetAttributeAddsAllSnippets() throws Exception {
-		String result = this.asciidoctor.convert(
-				"operation::some-operation[]", this.options);
-
-		assertThat(result, equalTo(getExpectedContentFromFile("all_snippets")));
+		String result = this.asciidoctor.convert("operation::some-operation[]",
+				this.options);
+		assertThat(result, equalTo(getExpectedContentFromFile("all-snippets")));
 	}
 
 	@Test
 	public void useMacroWithEmptySnippetAttributeAddsAllSnippets() throws Exception {
-		String result = this.asciidoctor.convert(
-				"operation::some-operation[snippets=]", this.options);
-
-		assertThat(result, equalTo(getExpectedContentFromFile("all_snippets")));
+		String result = this.asciidoctor.convert("operation::some-operation[snippets=]",
+				this.options);
+		assertThat(result, equalTo(getExpectedContentFromFile("all-snippets")));
 	}
 
 	@Test
 	public void includingUnknownSnippetAddsWarning() throws Exception {
 		String result = this.asciidoctor.convert(
 				"operation::some-operation[snippets='unknown-snippet']", this.options);
-
-		assertThat(result, startsWith(getExpectedContentFromFile("snippet_warning")));
+		assertThat(result, startsWith(getExpectedContentFromFile("missing-snippet")));
 	}
 
 	@Test
 	public void includingCustomSnippetCreatesCustomTitle() throws Exception {
 		String result = this.asciidoctor.convert(
 				"operation::some-operation[snippets='custom-snippet']", this.options);
-
-		assertThat(result, containsString(getExpectedContentFromFile("snippet_custom_title")));
+		assertThat(result,
+				containsString(getExpectedContentFromFile("snippet-custom-title")));
 	}
 
-	private String getExpectedContentFromFile(String fileName) throws URISyntaxException, IOException {
-		Path filePath = Paths.get(this.getClass().getResource("/operations/" + fileName + ".html").toURI());
+	@Test
+	public void nonExistentOperationIsHandledGracefully() throws Exception {
+		String result = this.asciidoctor.convert("operation::non-existent-operation[]",
+				this.options);
+		assertThat(result, startsWith(getExpectedContentFromFile("missing-operation")));
+	}
+
+	private String getExpectedContentFromFile(String fileName)
+			throws URISyntaxException, IOException {
+		Path filePath = Paths.get(
+				this.getClass().getResource("/operations/" + fileName + ".html").toURI());
 		return new String(Files.readAllBytes(filePath));
 	}
 }

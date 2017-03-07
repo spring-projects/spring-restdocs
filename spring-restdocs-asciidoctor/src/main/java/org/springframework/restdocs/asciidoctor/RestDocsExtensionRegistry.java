@@ -17,8 +17,6 @@
 package org.springframework.restdocs.asciidoctor;
 
 import org.asciidoctor.Asciidoctor;
-import org.asciidoctor.extension.JavaExtensionRegistry;
-import org.asciidoctor.extension.RubyExtensionRegistry;
 import org.asciidoctor.extension.spi.ExtensionRegistry;
 
 /**
@@ -30,11 +28,9 @@ public final class RestDocsExtensionRegistry implements ExtensionRegistry {
 
 	@Override
 	public void register(Asciidoctor asciidoctor) {
-		JavaExtensionRegistry registry = asciidoctor.javaExtensionRegistry();
-		registry.preprocessor(new DefaultAttributesPreprocessor());
-
-		RubyExtensionRegistry rubyExtensionRegistry = asciidoctor.rubyExtensionRegistry();
-		rubyExtensionRegistry
+		asciidoctor.javaExtensionRegistry()
+				.preprocessor(new DefaultAttributesPreprocessor());
+		asciidoctor.rubyExtensionRegistry()
 				.loadClass(RestDocsExtensionRegistry.class
 						.getResourceAsStream("/extensions/operation_block_macro.rb"))
 				.blockMacro("operation", "OperationBlockMacro");
