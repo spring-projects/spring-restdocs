@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,9 @@ class JsonContentHandler implements ContentHandler {
 			JsonFieldType actualFieldType = this.fieldTypeResolver
 					.resolveFieldType(fieldDescriptor.getPath(), readContent());
 			if (descriptorFieldType == JsonFieldType.VARIES
-					|| descriptorFieldType == actualFieldType) {
+					|| descriptorFieldType == actualFieldType
+					|| (fieldDescriptor.isOptional()
+							&& actualFieldType == JsonFieldType.NULL)) {
 				return descriptorFieldType;
 			}
 			throw new FieldTypesDoNotMatchException(fieldDescriptor, actualFieldType);
