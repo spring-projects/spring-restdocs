@@ -1,7 +1,0 @@
-repositories {
-	mavenCentral()
-}
-
-dependencies {
-	compile 'org.asciidoctor:asciidoctorj:1.5.2'
-}
