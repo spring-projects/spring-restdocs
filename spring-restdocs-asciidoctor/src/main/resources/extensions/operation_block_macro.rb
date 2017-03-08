@@ -15,32 +15,34 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
   def process(parent, operation, attributes)
     snippets_dir = parent.document.attributes['snippets'].to_s
     snippet_names = attributes.fetch 'snippets', ''
-    content = read_snippets(snippets_dir, snippet_names, parent.level + 1,
-                            operation)
-    add_snippets_block(content, parent.document, parent) unless content.empty?
+    content = read_snippets(snippets_dir, snippet_names, parent, operation)
+    add_blocks(content, parent.document, parent) unless content.empty?
     nil
   end
 
-  def read_snippets(snippets_dir, snippet_names, section_level, operation)
+  def read_snippets(snippets_dir, snippet_names, parent, operation)
     snippets = snippets_to_include(snippet_names, snippets_dir, operation)
     if snippets.empty?
       warn "No snippets were found for operation #{operation} in"\
            "#{snippets_dir}"
       "No snippets found for operation::#{operation}"
     else
-      do_read_snippets(snippets, section_level, operation)
+      do_read_snippets(snippets, parent, operation)
     end
   end
 
-  def do_read_snippets(snippets, section_level, operation)
+  def do_read_snippets(snippets, parent, operation)
     content = StringIO.new
+    section_level = parent.level + 1
+    section_id = parent.id
     snippets.each do |snippet|
-      append_snippet_block(content, snippet, section_level, operation)
+      append_snippet_block(content, snippet, section_level, section_id,
+                           operation)
     end
     content.string
   end
 
-  def add_snippets_block(content, doc, parent)
+  def add_blocks(content, doc, parent)
     options = { safe: doc.options[:safe],
                 attributes: { 'fragment' => '',
                               'projectdir' => doc.attr(:projectdir) } }
@@ -71,8 +73,9 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
        .map { |file| Snippet.new(File.join(operation_dir, file), file[0..-6]) }
   end
 
-  def append_snippet_block(content, snippet, section_level, operation)
-    write_title content, snippet, section_level
+  def append_snippet_block(content, snippet, section_level, section_id,
+                           operation)
+    write_title content, snippet, section_level, section_id
     write_content content, snippet, operation
   end
 
@@ -88,8 +91,9 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
     end
   end
 
-  def write_title(content, snippet, level)
+  def write_title(content, snippet, level, id)
     section_level = '=' * (level + 1)
+    content.puts "[[#{id}_#{snippet.name.sub '-', '_'}]]"
     content.puts "#{section_level} #{snippet.title}"
     content.puts ''
   end
