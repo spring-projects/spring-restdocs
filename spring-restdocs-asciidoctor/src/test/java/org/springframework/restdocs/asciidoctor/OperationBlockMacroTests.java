@@ -32,7 +32,6 @@ import org.junit.Test;
 
 import org.springframework.util.FileSystemUtils;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -60,12 +59,6 @@ public class OperationBlockMacroTests {
 	@Before
 	public void setUp() {
 		this.options.setAttributes(getAttributes());
-	}
-
-	private Attributes getAttributes() {
-		Attributes attributes = new Attributes();
-		attributes.setAttribute("projectdir", new File(".").getAbsolutePath());
-		return attributes;
 	}
 
 	@Test
@@ -106,25 +99,47 @@ public class OperationBlockMacroTests {
 	}
 
 	@Test
-	public void includingUnknownSnippetAddsWarning() throws Exception {
+	public void includingMissingSnippetAddsWarning() throws Exception {
 		String result = this.asciidoctor.convert(
-				"operation::some-operation[snippets='unknown-snippet']", this.options);
+				"operation::some-operation[snippets='missing-snippet']", this.options);
 		assertThat(result, startsWith(getExpectedContentFromFile("missing-snippet")));
 	}
 
 	@Test
-	public void includingCustomSnippetCreatesCustomTitle() throws Exception {
+	public void defaultTitleIsProvidedForCustomSnippet() throws Exception {
 		String result = this.asciidoctor.convert(
 				"operation::some-operation[snippets='custom-snippet']", this.options);
 		assertThat(result,
-				containsString(getExpectedContentFromFile("snippet-custom-title")));
+				equalTo(getExpectedContentFromFile("custom-snippet-default-title")));
 	}
 
 	@Test
-	public void nonExistentOperationIsHandledGracefully() throws Exception {
-		String result = this.asciidoctor.convert("operation::non-existent-operation[]",
+	public void missingOperationIsHandledGracefully() throws Exception {
+		String result = this.asciidoctor.convert("operation::missing-operation[]",
 				this.options);
 		assertThat(result, startsWith(getExpectedContentFromFile("missing-operation")));
+	}
+
+	@Test
+	public void titleOfBuiltInSnippetCanBeCustomizedUsingDocumentAttribute()
+			throws URISyntaxException, IOException {
+		String result = this.asciidoctor.convert(
+				":operation-curl-request-title: Example request\n"
+						+ "operation::some-operation[snippets='curl-request']",
+				this.options);
+		assertThat(result,
+				equalTo(getExpectedContentFromFile("built-in-snippet-custom-title")));
+	}
+
+	@Test
+	public void titleOfCustomSnippetCanBeCustomizedUsingDocumentAttribute()
+			throws Exception {
+		String result = this.asciidoctor.convert(
+				":operation-custom-snippet-title: Customized title\n"
+						+ "operation::some-operation[snippets='custom-snippet']",
+				this.options);
+		assertThat(result,
+				equalTo(getExpectedContentFromFile("custom-snippet-custom-title")));
 	}
 
 	private String getExpectedContentFromFile(String fileName)
@@ -140,6 +155,12 @@ public class OperationBlockMacroTests {
 
 	private boolean isWindows() {
 		return File.separatorChar == '\\';
+	}
+
+	private Attributes getAttributes() {
+		Attributes attributes = new Attributes();
+		attributes.setAttribute("projectdir", new File(".").getAbsolutePath());
+		return attributes;
 	}
 
 }

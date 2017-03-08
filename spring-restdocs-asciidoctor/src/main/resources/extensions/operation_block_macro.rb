@@ -15,29 +15,32 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
   def process(parent, operation, attributes)
     snippets_dir = parent.document.attributes['snippets'].to_s
     snippet_names = attributes.fetch 'snippets', ''
-    content = read_snippets(snippets_dir, snippet_names, parent, operation)
+    snippet_titles = SnippetTitles.new parent.document.attributes
+    content = read_snippets(snippets_dir, snippet_names, parent, operation,
+                            snippet_titles)
     add_blocks(content, parent.document, parent) unless content.empty?
     nil
   end
 
-  def read_snippets(snippets_dir, snippet_names, parent, operation)
+  def read_snippets(snippets_dir, snippet_names, parent, operation,
+                    snippet_titles)
     snippets = snippets_to_include(snippet_names, snippets_dir, operation)
     if snippets.empty?
       warn "No snippets were found for operation #{operation} in"\
            "#{snippets_dir}"
       "No snippets found for operation::#{operation}"
     else
-      do_read_snippets(snippets, parent, operation)
+      do_read_snippets(snippets, parent, operation, snippet_titles)
     end
   end
 
-  def do_read_snippets(snippets, parent, operation)
+  def do_read_snippets(snippets, parent, operation, snippet_titles)
     content = StringIO.new
     section_level = parent.level + 1
     section_id = parent.id
     snippets.each do |snippet|
       append_snippet_block(content, snippet, section_level, section_id,
-                           operation)
+                           operation, snippet_titles)
     end
     content.string
   end
@@ -59,7 +62,7 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
     else
       snippet_names.split(',').map do |name|
         path = File.join snippets_dir, operation, "#{name}.adoc"
-        Snippet.new(path, name)
+        Snippet.new path, name
       end
     end
   end
@@ -74,8 +77,8 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
   end
 
   def append_snippet_block(content, snippet, section_level, section_id,
-                           operation)
-    write_title content, snippet, section_level, section_id
+                           operation, snippet_titles)
+    write_title content, snippet, section_level, section_id, snippet_titles
     write_content content, snippet, operation
   end
 
@@ -91,38 +94,49 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
     end
   end
 
-  def write_title(content, snippet, level, id)
+  def write_title(content, snippet, level, id, snippet_titles)
     section_level = '=' * (level + 1)
+    title = snippet_titles.title_for_snippet snippet
     content.puts "[[#{id}_#{snippet.name.sub '-', '_'}]]"
-    content.puts "#{section_level} #{snippet.title}"
+    content.puts "#{section_level} #{title}"
     content.puts ''
   end
 
   # Details of a snippet to be rendered
   class Snippet
-    @titles = { 'http-request' => 'HTTP request',
-                'curl-request' => 'Curl request',
-                'httpie-request' => 'HTTPie request',
-                'request-body' => 'Request body',
-                'request-fields' => 'Request fields',
-                'http-response' => 'HTTP response',
-                'response-body' => 'Response body',
-                'response-fields' => 'Response fields',
-                'links' => 'Links' }
-
-    class << self
-      attr_reader :titles
-    end
-
     attr_reader :name, :path
 
     def initialize(path, name)
       @path = path
       @name = name
+      @snippet_titles
+    end
+  end
+
+  class SnippetTitles
+    @defaults = { 'http-request' => 'HTTP request',
+                  'curl-request' => 'Curl request',
+                  'httpie-request' => 'HTTPie request',
+                  'request-body' => 'Request body',
+                  'request-fields' => 'Request fields',
+                  'http-response' => 'HTTP response',
+                  'response-body' => 'Response body',
+                  'response-fields' => 'Response fields',
+                  'links' => 'Links' }
+
+    class << self
+      attr_reader :defaults
     end
 
-    def title
-      Snippet.titles.fetch @name, name.sub('-', ' ').capitalize
+    def initialize(document_attributes)
+      @document_attributes = document_attributes
+    end
+
+    def title_for_snippet(snippet)
+      attribute_name = "operation-#{snippet.name}-title"
+      @document_attributes.fetch attribute_name do
+        SnippetTitles.defaults.fetch snippet.name, snippet.name.sub('-', ' ').capitalize
+      end
     end
   end
 end
