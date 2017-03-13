@@ -24,6 +24,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
+import org.springframework.util.StringUtils;
 
 /**
  * A converter for creating an {@link OperationResponse} derived from a
@@ -64,10 +65,7 @@ class MockMvcResponseConverter implements ResponseConverter<MockHttpServletRespo
 		header.append(cookie.getName());
 		header.append('=');
 
-		String value = cookie.getValue();
-		if (value != null && value.length() > 0) {
-			header.append(value);
-		}
+		appendIfAvailable(header, cookie.getValue());
 
 		int maxAge = cookie.getMaxAge();
 		if (maxAge > -1) {
@@ -75,17 +73,8 @@ class MockMvcResponseConverter implements ResponseConverter<MockHttpServletRespo
 			header.append(maxAge);
 		}
 
-		String domain = cookie.getDomain();
-		if (domain != null && domain.length() > 0) {
-			header.append(";domain=");
-			header.append(domain);
-		}
-
-		String path = cookie.getPath();
-		if (path != null && path.length() > 0) {
-			header.append(";path=");
-			header.append(path);
-		}
+		appendIfAvailable(header, ";domain=", cookie.getDomain());
+		appendIfAvailable(header, ";path=", cookie.getPath());
 
 		if (cookie.getSecure()) {
 			header.append(";Secure");
@@ -96,6 +85,20 @@ class MockMvcResponseConverter implements ResponseConverter<MockHttpServletRespo
 		}
 
 		return header.toString();
+	}
+
+	private void appendIfAvailable(StringBuilder header, String value) {
+		if (StringUtils.hasText(value)) {
+			header.append("");
+			header.append(value);
+		}
+	}
+
+	private void appendIfAvailable(StringBuilder header, String name, String value) {
+		if (StringUtils.hasText(value)) {
+			header.append(name);
+			header.append(value);
+		}
 	}
 
 }
