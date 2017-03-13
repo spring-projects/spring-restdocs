@@ -371,17 +371,16 @@ public class MockMvcRestDocumentationIntegrationTests {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
 
-		mockMvc.perform(get("/set-cookie"))
-				.andExpect(status().isOk())
+		mockMvc.perform(get("/set-cookie")).andExpect(status().isOk())
 				.andDo(document("set-cookie",
-						responseHeaders(headerWithName(HttpHeaders.SET_COOKIE).description("set-cookie"))));
+						responseHeaders(headerWithName(HttpHeaders.SET_COOKIE)
+								.description("set-cookie"))));
 
-		assertThat(
-				new File("build/generated-snippets/set-cookie/http-response.adoc"),
+		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"),
 				is(snippet(asciidoctor())
-						.withContents(
-								httpResponse(asciidoctor(), HttpStatus.OK)
-										.header(HttpHeaders.SET_COOKIE, "name=value;domain=localhost;HttpOnly"))));
+						.withContents(httpResponse(asciidoctor(), HttpStatus.OK).header(
+								HttpHeaders.SET_COOKIE,
+								"name=value;domain=localhost;HttpOnly"))));
 	}
 
 	@Test

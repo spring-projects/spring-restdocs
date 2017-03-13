@@ -113,7 +113,8 @@ class TomcatServer extends ExternalResource {
 	private static final class CookiesServlet extends HttpServlet {
 
 		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+				throws ServletException, IOException {
 			Cookie cookie = new Cookie("name", "value");
 			cookie.setDomain("localhost");
 			cookie.setHttpOnly(true);

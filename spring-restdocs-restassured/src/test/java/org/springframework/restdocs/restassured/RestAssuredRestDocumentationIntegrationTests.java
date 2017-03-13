@@ -274,19 +274,17 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		given().port(tomcat.getPort())
 				.filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("set-cookie",
-						preprocessResponse(removeHeaders(HttpHeaders.DATE, HttpHeaders.CONTENT_TYPE))))
+						preprocessResponse(removeHeaders(HttpHeaders.DATE,
+								HttpHeaders.CONTENT_TYPE))))
 				.get("/set-cookie").then().statusCode(200);
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/set-cookie"),
 				"http-request.adoc", "http-response.adoc", "curl-request.adoc");
 
-		assertThat(
-				new File("build/generated-snippets/set-cookie/http-response.adoc"),
+		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"),
 				is(snippet(asciidoctor())
-					.withContents(httpResponse(asciidoctor(), HttpStatus.OK)
-						.header(HttpHeaders.SET_COOKIE, "name=value;domain=localhost;HttpOnly")
-					)
-				)
-		);
+						.withContents(httpResponse(asciidoctor(), HttpStatus.OK).header(
+								HttpHeaders.SET_COOKIE,
+								"name=value;domain=localhost;HttpOnly"))));
 	}
 
 	@Test
