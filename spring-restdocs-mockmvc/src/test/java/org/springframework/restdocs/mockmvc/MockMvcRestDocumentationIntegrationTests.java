@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.After;
 import org.junit.Before;
@@ -366,6 +367,23 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void responseWithSetCookie() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+
+		mockMvc.perform(get("/set-cookie")).andExpect(status().isOk())
+				.andDo(document("set-cookie",
+						responseHeaders(headerWithName(HttpHeaders.SET_COOKIE)
+								.description("set-cookie"))));
+
+		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"),
+				is(snippet(asciidoctor())
+						.withContents(httpResponse(asciidoctor(), HttpStatus.OK).header(
+								HttpHeaders.SET_COOKIE,
+								"name=value;domain=localhost;HttpOnly"))));
+	}
+
+	@Test
 	public void parameterizedOutputDirectory() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
@@ -599,6 +617,15 @@ public class MockMvcRestDocumentationIntegrationTests {
 		@RequestMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 		public void upload() {
 
+		}
+
+		@RequestMapping("/set-cookie")
+		public void setCookie(HttpServletResponse response) {
+			Cookie cookie = new Cookie("name", "value");
+			cookie.setDomain("localhost");
+			cookie.setHttpOnly(true);
+
+			response.addCookie(cookie);
 		}
 
 	}

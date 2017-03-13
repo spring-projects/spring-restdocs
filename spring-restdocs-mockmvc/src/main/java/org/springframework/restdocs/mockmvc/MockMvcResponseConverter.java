@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 
 package org.springframework.restdocs.mockmvc;
+
+import javax.servlet.http.Cookie;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,7 +47,55 @@ class MockMvcResponseConverter implements ResponseConverter<MockHttpServletRespo
 				headers.add(headerName, value);
 			}
 		}
+
+		if (response.getCookies() != null
+				&& !headers.containsKey(HttpHeaders.SET_COOKIE)) {
+			for (Cookie cookie : response.getCookies()) {
+				headers.add(HttpHeaders.SET_COOKIE, generateSetCookieHeader(cookie));
+			}
+		}
+
 		return headers;
+	}
+
+	private String generateSetCookieHeader(Cookie cookie) {
+		StringBuilder header = new StringBuilder();
+
+		header.append(cookie.getName());
+		header.append('=');
+
+		String value = cookie.getValue();
+		if (value != null && value.length() > 0) {
+			header.append(value);
+		}
+
+		int maxAge = cookie.getMaxAge();
+		if (maxAge > -1) {
+			header.append(";Max-Age=");
+			header.append(maxAge);
+		}
+
+		String domain = cookie.getDomain();
+		if (domain != null && domain.length() > 0) {
+			header.append(";domain=");
+			header.append(domain);
+		}
+
+		String path = cookie.getPath();
+		if (path != null && path.length() > 0) {
+			header.append(";path=");
+			header.append(path);
+		}
+
+		if (cookie.getSecure()) {
+			header.append(";Secure");
+		}
+
+		if (cookie.isHttpOnly()) {
+			header.append(";HttpOnly");
+		}
+
+		return header.toString();
 	}
 
 }
