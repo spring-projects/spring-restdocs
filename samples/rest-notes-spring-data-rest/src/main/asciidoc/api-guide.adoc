@@ -172,7 +172,7 @@ include::{snippets}/note-get-example/links.adoc[]
 
 A `GET` request will retrieve the details of a note
 
-operation::note-get-example[snippets='response-fields,curl-request-http-response']
+operation::note-get-example[snippets='response-fields,curl-request,http-response']
 
 
 
