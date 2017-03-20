@@ -35,6 +35,8 @@ public abstract class CliDocumentation {
 
 	}
 
+	private static final CommandFormatter defaultCommandFormatter = multiLineFormat();
+
 	/**
 	 * Returns a new {@code Snippet} that will document the curl request for the API
 	 * operation.
@@ -42,7 +44,7 @@ public abstract class CliDocumentation {
 	 * @return the snippet that will document the curl request
 	 */
 	public static Snippet curlRequest() {
-		return new CurlRequestSnippet();
+		return curlRequest(defaultCommandFormatter);
 	}
 
 	/**
@@ -54,7 +56,31 @@ public abstract class CliDocumentation {
 	 * @return the snippet that will document the curl request
 	 */
 	public static Snippet curlRequest(Map<String, Object> attributes) {
-		return new CurlRequestSnippet(attributes);
+		return curlRequest(attributes, defaultCommandFormatter);
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the curl request for the API
+	 * operation. The given {@code commandFormatter} will be used for formatting the snippet.
+*
+	 * @param commandFormatter the command formatter
+	 * @return the snippet that will document the curl request
+	 */
+	public static Snippet curlRequest(CommandFormatter commandFormatter) {
+		return curlRequest(null, commandFormatter);
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the curl request for the API
+	 * operation. The given {@code attributes} will be available during snippet
+	 * generation. The given {@code commandFormatter} will be used for formatting the snippet.
+	 *
+	 * @param attributes the attributes
+	 * @param commandFormatter the command formatter
+	 * @return the snippet that will document the curl request
+	 */
+	public static Snippet curlRequest(Map<String, Object> attributes, CommandFormatter commandFormatter) {
+		return new CurlRequestSnippet(attributes, commandFormatter);
 	}
 
 	/**
@@ -64,7 +90,7 @@ public abstract class CliDocumentation {
 	 * @return the snippet that will document the HTTPie request
 	 */
 	public static Snippet httpieRequest() {
-		return new HttpieRequestSnippet();
+		return httpieRequest(defaultCommandFormatter);
 	}
 
 	/**
@@ -76,7 +102,47 @@ public abstract class CliDocumentation {
 	 * @return the snippet that will document the HTTPie request
 	 */
 	public static Snippet httpieRequest(Map<String, Object> attributes) {
-		return new HttpieRequestSnippet(attributes);
+		return httpieRequest(attributes, defaultCommandFormatter);
 	}
 
+	/**
+	 * Returns a new {@code Snippet} that will document the HTTPie request for the API
+	 * operation. The given {@code commandFormatter} will be used for formatting the snippet.
+	 *
+	 * @param commandFormatter the command formatter
+	 * @return the snippet that will document the HTTPie request
+	 */
+	public static Snippet httpieRequest(CommandFormatter commandFormatter) {
+		return httpieRequest(null, defaultCommandFormatter);
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the HTTPie request for the API
+	 * operation. The given {@code attributes} will be available during snippet
+	 * generation. The given {@code commandFormatter} will be used for formatting the snippet.
+	 *
+	 * @param attributes the attributes
+	 * @param commandFormatter the command formatter
+	 * @return the snippet that will document the HTTPie request
+	 */
+	public static Snippet httpieRequest(Map<String, Object> attributes, CommandFormatter commandFormatter) {
+		return new HttpieRequestSnippet(attributes, commandFormatter);
+	}
+	/**
+	 * Creates a new {@code CommandFormatter} which formats input to a multi line output.
+	 *
+	 * @return A multi line {@code commandFormatter}
+	 */
+	public static CommandFormatter multiLineFormat() {
+		return new ConcatenatingCommandFormatter(" \\%n ");
+	}
+
+	/**
+	 * Creates a new {@code CommandFormatter} which formats input to a single line output.
+	 *
+	 * @return A single line {@code CommandFormatter}
+	 */
+	public static CommandFormatter singleLineFormat() {
+		return new ConcatenatingCommandFormatter(" ");
+	}
 }

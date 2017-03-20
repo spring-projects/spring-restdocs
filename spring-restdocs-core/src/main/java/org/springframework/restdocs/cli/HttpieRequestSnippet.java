@@ -18,6 +18,7 @@ package org.springframework.restdocs.cli;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
@@ -46,11 +48,23 @@ import org.springframework.util.StringUtils;
  */
 public class HttpieRequestSnippet extends TemplatedSnippet {
 
+	private final CommandFormatter commandFormatter;
+
 	/**
 	 * Creates a new {@code HttpieRequestSnippet} with no additional attributes.
 	 */
+	@Deprecated
 	protected HttpieRequestSnippet() {
-		this(null);
+		this(null, null);
+	}
+
+	/**
+	 * Creates a new {@code HttpieRequestSnippet} with the given {@link CommandFormatter}.
+	 *
+	 * @param commandFormatter The formatter for generating the snippet
+	 */
+	protected HttpieRequestSnippet(CommandFormatter commandFormatter) {
+		this(null, commandFormatter);
 	}
 
 	/**
@@ -59,8 +73,24 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	 *
 	 * @param attributes The additional attributes
 	 */
+	@Deprecated
 	protected HttpieRequestSnippet(Map<String, Object> attributes) {
+		this(attributes, null);
+	}
+
+	/**
+	 * Creates a new {@code HttpieRequestSnippet} with the given additional
+	 * {@code attributes} that will be included in the model during template rendering
+	 * and the given {@link CommandFormatter}.
+	 *
+	 * @param attributes The additional attributes
+	 * @param commandFormatter The formatter for generating the snippet
+	 */
+	protected HttpieRequestSnippet(Map<String, Object> attributes, CommandFormatter commandFormatter) {
 		super("httpie-request", attributes);
+
+		Assert.notNull(commandFormatter, "Command formatter must be set");
+		this.commandFormatter = commandFormatter;
 	}
 
 	@Override
@@ -103,13 +133,14 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private String getRequestItems(CliOperationRequest request) {
-		StringWriter requestItems = new StringWriter();
-		PrintWriter printer = new PrintWriter(requestItems);
-		writeFormDataIfNecessary(request, printer);
-		writeHeaders(request, printer);
-		writeCookies(request, printer);
-		writeParametersIfNecessary(request, printer);
-		return requestItems.toString();
+		List<String> lines = new ArrayList<>();
+
+		writeFormDataIfNecessary(request, lines);
+		writeHeaders(request, lines);
+		writeCookies(request, lines);
+		writeParametersIfNecessary(request, lines);
+
+		return this.commandFormatter.format(lines);
 	}
 
 	private void writeOptions(OperationRequest request, PrintWriter writer) {
@@ -136,20 +167,23 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		writer.print(String.format("%s", request.getMethod().name()));
 	}
 
-	private void writeFormDataIfNecessary(OperationRequest request, PrintWriter writer) {
+	private void writeFormDataIfNecessary(OperationRequest request, List<String> lines) {
 		for (OperationRequestPart part : request.getParts()) {
-			writer.printf(" \\%n  '%s'", part.getName());
+			StringBuilder oneLine = new StringBuilder();
+			oneLine.append(String.format("'%s'", part.getName()));
 			if (!StringUtils.hasText(part.getSubmittedFileName())) {
 				// https://github.com/jkbrzt/httpie/issues/342
-				writer.printf("@<(echo '%s')", part.getContentAsString());
+				oneLine.append(String.format("@<(echo '%s')", part.getContentAsString()));
 			}
 			else {
-				writer.printf("@'%s'", part.getSubmittedFileName());
+				oneLine.append(String.format("@'%s'", part.getSubmittedFileName()));
 			}
+
+			lines.add(oneLine.toString());
 		}
 	}
 
-	private void writeHeaders(OperationRequest request, PrintWriter writer) {
+	private void writeHeaders(OperationRequest request, List<String> lines) {
 		HttpHeaders headers = request.getHeaders();
 		for (Entry<String, List<String>> entry : headers.entrySet()) {
 			for (String header : entry.getValue()) {
@@ -159,41 +193,41 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 						&& header.startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)) {
 					continue;
 				}
-				writer.print(String.format(" '%s:%s'", entry.getKey(), header));
+				lines.add(String.format("'%s:%s'", entry.getKey(), header));
 			}
 		}
 	}
 
-	private void writeCookies(OperationRequest request, PrintWriter writer) {
+	private void writeCookies(OperationRequest request, List<String> lines) {
 		for (RequestCookie cookie : request.getCookies()) {
-			writer.print(String.format(" 'Cookie:%s=%s'", cookie.getName(),
+			lines.add(String.format("'Cookie:%s=%s'", cookie.getName(),
 					cookie.getValue()));
 		}
 	}
 
 	private void writeParametersIfNecessary(CliOperationRequest request,
-			PrintWriter writer) {
+			List<String> lines) {
 		if (StringUtils.hasText(request.getContentAsString())) {
 			return;
 		}
 		if (!request.getParts().isEmpty()) {
-			writeContentUsingParameters(request.getParameters(), writer);
+			writeContentUsingParameters(request.getParameters(), lines);
 		}
 		else if (request.isPutOrPost()) {
 			writeContentUsingParameters(
 					request.getParameters().getUniqueParameters(request.getUri()),
-					writer);
+					lines);
 		}
 	}
 
-	private void writeContentUsingParameters(Parameters parameters, PrintWriter writer) {
+	private void writeContentUsingParameters(Parameters parameters, List<String> lines) {
 		for (Map.Entry<String, List<String>> entry : parameters.entrySet()) {
 			if (entry.getValue().isEmpty()) {
-				writer.append(String.format(" '%s='", entry.getKey()));
+				lines.add(String.format("'%s='", entry.getKey()));
 			}
 			else {
 				for (String value : entry.getValue()) {
-					writer.append(String.format(" '%s=%s'", entry.getKey(), value));
+					lines.add(String.format("'%s=%s'", entry.getKey(), value));
 				}
 			}
 		}
