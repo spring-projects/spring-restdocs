@@ -16,8 +16,7 @@
 
 package org.springframework.restdocs.cli;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,7 @@ import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -39,17 +39,35 @@ import org.springframework.util.StringUtils;
  *
  * @author Andy Wilkinson
  * @author Paul-Christian Volkmer
+ * @author Tomasz Kopczynski
  * @since 1.1.0
  * @see CliDocumentation#curlRequest()
+ * @see CliDocumentation#curlRequest(CommandFormatter)
  * @see CliDocumentation#curlRequest(Map)
+ * @see CliDocumentation#curlRequest(Map, CommandFormatter)
  */
 public class CurlRequestSnippet extends TemplatedSnippet {
 
+	private final CommandFormatter commandFormatter;
+
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with no additional attributes.
+	 *
+	 * @deprecated since 1.2.0 in favor of {@link #CurlRequestSnippet(CommandFormatter)}
 	 */
+	@Deprecated
 	protected CurlRequestSnippet() {
-		this(null);
+		this(null, CliDocumentation.DEFAULT_COMMAND_FORMATTER);
+	}
+
+	/**
+	 * Creates a new {@code CurlRequestSnippet} that will use the given
+	 * {@code commandFormatter} to format the curl command.
+	 *
+	 * @param commandFormatter The formatter
+	 */
+	protected CurlRequestSnippet(CommandFormatter commandFormatter) {
+		this(null, commandFormatter);
 	}
 
 	/**
@@ -57,9 +75,27 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	 * {@code attributes} that will be included in the model during template rendering.
 	 *
 	 * @param attributes The additional attributes
+	 * @deprecated since 1.2.0 in favor of
+	 * {@link #CurlRequestSnippet(Map, CommandFormatter)}
 	 */
+	@Deprecated
 	protected CurlRequestSnippet(Map<String, Object> attributes) {
+		this(attributes, CliDocumentation.DEFAULT_COMMAND_FORMATTER);
+	}
+
+	/**
+	 * Creates a new {@code CurlRequestSnippet} with the given additional
+	 * {@code attributes} that will be included in the model during template rendering.
+	 * The given {@code commandFormaatter} will be used to format the curl command.
+	 *
+	 * @param attributes The additional attributes
+	 * @param commandFormatter The formatter for generating the snippet
+	 */
+	protected CurlRequestSnippet(Map<String, Object> attributes,
+			CommandFormatter commandFormatter) {
 		super("curl-request", attributes);
+		Assert.notNull(commandFormatter, "Command formatter must not be null");
+		this.commandFormatter = commandFormatter;
 	}
 
 	@Override
@@ -87,21 +123,25 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	}
 
 	private String getOptions(Operation operation) {
-		StringWriter command = new StringWriter();
-		PrintWriter printer = new PrintWriter(command);
-		writeIncludeHeadersInOutputOption(printer);
-		CliOperationRequest request = new CliOperationRequest(operation.getRequest());
-		writeUserOptionIfNecessary(request, printer);
-		writeHttpMethodIfNecessary(request, printer);
-		writeHeaders(request, printer);
-		writeCookies(request, printer);
-		writePartsIfNecessary(request, printer);
-		writeContent(request, printer);
+		StringBuilder builder = new StringBuilder();
+		writeIncludeHeadersInOutputOption(builder);
 
-		return command.toString();
+		CliOperationRequest request = new CliOperationRequest(operation.getRequest());
+		writeUserOptionIfNecessary(request, builder);
+		writeHttpMethodIfNecessary(request, builder);
+
+		List<String> additionaLines = new ArrayList<>();
+		writeHeaders(request, additionaLines);
+		writeCookies(request, additionaLines);
+		writePartsIfNecessary(request, additionaLines);
+		writeContent(request, additionaLines);
+
+		builder.append(this.commandFormatter.format(additionaLines));
+
+		return builder.toString();
 	}
 
-	private void writeCookies(CliOperationRequest request, PrintWriter printer) {
+	private void writeCookies(CliOperationRequest request, List<String> lines) {
 		if (!CollectionUtils.isEmpty(request.getCookies())) {
 			StringBuilder cookiesBuilder = new StringBuilder();
 			for (RequestCookie cookie : request.getCookies()) {
@@ -111,79 +151,82 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 				cookiesBuilder.append(
 						String.format("%s=%s", cookie.getName(), cookie.getValue()));
 			}
-			printer.print(String.format(" --cookie '%s'", cookiesBuilder.toString()));
+			lines.add(String.format("--cookie '%s'", cookiesBuilder.toString()));
 		}
 	}
 
-	private void writeIncludeHeadersInOutputOption(PrintWriter writer) {
-		writer.print("-i");
+	private void writeIncludeHeadersInOutputOption(StringBuilder builder) {
+		builder.append("-i");
 	}
 
 	private void writeUserOptionIfNecessary(CliOperationRequest request,
-			PrintWriter writer) {
+			StringBuilder builder) {
 		String credentials = request.getBasicAuthCredentials();
 		if (credentials != null) {
-			writer.print(String.format(" -u '%s'", credentials));
+			builder.append(String.format(" -u '%s'", credentials));
 		}
 	}
 
 	private void writeHttpMethodIfNecessary(OperationRequest request,
-			PrintWriter writer) {
+			StringBuilder builder) {
 		if (!HttpMethod.GET.equals(request.getMethod())) {
-			writer.print(String.format(" -X %s", request.getMethod()));
+			builder.append(String.format(" -X %s", request.getMethod()));
 		}
 	}
 
-	private void writeHeaders(CliOperationRequest request, PrintWriter writer) {
+	private void writeHeaders(CliOperationRequest request, List<String> lines) {
 		for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
 			for (String header : entry.getValue()) {
-				writer.print(String.format(" -H '%s: %s'", entry.getKey(), header));
+				lines.add(String.format("-H '%s: %s'", entry.getKey(), header));
 			}
 		}
 	}
 
-	private void writePartsIfNecessary(OperationRequest request, PrintWriter writer) {
+	private void writePartsIfNecessary(OperationRequest request, List<String> lines) {
 		for (OperationRequestPart part : request.getParts()) {
-			writer.printf(" -F '%s=", part.getName());
+
+			StringBuilder oneLine = new StringBuilder();
+			oneLine.append(String.format("-F '%s=", part.getName()));
 			if (!StringUtils.hasText(part.getSubmittedFileName())) {
-				writer.append(part.getContentAsString());
+				oneLine.append(part.getContentAsString());
 			}
 			else {
-				writer.printf("@%s", part.getSubmittedFileName());
+				oneLine.append(String.format("@%s", part.getSubmittedFileName()));
 			}
 			if (part.getHeaders().getContentType() != null) {
-				writer.append(";type=")
-						.append(part.getHeaders().getContentType().toString());
+				oneLine.append(";type=");
+				oneLine.append(part.getHeaders().getContentType().toString());
 			}
 
-			writer.append("'");
+			oneLine.append("'");
+			lines.add(oneLine.toString());
 		}
 	}
 
-	private void writeContent(CliOperationRequest request, PrintWriter writer) {
+	private void writeContent(CliOperationRequest request, List<String> lines) {
 		String content = request.getContentAsString();
 		if (StringUtils.hasText(content)) {
-			writer.print(String.format(" -d '%s'", content));
+			lines.add(String.format("-d '%s'", content));
 		}
 		else if (!request.getParts().isEmpty()) {
 			for (Entry<String, List<String>> entry : request.getParameters().entrySet()) {
 				for (String value : entry.getValue()) {
-					writer.print(String.format(" -F '%s=%s'", entry.getKey(), value));
+					lines.add(String.format("-F '%s=%s'", entry.getKey(), value));
 				}
 			}
 		}
 		else if (request.isPutOrPost()) {
-			writeContentUsingParameters(request, writer);
+			writeContentUsingParameters(request, lines);
 		}
 	}
 
 	private void writeContentUsingParameters(OperationRequest request,
-			PrintWriter writer) {
+			List<String> lines) {
 		Parameters uniqueParameters = request.getParameters()
 				.getUniqueParameters(request.getUri());
 		String queryString = uniqueParameters.toQueryString();
 		if (StringUtils.hasText(queryString)) {
-			writer.print(String.format(" -d '%s'", queryString));
+			lines.add(String.format("-d '%s'", queryString));
 		}
 	}
 
