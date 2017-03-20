@@ -73,6 +73,7 @@ dependencies {
 
 	runtime "com.h2database:h2"
 
+	testCompile "io.rest-assured:rest-assured:3.0.2"
 	testCompile "org.grails:grails-plugin-testing"
 	testCompile "org.grails.plugins:geb"
 	testCompile "org.grails:grails-datastore-rest-client"

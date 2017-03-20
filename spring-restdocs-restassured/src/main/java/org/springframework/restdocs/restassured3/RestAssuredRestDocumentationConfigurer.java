@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured;
+package org.springframework.restdocs.restassured3;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jayway.restassured.filter.Filter;
-import com.jayway.restassured.filter.FilterContext;
-import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.FilterableRequestSpecification;
-import com.jayway.restassured.specification.FilterableResponseSpecification;
+import io.restassured.filter.Filter;
+import io.restassured.filter.FilterContext;
+import io.restassured.response.Response;
+import io.restassured.specification.FilterableRequestSpecification;
+import io.restassured.specification.FilterableResponseSpecification;
 
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
 
 /**
- * A REST Assured-specific {@link RestDocumentationConfigurer}.
+ * A REST Assured 3-specific {@link RestDocumentationConfigurer}.
  *
  * @author Andy Wilkinson
- * @since 1.1.0
- * @deprecated since 1.2.0 in favor of
- * {@link org.springframework.restdocs.restassured3.RestAssuredRestDocumentationConfigurer}
+ * @since 1.2.0
  */
-@Deprecated
 public final class RestAssuredRestDocumentationConfigurer extends
 		RestDocumentationConfigurer<RestAssuredSnippetConfigurer, RestAssuredRestDocumentationConfigurer>
 		implements Filter {

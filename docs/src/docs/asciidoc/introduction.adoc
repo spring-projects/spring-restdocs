@@ -12,9 +12,9 @@ can also be configured to use Markdown.
 
 Spring REST Docs makes use of snippets produced by tests written with
 {spring-framework-docs}/#spring-mvc-test-framework[Spring MVC Test] or
-http://www.rest-assured.io[REST Assured]. This test-driven approach helps to guarantee the
-accuracy of your service's documentation. If a snippet is incorrect the test that produces
-it will fail.
+http://www.rest-assured.io[REST Assured] 2 and 3. This test-driven approach helps to
+guarantee the accuracy of your service's documentation. If a snippet is incorrect the
+test that produces it will fail.
 
 Documenting a RESTful service is largely about describing its resources. Two key parts
 of each resource's description are the details of the HTTP requests that it consumes

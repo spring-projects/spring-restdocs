@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured;
+package org.springframework.restdocs.restassured3;
 
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.regex.Pattern;
 
-import com.jayway.restassured.builder.RequestSpecBuilder;
-import com.jayway.restassured.specification.RequestSpecification;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.specification.RequestSpecification;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -57,9 +57,9 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.restassured.operation.preprocess.RestAssuredPreprocessors.modifyUris;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.restassured3.operation.preprocess.RestAssuredPreprocessors.modifyUris;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
@@ -72,7 +72,6 @@ import static org.springframework.restdocs.test.SnippetMatchers.snippet;
  * @author Andy Wilkinson
  * @author Tomasz Kopczynski
  */
-@Deprecated
 public class RestAssuredRestDocumentationIntegrationTests {
 
 	@Rule
@@ -96,7 +95,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		given().port(tomcat.getPort())
 				.filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("curl-snippet-with-content")).accept("application/json")
-				.content("content").contentType(contentType).post("/").then()
+				.body("content").contentType(contentType).post("/").then()
 				.statusCode(200);
 
 		assertThat(
@@ -194,7 +193,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("request-fields",
 						requestFields(fieldWithPath("a").description("The description"))))
-				.accept("application/json").content("{\"a\":\"alpha\"}").post("/").then()
+				.accept("application/json").body("{\"a\":\"alpha\"}").post("/").then()
 				.statusCode(200);
 		assertExpectedSnippetFilesExist(
 				new File("build/generated-snippets/request-fields"), "http-request.adoc",
@@ -298,7 +297,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		given().port(tomcat.getPort())
 				.filter(documentationConfiguration(this.restDocumentation))
 				.header("a", "alpha").header("b", "bravo").contentType("application/json")
-				.accept("application/json").content("{\"a\":\"alpha\"}")
+				.accept("application/json").body("{\"a\":\"alpha\"}")
 				.filter(document("original-request"))
 				.filter(document("preprocessed-request",
 						preprocessRequest(prettyPrint(),

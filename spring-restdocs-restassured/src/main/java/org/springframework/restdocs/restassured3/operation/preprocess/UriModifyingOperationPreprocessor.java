@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured.operation.preprocess;
+package org.springframework.restdocs.restassured3.operation.preprocess;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -54,11 +54,8 @@ import org.springframework.web.util.UriComponentsBuilder;
  * </ul>
  *
  * @author Andy Wilkinson
- * @since 1.1.0
- * @deprecated since 1.2.0 in favor of
- * {@link org.springframework.restdocs.restassured3.operation.preprocess.UriModifyingOperationPreprocessor}
+ * @since 1.2.0
  */
-@Deprecated
 public final class UriModifyingOperationPreprocessor implements OperationPreprocessor {
 
 	private final UriModifyingContentModifier contentModifier = new UriModifyingContentModifier();

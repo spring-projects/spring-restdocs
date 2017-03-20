@@ -34,6 +34,7 @@ ext['spring-restdocs.version'] = '1.2.0.BUILD-SNAPSHOT'
 
 dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-web'
+	testCompile 'io.rest-assured:rest-assured:3.0.2'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	testCompile 'org.springframework.restdocs:spring-restdocs-restassured'
 	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"

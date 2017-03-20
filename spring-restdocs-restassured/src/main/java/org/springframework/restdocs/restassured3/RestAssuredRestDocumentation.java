@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured;
+package org.springframework.restdocs.restassured3;
 
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
@@ -23,14 +23,11 @@ import org.springframework.restdocs.operation.preprocess.OperationResponsePrepro
 import org.springframework.restdocs.snippet.Snippet;
 
 /**
- * Static factory methods for documenting RESTful APIs using REST Assured.
+ * Static factory methods for documenting RESTful APIs using REST Assured 3.
  *
  * @author Andy Wilkinson
- * @since 1.1.0
- * @deprecated Since 1.2.0 in favor of
- * {@link org.springframework.restdocs.restassured3.RestAssuredRestDocumentation}
+ * @since 1.2.0
  */
-@Deprecated
 public abstract class RestAssuredRestDocumentation {
 
 	private static final RestAssuredRequestConverter REQUEST_CONVERTER = new RestAssuredRequestConverter();

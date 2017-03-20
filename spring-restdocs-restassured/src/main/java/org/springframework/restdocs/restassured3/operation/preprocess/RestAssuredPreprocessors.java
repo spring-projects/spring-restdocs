@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured.operation.preprocess;
+package org.springframework.restdocs.restassured3.operation.preprocess;
 
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -23,16 +23,13 @@ import org.springframework.restdocs.operation.OperationResponse;
 /**
  * Static factory methods for creating
  * {@link org.springframework.restdocs.operation.preprocess.OperationPreprocessor
- * OperationPreprocessors} for use with REST Assured. They can be applied to an
+ * OperationPreprocessors} for use with REST Assured 3. They can be applied to an
  * {@link Operation Operation's} {@link OperationRequest request} or
  * {@link OperationResponse response} before it is documented.
  *
  * @author Andy Wilkinson
  * @since 1.1.0
- * @deprecated since 1.2.0 in favor of
- * {@link org.springframework.restdocs.restassured3.operation.preprocess.RestAssuredPreprocessors}
  */
-@Deprecated
 public abstract class RestAssuredPreprocessors {
 
 	private RestAssuredPreprocessors() {

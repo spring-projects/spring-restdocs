@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured;
+package org.springframework.restdocs.restassured3;
 
 import java.util.List;
 import java.util.Map;
 
-import com.jayway.restassured.filter.FilterContext;
-import com.jayway.restassured.specification.FilterableRequestSpecification;
-import com.jayway.restassured.specification.FilterableResponseSpecification;
+import io.restassured.filter.FilterContext;
+import io.restassured.specification.FilterableRequestSpecification;
+import io.restassured.specification.FilterableResponseSpecification;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -44,7 +44,6 @@ import static org.mockito.Mockito.verify;
  *
  * @author Andy Wilkinson
  */
-@Deprecated
 public class RestAssuredRestDocumentationConfigurerTests {
 
 	@Rule

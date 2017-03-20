@@ -5,6 +5,7 @@ plugins {
 dependencies {
 	testCompile project(':spring-restdocs-mockmvc')
 	testCompile project(':spring-restdocs-restassured')
+	testCompile 'io.rest-assured:rest-assured'
 	testCompile 'javax.validation:validation-api'
 	testCompile 'junit:junit'
 	testCompile 'org.testng:testng:6.9.10'

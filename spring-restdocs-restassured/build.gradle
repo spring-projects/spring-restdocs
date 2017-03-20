@@ -2,8 +2,11 @@ description = 'Spring REST Docs REST Assured'
 
 dependencies {
 	compile project(':spring-restdocs-core')
-	compile 'com.jayway.restassured:rest-assured'
+	compileOnly 'com.jayway.restassured:rest-assured'
+	compileOnly 'io.rest-assured:rest-assured'
 
+	testCompile 'com.jayway.restassured:rest-assured'
+	testCompile 'io.rest-assured:rest-assured'
 	testCompile 'org.apache.tomcat.embed:tomcat-embed-core:8.5.11'
 	testCompile 'org.mockito:mockito-core'
 	testCompile 'org.hamcrest:hamcrest-library'
