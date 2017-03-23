@@ -98,22 +98,13 @@ the configuration are described below.
 	<build>
 		<plugins>
 			<plugin> <2>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<includes>
-						<include>**/*Documentation.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-			<plugin> <3>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
 				<version>1.5.3</version>
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<phase>prepare-package</phase> <4>
+						<phase>prepare-package</phase> <3>
 						<goals>
 							<goal>process-asciidoc</goal>
 						</goals>
@@ -124,7 +115,7 @@ the configuration are described below.
 					</execution>
 				</executions>
 				<dependencies>
-					<dependency> <5>
+					<dependency> <4>
 						<groupId>org.springframework.restdocs</groupId>
 						<artifactId>spring-restdocs-asciidoctor</artifactId>
 						<version>{project-version}</version>
@@ -138,12 +129,10 @@ the configuration are described below.
 	REST Assured rather than MockMvc, add a dependency on `spring-restdocs-restassured`
 	and `com.jayway.restassured:restassured` (REST Assured 2) or
 	`io.rest-assured:rest-assured` (REST Assured 3) instead.
-<2> Add the SureFire plugin and configure it to include files whose names end with
-	`Documentation.java`.
-<3> Add the Asciidoctor plugin.
-<4> Using `prepare-package` allows the documentation to be
+<2> Add the Asciidoctor plugin.
+<3> Using `prepare-package` allows the documentation to be
 	<<getting-started-build-configuration-maven-packaging, included in the package>>.
-<5> Add `spring-restdocs-asciidoctor` as a dependency of the Asciidoctor plugin. This
+<4> Add `spring-restdocs-asciidoctor` as a dependency of the Asciidoctor plugin. This
 	will automatically configure the `snippets` attribute for use in your `.adoc` files to
 	point to `target/generated-snippets`. It will also allow you to use the `operation`
 	block macro.
@@ -190,7 +179,7 @@ the configuration are described below.
 	documentation is created.
 
 
-[[getting-started-build-configuration-gradle-packaging-the-documentation]]
+[[getting-started-build-configuration-packaging-the-documentation]]
 ==== Packaging the documentation
 
 You may want to package the generated documentation in your project's jar file, for
