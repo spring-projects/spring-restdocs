@@ -132,7 +132,8 @@ the configuration are described below.
 <4> Define an attribute named `snippets` that can be used when including the generated
 	snippets in your documentation.
 <5> Using `prepare-package` allows the documentation to be
-	<<getting-started-build-configuration-maven-packaging, included in the package>>.
+	<<getting-started-build-configuration-packaging-the-documentation, included in the
+	package>>.
 
 [source,indent=0,subs="verbatim,attributes",role="secondary"]
 .Gradle
@@ -173,7 +174,7 @@ the configuration are described below.
 	documentation is created.
 
 
-[[getting-started-build-configuration-gradle-packaging-the-documentation]]
+[[getting-started-build-configuration-packaging-the-documentation]]
 ==== Packaging the documentation
 
 You may want to package the generated documentation in your project's jar file, for
