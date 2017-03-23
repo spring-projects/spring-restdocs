@@ -17,6 +17,7 @@
 package org.springframework.restdocs.payload;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -88,36 +89,38 @@ final class JsonFieldProcessor {
 	}
 
 	private void traverse(ProcessingContext context, MatchCallback matchCallback) {
-		final String segment = context.getSegment();
+		String segment = context.getSegment();
 		if (JsonFieldPath.isArraySegment(segment)) {
-			if (context.getPayload() instanceof List) {
-				handleListPayload(context, matchCallback);
+			if (context.getPayload() instanceof Collection) {
+				handleCollectionPayload(context, matchCallback);
 			}
 		}
-		else if (context.getPayload() instanceof Map
-				&& ((Map<?, ?>) context.getPayload()).containsKey(segment)) {
+		else if (context.getPayload() instanceof Map) {
 			handleMapPayload(context, matchCallback);
 		}
 	}
 
-	private void handleListPayload(ProcessingContext context,
+	private void handleCollectionPayload(ProcessingContext context,
 			MatchCallback matchCallback) {
-		List<?> list = context.getPayload();
-		final Iterator<?> items = list.iterator();
+		handleCollectionPayload((Collection<?>) context.getPayload(), matchCallback,
+				context);
+	}
+
+	private void handleCollectionPayload(Collection<?> collection,
+			MatchCallback matchCallback, ProcessingContext context) {
+		Iterator<?> items = collection.iterator();
 		if (context.isLeaf()) {
 			while (items.hasNext()) {
 				Object item = items.next();
-				matchCallback.foundMatch(
-						new ListMatch(items, list, item, context.getParentMatch()));
+				matchCallback.foundMatch(new CollectionMatch(items, collection, item,
+						context.getParentMatch()));
 			}
 		}
 		else {
 			while (items.hasNext()) {
 				Object item = items.next();
-				traverse(
-						context.descend(item,
-								new ListMatch(items, list, item, context.parent)),
-						matchCallback);
+				traverse(context.descend(item, new CollectionMatch(items, collection,
+						item, context.getParentMatch())), matchCallback);
 			}
 		}
 	}
@@ -126,13 +129,18 @@ final class JsonFieldProcessor {
 			MatchCallback matchCallback) {
 		Map<?, ?> map = context.getPayload();
 		Object item = map.get(context.getSegment());
-		MapMatch mapMatch = new MapMatch(item, map, context.getSegment(),
-				context.getParentMatch());
-		if (context.isLeaf()) {
-			matchCallback.foundMatch(mapMatch);
+		if (item != null || map.containsKey(context.getSegment())) {
+			MapMatch mapMatch = new MapMatch(item, map, context.getSegment(),
+					context.getParentMatch());
+			if (context.isLeaf()) {
+				matchCallback.foundMatch(mapMatch);
+			}
+			else {
+				traverse(context.descend(item, mapMatch), matchCallback);
+			}
 		}
-		else {
-			traverse(context.descend(item, mapMatch), matchCallback);
+		else if ("*".equals(context.getSegment())) {
+			handleCollectionPayload(map.values(), matchCallback, context);
 		}
 	}
 
@@ -162,7 +170,7 @@ final class JsonFieldProcessor {
 		public void remove() {
 			Object removalCandidate = this.map.get(this.segment);
 			if (isMapWithEntries(removalCandidate)
-					|| isListWithNonScalarEntries(removalCandidate)) {
+					|| isCollectionWithNonScalarEntries(removalCandidate)) {
 				return;
 			}
 			this.map.remove(this.segment);
@@ -183,12 +191,12 @@ final class JsonFieldProcessor {
 			return object instanceof Map && !((Map<?, ?>) object).isEmpty();
 		}
 
-		private boolean isListWithNonScalarEntries(Object object) {
-			if (!(object instanceof List)) {
+		private boolean isCollectionWithNonScalarEntries(Object object) {
+			if (!(object instanceof Collection)) {
 				return false;
 			}
-			for (Object entry : (List<?>) object) {
-				if (entry instanceof Map || entry instanceof List) {
+			for (Object entry : (Collection<?>) object) {
+				if (entry instanceof Map || entry instanceof Collection) {
 					return true;
 				}
 			}
@@ -197,19 +205,20 @@ final class JsonFieldProcessor {
 
 	}
 
-	private static final class ListMatch implements Match {
+	private static final class CollectionMatch implements Match {
 
 		private final Iterator<?> items;
 
-		private final List<?> list;
+		private final Collection<?> collection;
 
 		private final Object item;
 
 		private final Match parent;
 
-		private ListMatch(Iterator<?> items, List<?> list, Object item, Match parent) {
+		private CollectionMatch(Iterator<?> items, Collection<?> collection, Object item,
+				Match parent) {
 			this.items = items;
-			this.list = list;
+			this.collection = collection;
 			this.item = item;
 			this.parent = parent;
 		}
@@ -225,7 +234,7 @@ final class JsonFieldProcessor {
 				return;
 			}
 			this.items.remove();
-			if (this.list.isEmpty() && this.parent != null) {
+			if (this.collection.isEmpty() && this.parent != null) {
 				this.parent.remove();
 			}
 		}
@@ -233,21 +242,21 @@ final class JsonFieldProcessor {
 		@Override
 		public void removeSubsection() {
 			this.items.remove();
-			if (this.list.isEmpty() && this.parent != null) {
+			if (this.collection.isEmpty() && this.parent != null) {
 				this.parent.removeSubsection();
 			}
 		}
 
 		private boolean itemIsEmpty() {
-			return !isMapWithEntries(this.item) && !isListWithEntries(this.item);
+			return !isMapWithEntries(this.item) && !isCollectionWithEntries(this.item);
 		}
 
 		private boolean isMapWithEntries(Object object) {
 			return object instanceof Map && !((Map<?, ?>) object).isEmpty();
 		}
 
-		private boolean isListWithEntries(Object object) {
-			return object instanceof List && !((List<?>) object).isEmpty();
+		private boolean isCollectionWithEntries(Object object) {
+			return object instanceof Collection && !((Collection<?>) object).isEmpty();
 		}
 
 	}

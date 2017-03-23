@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -303,6 +308,102 @@ public class JsonFieldProcessorTests {
 		assertThat(this.fieldProcessor
 				.extract(JsonFieldPath.compile("['a.key']['b.key']"), payload),
 				equalTo((Object) "bravo"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void extractNestedEntriesUsingTopLevelWildcard() throws IOException {
+		Map<String, Object> payload = new LinkedHashMap<>();
+		Map<String, Object> alpha = new LinkedHashMap<>();
+		payload.put("a", alpha);
+		alpha.put("b", "bravo1");
+		Map<String, Object> charlie = new LinkedHashMap<>();
+		charlie.put("b", "bravo2");
+		payload.put("c", charlie);
+		assertThat((List<String>) this.fieldProcessor
+				.extract(JsonFieldPath.compile("*.b"), payload),
+				contains("bravo1", "bravo2"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void extractNestedEntriesUsingMidLevelWildcard() throws IOException {
+		Map<String, Object> payload = new LinkedHashMap<>();
+		Map<String, Object> alpha = new LinkedHashMap<>();
+		payload.put("a", alpha);
+		Map<String, Object> bravo = new LinkedHashMap<>();
+		bravo.put("b", "bravo");
+		alpha.put("one", bravo);
+		alpha.put("two", bravo);
+		assertThat((List<String>) this.fieldProcessor
+				.extract(JsonFieldPath.compile("a.*.b"), payload),
+				contains("bravo", "bravo"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void extractUsingLeafWildcardMatchingSingleItem() throws IOException {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> alpha = new HashMap<>();
+		payload.put("a", alpha);
+		alpha.put("b", "bravo1");
+		Map<String, Object> charlie = new HashMap<>();
+		charlie.put("b", "bravo2");
+		payload.put("c", charlie);
+		assertThat((List<String>) this.fieldProcessor
+				.extract(JsonFieldPath.compile("a.*"), payload), contains("bravo1"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void extractUsingLeafWildcardMatchingMultipleItems() throws IOException {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> alpha = new HashMap<>();
+		payload.put("a", alpha);
+		alpha.put("b", "bravo1");
+		alpha.put("c", "charlie");
+		assertThat((List<String>) this.fieldProcessor
+				.extract(JsonFieldPath.compile("a.*"), payload),
+				contains("bravo1", "charlie"));
+	}
+
+	@Test
+	public void removeUsingLeafWildcard() throws IOException {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> alpha = new HashMap<>();
+		payload.put("a", alpha);
+		alpha.put("b", "bravo1");
+		alpha.put("c", "charlie");
+		this.fieldProcessor.remove(JsonFieldPath.compile("a.*"), payload);
+		assertThat(payload.size(), equalTo(0));
+	}
+
+	@Test
+	public void removeUsingTopLevelWildcard() throws IOException {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> alpha = new HashMap<>();
+		payload.put("a", alpha);
+		alpha.put("b", "bravo1");
+		alpha.put("c", "charlie");
+		this.fieldProcessor.remove(JsonFieldPath.compile("*.b"), payload);
+		assertThat(alpha, not(hasKey("b")));
+	}
+
+	@Test
+	public void removeUsingMidLevelWildcard() throws IOException {
+		Map<String, Object> payload = new LinkedHashMap<>();
+		Map<String, Object> alpha = new LinkedHashMap<>();
+		payload.put("a", alpha);
+		payload.put("c", "charlie");
+		Map<String, Object> bravo1 = new LinkedHashMap<>();
+		bravo1.put("b", "bravo");
+		alpha.put("one", bravo1);
+		Map<String, Object> bravo2 = new LinkedHashMap<>();
+		bravo2.put("b", "bravo");
+		alpha.put("two", bravo2);
+		this.fieldProcessor.remove(JsonFieldPath.compile("a.*.b"), payload);
+		assertThat(payload.size(), equalTo(1));
+		assertThat(payload, hasEntry("c", (Object) "charlie"));
 	}
 
 	private Map<String, String> createEntry(String... pairs) {

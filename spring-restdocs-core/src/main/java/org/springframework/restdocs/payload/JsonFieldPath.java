@@ -72,8 +72,9 @@ final class JsonFieldPath {
 
 	static JsonFieldPath compile(String path) {
 		List<String> segments = extractSegments(path);
+		String leafSegment = segments.get(segments.size() - 1);
 		return new JsonFieldPath(path, segments, matchesSingleValue(segments),
-				isArraySegment(segments.get(segments.size() - 1)));
+				isArraySegment(leafSegment) || isWildcardSegment(leafSegment));
 	}
 
 	static boolean isArraySegment(String segment) {
@@ -83,11 +84,16 @@ final class JsonFieldPath {
 	static boolean matchesSingleValue(List<String> segments) {
 		Iterator<String> iterator = segments.iterator();
 		while (iterator.hasNext()) {
-			if (isArraySegment(iterator.next()) && iterator.hasNext()) {
+			String next = iterator.next();
+			if ((isArraySegment(next) || isWildcardSegment(next)) && iterator.hasNext()) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	private static boolean isWildcardSegment(String segment) {
+		return "*".equals(segment);
 	}
 
 	private static List<String> extractSegments(String path) {

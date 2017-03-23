@@ -145,4 +145,30 @@ public class JsonFieldPathTests {
 				contains("a.key", "[]", "b", "c"));
 	}
 
+	@Test
+	public void compilationOfPathWithAWildcard() {
+		assertThat(JsonFieldPath.compile("a.b.*.c").getSegments(),
+				contains("a", "b", "*", "c"));
+	}
+
+	@Test
+	public void compilationOfPathWithAWildcardInBrackets() {
+		assertThat(JsonFieldPath.compile("a.b.['*'].c").getSegments(),
+				contains("a", "b", "*", "c"));
+	}
+
+	@Test
+	public void fieldBeneathTopLevelWildcardIsNotPreciseAndNotAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("*.a");
+		assertFalse(path.isPrecise());
+		assertFalse(path.isArray());
+	}
+
+	@Test
+	public void fieldBeneathNestedWildcardIsNotPreciseAndNotAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("a.*.b");
+		assertFalse(path.isPrecise());
+		assertFalse(path.isArray());
+	}
+
 }

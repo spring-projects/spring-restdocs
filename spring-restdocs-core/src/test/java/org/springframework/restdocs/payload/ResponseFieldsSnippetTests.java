@@ -241,8 +241,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	public void xmlResponseFields() throws IOException {
 		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two").row("`a`",
-								"`a`", "three"));
+						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two")
+						.row("`a`", "`a`", "three"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
 						fieldWithPath("a/c").description("two").type("c"),
@@ -252,7 +252,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.content("<a><b>5</b><c>charlie</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-												.build());
+										.build());
 	}
 
 	@Test
@@ -268,7 +268,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.content("<a id=\"1\">foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-												.build());
+										.build());
 	}
 
 	@Test
@@ -284,7 +284,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.content("<a>foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-												.build());
+										.build());
 	}
 
 	@Test
@@ -346,6 +346,24 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 				fieldWithPath("Foo|Bar").type("one|two").description("three|four")))
 						.document(this.operationBuilder.response()
 								.content("{\"Foo|Bar\": 5}").build());
+	}
+
+	@Test
+	public void mapResponseWithVaryingKeysMatchedUsingWildcard() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`things.*.size`", "`String`", "one")
+						.row("`things.*.type`", "`String`", "two"));
+
+		new ResponseFieldsSnippet(
+				Arrays.asList(fieldWithPath("things.*.size").description("one"),
+						fieldWithPath("things.*.type").description("two")))
+								.document(this.operationBuilder.response()
+										.content("{\"things\": {\"12abf\": {\"type\":"
+												+ "\"Whale\", \"size\": \"HUGE\"},"
+												+ "\"gzM33\" : {\"type\": \"Screw\","
+												+ "\"size\": \"SMALL\"}}}")
+										.build());
 	}
 
 	private String escapeIfNecessary(String input) {

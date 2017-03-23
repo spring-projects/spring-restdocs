@@ -107,7 +107,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 						.document(this.operationBuilder.request("http://localhost")
 								.content(
 										"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
-								.build());
+						.build());
 	}
 
 	@Test
@@ -267,8 +267,8 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	public void xmlRequestFields() throws IOException {
 		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two").row("`a`",
-								"`a`", "three"));
+						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two")
+						.row("`a`", "`a`", "three"));
 
 		new RequestFieldsSnippet(
 				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
@@ -279,7 +279,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 												.content("<a><b>5</b><c>charlie</c></a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-												.build());
+								.build());
 	}
 
 	@Test
@@ -336,6 +336,24 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 				fieldWithPath("Foo|Bar").type("one|two").description("three|four")))
 						.document(this.operationBuilder.request("http://localhost")
 								.content("{\"Foo|Bar\": 5}").build());
+	}
+
+	@Test
+	public void mapRequestWithVaryingKeysMatchedUsingWildcard() throws IOException {
+		this.snippets.expectRequestFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`things.*.size`", "`String`", "one")
+						.row("`things.*.type`", "`String`", "two"));
+
+		new RequestFieldsSnippet(
+				Arrays.asList(fieldWithPath("things.*.size").description("one"),
+						fieldWithPath("things.*.type").description("two"))).document(
+								this.operationBuilder.request("http://localhost")
+										.content("{\"things\": {\"12abf\": {\"type\":"
+												+ "\"Whale\", \"size\": \"HUGE\"},"
+												+ "\"gzM33\" : {\"type\": \"Screw\","
+												+ "\"size\": \"SMALL\"}}}")
+										.build());
 	}
 
 	private String escapeIfNecessary(String input) {

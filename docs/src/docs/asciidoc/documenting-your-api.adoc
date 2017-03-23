@@ -282,7 +282,6 @@ The following paths are all present:
 |`['a']['e.dot']`
 |The string `four`
 
-
 |===
 
 A payload that uses an array at its root can also be documented. The path `[]` will refer
@@ -302,7 +301,22 @@ found in the following array:
 	]
 ----
 
+You can use `\*` as a wildcard to match fields with different names. For example,
+`users.*.role` could be used to document the role of every user in the following JSON:
 
+[source,json.indent=0]
+----
+	{
+		"users":{
+			"ab12cd34":{
+				"role": "Administrator"
+			},
+			"12ab34cd":{
+				"role": "Guest"
+			}
+		}
+	}
+----
 
 [[documenting-your-api-request-response-payloads-fields-json-field-types]]
 ====== JSON field types
