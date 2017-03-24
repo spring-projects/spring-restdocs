@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,38 +51,54 @@ public class SampleBuildConfigurer {
 		sampleBuild.group = "Build"
 
 		if (new File(sampleDir, 'build.gradle').isFile()) {
+			Task gradleVersionsUpdate = createGradleVersionsUpdate(project)
+			sampleBuild.dependsOn gradleVersionsUpdate
 			if (build) {
 				Task gradleBuild = createGradleBuild(project, dependencies)
 				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'build/asciidoc'))
 				verifyIncludesTask.dependsOn gradleBuild
 				sampleBuild.dependsOn verifyIncludesTask
-			}
-			sampleBuild.doFirst {
-				replaceVersion(new File(this.workingDir, 'build.gradle'),
-						"ext\\['spring-restdocs.version'\\] = '.*'",
-						"ext['spring-restdocs.version'] = '${project.version}'")
-				replaceVersion(new File(this.workingDir, 'build.gradle'),
-						"restDocsVersion = \".*\"",
-						"restDocsVersion = \"${project.version}\"")
+				gradleBuild.dependsOn gradleVersionsUpdate
 			}
 		}
 		else if (new File(sampleDir, 'pom.xml').isFile()) {
+			Task mavenVersionsUpdate = createMavenVersionsUpdate(project)
+			sampleBuild.dependsOn mavenVersionsUpdate
 			if (build) {
 				Task mavenBuild = createMavenBuild(project, sampleDir, dependencies)
 				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'target/generated-docs'))
 				verifyIncludesTask.dependsOn(mavenBuild)
 				sampleBuild.dependsOn verifyIncludesTask
-			}
-			sampleBuild.doFirst {
-				replaceVersion(new File(this.workingDir, 'pom.xml'),
-					'<spring-restdocs.version>.*</spring-restdocs.version>',
-					"<spring-restdocs.version>${project.version}</spring-restdocs.version>")
+				mavenBuild.dependsOn mavenVersionsUpdate
 			}
 		}
 		else {
 			throw new IllegalStateException("No pom.xml or build.gradle was found in $sampleDir")
 		}
 		return sampleBuild
+	}
+
+	private Task createMavenVersionsUpdate(Project project) {
+		Task mavenVersionsUpdate = project.tasks.create "${name}MavenVersionUpdates"
+		mavenVersionsUpdate.doFirst {
+			replaceVersion(new File(this.workingDir, 'pom.xml'),
+				'<spring-restdocs.version>.*</spring-restdocs.version>',
+				"<spring-restdocs.version>${project.version}</spring-restdocs.version>")
+		}
+		return mavenVersionsUpdate
+	}
+
+	private Task createGradleVersionsUpdate(Project project) {
+		Task gradleVersionsUpdate = project.tasks.create "${name}GradleVersionUpdates"
+		gradleVersionsUpdate.doFirst {
+			replaceVersion(new File(this.workingDir, 'build.gradle'),
+					"ext\\['spring-restdocs.version'\\] = '.*'",
+					"ext['spring-restdocs.version'] = '${project.version}'")
+			replaceVersion(new File(this.workingDir, 'build.gradle'),
+					"restDocsVersion = \".*\"",
+					"restDocsVersion = \"${project.version}\"")
+		}
+		return gradleVersionsUpdate
 	}
 
 	private Task createMavenBuild(Project project, File sampleDir, Object... dependencies) {
