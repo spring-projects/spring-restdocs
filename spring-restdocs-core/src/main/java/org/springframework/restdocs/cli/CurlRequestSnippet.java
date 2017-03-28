@@ -130,13 +130,13 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		writeUserOptionIfNecessary(request, builder);
 		writeHttpMethodIfNecessary(request, builder);
 
-		List<String> additionaLines = new ArrayList<>();
-		writeHeaders(request, additionaLines);
-		writeCookies(request, additionaLines);
-		writePartsIfNecessary(request, additionaLines);
-		writeContent(request, additionaLines);
+		List<String> additionalLines = new ArrayList<>();
+		writeHeaders(request, additionalLines);
+		writeCookies(request, additionalLines);
+		writePartsIfNecessary(request, additionalLines);
+		writeContent(request, additionalLines);
 
-		builder.append(this.commandFormatter.format(additionaLines));
+		builder.append(this.commandFormatter.format(additionalLines));
 
 		return builder.toString();
 	}
