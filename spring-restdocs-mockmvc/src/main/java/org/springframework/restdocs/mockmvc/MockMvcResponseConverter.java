@@ -73,15 +73,15 @@ class MockMvcResponseConverter implements ResponseConverter<MockHttpServletRespo
 			header.append(maxAge);
 		}
 
-		appendIfAvailable(header, ";domain=", cookie.getDomain());
-		appendIfAvailable(header, ";path=", cookie.getPath());
+		appendIfAvailable(header, "; Domain=", cookie.getDomain());
+		appendIfAvailable(header, "; Path=", cookie.getPath());
 
 		if (cookie.getSecure()) {
-			header.append(";Secure");
+			header.append("; Secure");
 		}
 
 		if (cookie.isHttpOnly()) {
-			header.append(";HttpOnly");
+			header.append("; HttpOnly");
 		}
 
 		return header.toString();

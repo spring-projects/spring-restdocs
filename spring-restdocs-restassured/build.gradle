@@ -7,7 +7,7 @@ dependencies {
 
 	testCompile 'com.jayway.restassured:rest-assured'
 	testCompile 'io.rest-assured:rest-assured'
-	testCompile 'org.apache.tomcat.embed:tomcat-embed-core:8.5.11'
+	testCompile 'org.apache.tomcat.embed:tomcat-embed-core:8.5.13'
 	testCompile 'org.mockito:mockito-core'
 	testCompile 'org.hamcrest:hamcrest-library'
 	testCompile project(path: ':spring-restdocs-core', configuration: 'testArtifacts')

@@ -289,7 +289,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				is(snippet(asciidoctor())
 						.withContents(httpResponse(asciidoctor(), HttpStatus.OK).header(
 								HttpHeaders.SET_COOKIE,
-								"name=value;domain=localhost;HttpOnly"))));
+								"name=value; Domain=localhost; HttpOnly"))));
 	}
 
 	@Test

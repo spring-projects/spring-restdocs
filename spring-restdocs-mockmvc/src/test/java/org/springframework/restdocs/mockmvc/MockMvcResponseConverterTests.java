@@ -68,6 +68,6 @@ public class MockMvcResponseConverterTests {
 		assertThat(operationResponse.getHeaders().size(), is(1));
 		assertTrue(operationResponse.getHeaders().containsKey(HttpHeaders.SET_COOKIE));
 		assertThat(operationResponse.getHeaders().get(HttpHeaders.SET_COOKIE), equalTo(
-				Collections.singletonList("name=value;domain=localhost;HttpOnly")));
+				Collections.singletonList("name=value; Domain=localhost; HttpOnly")));
 	}
 }
