@@ -11,7 +11,7 @@ buildscript {
 	}
 	configurations.classpath.resolutionStrategy.eachDependency {
 		if (it.requested.name == 'dependency-management-plugin') {
-			it.useVersion '1.0.0.RELEASE'
+			it.useVersion '1.0.1.RELEASE'
 		}
 	}
 }
