@@ -30,7 +30,7 @@ ext {
 	snippetsDir = file('build/generated-snippets')
 }
 
-ext['spring-restdocs.version'] = '1.2.0.BUILD-SNAPSHOT'
+ext['spring-restdocs.version'] = '1.2.0.RELEASE'
 
 dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-web'
