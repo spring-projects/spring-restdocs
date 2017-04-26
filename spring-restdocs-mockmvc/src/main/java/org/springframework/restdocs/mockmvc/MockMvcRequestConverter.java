@@ -70,7 +70,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 			HttpHeaders headers = extractHeaders(mockRequest);
 			Parameters parameters = extractParameters(mockRequest);
 			List<OperationRequestPart> parts = extractParts(mockRequest);
-			Collection<RequestCookie> cookies = extractCookies(mockRequest);
+			Collection<RequestCookie> cookies = extractCookies(mockRequest, headers);
 			String queryString = mockRequest.getQueryString();
 			if (!StringUtils.hasText(queryString)
 					&& "GET".equals(mockRequest.getMethod())) {
@@ -89,7 +89,8 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		}
 	}
 
-	private Collection<RequestCookie> extractCookies(MockHttpServletRequest mockRequest) {
+	private Collection<RequestCookie> extractCookies(MockHttpServletRequest mockRequest,
+			HttpHeaders headers) {
 		if (mockRequest.getCookies() == null || mockRequest.getCookies().length == 0) {
 			return Collections.emptyList();
 		}
@@ -98,6 +99,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 			cookies.add(
 					new RequestCookie(servletCookie.getName(), servletCookie.getValue()));
 		}
+		headers.remove(HttpHeaders.COOKIE);
 		return cookies;
 	}
 
