@@ -33,7 +33,7 @@ for the index operation:
 
 [source,indent=0]
 ----
-operation::index[snippets=curl-request,http-request,http-response]
+operation::index[snippets='curl-request,http-request,http-response']
 ----
 
 To include all of an operation's snippets, the `snippets` attribute can be omitted:
