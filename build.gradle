@@ -108,7 +108,7 @@ configure(subprojects - project(":docs")) { subproject ->
 	apply plugin: 'checkstyle'
 	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
 
-	if (project.hasProperty('platformVersion')) {
+	if (project.hasProperty('platformVersion') && subproject.path != ':spring-restdocs-asciidoctor') {
 		apply plugin: 'spring-io'
 
 		repositories {
