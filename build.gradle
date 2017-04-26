@@ -212,9 +212,8 @@ task api (type: Javadoc) {
 	options.links = javadocLinks
 	options.addStringOption '-quiet'
 
-	source subprojects.collect { project ->
-		project.sourceSets.main.allJava
-	}
+	source subprojects.findAll { project -> project.path != ":spring-restdocs-asciidoctor" }
+			.collect { project -> project.sourceSets.main.allJava }
 
 	destinationDir = new File(buildDir, "api")
 
