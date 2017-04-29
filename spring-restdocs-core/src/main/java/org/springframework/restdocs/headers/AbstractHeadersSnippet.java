@@ -53,8 +53,8 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 			Map<String, Object> attributes) {
 		super(type + "-headers", attributes);
 		for (HeaderDescriptor descriptor : descriptors) {
-			Assert.notNull(descriptor.getName());
-			Assert.notNull(descriptor.getDescription());
+			Assert.notNull(descriptor.getName(), "descriptor's name must not be null");
+			Assert.notNull(descriptor.getDescription(), "descriptor's description must not be null");
 		}
 		this.headerDescriptors = descriptors;
 		this.type = type;
