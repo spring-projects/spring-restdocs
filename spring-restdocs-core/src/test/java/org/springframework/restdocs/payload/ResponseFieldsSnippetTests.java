@@ -226,7 +226,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void fieldWithExplictVariesType() throws IOException {
+	public void fieldWithExplicitVariesType() throws IOException {
 		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
 						"`Varies`", "one"));
@@ -238,7 +238,21 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void xmlResponseFields() throws IOException {
+	public void xmlResponseFieldsWithApplicationXml() throws IOException {
+		xml(MediaType.APPLICATION_XML_VALUE);
+	}
+
+	@Test
+	public void xmlResponseFieldsWithTextXml() throws IOException {
+		xml(MediaType.TEXT_XML_VALUE);
+	}
+
+	@Test
+	public void xmlResponseFieldsWithRssXml() throws IOException {
+		xml(MediaType.APPLICATION_RSS_XML_VALUE);
+	}
+
+	private void xml(String mediaType) throws IOException {
 		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two")
@@ -247,12 +261,12 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
 						fieldWithPath("a/c").description("two").type("c"),
 						fieldWithPath("a").description("three").type("a")))
-								.document(
-										this.operationBuilder.response()
-												.content("<a><b>5</b><c>charlie</c></a>")
-												.header(HttpHeaders.CONTENT_TYPE,
-														MediaType.APPLICATION_XML_VALUE)
-										.build());
+				.document(
+						this.operationBuilder.response()
+								.content("<a><b>5</b><c>charlie</c></a>")
+								.header(HttpHeaders.CONTENT_TYPE,
+										mediaType)
+								.build());
 	}
 
 	@Test
