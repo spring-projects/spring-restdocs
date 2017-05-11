@@ -221,7 +221,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	private ContentHandler getContentHandler(byte[] content, MediaType contentType) {
 		try {
 			if (contentType != null
-					&& MediaType.APPLICATION_XML.isCompatibleWith(contentType)) {
+					&& isCompatibleWithXml(contentType)) {
 				return new XmlContentHandler(content);
 			}
 			else {
@@ -231,6 +231,12 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		catch (IOException ex) {
 			throw new ModelCreationException(ex);
 		}
+	}
+
+	private boolean isCompatibleWithXml(MediaType contentType) {
+		return MediaType.APPLICATION_XML.isCompatibleWith(contentType) ||
+				MediaType.TEXT_XML.isCompatibleWith(contentType) ||
+				MediaType.APPLICATION_RSS_XML.isCompatibleWith(contentType);
 	}
 
 	private void validateFieldDocumentation(ContentHandler payloadHandler) {
