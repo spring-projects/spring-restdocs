@@ -20,6 +20,7 @@ allprojects {
 	group = 'org.springframework.restdocs'
 	repositories {
 		mavenCentral()
+		maven { url "https://repo.spring.io/libs-snapshot" }
 	}
 }
 
@@ -38,7 +39,7 @@ sonarqube {
 }
 
 ext {
-	springVersion = '4.3.6.RELEASE'
+	springVersion = '5.0.0.BUILD-SNAPSHOT'
 	javadocLinks = [
 		'http://docs.oracle.com/javase/8/docs/api/',
 		"http://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
@@ -56,15 +57,15 @@ subprojects {
 	apply plugin: 'propdeps-maven'
 	apply plugin: 'maven'
 
-	sourceCompatibility = 1.7
-	targetCompatibility = 1.7
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
 
 	dependencyManagement {
 		imports {
 			mavenBom "org.springframework:spring-framework-bom:$springVersion"
 		}
 		dependencies {
-			dependency 'com.fasterxml.jackson.core:jackson-databind:2.5.5'
+			dependency 'com.fasterxml.jackson.core:jackson-databind:2.9.0.pr3'
 			dependency 'com.jayway.restassured:rest-assured:2.8.0'
 			dependency 'com.samskivert:jmustache:1.12'
 			dependency 'commons-codec:commons-codec:1.10'
