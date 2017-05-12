@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -219,17 +219,32 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	}
 
 	private ContentHandler getContentHandler(byte[] content, MediaType contentType) {
-		try {
-			if (contentType != null
-					&& MediaType.APPLICATION_XML.isCompatibleWith(contentType)) {
-				return new XmlContentHandler(content);
-			}
-			else {
-				return new JsonContentHandler(content);
+		ContentHandler contentHandler = createJsonContentHandler(content);
+		if (contentHandler == null) {
+			contentHandler = createXmlContentHandler(content);
+			if (contentHandler == null) {
+				throw new PayloadHandlingException("Cannot handle " + contentType
+						+ " content as it could not be parsed as JSON or XML");
 			}
 		}
-		catch (IOException ex) {
-			throw new ModelCreationException(ex);
+		return contentHandler;
+	}
+
+	private ContentHandler createJsonContentHandler(byte[] content) {
+		try {
+			return new JsonContentHandler(content);
+		}
+		catch (Exception ex) {
+			return null;
+		}
+	}
+
+	private ContentHandler createXmlContentHandler(byte[] content) {
+		try {
+			return new XmlContentHandler(content);
+		}
+		catch (Exception ex) {
+			return null;
 		}
 	}
 

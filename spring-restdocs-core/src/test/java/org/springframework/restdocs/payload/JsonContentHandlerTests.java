@@ -51,4 +51,10 @@ public class JsonContentHandlerTests {
 		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.STRING)));
 	}
 
+	@Test
+	public void failsFastWithNonJsonContent() {
+		this.thrown.expect(PayloadHandlingException.class);
+		new JsonContentHandler("Non-JSON content".getBytes());
+	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -264,21 +264,33 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void xmlRequestFields() throws IOException {
+	public void applicationXmlRequestFields() throws IOException {
+		xmlRequestFields(MediaType.APPLICATION_XML);
+	}
+
+	@Test
+	public void textXmlRequestFields() throws IOException {
+		xmlRequestFields(MediaType.TEXT_XML);
+	}
+
+	@Test
+	public void customXmlRequestFields() throws IOException {
+		xmlRequestFields(MediaType.parseMediaType("application/vnd.com.example+xml"));
+	}
+
+	private void xmlRequestFields(MediaType contentType) throws IOException {
 		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two")
 						.row("`a`", "`a`", "three"));
 
-		new RequestFieldsSnippet(
-				Arrays.asList(fieldWithPath("a/b").description("one").type("b"),
-						fieldWithPath("a/c").description("two").type("c"),
-						fieldWithPath("a").description("three").type("a")))
-								.document(
-										this.operationBuilder.request("http://localhost")
-												.content("<a><b>5</b><c>charlie</c></a>")
-												.header(HttpHeaders.CONTENT_TYPE,
-														MediaType.APPLICATION_XML_VALUE)
+		new RequestFieldsSnippet(Arrays.asList(
+				fieldWithPath("a/b").description("one").type("b"),
+				fieldWithPath("a/c").description("two").type("c"),
+				fieldWithPath("a").description("three").type("a")))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("<a><b>5</b><c>charlie</c></a>")
+								.header(HttpHeaders.CONTENT_TYPE, contentType.toString())
 								.build());
 	}
 

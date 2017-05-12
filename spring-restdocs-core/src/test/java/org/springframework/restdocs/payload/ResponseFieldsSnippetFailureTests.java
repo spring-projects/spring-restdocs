@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class ResponseFieldsSnippetFailureTests {
 												.content("<a>foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-												.build());
+										.build());
 	}
 
 	@Test
@@ -159,6 +159,17 @@ public class ResponseFieldsSnippetFailureTests {
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
 				.document(this.operationBuilder.response().content("<a><c>5</c></a>")
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+						.build());
+	}
+
+	@Test
+	public void unsupportedContent() throws IOException {
+		this.thrown.expect(PayloadHandlingException.class);
+		this.thrown.expectMessage(equalTo("Cannot handle text/plain content as it could"
+				+ " not be parsed as JSON or XML"));
+		new ResponseFieldsSnippet(Collections.<FieldDescriptor>emptyList())
+				.document(this.operationBuilder.response().content("Some plain text")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
 						.build());
 	}
 

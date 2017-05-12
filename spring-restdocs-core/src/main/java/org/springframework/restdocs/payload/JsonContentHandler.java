@@ -41,8 +41,9 @@ class JsonContentHandler implements ContentHandler {
 
 	private final byte[] rawContent;
 
-	JsonContentHandler(byte[] content) throws IOException {
+	JsonContentHandler(byte[] content) {
 		this.rawContent = content;
+		readContent();
 	}
 
 	@Override
