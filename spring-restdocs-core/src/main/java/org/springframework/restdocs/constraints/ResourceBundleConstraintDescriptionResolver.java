@@ -154,7 +154,12 @@ public class ResourceBundleConstraintDescriptionResolver
 		catch (MissingResourceException ex) {
 			// Continue and return default description, if available
 		}
-		return this.defaultDescriptions.getString(key);
+		try {
+			return this.defaultDescriptions.getString(key);
+		}
+		catch (MissingResourceException ex) {
+			return null;
+		}
 	}
 
 	private static final class ConstraintPlaceholderResolver

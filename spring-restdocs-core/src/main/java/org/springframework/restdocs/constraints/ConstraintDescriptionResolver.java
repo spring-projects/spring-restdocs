@@ -28,7 +28,7 @@ public interface ConstraintDescriptionResolver {
 	 * Resolves the description for the given {@code constraint}.
 	 *
 	 * @param constraint the constraint
-	 * @return the description
+	 * @return the description or null if no description is available
 	 */
 	String resolveDescription(Constraint constraint);
 }

@@ -100,7 +100,10 @@ public class ConstraintDescriptions {
 				.resolveForProperty(property, this.clazz);
 		List<String> descriptions = new ArrayList<>();
 		for (Constraint constraint : constraints) {
-			descriptions.add(this.descriptionResolver.resolveDescription(constraint));
+			String description = this.descriptionResolver.resolveDescription(constraint);
+			if (description != null) {
+				descriptions.add(this.descriptionResolver.resolveDescription(constraint));
+			}
 		}
 		Collections.sort(descriptions);
 		return descriptions;
