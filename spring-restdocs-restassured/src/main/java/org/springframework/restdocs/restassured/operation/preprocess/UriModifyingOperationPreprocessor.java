@@ -72,6 +72,8 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 
 	private String port;
 
+	private String contextPath;
+
 	/**
 	 * Modifies the URI to use the given {@code scheme}. {@code null}, the default, will
 	 * leave the scheme unchanged.
@@ -123,6 +125,20 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 		return this;
 	}
 
+	/**
+	 * Modifies the URI to use the given {@code contextPath}. {@code null}, the default, will
+	 * leave the host unchanged.
+	 *
+	 * @param contextPath the context path
+	 * @return {@code this}
+	 */
+	public UriModifyingOperationPreprocessor contextPath(String contextPath) {
+		this.contextPath = contextPath;
+		this.contentModifier.setContextPath(contextPath);
+		return this;
+	}
+
+
 	@Override
 	public OperationRequest preprocess(OperationRequest request) {
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(request.getUri());
@@ -139,6 +155,9 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 			else {
 				uriBuilder.port(null);
 			}
+		}
+		if (this.contextPath != null) {
+			uriBuilder.replacePath(this.contextPath + (StringUtils.hasText(request.getUri().getPath()) ? "/" + request.getUri().getPath() : ""));
 		}
 		URI modifiedUri = uriBuilder.build(true).toUri();
 		HttpHeaders modifiedHeaders = modify(request.getHeaders());
@@ -183,13 +202,15 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 	private static final class UriModifyingContentModifier implements ContentModifier {
 
 		private static final Pattern SCHEME_HOST_PORT_PATTERN = Pattern
-				.compile("(http[s]?)://([^/:#?]+)(:[0-9]+)?");
+				.compile("(http[s]?)://([^/:#?]+)(:[0-9]+)?()");
 
 		private String scheme;
 
 		private String host;
 
 		private String port;
+
+		private String contextPath;
 
 		private void setScheme(String scheme) {
 			this.scheme = scheme;
@@ -201,6 +222,10 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 
 		private void setPort(String port) {
 			this.port = port;
+		}
+
+		public void setContextPath(String contextPath) {
+			this.contextPath = contextPath;
 		}
 
 		@Override
@@ -218,7 +243,7 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 
 		private String modify(String input) {
 			List<String> replacements = Arrays.asList(this.scheme, this.host,
-					StringUtils.hasText(this.port) ? ":" + this.port : this.port);
+					StringUtils.hasText(this.port) ? ":" + this.port : this.port, StringUtils.hasText(this.contextPath) ? "/" + this.contextPath : this.contextPath);
 
 			int previous = 0;
 

@@ -93,6 +93,24 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
+	public void requestUriContextPathCanBeModified() {
+		this.preprocessor.contextPath("context-path");
+		OperationRequest processed = this.preprocessor
+				.preprocess(createRequestWithUri("http://api.example.com:12345/foo/bar"));
+		assertThat(processed.getUri(),
+				is(equalTo(URI.create("http://api.example.com:12345/context-path/foo/bar"))));
+	}
+
+	@Test
+	public void requestUriContextPathCanBeModifiedEmptyPath() {
+		this.preprocessor.contextPath("context-path");
+		OperationRequest processed = this.preprocessor
+				.preprocess(createRequestWithUri("http://api.example.com:12345"));
+		assertThat(processed.getUri(),
+				is(equalTo(URI.create("http://api.example.com:12345/context-path"))));
+	}
+
+	@Test
 	public void requestUriPathIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
@@ -237,6 +255,26 @@ public class UriModifyingOperationPreprocessorTests {
 						"The uri 'http://localhost:12345' should be used"));
 		assertThat(new String(processed.getContent()),
 				is(equalTo("The uri 'http://localhost' should be used")));
+	}
+
+	@Test
+	public void responseContentUriContextPathCanBeModified() {
+		this.preprocessor.contextPath("context-path");
+		OperationResponse processed = this.preprocessor
+				.preprocess(createResponseWithContent(
+						"The uri 'http://api.example.com:12345/foo/bar' should be used"));
+		assertThat(new String(processed.getContent()),
+				is(equalTo("The uri 'http://api.example.com:12345/context-path/foo/bar' should be used")));
+	}
+
+	@Test
+	public void responseContentUriContextPathCanBeModifiedEmptyPath() {
+		this.preprocessor.contextPath("context-path");
+		OperationResponse processed = this.preprocessor
+				.preprocess(createResponseWithContent(
+						"The uri 'http://api.example.com:12345' should be used"));
+		assertThat(new String(processed.getContent()),
+				is(equalTo("The uri 'http://api.example.com:12345/context-path' should be used")));
 	}
 
 	@Test
