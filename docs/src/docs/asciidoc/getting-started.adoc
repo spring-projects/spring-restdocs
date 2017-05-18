@@ -73,8 +73,7 @@ Spring REST Docs has the following minimum requirements:
 Additionally, the `spring-restdocs-restassured` module has the following minimum
 requirements:
 
-- REST Assured 2.8 (`com.jayway.restassured:restassured`) or REST Assured 3.0
-  (`io.rest-assured:rest-assured`)
+- REST Assured 3.0
 
 [[getting-started-build-configuration]]
 === Build configuration
@@ -127,8 +126,7 @@ the configuration are described below.
 ----
 <1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope. If you want to use
 	REST Assured rather than MockMvc, add a dependency on `spring-restdocs-restassured`
-	and `com.jayway.restassured:restassured` (REST Assured 2) or
-	`io.rest-assured:rest-assured` (REST Assured 3) instead.
+	instead.
 <2> Add the Asciidoctor plugin.
 <3> Using `prepare-package` allows the documentation to be
 	<<getting-started-build-configuration-maven-packaging, included in the package>>.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,26 +105,6 @@ public class RestDocumentationGeneratorTests {
 		verifySnippetInvocation(this.snippet, configuration);
 		verifySnippetInvocation(defaultSnippet1, configuration);
 		verifySnippetInvocation(defaultSnippet2, configuration);
-	}
-
-	@Test
-	@Deprecated
-	public void additionalSnippetsAreCalled() throws IOException {
-		given(this.requestConverter.convert(this.request))
-				.willReturn(this.operationRequest);
-		given(this.responseConverter.convert(this.response))
-				.willReturn(this.operationResponse);
-		Snippet additionalSnippet1 = mock(Snippet.class);
-		Snippet additionalSnippet2 = mock(Snippet.class);
-		RestDocumentationGenerator<Object, Object> generator = new RestDocumentationGenerator<>(
-				"id", this.requestConverter, this.responseConverter, this.snippet);
-		generator.addSnippets(additionalSnippet1, additionalSnippet2);
-		HashMap<String, Object> configuration = new HashMap<>();
-		generator.handle(this.request, this.response, configuration);
-		generator.handle(this.request, this.response, configuration);
-		verifySnippetInvocation(this.snippet, configuration, 2);
-		verifySnippetInvocation(additionalSnippet1, configuration);
-		verifySnippetInvocation(additionalSnippet2, configuration);
 	}
 
 	@Test

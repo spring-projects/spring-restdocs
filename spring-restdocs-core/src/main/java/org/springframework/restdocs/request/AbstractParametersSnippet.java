@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,24 +42,6 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	private final Map<String, ParameterDescriptor> descriptorsByName = new LinkedHashMap<>();
 
 	private final boolean ignoreUndocumentedParameters;
-
-	/**
-	 * Creates a new {@code AbstractParametersSnippet} that will produce a snippet with
-	 * the given {@code snippetName} that will document parameters using the given
-	 * {@code descriptors}. The given {@code attributes} will be included in the model
-	 * during template rendering. Undocumented parameters will trigger a failure.
-	 *
-	 * @param snippetName The snippet name
-	 * @param descriptors The descriptors
-	 * @param attributes The additional attributes
-	 * @deprecated since 1.1 in favour of
-	 * {@link #AbstractParametersSnippet(String, List, Map, boolean)}
-	 */
-	@Deprecated
-	protected AbstractParametersSnippet(String snippetName,
-			List<ParameterDescriptor> descriptors, Map<String, Object> attributes) {
-		this(snippetName, descriptors, attributes, false);
-	}
 
 	/**
 	 * Creates a new {@code AbstractParametersSnippet} that will produce a snippet with
@@ -153,19 +135,6 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 */
 	protected abstract void verificationFailed(Set<String> undocumentedParameters,
 			Set<String> missingParameters);
-
-	/**
-	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will
-	 * be used to generate the documentation key by their
-	 * {@link ParameterDescriptor#getName()}.
-	 *
-	 * @return the map of path descriptors
-	 * @deprecated since 1.1.0 in favor of {@link #getParameterDescriptors()}
-	 */
-	@Deprecated
-	protected final Map<String, ParameterDescriptor> getFieldDescriptors() {
-		return this.descriptorsByName;
-	}
 
 	/**
 	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -199,18 +199,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		catch (IOException ex) {
 			throw new RestDocumentationGenerationException(ex);
 		}
-	}
-
-	/**
-	 * Adds the given {@code snippets} such that they are documented when this handler is
-	 * called.
-	 *
-	 * @param snippets the snippets to add
-	 * @deprecated since 1.1 in favor of {@link #withSnippets(Snippet...)}
-	 */
-	@Deprecated
-	public void addSnippets(Snippet... snippets) {
-		this.additionalSnippets.addAll(Arrays.asList(snippets));
 	}
 
 	/**

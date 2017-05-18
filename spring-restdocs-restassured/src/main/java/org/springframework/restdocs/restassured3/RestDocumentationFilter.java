@@ -81,20 +81,6 @@ public class RestDocumentationFilter implements Filter {
 	}
 
 	/**
-	 * Adds the given {@code snippets} such that they are documented when this result
-	 * handler is called.
-	 *
-	 * @param snippets the snippets to add
-	 * @return this {@code RestDocumentationFilter}
-	 * @deprecated since 1.1 in favor of {@link #document(Snippet...)}
-	 */
-	@Deprecated
-	public final RestDocumentationFilter snippets(Snippet... snippets) {
-		this.delegate.addSnippets(snippets);
-		return this;
-	}
-
-	/**
 	 * Creates a new {@link RestDocumentationFilter} that will produce documentation using
 	 * the given {@code snippets}.
 	 *

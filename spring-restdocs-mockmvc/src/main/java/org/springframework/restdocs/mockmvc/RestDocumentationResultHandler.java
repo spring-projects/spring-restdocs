@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,21 +53,6 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		Map<String, Object> configuration = (Map<String, Object>) result.getRequest()
 				.getAttribute(ATTRIBUTE_NAME_CONFIGURATION);
 		this.delegate.handle(result.getRequest(), result.getResponse(), configuration);
-	}
-
-	/**
-	 * Adds the given {@code snippets} such that they are documented when this result
-	 * handler is called.
-	 *
-	 * @param snippets the snippets to add
-	 * @return this {@code RestDocumentationResultHandler}
-	 * @deprecated since 1.1 in favor of {@link #document(Snippet...)} and passing the
-	 * return value into {@link ResultActions#andDo(ResultHandler)}
-	 */
-	@Deprecated
-	public RestDocumentationResultHandler snippets(Snippet... snippets) {
-		this.delegate.addSnippets(snippets);
-		return this;
 	}
 
 	/**

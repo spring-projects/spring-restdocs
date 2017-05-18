@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,23 +39,6 @@ public abstract class MockMvcRestDocumentation {
 
 	private MockMvcRestDocumentation() {
 
-	}
-
-	/**
-	 * Provides access to a {@link MockMvcConfigurer} that can be used to configure a
-	 * {@link MockMvc} instance using the given {@code restDocumentation}.
-	 *
-	 * @param restDocumentation the REST documentation
-	 * @return the configurer
-	 * @see ConfigurableMockMvcBuilder#apply(MockMvcConfigurer)
-	 * @deprecated Since 1.1 in favor of
-	 * {@link #documentationConfiguration(RestDocumentationContextProvider)}
-	 */
-	@Deprecated
-	public static MockMvcRestDocumentationConfigurer documentationConfiguration(
-			org.springframework.restdocs.RestDocumentation restDocumentation) {
-		return documentationConfiguration(
-				(RestDocumentationContextProvider) restDocumentation);
 	}
 
 	/**

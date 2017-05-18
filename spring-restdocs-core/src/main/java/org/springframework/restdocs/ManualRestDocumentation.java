@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 
 	private final File outputDirectory;
 
-	private RestDocumentationContext context;
+	private StandardRestDocumentationContext context;
 
 	/**
 	 * Creates a new {@code ManualRestDocumentation} instance that will generate snippets
@@ -67,13 +67,12 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 	 * @param testMethodName the name of the test method
 	 * @throws IllegalStateException if a context has already be created
 	 */
-	@SuppressWarnings("deprecation")
 	public void beforeTest(Class<?> testClass, String testMethodName) {
 		if (this.context != null) {
 			throw new IllegalStateException(
 					"Context already exists. Did you forget to call afterTest()?");
 		}
-		this.context = new RestDocumentationContext(testClass, testMethodName,
+		this.context = new StandardRestDocumentationContext(testClass, testMethodName,
 				this.outputDirectory);
 	}
 

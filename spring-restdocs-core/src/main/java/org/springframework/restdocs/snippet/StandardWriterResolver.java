@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.io.Writer;
 
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
@@ -43,22 +42,6 @@ public final class StandardWriterResolver implements WriterResolver {
 	private String encoding = "UTF-8";
 
 	private TemplateFormat templateFormat;
-
-	/**
-	 * Creates a new {@code StandardWriterResolver} that will use the given
-	 * {@code placeholderResolver} to resolve any placeholders in the
-	 * {@code operationName}. Writers will use {@code UTF-8} encoding and, when writing to
-	 * a file, will use a filename appropriate for Asciidoctor content.
-	 *
-	 * @param placeholderResolver the placeholder resolver
-	 * @deprecated since 1.1.0 in favor of
-	 * {@link #StandardWriterResolver(PlaceholderResolverFactory, String, TemplateFormat)}
-	 */
-	@Deprecated
-	public StandardWriterResolver(PlaceholderResolver placeholderResolver) {
-		this(new SingleInstancePlaceholderResolverFactory(placeholderResolver), "UTF-8",
-				TemplateFormats.asciidoctor());
-	}
 
 	/**
 	 * Creates a new {@code StandardWriterResolver} that will use a
@@ -97,12 +80,6 @@ public final class StandardWriterResolver implements WriterResolver {
 		}
 	}
 
-	@Override
-	@Deprecated
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
-	}
-
 	File resolveFile(String outputDirectory, String fileName,
 			RestDocumentationContext context) {
 		File outputFile = new File(outputDirectory, fileName);
@@ -127,23 +104,6 @@ public final class StandardWriterResolver implements WriterResolver {
 			throw new IllegalStateException(
 					"Failed to create directory '" + parent + "'");
 		}
-	}
-
-	private static final class SingleInstancePlaceholderResolverFactory
-			implements PlaceholderResolverFactory {
-
-		private final PlaceholderResolver placeholderResolver;
-
-		private SingleInstancePlaceholderResolverFactory(
-				PlaceholderResolver placeholderResolver) {
-			this.placeholderResolver = placeholderResolver;
-		}
-
-		@Override
-		public PlaceholderResolver create(RestDocumentationContext context) {
-			return this.placeholderResolver;
-		}
-
 	}
 
 }

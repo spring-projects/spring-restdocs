@@ -51,16 +51,6 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	private final CommandFormatter commandFormatter;
 
 	/**
-	 * Creates a new {@code CurlRequestSnippet} with no additional attributes.
-	 *
-	 * @deprecated since 1.2.0 in favor of {@link #CurlRequestSnippet(CommandFormatter)}
-	 */
-	@Deprecated
-	protected CurlRequestSnippet() {
-		this(null, CliDocumentation.DEFAULT_COMMAND_FORMATTER);
-	}
-
-	/**
 	 * Creates a new {@code CurlRequestSnippet} that will use the given
 	 * {@code commandFormatter} to format the curl command.
 	 *
@@ -68,19 +58,6 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	 */
 	protected CurlRequestSnippet(CommandFormatter commandFormatter) {
 		this(null, commandFormatter);
-	}
-
-	/**
-	 * Creates a new {@code CurlRequestSnippet} with the given additional
-	 * {@code attributes} that will be included in the model during template rendering.
-	 *
-	 * @param attributes The additional attributes
-	 * @deprecated since 1.2.0 in favor of
-	 * {@link #CurlRequestSnippet(Map, CommandFormatter)}
-	 */
-	@Deprecated
-	protected CurlRequestSnippet(Map<String, Object> attributes) {
-		this(attributes, CliDocumentation.DEFAULT_COMMAND_FORMATTER);
 	}
 
 	/**

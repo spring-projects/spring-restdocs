@@ -49,24 +49,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	/**
 	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
-	 * {@code <type>-fields}. The fields will be documented using the given
-	 * {@code  descriptors} and the given {@code attributes} will be included in the model
-	 * during template rendering. Undocumented fields will trigger a failure.
-	 *
-	 * @param type the type of the fields
-	 * @param descriptors the field descriptors
-	 * @param attributes the additional attributes
-	 * @deprecated since 1.1 in favor of
-	 * {@link #AbstractFieldsSnippet(String, List, Map, boolean)}
-	 */
-	@Deprecated
-	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes) {
-		this(type, descriptors, attributes, false);
-	}
-
-	/**
-	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
 	 * {@code <type>-fields} using a template named {@code <type>-fields}. The fields will
 	 * be documented using the given {@code  descriptors} and the given {@code attributes}
 	 * will be included in the model during template rendering. If

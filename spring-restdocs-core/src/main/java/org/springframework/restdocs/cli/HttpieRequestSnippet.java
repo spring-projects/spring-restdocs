@@ -52,16 +52,6 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	private final CommandFormatter commandFormatter;
 
 	/**
-	 * Creates a new {@code HttpieRequestSnippet} with no additional attributes.
-	 *
-	 * @deprecated since 1.2.0 in favor of {@link #HttpieRequestSnippet(CommandFormatter)}
-	 */
-	@Deprecated
-	protected HttpieRequestSnippet() {
-		this(null, null);
-	}
-
-	/**
 	 * Creates a new {@code HttpieRequestSnippet} that will use the given
 	 * {@code commandFormatter} to format the HTTPie command.
 	 *
@@ -69,19 +59,6 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	 */
 	protected HttpieRequestSnippet(CommandFormatter commandFormatter) {
 		this(null, commandFormatter);
-	}
-
-	/**
-	 * Creates a new {@code HttpieRequestSnippet} with the given additional
-	 * {@code attributes} that will be included in the model during template rendering.
-	 *
-	 * @param attributes The additional attributes
-	 * @deprecated since 1.2.0 in favor of
-	 * {@link #HttpieRequestSnippet(Map, CommandFormatter)}
-	 */
-	@Deprecated
-	protected HttpieRequestSnippet(Map<String, Object> attributes) {
-		this(attributes, null);
 	}
 
 	/**
