@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RequestParts {
@@ -30,7 +30,7 @@ public class RequestParts {
 
 	public void upload() throws Exception {
 		// tag::request-parts[]
-		this.mockMvc.perform(fileUpload("/upload").file("file", "example".getBytes())) // <1>
+		this.mockMvc.perform(multipart("/upload").file("file", "example".getBytes())) // <1>
 			.andExpect(status().isOk())
 			.andDo(document("upload", requestParts( // <2>
 					partWithName("file").description("The file to upload")) // <3>

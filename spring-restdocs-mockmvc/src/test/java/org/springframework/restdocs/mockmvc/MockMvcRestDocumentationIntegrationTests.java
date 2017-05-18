@@ -93,7 +93,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.SnippetMatchers.snippet;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -348,7 +348,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
 
-		mockMvc.perform(fileUpload("/upload").file("foo", "bar".getBytes()))
+		mockMvc.perform(multipart("/upload").file("foo", "bar".getBytes()))
 				.andExpect(status().isOk()).andDo(document("request-parts", requestParts(
 						partWithName("foo").description("The description"))));
 
@@ -577,7 +577,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	public void multiPart() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
-		mockMvc.perform(fileUpload("/upload").file("test", "content".getBytes()))
+		mockMvc.perform(multipart("/upload").file("test", "content".getBytes()))
 				.andExpect(status().isOk()).andDo(document("upload",
 						requestParts(partWithName("test").description("Foo"))));
 	}

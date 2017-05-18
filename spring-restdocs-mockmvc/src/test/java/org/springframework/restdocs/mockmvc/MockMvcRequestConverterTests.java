@@ -174,7 +174,7 @@ public class MockMvcRequestConverterTests {
 	@Test
 	public void mockMultipartFileUpload() throws Exception {
 		OperationRequest request = createOperationRequest(
-				MockMvcRequestBuilders.fileUpload("/foo")
+				MockMvcRequestBuilders.multipart("/foo")
 						.file(new MockMultipartFile("file", new byte[] { 1, 2, 3, 4 })));
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.POST));
@@ -190,7 +190,7 @@ public class MockMvcRequestConverterTests {
 	@Test
 	public void mockMultipartFileUploadWithContentType() throws Exception {
 		OperationRequest request = createOperationRequest(
-				MockMvcRequestBuilders.fileUpload("/foo").file(new MockMultipartFile(
+				MockMvcRequestBuilders.multipart("/foo").file(new MockMultipartFile(
 						"file", "original", "image/png", new byte[] { 1, 2, 3, 4 })));
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.POST));

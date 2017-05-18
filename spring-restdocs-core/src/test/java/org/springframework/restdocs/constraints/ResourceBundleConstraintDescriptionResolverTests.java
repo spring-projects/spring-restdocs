@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -270,7 +270,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	private Constraint getConstraintFromField(String name) {
 		Annotation[] annotations = ReflectionUtils.findField(Constrained.class, name)
 				.getAnnotations();
-		Assert.isTrue(annotations.length == 1);
+		Assert.isTrue(annotations.length == 1, "The field '" + name + "' must have"
+				+ "exactly one @Constrained annotation");
 		return new Constraint(annotations[0].annotationType().getName(),
 				AnnotationUtils.getAnnotationAttributes(annotations[0]));
 	}

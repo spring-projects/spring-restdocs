@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,10 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 			Map<String, Object> attributes) {
 		super(type + "-headers", attributes);
 		for (HeaderDescriptor descriptor : descriptors) {
-			Assert.notNull(descriptor.getName());
-			Assert.notNull(descriptor.getDescription());
+			Assert.notNull(descriptor.getName(),
+					"The name of the header must not be null");
+			Assert.notNull(descriptor.getDescription(),
+					"The description of the header must not be null");
 		}
 		this.headerDescriptors = descriptors;
 		this.type = type;
