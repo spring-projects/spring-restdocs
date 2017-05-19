@@ -171,8 +171,7 @@ the configuration are described below.
 	`operation` block macro.
 <3> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration. If
 	you want to use REST Assured rather than MockMvc, add a dependency on
-	`spring-restdocs-restassured` and `com.jayway.restassured:restassured` (REST Assured
-	2) or `io.rest-assured:rest-assured` (REST Assured 3) instead.
+	`spring-restdocs-restassured` instead.
 <4> Configure a property to define the output location for generated snippets.
 <5> Configure the `test` task to add the snippets directory as an output.
 <6> Configure the `asciidoctor` task
@@ -321,8 +320,7 @@ include::{examples-dir}/com/example/restassured/ExampleApplicationTests.java[tag
 <1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a
 `Filter`. An instance of this class can be obtained from the static
 `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the
-`org.springframework.restdocs.restassured` or `org.springframework.restdocs.restassured3`
-package depending on the version of REST Assured that you are using.
+`org.springframework.restdocs.restassured3` package.
 
 The configurer applies sensible defaults and also provides an API for customizing the
 configuration. Refer to the <<configuration, configuration section>> for more information.
@@ -462,8 +460,7 @@ include::{examples-dir}/com/example/restassured/InvokeService.java[tags=invoke-s
 that will be located beneath the configured output directory. The snippets are written by
 a `RestDocumentationFilter`. An instance of this class can be obtained from the
 static `document` method on `RestAssuredRestDocumentation`  in the
-`org.springframework.restdocs.restassured` or `org.springframework.restdocs.restassured3`
-package depending on the version of REST Assured that you are using.
+`org.springframework.restdocs.restassured3` package.
 <4> Invoke the root (`/`) of the service.
 <5> Assert that the service produce the expected response.
 
