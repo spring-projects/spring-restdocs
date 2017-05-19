@@ -16,6 +16,7 @@ dependencies {
 	testCompile 'javax.validation:validation-api'
 	testCompile 'junit:junit'
 	testCompile 'org.testng:testng:6.9.10'
+	testCompile 'org.junit.jupiter:junit-jupiter-api'
 }
 
 tasks.findByPath("artifactoryPublish")?.enabled = false

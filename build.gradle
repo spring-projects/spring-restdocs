@@ -77,6 +77,7 @@ subprojects {
 			dependency 'org.hamcrest:hamcrest-library:1.3'
 			dependency 'org.hibernate:hibernate-validator:5.4.1.Final'
 			dependency 'org.mockito:mockito-core:1.10.19'
+			dependency 'org.junit.jupiter:junit-jupiter-api:5.0.0-M4'
 			dependency 'org.springframework.hateoas:spring-hateoas:0.23.0.RELEASE'
 			dependency 'org.jacoco:org.jacoco.agent:0.7.7.201606060606'
 		}
@@ -193,6 +194,10 @@ samples {
 	slate {
 		workingDir "$projectDir/samples/rest-notes-slate"
 		build false
+	}
+
+	junit5 {
+		workingDir "$projectDir/samples/junit5"
 	}
 
 }

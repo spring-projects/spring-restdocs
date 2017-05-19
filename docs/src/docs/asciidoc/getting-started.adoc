@@ -60,6 +60,10 @@ If you want to jump straight in, a number of sample applications are available:
 | Gradle
 | Demonstrates the use of Spring REST Docs with http://testng.org[TestNG].
 
+| {samples}/junit5[JUnit 5]
+| Gradle
+| Demonstrates the use of Spring REST Docs with http://junit.org/junit5/[JUnit 5].
+
 |===
 
 [[getting-started-requirements]]
@@ -257,13 +261,13 @@ response.
 ==== Setting up your tests
 
 Exactly how you setup your tests depends on the test framework that you're using.
-Spring REST Docs provides first-class support for JUnit. Other frameworks, such as TestNG,
-are also supported although slightly more setup is required.
+Spring REST Docs provides first-class support for JUnit 4 and JUnit 5. Other frameworks,
+such as TestNG, are also supported although slightly more setup is required.
 
 [[getting-started-documentation-snippets-setup-junit]]
-===== Setting up your JUnit tests
+===== Setting up your JUnit 4 tests
 
-When using JUnit, the first step in generating documentation snippets is to declare a
+When using JUnit 4, the first step in generating documentation snippets is to declare a
 `public` `JUnitRestDocumentation` field that's annotated as a JUnit `@Rule`.
 
 
@@ -319,6 +323,69 @@ include::{examples-dir}/com/example/restassured/ExampleApplicationTests.java[tag
 `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the
 `org.springframework.restdocs.restassured` or `org.springframework.restdocs.restassured3`
 package depending on the version of REST Assured that you are using.
+
+The configurer applies sensible defaults and also provides an API for customizing the
+configuration. Refer to the <<configuration, configuration section>> for more information.
+
+
+
+[[getting-started-documentation-snippets-setup-junit-5]]
+===== Setting up your JUnit 5 tests
+
+When using JUnit 5, the first step in generating documentation snippets is to apply
+the `RestDocumentationExtension` to your test class:
+
+[source,java,indent=0]
+----
+@ExtendWith(RestDocumentationExtension.class)
+public class JUnit5ExampleTests {
+----
+
+For testing a typical Spring application the `SpringExtension` should also be applied:
+
+[source,java,indent=0]
+----
+@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
+public class JUnit5ExampleTests {
+----
+
+The `RestDocumentationExtension` is automatically configured with an output directory
+based on your project's build tool:
+
+[cols="2,5"]
+|===
+| Build tool | Output directory
+
+| Maven
+| `target/generated-snippets`
+
+| Gradle
+| `build/generated-snippets`
+
+|===
+
+
+
+Next, provide an `@BeforeEach` method to configure MockMvc or REST Assured:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/ExampleApplicationJUnit5Tests.java[tags=setup]
+----
+<1> The `MockMvc` instance is configured using a `MockMvcRestDocumentationConfigurer`. An
+instance of this class can be obtained from the static `documentationConfiguration()`
+method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationJUnit5Tests.java[tags=setup]
+----
+<1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a
+`Filter`. An instance of this class can be obtained from the static
+`documentationConfiguration()` method on `RestAssuredRestDocumentation` in the
+`org.springframework.restdocs.restassured3` package.
 
 The configurer applies sensible defaults and also provides an API for customizing the
 configuration. Refer to the <<configuration, configuration section>> for more information.

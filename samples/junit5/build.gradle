@@ -1,0 +1,69 @@
+buildscript {
+	repositories {
+		maven { url 'https://repo.spring.io/milestone' }
+	}
+	dependencies {
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.0.M1'
+		classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4'
+	}
+}
+
+plugins {
+	id "org.asciidoctor.convert" version "1.5.3"
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'eclipse'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+repositories {
+	mavenLocal()
+	maven { url 'https://repo.spring.io/libs-snapshot' }
+	mavenCentral()
+}
+
+group = 'com.example'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+ext {
+	snippetsDir = file('build/generated-snippets')
+	junitJupiterVersion = '5.0.0-M4'
+}
+
+ext['spring-restdocs.version'] = '2.0.0.BUILD-SNAPSHOT'
+
+dependencies {
+	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
+
+	compile 'org.springframework.boot:spring-boot-starter-web'
+
+	testCompile('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'junit', module: 'junit;'
+	}
+	testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+	testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+}
+
+test {
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+jar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
+}
+
+eclipseJdt.onlyIf { false }
+cleanEclipseJdt.onlyIf { false }
