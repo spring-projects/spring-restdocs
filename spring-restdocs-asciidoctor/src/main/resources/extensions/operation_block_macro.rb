@@ -47,13 +47,15 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
 
   def add_blocks(content, doc, parent)
     options = { safe: doc.options[:safe],
-                attributes: { 'fragment' => '',
-                              'projectdir' => doc.attr(:projectdir) } }
+                attributes: { 'projectdir' => doc.attr(:projectdir) } }
     fragment = Asciidoctor.load content, options
     fragment.blocks.each do |b|
       b.parent = parent
       parent << b
     end
+    parent.find_by.each do |b|
+	  b.parent = b.parent unless b.is_a? Asciidoctor::Document
+	end
   end
 
   def snippets_to_include(snippet_names, snippets_dir, operation)

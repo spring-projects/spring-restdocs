@@ -3,6 +3,8 @@ description = 'Asciidoctor extensions for Spring REST Docs'
 dependencies {
 	provided 'org.asciidoctor:asciidoctorj'
 	testCompile 'junit:junit'
+	testCompile 'org.apache.pdfbox:pdfbox'
 	testCompile 'org.asciidoctor:asciidoctorj'
 	testCompile 'org.springframework:spring-core'
+	testRuntime 'org.asciidoctor:asciidoctorj-pdf'
 }
