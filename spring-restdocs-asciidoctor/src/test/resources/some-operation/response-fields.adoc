@@ -1,0 +1,16 @@
+|===
+|Path|Type|Description
+
+|`a`
+|`Object`
+|one
+
+|`a.b`
+|`Number`
+|two
+
+|`a.c`
+|`String`
+|three
+
+|===
