@@ -78,8 +78,8 @@ public abstract class TemplatedSnippet implements Snippet {
 				.getAttributes().get(RestDocumentationContext.class.getName());
 		WriterResolver writerResolver = (WriterResolver) operation.getAttributes()
 				.get(WriterResolver.class.getName());
-		try (Writer writer = writerResolver.resolve(operation.getName(), this.snippetName,
-				context)) {
+		try (Writer writer = writerResolver.resolve(getOutputDir(operation),
+				getFileName(operation), context)) {
 			Map<String, Object> model = createModel(operation);
 			model.putAll(this.attributes);
 			TemplateEngine templateEngine = (TemplateEngine) operation.getAttributes()
@@ -87,6 +87,28 @@ public abstract class TemplatedSnippet implements Snippet {
 			writer.append(
 					templateEngine.compileTemplate(this.templateName).render(model));
 		}
+	}
+
+	/**
+	 * Compute the file name for the snippet output (minus the extension). Default is
+	 * simply the snippet name.
+	 *
+	 * @param operation the current operation
+	 * @return the base name of the snippet file
+	 */
+	protected String getFileName(Operation operation) {
+		return getSnippetName();
+	}
+
+	/**
+	 * Compute the output directory for the snippet (relative to the global output
+	 * directory). Default is the operation name.
+	 *
+	 * @param operation the current operation
+	 * @return the name of a directory to write the snippet
+	 */
+	protected String getOutputDir(Operation operation) {
+		return operation.getName();
 	}
 
 	/**
