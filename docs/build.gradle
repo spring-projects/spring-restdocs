@@ -28,4 +28,5 @@ asciidoctor {
 	attributes	'revnumber': project.version,
 				'branch-or-tag': project.version.endsWith('SNAPSHOT') ? 'master': "v${project.version}"
 	inputs.files(sourceSets.test.java)
+	inputs.dir sourceDir
 }
