@@ -35,10 +35,10 @@ class JsonFieldTypeResolver {
 			JsonFieldType commonType = null;
 			for (Object item : (Collection<?>) field) {
 				JsonFieldType fieldType = determineFieldType(item);
-				if (commonType == null && fieldType != JsonFieldType.NULL) {
+				if (commonType == null) {
 					commonType = fieldType;
 				}
-				else if (fieldType != commonType && fieldType != JsonFieldType.NULL) {
+				else if (fieldType != commonType) {
 					return JsonFieldType.VARIES;
 				}
 			}
