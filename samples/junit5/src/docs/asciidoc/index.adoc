@@ -1,12 +1,12 @@
-= Spring REST Docs TestNG Sample
+= Spring REST Docs JUnit 5 Sample
 Andy Wilkinson;
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
 
-Sample application demonstrating how to use Spring REST Docs with TestNG.
+Sample application demonstrating how to use Spring REST Docs with JUnit 5.
 
-`SampleTestNgApplicationTests` makes a call to a very simple service and produces three
+`SampleJUnit5ApplicationTests` makes a call to a very simple service and produces three
 documentation snippets.
 
 One showing how to make a request using cURL:
