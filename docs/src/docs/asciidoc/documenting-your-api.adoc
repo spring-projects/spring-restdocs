@@ -859,7 +859,7 @@ include::{examples-dir}/com/example/mockmvc/HttpHeaders.java[tags=headers]
 	Uses the static `requestHeaders` method on
 	`org.springframework.restdocs.headers.HeaderDocumentation`.
 <3> Document the `Authorization` header. Uses the static `headerWithName` method on
-	`org.springframework.restdocs.headers.HeaderDocumentation.
+	`org.springframework.restdocs.headers.HeaderDocumentation`.
 <4> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
 	method on `org.springframework.restdocs.headers.HeaderDocumentation`.
 
