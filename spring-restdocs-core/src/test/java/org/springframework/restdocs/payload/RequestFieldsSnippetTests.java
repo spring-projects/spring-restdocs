@@ -159,6 +159,20 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void allUndocumentedFieldsContinueToBeIgnoredAfterAddingDescriptors()
+			throws IOException {
+		this.snippets.expectRequestFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "Field b")
+						.row("`c.d`", "`Number`", "Field d"));
+
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("b").description("Field b")),
+				true).andWithPrefix("c.", fieldWithPath("d").description("Field d"))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{\"a\":5,\"b\":4,\"c\":{\"d\": 3}}").build());
+	}
+
+	@Test
 	public void missingOptionalRequestField() throws IOException {
 		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",

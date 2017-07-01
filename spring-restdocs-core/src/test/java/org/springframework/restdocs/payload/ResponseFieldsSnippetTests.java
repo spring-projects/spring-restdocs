@@ -135,6 +135,21 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void allUndocumentedFieldsContinueToBeIgnoredAfterAddingDescriptors()
+			throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "Field b")
+						.row("`c.d`", "`Number`", "Field d"));
+
+		new ResponseFieldsSnippet(
+				Arrays.asList(fieldWithPath("b").description("Field b")), true)
+						.andWithPrefix("c.", fieldWithPath("d").description("Field d"))
+						.document(this.operationBuilder.response()
+								.content("{\"a\":5,\"b\":4,\"c\":{\"d\": 3}}").build());
+	}
+
+	@Test
 	public void responseFieldsWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-fields"))
