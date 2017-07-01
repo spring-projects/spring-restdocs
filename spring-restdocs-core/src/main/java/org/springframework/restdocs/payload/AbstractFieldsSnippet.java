@@ -288,6 +288,15 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	}
 
 	/**
+	 * Returns whether or not this snippet ignores undocumented fields.
+	 *
+	 * @return {@code true} if undocumented fields are ignored, otherwise {@code false}
+	 */
+	protected final boolean isIgnoredUndocumentedFields() {
+		return this.ignoreUndocumentedFields;
+	}
+
+	/**
 	 * Returns a model for the given {@code descriptor}.
 	 *
 	 * @param descriptor the descriptor
