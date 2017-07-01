@@ -378,6 +378,20 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 										.build());
 	}
 
+	@Test
+	public void responseWithArrayContainingFieldThatIsSometimesNull() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`assets[].name`", "`String`", "one"));
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("assets[].name")
+				.description("one").type(JsonFieldType.STRING)))
+						.document(this.operationBuilder.response()
+								.content("{\"assets\": [" + "{\"name\": \"sample1\"}, "
+										+ "{\"name\": null}, "
+										+ "{\"name\": \"sample2\"}]}")
+								.build());
+	}
+
 	private String escapeIfNecessary(String input) {
 		if (this.templateFormat.equals(TemplateFormats.markdown())) {
 			return input;

@@ -112,11 +112,71 @@ public class JsonFieldTypeResolverTests {
 	}
 
 	@Test
-	public void nonExistentFieldProducesIllegalArgumentException() throws IOException {
+	public void multipleFieldsWithDifferentTypesAndSometimesAbsent() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a[].id",
+						createPayload("{\"a\":[{\"id\":1},{\"id\":true}, { }]}")),
+				equalTo(JsonFieldType.VARIES));
+	}
+
+	@Test
+	public void multipleFieldsWhenSometimesAbsent() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a[].id",
+						createPayload("{\"a\":[{\"id\":1},{ }]}")),
+				equalTo(JsonFieldType.NUMBER));
+	}
+
+	@Test
+	public void multipleFieldsWithDifferentTypesAndSometimesNull() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a[].id",
+						createPayload(
+								"{\"a\":[{\"id\":1},{\"id\":true}, {\"id\":null}]}")),
+				equalTo(JsonFieldType.VARIES));
+	}
+
+	@Test
+	public void multipleFieldsWhenSometimesNull() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a[].id",
+						createPayload("{\"a\":[{\"id\":1},{\"id\":null}]}")),
+				equalTo(JsonFieldType.NUMBER));
+	}
+
+	@Test
+	public void multipleFieldsWhenEitherNullOrAbsent() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a[].id",
+						createPayload("{\"a\":[{},{\"id\":null}]}")),
+				equalTo(JsonFieldType.NULL));
+	}
+
+	@Test
+	public void multipleFieldsThatAreAllNull() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("a[].id",
+						createPayload("{\"a\":[{\"id\":null},{\"id\":null}]}")),
+				equalTo(JsonFieldType.NULL));
+	}
+
+	@Test
+	public void nonExistentSingleFieldProducesFieldDoesNotExistException()
+			throws IOException {
 		this.thrownException.expect(FieldDoesNotExistException.class);
 		this.thrownException.expectMessage(
 				"The payload does not contain a field with the path 'a.b'");
 		this.fieldTypeResolver.resolveFieldType("a.b", createPayload("{\"a\":{}}"));
+	}
+
+	@Test
+	public void nonExistentMultipleFieldsProducesFieldDoesNotExistException()
+			throws IOException {
+		this.thrownException.expect(FieldDoesNotExistException.class);
+		this.thrownException.expectMessage(
+				"The payload does not contain a field with the path 'a[].b'");
+		this.fieldTypeResolver.resolveFieldType("a[].b",
+				createPayload("{\"a\":[{\"c\":1},{\"c\":2}]}"));
 	}
 
 	private void assertFieldType(JsonFieldType expectedType, String jsonValue)
