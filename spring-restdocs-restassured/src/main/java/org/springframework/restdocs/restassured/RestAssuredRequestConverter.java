@@ -126,9 +126,16 @@ class RestAssuredRequestConverter
 	private HttpHeaders extractHeaders(FilterableRequestSpecification requestSpec) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		for (Header header : requestSpec.getHeaders()) {
-			httpHeaders.add(header.getName(), header.getValue());
+			if (!isAllMediaTypesAcceptHeader(header)) {
+				httpHeaders.add(header.getName(), header.getValue());
+			}
 		}
 		return httpHeaders;
+	}
+
+	private boolean isAllMediaTypesAcceptHeader(Header header) {
+		return HttpHeaders.ACCEPT.equals(header.getName())
+				&& "*/*".equals(header.getValue());
 	}
 
 	private Parameters extractParameters(FilterableRequestSpecification requestSpec) {

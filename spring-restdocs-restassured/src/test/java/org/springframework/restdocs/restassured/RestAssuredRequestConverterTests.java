@@ -127,9 +127,23 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.get("/");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
+		assertThat(request.getHeaders().toString(), request.getHeaders().size(), is(2));
+		assertThat(request.getHeaders().get("Foo"), is(equalTo(Arrays.asList("bar"))));
+		assertThat(request.getHeaders().get("Host"),
+				is(equalTo(Arrays.asList("localhost:" + tomcat.getPort()))));
+	}
+
+	@Test
+	public void headersWithCustomAccept() {
+		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort())
+				.header("Foo", "bar").accept("application/json");
+		requestSpec.get("/");
+		OperationRequest request = this.factory
+				.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getHeaders().toString(), request.getHeaders().size(), is(3));
 		assertThat(request.getHeaders().get("Foo"), is(equalTo(Arrays.asList("bar"))));
-		assertThat(request.getHeaders().get("Accept"), is(equalTo(Arrays.asList("*/*"))));
+		assertThat(request.getHeaders().get("Accept"),
+				is(equalTo(Arrays.asList("application/json"))));
 		assertThat(request.getHeaders().get("Host"),
 				is(equalTo(Arrays.asList("localhost:" + tomcat.getPort()))));
 	}
