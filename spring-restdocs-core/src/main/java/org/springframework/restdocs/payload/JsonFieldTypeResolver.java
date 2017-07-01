@@ -38,7 +38,7 @@ class JsonFieldTypeResolver {
 				if (commonType == null) {
 					commonType = fieldType;
 				}
-				else if (fieldType != commonType) {
+				else if (fieldType != commonType && fieldType != JsonFieldType.NULL) {
 					return JsonFieldType.VARIES;
 				}
 			}
