@@ -180,8 +180,8 @@ public class RequestFieldsSnippetFailureTests {
 	public void undocumentedXmlRequestFieldAndMissingXmlRequestField()
 			throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(startsWith(
-				"The following parts of the payload were not" + " documented:"));
+		this.thrown.expectMessage(
+				startsWith("The following parts of the payload were not documented:"));
 		this.thrown
 				.expectMessage(endsWith("Fields with the following paths were not found"
 						+ " in the payload: [a/b]"));
@@ -202,6 +202,38 @@ public class RequestFieldsSnippetFailureTests {
 						.content("Some plain text")
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
 						.build());
+	}
+
+	@Test
+	public void nonOptionalFieldBeneathArrayThatIsSometimesNull() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown.expectMessage(startsWith(
+				"Fields with the following paths were not found in the payload: "
+						+ "[a[].b]"));
+		new RequestFieldsSnippet(Arrays.asList(
+				fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
+				fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
+						.document(this.operationBuilder.request("http://localhost")
+								.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
+										+ "{\"b\": null, \"c\": 2},"
+										+ " {\"b\": 1,\"c\": 2}]}")
+								.build());
+	}
+
+	@Test
+	public void nonOptionalFieldBeneathArrayThatIsSometimesAbsent() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown.expectMessage(startsWith(
+				"Fields with the following paths were not found in the payload: "
+						+ "[a[].b]"));
+		new RequestFieldsSnippet(Arrays.asList(
+				fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
+				fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
+						.document(
+								this.operationBuilder.request("http://localhost")
+										.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
+												+ "{\"c\": 2}, {\"b\": 1,\"c\": 2}]}")
+								.build());
 	}
 
 }

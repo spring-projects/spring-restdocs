@@ -173,4 +173,36 @@ public class ResponseFieldsSnippetFailureTests {
 						.build());
 	}
 
+	@Test
+	public void nonOptionalFieldBeneathArrayThatIsSometimesNull() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown.expectMessage(startsWith(
+				"Fields with the following paths were not found in the payload: "
+						+ "[a[].b]"));
+		new ResponseFieldsSnippet(Arrays.asList(
+				fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
+				fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
+						.document(this.operationBuilder.response()
+								.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
+										+ "{\"b\": null, \"c\": 2},"
+										+ " {\"b\": 1,\"c\": 2}]}")
+								.build());
+	}
+
+	@Test
+	public void nonOptionalFieldBeneathArrayThatIsSometimesAbsent() throws IOException {
+		this.thrown.expect(SnippetException.class);
+		this.thrown.expectMessage(startsWith(
+				"Fields with the following paths were not found in the payload: "
+						+ "[a[].b]"));
+		new ResponseFieldsSnippet(Arrays.asList(
+				fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
+				fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
+						.document(
+								this.operationBuilder.response()
+										.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
+												+ "{\"c\": 2}, {\"b\": 1,\"c\": 2}]}")
+								.build());
+	}
+
 }

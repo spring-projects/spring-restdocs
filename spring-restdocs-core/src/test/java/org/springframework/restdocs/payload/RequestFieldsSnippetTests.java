@@ -67,6 +67,17 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void mapRequestWithNullField() throws IOException {
+		this.snippets.expectRequestFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
+						"`Null`", "one"));
+
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")))
+				.document(this.operationBuilder.request("http://localhost")
+						.content("{\"a\": {\"b\": null}}").build());
+	}
+
+	@Test
 	public void entireSubsectionsCanBeDocumented() throws IOException {
 		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
@@ -105,8 +116,20 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 				fieldWithPath("[]a.c").description("three"),
 				fieldWithPath("[]a").description("four")))
 						.document(this.operationBuilder.request("http://localhost")
-								.content(
-										"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
+								.content("[{\"a\": {\"b\": 5, \"c\":\"charlie\"}},"
+										+ "{\"a\": {\"b\": 4, \"c\":\"chalk\"}}]")
+						.build());
+	}
+
+	@Test
+	public void arrayRequestWithAlwaysNullField() throws IOException {
+		this.snippets.expectRequestFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`[]a.b`", "`Null`", "one"));
+
+		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b").description("one")))
+				.document(this.operationBuilder.request("http://localhost")
+						.content("[{\"a\": {\"b\": null}}," + "{\"a\": {\"b\": null}}]")
 						.build());
 	}
 
@@ -388,12 +411,29 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`assets[].name`", "`String`", "one"));
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("assets[].name")
-				.description("one").type(JsonFieldType.STRING)))
+				.description("one").type(JsonFieldType.STRING).optional()))
 						.document(this.operationBuilder.request("http://localhost")
 								.content("{\"assets\": [" + "{\"name\": \"sample1\"}, "
 										+ "{\"name\": null}, "
 										+ "{\"name\": \"sample2\"}]}")
 								.build());
+	}
+
+	@Test
+	public void optionalFieldBeneathArrayThatIsSometimesAbsent() throws IOException {
+		this.snippets.expectRequestFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`a[].b`", "`Number`", "one")
+						.row("`a[].c`", "`Number`", "two"));
+		new RequestFieldsSnippet(Arrays.asList(
+				fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER)
+						.optional(),
+				fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
+						.document(
+								this.operationBuilder.request("http://localhost")
+										.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
+												+ "{\"c\": 2}, {\"b\": 1,\"c\": 2}]}")
+										.build());
 	}
 
 	private String escapeIfNecessary(String input) {
