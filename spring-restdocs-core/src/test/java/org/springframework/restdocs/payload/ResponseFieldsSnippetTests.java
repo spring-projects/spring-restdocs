@@ -73,6 +73,17 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void mapResponseWithNullField() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
+						"`Null`", "one"));
+
+		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")))
+				.document(this.operationBuilder.response()
+						.content("{\"a\": {\"b\": null}}").build());
+	}
+
+	@Test
 	public void subsectionOfMapResponse() throws IOException {
 		this.snippets.expect("response-fields-beneath-a")
 				.withContents(tableWithHeader("Path", "Type", "Description")
@@ -95,9 +106,22 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 				fieldWithPath("[]a.c").description("two"),
 				fieldWithPath("[]a").description("three")))
 						.document(this.operationBuilder.response()
-								.content(
-										"[{\"a\": {\"b\": 5}},{\"a\": {\"c\": \"charlie\"}}]")
+								.content("[{\"a\": {\"b\": 5, \"c\":\"charlie\"}},"
+										+ "{\"a\": {\"b\": 4, \"c\":\"chalk\"}}]")
 								.build());
+	}
+
+	@Test
+	public void arrayResponseWithAlwaysNullField() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`[]a.b`", "`Null`", "one"));
+
+		new ResponseFieldsSnippet(
+				Arrays.asList(fieldWithPath("[]a.b").description("one")))
+						.document(this.operationBuilder.response().content(
+								"[{\"a\": {\"b\": null}}," + "{\"a\": {\"b\": null}}]")
+						.build());
 	}
 
 	@Test
@@ -399,12 +423,29 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`assets[].name`", "`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("assets[].name")
-				.description("one").type(JsonFieldType.STRING)))
+				.description("one").type(JsonFieldType.STRING).optional()))
 						.document(this.operationBuilder.response()
 								.content("{\"assets\": [" + "{\"name\": \"sample1\"}, "
 										+ "{\"name\": null}, "
 										+ "{\"name\": \"sample2\"}]}")
 								.build());
+	}
+
+	@Test
+	public void optionalFieldBeneathArrayThatIsSometimesAbsent() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description")
+						.row("`a[].b`", "`Number`", "one")
+						.row("`a[].c`", "`Number`", "two"));
+		new ResponseFieldsSnippet(Arrays.asList(
+				fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER)
+						.optional(),
+				fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
+						.document(
+								this.operationBuilder.response()
+										.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
+												+ "{\"c\": 2}, {\"b\": 1,\"c\": 2}]}")
+										.build());
 	}
 
 	private String escapeIfNecessary(String input) {

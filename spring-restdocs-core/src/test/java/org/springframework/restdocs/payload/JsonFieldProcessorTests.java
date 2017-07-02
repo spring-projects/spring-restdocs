@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
@@ -103,6 +104,31 @@ public class JsonFieldProcessorTests {
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[].b"), payload),
 				equalTo((Object) Arrays.asList("bravo", "bravo")));
+	}
+
+	@Test
+	public void extractOccasionallyAbsentFieldFromItemsInArray() {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> entry = new HashMap<>();
+		entry.put("b", "bravo");
+		List<Map<String, Object>> alpha = Arrays.asList(entry,
+				new HashMap<String, Object>());
+		payload.put("a", alpha);
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[].b"), payload),
+				equalTo((Object) Arrays.asList("bravo")));
+	}
+
+	@Test
+	public void extractOccasionallyNullFieldFromItemsInArray() {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> nonNullField = new HashMap<>();
+		nonNullField.put("b", "bravo");
+		Map<String, Object> nullField = new HashMap<>();
+		nullField.put("b", null);
+		List<Map<String, Object>> alpha = Arrays.asList(nonNullField, nullField);
+		payload.put("a", alpha);
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("a[].b"), payload),
+				equalTo((Object) Arrays.asList("bravo", null)));
 	}
 
 	@Test
@@ -404,6 +430,82 @@ public class JsonFieldProcessorTests {
 		this.fieldProcessor.remove(JsonFieldPath.compile("a.*.b"), payload);
 		assertThat(payload.size(), equalTo(1));
 		assertThat(payload, hasEntry("c", (Object) "charlie"));
+	}
+
+	@Test
+	public void hasFieldIsTrueForNonNullFieldInMap() throws Exception {
+		Map<String, Object> payload = new HashMap<>();
+		payload.put("a", "alpha");
+		assertThat(this.fieldProcessor.hasField(JsonFieldPath.compile("a"), payload),
+				is(true));
+	}
+
+	@Test
+	public void hasFieldIsTrueForNullFieldInMap() throws Exception {
+		Map<String, Object> payload = new HashMap<>();
+		payload.put("a", null);
+		assertThat(this.fieldProcessor.hasField(JsonFieldPath.compile("a"), payload),
+				is(true));
+	}
+
+	@Test
+	public void hasFieldIsFalseForAbsentFieldInMap() throws Exception {
+		Map<String, Object> payload = new HashMap<>();
+		payload.put("a", null);
+		assertThat(this.fieldProcessor.hasField(JsonFieldPath.compile("b"), payload),
+				is(false));
+	}
+
+	@Test
+	public void hasFieldIsTrueForNeverNullFieldBeneathArray() throws Exception {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> nested = new HashMap<>();
+		nested.put("b", "bravo");
+		payload.put("a", Arrays.asList(nested, nested, nested));
+		assertThat(this.fieldProcessor.hasField(JsonFieldPath.compile("a.[].b"), payload),
+				is(true));
+	}
+
+	@Test
+	public void hasFieldIsTrueForAlwaysNullFieldBeneathArray() throws Exception {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> nested = new HashMap<>();
+		nested.put("b", null);
+		payload.put("a", Arrays.asList(nested, nested, nested));
+		assertThat(this.fieldProcessor.hasField(JsonFieldPath.compile("a.[].b"), payload),
+				is(true));
+	}
+
+	@Test
+	public void hasFieldIsFalseForAlwaysAbsentFieldBeneathArray() throws Exception {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> nested = new HashMap<>();
+		nested.put("b", "bravo");
+		payload.put("a", Arrays.asList(nested, nested, nested));
+		assertThat(this.fieldProcessor.hasField(JsonFieldPath.compile("a.[].c"), payload),
+				is(false));
+	}
+
+	@Test
+	public void hasFieldIsFalseForOccasionallyAbsentFieldBeneathArray() throws Exception {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> nested = new HashMap<>();
+		nested.put("b", "bravo");
+		payload.put("a", Arrays.asList(nested, new HashMap<>(), nested));
+		assertThat(this.fieldProcessor.hasField(JsonFieldPath.compile("a.[].b"), payload),
+				is(false));
+	}
+
+	@Test
+	public void hasFieldIsFalseForOccasionallyNullFieldBeneathArray() throws Exception {
+		Map<String, Object> payload = new HashMap<>();
+		Map<String, Object> fieldPresent = new HashMap<>();
+		fieldPresent.put("b", "bravo");
+		Map<String, Object> fieldNull = new HashMap<>();
+		fieldNull.put("b", null);
+		payload.put("a", Arrays.asList(fieldPresent, fieldPresent, fieldNull));
+		assertThat(this.fieldProcessor.hasField(JsonFieldPath.compile("a.[].b"), payload),
+				is(false));
 	}
 
 	private Map<String, String> createEntry(String... pairs) {

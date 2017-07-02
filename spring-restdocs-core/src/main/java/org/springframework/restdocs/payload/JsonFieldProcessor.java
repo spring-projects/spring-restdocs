@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A {@code JsonFieldProcessor} processes a payload's fields, allowing them to be
@@ -32,17 +31,10 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 final class JsonFieldProcessor {
 
-	boolean hasField(JsonFieldPath fieldPath, Object payload) {
-		final AtomicReference<Boolean> hasField = new AtomicReference<>(false);
-		traverse(new ProcessingContext(payload, fieldPath), new MatchCallback() {
-
-			@Override
-			public void foundMatch(Match match) {
-				hasField.set(true);
-			}
-
-		});
-		return hasField.get();
+	boolean hasField(final JsonFieldPath fieldPath, Object payload) {
+		HasFieldMatchCallback callback = new HasFieldMatchCallback();
+		traverse(new ProcessingContext(payload, fieldPath), callback);
+		return callback.fieldFound();
 	}
 
 	Object extract(JsonFieldPath path, Object payload) {
@@ -52,6 +44,11 @@ final class JsonFieldProcessor {
 			@Override
 			public void foundMatch(Match match) {
 				matches.add(match.getValue());
+			}
+
+			@Override
+			public void absent() {
+
 			}
 
 		});
@@ -74,6 +71,11 @@ final class JsonFieldProcessor {
 				match.remove();
 			}
 
+			@Override
+			public void absent() {
+
+			}
+
 		});
 	}
 
@@ -83,6 +85,11 @@ final class JsonFieldProcessor {
 			@Override
 			public void foundMatch(Match match) {
 				match.removeSubsection();
+			}
+
+			@Override
+			public void absent() {
+
 			}
 
 		});
@@ -128,8 +135,8 @@ final class JsonFieldProcessor {
 	private void handleMapPayload(ProcessingContext context,
 			MatchCallback matchCallback) {
 		Map<?, ?> map = context.getPayload();
-		Object item = map.get(context.getSegment());
-		if (item != null || map.containsKey(context.getSegment())) {
+		if (map.containsKey(context.getSegment())) {
+			Object item = map.get(context.getSegment());
 			MapMatch mapMatch = new MapMatch(item, map, context.getSegment(),
 					context.getParentMatch());
 			if (context.isLeaf()) {
@@ -142,6 +149,47 @@ final class JsonFieldProcessor {
 		else if ("*".equals(context.getSegment())) {
 			handleCollectionPayload(map.values(), matchCallback, context);
 		}
+		else {
+			matchCallback.absent();
+		}
+	}
+
+	/**
+	 * {@link MatchCallback} use to determine whether a payload has a particular field.
+	 */
+	private static final class HasFieldMatchCallback implements MatchCallback {
+
+		private MatchType matchType = MatchType.NONE;
+
+		@Override
+		public void foundMatch(Match match) {
+			this.matchType = this.matchType.combinedWith(
+					match.getValue() == null ? MatchType.NULL : MatchType.NON_NULL);
+		}
+
+		@Override
+		public void absent() {
+			this.matchType = this.matchType.combinedWith(MatchType.ABSENT);
+		}
+
+		boolean fieldFound() {
+			return this.matchType == MatchType.NON_NULL
+					|| this.matchType == MatchType.NULL;
+		}
+
+		private static enum MatchType {
+
+			ABSENT, MIXED, NONE, NULL, NON_NULL;
+
+			MatchType combinedWith(MatchType matchType) {
+				if (this == NONE || this == matchType) {
+					return matchType;
+				}
+				return MIXED;
+			}
+
+		}
+
 	}
 
 	private static final class MapMatch implements Match {
@@ -264,6 +312,8 @@ final class JsonFieldProcessor {
 	private interface MatchCallback {
 
 		void foundMatch(Match match);
+
+		void absent();
 
 	}
 
