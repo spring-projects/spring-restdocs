@@ -39,6 +39,7 @@ dependencies {
 	testCompile 'org.hamcrest:hamcrest-library'
 	testCompile 'org.springframework:spring-test'
 	testRuntime 'org.glassfish:javax.el:3.0.0'
+	testRuntime 'org.springframework:spring-aop'
 }
 
 jar {
