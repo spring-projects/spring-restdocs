@@ -45,7 +45,7 @@ There are several that you can contribute to Spring REST Docs:
 
 Spring REST Docs is open source software released under the [Apache 2.0 license][14].
 
-[1]: https://build.spring.io/plugins/servlet/buildStatusImage/SRD-PUB (Build status)
+[1]: https://build.spring.io/plugins/servlet/wittified/build-status/SRD-PUB2 (Build status)
 [2]: https://build.spring.io/browse/SRD-PUB
 [3]: http://asciidoctor.org
 [4]: http://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/htmlsingle/#spring-mvc-test-framework
