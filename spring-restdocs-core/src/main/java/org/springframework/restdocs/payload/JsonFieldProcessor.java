@@ -27,7 +27,7 @@ import java.util.Map;
  * extracted and removed.
  *
  * @author Andy Wilkinson
- *
+ * @author Minhyeok Jeong
  */
 final class JsonFieldProcessor {
 
@@ -48,14 +48,15 @@ final class JsonFieldProcessor {
 
 			@Override
 			public void absent() {
-
 			}
 
 		});
+
 		if (matches.isEmpty()) {
 			throw new FieldDoesNotExistException(path);
 		}
-		if ((!path.isArray()) && path.isPrecise()) {
+
+		if (path.isPrecise()) {
 			return matches.get(0);
 		}
 		else {
@@ -73,7 +74,6 @@ final class JsonFieldProcessor {
 
 			@Override
 			public void absent() {
-
 			}
 
 		});
@@ -89,7 +89,6 @@ final class JsonFieldProcessor {
 
 			@Override
 			public void absent() {
-
 			}
 
 		});

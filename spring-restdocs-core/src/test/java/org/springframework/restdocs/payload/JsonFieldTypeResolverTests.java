@@ -32,7 +32,7 @@ import static org.junit.Assert.assertThat;
  * Tests for {@link JsonFieldTypeResolver}.
  *
  * @author Andy Wilkinson
- *
+ * @author Minhyeok Jeong
  */
 public class JsonFieldTypeResolverTests {
 
@@ -44,6 +44,31 @@ public class JsonFieldTypeResolverTests {
 	@Test
 	public void arrayField() throws IOException {
 		assertFieldType(JsonFieldType.ARRAY, "[]");
+	}
+
+	@Test
+	public void objectField() throws IOException {
+		assertFieldType(JsonFieldType.OBJECT, "{}");
+	}
+
+	@Test
+	public void booleanField() throws IOException {
+		assertFieldType(JsonFieldType.BOOLEAN, "true");
+	}
+
+	@Test
+	public void nullField() throws IOException {
+		assertFieldType(JsonFieldType.NULL, "null");
+	}
+
+	@Test
+	public void numberField() throws IOException {
+		assertFieldType(JsonFieldType.NUMBER, "1.2345");
+	}
+
+	@Test
+	public void stringField() throws IOException {
+		assertFieldType(JsonFieldType.STRING, "\"Foo\"");
 	}
 
 	@Test
@@ -63,28 +88,13 @@ public class JsonFieldTypeResolverTests {
 	}
 
 	@Test
-	public void booleanField() throws IOException {
-		assertFieldType(JsonFieldType.BOOLEAN, "true");
-	}
-
-	@Test
-	public void objectField() throws IOException {
-		assertFieldType(JsonFieldType.OBJECT, "{}");
-	}
-
-	@Test
-	public void nullField() throws IOException {
-		assertFieldType(JsonFieldType.NULL, "null");
-	}
-
-	@Test
-	public void numberField() throws IOException {
-		assertFieldType(JsonFieldType.NUMBER, "1.2345");
-	}
-
-	@Test
-	public void stringField() throws IOException {
-		assertFieldType(JsonFieldType.STRING, "\"Foo\"");
+	public void nestedArrayStartedWithArray() throws IOException {
+		assertThat(
+				this.fieldTypeResolver
+						.resolveFieldType("[].a[]",
+								new ObjectMapper().readValue(
+										"[{\"a\": [{\"b\":\"bravo\"}]}]", List.class)),
+				equalTo(JsonFieldType.ARRAY));
 	}
 
 	@Test
