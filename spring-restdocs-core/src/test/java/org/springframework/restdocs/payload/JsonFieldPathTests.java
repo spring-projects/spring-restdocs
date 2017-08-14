@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Andy Wilkinson
  * @author Jeremy Rickard
+ * @author Minhyeok Jeong
  */
 public class JsonFieldPathTests {
 
@@ -46,9 +47,9 @@ public class JsonFieldPathTests {
 	}
 
 	@Test
-	public void topLevelArrayIsPreciseAndAnArray() {
+	public void topLevelArrayIsNotPreciseAndAnArray() {
 		JsonFieldPath path = JsonFieldPath.compile("[]");
-		assertTrue(path.isPrecise());
+		assertFalse(path.isPrecise());
 		assertTrue(path.isArray());
 	}
 
@@ -60,16 +61,23 @@ public class JsonFieldPathTests {
 	}
 
 	@Test
-	public void arrayIsPreciseAndAnArray() {
+	public void arrayIsNotPreciseAndAnArray() {
 		JsonFieldPath path = JsonFieldPath.compile("a[]");
-		assertTrue(path.isPrecise());
+		assertFalse(path.isPrecise());
 		assertTrue(path.isArray());
 	}
 
 	@Test
-	public void nestedArrayIsPreciseAndAnArray() {
+	public void nestedArrayIsNotPreciseAndAnArray() {
 		JsonFieldPath path = JsonFieldPath.compile("a.b[]");
-		assertTrue(path.isPrecise());
+		assertFalse(path.isPrecise());
+		assertTrue(path.isArray());
+	}
+
+	@Test
+	public void nestedArrayStartedWithArrayIsNotPreciseAndAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("[].a[]");
+		assertFalse(path.isPrecise());
 		assertTrue(path.isArray());
 	}
 

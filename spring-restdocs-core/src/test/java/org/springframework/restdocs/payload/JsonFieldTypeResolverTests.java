@@ -32,7 +32,7 @@ import static org.junit.Assert.assertThat;
  * Tests for {@link JsonFieldTypeResolver}.
  *
  * @author Andy Wilkinson
- *
+ * @author Minhyeok Jeong
  */
 public class JsonFieldTypeResolverTests {
 
@@ -59,6 +59,14 @@ public class JsonFieldTypeResolverTests {
 		assertThat(
 				this.fieldTypeResolver.resolveFieldType("a[]",
 						createPayload("{\"a\": [{\"b\":\"bravo\"}]}")),
+				equalTo(JsonFieldType.ARRAY));
+	}
+
+	@Test
+	public void nestedArrayStartedWithArray() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType("[].a[]",
+						new ObjectMapper().readValue("[{\"a\": [{\"b\":\"bravo\"}]}]", List.class)),
 				equalTo(JsonFieldType.ARRAY));
 	}
 
