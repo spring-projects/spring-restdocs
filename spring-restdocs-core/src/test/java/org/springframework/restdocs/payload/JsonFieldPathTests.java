@@ -54,6 +54,20 @@ public class JsonFieldPathTests {
 	}
 
 	@Test
+	public void fieldBeneathTopLevelArrayIsNotPreciseAndNotAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("[]a");
+		assertFalse(path.isPrecise());
+		assertFalse(path.isArray());
+	}
+
+	@Test
+	public void arrayIsNotPreciseAndAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("a[]");
+		assertFalse(path.isPrecise());
+		assertTrue(path.isArray());
+	}
+
+	@Test
 	public void nestedArrayIsNotPreciseAndAnArray() {
 		JsonFieldPath path = JsonFieldPath.compile("a.b[]");
 		assertFalse(path.isPrecise());
@@ -163,20 +177,6 @@ public class JsonFieldPathTests {
 	public void compilationOfPathWithAWildcardInBrackets() {
 		assertThat(JsonFieldPath.compile("a.b.['*'].c").getSegments(),
 				contains("a", "b", "*", "c"));
-	}
-
-	@Test
-	public void fieldBeneathTopLevelArrayIsNotPreciseAndNotAnArray() {
-		JsonFieldPath path = JsonFieldPath.compile("[]a");
-		assertFalse(path.isPrecise());
-		assertFalse(path.isArray());
-	}
-
-	@Test
-	public void arrayIsNotPreciseAndAnArray() {
-		JsonFieldPath path = JsonFieldPath.compile("a[]");
-		assertFalse(path.isPrecise());
-		assertTrue(path.isArray());
 	}
 
 }
