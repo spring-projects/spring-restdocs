@@ -37,7 +37,7 @@ final class JsonFieldList<E> extends ArrayList<E> {
 	 * @throws NullPointerException if the specified collection is null
 	 * @see ArrayList#ArrayList(Collection)
 	 */
-	public JsonFieldList(Collection<? extends E> c) {
+	JsonFieldList(Collection<? extends E> c) {
 		super(c);
 	}
 
