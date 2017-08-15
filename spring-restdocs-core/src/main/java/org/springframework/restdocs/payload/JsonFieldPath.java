@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.springframework.restdocs.payload;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +26,7 @@ import java.util.regex.Pattern;
  *
  * @author Andy Wilkinson
  * @author Jeremy Rickard
- *
+ * @author Minhyeok Jeong
  */
 final class JsonFieldPath {
 
@@ -41,8 +40,13 @@ final class JsonFieldPath {
 
 	private final List<String> segments;
 
+	/**
+	 * Whether this path indicates a specific value which is neither an array nor an
+	 * object.
+	 */
 	private final boolean precise;
 
+	/** Whether this path indicates a value which is an array. */
 	private final boolean array;
 
 	private JsonFieldPath(String rawPath, List<String> segments, boolean precise,
@@ -81,11 +85,9 @@ final class JsonFieldPath {
 		return ARRAY_INDEX_PATTERN.matcher(segment).matches();
 	}
 
-	static boolean matchesSingleValue(List<String> segments) {
-		Iterator<String> iterator = segments.iterator();
-		while (iterator.hasNext()) {
-			String next = iterator.next();
-			if ((isArraySegment(next) || isWildcardSegment(next)) && iterator.hasNext()) {
+	private static boolean matchesSingleValue(List<String> segments) {
+		for (String segment : segments) {
+			if (isArraySegment(segment) || isWildcardSegment(segment)) {
 				return false;
 			}
 		}

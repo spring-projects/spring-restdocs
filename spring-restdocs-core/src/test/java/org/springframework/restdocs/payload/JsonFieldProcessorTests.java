@@ -39,6 +39,7 @@ import static org.junit.Assert.assertThat;
  * Tests for {@link JsonFieldProcessor}.
  *
  * @author Andy Wilkinson
+ * @author Minhyeok Jeong
  */
 public class JsonFieldProcessorTests {
 
@@ -71,6 +72,36 @@ public class JsonFieldProcessorTests {
 		payload.add(bravo);
 		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("[]"), payload),
 				equalTo((Object) payload));
+	}
+
+	@Test
+	public void extractNestedArrayStartedWithArray() {
+		List<Object> payload = new ArrayList<>();
+		Map<String, Object> alpha = new HashMap<>();
+		List<Map<String, Object>> bravo = new ArrayList<>();
+		Map<String, Object> charlie = new HashMap<>();
+		charlie.put("c", "charlie");
+		bravo.add(charlie);
+		bravo.add(charlie);
+		alpha.put("b", bravo);
+		payload.add(alpha);
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("[]b"), payload),
+				equalTo((Object) Arrays.asList(bravo)));
+	}
+
+	@Test
+	public void extractNestedArraySurroundedWithArray() {
+		List<Object> payload = new ArrayList<>();
+		Map<String, Object> alpha = new HashMap<>();
+		List<Map<String, Object>> bravo = new ArrayList<>();
+		Map<String, Object> charlie = new HashMap<>();
+		charlie.put("c", "charlie");
+		bravo.add(charlie);
+		bravo.add(charlie);
+		alpha.put("b", bravo);
+		payload.add(alpha);
+		assertThat(this.fieldProcessor.extract(JsonFieldPath.compile("[]b[]"), payload),
+				equalTo((Object) bravo));
 	}
 
 	@Test
@@ -169,6 +200,24 @@ public class JsonFieldProcessorTests {
 		payload.put("a", alpha);
 		assertThat(
 				this.fieldProcessor.extract(JsonFieldPath.compile("a[][].ids"), payload),
+				equalTo((Object) Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3),
+						Arrays.asList(4))));
+	}
+
+	@Test
+	public void extractArraysFromItemsInNestedArrayStartedWithArray() {
+		List<Object> payload = new ArrayList<>();
+		Map<String, Object> alpha = new HashMap<>();
+		Map<String, Object> entry1 = createEntry("ids", Arrays.asList(1, 2));
+		Map<String, Object> entry2 = createEntry("ids", Arrays.asList(3));
+		Map<String, Object> entry3 = createEntry("ids", Arrays.asList(4));
+		List<List<Map<String, Object>>> bravo = Arrays
+				.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
+		alpha.put("a", bravo);
+		payload.add(alpha);
+		assertThat(
+				this.fieldProcessor.extract(JsonFieldPath.compile("[].a[][].ids"),
+						payload),
 				equalTo((Object) Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3),
 						Arrays.asList(4))));
 	}

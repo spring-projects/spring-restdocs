@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,6 +27,7 @@ import org.springframework.http.MediaType;
  * identified by a field path.
  *
  * @author Andy Wilkinson
+ * @author Minhyeok Jeong
  * @since 1.2.0
  * @see PayloadDocumentation#beneathPath(String)
  */
@@ -69,8 +69,8 @@ public class FieldPathPayloadSubsectionExtractor
 			JsonFieldPath compiledPath = JsonFieldPath.compile(this.fieldPath);
 			Object extracted = new JsonFieldProcessor().extract(compiledPath,
 					objectMapper.readValue(payload, Object.class));
-			if (extracted instanceof List && !compiledPath.isPrecise()) {
-				List<?> extractedList = (List<?>) extracted;
+			if (extracted instanceof JsonFieldList) {
+				JsonFieldList<?> extractedList = (JsonFieldList<?>) extracted;
 				if (extractedList.size() == 1) {
 					extracted = extractedList.get(0);
 				}
