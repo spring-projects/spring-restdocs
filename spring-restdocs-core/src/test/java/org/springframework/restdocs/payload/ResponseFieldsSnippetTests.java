@@ -43,6 +43,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  * Tests for {@link ResponseFieldsSnippet}.
  *
  * @author Andy Wilkinson
+ * @author Minhyeok Jeong
  */
 public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
@@ -58,17 +59,28 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 						.row("`assets`", "`Array`", "three")
 						.row("`assets[]`", "`Array`", "four")
 						.row("`assets[].id`", "`Number`", "five")
-						.row("`assets[].name`", "`String`", "six"));
+						.row("`assets[].name`", "`String`", "six")
+						.row("`properties`", "`Object`", "seven")
+						.row("`properties.*`", "`Array`", "eight")
+						.row("`properties.*.value`", "`Number`", "nine")
+						.row("`properties.*.desc`", "`String`", "ten"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("id").description("one"),
 				fieldWithPath("date").description("two"),
 				fieldWithPath("assets").description("three"),
 				fieldWithPath("assets[]").description("four"),
 				fieldWithPath("assets[].id").description("five"),
-				fieldWithPath("assets[].name").description("six")))
+				fieldWithPath("assets[].name").description("six"),
+				fieldWithPath("properties").description("seven"),
+				fieldWithPath("properties.*").description("eight"),
+				fieldWithPath("properties.*.value").description("nine"),
+				fieldWithPath("properties.*.desc").description("ten")))
 						.document(this.operationBuilder.response()
-								.content(
-										"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
-												+ " [{\"id\":356,\"name\": \"sample\"}]}")
+								.content("{\"id\": 67,\"date\": \"2015-01-20\","
+										+ "\"assets\": [{\"id\":356,\"name\": \"sample\"}],"
+										+ "\"properties\": {"
+										+ " \"foo\": {\"value\": 10, \"desc\": \"Some foo\"},"
+										+ " \"bar\": {\"value\": 20, \"desc\": \"Some bar\"}"
+										+ "}}")
 								.build());
 	}
 
@@ -101,13 +113,21 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`[]a.b`", "`Number`", "one")
 						.row("`[]a.c`", "`String`", "two")
-						.row("`[]a`", "`Object`", "three"));
+						.row("`[]a`", "`Object`", "three")
+						.row("`[]a.d`", "`Array`", "four")
+						.row("`[]a.d[]`", "`Array`", "five")
+						.row("`[]a.d[].e`", "`Number`", "six"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b").description("one"),
 				fieldWithPath("[]a.c").description("two"),
-				fieldWithPath("[]a").description("three")))
+				fieldWithPath("[]a").description("three"),
+				fieldWithPath("[]a.d").description("four"),
+				fieldWithPath("[]a.d[]").description("five"),
+				fieldWithPath("[]a.d[].e").description("six")))
 						.document(this.operationBuilder.response()
-								.content("[{\"a\": {\"b\": 5, \"c\":\"charlie\"}},"
-										+ "{\"a\": {\"b\": 4, \"c\":\"chalk\"}}]")
+								.content("[{\"a\": {\"b\": 5, \"c\":\"charlie\","
+										+ " \"d\": [{\"e\": 10}, {\"e\": 20}]}},"
+										+ "{\"a\": {\"b\": 4, \"c\":\"chalk\","
+										+ " \"d\": [{\"e\": 30}, {\"e\": 40}]}}]")
 								.build());
 	}
 

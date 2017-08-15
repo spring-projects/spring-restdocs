@@ -27,7 +27,7 @@ import java.util.Map;
  * extracted and removed.
  *
  * @author Andy Wilkinson
- *
+ * @author Minhyeok Jeong
  */
 final class JsonFieldProcessor {
 
@@ -37,6 +37,17 @@ final class JsonFieldProcessor {
 		return callback.fieldFound();
 	}
 
+	/**
+	 * Extracts the identified object from the specified JSON payload using the specified
+	 * path. If the path does not indicate an array and multiple values are matched, it
+	 * returns a list as {@code JsonFieldList}, so the result can be distinguished from a
+	 * pure {@code List} which is extracted because of the path indicates a real array
+	 * value.
+	 *
+	 * @param path the JSON field path
+	 * @param payload the JSON payload
+	 * @return the extracted object by the path
+	 */
 	Object extract(JsonFieldPath path, Object payload) {
 		final List<Object> matches = new ArrayList<>();
 		traverse(new ProcessingContext(payload, path), new MatchCallback() {
@@ -48,18 +59,22 @@ final class JsonFieldProcessor {
 
 			@Override
 			public void absent() {
-
 			}
 
 		});
+
 		if (matches.isEmpty()) {
 			throw new FieldDoesNotExistException(path);
 		}
-		if ((!path.isArray()) && path.isPrecise()) {
+
+		if (path.isPrecise()) {
 			return matches.get(0);
 		}
-		else {
+		else if (path.isArray()) {
 			return matches;
+		}
+		else {
+			return new JsonFieldList<>(matches);
 		}
 	}
 
@@ -73,7 +88,6 @@ final class JsonFieldProcessor {
 
 			@Override
 			public void absent() {
-
 			}
 
 		});
@@ -89,7 +103,6 @@ final class JsonFieldProcessor {
 
 			@Override
 			public void absent() {
-
 			}
 
 		});

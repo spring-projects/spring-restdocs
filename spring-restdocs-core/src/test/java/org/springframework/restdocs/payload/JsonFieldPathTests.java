@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Andy Wilkinson
  * @author Jeremy Rickard
+ * @author Minhyeok Jeong
  */
 public class JsonFieldPathTests {
 
@@ -46,9 +47,9 @@ public class JsonFieldPathTests {
 	}
 
 	@Test
-	public void topLevelArrayIsPreciseAndAnArray() {
+	public void topLevelArrayIsNotPreciseAndAnArray() {
 		JsonFieldPath path = JsonFieldPath.compile("[]");
-		assertTrue(path.isPrecise());
+		assertFalse(path.isPrecise());
 		assertTrue(path.isArray());
 	}
 
@@ -60,16 +61,23 @@ public class JsonFieldPathTests {
 	}
 
 	@Test
-	public void arrayIsPreciseAndAnArray() {
+	public void arrayIsNotPreciseAndAnArray() {
 		JsonFieldPath path = JsonFieldPath.compile("a[]");
-		assertTrue(path.isPrecise());
+		assertFalse(path.isPrecise());
 		assertTrue(path.isArray());
 	}
 
 	@Test
-	public void nestedArrayIsPreciseAndAnArray() {
+	public void nestedArrayIsNotPreciseAndAnArray() {
 		JsonFieldPath path = JsonFieldPath.compile("a.b[]");
-		assertTrue(path.isPrecise());
+		assertFalse(path.isPrecise());
+		assertTrue(path.isArray());
+	}
+
+	@Test
+	public void nestedArrayStartedWithArrayIsNotPreciseAndAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("[].a[]");
+		assertFalse(path.isPrecise());
 		assertTrue(path.isArray());
 	}
 
@@ -83,6 +91,20 @@ public class JsonFieldPathTests {
 	@Test
 	public void fieldBeneathAnArrayIsNotPreciseAndIsNotAnArray() {
 		JsonFieldPath path = JsonFieldPath.compile("a[].b");
+		assertFalse(path.isPrecise());
+		assertFalse(path.isArray());
+	}
+
+	@Test
+	public void fieldBeneathTopLevelWildcardIsNotPreciseAndNotAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("*.a");
+		assertFalse(path.isPrecise());
+		assertFalse(path.isArray());
+	}
+
+	@Test
+	public void fieldBeneathNestedWildcardIsNotPreciseAndNotAnArray() {
+		JsonFieldPath path = JsonFieldPath.compile("a.*.b");
 		assertFalse(path.isPrecise());
 		assertFalse(path.isArray());
 	}
@@ -155,20 +177,6 @@ public class JsonFieldPathTests {
 	public void compilationOfPathWithAWildcardInBrackets() {
 		assertThat(JsonFieldPath.compile("a.b.['*'].c").getSegments(),
 				contains("a", "b", "*", "c"));
-	}
-
-	@Test
-	public void fieldBeneathTopLevelWildcardIsNotPreciseAndNotAnArray() {
-		JsonFieldPath path = JsonFieldPath.compile("*.a");
-		assertFalse(path.isPrecise());
-		assertFalse(path.isArray());
-	}
-
-	@Test
-	public void fieldBeneathNestedWildcardIsNotPreciseAndNotAnArray() {
-		JsonFieldPath path = JsonFieldPath.compile("a.*.b");
-		assertFalse(path.isPrecise());
-		assertFalse(path.isArray());
 	}
 
 }

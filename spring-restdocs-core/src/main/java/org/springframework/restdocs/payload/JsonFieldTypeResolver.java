@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.Map;
  * Resolves the type of a field in a JSON request or response payload.
  *
  * @author Andy Wilkinson
+ * @author Minhyeok Jeong
  */
 class JsonFieldTypeResolver {
 
@@ -31,9 +32,10 @@ class JsonFieldTypeResolver {
 	JsonFieldType resolveFieldType(String path, Object payload) {
 		JsonFieldPath fieldPath = JsonFieldPath.compile(path);
 		Object field = this.fieldProcessor.extract(fieldPath, payload);
-		if (field instanceof Collection && !fieldPath.isPrecise()) {
+
+		if (field instanceof JsonFieldList) {
 			JsonFieldType commonType = null;
-			for (Object item : (Collection<?>) field) {
+			for (Object item : (JsonFieldList<?>) field) {
 				JsonFieldType fieldType = determineFieldType(item);
 				if (commonType == null) {
 					commonType = fieldType;
@@ -44,6 +46,7 @@ class JsonFieldTypeResolver {
 			}
 			return commonType;
 		}
+
 		return determineFieldType(field);
 	}
 
@@ -65,4 +68,5 @@ class JsonFieldTypeResolver {
 		}
 		return JsonFieldType.NUMBER;
 	}
+
 }
