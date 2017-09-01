@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@ package org.springframework.restdocs.payload;
 
 import org.junit.Test;
 
+import org.springframework.restdocs.payload.JsonFieldPath.PathType;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link JsonFieldPath}.
@@ -32,59 +34,69 @@ import static org.junit.Assert.assertTrue;
 public class JsonFieldPathTests {
 
 	@Test
-	public void singleFieldIsPreciseAndNotAnArray() {
+	public void pathTypeOfSingleFieldIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("a");
-		assertTrue(path.isPrecise());
-		assertFalse(path.isArray());
+		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
 	}
 
 	@Test
-	public void singleNestedFieldIsPreciseAndNotAnArray() {
+	public void pathTypeOfSingleNestedFieldIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("a.b");
-		assertTrue(path.isPrecise());
-		assertFalse(path.isArray());
+		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
 	}
 
 	@Test
-	public void topLevelArrayIsPreciseAndAnArray() {
+	public void pathTypeOfTopLevelArrayIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("[]");
-		assertTrue(path.isPrecise());
-		assertTrue(path.isArray());
+		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
 	}
 
 	@Test
-	public void fieldBeneathTopLevelArrayIsNotPreciseAndNotAnArray() {
+	public void pathTypeOfFieldBeneathTopLevelArrayIsMulti() {
 		JsonFieldPath path = JsonFieldPath.compile("[]a");
-		assertFalse(path.isPrecise());
-		assertFalse(path.isArray());
+		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
 	}
 
 	@Test
-	public void arrayIsPreciseAndAnArray() {
+	public void pathTypeOfSingleNestedArrayIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("a[]");
-		assertTrue(path.isPrecise());
-		assertTrue(path.isArray());
+		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
 	}
 
 	@Test
-	public void nestedArrayIsPreciseAndAnArray() {
+	public void pathTypeOfArrayBeneathNestedFieldsIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("a.b[]");
-		assertTrue(path.isPrecise());
-		assertTrue(path.isArray());
+		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
 	}
 
 	@Test
-	public void arrayOfArraysIsNotPreciseAndIsAnArray() {
+	public void pathTypeOfArrayOfArraysIsMulti() {
 		JsonFieldPath path = JsonFieldPath.compile("a[][]");
-		assertFalse(path.isPrecise());
-		assertTrue(path.isArray());
+		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
 	}
 
 	@Test
-	public void fieldBeneathAnArrayIsNotPreciseAndIsNotAnArray() {
+	public void pathTypeOfFieldBeneathAnArrayIsMulti() {
 		JsonFieldPath path = JsonFieldPath.compile("a[].b");
-		assertFalse(path.isPrecise());
-		assertFalse(path.isArray());
+		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
+	}
+
+	@Test
+	public void pathTypeOfFieldBeneathTopLevelWildcardIsMulti() {
+		JsonFieldPath path = JsonFieldPath.compile("*.a");
+		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
+	}
+
+	@Test
+	public void pathTypeOfFieldBeneathNestedWildcardIsMulti() {
+		JsonFieldPath path = JsonFieldPath.compile("a.*.b");
+		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
+	}
+
+	@Test
+	public void pathTypeOfLeafWidlcardIsMulti() {
+		JsonFieldPath path = JsonFieldPath.compile("a.*");
+		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
 	}
 
 	@Test
@@ -155,20 +167,6 @@ public class JsonFieldPathTests {
 	public void compilationOfPathWithAWildcardInBrackets() {
 		assertThat(JsonFieldPath.compile("a.b.['*'].c").getSegments(),
 				contains("a", "b", "*", "c"));
-	}
-
-	@Test
-	public void fieldBeneathTopLevelWildcardIsNotPreciseAndNotAnArray() {
-		JsonFieldPath path = JsonFieldPath.compile("*.a");
-		assertFalse(path.isPrecise());
-		assertFalse(path.isArray());
-	}
-
-	@Test
-	public void fieldBeneathNestedWildcardIsNotPreciseAndNotAnArray() {
-		JsonFieldPath path = JsonFieldPath.compile("a.*.b");
-		assertFalse(path.isPrecise());
-		assertFalse(path.isArray());
 	}
 
 }

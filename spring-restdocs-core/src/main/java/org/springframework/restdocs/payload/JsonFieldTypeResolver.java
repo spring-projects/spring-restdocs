@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ package org.springframework.restdocs.payload;
 import java.util.Collection;
 import java.util.Map;
 
+import org.springframework.restdocs.payload.JsonFieldPath.PathType;
+import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
+
 /**
  * Resolves the type of a field in a JSON request or response payload.
  *
@@ -29,11 +32,12 @@ class JsonFieldTypeResolver {
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
 	JsonFieldType resolveFieldType(FieldDescriptor fieldDescriptor, Object payload) {
-		JsonFieldPath fieldPath = JsonFieldPath.compile(fieldDescriptor.getPath());
-		Object field = this.fieldProcessor.extract(fieldPath, payload);
-		if (field instanceof Collection && !fieldPath.isPrecise()) {
+		ExtractedField extractedField = this.fieldProcessor
+				.extract(fieldDescriptor.getPath(), payload);
+		Object value = extractedField.getValue();
+		if (value instanceof Collection && extractedField.getType() == PathType.MULTI) {
 			JsonFieldType commonType = null;
-			for (Object item : (Collection<?>) field) {
+			for (Object item : (Collection<?>) value) {
 				JsonFieldType fieldType = determineFieldType(item);
 				if (commonType == null) {
 					commonType = fieldType;
@@ -52,7 +56,7 @@ class JsonFieldTypeResolver {
 			}
 			return commonType;
 		}
-		return determineFieldType(field);
+		return determineFieldType(value);
 	}
 
 	private JsonFieldType determineFieldType(Object fieldValue) {

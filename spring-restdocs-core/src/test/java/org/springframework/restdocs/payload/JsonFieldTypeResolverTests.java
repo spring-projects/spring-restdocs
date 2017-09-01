@@ -62,6 +62,22 @@ public class JsonFieldTypeResolverTests {
 	}
 
 	@Test
+	public void arrayNestedBeneathAnArray() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].b[]"),
+						createPayload("{\"a\": [{\"b\": [ 1, 2 ]}]}")),
+				equalTo(JsonFieldType.ARRAY));
+	}
+
+	@Test
+	public void specificFieldOfObjectInArrayNestedBeneathAnArray() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].b[].c"),
+						createPayload("{\"a\": [{\"b\": [ {\"c\": 5}, {\"c\": 5}]}]}")),
+				equalTo(JsonFieldType.NUMBER));
+	}
+
+	@Test
 	public void booleanField() throws IOException {
 		assertFieldType(JsonFieldType.BOOLEAN, "true");
 	}
@@ -217,6 +233,40 @@ public class JsonFieldTypeResolverTests {
 				"The payload does not contain a field with the path 'a[].b'");
 		this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].b"),
 				createPayload("{\"a\":[{\"c\":1},{\"c\":2}]}"));
+	}
+
+	@Test
+	public void leafWildcardWithCommonType() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*"),
+						createPayload("{\"a\": {\"b\": 5, \"c\": 6}}")),
+				equalTo(JsonFieldType.NUMBER));
+	}
+
+	@Test
+	public void leafWildcardWithVaryingType() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*"),
+						createPayload("{\"a\": {\"b\": 5, \"c\": \"six\"}}")),
+				equalTo(JsonFieldType.VARIES));
+	}
+
+	@Test
+	public void intermediateWildcardWithCommonType() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*.d"),
+						createPayload(
+								"{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": 5}}}}")),
+				equalTo(JsonFieldType.NUMBER));
+	}
+
+	@Test
+	public void intermediateWildcardWithVaryingType() throws IOException {
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*.d"),
+						createPayload(
+								"{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": \"four\"}}}}")),
+				equalTo(JsonFieldType.VARIES));
 	}
 
 	private void assertFieldType(JsonFieldType expectedType, String jsonValue)

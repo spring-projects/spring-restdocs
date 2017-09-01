@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
  *
  * @author Andy Wilkinson
  * @author Jeremy Rickard
- *
  */
 final class JsonFieldPath {
 
@@ -41,24 +40,16 @@ final class JsonFieldPath {
 
 	private final List<String> segments;
 
-	private final boolean precise;
+	private final PathType type;
 
-	private final boolean array;
-
-	private JsonFieldPath(String rawPath, List<String> segments, boolean precise,
-			boolean array) {
+	private JsonFieldPath(String rawPath, List<String> segments, PathType type) {
 		this.rawPath = rawPath;
 		this.segments = segments;
-		this.precise = precise;
-		this.array = array;
+		this.type = type;
 	}
 
-	boolean isPrecise() {
-		return this.precise;
-	}
-
-	boolean isArray() {
-		return this.array;
+	PathType getType() {
+		return this.type;
 	}
 
 	List<String> getSegments() {
@@ -72,9 +63,8 @@ final class JsonFieldPath {
 
 	static JsonFieldPath compile(String path) {
 		List<String> segments = extractSegments(path);
-		String leafSegment = segments.get(segments.size() - 1);
-		return new JsonFieldPath(path, segments, matchesSingleValue(segments),
-				isArraySegment(leafSegment) || isWildcardSegment(leafSegment));
+		return new JsonFieldPath(path, segments,
+				matchesSingleValue(segments) ? PathType.SINGLE : PathType.MULTI);
 	}
 
 	static boolean isArraySegment(String segment) {
@@ -84,8 +74,9 @@ final class JsonFieldPath {
 	static boolean matchesSingleValue(List<String> segments) {
 		Iterator<String> iterator = segments.iterator();
 		while (iterator.hasNext()) {
-			String next = iterator.next();
-			if ((isArraySegment(next) || isWildcardSegment(next)) && iterator.hasNext()) {
+			String segment = iterator.next();
+			if ((isArraySegment(segment) && iterator.hasNext())
+					|| isWildcardSegment(segment)) {
 				return false;
 			}
 		}
@@ -132,4 +123,19 @@ final class JsonFieldPath {
 		}
 		return segments;
 	}
+
+	static enum PathType {
+
+		/**
+		 * The path identifies a single item in the payload
+		 */
+		SINGLE,
+
+		/**
+		 * The path identifies multiple items in the payload
+		 */
+		MULTI;
+
+	}
+
 }

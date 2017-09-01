@@ -52,8 +52,8 @@ class JsonContentHandler implements ContentHandler {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
 		Object payload = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-			if (!fieldDescriptor.isOptional() && !this.fieldProcessor.hasField(
-					JsonFieldPath.compile(fieldDescriptor.getPath()), payload)) {
+			if (!fieldDescriptor.isOptional() && !this.fieldProcessor
+					.hasField(fieldDescriptor.getPath(), payload)) {
 				missingFields.add(fieldDescriptor);
 			}
 		}
@@ -65,12 +65,11 @@ class JsonContentHandler implements ContentHandler {
 	public String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors) {
 		Object content = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-			JsonFieldPath path = JsonFieldPath.compile(fieldDescriptor.getPath());
 			if (describesSubsection(fieldDescriptor)) {
-				this.fieldProcessor.removeSubsection(path, content);
+				this.fieldProcessor.removeSubsection(fieldDescriptor.getPath(), content);
 			}
 			else {
-				this.fieldProcessor.remove(path, content);
+				this.fieldProcessor.remove(fieldDescriptor.getPath(), content);
 			}
 		}
 		if (!isEmpty(content)) {
