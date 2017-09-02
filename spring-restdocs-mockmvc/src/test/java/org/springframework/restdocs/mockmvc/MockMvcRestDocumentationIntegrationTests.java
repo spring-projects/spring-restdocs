@@ -103,6 +103,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Andy Wilkinson
  * @author Dewet Diener
  * @author Tomasz Kopczynski
+ * @author Filip Hrisafov
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -494,6 +495,44 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void defaultPreprocessedRequest() throws Exception {
+		Pattern pattern = Pattern.compile("(\"alpha\")");
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)
+						.operationPreprocessors()
+						.withDefaultRequestPreprocessors(prettyPrint(),
+								removeHeaders("a", HttpHeaders.HOST,
+										HttpHeaders.CONTENT_LENGTH),
+								replacePattern(pattern, "\"<<beta>>\"")))
+				.build();
+
+
+		MvcResult result = mockMvc
+				.perform(get("/").header("a", "alpha").header("b", "bravo")
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON).content("{\"a\":\"alpha\"}"))
+				.andDo(document("default-preprocessed-request"))
+				.andReturn();
+
+		HttpRequestMatcher preprocessedRequest = httpRequest(asciidoctor(),
+				RequestMethod.GET, "/");
+		List<String> removedHeaders = Arrays.asList("a", HttpHeaders.HOST,
+				HttpHeaders.CONTENT_LENGTH);
+		for (String headerName : iterable(result.getRequest().getHeaderNames())) {
+			if (!removedHeaders.contains(headerName)) {
+				preprocessedRequest.header(headerName,
+						result.getRequest().getHeader(headerName));
+			}
+		}
+		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
+		assertThat(
+				new File(
+						"build/generated-snippets/default-preprocessed-request/http-request.adoc"),
+				is(snippet(asciidoctor())
+						.withContents(preprocessedRequest.content(prettyPrinted))));
+	}
+
+	@Test
 	public void preprocessedResponse() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
@@ -521,6 +560,34 @@ public class MockMvcRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-response/http-response.adoc"),
+				is(snippet(asciidoctor())
+						.withContents(httpResponse(asciidoctor(), HttpStatus.OK)
+								.header("Content-Type", "application/json;charset=UTF-8")
+								.header(HttpHeaders.CONTENT_LENGTH,
+										prettyPrinted.getBytes().length)
+								.content(prettyPrinted))));
+	}
+
+	@Test
+	public void defaultPreprocessedResponse() throws Exception {
+		Pattern pattern = Pattern.compile("(\"alpha\")");
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)
+						.operationPreprocessors()
+						.withDefaultResponsePreprocessors(prettyPrint(), maskLinks(), removeHeaders("a"),
+								replacePattern(pattern, "\"<<beta>>\"")))
+				.build();
+
+
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(document("default-preprocessed-response"));
+
+		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
+				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
+		assertThat(
+				new File(
+						"build/generated-snippets/default-preprocessed-response/http-response.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(httpResponse(asciidoctor(), HttpStatus.OK)
 								.header("Content-Type", "application/json;charset=UTF-8")

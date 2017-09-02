@@ -36,12 +36,14 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
  * Abstract base class for the configuration of Spring REST Docs.
  *
  * @param <S> The concrete type of the {@link SnippetConfigurer}.
+ * @param <P> The concrete type of the {@link OperationPreprocessorsConfigurer}
  * @param <T> The concrete type of this configurer, to be returned from methods that
  * support chaining
  * @author Andy Wilkinson
+ * @author Filip Hrisafov
  * @since 1.1.0
  */
-public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, T> {
+public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, P extends AbstractConfigurer, T> {
 
 	private final WriterResolverConfigurer writerResolverConfigurer = new WriterResolverConfigurer();
 
@@ -54,6 +56,14 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 	 * @return the snippet configurer
 	 */
 	public abstract S snippets();
+
+	/**
+	 * Returns an {@link OperationPreprocessorsConfigurer} that can be used to configure the operation request and
+	 * response preprocessors that will be used during the documentation.
+	 *
+	 * @return the operation preprocessors configurer
+	 */
+	public abstract P operationPreprocessors();
 
 	/**
 	 * Configures the {@link TemplateEngine} that will be used for snippet rendering.
@@ -90,6 +100,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 	protected final void apply(Map<String, Object> configuration,
 			RestDocumentationContext context) {
 		List<AbstractConfigurer> configurers = Arrays.asList(snippets(),
+				operationPreprocessors(),
 				this.templateEngineConfigurer, this.writerResolverConfigurer);
 		for (AbstractConfigurer configurer : configurers) {
 			configurer.apply(configuration, context);
