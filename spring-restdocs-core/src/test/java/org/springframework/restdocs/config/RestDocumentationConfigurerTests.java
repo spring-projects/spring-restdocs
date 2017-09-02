@@ -31,6 +31,9 @@ import org.springframework.restdocs.cli.HttpieRequestSnippet;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpRequestSnippet;
 import org.springframework.restdocs.http.HttpResponseSnippet;
+import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
+import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.RequestBodySnippet;
 import org.springframework.restdocs.payload.ResponseBodySnippet;
 import org.springframework.restdocs.snippet.Snippet;
@@ -45,6 +48,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
@@ -54,6 +58,7 @@ import static org.mockito.Mockito.mock;
  * Tests for {@link RestDocumentationConfigurer}.
  *
  * @author Andy Wilkinson
+ * @author Filip Hrisafov
  */
 public class RestDocumentationConfigurerTests {
 
@@ -88,6 +93,14 @@ public class RestDocumentationConfigurerTests {
 		assertThat(snippetConfiguration.getEncoding(), is(equalTo("UTF-8")));
 		assertThat(snippetConfiguration.getTemplateFormat(),
 				is(equalTo(TemplateFormats.asciidoctor())));
+
+		OperationRequestPreprocessor defaultOperationRequestPreprocessor = (OperationRequestPreprocessor)
+				configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
+		assertThat(defaultOperationRequestPreprocessor, is(nullValue()));
+
+		OperationResponsePreprocessor defaultOperationResponsePreprocessor = (OperationResponsePreprocessor)
+				configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
+		assertThat(defaultOperationResponsePreprocessor, is(nullValue()));
 	}
 
 	@Test
@@ -200,6 +213,32 @@ public class RestDocumentationConfigurerTests {
 		assertThat(templateContext.size(), equalTo(0));
 	}
 
+	@Test
+	public void customDefaultOperationRequestPreprocessor() {
+		Map<String, Object> configuration = new HashMap<>();
+		this.configurer.operationPreprocessors()
+				.withDefaultRequestPreprocessors(Preprocessors.prettyPrint(), Preprocessors.removeHeaders("Foo"))
+				.apply(configuration, createContext());
+		assertThat(configuration,
+				hasEntry(
+						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR),
+						instanceOf(OperationRequestPreprocessor.class)));
+		//TODO how can we actually test that the preprocessors that we set are actually there?
+	}
+
+	@Test
+	public void customDefaultOperationResponsePreprocessor() {
+		Map<String, Object> configuration = new HashMap<>();
+		this.configurer.operationPreprocessors()
+				.withDefaultResponsePreprocessors(Preprocessors.prettyPrint(), Preprocessors.removeHeaders("Foo"))
+				.apply(configuration, createContext());
+		assertThat(configuration,
+				hasEntry(
+						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR),
+						instanceOf(OperationResponsePreprocessor.class)));
+		//TODO same as for the customDefaultOperationRequestPreprocessor
+	}
+
 	private RestDocumentationContext createContext() {
 		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
 				"build");
@@ -209,16 +248,24 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	private static final class TestRestDocumentationConfigurer extends
-			RestDocumentationConfigurer<TestSnippetConfigurer, TestRestDocumentationConfigurer> {
+			RestDocumentationConfigurer<TestSnippetConfigurer, TestOperationPreprocessorsConfigurer,
+					TestRestDocumentationConfigurer> {
 
 		private final TestSnippetConfigurer snippetConfigurer = new TestSnippetConfigurer(
 				this);
+
+		private final TestOperationPreprocessorsConfigurer operationPreprocessorsConfigurer =
+				new TestOperationPreprocessorsConfigurer(this);
 
 		@Override
 		public TestSnippetConfigurer snippets() {
 			return this.snippetConfigurer;
 		}
 
+		@Override
+		public TestOperationPreprocessorsConfigurer operationPreprocessors() {
+			return this.operationPreprocessorsConfigurer;
+		}
 	}
 
 	private static final class TestSnippetConfigurer extends
@@ -228,6 +275,14 @@ public class RestDocumentationConfigurerTests {
 			super(parent);
 		}
 
+	}
+
+	private static final class TestOperationPreprocessorsConfigurer extends
+			OperationPreprocessorsConfigurer<TestRestDocumentationConfigurer, TestOperationPreprocessorsConfigurer> {
+
+		protected TestOperationPreprocessorsConfigurer(TestRestDocumentationConfigurer parent) {
+			super(parent);
+		}
 	}
 
 }

@@ -28,6 +28,9 @@ import org.mockito.ArgumentCaptor;
 
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
+import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
+import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
 
@@ -43,6 +46,7 @@ import static org.mockito.Mockito.verify;
  * Tests for {@link RestAssuredRestDocumentationConfigurer}.
  *
  * @author Andy Wilkinson
+ * @author Filip Hrisafov
  */
 public class RestAssuredRestDocumentationConfigurerTests {
 
@@ -68,7 +72,11 @@ public class RestAssuredRestDocumentationConfigurerTests {
 
 	@Test
 	public void configurationIsAddedToTheContext() {
-		this.configurer.filter(this.requestSpec, this.responseSpec, this.filterContext);
+		this.configurer
+				.operationPreprocessors()
+				.withDefaultRequestPreprocessors(Preprocessors.prettyPrint())
+				.withDefaultResponsePreprocessors(Preprocessors.removeHeaders("Foo"))
+				.filter(this.requestSpec, this.responseSpec, this.filterContext);
 		@SuppressWarnings("rawtypes")
 		ArgumentCaptor<Map> configurationCaptor = ArgumentCaptor.forClass(Map.class);
 		verify(this.filterContext).setValue(
@@ -84,5 +92,13 @@ public class RestAssuredRestDocumentationConfigurerTests {
 				hasEntry(
 						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
+		assertThat(configuration,
+				hasEntry(
+						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR),
+						instanceOf(OperationRequestPreprocessor.class)));
+		assertThat(configuration,
+				hasEntry(
+						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR),
+						instanceOf(OperationResponsePreprocessor.class)));
 	}
 }
