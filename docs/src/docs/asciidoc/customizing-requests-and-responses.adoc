@@ -27,29 +27,20 @@ include::{examples-dir}/com/example/restassured/PerTestPreprocessing.java[tags=p
 <2> Apply a response preprocessor that will pretty print its content.
 
 Alternatively, you may want to apply the same preprocessors to every test. You can do
-so by configuring the preprocessors in your `@Before` method and using the
-<<documentating-your-api-parameterized-output-directories, support for parameterized
-output directories>>:
+so by configuring the preprocessors using the `RestDocumentationConfigurer` API.
+For example to remove the `Foo` header from all requests and pretty print all responses:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/EveryTestPreprocessing.java[tags=setup]
 ----
-<1> Create a `RestDocumentationResultHandler`, configured to preprocess the request
-	and response.
-<2> Create a `MockMvc` instance, configured to always call the documentation result
-	handler.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags=setup]
 ----
-<1> Create a `RestDocumentationFilter`, configured to preprocess the request
-	and response.
-<2> Create a `RequestSpecification` instance, configured to always call the documentation
-	filter.
 
 Then, in each test, any configuration specific to that test can be performed. For example:
 
@@ -58,17 +49,12 @@ Then, in each test, any configuration specific to that test can be performed. Fo
 ----
 include::{examples-dir}/com/example/mockmvc/EveryTestPreprocessing.java[tags=use]
 ----
-<1> The request and response will be preprocessed due to the use of `alwaysDo` above.
-<2> Document the links specific to the resource that is being tested
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags=use]
 ----
-<1> The request and response will be preprocessed due to the configuration of the
-`RequestSpecification` in the `setUp` method.
-<2> Document the links specific to the resource that is being tested
 
 Various built in preprocessors, including those illustrated above, are available via the
 static methods on `Preprocessors`. See <<Preprocessors, below>> for further details.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,49 +16,34 @@
 
 package com.example.restassured;
 
-import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
+
 import org.junit.Before;
 import org.junit.Rule;
 
 import org.springframework.restdocs.JUnitRestDocumentation;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
-public class EveryTestPreprocessing {
+public class CustomDefaultOperationPreprocessors {
 
 	@Rule
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
-	// tag::setup[]
+	@SuppressWarnings("unused")
 	private RequestSpecification spec;
 
 	@Before
 	public void setup() {
+		// tag::custom-default-preprocessors[]
 		this.spec = new RequestSpecBuilder()
 				.addFilter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
 						.withDefaultRequestPreprocessors(removeHeaders("Foo"))
 						.withDefaultResponsePreprocessors(prettyPrint()))
 				.build();
+		// end::custom-default-preprocessors[]
 	}
-
-	// end::setup[]
-
-	public void use() throws Exception {
-		// tag::use[]
-		RestAssured.given(this.spec)
-				.filter(document("{method-name]",
-					links(linkWithRel("self").description("Canonical self link"))))
-			.when().get("/")
-			.then().assertThat().statusCode(is(200));
-		// end::use[]
-	}
-
 }

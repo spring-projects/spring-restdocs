@@ -114,3 +114,23 @@ include::{examples-dir}/com/example/mockmvc/CustomDefaultSnippets.java[tags=cust
 ----
 include::{examples-dir}/com/example/restassured/CustomDefaultSnippets.java[tags=custom-default-snippets]
 ----
+
+[[configuration-default-preprocessors]]
+=== Operation preprocessors
+
+You can configure default Request / Response preprocessors during setup using the
+`RestDocumentationConfigurer` API. For example, to remove the `Foo` headers from all requests
+and pretty print all responses:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/CustomDefaultOperationPreprocessors.java[tags=custom-default-preprocessors]
+----
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/CustomDefaultOperationPreprocessors.java[tags=custom-default-preprocessors]
+----
+
