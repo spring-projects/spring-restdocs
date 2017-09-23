@@ -510,4 +510,5 @@ public class JsonFieldProcessorTests {
 		entry.put(key, value);
 		return entry;
 	}
+
 }

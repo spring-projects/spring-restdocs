@@ -103,7 +103,6 @@ final class CliOperationRequest implements OperationRequest {
 			}
 		}
 		return true;
-
 	}
 
 	@Override

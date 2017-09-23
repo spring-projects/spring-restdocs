@@ -44,14 +44,12 @@ final class ConcatenatingCommandFormatter implements CommandFormatter {
 		if (CollectionUtils.isEmpty(elements)) {
 			return "";
 		}
-
 		StringBuilder result = new StringBuilder();
-
 		for (String element : elements) {
 			result.append(String.format(this.separator));
 			result.append(element);
 		}
-
 		return result.toString();
 	}
+
 }

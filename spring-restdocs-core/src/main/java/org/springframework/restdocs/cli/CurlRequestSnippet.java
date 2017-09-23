@@ -161,7 +161,6 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 	private void writePartsIfNecessary(OperationRequest request, List<String> lines) {
 		for (OperationRequestPart part : request.getParts()) {
-
 			StringBuilder oneLine = new StringBuilder();
 			oneLine.append(String.format("-F '%s=", part.getName()));
 			if (!StringUtils.hasText(part.getSubmittedFileName())) {
@@ -174,7 +173,6 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 				oneLine.append(";type=");
 				oneLine.append(part.getHeaders().getContentType().toString());
 			}
-
 			oneLine.append("'");
 			lines.add(oneLine.toString());
 		}

@@ -85,6 +85,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 				getDelegate().handle(result.getRequest(), result.getResponse(),
 						configuration);
 			}
+
 		};
 	}
 
@@ -96,4 +97,5 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	protected final RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> getDelegate() {
 		return this.delegate;
 	}
+
 }

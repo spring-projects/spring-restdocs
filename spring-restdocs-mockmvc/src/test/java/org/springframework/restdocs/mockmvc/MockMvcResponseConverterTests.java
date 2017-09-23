@@ -70,4 +70,5 @@ public class MockMvcResponseConverterTests {
 		assertThat(operationResponse.getHeaders().get(HttpHeaders.SET_COOKIE), equalTo(
 				Collections.singletonList("name=value; Domain=localhost; HttpOnly")));
 	}
+
 }
