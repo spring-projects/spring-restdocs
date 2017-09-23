@@ -44,7 +44,57 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForOptionalFieldWithNullValueDoesNotHaveToMatch() throws IOException {
+	public void typeForFieldWithNotNullAndThenNullValueMustMatch() throws IOException {
+		this.thrown.expect(FieldTypesDoNotMatchException.class);
+		new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}".getBytes())
+				.determineFieldType(
+						new FieldDescriptor("a[].id").type(JsonFieldType.STRING));
+	}
+
+	@Test
+	public void typeForFieldWithNullAndThenNotNullValueMustMatch() throws IOException {
+		this.thrown.expect(FieldTypesDoNotMatchException.class);
+		new JsonContentHandler("{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
+				.determineFieldType(
+						new FieldDescriptor("a.[].id").type(JsonFieldType.STRING));
+	}
+
+	@Test
+	public void typeForOptionalFieldWithNumberAndThenNullValueIsNumber()
+			throws IOException {
+		Object fieldType = new JsonContentHandler(
+				"{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes())
+						.determineFieldType(new FieldDescriptor("a[].id").optional());
+		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.NUMBER)));
+	}
+
+	@Test
+	public void typeForOptionalFieldWithNullAndThenNumberIsNumber() throws IOException {
+		Object fieldType = new JsonContentHandler(
+				"{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
+						.determineFieldType(new FieldDescriptor("a[].id").optional());
+		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.NUMBER)));
+	}
+
+	@Test
+	public void typeForFieldWithNumberAndThenNullValueIsVaries() throws IOException {
+		Object fieldType = new JsonContentHandler(
+				"{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes())
+						.determineFieldType(new FieldDescriptor("a[].id"));
+		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.VARIES)));
+	}
+
+	@Test
+	public void typeForFieldWithNullAndThenNumberIsVaries() throws IOException {
+		Object fieldType = new JsonContentHandler(
+				"{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
+						.determineFieldType(new FieldDescriptor("a[].id"));
+		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.VARIES)));
+	}
+
+	@Test
+	public void typeForOptionalFieldWithNullValueCanBeProvidedExplicitly()
+			throws IOException {
 		Object fieldType = new JsonContentHandler("{\"a\": null}".getBytes())
 				.determineFieldType(
 						new FieldDescriptor("a").type(JsonFieldType.STRING).optional());

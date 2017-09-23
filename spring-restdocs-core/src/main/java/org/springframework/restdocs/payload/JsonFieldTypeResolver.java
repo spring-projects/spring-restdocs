@@ -28,8 +28,8 @@ class JsonFieldTypeResolver {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
-	JsonFieldType resolveFieldType(String path, Object payload) {
-		JsonFieldPath fieldPath = JsonFieldPath.compile(path);
+	JsonFieldType resolveFieldType(FieldDescriptor fieldDescriptor, Object payload) {
+		JsonFieldPath fieldPath = JsonFieldPath.compile(fieldDescriptor.getPath());
 		Object field = this.fieldProcessor.extract(fieldPath, payload);
 		if (field instanceof Collection && !fieldPath.isPrecise()) {
 			JsonFieldType commonType = null;
@@ -38,8 +38,16 @@ class JsonFieldTypeResolver {
 				if (commonType == null) {
 					commonType = fieldType;
 				}
-				else if (fieldType != commonType && fieldType != JsonFieldType.NULL) {
-					return JsonFieldType.VARIES;
+				else if (fieldType != commonType) {
+					if (!fieldDescriptor.isOptional()) {
+						return JsonFieldType.VARIES;
+					}
+					if (commonType == JsonFieldType.NULL) {
+						commonType = fieldType;
+					}
+					else if (fieldType != JsonFieldType.NULL) {
+						return JsonFieldType.VARIES;
+					}
 				}
 			}
 			return commonType;
