@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,6 +100,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 				getDelegate().handle(result.getRequest(), result.getResponse(),
 						configuration);
 			}
+
 		};
 	}
 
@@ -111,4 +112,5 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	protected final RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> getDelegate() {
 		return this.delegate;
 	}
+
 }

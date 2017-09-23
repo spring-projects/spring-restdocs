@@ -30,7 +30,6 @@ import org.springframework.restdocs.operation.OperationResponse;
  * content type.
  *
  * @author Andy Wilkinson
- *
  */
 class ContentTypeLinkExtractor implements LinkExtractor {
 

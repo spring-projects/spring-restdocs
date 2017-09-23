@@ -77,4 +77,5 @@ class JsonFieldTypeResolver {
 		}
 		return JsonFieldType.NUMBER;
 	}
+
 }

@@ -237,4 +237,5 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 			}
 		}
 	}
+
 }

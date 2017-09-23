@@ -65,4 +65,5 @@ public final class RestAssuredRestDocumentationConfigurer extends
 		apply(configuration, context);
 		return filterContext.next(requestSpec, responseSpec);
 	}
+
 }

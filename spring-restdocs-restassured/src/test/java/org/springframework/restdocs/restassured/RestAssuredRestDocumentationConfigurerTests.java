@@ -86,4 +86,5 @@ public class RestAssuredRestDocumentationConfigurerTests {
 						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
 	}
+
 }

@@ -327,13 +327,13 @@ final class JsonFieldProcessor {
 
 	}
 
-	private static class LeafCollectionMatch implements Match {
+	private static final class LeafCollectionMatch implements Match {
 
 		private final Collection<?> collection;
 
 		private final Match parent;
 
-		public LeafCollectionMatch(Collection<?> collection, Match parent) {
+		private LeafCollectionMatch(Collection<?> collection, Match parent) {
 			this.collection = collection;
 			this.parent = parent;
 		}
@@ -387,6 +387,7 @@ final class JsonFieldProcessor {
 		void remove();
 
 		void removeSubsection();
+
 	}
 
 	private static final class ProcessingContext {
@@ -432,8 +433,12 @@ final class JsonFieldProcessor {
 			return new ProcessingContext(payload, this.path,
 					this.segments.subList(1, this.segments.size()), match);
 		}
+
 	}
 
+	/**
+	 * A field that has been extracted from a JSON payload.
+	 */
 	static class ExtractedField {
 
 		private final Object value;

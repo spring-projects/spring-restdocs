@@ -124,15 +124,18 @@ final class JsonFieldPath {
 		return segments;
 	}
 
+	/**
+	 * The type of a field path.
+	 */
 	static enum PathType {
 
 		/**
-		 * The path identifies a single item in the payload
+		 * The path identifies a single item in the payload.
 		 */
 		SINGLE,
 
 		/**
-		 * The path identifies multiple items in the payload
+		 * The path identifies multiple items in the payload.
 		 */
 		MULTI;
 
