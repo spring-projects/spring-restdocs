@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.restdocs.payload.JsonFieldPath.PathType;
+
 /**
  * A {@code JsonFieldProcessor} processes a payload's fields, allowing them to be
  * extracted and removed.
@@ -31,15 +33,16 @@ import java.util.Map;
  */
 final class JsonFieldProcessor {
 
-	boolean hasField(final JsonFieldPath fieldPath, Object payload) {
+	boolean hasField(String path, Object payload) {
 		HasFieldMatchCallback callback = new HasFieldMatchCallback();
-		traverse(new ProcessingContext(payload, fieldPath), callback);
+		traverse(new ProcessingContext(payload, JsonFieldPath.compile(path)), callback);
 		return callback.fieldFound();
 	}
 
-	Object extract(JsonFieldPath path, Object payload) {
+	ExtractedField extract(String path, Object payload) {
+		JsonFieldPath compiledPath = JsonFieldPath.compile(path);
 		final List<Object> matches = new ArrayList<>();
-		traverse(new ProcessingContext(payload, path), new MatchCallback() {
+		traverse(new ProcessingContext(payload, compiledPath), new MatchCallback() {
 
 			@Override
 			public void foundMatch(Match match) {
@@ -55,44 +58,43 @@ final class JsonFieldProcessor {
 		if (matches.isEmpty()) {
 			throw new FieldDoesNotExistException(path);
 		}
-		if ((!path.isArray()) && path.isPrecise()) {
-			return matches.get(0);
-		}
-		else {
-			return matches;
-		}
+		return new ExtractedField(
+				compiledPath.getType() == PathType.SINGLE ? matches.get(0) : matches,
+				compiledPath.getType());
 	}
 
-	void remove(final JsonFieldPath path, Object payload) {
-		traverse(new ProcessingContext(payload, path), new MatchCallback() {
+	void remove(String path, Object payload) {
+		traverse(new ProcessingContext(payload, JsonFieldPath.compile(path)),
+				new MatchCallback() {
 
-			@Override
-			public void foundMatch(Match match) {
-				match.remove();
-			}
+					@Override
+					public void foundMatch(Match match) {
+						match.remove();
+					}
 
-			@Override
-			public void absent() {
+					@Override
+					public void absent() {
 
-			}
+					}
 
-		});
+				});
 	}
 
-	void removeSubsection(final JsonFieldPath path, Object payload) {
-		traverse(new ProcessingContext(payload, path), new MatchCallback() {
+	void removeSubsection(String path, Object payload) {
+		traverse(new ProcessingContext(payload, JsonFieldPath.compile(path)),
+				new MatchCallback() {
 
-			@Override
-			public void foundMatch(Match match) {
-				match.removeSubsection();
-			}
+					@Override
+					public void foundMatch(Match match) {
+						match.removeSubsection();
+					}
 
-			@Override
-			public void absent() {
+					@Override
+					public void absent() {
 
-			}
+					}
 
-		});
+				});
 	}
 
 	private void traverse(ProcessingContext context, MatchCallback matchCallback) {
@@ -114,6 +116,22 @@ final class JsonFieldProcessor {
 	}
 
 	private void handleCollectionPayload(Collection<?> collection,
+			MatchCallback matchCallback, ProcessingContext context) {
+		if (context.isLeaf()) {
+			matchCallback.foundMatch(
+					new LeafCollectionMatch(collection, context.getParentMatch()));
+		}
+		else {
+			Iterator<?> items = collection.iterator();
+			while (items.hasNext()) {
+				Object item = items.next();
+				traverse(context.descend(item, new CollectionMatch(items, collection,
+						item, context.getParentMatch())), matchCallback);
+			}
+		}
+	}
+
+	private void handleWildcardPayload(Collection<?> collection,
 			MatchCallback matchCallback, ProcessingContext context) {
 		Iterator<?> items = collection.iterator();
 		if (context.isLeaf()) {
@@ -147,7 +165,7 @@ final class JsonFieldProcessor {
 			}
 		}
 		else if ("*".equals(context.getSegment())) {
-			handleCollectionPayload(map.values(), matchCallback, context);
+			handleWildcardPayload(map.values(), matchCallback, context);
 		}
 		else {
 			matchCallback.absent();
@@ -309,6 +327,51 @@ final class JsonFieldProcessor {
 
 	}
 
+	private static class LeafCollectionMatch implements Match {
+
+		private final Collection<?> collection;
+
+		private final Match parent;
+
+		public LeafCollectionMatch(Collection<?> collection, Match parent) {
+			this.collection = collection;
+			this.parent = parent;
+		}
+
+		@Override
+		public Collection<?> getValue() {
+			return this.collection;
+		}
+
+		@Override
+		public void remove() {
+			if (containsOnlyScalars(this.collection)) {
+				this.collection.clear();
+				if (this.parent != null) {
+					this.parent.remove();
+				}
+			}
+		}
+
+		@Override
+		public void removeSubsection() {
+			this.collection.clear();
+			if (this.parent != null) {
+				this.parent.removeSubsection();
+			}
+		}
+
+		private boolean containsOnlyScalars(Collection<?> collection) {
+			for (Object item : collection) {
+				if (item instanceof Collection || item instanceof Map) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+	}
+
 	private interface MatchCallback {
 
 		void foundMatch(Match match);
@@ -369,6 +432,27 @@ final class JsonFieldProcessor {
 			return new ProcessingContext(payload, this.path,
 					this.segments.subList(1, this.segments.size()), match);
 		}
+	}
+
+	static class ExtractedField {
+
+		private final Object value;
+
+		private final PathType type;
+
+		ExtractedField(Object value, PathType type) {
+			this.value = value;
+			this.type = type;
+		}
+
+		Object getValue() {
+			return this.value;
+		}
+
+		PathType getType() {
+			return this.type;
+		}
+
 	}
 
 }

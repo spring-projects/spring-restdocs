@@ -52,8 +52,8 @@ class JsonContentHandler implements ContentHandler {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
 		Object payload = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-			if (!fieldDescriptor.isOptional() && !this.fieldProcessor.hasField(
-					JsonFieldPath.compile(fieldDescriptor.getPath()), payload)) {
+			if (!fieldDescriptor.isOptional() && !this.fieldProcessor
+					.hasField(fieldDescriptor.getPath(), payload)) {
 				missingFields.add(fieldDescriptor);
 			}
 		}
@@ -65,12 +65,11 @@ class JsonContentHandler implements ContentHandler {
 	public String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors) {
 		Object content = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-			JsonFieldPath path = JsonFieldPath.compile(fieldDescriptor.getPath());
 			if (describesSubsection(fieldDescriptor)) {
-				this.fieldProcessor.removeSubsection(path, content);
+				this.fieldProcessor.removeSubsection(fieldDescriptor.getPath(), content);
 			}
 			else {
-				this.fieldProcessor.remove(path, content);
+				this.fieldProcessor.remove(fieldDescriptor.getPath(), content);
 			}
 		}
 		if (!isEmpty(content)) {
@@ -107,7 +106,7 @@ class JsonContentHandler implements ContentHandler {
 	@Override
 	public Object determineFieldType(FieldDescriptor fieldDescriptor) {
 		if (fieldDescriptor.getType() == null) {
-			return this.fieldTypeResolver.resolveFieldType(fieldDescriptor.getPath(),
+			return this.fieldTypeResolver.resolveFieldType(fieldDescriptor,
 					readContent());
 		}
 		if (!(fieldDescriptor.getType() instanceof JsonFieldType)) {
@@ -116,7 +115,7 @@ class JsonContentHandler implements ContentHandler {
 		JsonFieldType descriptorFieldType = (JsonFieldType) fieldDescriptor.getType();
 		try {
 			JsonFieldType actualFieldType = this.fieldTypeResolver
-					.resolveFieldType(fieldDescriptor.getPath(), readContent());
+					.resolveFieldType(fieldDescriptor, readContent());
 			if (descriptorFieldType == JsonFieldType.VARIES
 					|| descriptorFieldType == actualFieldType
 					|| (fieldDescriptor.isOptional()

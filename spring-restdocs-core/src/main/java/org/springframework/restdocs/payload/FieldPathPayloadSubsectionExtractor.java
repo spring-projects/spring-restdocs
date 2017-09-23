@@ -22,6 +22,8 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldPath.PathType;
+import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
 /**
  * A {@link PayloadSubsectionExtractor} that extracts the subsection of the JSON payload
@@ -66,20 +68,20 @@ public class FieldPathPayloadSubsectionExtractor
 	public byte[] extractSubsection(byte[] payload, MediaType contentType) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			JsonFieldPath compiledPath = JsonFieldPath.compile(this.fieldPath);
-			Object extracted = new JsonFieldProcessor().extract(compiledPath,
-					objectMapper.readValue(payload, Object.class));
-			if (extracted instanceof List && !compiledPath.isPrecise()) {
-				List<?> extractedList = (List<?>) extracted;
+			ExtractedField extractedField = new JsonFieldProcessor().extract(
+					this.fieldPath, objectMapper.readValue(payload, Object.class));
+			Object value = extractedField.getValue();
+			if (value instanceof List && extractedField.getType() == PathType.MULTI) {
+				List<?> extractedList = (List<?>) value;
 				if (extractedList.size() == 1) {
-					extracted = extractedList.get(0);
+					value = extractedList.get(0);
 				}
 				else {
 					throw new PayloadHandlingException(this.fieldPath
 							+ " does not uniquely identify a subsection of the payload");
 				}
 			}
-			return objectMapper.writeValueAsBytes(extracted);
+			return objectMapper.writeValueAsBytes(value);
 		}
 		catch (IOException ex) {
 			throw new PayloadHandlingException(ex);
