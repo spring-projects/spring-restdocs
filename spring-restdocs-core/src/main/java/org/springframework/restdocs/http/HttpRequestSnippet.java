@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -158,12 +158,12 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		for (Entry<String, List<String>> parameter : request.getParameters().entrySet()) {
 			if (parameter.getValue().isEmpty()) {
 				writePartBoundary(writer);
-				writePart(parameter.getKey(), "", null, writer);
+				writePart(parameter.getKey(), "", null, null, writer);
 			}
 			else {
 				for (String value : parameter.getValue()) {
 					writePartBoundary(writer);
-					writePart(parameter.getKey(), value, null, writer);
+					writePart(parameter.getKey(), value, null, null, writer);
 					writer.println();
 				}
 			}
@@ -181,13 +181,17 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writePart(OperationRequestPart part, PrintWriter writer) {
-		writePart(part.getName(), part.getContentAsString(),
+		writePart(part.getName(), part.getContentAsString(), part.getSubmittedFileName(),
 				part.getHeaders().getContentType(), writer);
 	}
 
-	private void writePart(String name, String value, MediaType contentType,
-			PrintWriter writer) {
-		writer.printf("Content-Disposition: form-data; name=%s%n", name);
+	private void writePart(String name, String value, String filename,
+			MediaType contentType, PrintWriter writer) {
+		writer.printf("Content-Disposition: form-data; name=%s", name);
+		if (StringUtils.hasText(filename)) {
+			writer.printf("; filename=%s", filename);
+		}
+		writer.printf("%n");
 		if (contentType != null) {
 			writer.printf("Content-Type: %s%n", contentType);
 		}

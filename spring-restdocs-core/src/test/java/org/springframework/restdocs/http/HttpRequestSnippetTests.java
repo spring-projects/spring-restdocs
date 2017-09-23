@@ -286,6 +286,23 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void multipartPostWithFilename() throws IOException {
+		String expectedContent = createPart(String.format("Content-Disposition: "
+				+ "form-data; " + "name=image; filename=image.png%n%n<< data >>"));
+		this.snippets.expectHttpRequest()
+				.withContents(httpRequest(RequestMethod.POST, "/upload")
+						.header("Content-Type",
+								"multipart/form-data; boundary=" + BOUNDARY)
+						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
+		new HttpRequestSnippet().document(
+				this.operationBuilder.request("http://localhost/upload").method("POST")
+						.header(HttpHeaders.CONTENT_TYPE,
+								MediaType.MULTIPART_FORM_DATA_VALUE)
+				.part("image", "<< data >>".getBytes()).submittedFileName("image.png")
+				.build());
+	}
+
+	@Test
 	public void multipartPostWithParameters() throws IOException {
 		String param1Part = createPart(
 				String.format("Content-Disposition: form-data; " + "name=a%n%napple"),
