@@ -40,6 +40,8 @@ public class FieldPathPayloadSubsectionExtractor
 
 	private final String subsectionId;
 
+	private final ObjectMapper objectMapper = new ObjectMapper();
+
 	/**
 	 * Creates a new {@code FieldPathPayloadSubsectionExtractor} that will extract the
 	 * subsection of the JSON payload found at the given {@code fieldPath}. The
@@ -66,10 +68,9 @@ public class FieldPathPayloadSubsectionExtractor
 
 	@Override
 	public byte[] extractSubsection(byte[] payload, MediaType contentType) {
-		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			ExtractedField extractedField = new JsonFieldProcessor().extract(
-					this.fieldPath, objectMapper.readValue(payload, Object.class));
+					this.fieldPath, this.objectMapper.readValue(payload, Object.class));
 			Object value = extractedField.getValue();
 			if (value instanceof List && extractedField.getType() == PathType.MULTI) {
 				List<?> extractedList = (List<?>) value;
@@ -81,7 +82,7 @@ public class FieldPathPayloadSubsectionExtractor
 							+ " does not uniquely identify a subsection of the payload");
 				}
 			}
-			return objectMapper.writeValueAsBytes(value);
+			return this.objectMapper.writeValueAsBytes(value);
 		}
 		catch (IOException ex) {
 			throw new PayloadHandlingException(ex);
