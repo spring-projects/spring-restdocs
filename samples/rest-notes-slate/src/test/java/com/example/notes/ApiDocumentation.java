@@ -19,6 +19,7 @@ package com.example.notes;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithSelfRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -199,7 +200,7 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("_links.tags", is(notNullValue())))
 			.andDo(document("note-get-example",
 					links(
-							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithSelfRel().description("Canonical link for this resource"),
 							linkWithRel("note").description("This note"),
 							linkWithRel("tags").description("This note's tags")),
 					responseFields(
@@ -299,7 +300,7 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("name", is(tag.get("name"))))
 			.andDo(document("tag-get-example",
 					links(
-							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithSelfRel().description("Canonical link for this resource"),
 							linkWithRel("tag").description("This tag"),
 							linkWithRel("notes").description("The notes that have this tag")),
 					responseFields(

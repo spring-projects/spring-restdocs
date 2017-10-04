@@ -22,6 +22,8 @@ include::{examples-dir}/com/example/mockmvc/Hypermedia.java[tag=links]
 <2> Expect a link whose rel is `alpha`. Uses the static `linkWithRel` method on
 	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <3> Expect a link whose rel is `bravo`.
+<4> Expect a `self` link. Uses the static `linkWithSelfRel` method on
+    `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -34,6 +36,8 @@ include::{examples-dir}/com/example/restassured/Hypermedia.java[tag=links]
 <2> Expect a link whose rel is `alpha`. Uses the static `linkWithRel` method on
 	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <3> Expect a link whose rel is `bravo`.
+<4> Expect a `self` link. Uses the static `linkWithSelfRel` method on
+    `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 
 The result is a snippet named `links.adoc` that contains a table describing the resource's
 links.
@@ -94,7 +98,7 @@ response.
 [[documenting-your-api-hypermedia-ignoring-common-links]]
 ==== Ignoring common links
 
-Rather than documenting links that are common to every response, such as `_self` and
+Rather than documenting links that are common to every response, such as `self` and
 `curies` when using HAL, you may want to document them once in an overview section and
 then ignore them in the rest of your API's documentation. To do so, you can build on the
 <<documenting-your-api-reusing-snippets,support for reusing snippets>> to add link

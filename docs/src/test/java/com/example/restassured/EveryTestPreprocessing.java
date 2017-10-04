@@ -26,7 +26,7 @@ import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.restassured3.RestDocumentationFilter;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithSelfRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -62,7 +62,7 @@ public class EveryTestPreprocessing {
 		// tag::use[]
 		RestAssured.given(this.spec) // <1>
 			.filter(this.documentationFilter.document( // <2>
-					links(linkWithRel("self").description("Canonical self link"))))
+					links(linkWithSelfRel().description("Canonical self link"))))
 			.when().get("/")
 			.then().assertThat().statusCode(is(200));
 		// end::use[]

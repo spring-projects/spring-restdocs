@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithSelfRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -223,7 +224,7 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("_links.note-tags", is(notNullValue())))
 			.andDo(this.documentationHandler.document(
 				links(
-					linkWithRel("self").description("This <<resources-note,note>>"),
+					linkWithSelfRel().description("This <<resources-note,note>>"),
 					linkWithRel("note-tags").description("This note's <<resources-note-tags,tags>>")),
 				responseFields(
 					fieldWithPath("title").description("The title of the note"),
@@ -339,7 +340,7 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("name", is(tag.get("name"))))
 			.andDo(this.documentationHandler.document(
 				links(
-					linkWithRel("self").description("This <<resources-tag,tag>>"),
+					linkWithSelfRel().description("This <<resources-tag,tag>>"),
 					linkWithRel("tagged-notes").description("The <<resources-tagged-notes,notes>> that have this tag")),
 				responseFields(
 					fieldWithPath("name").description("The name of the tag"),

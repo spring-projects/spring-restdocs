@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithSelfRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -65,7 +65,7 @@ public class EveryTestPreprocessing {
 		this.mockMvc.perform(get("/")) // <1>
 				.andExpect(status().isOk())
 				.andDo(this.documentationHandler.document( // <2>
-						links(linkWithRel("self").description("Canonical self link"))
+						links(linkWithSelfRel().description("Canonical self link"))
 				));
 		// end::use[]
 	}

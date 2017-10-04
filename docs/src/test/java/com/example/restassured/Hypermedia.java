@@ -22,6 +22,7 @@ import io.restassured.specification.RequestSpecification;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.halLinks;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithSelfRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
@@ -35,7 +36,8 @@ public class Hypermedia {
 			.accept("application/json")
 			.filter(document("index", links( // <1>
 					linkWithRel("alpha").description("Link to the alpha resource"), // <2>
-					linkWithRel("bravo").description("Link to the bravo resource")))) // <3>
+					linkWithRel("bravo").description("Link to the bravo resource"), // <3>
+					linkWithSelfRel().description("Link to the self resource")))) // <4>
 			.get("/").then().assertThat().statusCode(is(200));
 		// end::links[]
 	}
@@ -46,7 +48,8 @@ public class Hypermedia {
 		// tag::explicit-extractor[]
 		.filter(document("index", links(halLinks(), // <1>
 				linkWithRel("alpha").description("Link to the alpha resource"),
-				linkWithRel("bravo").description("Link to the bravo resource"))))
+				linkWithRel("bravo").description("Link to the bravo resource"),
+				linkWithSelfRel().description("Link to the self resource"))))
 		// end::explicit-extractor[]
 		.get("/").then().assertThat().statusCode(is(200));
 	}
