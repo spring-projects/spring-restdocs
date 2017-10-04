@@ -21,12 +21,13 @@ import org.springframework.restdocs.hypermedia.LinkDescriptor;
 import org.springframework.restdocs.hypermedia.LinksSnippet;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithSelfRel;
 
 public class Hypermedia {
 
 	// tag::ignore-links[]
 	public static LinksSnippet links(LinkDescriptor... descriptors) {
-		return HypermediaDocumentation.links(linkWithRel("_self").ignored().optional(),
+		return HypermediaDocumentation.links(linkWithSelfRel().ignored().optional(),
 				linkWithRel("curies").ignored()).and(descriptors);
 	}
 	// end::ignore-links[]

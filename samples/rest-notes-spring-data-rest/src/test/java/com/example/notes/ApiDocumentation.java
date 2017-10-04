@@ -19,6 +19,7 @@ package com.example.notes;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithSelfRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -133,7 +134,7 @@ public class ApiDocumentation {
 			.andExpect(status().isOk())
 			.andDo(document("notes-list-example",
 					links(
-							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithSelfRel().description("Canonical link for this resource"),
 							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
 							subsectionWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"),
@@ -201,7 +202,7 @@ public class ApiDocumentation {
 			.andDo(print())
 			.andDo(document("note-get-example",
 					links(
-							linkWithRel("self").description("Canonical link for this <<resources-note,note>>"),
+							linkWithSelfRel().description("Canonical link for this <<resources-note,note>>"),
 							linkWithRel("note").description("This <<resources-note,note>>"),
 							linkWithRel("tags").description("This note's tags")),
 					responseFields(
@@ -223,7 +224,7 @@ public class ApiDocumentation {
 			.andExpect(status().isOk())
 			.andDo(document("tags-list-example",
 					links(
-							linkWithRel("self").description("Canonical link for this resource"),
+							linkWithSelfRel().description("Canonical link for this resource"),
 							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
 							subsectionWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"),
@@ -304,7 +305,7 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("name", is(tag.get("name"))))
 			.andDo(document("tag-get-example",
 					links(
-							linkWithRel("self").description("Canonical link for this <<resources-tag,tag>>"),
+							linkWithSelfRel().description("Canonical link for this <<resources-tag,tag>>"),
 							linkWithRel("tag").description("This <<resources-tag,tag>>"),
 							linkWithRel("notes").description("The <<resources-tagged-notes,notes>> that have this tag")),
 					responseFields(

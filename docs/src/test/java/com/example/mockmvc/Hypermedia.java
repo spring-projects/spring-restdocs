@@ -16,6 +16,7 @@
 
 package com.example.mockmvc;
 
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithSelfRel;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -36,7 +37,8 @@ public class Hypermedia {
 			.andExpect(status().isOk())
 			.andDo(document("index", links( // <1>
 					linkWithRel("alpha").description("Link to the alpha resource"), // <2>
-					linkWithRel("bravo").description("Link to the bravo resource")))); // <3>
+					linkWithRel("bravo").description("Link to the bravo resource"), // <3>
+					linkWithSelfRel().description("Link to the self resource")))); // <4>
 		// end::links[]
 	}
 
@@ -46,7 +48,8 @@ public class Hypermedia {
 			//tag::explicit-extractor[]
 			.andDo(document("index", links(halLinks(), // <1>
 					linkWithRel("alpha").description("Link to the alpha resource"),
-					linkWithRel("bravo").description("Link to the bravo resource"))));
+					linkWithRel("bravo").description("Link to the bravo resource"),
+					linkWithSelfRel().description("Link to the self resource"))));
 			// end::explicit-extractor[]
 	}
 

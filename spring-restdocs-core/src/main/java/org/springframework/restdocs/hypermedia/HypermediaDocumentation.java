@@ -43,6 +43,15 @@ public abstract class HypermediaDocumentation {
 	}
 
 	/**
+	 * Creates a {@code LinkDescriptor} that describes a link a self {@code rel}.
+	 *
+	 * @return a {@code LinkDescriptor} ready for further configuration
+	 */
+	public static LinkDescriptor linkWithSelfRel() {
+		return new LinkDescriptor("self");
+	}
+
+	/**
 	 * Returns a new {@code Snippet} that will document the links in the API operation's
 	 * response. Links will be extracted from the response automatically based on its
 	 * content type and will be documented using the given {@code descriptors}.
