@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 public class FieldPathPayloadSubsectionExtractor
 		implements PayloadSubsectionExtractor<FieldPathPayloadSubsectionExtractor> {
 
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
 	private final String fieldPath;
 
 	private final String subsectionId;
@@ -66,7 +68,6 @@ public class FieldPathPayloadSubsectionExtractor
 
 	@Override
 	public byte[] extractSubsection(byte[] payload, MediaType contentType) {
-		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			ExtractedField extractedField = new JsonFieldProcessor().extract(
 					this.fieldPath, objectMapper.readValue(payload, Object.class));
