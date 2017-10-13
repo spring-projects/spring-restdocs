@@ -52,13 +52,29 @@ class JsonContentHandler implements ContentHandler {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
 		Object payload = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-			if (!fieldDescriptor.isOptional() && !this.fieldProcessor
-					.hasField(fieldDescriptor.getPath(), payload)) {
+			if (!fieldDescriptor.isOptional()
+					&& !this.fieldProcessor.hasField(fieldDescriptor.getPath(), payload)
+					&& !isNestedBeneathMissingOptionalField(fieldDescriptor,
+							fieldDescriptors, payload)) {
 				missingFields.add(fieldDescriptor);
 			}
 		}
 
 		return missingFields;
+	}
+
+	private boolean isNestedBeneathMissingOptionalField(FieldDescriptor missing,
+			List<FieldDescriptor> fieldDescriptors, Object payload) {
+		List<FieldDescriptor> candidates = new ArrayList<>(fieldDescriptors);
+		candidates.remove(missing);
+		for (FieldDescriptor candidate : candidates) {
+			if (candidate.isOptional()
+					&& missing.getPath().startsWith(candidate.getPath())
+					&& !this.fieldProcessor.hasField(candidate.getPath(), payload)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
