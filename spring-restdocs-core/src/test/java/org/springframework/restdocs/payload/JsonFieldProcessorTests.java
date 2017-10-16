@@ -175,21 +175,21 @@ public class JsonFieldProcessorTests {
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentTopLevelField() {
-		this.fieldProcessor.extract("a", Collections.emptyMap()).getValue();
+		this.fieldProcessor.extract("a", Collections.emptyMap());
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentNestedField() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", new HashMap<String, Object>());
-		this.fieldProcessor.extract("a.b", payload).getValue();
+		this.fieldProcessor.extract("a.b", payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentNestedFieldWhenParentIsNotAMap() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
-		this.fieldProcessor.extract("a.b", payload).getValue();
+		this.fieldProcessor.extract("a.b", payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
@@ -198,20 +198,20 @@ public class JsonFieldProcessorTests {
 		HashMap<String, Object> alpha = new HashMap<>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
-		this.fieldProcessor.extract("a.b.c", payload).getValue();
+		this.fieldProcessor.extract("a.b.c", payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentArrayField() {
 		HashMap<String, Object> payload = new HashMap<>();
-		this.fieldProcessor.extract("a[]", payload).getValue();
+		this.fieldProcessor.extract("a[]", payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
 	public void nonExistentArrayFieldAsTypeDoesNotMatch() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
-		this.fieldProcessor.extract("a[]", payload).getValue();
+		this.fieldProcessor.extract("a[]", payload);
 	}
 
 	@Test(expected = FieldDoesNotExistException.class)
@@ -220,7 +220,7 @@ public class JsonFieldProcessorTests {
 		HashMap<String, Object> alpha = new HashMap<>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
-		this.fieldProcessor.extract("a.b[].id", payload).getValue();
+		this.fieldProcessor.extract("a.b[].id", payload);
 	}
 
 	@Test
