@@ -17,6 +17,8 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -105,6 +107,44 @@ public class JsonContentHandlerTests {
 	public void failsFastWithNonJsonContent() {
 		this.thrown.expect(PayloadHandlingException.class);
 		new JsonContentHandler("Non-JSON content".getBytes());
+	}
+
+	@Test
+	public void describedFieldThatIsNotPresentIsConsideredMissing() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"a\": \"alpha\", \"b\":\"bravo\"}".getBytes())
+						.findMissingFields(Arrays.asList(new FieldDescriptor("a"),
+								new FieldDescriptor("b"), new FieldDescriptor("c")));
+		assertThat(missingFields.size(), is(equalTo(1)));
+		assertThat(missingFields.get(0).getPath(), is(equalTo("c")));
+	}
+
+	@Test
+	public void describedOptionalFieldThatIsNotPresentIsNotConsideredMissing() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"a\": \"alpha\", \"b\":\"bravo\"}".getBytes()).findMissingFields(
+						Arrays.asList(new FieldDescriptor("a"), new FieldDescriptor("b"),
+								new FieldDescriptor("c").optional()));
+		assertThat(missingFields.size(), is(equalTo(0)));
+	}
+
+	@Test
+	public void describedFieldThatIsNotPresentNestedBeneathOptionalFieldThatIsPresentIsConsideredMissing() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"a\":\"alpha\",\"b\":\"bravo\"}".getBytes()).findMissingFields(
+						Arrays.asList(new FieldDescriptor("a").optional(),
+								new FieldDescriptor("b"), new FieldDescriptor("a.c")));
+		assertThat(missingFields.size(), is(equalTo(1)));
+		assertThat(missingFields.get(0).getPath(), is(equalTo("a.c")));
+	}
+
+	@Test
+	public void describedFieldThatIsNotPresentNestedBeneathOptionalFieldThatIsNotPresentIsNotConsideredMissing() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"b\":\"bravo\"}".getBytes()).findMissingFields(
+						Arrays.asList(new FieldDescriptor("a").optional(),
+								new FieldDescriptor("b"), new FieldDescriptor("a.c")));
+		assertThat(missingFields.size(), is(equalTo(0)));
 	}
 
 }
