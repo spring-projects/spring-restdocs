@@ -760,7 +760,7 @@ for documenting a request part's body and its fields.
 
 
 
-[[documenting-your-api-request-parts-payloads-fields]]
+[[documenting-your-api-request-parts-payloads-body]]
 ==== Documenting a request part's body
 
 A snippet containing the body of a request part can be generated:
