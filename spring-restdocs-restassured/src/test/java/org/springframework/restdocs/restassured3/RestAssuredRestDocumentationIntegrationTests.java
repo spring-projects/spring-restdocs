@@ -71,6 +71,7 @@ import static org.springframework.restdocs.test.SnippetMatchers.snippet;
  *
  * @author Andy Wilkinson
  * @author Tomasz Kopczynski
+ * @author Filip Hrisafov
  */
 public class RestAssuredRestDocumentationIntegrationTests {
 
@@ -328,6 +329,31 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void defaultPreprocessedRequest() throws Exception {
+		Pattern pattern = Pattern.compile("(\"alpha\")");
+		given().port(tomcat.getPort())
+				.filter(documentationConfiguration(this.restDocumentation)
+						.operationPreprocessors().withDefaultRequestPreprocessors(prettyPrint(),
+								replacePattern(pattern, "\"<<beta>>\""),
+								modifyUris().removePort(),
+								removeHeaders("a", HttpHeaders.CONTENT_LENGTH)))
+				.header("a", "alpha").header("b", "bravo").contentType("application/json")
+				.accept("application/json").body("{\"a\":\"alpha\"}")
+				.filter(document("default-preprocessed-request"))
+				.get("/").then().statusCode(200);
+		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
+		assertThat(
+				new File(
+						"build/generated-snippets/default-preprocessed-request/http-request.adoc"),
+				is(snippet(asciidoctor())
+						.withContents(httpRequest(asciidoctor(), RequestMethod.GET, "/")
+								.header("b", "bravo")
+								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
+								.header("Content-Type", "application/json; charset=UTF-8")
+								.header("Host", "localhost").content(prettyPrinted))));
+	}
+
+	@Test
 	public void preprocessedResponse() throws Exception {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		given().port(tomcat.getPort())
@@ -344,6 +370,31 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/preprocessed-response/http-response.adoc"),
+				is(snippet(asciidoctor())
+						.withContents(httpResponse(asciidoctor(), HttpStatus.OK)
+								.header("Foo", "https://api.example.com/foo/bar")
+								.header("Content-Type", "application/json;charset=UTF-8")
+								.header(HttpHeaders.CONTENT_LENGTH,
+										prettyPrinted.getBytes().length)
+								.content(prettyPrinted))));
+	}
+
+	@Test
+	public void defaultPreprocessedResponse() throws Exception {
+		Pattern pattern = Pattern.compile("(\"alpha\")");
+		given().port(tomcat.getPort())
+				.filter(documentationConfiguration(this.restDocumentation)
+						.operationPreprocessors().withDefaultResponsePreprocessors(prettyPrint(), maskLinks(),
+								removeHeaders("a", "Transfer-Encoding", "Date", "Server"),
+								replacePattern(pattern, "\"<<beta>>\""), modifyUris()
+										.scheme("https").host("api.example.com").removePort()))
+				.filter(document("default-preprocessed-response"))
+				.get("/").then().statusCode(200);
+		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
+				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
+		assertThat(
+				new File(
+						"build/generated-snippets/default-preprocessed-response/http-response.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(httpResponse(asciidoctor(), HttpStatus.OK)
 								.header("Foo", "https://api.example.com/foo/bar")
