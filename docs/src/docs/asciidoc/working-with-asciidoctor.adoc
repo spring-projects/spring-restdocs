@@ -153,7 +153,7 @@ The title of a table can be specified using a line prefixed by a `.`:
 
 
 
-[[working-with-asciidoctor-customizing-tables-title]]
+[[working-with-asciidoctor-customizing-tables-formatting-problems]]
 ==== Avoiding table formatting problems
 
 Asciidoctor uses the `|` character to delimit cells in a table. This can cause problems

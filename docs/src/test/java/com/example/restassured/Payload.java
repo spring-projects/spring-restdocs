@@ -55,7 +55,7 @@ public class Payload {
 					subsectionWithPath("contact").description("The user's contact details")))) // <1>
 			.when().get("/user/5")
 			.then().assertThat().statusCode(is(200));
-		// end::response[]
+		// end::subsection[]
 	}
 
 	public void explicitType() throws Exception {
