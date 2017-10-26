@@ -72,10 +72,9 @@ public class RestAssuredRestDocumentationConfigurerTests {
 
 	@Test
 	public void configurationIsAddedToTheContext() {
-		this.configurer
-				.operationPreprocessors()
-				.withDefaultRequestPreprocessors(Preprocessors.prettyPrint())
-				.withDefaultResponsePreprocessors(Preprocessors.removeHeaders("Foo"))
+		this.configurer.operationPreprocessors()
+				.withRequestDefaults(Preprocessors.prettyPrint())
+				.withResponseDefaults(Preprocessors.removeHeaders("Foo"))
 				.filter(this.requestSpec, this.responseSpec, this.filterContext);
 		@SuppressWarnings("rawtypes")
 		ArgumentCaptor<Map> configurationCaptor = ArgumentCaptor.forClass(Map.class);

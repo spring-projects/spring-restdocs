@@ -27,20 +27,25 @@ include::{examples-dir}/com/example/restassured/PerTestPreprocessing.java[tags=p
 <2> Apply a response preprocessor that will pretty print its content.
 
 Alternatively, you may want to apply the same preprocessors to every test. You can do
-so by configuring the preprocessors using the `RestDocumentationConfigurer` API.
-For example to remove the `Foo` header from all requests and pretty print all responses:
+so by configuring the preprocessors using the `RestDocumentationConfigurer` API in your
+`@Before` method. For example to remove the `Foo` header from all requests and pretty print
+all responses:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/EveryTestPreprocessing.java[tags=setup]
 ----
+<1> Apply a request preprocessor that will remove the header named `Foo`.
+<2> Apply a response preprocessor that will pretty print its content.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags=setup]
 ----
+<1> Apply a request preprocessor that will remove the header named `Foo`.
+<2> Apply a response preprocessor that will pretty print its content.
 
 Then, in each test, any configuration specific to that test can be performed. For example:
 

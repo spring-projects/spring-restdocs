@@ -25,18 +25,18 @@ import io.restassured.specification.FilterableResponseSpecification;
 import org.springframework.restdocs.config.OperationPreprocessorsConfigurer;
 
 /**
- * A configurer that can be used to configure the operation preprocessors when
- * using REST Assured 3.
+ * A configurer that can be used to configure the operation preprocessors when using REST
+ * Assured 3.
  *
  * @author Filip Hrisafov
  * @since 2.0.0
  */
 public final class RestAssuredOperationPreprocessorsConfigurer extends
-		OperationPreprocessorsConfigurer<RestAssuredRestDocumentationConfigurer,
-				RestAssuredOperationPreprocessorsConfigurer>
+		OperationPreprocessorsConfigurer<RestAssuredRestDocumentationConfigurer, RestAssuredOperationPreprocessorsConfigurer>
 		implements Filter {
 
-	RestAssuredOperationPreprocessorsConfigurer(RestAssuredRestDocumentationConfigurer parent) {
+	RestAssuredOperationPreprocessorsConfigurer(
+			RestAssuredRestDocumentationConfigurer parent) {
 		super(parent);
 	}
 

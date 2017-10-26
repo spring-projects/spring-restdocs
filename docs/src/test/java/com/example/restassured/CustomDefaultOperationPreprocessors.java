@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.example.restassured;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-
 import org.junit.Before;
 import org.junit.Rule;
 
@@ -38,12 +37,13 @@ public class CustomDefaultOperationPreprocessors {
 
 	@Before
 	public void setup() {
-		// tag::custom-default-preprocessors[]
+		// tag::custom-default-operation-preprocessors[]
 		this.spec = new RequestSpecBuilder()
-				.addFilter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
-						.withDefaultRequestPreprocessors(removeHeaders("Foo"))
-						.withDefaultResponsePreprocessors(prettyPrint()))
-				.build();
-		// end::custom-default-preprocessors[]
+			.addFilter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
+				.withRequestDefaults(removeHeaders("Foo")) // <1>
+				.withResponseDefaults(prettyPrint())) // <2>
+			.build();
+		// end::custom-default-operation-preprocessors[]
 	}
+
 }

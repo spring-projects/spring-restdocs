@@ -116,21 +116,25 @@ include::{examples-dir}/com/example/restassured/CustomDefaultSnippets.java[tags=
 ----
 
 [[configuration-default-preprocessors]]
-=== Operation preprocessors
+=== Default operation preprocessors
 
-You can configure default Request / Response preprocessors during setup using the
+You can configure default request and response preprocessors during setup using the
 `RestDocumentationConfigurer` API. For example, to remove the `Foo` headers from all requests
 and pretty print all responses:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
-include::{examples-dir}/com/example/mockmvc/CustomDefaultOperationPreprocessors.java[tags=custom-default-preprocessors]
+include::{examples-dir}/com/example/mockmvc/CustomDefaultOperationPreprocessors.java[tags=custom-default-operation-preprocessors]
 ----
+<1> Apply a request preprocessor that will remove the header named `Foo`.
+<2> Apply a response preprocessor that will pretty print its content.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
-include::{examples-dir}/com/example/restassured/CustomDefaultOperationPreprocessors.java[tags=custom-default-preprocessors]
+include::{examples-dir}/com/example/restassured/CustomDefaultOperationPreprocessors.java[tags=custom-default-operation-preprocessors]
 ----
+<1> Apply a request preprocessor that will remove the header named `Foo`.
+<2> Apply a response preprocessor that will pretty print its content.
 

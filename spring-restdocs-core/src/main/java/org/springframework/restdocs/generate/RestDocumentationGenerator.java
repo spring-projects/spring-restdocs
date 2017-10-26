@@ -57,17 +57,16 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	public static final String ATTRIBUTE_NAME_DEFAULT_SNIPPETS = "org.springframework.restdocs.defaultSnippets";
 
 	/**
-	 * Name of the operation attribute used to hold the default operation request preprocessor.
+	 * Name of the operation attribute used to hold the default operation request
+	 * preprocessor.
 	 */
-	public static final String ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR =
-			"org.springframework.restdocs.defaultOperationRequestPreprocessor";
+	public static final String ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR = "org.springframework.restdocs.defaultOperationRequestPreprocessor";
 
 	/**
-	 * Name of the operation attribute used to hold the default operation response preprocessor.
+	 * Name of the operation attribute used to hold the default operation response
+	 * preprocessor.
 	 */
-	public static final String ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR =
-			"org.springframework.restdocs.defaultOperationResponsePreprocessor";
-
+	public static final String ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR = "org.springframework.restdocs.defaultOperationResponsePreprocessor";
 
 	private final String identifier;
 
@@ -198,8 +197,10 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 */
 	public void handle(REQ request, RESP response, Map<String, Object> configuration) {
 		Map<String, Object> attributes = new HashMap<>(configuration);
-		OperationRequest operationRequest = preprocessRequest(request, attributes);
-		OperationResponse operationResponse = preprocessResponse(response, attributes);
+		OperationRequest operationRequest = preprocessRequest(
+				this.requestConverter.convert(request), attributes);
+		OperationResponse operationResponse = preprocessResponse(
+				this.responseConverter.convert(response), attributes);
 		Operation operation = new StandardOperation(this.identifier, operationRequest,
 				operationResponse, attributes);
 		try {
@@ -239,40 +240,45 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		return combinedSnippets;
 	}
 
-	private OperationRequest preprocessRequest(REQ request, Map<String, Object> configuration) {
-		List<OperationRequestPreprocessor> requestPreprocessors = getRequestPreprocessors(configuration);
-		OperationRequest operationRequest = this.requestConverter.convert(request);
+	private OperationRequest preprocessRequest(OperationRequest request,
+			Map<String, Object> configuration) {
+		List<OperationRequestPreprocessor> requestPreprocessors = getRequestPreprocessors(
+				configuration);
 		for (OperationRequestPreprocessor preprocessor : requestPreprocessors) {
-			operationRequest = preprocessor.preprocess(operationRequest);
+			request = preprocessor.preprocess(request);
 		}
-		return operationRequest;
+		return request;
 	}
 
-	private List<OperationRequestPreprocessor> getRequestPreprocessors(Map<String, Object> configuration) {
-		List<OperationRequestPreprocessor> preprocessors = new ArrayList<>(2);
-		preprocessors.add(this.requestPreprocessor);
-		OperationRequestPreprocessor defaultRequestPreprocessor = (OperationRequestPreprocessor) configuration.get(
-				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
-		if (defaultRequestPreprocessor != null) {
-			preprocessors.add(defaultRequestPreprocessor);
-		}
-		return preprocessors;
+	private List<OperationRequestPreprocessor> getRequestPreprocessors(
+			Map<String, Object> configuration) {
+		return getPreprocessors(this.requestPreprocessor,
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
+				configuration);
 	}
 
-	private OperationResponse preprocessResponse(RESP response, Map<String, Object> configuration) {
-		List<OperationResponsePreprocessor> responsePreprocessors = getResponsePreprocessors(configuration);
-		OperationResponse operationResponse = this.responseConverter.convert(response);
-		for (OperationResponsePreprocessor preprocessor : responsePreprocessors) {
-			operationResponse = preprocessor.preprocess(operationResponse);
+	private OperationResponse preprocessResponse(OperationResponse response,
+			Map<String, Object> configuration) {
+		for (OperationResponsePreprocessor preprocessor : getResponsePreprocessors(
+				configuration)) {
+			response = preprocessor.preprocess(response);
 		}
-		return operationResponse;
+		return response;
 	}
 
-	private List<OperationResponsePreprocessor> getResponsePreprocessors(Map<String, Object> configuration) {
-		List<OperationResponsePreprocessor> preprocessors = new ArrayList<>(2);
-		preprocessors.add(this.responsePreprocessor);
-		OperationResponsePreprocessor defaultResponsePreprocessor = (OperationResponsePreprocessor) configuration.get(
-				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
+	private List<OperationResponsePreprocessor> getResponsePreprocessors(
+			Map<String, Object> configuration) {
+		return getPreprocessors(this.responsePreprocessor,
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
+				configuration);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> List<T> getPreprocessors(T preprocessor, String preprocessorAttribute,
+			Map<String, Object> configuration) {
+		List<T> preprocessors = new ArrayList<>(2);
+		preprocessors.add(preprocessor);
+		T defaultResponsePreprocessor = (T) configuration.get(preprocessorAttribute);
 		if (defaultResponsePreprocessor != null) {
 			preprocessors.add(defaultResponsePreprocessor);
 		}

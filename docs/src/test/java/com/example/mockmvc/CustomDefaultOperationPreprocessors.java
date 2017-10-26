@@ -35,16 +35,19 @@ public class CustomDefaultOperationPreprocessors {
 
 	private WebApplicationContext context;
 
+	@SuppressWarnings("unused")
 	private MockMvc mockMvc;
 
 	@Before
 	public void setup() {
-		// tag::custom-default-preprocessors[]
+		// tag::custom-default-operation-preprocessors[]
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors()
-						.withDefaultRequestPreprocessors(removeHeaders("Foo"))
-						.withDefaultResponsePreprocessors(prettyPrint()))
+				.apply(documentationConfiguration(this.restDocumentation)
+						.operationPreprocessors()
+						.withRequestDefaults(removeHeaders("Foo")) // <1>
+						.withResponseDefaults(prettyPrint())) // <2>
 				.build();
-		// end::custom-default-preprocessors[]
+		// end::custom-default-operation-preprocessors[]
 	}
+
 }

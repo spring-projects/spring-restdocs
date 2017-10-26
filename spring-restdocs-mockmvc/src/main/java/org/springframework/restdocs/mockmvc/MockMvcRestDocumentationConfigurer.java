@@ -37,8 +37,7 @@ import org.springframework.web.context.WebApplicationContext;
  * @since 1.1.0
  */
 public final class MockMvcRestDocumentationConfigurer extends
-		RestDocumentationConfigurer<MockMvcSnippetConfigurer, MockMvcOperationPreprocessorsConfigurer,
-				MockMvcRestDocumentationConfigurer>
+		RestDocumentationConfigurer<MockMvcSnippetConfigurer, MockMvcOperationPreprocessorsConfigurer, MockMvcRestDocumentationConfigurer>
 		implements MockMvcConfigurer {
 
 	private final MockMvcSnippetConfigurer snippetConfigurer = new MockMvcSnippetConfigurer(
@@ -46,8 +45,8 @@ public final class MockMvcRestDocumentationConfigurer extends
 
 	private final UriConfigurer uriConfigurer = new UriConfigurer(this);
 
-	private final MockMvcOperationPreprocessorsConfigurer operationPreprocessorsConfigurer =
-			new MockMvcOperationPreprocessorsConfigurer(this);
+	private final MockMvcOperationPreprocessorsConfigurer operationPreprocessorsConfigurer = new MockMvcOperationPreprocessorsConfigurer(
+			this);
 
 	private final RestDocumentationContextProvider contextManager;
 

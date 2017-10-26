@@ -26,21 +26,24 @@ import org.springframework.restdocs.operation.preprocess.OperationResponsePrepro
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 
 /**
- * A configurer that can be used to configure the default operation preprocessors that need to be used.
+ * A configurer that can be used to configure the default operation preprocessors.
  *
  * @param <PARENT> The type of the configurer's parent
  * @param <TYPE> The concrete type of the configurer to be returned from chained methods
  * @author Filip Hrisafov
+ * @author Andy Wilkinson
  * @since 2.0.0
  */
 public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE>
 		extends AbstractNestedConfigurer<PARENT> {
 
 	private OperationRequestPreprocessor defaultOperationRequestPreprocessor;
+
 	private OperationResponsePreprocessor defaultOperationResponsePreprocessor;
 
 	/**
-	 * Creates a new {@code OperationPreprocessorConfigurer} with the given {@code parent}.
+	 * Creates a new {@code OperationPreprocessorConfigurer} with the given
+	 * {@code parent}.
 	 *
 	 * @param parent the parent
 	 */
@@ -49,34 +52,40 @@ public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE>
 	}
 
 	@Override
-	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
+	public void apply(Map<String, Object> configuration,
+			RestDocumentationContext context) {
+		configuration.put(
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
 				this.defaultOperationRequestPreprocessor);
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
+		configuration.put(
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
 				this.defaultOperationResponsePreprocessor);
 	}
 
 	/**
-	 * Configures the default documentation operation request preprocessors.
+	 * Configures the default operation request preprocessors.
 	 *
 	 * @param preprocessors the preprocessors
 	 * @return {@code this}
 	 */
 	@SuppressWarnings("unchecked")
-	public TYPE withDefaultRequestPreprocessors(OperationPreprocessor... preprocessors) {
-		this.defaultOperationRequestPreprocessor = Preprocessors.preprocessRequest(preprocessors);
+	public TYPE withRequestDefaults(OperationPreprocessor... preprocessors) {
+		this.defaultOperationRequestPreprocessor = Preprocessors
+				.preprocessRequest(preprocessors);
 		return (TYPE) this;
 	}
 
 	/**
-	 * Configures the default documentation operation response preprocessors.
+	 * Configures the default operation response preprocessors.
 	 *
 	 * @param preprocessors the preprocessors
 	 * @return {@code this}
 	 */
 	@SuppressWarnings("unchecked")
-	public TYPE withDefaultResponsePreprocessors(OperationPreprocessor... preprocessors) {
-		this.defaultOperationResponsePreprocessor = Preprocessors.preprocessResponse(preprocessors);
+	public TYPE withResponseDefaults(OperationPreprocessor... preprocessors) {
+		this.defaultOperationResponsePreprocessor = Preprocessors
+				.preprocessResponse(preprocessors);
 		return (TYPE) this;
 	}
+
 }

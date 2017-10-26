@@ -333,22 +333,24 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		given().port(tomcat.getPort())
 				.filter(documentationConfiguration(this.restDocumentation)
-						.operationPreprocessors().withDefaultRequestPreprocessors(prettyPrint(),
-								replacePattern(pattern, "\"<<beta>>\""),
+						.operationPreprocessors().withRequestDefaults(
+								prettyPrint(), replacePattern(pattern, "\"<<beta>>\""),
 								modifyUris().removePort(),
 								removeHeaders("a", HttpHeaders.CONTENT_LENGTH)))
 				.header("a", "alpha").header("b", "bravo").contentType("application/json")
 				.accept("application/json").body("{\"a\":\"alpha\"}")
-				.filter(document("default-preprocessed-request"))
-				.get("/").then().statusCode(200);
+				.filter(document("default-preprocessed-request")).get("/").then()
+				.statusCode(200);
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
 		assertThat(
 				new File(
 						"build/generated-snippets/default-preprocessed-request/http-request.adoc"),
 				is(snippet(asciidoctor())
-						.withContents(httpRequest(asciidoctor(), RequestMethod.GET, "/")
-								.header("b", "bravo")
-								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
+						.withContents(
+								httpRequest(asciidoctor(), RequestMethod.GET, "/")
+										.header("b", "bravo")
+										.header("Accept",
+												MediaType.APPLICATION_JSON_VALUE)
 								.header("Content-Type", "application/json; charset=UTF-8")
 								.header("Host", "localhost").content(prettyPrinted))));
 	}
@@ -384,12 +386,14 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		given().port(tomcat.getPort())
 				.filter(documentationConfiguration(this.restDocumentation)
-						.operationPreprocessors().withDefaultResponsePreprocessors(prettyPrint(), maskLinks(),
+						.operationPreprocessors()
+						.withResponseDefaults(prettyPrint(), maskLinks(),
 								removeHeaders("a", "Transfer-Encoding", "Date", "Server"),
-								replacePattern(pattern, "\"<<beta>>\""), modifyUris()
-										.scheme("https").host("api.example.com").removePort()))
-				.filter(document("default-preprocessed-response"))
-				.get("/").then().statusCode(200);
+								replacePattern(pattern, "\"<<beta>>\""),
+								modifyUris().scheme("https").host("api.example.com")
+										.removePort()))
+				.filter(document("default-preprocessed-response")).get("/").then()
+				.statusCode(200);
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
 				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
 		assertThat(

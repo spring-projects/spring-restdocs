@@ -500,19 +500,17 @@ public class MockMvcRestDocumentationIntegrationTests {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)
 						.operationPreprocessors()
-						.withDefaultRequestPreprocessors(prettyPrint(),
+						.withRequestDefaults(prettyPrint(),
 								removeHeaders("a", HttpHeaders.HOST,
 										HttpHeaders.CONTENT_LENGTH),
 								replacePattern(pattern, "\"<<beta>>\"")))
 				.build();
 
-
 		MvcResult result = mockMvc
 				.perform(get("/").header("a", "alpha").header("b", "bravo")
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON).content("{\"a\":\"alpha\"}"))
-				.andDo(document("default-preprocessed-request"))
-				.andReturn();
+				.andDo(document("default-preprocessed-request")).andReturn();
 
 		HttpRequestMatcher preprocessedRequest = httpRequest(asciidoctor(),
 				RequestMethod.GET, "/");
@@ -573,11 +571,10 @@ public class MockMvcRestDocumentationIntegrationTests {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)
-						.operationPreprocessors()
-						.withDefaultResponsePreprocessors(prettyPrint(), maskLinks(), removeHeaders("a"),
+						.operationPreprocessors().withResponseDefaults(
+								prettyPrint(), maskLinks(), removeHeaders("a"),
 								replacePattern(pattern, "\"<<beta>>\"")))
 				.build();
-
 
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

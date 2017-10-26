@@ -45,19 +45,18 @@ public class EveryTestPreprocessing {
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors()
-						.withDefaultRequestPreprocessors(removeHeaders("Foo"))
-						.withDefaultResponsePreprocessors(prettyPrint()))
-				.build();
+			.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors()
+				.withRequestDefaults(removeHeaders("Foo")) // <1>
+				.withResponseDefaults(prettyPrint())) // <2>
+			.build();
 	}
-
 	// end::setup[]
 
 	public void use() throws Exception {
 		// tag::use[]
-		this.mockMvc.perform(get("/")) // <1>
+		this.mockMvc.perform(get("/"))
 				.andExpect(status().isOk())
-				.andDo(document("{method-name}",
+				.andDo(document("index",
 						links(linkWithRel("self").description("Canonical self link"))
 				));
 		// end::use[]

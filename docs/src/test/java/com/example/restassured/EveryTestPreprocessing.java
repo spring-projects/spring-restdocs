@@ -43,19 +43,18 @@ public class EveryTestPreprocessing {
 	@Before
 	public void setup() {
 		this.spec = new RequestSpecBuilder()
-				.addFilter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
-						.withDefaultRequestPreprocessors(removeHeaders("Foo"))
-						.withDefaultResponsePreprocessors(prettyPrint()))
-				.build();
+			.addFilter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
+				.withRequestDefaults(removeHeaders("Foo")) // <1>
+				.withResponseDefaults(prettyPrint())) // <2>
+			.build();
 	}
-
 	// end::setup[]
 
 	public void use() throws Exception {
 		// tag::use[]
 		RestAssured.given(this.spec)
-				.filter(document("{method-name]",
-					links(linkWithRel("self").description("Canonical self link"))))
+			.filter(document("index",
+				links(linkWithRel("self").description("Canonical self link"))))
 			.when().get("/")
 			.then().assertThat().statusCode(is(200));
 		// end::use[]

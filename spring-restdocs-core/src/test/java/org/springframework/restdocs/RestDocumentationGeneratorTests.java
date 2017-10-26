@@ -78,8 +78,11 @@ public class RestDocumentationGeneratorTests {
 
 	private final Snippet snippet = mock(Snippet.class);
 
-	private final OperationPreprocessor requestPreprocessor = mock(OperationPreprocessor.class);
-	private final OperationPreprocessor responsePreprocessor = mock(OperationPreprocessor.class);
+	private final OperationPreprocessor requestPreprocessor = mock(
+			OperationPreprocessor.class);
+
+	private final OperationPreprocessor responsePreprocessor = mock(
+			OperationPreprocessor.class);
 
 	@Test
 	public void basicHandling() throws IOException {
@@ -122,19 +125,23 @@ public class RestDocumentationGeneratorTests {
 		HashMap<String, Object> configuration = new HashMap<>();
 		OperationPreprocessor defaultPreprocessor1 = mock(OperationPreprocessor.class);
 		OperationPreprocessor defaultPreprocessor2 = mock(OperationPreprocessor.class);
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
-				Preprocessors.preprocessRequest(defaultPreprocessor1, defaultPreprocessor2));
+		configuration.put(
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
+				Preprocessors.preprocessRequest(defaultPreprocessor1,
+						defaultPreprocessor2));
 		OperationRequest first = createRequest();
 		OperationRequest second = createRequest();
 		OperationRequest third = createRequest();
-		given(this.requestPreprocessor.preprocess(this.operationRequest)).willReturn(first);
+		given(this.requestPreprocessor.preprocess(this.operationRequest))
+				.willReturn(first);
 		given(defaultPreprocessor1.preprocess(first)).willReturn(second);
 		given(defaultPreprocessor2.preprocess(second)).willReturn(third);
 		new RestDocumentationGenerator<>("id", this.requestConverter,
-				this.responseConverter, Preprocessors.preprocessRequest(this.requestPreprocessor), this.snippet)
-				.handle(this.request, this.response, configuration);
-
-		verifySnippetInvocation(this.snippet, third, this.operationResponse, configuration, 1);
+				this.responseConverter,
+				Preprocessors.preprocessRequest(this.requestPreprocessor), this.snippet)
+						.handle(this.request, this.response, configuration);
+		verifySnippetInvocation(this.snippet, third, this.operationResponse,
+				configuration, 1);
 	}
 
 	@Test
@@ -146,49 +153,24 @@ public class RestDocumentationGeneratorTests {
 		HashMap<String, Object> configuration = new HashMap<>();
 		OperationPreprocessor defaultPreprocessor1 = mock(OperationPreprocessor.class);
 		OperationPreprocessor defaultPreprocessor2 = mock(OperationPreprocessor.class);
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
-				Preprocessors.preprocessResponse(defaultPreprocessor1, defaultPreprocessor2));
+		configuration.put(
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
+				Preprocessors.preprocessResponse(defaultPreprocessor1,
+						defaultPreprocessor2));
 		OperationResponse first = createResponse();
 		OperationResponse second = createResponse();
-		OperationResponse third = new OperationResponseFactory().createFrom(this.operationResponse, new HttpHeaders());
-		given(this.responsePreprocessor.preprocess(this.operationResponse)).willReturn(first);
+		OperationResponse third = new OperationResponseFactory()
+				.createFrom(this.operationResponse, new HttpHeaders());
+		given(this.responsePreprocessor.preprocess(this.operationResponse))
+				.willReturn(first);
 		given(defaultPreprocessor1.preprocess(first)).willReturn(second);
 		given(defaultPreprocessor2.preprocess(second)).willReturn(third);
 		new RestDocumentationGenerator<>("id", this.requestConverter,
-				this.responseConverter, Preprocessors.preprocessResponse(this.responsePreprocessor), this.snippet)
-				.handle(this.request, this.response, configuration);
-
-		verifySnippetInvocation(this.snippet, this.operationRequest, third, configuration, 1);
-	}
-
-	@Test
-	public void defaultOperationPreprocessorsAreCalled() throws IOException {
-		given(this.requestConverter.convert(this.request))
-				.willReturn(this.operationRequest);
-		given(this.responseConverter.convert(this.response))
-				.willReturn(this.operationResponse);
-		HashMap<String, Object> configuration = new HashMap<>();
-		OperationPreprocessor requestPreprocessor1 = mock(OperationPreprocessor.class);
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
-				Preprocessors.preprocessRequest(requestPreprocessor1));
-		OperationRequest firstRequest = createRequest();
-		OperationRequest secondRequest = createRequest();
-		given(this.requestPreprocessor.preprocess(this.operationRequest)).willReturn(firstRequest);
-		given(requestPreprocessor1.preprocess(firstRequest)).willReturn(secondRequest);
-
-		OperationPreprocessor responsePreprocessor1 = mock(OperationPreprocessor.class);
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
-				Preprocessors.preprocessResponse(responsePreprocessor1));
-		OperationResponse firstResponse = createResponse();
-		OperationResponse secondResponse = createResponse();
-		given(this.responsePreprocessor.preprocess(this.operationResponse)).willReturn(firstResponse);
-		given(responsePreprocessor1.preprocess(firstResponse)).willReturn(secondResponse);
-		new RestDocumentationGenerator<>("id", this.requestConverter,
-				this.responseConverter, Preprocessors.preprocessRequest(this.requestPreprocessor),
+				this.responseConverter,
 				Preprocessors.preprocessResponse(this.responsePreprocessor), this.snippet)
-				.handle(this.request, this.response, configuration);
-
-		verifySnippetInvocation(this.snippet, secondRequest, secondResponse, configuration, 1);
+						.handle(this.request, this.response, configuration);
+		verifySnippetInvocation(this.snippet, this.operationRequest, third, configuration,
+				1);
 	}
 
 	@Test
@@ -225,11 +207,12 @@ public class RestDocumentationGeneratorTests {
 
 	private void verifySnippetInvocation(Snippet snippet, Map<String, Object> attributes,
 			int times) throws IOException {
-		verifySnippetInvocation(snippet, this.operationRequest, this.operationResponse, attributes, times);
+		verifySnippetInvocation(snippet, this.operationRequest, this.operationResponse,
+				attributes, times);
 	}
 
-	private void verifySnippetInvocation(Snippet snippet, OperationRequest operationRequest,
-			OperationResponse operationResponse,
+	private void verifySnippetInvocation(Snippet snippet,
+			OperationRequest operationRequest, OperationResponse operationResponse,
 			Map<String, Object> attributes, int times) throws IOException {
 		ArgumentCaptor<Operation> operation = ArgumentCaptor.forClass(Operation.class);
 		verify(snippet, Mockito.times(times)).document(operation.capture());
@@ -239,13 +222,12 @@ public class RestDocumentationGeneratorTests {
 	}
 
 	private static OperationRequest createRequest() {
-		return new OperationRequestFactory()
-				.create(URI.create("http://localhost:8080"), null, null, new HttpHeaders(), null, null);
+		return new OperationRequestFactory().create(URI.create("http://localhost:8080"),
+				null, null, new HttpHeaders(), null, null);
 	}
 
 	private static OperationResponse createResponse() {
-		return new OperationResponseFactory()
-				.create(null, null, null);
+		return new OperationResponseFactory().create(null, null, null);
 	}
 
 }

@@ -82,9 +82,6 @@ public class RestDocumentationResultHandler implements ResultHandler {
 								.getAttribute(ATTRIBUTE_NAME_CONFIGURATION));
 				configuration.remove(
 						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-				// TODO Do we need to remove the preprocessors here as well?
-				// I think that there is no test that evaluates this here. And the Javadoc does not reflect the
-				// behaviour
 				getDelegate().handle(result.getRequest(), result.getResponse(),
 						configuration);
 			}
