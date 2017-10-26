@@ -117,12 +117,11 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 				.willReturn(snippetResource("request-parameters-with-title"));
 		this.snippets.expectRequestParameters().withContents(containsString("The title"));
 
-		new RequestParametersSnippet(
-				Arrays.asList(
-						parameterWithName("a").description("one")
-								.attributes(key("foo").value("alpha")),
-						parameterWithName("b").description("two")
-								.attributes(key("foo").value("bravo"))),
+		new RequestParametersSnippet(Arrays.asList(
+				parameterWithName("a").description("one")
+						.attributes(key("foo").value("alpha")),
+				parameterWithName("b").description("two")
+						.attributes(key("foo").value("bravo"))),
 				attributes(
 						key("title").value("The title")))
 								.document(

@@ -53,12 +53,10 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
-				parameterWithName("b").description("two")))
-						.document(this.operationBuilder
-								.attribute(
-										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-										"/{a}/{b}")
-								.build());
+				parameterWithName("b").description("two"))).document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}")
+						.build());
 	}
 
 	@Test
@@ -67,12 +65,10 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`",
 						"two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").ignored(),
-				parameterWithName("b").description("two")))
-						.document(this.operationBuilder
-								.attribute(
-										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-										"/{a}/{b}")
-								.build());
+				parameterWithName("b").description("two"))).document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}")
+						.build());
 	}
 
 	@Test
@@ -81,10 +77,11 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`",
 						"two"));
 		new PathParametersSnippet(
-				Arrays.asList(parameterWithName("b").description("two")), true)
-						.document(this.operationBuilder.attribute(
-								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-								"/{a}/{b}").build());
+				Arrays.asList(parameterWithName("b").description("two")),
+				true).document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}")
+						.build());
 	}
 
 	@Test
@@ -117,12 +114,10 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
-				parameterWithName("b").description("two")))
-						.document(this.operationBuilder
-								.attribute(
-										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-										"/{a}/{b}?foo=bar")
-								.build());
+				parameterWithName("b").description("two"))).document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}?foo=bar")
+						.build());
 	}
 
 	@Test
@@ -131,12 +126,10 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description")
 						.row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
-				parameterWithName("b").description("two")))
-						.document(this.operationBuilder
-								.attribute(
-										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-										"/{a}/{b}?foo={c}")
-								.build());
+				parameterWithName("b").description("two"))).document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}?foo={c}")
+						.build());
 	}
 
 	@Test
@@ -150,8 +143,8 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				Arrays.asList(
 						parameterWithName("a").description("one")
 								.attributes(key("foo").value("alpha")),
-						parameterWithName("b").description("two")
-								.attributes(key("foo").value("bravo"))),
+				parameterWithName("b").description("two")
+						.attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title")))
 						.document(this.operationBuilder
 								.attribute(

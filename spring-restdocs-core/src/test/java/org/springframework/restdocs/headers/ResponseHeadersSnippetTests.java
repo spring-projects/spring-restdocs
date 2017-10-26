@@ -91,7 +91,8 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseHeadersWithCustomAttributes() throws IOException {
-		this.snippets.expectResponseHeaders().withContents(containsString("Custom title"));
+		this.snippets.expectResponseHeaders()
+				.withContents(containsString("Custom title"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-headers"))
 				.willReturn(snippetResource("response-headers-with-title"));
@@ -132,8 +133,7 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 												.response().header("X-Test", "test")
 												.header("Content-Type",
 														"application/json")
-												.header("Etag", "lskjadldj3ii32l2ij23")
-												.build());
+								.header("Etag", "lskjadldj3ii32l2ij23").build());
 	}
 
 	@Test

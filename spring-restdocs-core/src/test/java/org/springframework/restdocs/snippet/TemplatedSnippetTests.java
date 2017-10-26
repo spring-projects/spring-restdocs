@@ -48,7 +48,8 @@ public class TemplatedSnippetTests {
 			TemplateFormats.asciidoctor());
 
 	@Rule
-	public ExpectedSnippets snippets = new ExpectedSnippets(TemplateFormats.asciidoctor());
+	public ExpectedSnippets snippets = new ExpectedSnippets(
+			TemplateFormats.asciidoctor());
 
 	@Test
 	public void attributesAreCopied() {

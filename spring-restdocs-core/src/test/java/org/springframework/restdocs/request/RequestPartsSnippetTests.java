@@ -108,12 +108,11 @@ public class RequestPartsSnippetTests extends AbstractSnippetTests {
 				.willReturn(snippetResource("request-parts-with-title"));
 		this.snippets.expectRequestParts().withContents(containsString("The title"));
 
-		new RequestPartsSnippet(
-				Arrays.asList(
-						partWithName("a").description("one")
-								.attributes(key("foo").value("alpha")),
-						partWithName("b").description("two")
-								.attributes(key("foo").value("bravo"))),
+		new RequestPartsSnippet(Arrays.asList(
+				partWithName("a").description("one")
+						.attributes(key("foo").value("alpha")),
+				partWithName("b").description("two")
+						.attributes(key("foo").value("bravo"))),
 				attributes(
 						key("title").value("The title")))
 								.document(

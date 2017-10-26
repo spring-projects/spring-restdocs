@@ -58,7 +58,7 @@ public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
 														.part("one",
 																"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}"
 																		.getBytes())
-														.build());
+												.build());
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
 														.part("one",
 																"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}"
 																		.getBytes())
-														.build());
+												.build());
 	}
 
 	@Test
