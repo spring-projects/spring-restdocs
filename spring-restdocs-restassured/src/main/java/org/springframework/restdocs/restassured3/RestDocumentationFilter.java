@@ -97,6 +97,10 @@ public class RestDocumentationFilter implements Filter {
 						context);
 				configuration.remove(
 						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+				configuration.remove(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
+				configuration.remove(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
 				return configuration;
 			}
 

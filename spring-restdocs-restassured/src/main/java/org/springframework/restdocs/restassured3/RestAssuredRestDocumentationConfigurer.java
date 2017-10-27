@@ -33,13 +33,17 @@ import org.springframework.restdocs.config.RestDocumentationConfigurer;
  * A REST Assured 3-specific {@link RestDocumentationConfigurer}.
  *
  * @author Andy Wilkinson
+ * @author Filip Hrisafov
  * @since 1.2.0
  */
 public final class RestAssuredRestDocumentationConfigurer extends
-		RestDocumentationConfigurer<RestAssuredSnippetConfigurer, RestAssuredRestDocumentationConfigurer>
+		RestDocumentationConfigurer<RestAssuredSnippetConfigurer, RestAssuredOperationPreprocessorsConfigurer, RestAssuredRestDocumentationConfigurer>
 		implements Filter {
 
 	private final RestAssuredSnippetConfigurer snippetConfigurer = new RestAssuredSnippetConfigurer(
+			this);
+
+	private final RestAssuredOperationPreprocessorsConfigurer operationPreprocessorsConfigurer = new RestAssuredOperationPreprocessorsConfigurer(
 			this);
 
 	private final RestDocumentationContextProvider contextProvider;
@@ -52,6 +56,11 @@ public final class RestAssuredRestDocumentationConfigurer extends
 	@Override
 	public RestAssuredSnippetConfigurer snippets() {
 		return this.snippetConfigurer;
+	}
+
+	@Override
+	public RestAssuredOperationPreprocessorsConfigurer operationPreprocessors() {
+		return this.operationPreprocessorsConfigurer;
 	}
 
 	@Override

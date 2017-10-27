@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.config;
 
+import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,9 @@ import java.util.Map;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.cli.CliDocumentation;
@@ -31,6 +36,13 @@ import org.springframework.restdocs.cli.HttpieRequestSnippet;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.http.HttpRequestSnippet;
 import org.springframework.restdocs.http.HttpResponseSnippet;
+import org.springframework.restdocs.operation.OperationRequest;
+import org.springframework.restdocs.operation.OperationRequestFactory;
+import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.OperationResponseFactory;
+import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
+import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.RequestBodySnippet;
 import org.springframework.restdocs.payload.ResponseBodySnippet;
 import org.springframework.restdocs.snippet.Snippet;
@@ -45,6 +57,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
@@ -54,6 +67,7 @@ import static org.mockito.Mockito.mock;
  * Tests for {@link RestDocumentationConfigurer}.
  *
  * @author Andy Wilkinson
+ * @author Filip Hrisafov
  */
 public class RestDocumentationConfigurerTests {
 
@@ -88,6 +102,14 @@ public class RestDocumentationConfigurerTests {
 		assertThat(snippetConfiguration.getEncoding(), is(equalTo("UTF-8")));
 		assertThat(snippetConfiguration.getTemplateFormat(),
 				is(equalTo(TemplateFormats.asciidoctor())));
+
+		OperationRequestPreprocessor defaultOperationRequestPreprocessor = (OperationRequestPreprocessor) configuration
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
+		assertThat(defaultOperationRequestPreprocessor, is(nullValue()));
+
+		OperationResponsePreprocessor defaultOperationResponsePreprocessor = (OperationResponsePreprocessor) configuration
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
+		assertThat(defaultOperationResponsePreprocessor, is(nullValue()));
 	}
 
 	@Test
@@ -200,6 +222,41 @@ public class RestDocumentationConfigurerTests {
 		assertThat(templateContext.size(), equalTo(0));
 	}
 
+	@Test
+	public void customDefaultOperationRequestPreprocessor() {
+		Map<String, Object> configuration = new HashMap<>();
+		this.configurer.operationPreprocessors()
+				.withRequestDefaults(Preprocessors.prettyPrint(),
+						Preprocessors.removeHeaders("Foo"))
+				.apply(configuration, createContext());
+		OperationRequestPreprocessor preprocessor = (OperationRequestPreprocessor) configuration
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Foo", "value");
+		OperationRequest request = new OperationRequestFactory().create(
+				URI.create("http://localhost:8080"), HttpMethod.GET, null, headers, null,
+				Collections.emptyList());
+		assertThat(preprocessor.preprocess(request).getHeaders().get("Foo"),
+				is(nullValue()));
+	}
+
+	@Test
+	public void customDefaultOperationResponsePreprocessor() {
+		Map<String, Object> configuration = new HashMap<>();
+		this.configurer.operationPreprocessors()
+				.withResponseDefaults(Preprocessors.prettyPrint(),
+						Preprocessors.removeHeaders("Foo"))
+				.apply(configuration, createContext());
+		OperationResponsePreprocessor preprocessor = (OperationResponsePreprocessor) configuration
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Foo", "value");
+		OperationResponse response = new OperationResponseFactory().create(HttpStatus.OK,
+				headers, null);
+		assertThat(preprocessor.preprocess(response).getHeaders().get("Foo"),
+				is(nullValue()));
+	}
+
 	private RestDocumentationContext createContext() {
 		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
 				"build");
@@ -209,9 +266,12 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	private static final class TestRestDocumentationConfigurer extends
-			RestDocumentationConfigurer<TestSnippetConfigurer, TestRestDocumentationConfigurer> {
+			RestDocumentationConfigurer<TestSnippetConfigurer, TestOperationPreprocessorsConfigurer, TestRestDocumentationConfigurer> {
 
 		private final TestSnippetConfigurer snippetConfigurer = new TestSnippetConfigurer(
+				this);
+
+		private final TestOperationPreprocessorsConfigurer operationPreprocessorsConfigurer = new TestOperationPreprocessorsConfigurer(
 				this);
 
 		@Override
@@ -219,6 +279,10 @@ public class RestDocumentationConfigurerTests {
 			return this.snippetConfigurer;
 		}
 
+		@Override
+		public TestOperationPreprocessorsConfigurer operationPreprocessors() {
+			return this.operationPreprocessorsConfigurer;
+		}
 	}
 
 	private static final class TestSnippetConfigurer extends
@@ -228,6 +292,15 @@ public class RestDocumentationConfigurerTests {
 			super(parent);
 		}
 
+	}
+
+	private static final class TestOperationPreprocessorsConfigurer extends
+			OperationPreprocessorsConfigurer<TestRestDocumentationConfigurer, TestOperationPreprocessorsConfigurer> {
+
+		protected TestOperationPreprocessorsConfigurer(
+				TestRestDocumentationConfigurer parent) {
+			super(parent);
+		}
 	}
 
 }
