@@ -1199,3 +1199,4 @@ and adds a title:
 <1> Add a title to the table
 <2> Add a new column named "Constraints"
 <3> Include the descriptors' `constraints` attribute in each row of the table
+
