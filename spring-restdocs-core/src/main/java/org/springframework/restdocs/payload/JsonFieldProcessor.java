@@ -49,11 +49,6 @@ final class JsonFieldProcessor {
 				matches.add(match.getValue());
 			}
 
-			@Override
-			public void absent() {
-
-			}
-
 		});
 		if (matches.isEmpty()) {
 			throw new FieldDoesNotExistException(path);
@@ -72,11 +67,6 @@ final class JsonFieldProcessor {
 						match.remove();
 					}
 
-					@Override
-					public void absent() {
-
-					}
-
 				});
 	}
 
@@ -87,11 +77,6 @@ final class JsonFieldProcessor {
 					@Override
 					public void foundMatch(Match match) {
 						match.removeSubsection();
-					}
-
-					@Override
-					public void absent() {
-
 					}
 
 				});
@@ -376,7 +361,8 @@ final class JsonFieldProcessor {
 
 		void foundMatch(Match match);
 
-		void absent();
+		default void absent() {
+		}
 
 	}
 

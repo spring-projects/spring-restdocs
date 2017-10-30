@@ -1,0 +1,17 @@
+description = 'Spring REST Docs WebFlux'
+
+dependencies {
+	compile 'org.springframework:spring-test'
+	compile 'org.springframework:spring-webflux'
+	compile project(':spring-restdocs-core')
+
+	testCompile 'org.mockito:mockito-core'
+	testCompile 'org.hamcrest:hamcrest-library'
+	testCompile project(path: ':spring-restdocs-core', configuration: 'testArtifacts')
+	testRuntime 'org.springframework:spring-context'
+	testRuntime 'org.synchronoss.cloud:nio-multipart-parser'
+}
+
+test {
+	jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*"
+}

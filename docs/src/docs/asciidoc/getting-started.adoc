@@ -28,6 +28,17 @@ If you want to jump straight in, a number of sample applications are available:
 
 |===
 
+[cols="3,2,10"]
+.WebTestClient
+|===
+| Sample | Build system | Description
+
+| {samples}/web-test-client[WebTestClient]
+| Gradle
+| Demonstrates the use of Spring REST docs with Spring WebFlux's WebTestClient.
+
+|===
+
 
 [cols="3,2,10"]
 .REST Assured
@@ -129,8 +140,8 @@ the configuration are described below.
 	</build>
 ----
 <1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope. If you want to use
-	REST Assured rather than MockMvc, add a dependency on `spring-restdocs-restassured`
-	instead.
+	`WebTestClient` or REST Assured rather than MockMvc, add a dependency on
+	`spring-restdocs-webtestclient` or `spring-restdocs-restassured` respectively instead.
 <2> Add the Asciidoctor plugin.
 <3> Using `prepare-package` allows the documentation to be
 	<<getting-started-build-configuration-maven-packaging, included in the package>>.
@@ -248,8 +259,9 @@ from where it will be included in the jar file.
 
 [[getting-started-documentation-snippets]]
 === Generating documentation snippets
-Spring REST Docs uses
-{spring-framework-docs}/#spring-mvc-test-framework[Spring's MVC Test framework] or
+Spring REST Docs uses Spring MVC's
+{spring-framework-docs}/testing.html#spring-mvc-test-framework[test framework],
+Spring WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`] or
 http://www.rest-assured.io[REST Assured] to make requests to the service that you are
 documenting. It then produces documentation snippets for the request and the resulting
 response.
@@ -301,7 +313,7 @@ The default can be overridden by providing an output directory when creating the
 public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("custom");
 ----
 
-Next, provide an `@Before` method to configure MockMvc or REST Assured:
+Next, provide an `@Before` method to configure MockMvc, WebTestClient or REST Assured:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
@@ -311,6 +323,16 @@ include::{examples-dir}/com/example/mockmvc/ExampleApplicationTests.java[tags=se
 <1> The `MockMvc` instance is configured using a `MockMvcRestDocumentationConfigurer`. An
 instance of this class can be obtained from the static `documentationConfiguration()`
 method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/ExampleApplicationTests.java[tags=setup]
+----
+<1> The `WebTestClient` instance is configured by adding a
+`WebTestclientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.  An instance of
+this class can be obtained from the static `documentationConfiguration()` method on
+`org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -364,7 +386,7 @@ based on your project's build tool:
 
 
 
-Next, provide an `@BeforeEach` method to configure MockMvc or REST Assured:
+Next, provide a `@BeforeEach` method to configure MockMvc, WebTestClient, or REST Assured:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
@@ -374,6 +396,16 @@ include::{examples-dir}/com/example/mockmvc/ExampleApplicationJUnit5Tests.java[t
 <1> The `MockMvc` instance is configured using a `MockMvcRestDocumentationConfigurer`. An
 instance of this class can be obtained from the static `documentationConfiguration()`
 method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/ExampleApplicationJUnit5Tests.java[tags=setup]
+----
+<1> The `WebTestClient` instance is configured by adding a
+`WebTestClientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.  An instance of
+this class can be obtained from the static `documentationConfiguration()` method on
+`org.springframework.restdocs.webtestlcient.WebTestClientRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -407,12 +439,18 @@ private ManualRestDocumentation restDocumentation = new ManualRestDocumentation(
 
 Secondly, `ManualRestDocumentation.beforeTest(Class, String)`
 must be called before each test. This can be done as part of the method that is
-configuring MockMVC or REST Assured:
+configuring MockMvc, WebTestClient, or REST Assured:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/ExampleApplicationTestNgTests.java[tags=setup]
+----
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/ExampleApplicationTestNgTests.java[tags=setup]
 ----
 
 [source,java,indent=0,role="secondary"]
@@ -448,6 +486,19 @@ that will be located beneath the configured output directory. The snippets are w
 a `RestDocumentationResultHandler`. An instance of this class can be obtained from the
 static `document` method on
 `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/InvokeService.java[tags=invoke-service]
+----
+<1> Invoke the root (`/`) of the service and indicate that an `application/json` response
+is required.
+<2> Assert that the service produced the expected response.
+<3> Document the call to the service, writing the snippets into a directory named `index`
+that will be located beneath the configured output directory. The snippets are written by
+a `Consumer` of the `ExchangeResult`. Such a consumer can be obtained from the static
+`document` method on `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured

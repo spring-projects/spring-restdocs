@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -242,12 +243,13 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 
 	private OperationRequest preprocessRequest(OperationRequest request,
 			Map<String, Object> configuration) {
-		List<OperationRequestPreprocessor> requestPreprocessors = getRequestPreprocessors(
-				configuration);
-		for (OperationRequestPreprocessor preprocessor : requestPreprocessors) {
-			request = preprocessor.preprocess(request);
-		}
-		return request;
+		return preprocess(getRequestPreprocessors(configuration), request,
+				this::preprocess);
+	}
+
+	private OperationRequest preprocess(OperationRequestPreprocessor preprocessor,
+			OperationRequest request) {
+		return preprocessor.preprocess(request);
 	}
 
 	private List<OperationRequestPreprocessor> getRequestPreprocessors(
@@ -259,11 +261,13 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 
 	private OperationResponse preprocessResponse(OperationResponse response,
 			Map<String, Object> configuration) {
-		for (OperationResponsePreprocessor preprocessor : getResponsePreprocessors(
-				configuration)) {
-			response = preprocessor.preprocess(response);
-		}
-		return response;
+		return preprocess(getResponsePreprocessors(configuration), response,
+				this::preprocess);
+	}
+
+	private OperationResponse preprocess(OperationResponsePreprocessor preprocessor,
+			OperationResponse response) {
+		return preprocessor.preprocess(response);
 	}
 
 	private List<OperationResponsePreprocessor> getResponsePreprocessors(
@@ -271,6 +275,15 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		return getPreprocessors(this.responsePreprocessor,
 				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
 				configuration);
+	}
+
+	private <P, T> T preprocess(List<P> preprocessors, T target,
+			BiFunction<P, T, T> function) {
+		T processed = target;
+		for (P preprocessor : preprocessors) {
+			processed = function.apply(preprocessor, processed);
+		}
+		return processed;
 	}
 
 	@SuppressWarnings("unchecked")

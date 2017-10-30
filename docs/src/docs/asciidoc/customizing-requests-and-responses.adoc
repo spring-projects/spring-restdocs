@@ -19,6 +19,14 @@ include::{examples-dir}/com/example/mockmvc/PerTestPreprocessing.java[tags=prepr
 <2> Apply a response preprocessor that will pretty print its content.
 
 [source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/PerTestPreprocessing.java[tags=preprocessing]
+----
+<1> Apply a request preprocessor that will remove the header named `Foo`.
+<2> Apply a response preprocessor that will pretty print its content.
+
+[source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/PerTestPreprocessing.java[tags=preprocessing]
@@ -40,6 +48,14 @@ include::{examples-dir}/com/example/mockmvc/EveryTestPreprocessing.java[tags=set
 <2> Apply a response preprocessor that will pretty print its content.
 
 [source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/EveryTestPreprocessing.java[tags=setup]
+----
+<1> Apply a request preprocessor that will remove the header named `Foo`.
+<2> Apply a response preprocessor that will pretty print its content.
+
+[source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags=setup]
@@ -53,6 +69,12 @@ Then, in each test, any configuration specific to that test can be performed. Fo
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/EveryTestPreprocessing.java[tags=use]
+----
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/EveryTestPreprocessing.java[tags=use]
 ----
 
 [source,java,indent=0,role="secondary"]

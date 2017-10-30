@@ -3,15 +3,15 @@ plugins {
 }
 
 repositories {
-	maven {
-		url 'https://repo.spring.io/release'
-	}
+	maven { url 'https://repo.spring.io/release' }
+	maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
-	asciidoctor 'io.spring.asciidoctor:spring-asciidoctor-extensions:0.1.1.RELEASE'
+	asciidoctor 'io.spring.asciidoctor:spring-asciidoctor-extensions:0.1.2.BUILD-SNAPSHOT'
 	testCompile project(':spring-restdocs-mockmvc')
 	testCompile project(':spring-restdocs-restassured')
+	testCompile project(':spring-restdocs-webtestclient')
 	testCompile 'io.rest-assured:rest-assured'
 	testCompile 'javax.validation:validation-api'
 	testCompile 'junit:junit'

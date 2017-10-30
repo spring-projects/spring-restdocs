@@ -1,0 +1,52 @@
+plugins {
+	id "org.asciidoctor.convert" version "1.5.3"
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+	mavenLocal()
+	maven { url 'https://repo.spring.io/libs-snapshot' }
+	mavenCentral()
+}
+
+group = 'com.example'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+ext['spring-restdocs.version'] = '2.0.0.BUILD-SNAPSHOT'
+
+dependencies {
+	compile 'io.projectreactor.ipc:reactor-netty:0.7.1.RELEASE'
+	compile 'org.springframework:spring-context:5.0.1.RELEASE'
+	compile 'org.springframework:spring-webflux:5.0.1.RELEASE'
+	testCompile 'junit:junit:4.12'
+	testCompile 'org.springframework:spring-test:5.0.1.RELEASE'
+	testCompile "org.springframework.restdocs:spring-restdocs-webtestclient:${project.ext['spring-restdocs.version']}"
+	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
+}
+
+test {
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+jar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
+}
+
+eclipseJdt.onlyIf { false }
+cleanEclipseJdt.onlyIf { false }

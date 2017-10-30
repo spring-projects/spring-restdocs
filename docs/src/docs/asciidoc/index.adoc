@@ -13,7 +13,7 @@ Andy Wilkinson
 :samples: {source}/samples
 :templates: {source}spring-restdocs/src/main/resources/org/springframework/restdocs/templates
 :spring-boot-docs: http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle
-:spring-framework-docs: http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle
+:spring-framework-docs: https://docs.spring.io/spring-framework/docs/5.0.x/spring-framework-reference
 
 [[abstract]]
 

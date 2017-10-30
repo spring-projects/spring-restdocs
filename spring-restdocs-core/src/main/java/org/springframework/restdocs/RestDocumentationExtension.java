@@ -23,7 +23,6 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestExtensionContext;
 
@@ -59,14 +58,14 @@ public class RestDocumentationExtension implements Extension, BeforeEachCallback
 
 	@Override
 	public boolean supports(ParameterContext parameterContext,
-			ExtensionContext extensionContext) throws ParameterResolutionException {
+			ExtensionContext extensionContext) {
 		return RestDocumentationContextProvider.class
 				.isAssignableFrom(parameterContext.getParameter().getType());
 	}
 
 	@Override
 	public Object resolve(ParameterContext parameterContext,
-			ExtensionContext extensionContext) throws ParameterResolutionException {
+			ExtensionContext extensionContext) {
 		return this;
 	}
 

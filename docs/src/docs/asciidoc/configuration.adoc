@@ -55,6 +55,12 @@ include::{examples-dir}/com/example/mockmvc/CustomEncoding.java[tags=custom-enco
 ----
 
 [source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/CustomEncoding.java[tags=custom-encoding]
+----
+
+[source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/CustomEncoding.java[tags=custom-encoding]
@@ -77,6 +83,12 @@ box. You can change the default format using the `RestDocumentationConfigurer` A
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/CustomFormat.java[tags=custom-format]
+----
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/CustomFormat.java[tags=custom-format]
 ----
 
 [source,java,indent=0,role="secondary"]
@@ -110,6 +122,12 @@ include::{examples-dir}/com/example/mockmvc/CustomDefaultSnippets.java[tags=cust
 ----
 
 [source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/CustomDefaultSnippets.java[tags=custom-default-snippets]
+----
+
+[source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/CustomDefaultSnippets.java[tags=custom-default-snippets]
@@ -126,6 +144,14 @@ and pretty print all responses:
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/CustomDefaultOperationPreprocessors.java[tags=custom-default-operation-preprocessors]
+----
+<1> Apply a request preprocessor that will remove the header named `Foo`.
+<2> Apply a response preprocessor that will pretty print its content.
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/CustomDefaultOperationPreprocessors.java[tags=custom-default-operation-preprocessors]
 ----
 <1> Apply a request preprocessor that will remove the header named `Foo`.
 <2> Apply a response preprocessor that will pretty print its content.

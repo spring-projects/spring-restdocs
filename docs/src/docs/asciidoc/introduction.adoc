@@ -10,8 +10,9 @@ http://asciidoctor.org[Asciidoctor] by default. Asciidoctor processes plain text
 produces HTML, styled and layed out to suit your needs. If you prefer, Spring REST Docs
 can also be configured to use Markdown.
 
-Spring REST Docs makes use of snippets produced by tests written with
-{spring-framework-docs}/#spring-mvc-test-framework[Spring MVC Test] or
+Spring REST Docs makes use of snippets produced by tests written with Spring MVC's
+{spring-framework-docs}/testing.html#spring-mvc-test-framework[test framework], Spring
+WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`] or
 http://www.rest-assured.io[REST Assured 3]. This test-driven approach helps to guarantee
 the accuracy of your service's documentation. If a snippet is incorrect the test that
 produces it will fail.
