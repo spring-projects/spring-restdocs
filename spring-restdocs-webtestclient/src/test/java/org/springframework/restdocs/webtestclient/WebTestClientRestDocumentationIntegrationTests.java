@@ -37,6 +37,7 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractors;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
@@ -140,7 +141,8 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		Consumer<EntityExchangeResult<byte[]>> documentation = document("multipart",
 				requestParts(partWithName("a").description("Part a"),
 						partWithName("b").description("Part b")));
-		this.webTestClient.post().uri("/upload").syncBody(multipartData).exchange()
+		this.webTestClient.post().uri("/upload")
+				.body(BodyInserters.fromMultipartData(multipartData)).exchange()
 				.expectStatus().isOk().expectBody().consumeWith(documentation);
 		assertThat(new File("build/generated-snippets/multipart/request-parts.adoc"),
 				is(snippet(asciidoctor())

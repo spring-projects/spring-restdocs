@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartBody;
@@ -49,7 +50,7 @@ public class RequestPartPayload {
 		};
 		multipartData.add("image", imageResource);
 		multipartData.add("metadata", Collections.singletonMap("version",  "1.0"));
-		this.webTestClient.post().uri("/images").syncBody(multipartData)
+		this.webTestClient.post().uri("/images").body(BodyInserters.fromMultipartData(multipartData))
 			.accept(MediaType.APPLICATION_JSON).exchange()
 			.expectStatus().isOk().expectBody()
 			.consumeWith(document("image-upload",
@@ -72,7 +73,7 @@ public class RequestPartPayload {
 		multipartData.add("image", imageResource);
 		multipartData.add("metadata", Collections.singletonMap("version",  "1.0"));
 
-		this.webTestClient.post().uri("/images").syncBody(multipartData)
+		this.webTestClient.post().uri("/images").body(BodyInserters.fromMultipartData(multipartData))
 			.accept(MediaType.APPLICATION_JSON).exchange()
 			.expectStatus().isOk().expectBody()
 			.consumeWith(document("image-upload",

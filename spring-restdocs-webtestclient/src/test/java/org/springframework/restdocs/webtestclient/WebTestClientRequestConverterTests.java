@@ -155,8 +155,8 @@ public class WebTestClientRequestConverterTests {
 					req.body(BodyExtractors.toMultipartData()).block();
 					return null;
 				})).configureClient().baseUrl("http://localhost").build().post()
-				.uri("/foo").syncBody(multipartData).exchange().expectBody()
-				.returnResult();
+				.uri("/foo").body(BodyInserters.fromMultipartData(multipartData))
+				.exchange().expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.POST));
@@ -187,8 +187,8 @@ public class WebTestClientRequestConverterTests {
 					req.body(BodyExtractors.toMultipartData()).block();
 					return null;
 				})).configureClient().baseUrl("http://localhost").build().post()
-				.uri("/foo").syncBody(multipartData).exchange().expectBody()
-				.returnResult();
+				.uri("/foo").body(BodyInserters.fromMultipartData(multipartData))
+				.exchange().expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
 		assertThat(request.getMethod(), is(HttpMethod.POST));

@@ -19,6 +19,7 @@ package com.example.webtestclient;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
@@ -34,7 +35,7 @@ public class RequestParts {
 		// tag::request-parts[]
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("file", "example".getBytes());
-		this.webTestClient.post().uri("/upload").syncBody(multipartData) // <1>
+		this.webTestClient.post().uri("/upload").body(BodyInserters.fromMultipartData(multipartData)) // <1>
 			.exchange().expectStatus().isOk().expectBody()
 			.consumeWith(document("upload", requestParts( // <2>
 				partWithName("file").description("The file to upload")) // <3>
