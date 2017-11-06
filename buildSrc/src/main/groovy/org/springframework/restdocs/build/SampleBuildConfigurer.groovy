@@ -116,11 +116,11 @@ public class SampleBuildConfigurer {
 	}
 
 	private Task createGradleBuild(Project project, Object... dependencies) {
-		Task gradleBuild = project.tasks.create("${name}Gradle", GradleBuild)
+		Task gradleBuild = project.tasks.create("${name}Gradle", Exec)
 		gradleBuild.description = "Builds the ${name} sample with Gradle"
 		gradleBuild.group = "Build"
-		gradleBuild.dir = this.workingDir
-		gradleBuild.tasks = ['clean', 'build']
+		gradleBuild.workingDir = this.workingDir
+		gradleBuild.commandLine = [isWindows() ? "${sampleDir.absolutePath}/gradlew.bat" : './gradlew', 'clean', 'build']
 		gradleBuild.dependsOn dependencies
 		return gradleBuild
 	}
