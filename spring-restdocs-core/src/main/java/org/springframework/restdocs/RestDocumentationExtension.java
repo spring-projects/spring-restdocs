@@ -24,7 +24,6 @@ import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
-import org.junit.jupiter.api.extension.TestExtensionContext;
 
 /**
  * A JUnit Jupiter {@link Extension} used to automatically manage the
@@ -38,7 +37,7 @@ public class RestDocumentationExtension implements Extension, BeforeEachCallback
 	private final ManualRestDocumentation delegate = new ManualRestDocumentation();
 
 	@Override
-	public void beforeEach(TestExtensionContext context) throws Exception {
+	public void beforeEach(ExtensionContext context) throws Exception {
 		Class<?> testClass = context.getTestClass().orElseThrow(
 				() -> new IllegalStateException("No test class was available"));
 		Method testMethod = context.getTestMethod().orElseThrow(
@@ -47,7 +46,7 @@ public class RestDocumentationExtension implements Extension, BeforeEachCallback
 	}
 
 	@Override
-	public void afterEach(TestExtensionContext context) throws Exception {
+	public void afterEach(ExtensionContext context) throws Exception {
 		this.delegate.afterTest();
 	}
 
@@ -57,14 +56,14 @@ public class RestDocumentationExtension implements Extension, BeforeEachCallback
 	}
 
 	@Override
-	public boolean supports(ParameterContext parameterContext,
+	public boolean supportsParameter(ParameterContext parameterContext,
 			ExtensionContext extensionContext) {
 		return RestDocumentationContextProvider.class
 				.isAssignableFrom(parameterContext.getParameter().getType());
 	}
 
 	@Override
-	public Object resolve(ParameterContext parameterContext,
+	public Object resolveParameter(ParameterContext parameterContext,
 			ExtensionContext extensionContext) {
 		return this;
 	}
