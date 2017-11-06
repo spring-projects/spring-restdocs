@@ -18,19 +18,20 @@ package com.example.notes;
 
 import java.util.Map;
 
-import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorAttributes;
+import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.WebRequest;
 
 @Component
 class ExceptionSupressingErrorAttributes extends DefaultErrorAttributes {
 
 	@Override
-	public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes,
+	public Map<String, Object> getErrorAttributes(WebRequest webRequest,
 			boolean includeStackTrace) {
-		Map<String, Object> errorAttributes = super.getErrorAttributes(requestAttributes, includeStackTrace);
+		Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, includeStackTrace);
 		errorAttributes.remove("exception");
-		Object message = requestAttributes.getAttribute("javax.servlet.error.message", RequestAttributes.SCOPE_REQUEST);
+		Object message = webRequest.getAttribute("javax.servlet.error.message", RequestAttributes.SCOPE_REQUEST);
 		if (message != null) {
 			errorAttributes.put("message", message);
 		}
