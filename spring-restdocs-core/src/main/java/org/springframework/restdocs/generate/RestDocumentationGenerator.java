@@ -227,12 +227,13 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 
 	@SuppressWarnings("unchecked")
 	private List<Snippet> getSnippets(Map<String, Object> configuration) {
-		List<Snippet> combinedSnippets = new ArrayList<>(this.snippets);
+		List<Snippet> combinedSnippets = new ArrayList<>();
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
 				.get(ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		if (defaultSnippets != null) {
 			combinedSnippets.addAll(defaultSnippets);
 		}
+		combinedSnippets.addAll(this.snippets);
 		return combinedSnippets;
 	}
 
