@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -229,12 +229,13 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 
 	@SuppressWarnings("unchecked")
 	private List<Snippet> getSnippets(Map<String, Object> configuration) {
-		List<Snippet> combinedSnippets = new ArrayList<>(this.snippets);
+		List<Snippet> combinedSnippets = new ArrayList<>();
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
 				.get(ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		if (defaultSnippets != null) {
 			combinedSnippets.addAll(defaultSnippets);
 		}
+		combinedSnippets.addAll(this.snippets);
 		combinedSnippets.addAll(this.additionalSnippets);
 		this.additionalSnippets.clear();
 		return combinedSnippets;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import org.springframework.http.HttpHeaders;
@@ -102,9 +103,10 @@ public class RestDocumentationGeneratorTests {
 		new RestDocumentationGenerator<>("id", this.requestConverter,
 				this.responseConverter, this.snippet).handle(this.request, this.response,
 						configuration);
-		verifySnippetInvocation(this.snippet, configuration);
-		verifySnippetInvocation(defaultSnippet1, configuration);
-		verifySnippetInvocation(defaultSnippet2, configuration);
+		InOrder inOrder = Mockito.inOrder(defaultSnippet1, defaultSnippet2, this.snippet);
+		verifySnippetInvocation(inOrder, defaultSnippet1, configuration);
+		verifySnippetInvocation(inOrder, defaultSnippet2, configuration);
+		verifySnippetInvocation(inOrder, this.snippet, configuration);
 	}
 
 	@Test
@@ -122,9 +124,13 @@ public class RestDocumentationGeneratorTests {
 		HashMap<String, Object> configuration = new HashMap<>();
 		generator.handle(this.request, this.response, configuration);
 		generator.handle(this.request, this.response, configuration);
-		verifySnippetInvocation(this.snippet, configuration, 2);
-		verifySnippetInvocation(additionalSnippet1, configuration);
-		verifySnippetInvocation(additionalSnippet2, configuration);
+		InOrder inOrder = Mockito.inOrder(this.snippet, additionalSnippet1,
+				additionalSnippet2);
+		verifySnippetInvocation(inOrder, this.snippet, configuration);
+		verifySnippetInvocation(inOrder, additionalSnippet1, configuration);
+		verifySnippetInvocation(inOrder, additionalSnippet2, configuration);
+		verifySnippetInvocation(inOrder, this.snippet, configuration);
+		verifyNoMoreInteractions(this.snippet, additionalSnippet1, additionalSnippet2);
 	}
 
 	@Test
@@ -156,13 +162,18 @@ public class RestDocumentationGeneratorTests {
 
 	private void verifySnippetInvocation(Snippet snippet, Map<String, Object> attributes)
 			throws IOException {
-		verifySnippetInvocation(snippet, attributes, 1);
+		ArgumentCaptor<Operation> operation = ArgumentCaptor.forClass(Operation.class);
+		verify(snippet).document(operation.capture());
+		assertThat(this.operationRequest, is(equalTo(operation.getValue().getRequest())));
+		assertThat(this.operationResponse,
+				is(equalTo(operation.getValue().getResponse())));
+		assertThat(attributes, is(equalTo(operation.getValue().getAttributes())));
 	}
 
-	private void verifySnippetInvocation(Snippet snippet, Map<String, Object> attributes,
-			int times) throws IOException {
+	private void verifySnippetInvocation(InOrder inOrder, Snippet snippet,
+			Map<String, Object> attributes) throws IOException {
 		ArgumentCaptor<Operation> operation = ArgumentCaptor.forClass(Operation.class);
-		verify(snippet, Mockito.times(times)).document(operation.capture());
+		inOrder.verify(snippet).document(operation.capture());
 		assertThat(this.operationRequest, is(equalTo(operation.getValue().getRequest())));
 		assertThat(this.operationResponse,
 				is(equalTo(operation.getValue().getResponse())));
