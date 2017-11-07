@@ -54,7 +54,7 @@ public class SampleBuildConfigurer {
 			Task gradleVersionsUpdate = createGradleVersionsUpdate(project)
 			sampleBuild.dependsOn gradleVersionsUpdate
 			if (build) {
-				Task gradleBuild = createGradleBuild(project, dependencies)
+				Task gradleBuild = createGradleBuild(project, sampleDir, dependencies)
 				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'build/asciidoc'))
 				verifyIncludesTask.dependsOn gradleBuild
 				sampleBuild.dependsOn verifyIncludesTask
@@ -115,7 +115,7 @@ public class SampleBuildConfigurer {
 		return File.separatorChar == '\\'
 	}
 
-	private Task createGradleBuild(Project project, Object... dependencies) {
+	private Task createGradleBuild(Project project, File sampleDir, Object... dependencies) {
 		Task gradleBuild = project.tasks.create("${name}Gradle", Exec)
 		gradleBuild.description = "Builds the ${name} sample with Gradle"
 		gradleBuild.group = "Build"
