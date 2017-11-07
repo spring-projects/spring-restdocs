@@ -77,8 +77,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 
 	private final List<Snippet> snippets;
 
-	private final List<Snippet> additionalSnippets;
-
 	private final RequestConverter<REQ> requestConverter;
 
 	private final ResponseConverter<RESP> responseConverter;
@@ -184,7 +182,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		this.requestPreprocessor = requestPreprocessor;
 		this.responsePreprocessor = responsePreprocessor;
 		this.snippets = new ArrayList<>(Arrays.asList(snippets));
-		this.additionalSnippets = new ArrayList<>();
 	}
 
 	/**
@@ -236,8 +233,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		if (defaultSnippets != null) {
 			combinedSnippets.addAll(defaultSnippets);
 		}
-		combinedSnippets.addAll(this.additionalSnippets);
-		this.additionalSnippets.clear();
 		return combinedSnippets;
 	}
 
