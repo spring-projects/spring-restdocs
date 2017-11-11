@@ -26,7 +26,7 @@ public class Hypermedia {
 
 	// tag::ignore-links[]
 	public static LinksSnippet links(LinkDescriptor... descriptors) {
-		return HypermediaDocumentation.links(linkWithRel("_self").ignored().optional(),
+		return HypermediaDocumentation.links(linkWithRel("self").ignored().optional(),
 				linkWithRel("curies").ignored()).and(descriptors);
 	}
 	// end::ignore-links[]
