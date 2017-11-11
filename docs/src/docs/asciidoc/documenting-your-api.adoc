@@ -94,7 +94,7 @@ response.
 [[documenting-your-api-hypermedia-ignoring-common-links]]
 ==== Ignoring common links
 
-Rather than documenting links that are common to every response, such as `_self` and
+Rather than documenting links that are common to every response, such as `self` and
 `curies` when using HAL, you may want to document them once in an overview section and
 then ignore them in the rest of your API's documentation. To do so, you can build on the
 <<documenting-your-api-reusing-snippets,support for reusing snippets>> to add link
