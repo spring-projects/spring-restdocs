@@ -28,7 +28,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
@@ -52,6 +55,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
+import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
+import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
 import static org.springframework.restdocs.test.SnippetMatchers.snippet;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
 import static org.springframework.restdocs.test.SnippetMatchers.tableWithTitleAndHeader;
@@ -84,7 +89,11 @@ public class WebTestClientRestDocumentationIntegrationTests {
 					return request.body(BodyExtractors.toMultipartData()).map((parts) -> {
 						return ServerResponse.status(HttpStatus.OK).build().block();
 					});
-				});
+				}).andRoute(RequestPredicates.GET("/set-cookie"),
+						(request) -> ServerResponse.ok()
+								.cookie(ResponseCookie.from("name", "value")
+										.domain("localhost").httpOnly(true).build())
+								.build());
 		this.webTestClient = WebTestClient.bindToRouterFunction(route).configureClient()
 				.baseUrl("https://api.example.com")
 				.filter(documentationConfiguration(this.restDocumentation)).build();
@@ -149,6 +158,46 @@ public class WebTestClientRestDocumentationIntegrationTests {
 						.withContents(tableWithHeader(TemplateFormats.asciidoctor(),
 								"Part", "Description").row("`a`", "Part a").row("`b`",
 										"Part b"))));
+	}
+
+	@Test
+	public void responseWithSetCookie() throws Exception {
+		this.webTestClient.get().uri("/set-cookie").exchange().expectStatus().isOk()
+				.expectBody().consumeWith(document("set-cookie"));
+		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"),
+				is(snippet(asciidoctor())
+						.withContents(httpResponse(asciidoctor(), HttpStatus.OK).header(
+								HttpHeaders.SET_COOKIE,
+								"name=value; Domain=localhost; HttpOnly"))));
+	}
+
+	@Test
+	public void curlSnippetWithCookies() throws Exception {
+		this.webTestClient.get().uri("/").cookie("cookieName", "cookieVal")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+				.expectBody().consumeWith(document("curl-snippet-with-cookies"));
+		assertThat(
+				new File(
+						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
+				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
+						.content(String.format("$ curl 'https://api.example.com/' -i \\%n"
+								+ "    -H 'Accept: application/json' \\%n"
+								+ "    --cookie 'cookieName=cookieVal'")))));
+	}
+
+	@Test
+	public void httpieSnippetWithCookies() throws Exception {
+		this.webTestClient.get().uri("/").cookie("cookieName", "cookieVal")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+				.expectBody().consumeWith(document("httpie-snippet-with-cookies"));
+		assertThat(
+				new File(
+						"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"),
+				is(snippet(asciidoctor())
+						.withContents(codeBlock(asciidoctor(), "bash").content(
+								String.format("$ http GET 'https://api.example.com/' \\%n"
+										+ "    'Accept:application/json' \\%n"
+										+ "    'Cookie:cookieName=cookieVal'")))));
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {

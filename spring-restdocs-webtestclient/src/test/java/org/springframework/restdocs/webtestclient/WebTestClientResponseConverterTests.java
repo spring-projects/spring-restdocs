@@ -16,10 +16,14 @@
 
 package org.springframework.restdocs.webtestclient;
 
+import java.util.Collections;
+
 import org.junit.Test;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -29,6 +33,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 
 /**
@@ -53,6 +58,23 @@ public class WebTestClientResponseConverterTests {
 		assertThat(response.getHeaders().getContentType(),
 				is(MediaType.parseMediaType("text/plain;charset=UTF-8")));
 		assertThat(response.getHeaders().getContentLength(), is(13L));
+	}
+
+	@Test
+	public void responseWithCookie() {
+		ExchangeResult result = WebTestClient
+				.bindToRouterFunction(RouterFunctions.route(GET("/foo"),
+						(req) -> ServerResponse.ok()
+								.cookie(ResponseCookie.from("name", "value")
+										.domain("localhost").httpOnly(true).build())
+						.build()))
+				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
+				.exchange().expectBody().returnResult();
+		OperationResponse response = this.converter.convert(result);
+		assertThat(response.getHeaders().size(), is(1));
+		assertTrue(response.getHeaders().containsKey(HttpHeaders.SET_COOKIE));
+		assertThat(response.getHeaders().get(HttpHeaders.SET_COOKIE), equalTo(
+				Collections.singletonList("name=value; Domain=localhost; HttpOnly")));
 	}
 
 }

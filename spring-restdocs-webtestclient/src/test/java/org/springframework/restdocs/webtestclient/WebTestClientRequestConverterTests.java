@@ -18,15 +18,18 @@ package org.springframework.restdocs.webtestclient;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import org.junit.Test;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
+import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
@@ -37,6 +40,7 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
@@ -203,6 +207,29 @@ public class WebTestClientRequestConverterTests {
 		assertThat(contentDisposition.getFilename(), is(equalTo("image.png")));
 		assertThat(part.getHeaders().getContentType(), is(equalTo(MediaType.IMAGE_PNG)));
 		assertThat(part.getContent(), is(equalTo(new byte[] { 1, 2, 3, 4 })));
+	}
+
+	@Test
+	public void requestWithCookies() throws Exception {
+		ExchangeResult result = WebTestClient
+				.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
+				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
+				.cookie("cookieName1", "cookieVal1").cookie("cookieName2", "cookieVal2")
+				.exchange().expectBody().returnResult();
+		assertThat(result.getRequestHeaders().get(HttpHeaders.COOKIE),
+				is(notNullValue()));
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
+		assertThat(request.getMethod(), is(HttpMethod.GET));
+		assertThat(request.getCookies().size(), is(equalTo(2)));
+		assertThat(request.getHeaders().get(HttpHeaders.COOKIE), is(nullValue()));
+		Iterator<RequestCookie> cookieIterator = request.getCookies().iterator();
+		RequestCookie cookie1 = cookieIterator.next();
+		assertThat(cookie1.getName(), is(equalTo("cookieName1")));
+		assertThat(cookie1.getValue(), is(equalTo("cookieVal1")));
+		RequestCookie cookie2 = cookieIterator.next();
+		assertThat(cookie2.getName(), is(equalTo("cookieName2")));
+		assertThat(cookie2.getValue(), is(equalTo("cookieVal2")));
 	}
 
 }

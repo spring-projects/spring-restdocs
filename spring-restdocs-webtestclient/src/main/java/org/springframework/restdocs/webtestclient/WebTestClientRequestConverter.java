@@ -69,10 +69,10 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 
 	@Override
 	public OperationRequest convert(ExchangeResult result) {
+		HttpHeaders headers = extractRequestHeaders(result);
 		return new OperationRequestFactory().create(result.getUrl(), result.getMethod(),
-				result.getRequestBodyContent(), extractRequestHeaders(result),
-				extractParameters(result), extractRequestParts(result),
-				extractCookies(result));
+				result.getRequestBodyContent(), headers, extractParameters(result),
+				extractRequestParts(result), extractCookies(headers));
 	}
 
 	private HttpHeaders extractRequestHeaders(ExchangeResult result) {
@@ -123,9 +123,19 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 		return contentStream;
 	}
 
-	private Collection<RequestCookie> extractCookies(ExchangeResult result) {
-		// Cookies are not available. See https://jira.spring.io/browse/SPR-16124.
-		return Collections.emptyList();
+	private Collection<RequestCookie> extractCookies(HttpHeaders headers) {
+		List<String> cookieHeaders = headers.get(HttpHeaders.COOKIE);
+		if (cookieHeaders == null) {
+			return Collections.emptyList();
+		}
+		headers.remove(HttpHeaders.COOKIE);
+		return cookieHeaders.stream().map(this::createRequestCookie)
+				.collect(Collectors.toList());
+	}
+
+	private RequestCookie createRequestCookie(String header) {
+		String[] components = header.split("=");
+		return new RequestCookie(components[0], components[1]);
 	}
 
 	private final class ExchangeResultReactiveHttpInputMessage
