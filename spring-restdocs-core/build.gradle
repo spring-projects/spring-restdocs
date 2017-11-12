@@ -33,7 +33,7 @@ dependencies {
 	optional 'commons-codec:commons-codec'
 	optional 'javax.validation:validation-api'
 	optional 'junit:junit'
-	optional 'org.hibernate:hibernate-validator'
+	optional 'org.hibernate.validator:hibernate-validator'
 	optional 'org.junit.jupiter:junit-jupiter-api'
 	testCompile 'org.javamoney:moneta'
 	testCompile 'org.mockito:mockito-core'

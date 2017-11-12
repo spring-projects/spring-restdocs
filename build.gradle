@@ -72,7 +72,7 @@ subprojects {
 			dependency 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
 			dependency 'org.hamcrest:hamcrest-core:1.3'
 			dependency 'org.hamcrest:hamcrest-library:1.3'
-			dependency 'org.hibernate:hibernate-validator:6.0.4.Final'
+			dependency 'org.hibernate.validator:hibernate-validator:6.0.4.Final'
 			dependency 'org.jacoco:org.jacoco.agent:0.7.9'
 			dependency 'org.javamoney:moneta:1.1'
 			dependency 'org.jruby:jruby-complete:9.1.13.0'
