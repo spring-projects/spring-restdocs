@@ -25,29 +25,38 @@ import java.util.List;
 import java.util.ListResourceBundle;
 import java.util.ResourceBundle;
 
+import javax.money.MonetaryAmount;
 import javax.validation.constraints.AssertFalse;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Negative;
+import javax.validation.constraints.NegativeOrZero;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.CodePointLength;
 import org.hibernate.validator.constraints.CreditCardNumber;
+import org.hibernate.validator.constraints.Currency;
 import org.hibernate.validator.constraints.EAN;
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.Mod10Check;
 import org.hibernate.validator.constraints.Mod11Check;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.junit.Test;
@@ -82,6 +91,18 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	@Test
+	public void defaultMessageCodePointLength() {
+		assertThat(constraintDescriptionForField("codePointLength"),
+				is(equalTo("Code point length must be between 2 and 5 inclusive")));
+	}
+
+	@Test
+	public void defaultMessageCurrency() {
+		assertThat(constraintDescriptionForField("currency"),
+				is(equalTo("Must be in an accepted currency unit (GBP, USD)")));
+	}
+
+	@Test
 	public void defaultMessageDecimalMax() {
 		assertThat(constraintDescriptionForField("decimalMax"),
 				is(equalTo("Must be at most 9.875")));
@@ -103,6 +124,12 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	public void defaultMessageFuture() {
 		assertThat(constraintDescriptionForField("future"),
 				is(equalTo("Must be in the future")));
+	}
+
+	@Test
+	public void defaultMessageFutureOrPresent() {
+		assertThat(constraintDescriptionForField("futureOrPresent"),
+				is(equalTo("Must be in the future or the present")));
 	}
 
 	@Test
@@ -132,6 +159,12 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	public void defaultMessagePast() {
 		assertThat(constraintDescriptionForField("past"),
 				is(equalTo("Must be in the past")));
+	}
+
+	@Test
+	public void defaultMessagePastOrPresent() {
+		assertThat(constraintDescriptionForField("pastOrPresent"),
+				is(equalTo("Must be in the past or the present")));
 	}
 
 	@Test
@@ -165,6 +198,12 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	@Test
+	public void defaultMessageEmailHibernateValidator() {
+		assertThat(constraintDescriptionForField("emailHibernateValidator"),
+				is(equalTo("Must be a well-formed email address")));
+	}
+
+	@Test
 	public void defaultMessageLength() {
 		assertThat(constraintDescriptionForField("length"),
 				is(equalTo("Length must be between 2 and 10 inclusive")));
@@ -189,8 +228,26 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	@Test
+	public void defaultMessageNegative() {
+		assertThat(constraintDescriptionForField("negative"),
+				is(equalTo("Must be negative")));
+	}
+
+	@Test
+	public void defaultMessageNegativeOrZero() {
+		assertThat(constraintDescriptionForField("negativeOrZero"),
+				is(equalTo("Must be negative or zero")));
+	}
+
+	@Test
 	public void defaultMessageNotBlank() {
 		assertThat(constraintDescriptionForField("notBlank"),
+				is(equalTo("Must not be blank")));
+	}
+
+	@Test
+	public void defaultMessageNotBlankHibernateValidator() {
+		assertThat(constraintDescriptionForField("notBlankHibernateValidator"),
 				is(equalTo("Must not be blank")));
 	}
 
@@ -198,6 +255,24 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	public void defaultMessageNotEmpty() {
 		assertThat(constraintDescriptionForField("notEmpty"),
 				is(equalTo("Must not be empty")));
+	}
+
+	@Test
+	public void defaultMessageNotEmptyHibernateValidator() {
+		assertThat(constraintDescriptionForField("notEmpty"),
+				is(equalTo("Must not be empty")));
+	}
+
+	@Test
+	public void defaultMessagePositive() {
+		assertThat(constraintDescriptionForField("positive"),
+				is(equalTo("Must be positive")));
+	}
+
+	@Test
+	public void defaultMessagePositiveOrZero() {
+		assertThat(constraintDescriptionForField("positiveOrZero"),
+				is(equalTo("Must be positive or zero")));
 	}
 
 	@Test
@@ -284,6 +359,12 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		@AssertTrue
 		private boolean assertTrue;
 
+		@CodePointLength(min = 2, max = 5)
+		private String codePointLength;
+
+		@Currency({ "GBP", "USD" })
+		private MonetaryAmount currency;
+
 		@DecimalMax("9.875")
 		private BigDecimal decimalMax;
 
@@ -295,6 +376,9 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 		@Future
 		private Date future;
+
+		@FutureOrPresent
+		private Date futureOrPresent;
 
 		@Max(10)
 		private int max;
@@ -311,6 +395,9 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		@Past
 		private Date past;
 
+		@PastOrPresent
+		private Date pastOrPresent;
+
 		@Pattern(regexp = "[A-Z][a-z]+")
 		private String pattern;
 
@@ -326,6 +413,10 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		@Email
 		private String email;
 
+		@SuppressWarnings("deprecation")
+		@org.hibernate.validator.constraints.Email
+		private String emailHibernateValidator;
+
 		@Length(min = 2, max = 10)
 		private String length;
 
@@ -338,11 +429,31 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		@Mod11Check
 		private String mod11Check;
 
+		@Negative
+		private int negative;
+
+		@NegativeOrZero
+		private int negativeOrZero;
+
 		@NotBlank
 		private String notBlank;
 
+		@SuppressWarnings("deprecation")
+		@org.hibernate.validator.constraints.NotBlank
+		private String notBlankHibernateValidator;
+
 		@NotEmpty
 		private String notEmpty;
+
+		@SuppressWarnings("deprecation")
+		@org.hibernate.validator.constraints.NotEmpty
+		private String notEmptyHibernateValidator;
+
+		@Positive
+		private int positive;
+
+		@PositiveOrZero
+		private int positiveOrZero;
 
 		@Range(min = 10, max = 100)
 		private int range;

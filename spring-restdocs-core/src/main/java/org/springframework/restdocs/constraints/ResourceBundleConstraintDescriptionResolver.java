@@ -25,30 +25,39 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Negative;
+import javax.validation.constraints.NegativeOrZero;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.CodePointLength;
 import org.hibernate.validator.constraints.CreditCardNumber;
+import org.hibernate.validator.constraints.Currency;
 import org.hibernate.validator.constraints.EAN;
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.Mod10Check;
 import org.hibernate.validator.constraints.Mod11Check;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.hibernate.validator.constraints.URL;
 
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
+import org.springframework.util.StringUtils;
 
 /**
  * A {@link ConstraintDescriptionResolver} that resolves constraint descriptions from a
@@ -57,7 +66,7 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * {@code javax.validation.constraints.NotNull} is
  * {@code javax.validation.constraints.NotNull.description}.
  * <p>
- * Default descriptions are provided for Bean Validation 1.1's constraints:
+ * Default descriptions are provided for Bean Validation 2.0's constraints:
  *
  * <ul>
  * <li>{@link AssertFalse}
@@ -65,13 +74,22 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * <li>{@link DecimalMax}
  * <li>{@link DecimalMin}
  * <li>{@link Digits}
+ * <li>{@link Email}
  * <li>{@link Future}
+ * <li>{@link FutureOrPresent}
  * <li>{@link Max}
  * <li>{@link Min}
+ * <li>{@link Negative}
+ * <li>{@link NegativeOrZero}
+ * <li>{@link NotBlank}
+ * <li>{@link NotEmpty}
  * <li>{@link NotNull}
  * <li>{@link Null}
  * <li>{@link Past}
+ * <li>{@link PastOrPresent}
  * <li>{@link Pattern}
+ * <li>{@link Positive}
+ * <li>{@link PositiveOrZero}
  * <li>{@link Size}
  * </ul>
  *
@@ -79,15 +97,17 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * Default descriptions are also provided for Hibernate Validator's constraints:
  *
  * <ul>
+ * <li>{@link CodePointLength}
  * <li>{@link CreditCardNumber}
+ * <li>{@link Currency}
  * <li>{@link EAN}
- * <li>{@link Email}
+ * <li>{@link org.hibernate.validator.constraints.Email}
  * <li>{@link Length}
  * <li>{@link LuhnCheck}
  * <li>{@link Mod10Check}
  * <li>{@link Mod11Check}
- * <li>{@link NotBlank}
- * <li>{@link NotEmpty}
+ * <li>{@link org.hibernate.validator.constraints.NotBlank}
+ * <li>{@link org.hibernate.validator.constraints.NotEmpty}
  * <li>{@link Range}
  * <li>{@link SafeHtml}
  * <li>{@link URL}
@@ -169,7 +189,13 @@ public class ResourceBundleConstraintDescriptionResolver
 		@Override
 		public String resolvePlaceholder(String placeholderName) {
 			Object replacement = this.constraint.getConfiguration().get(placeholderName);
-			return replacement != null ? replacement.toString() : null;
+			if (replacement == null) {
+				return null;
+			}
+			if (replacement.getClass().isArray()) {
+				return StringUtils.arrayToDelimitedString((Object[]) replacement, ", ");
+			}
+			return replacement.toString();
 		}
 
 	}

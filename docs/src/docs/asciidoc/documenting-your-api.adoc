@@ -1131,25 +1131,37 @@ To take complete control of constraint resolution, your own implementation of
 [[documenting-your-api-constraints-describing]]
 ==== Describing constraints
 
-Default descriptions are provided for all of the Bean Validation 1.1's constraints:
+Default descriptions are provided for all of Bean Validation 2.0's constraints:
 
 * AssertFalse
 * AssertTrue
 * DecimalMax
 * DecimalMin
 * Digits
+* Email
 * Future
+* FutureOrPresent
 * Max
 * Min
+* Negative
+* NegativeOrZero
+* NotBlank
+* NotEmpty
 * NotNull
 * Null
 * Past
+* PastOrPresent
 * Pattern
+* Positive
+* PositiveOrZero
 * Size
 
-Default descriptions are also provided for constraints from Hibernate Validator:
+Default descriptions are also provided for the following constraints from Hibernate
+Validator:
 
+* CodePointLength
 * CreditCardNumber
+* Currency
 * EAN
 * Email
 * Length
@@ -1158,6 +1170,7 @@ Default descriptions are also provided for constraints from Hibernate Validator:
 * Mod11Check
 * NotBlank
 * NotEmpty
+* Currency
 * Range
 * SafeHtml
 * URL
