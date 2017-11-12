@@ -6,10 +6,10 @@
 [[configuration-uris]]
 === Documented URIs
 
-NOTE: As REST Assured tests a service by making actual HTTP requests, the documented
-URIs cannot be customized in this way. You should use the
-<<customizing-requests-and-responses-preprocessors-modify-uris, REST-Assured specific
-preprocessor>> instead.
+
+
+[[configuration-uris-mockmvc]]
+==== MockMvc URI customization
 
 When using MockMvc, the default configuration for URIs documented by Spring REST Docs is:
 
@@ -39,6 +39,25 @@ port 443 for HTTPS), it will be omitted from any URIs in the generated snippets.
 
 TIP: To configure a request's context path, use the `contextPath` method on
 `MockHttpServletRequestBuilder`.
+
+
+
+[[configuration-uris-rest-assured]]
+==== REST Assured URI customization
+
+REST Assured tests a service by making actual HTTP requests. As a result, URIs must be
+customized once the operation on the service has been performed but before it is
+documented. A <<customizing-requests-and-responses-preprocessors-modify-uris, REST-Assured
+specific preprocessor>> is provided for this purpose.
+
+
+
+[[configuration-uris-webtestclient]]
+==== WebTestClient URI customization
+
+When using WebTestClient, the documented URIs can be customized using the
+{spring-framework-api}/org/springframework/test/web/reactive/server/WebTestClient.Builder.html#baseUrl-java.lang.String-[
+`baseUrl(String)` method on `WebTestClient.Builder`].
 
 
 
