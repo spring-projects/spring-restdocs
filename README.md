@@ -17,7 +17,7 @@ To learn more about Spring REST Docs, please consult the [reference documentatio
 
 ## Building from source
 
-You will need Java 7 or later to build Spring REST Docs. It is built using [Gradle][10]:
+You will need Java 8 or later to build Spring REST Docs. It is built using [Gradle][10]:
 
 ```
 ./gradlew build
