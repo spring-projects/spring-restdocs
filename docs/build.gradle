@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-	asciidoctor 'io.spring.asciidoctor:spring-asciidoctor-extensions:0.1.2.BUILD-SNAPSHOT'
+	asciidoctor 'io.spring.asciidoctor:spring-asciidoctor-extensions:0.1.2.RELEASE'
 	testCompile project(':spring-restdocs-mockmvc')
 	testCompile project(':spring-restdocs-restassured')
 	testCompile project(':spring-restdocs-webtestclient')
