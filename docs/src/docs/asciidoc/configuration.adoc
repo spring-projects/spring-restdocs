@@ -55,9 +55,16 @@ specific preprocessor>> is provided for this purpose.
 [[configuration-uris-webtestclient]]
 ==== WebTestClient URI customization
 
-When using WebTestClient, the documented URIs can be customized using the
+When using WebTestClient, the default base for URIs documented by Spring REST
+Docs is `http://localhost:8080`. This base can be customized using the
 {spring-framework-api}/org/springframework/test/web/reactive/server/WebTestClient.Builder.html#baseUrl-java.lang.String-[
-`baseUrl(String)` method on `WebTestClient.Builder`].
+`baseUrl(String)` method on `WebTestClient.Builder`]:
+
+[source,java,indent=0]
+----
+include::{examples-dir}/com/example/webtestclient/CustomUriConfiguration.java[tags=custom-uri-configuration]
+----
+<1> Configure the base of documented URIs to be `https://api.example.com`.
 
 
 

@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.webtestclient;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +29,7 @@ import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -52,7 +55,8 @@ public class WebTestClientRestDocumentationConfigurer extends
 
 	private final RestDocumentationContextProvider contextProvider;
 
-	WebTestClientRestDocumentationConfigurer(RestDocumentationContextProvider contextProvider) {
+	WebTestClientRestDocumentationConfigurer(
+			RestDocumentationContextProvider contextProvider) {
 		this.contextProvider = contextProvider;
 	}
 
@@ -83,7 +87,23 @@ public class WebTestClientRestDocumentationConfigurer extends
 	public Mono<ClientResponse> filter(ClientRequest request, ExchangeFunction next) {
 		String index = request.headers().getFirst(WebTestClient.WEBTESTCLIENT_REQUEST_ID);
 		configurations.put(index, createConfiguration());
-		return next.exchange(request);
+		return next.exchange(applyUriDefaults(request));
+	}
+
+	private ClientRequest applyUriDefaults(ClientRequest request) {
+		URI requestUri = request.url();
+		if (!StringUtils.isEmpty(requestUri.getHost())) {
+			return request;
+		}
+		try {
+			requestUri = new URI("http", requestUri.getUserInfo(), "localhost", 8080,
+					requestUri.getPath(), requestUri.getQuery(),
+					requestUri.getFragment());
+			return ClientRequest.from(request).url(requestUri).build();
+		}
+		catch (URISyntaxException ex) {
+			throw new IllegalStateException(ex);
+		}
 	}
 
 }
