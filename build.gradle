@@ -16,7 +16,6 @@ allprojects {
 	group = 'org.springframework.restdocs'
 	repositories {
 		mavenCentral()
-		maven { url 'https://repo.spring.io/libs-snapshot' }
 	}
 }
 
@@ -35,7 +34,7 @@ sonarqube {
 }
 
 ext {
-	springVersion = '5.0.2.BUILD-SNAPSHOT'
+	springVersion = '5.0.2.RELEASE'
 	javadocLinks = [
 		'http://docs.oracle.com/javase/8/docs/api/',
 		"http://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
