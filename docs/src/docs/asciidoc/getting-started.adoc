@@ -154,7 +154,7 @@ the configuration are described below.
 .Gradle
 ----
 	plugins { <1>
-		id "org.asciidoctor.convert" version "1.5.6"
+		id "org.asciidoctor.convert" version "1.5.3"
 	}
 
 	dependencies {
