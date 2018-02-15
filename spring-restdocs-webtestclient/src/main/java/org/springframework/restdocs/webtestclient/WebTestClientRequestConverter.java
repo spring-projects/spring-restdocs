@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,8 +87,8 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 			return this.queryStringParser.parse(result.getUrl());
 		}
 		Parameters parameters = new Parameters();
-		if (result.getRequestHeaders().getContentType()
-				.equals(MediaType.APPLICATION_FORM_URLENCODED)) {
+		if (MediaType.APPLICATION_FORM_URLENCODED
+				.equals(result.getRequestHeaders().getContentType())) {
 			parameters.addAll(this.formDataReader
 					.readMono(FORM_DATA_TYPE,
 							new ExchangeResultReactiveHttpInputMessage(result), null)

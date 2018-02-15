@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -148,6 +149,18 @@ public class WebTestClientRequestConverterTests {
 		assertThat(request.getParameters(),
 				hasEntry("a", Arrays.asList("alpha", "apple")));
 		assertThat(request.getParameters(), hasEntry("b", Arrays.asList("br&vo")));
+	}
+
+	@Test
+	public void postRequestWithNoContentType() throws Exception {
+		ExchangeResult result = WebTestClient
+				.bindToRouterFunction(RouterFunctions.route(POST("/foo"),
+						(req) -> ServerResponse.ok().build()))
+				.configureClient().baseUrl("http://localhost").build().post().uri("/foo")
+				.exchange().expectBody().returnResult();
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
+		assertThat(request.getMethod(), is(HttpMethod.POST));
 	}
 
 	@Test
