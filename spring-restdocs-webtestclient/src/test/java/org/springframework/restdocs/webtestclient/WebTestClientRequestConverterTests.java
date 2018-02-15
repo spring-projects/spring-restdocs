@@ -131,7 +131,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithParameters() throws Exception {
+	public void postRequestWithFormDataParameters() throws Exception {
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 		parameters.addAll("a", Arrays.asList("alpha", "apple"));
 		parameters.addAll("b", Arrays.asList("br&vo"));
@@ -144,6 +144,47 @@ public class WebTestClientRequestConverterTests {
 				.expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri(), is(URI.create("http://localhost/foo")));
+		assertThat(request.getMethod(), is(HttpMethod.POST));
+		assertThat(request.getParameters().size(), is(2));
+		assertThat(request.getParameters(),
+				hasEntry("a", Arrays.asList("alpha", "apple")));
+		assertThat(request.getParameters(), hasEntry("b", Arrays.asList("br&vo")));
+	}
+
+	@Test
+	public void postRequestWithQueryStringParameters() throws Exception {
+		ExchangeResult result = WebTestClient
+				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
+					req.body(BodyExtractors.toFormData()).block();
+					return null;
+				})).configureClient().baseUrl("http://localhost").build().post()
+				.uri(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo"))
+				.exchange().expectBody().returnResult();
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getUri(),
+				is(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo")));
+		assertThat(request.getMethod(), is(HttpMethod.POST));
+		assertThat(request.getParameters().size(), is(2));
+		assertThat(request.getParameters(),
+				hasEntry("a", Arrays.asList("alpha", "apple")));
+		assertThat(request.getParameters(), hasEntry("b", Arrays.asList("br&vo")));
+	}
+
+	@Test
+	public void postRequestWithQueryStringAndFormDataParameters() throws Exception {
+		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+		parameters.addAll("a", Arrays.asList("apple"));
+		ExchangeResult result = WebTestClient
+				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
+					req.body(BodyExtractors.toFormData()).block();
+					return null;
+				})).configureClient().baseUrl("http://localhost").build().post()
+				.uri(URI.create("http://localhost/foo?a=alpha&b=br%26vo"))
+				.body(BodyInserters.fromFormData(parameters)).exchange().expectBody()
+				.returnResult();
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getUri(),
+				is(URI.create("http://localhost/foo?a=alpha&b=br%26vo")));
 		assertThat(request.getMethod(), is(HttpMethod.POST));
 		assertThat(request.getParameters().size(), is(2));
 		assertThat(request.getParameters(),

@@ -30,7 +30,6 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ReactiveHttpInputMessage;
 import org.springframework.http.codec.FormHttpMessageReader;
@@ -83,10 +82,8 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 	}
 
 	private Parameters extractParameters(ExchangeResult result) {
-		if (result.getMethod() == HttpMethod.GET) {
-			return this.queryStringParser.parse(result.getUrl());
-		}
 		Parameters parameters = new Parameters();
+		parameters.addAll(this.queryStringParser.parse(result.getUrl()));
 		if (MediaType.APPLICATION_FORM_URLENCODED
 				.equals(result.getRequestHeaders().getContentType())) {
 			parameters.addAll(this.formDataReader
