@@ -405,7 +405,7 @@ include::{examples-dir}/com/example/webtestclient/ExampleApplicationJUnit5Tests.
 <1> The `WebTestClient` instance is configured by adding a
 `WebTestClientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.  An instance of
 this class can be obtained from the static `documentationConfiguration()` method on
-`org.springframework.restdocs.webtestlcient.WebTestClientRestDocumentation`.
+`org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
