@@ -136,7 +136,7 @@ example, the widths of a table's columns can be specified using the `cols` attri
 
 [source,indent=0]
 ----
-[cols=1,3] <1>
+[cols="1,3"] <1>
 \include::{snippets}/index/links.adoc[]
 ----
 <1> The table's width will be split across its two columns with the second column being
