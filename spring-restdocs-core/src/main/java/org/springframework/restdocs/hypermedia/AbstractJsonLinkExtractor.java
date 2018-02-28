@@ -29,7 +29,7 @@ import org.springframework.restdocs.operation.OperationResponse;
  *
  * @author Andy Wilkinson
  */
-abstract class AbstractJsonLinkExtractor implements LinkExtractor {
+public abstract class AbstractJsonLinkExtractor implements LinkExtractor {
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
