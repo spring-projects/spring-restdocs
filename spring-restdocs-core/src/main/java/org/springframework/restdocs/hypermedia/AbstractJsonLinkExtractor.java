@@ -42,6 +42,12 @@ public abstract class AbstractJsonLinkExtractor implements LinkExtractor {
 		return extractLinks(jsonContent);
 	}
 
+	/**
+	 * The method to implement for JSON LinkExtractors which does the actual extraction.
+	 *
+	 * @param json The JSON data formatted as a Map of Strings to Objects
+	 * @return The extracted links, keyed by rel
+	 */
 	protected abstract Map<String, List<Link>> extractLinks(Map<String, Object> json);
 
 }
