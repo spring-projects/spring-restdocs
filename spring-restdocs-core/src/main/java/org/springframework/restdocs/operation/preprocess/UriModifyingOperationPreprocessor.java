@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured3.operation.preprocess;
+package org.springframework.restdocs.operation.preprocess;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -33,9 +33,6 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
-import org.springframework.restdocs.operation.preprocess.ContentModifier;
-import org.springframework.restdocs.operation.preprocess.ContentModifyingOperationPreprocessor;
-import org.springframework.restdocs.operation.preprocess.OperationPreprocessor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 

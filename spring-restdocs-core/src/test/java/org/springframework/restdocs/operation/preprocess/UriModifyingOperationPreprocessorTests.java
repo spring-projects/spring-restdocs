@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured3.operation.preprocess;
+package org.springframework.restdocs.operation.preprocess;
 
 import java.net.URI;
 import java.util.Arrays;
