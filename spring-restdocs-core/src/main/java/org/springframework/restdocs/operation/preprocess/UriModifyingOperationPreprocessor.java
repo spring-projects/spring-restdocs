@@ -53,7 +53,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author Andy Wilkinson
  * @since 1.2.0
  */
-public final class UriModifyingOperationPreprocessor implements OperationPreprocessor {
+public class UriModifyingOperationPreprocessor implements OperationPreprocessor {
 
 	private final UriModifyingContentModifier contentModifier = new UriModifyingContentModifier();
 
