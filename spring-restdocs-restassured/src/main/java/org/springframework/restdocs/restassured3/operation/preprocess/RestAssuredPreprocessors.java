@@ -19,6 +19,7 @@ package org.springframework.restdocs.restassured3.operation.preprocess;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.preprocess.UriModifyingOperationPreprocessor;
 
 /**
  * Static factory methods for creating
