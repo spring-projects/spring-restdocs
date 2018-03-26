@@ -105,7 +105,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 		CliOperationRequest request = new CliOperationRequest(operation.getRequest());
 		writeUserOptionIfNecessary(request, builder);
-		writeHttpMethodIfNecessary(request, builder);
+		writeHttpMethod(request, builder);
 
 		List<String> additionalLines = new ArrayList<>();
 		writeHeaders(request, additionalLines);
@@ -144,11 +144,9 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writeHttpMethodIfNecessary(OperationRequest request,
+	private void writeHttpMethod(OperationRequest request,
 			StringBuilder builder) {
-		if (!HttpMethod.GET.equals(request.getMethod())) {
-			builder.append(String.format(" -X %s", request.getMethod()));
-		}
+		builder.append(String.format(" -X %s", request.getMethod()));
 	}
 
 	private void writeHeaders(CliOperationRequest request, List<String> lines) {

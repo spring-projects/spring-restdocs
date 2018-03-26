@@ -182,7 +182,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content(String.format("$ curl 'http://localhost:8080/' -i \\%n"
+						.content(String.format("$ curl 'http://localhost:8080/' -i -X GET \\%n"
 								+ "    -H 'Accept: application/json' \\%n"
 								+ "    --cookie 'cookieName=cookieVal'")))));
 	}
@@ -633,7 +633,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 						"build/generated-snippets/custom-context-path/curl-request.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(codeBlock(asciidoctor(), "bash").content(String
-								.format("$ curl 'http://localhost:8080/custom/' -i \\%n"
+								.format("$ curl 'http://localhost:8080/custom/' -i -X GET \\%n"
 										+ "    -H 'Accept: application/json'")))));
 	}
 

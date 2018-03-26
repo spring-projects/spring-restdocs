@@ -180,7 +180,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				new File(
 						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content(String.format("$ curl 'https://api.example.com/' -i \\%n"
+						.content(String.format("$ curl 'https://api.example.com/' -i -X GET \\%n"
 								+ "    -H 'Accept: application/json' \\%n"
 								+ "    --cookie 'cookieName=cookieVal'")))));
 	}
