@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -262,10 +262,8 @@ public class JsonFieldTypeResolverTests {
 
 	@Test
 	public void intermediateWildcardWithVaryingType() throws IOException {
-		assertThat(
-				this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*.d"),
-						createPayload(
-								"{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": \"four\"}}}}")),
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*.d"),
+				createPayload("{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": \"four\"}}}}")),
 				equalTo(JsonFieldType.VARIES));
 	}
 

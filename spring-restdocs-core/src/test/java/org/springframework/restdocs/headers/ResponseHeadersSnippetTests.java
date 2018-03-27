@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,15 +58,12 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 						headerWithName("Content-Type").description("two"),
 						headerWithName("Etag").description("three"),
 						headerWithName("Cache-Control").description("five"),
-						headerWithName("Vary").description("six")))
-								.document(
-										this.operationBuilder.response()
-												.header("X-Test", "test")
-												.header("Content-Type",
-														"application/json")
-												.header("Etag", "lskjadldj3ii32l2ij23")
-												.header("Cache-Control", "max-age=0")
-												.header("Vary", "User-Agent").build());
+						headerWithName("Vary").description("six"))).document(
+								this.operationBuilder.response().header("X-Test", "test")
+										.header("Content-Type", "application/json")
+										.header("Etag", "lskjadldj3ii32l2ij23")
+										.header("Cache-Control", "max-age=0")
+										.header("Vary", "User-Agent").build());
 	}
 
 	@Test
@@ -91,13 +88,13 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseHeadersWithCustomAttributes() throws IOException {
-		this.snippets.expectResponseHeaders().withContents(containsString("Custom title"));
+		this.snippets.expectResponseHeaders()
+				.withContents(containsString("Custom title"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-headers"))
 				.willReturn(snippetResource("response-headers-with-title"));
 		new ResponseHeadersSnippet(
-				Arrays.asList(headerWithName("X-Test").description("one")),
-				attributes(
+				Arrays.asList(headerWithName("X-Test").description("one")), attributes(
 						key("title").value("Custom title")))
 								.document(
 										this.operationBuilder

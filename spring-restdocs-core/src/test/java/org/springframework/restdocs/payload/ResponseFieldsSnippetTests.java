@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 				Arrays.asList(fieldWithPath("[]a.b").description("one")))
 						.document(this.operationBuilder.response().content(
 								"[{\"a\": {\"b\": null}}," + "{\"a\": {\"b\": null}}]")
-						.build());
+								.build());
 	}
 
 	@Test
@@ -180,8 +180,8 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 				.willReturn(snippetResource("response-fields-with-title"));
 		this.snippets.expectResponseFields().withContents(containsString("Custom title"));
 
-		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
-				attributes(
+		new ResponseFieldsSnippet(
+				Arrays.asList(fieldWithPath("a").description("one")), attributes(
 						key("title").value("Custom title")))
 								.document(
 										this.operationBuilder
@@ -241,15 +241,13 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 						.attributes(key("foo").value("bravo")),
 				fieldWithPath("a").description("three")
 						.attributes(key("foo").value("charlie"))))
-								.document(
-										this.operationBuilder
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.response()
-												.content(
-														"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
-												.build());
+								.document(this.operationBuilder
+										.attribute(TemplateEngine.class.getName(),
+												new MustacheTemplateEngine(resolver))
+										.response()
+										.content(
+												"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
+										.build());
 	}
 
 	@Test
@@ -319,7 +317,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.content("<a id=\"1\">foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -335,7 +333,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.content("<a>foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test

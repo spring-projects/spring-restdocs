@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,8 +69,8 @@ public class RestDocumentationConfigurerTests {
 		assertThat(configuration, hasEntry(equalTo(WriterResolver.class.getName()),
 				instanceOf(StandardWriterResolver.class)));
 		assertThat(configuration,
-				hasEntry(
-						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
+				hasEntry(equalTo(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
@@ -116,8 +116,8 @@ public class RestDocumentationConfigurerTests {
 		this.configurer.snippets().withDefaults(CliDocumentation.curlRequest())
 				.apply(configuration, createContext());
 		assertThat(configuration,
-				hasEntry(
-						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
+				hasEntry(equalTo(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
 		@SuppressWarnings("unchecked")
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
@@ -133,8 +133,8 @@ public class RestDocumentationConfigurerTests {
 		this.configurer.snippets().withAdditionalDefaults(snippet).apply(configuration,
 				createContext());
 		assertThat(configuration,
-				hasEntry(
-						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
+				hasEntry(equalTo(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,10 +168,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithMultipleParameters() throws IOException {
-		this.snippets.expectHttpieRequest()
-				.withContents(codeBlock("bash")
-						.content("$ http --form POST 'http://localhost/foo'"
-								+ " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
+		this.snippets.expectHttpieRequest().withContents(
+				codeBlock("bash").content("$ http --form POST 'http://localhost/foo'"
+						+ " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
 		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo").method("POST")
 						.param("k1", "v1", "v1-bis").param("k2", "v2").build());
@@ -225,10 +224,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void putRequestWithMultipleParameters() throws IOException {
-		this.snippets.expectHttpieRequest()
-				.withContents(codeBlock("bash")
-						.content("$ http --form PUT 'http://localhost/foo'"
-								+ " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
+		this.snippets.expectHttpieRequest().withContents(
+				codeBlock("bash").content("$ http --form PUT 'http://localhost/foo'"
+						+ " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("PUT").param("k1", "v1")
 				.param("k1", "v1-bis").param("k2", "v2").build());
@@ -248,11 +246,10 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 		this.snippets.expectHttpieRequest().withContents(
 				codeBlock("bash").content("$ http GET 'http://localhost/foo'"
 						+ " 'Content-Type:application/json' 'a:alpha'"));
-		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.APPLICATION_JSON_VALUE)
-						.header("a", "alpha").build());
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/foo")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.header("a", "alpha").build());
 	}
 
 	@Test
@@ -283,10 +280,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				+ " 'metadata'@<(echo '{\"description\": \"foo\"}')";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("metadata", "{\"description\": \"foo\"}".getBytes()).build());
 	}
 
@@ -297,10 +293,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				+ " 'image'@'documents/images/example.png'";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", new byte[0])
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
 				.submittedFileName("documents/images/example.png").build());
@@ -312,10 +307,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				+ " 'image'@'documents/images/example.png'";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", new byte[0])
 				.submittedFileName("documents/images/example.png").build());
 	}
@@ -327,10 +321,9 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				+ " 'b=banana'";
 		this.snippets.expectHttpieRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", new byte[0])
 				.submittedFileName("documents/images/example.png").and()
 				.param("a", "apple", "avocado").param("b", "banana").build());
@@ -340,11 +333,10 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	public void basicAuthCredentialsAreSuppliedUsingAuthOption() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --auth 'user:secret' GET 'http://localhost/foo'"));
-		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo")
-						.header(HttpHeaders.AUTHORIZATION,
-								"Basic " + Base64Utils
-										.encodeToString("user:secret".getBytes()))
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/foo")
+				.header(HttpHeaders.AUTHORIZATION,
+						"Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
 				.build());
 	}
 
@@ -371,12 +363,11 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash").content(
 						"$ http GET 'http://localhost/foo' 'Host:api.example.com'"
 								+ " 'Content-Type:application/json' 'a:alpha'"));
-		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo")
-						.header(HttpHeaders.HOST, "api.example.com")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.APPLICATION_JSON_VALUE)
-						.header("a", "alpha").build());
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/foo")
+				.header(HttpHeaders.HOST, "api.example.com")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.header("a", "alpha").build());
 	}
 
 	@Test

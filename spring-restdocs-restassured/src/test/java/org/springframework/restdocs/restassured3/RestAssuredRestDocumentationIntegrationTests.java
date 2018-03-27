@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,9 +98,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.body("content").contentType(contentType).post("/").then()
 				.statusCode(200);
 
-		assertThat(
-				new File(
-						"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
 						.content(String.format("$ curl 'http://localhost:"
 								+ tomcat.getPort() + "/' -i -X POST \\%n"
@@ -117,11 +116,10 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.filter(document("curl-snippet-with-cookies")).accept("application/json")
 				.contentType(contentType).cookie("cookieName", "cookieVal").get("/")
 				.then().statusCode(200);
-		assertThat(
-				new File(
-						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
-				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(),
-						"bash").content(String.format("$ curl 'http://localhost:"
+		assertThat(new File(
+				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
+				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
+						.content(String.format("$ curl 'http://localhost:"
 								+ tomcat.getPort() + "/' -i \\%n"
 								+ "    -H 'Accept: application/json' \\%n"
 								+ "    -H 'Content-Type: " + contentType + "' \\%n"
@@ -136,9 +134,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.accept("application/json").param("foo", "bar").param("a", "alpha")
 				.post("/?foo=bar").then().statusCode(200);
 		String contentType = "application/x-www-form-urlencoded; charset=ISO-8859-1";
-		assertThat(
-				new File(
-						"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
 						.content(String.format("$ curl " + "'http://localhost:"
 								+ tomcat.getPort() + "/?foo=bar' -i -X POST \\%n"
@@ -316,9 +313,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 								.header("Content-Length", "13")
 								.content("{\"a\":\"alpha\"}"))));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
-		assertThat(
-				new File(
-						"build/generated-snippets/preprocessed-request/http-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/preprocessed-request/http-request.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(httpRequest(asciidoctor(), RequestMethod.GET, "/")
 								.header("b", "bravo")
@@ -341,9 +337,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.get("/").then().statusCode(200);
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
 				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
-		assertThat(
-				new File(
-						"build/generated-snippets/preprocessed-response/http-response.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/preprocessed-response/http-response.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(httpResponse(asciidoctor(), HttpStatus.OK)
 								.header("Foo", "https://api.example.com/foo/bar")
@@ -369,9 +364,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		finally {
 			Thread.currentThread().setContextClassLoader(previous);
 		}
-		assertThat(
-				new File(
-						"build/generated-snippets/custom-snippet-template/curl-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/custom-snippet-template/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(equalTo("Custom curl request"))));
 	}
 

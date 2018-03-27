@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,17 +61,10 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 						headerWithName("Accept-Encoding").description("three"),
 						headerWithName("Accept-Language").description("four"),
 						headerWithName("Cache-Control").description("five"),
-						headerWithName(
-								"Connection")
-										.description("six")))
-												.document(
-														this.operationBuilder
-																.request(
-																		"http://localhost")
-																.header("X-Test", "test")
-																.header("Accept", "*/*")
-																.header("Accept-Encoding",
-																		"gzip, deflate")
+						headerWithName("Connection").description("six"))).document(
+								this.operationBuilder.request("http://localhost")
+										.header("X-Test", "test").header("Accept", "*/*")
+										.header("Accept-Encoding", "gzip, deflate")
 										.header("Accept-Language", "en-US,en;q=0.5")
 										.header("Cache-Control", "max-age=0")
 										.header("Connection", "keep-alive").build());
@@ -105,8 +98,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 		given(resolver.resolveTemplateResource("request-headers"))
 				.willReturn(snippetResource("request-headers-with-title"));
 		new RequestHeadersSnippet(
-				Arrays.asList(headerWithName("X-Test").description("one")),
-				attributes(
+				Arrays.asList(headerWithName("X-Test").description("one")), attributes(
 						key("title").value("Custom title")))
 								.document(
 										this.operationBuilder
@@ -143,7 +135,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 												.header("X-Test", "test")
 												.header("Accept-Encoding",
 														"gzip, deflate")
-								.header("Accept", "*/*").build());
+												.header("Accept", "*/*").build());
 	}
 
 	@Test
@@ -160,10 +152,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 						headerWithName("Accept-Encoding").description("three"),
 						headerWithName("Accept-Language").description("four"))
 				.and(headerWithName("Cache-Control").description("five"),
-						headerWithName(
-								"Connection")
-										.description(
-												"six"))
+						headerWithName("Connection").description("six"))
 				.document(this.operationBuilder.request("http://localhost")
 						.header("X-Test", "test").header("Accept", "*/*")
 						.header("Accept-Encoding", "gzip, deflate")

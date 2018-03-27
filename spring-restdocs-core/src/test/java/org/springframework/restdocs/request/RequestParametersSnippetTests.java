@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,22 +117,17 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 				.willReturn(snippetResource("request-parameters-with-title"));
 		this.snippets.expectRequestParameters().withContents(containsString("The title"));
 
-		new RequestParametersSnippet(
-				Arrays.asList(
-						parameterWithName("a").description("one")
-								.attributes(key("foo").value("alpha")),
-						parameterWithName("b").description("two")
-								.attributes(key("foo").value("bravo"))),
-				attributes(
-						key("title").value("The title")))
-								.document(
-										this.operationBuilder
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.request("http://localhost")
-												.param("a", "alpha").param("b", "bravo")
-												.build());
+		new RequestParametersSnippet(Arrays.asList(
+				parameterWithName("a").description("one")
+						.attributes(key("foo").value("alpha")),
+				parameterWithName("b").description("two")
+						.attributes(key("foo").value("bravo"))),
+				attributes(key("title").value("The title")))
+						.document(this.operationBuilder
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(resolver))
+								.request("http://localhost").param("a", "alpha")
+								.param("b", "bravo").build());
 	}
 
 	@Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -159,9 +159,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 
 		mockMvc.perform(post("/").accept(MediaType.APPLICATION_JSON).content("content"))
 				.andExpect(status().isOk()).andDo(document("curl-snippet-with-content"));
-		assertThat(
-				new File(
-						"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(codeBlock(asciidoctor(), "bash").content(String
 								.format("$ curl 'http://localhost:8080/' -i -X POST \\%n"
@@ -177,9 +176,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)
 				.cookie(new Cookie("cookieName", "cookieVal"))).andExpect(status().isOk())
 				.andDo(document("curl-snippet-with-cookies"));
-		assertThat(
-				new File(
-						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
 						.content(String.format("$ curl 'http://localhost:8080/' -i \\%n"
 								+ "    -H 'Accept: application/json' \\%n"
@@ -193,9 +191,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		mockMvc.perform(post("/?foo=bar").param("foo", "bar").param("a", "alpha")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andDo(document("curl-snippet-with-query-string"));
-		assertThat(
-				new File(
-						"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(
 						codeBlock(asciidoctor(), "bash").content(String.format("$ curl "
 								+ "'http://localhost:8080/?foo=bar' -i -X POST \\%n"
@@ -210,12 +207,11 @@ public class MockMvcRestDocumentationIntegrationTests {
 		mockMvc.perform(post("/").param("a", "alpha").accept(MediaType.APPLICATION_JSON)
 				.content("some content")).andExpect(status().isOk())
 				.andDo(document("curl-snippet-with-content-and-parameters"));
-		assertThat(
-				new File(
-						"build/generated-snippets/curl-snippet-with-content-and-parameters/curl-request.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(codeBlock(asciidoctor(), "bash").content(String
-								.format("$ curl 'http://localhost:8080/?a=alpha' -i -X POST \\%n"
+		assertThat(new File(
+				"build/generated-snippets/curl-snippet-with-content-and-parameters/curl-request.adoc"),
+				is(snippet(asciidoctor()).withContents(
+						codeBlock(asciidoctor(), "bash").content(String.format(
+								"$ curl 'http://localhost:8080/?a=alpha' -i -X POST \\%n"
 										+ "    -H 'Accept: application/json' \\%n"
 										+ "    -d 'some content'")))));
 	}
@@ -228,9 +224,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		mockMvc.perform(post("/").accept(MediaType.APPLICATION_JSON).content("content"))
 				.andExpect(status().isOk())
 				.andDo(document("httpie-snippet-with-content"));
-		assertThat(
-				new File(
-						"build/generated-snippets/httpie-snippet-with-content/httpie-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/httpie-snippet-with-content/httpie-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
 						.content(String.format("$ echo 'content' | "
 								+ "http POST 'http://localhost:8080/' \\%n"
@@ -245,9 +240,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)
 				.cookie(new Cookie("cookieName", "cookieVal"))).andExpect(status().isOk())
 				.andDo(document("httpie-snippet-with-cookies"));
-		assertThat(
-				new File(
-						"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
 						.content(String.format("$ http GET 'http://localhost:8080/' \\%n"
 								+ "    'Accept:application/json' \\%n"
@@ -261,11 +255,10 @@ public class MockMvcRestDocumentationIntegrationTests {
 		mockMvc.perform(post("/?foo=bar").param("foo", "bar").param("a", "alpha")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andDo(document("httpie-snippet-with-query-string"));
-		assertThat(
-				new File(
-						"build/generated-snippets/httpie-snippet-with-query-string/httpie-request.adoc"),
-				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(),
-						"bash").content(String.format("$ http "
+		assertThat(new File(
+				"build/generated-snippets/httpie-snippet-with-query-string/httpie-request.adoc"),
+				is(snippet(asciidoctor()).withContents(
+						codeBlock(asciidoctor(), "bash").content(String.format("$ http "
 								+ "--form POST 'http://localhost:8080/?foo=bar' \\%n"
 								+ "    'Accept:application/json' \\%n    'a=alpha'")))));
 	}
@@ -277,9 +270,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		mockMvc.perform(post("/").param("a", "alpha").content("some content")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andDo(document("httpie-snippet-post-with-content-and-parameters"));
-		assertThat(
-				new File(
-						"build/generated-snippets/httpie-snippet-post-with-content-and-parameters/httpie-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/httpie-snippet-post-with-content-and-parameters/httpie-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
 						.content(String.format("$ echo " + "'some content' | http POST "
 								+ "'http://localhost:8080/?a=alpha' \\%n"
@@ -486,9 +478,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 			}
 		}
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
-		assertThat(
-				new File(
-						"build/generated-snippets/preprocessed-request/http-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/preprocessed-request/http-request.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(preprocessedRequest.content(prettyPrinted))));
 	}
@@ -518,9 +509,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 								.content(original))));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
 				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
-		assertThat(
-				new File(
-						"build/generated-snippets/preprocessed-response/http-response.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/preprocessed-response/http-response.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(httpResponse(asciidoctor(), HttpStatus.OK)
 								.header("Content-Type", "application/json;charset=UTF-8")
@@ -547,9 +537,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		finally {
 			Thread.currentThread().setContextClassLoader(previous);
 		}
-		assertThat(
-				new File(
-						"build/generated-snippets/custom-snippet-template/curl-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/custom-snippet-template/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(equalTo("Custom curl request"))));
 
 		mockMvc.perform(get("/")).andDo(document("index", curlRequest(

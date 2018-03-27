@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,17 +48,13 @@ public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
 						.row("`a.b`", "`Number`", "one").row("`a.c`", "`String`", "two")
 						.row("`a`", "`Object`", "three"));
 
-		new RequestPartFieldsSnippet("one",
-				Arrays.asList(fieldWithPath("a.b").description("one"),
-						fieldWithPath("a.c").description("two"), fieldWithPath("a")
-								.description("three")))
-										.document(
-												this.operationBuilder
-														.request("http://localhost")
-														.part("one",
-																"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}"
-																		.getBytes())
-														.build());
+		new RequestPartFieldsSnippet("one", Arrays.asList(
+				fieldWithPath("a.b").description("one"),
+				fieldWithPath("a.c").description("two"),
+				fieldWithPath("a").description("three"))).document(this.operationBuilder
+						.request("http://localhost")
+						.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
+						.build());
 	}
 
 	@Test
@@ -67,17 +63,12 @@ public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
 				.withContents(tableWithHeader("Path", "Type", "Description")
 						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
 
-		new RequestPartFieldsSnippet("one",
-				beneathPath("a"), Arrays
-						.asList(fieldWithPath("b").description("one"),
-								fieldWithPath("c").description("two")))
-										.document(
-												this.operationBuilder
-														.request("http://localhost")
-														.part("one",
-																"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}"
-																		.getBytes())
-														.build());
+		new RequestPartFieldsSnippet("one", beneathPath("a"), Arrays.asList(
+				fieldWithPath("b").description("one"),
+				fieldWithPath("c").description("two"))).document(this.operationBuilder
+						.request("http://localhost")
+						.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
+						.build());
 	}
 
 	@Test

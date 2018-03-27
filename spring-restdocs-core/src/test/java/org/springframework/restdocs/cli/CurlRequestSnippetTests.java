@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,10 +167,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void postRequestWithMultipleParameters() throws IOException {
-		this.snippets.expectCurlRequest()
-				.withContents(codeBlock("bash")
-						.content("$ curl 'http://localhost/foo' -i -X POST"
-								+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
+		this.snippets.expectCurlRequest().withContents(
+				codeBlock("bash").content("$ curl 'http://localhost/foo' -i -X POST"
+						+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
 		new CurlRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo").method("POST")
 						.param("k1", "v1", "v1-bis").param("k2", "v2").build());
@@ -224,10 +223,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void putRequestWithMultipleParameters() throws IOException {
-		this.snippets.expectCurlRequest()
-				.withContents(codeBlock("bash")
-						.content("$ curl 'http://localhost/foo' -i -X PUT"
-								+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
+		this.snippets.expectCurlRequest().withContents(
+				codeBlock("bash").content("$ curl 'http://localhost/foo' -i -X PUT"
+						+ " -d 'k1=v1&k1=v1-bis&k2=v2'"));
 		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
 				.request("http://localhost/foo").method("PUT").param("k1", "v1")
 				.param("k1", "v1-bis").param("k2", "v2").build());
@@ -247,11 +245,10 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content("$ curl 'http://localhost/foo' -i"
 						+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
-		new CurlRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.APPLICATION_JSON_VALUE)
-						.header("a", "alpha").build());
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/foo")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.header("a", "alpha").build());
 	}
 
 	@Test
@@ -285,10 +282,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "'metadata={\"description\": \"foo\"}'";
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("metadata", "{\"description\": \"foo\"}".getBytes()).build());
 	}
 
@@ -299,10 +295,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "'image=@documents/images/example.png;type=image/png'";
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", new byte[0])
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
 				.submittedFileName("documents/images/example.png").build());
@@ -315,10 +310,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "'image=@documents/images/example.png'";
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", new byte[0])
 				.submittedFileName("documents/images/example.png").build());
 	}
@@ -331,10 +325,9 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				+ "-F 'b=banana'";
 		this.snippets.expectCurlRequest()
 				.withContents(codeBlock("bash").content(expectedContent));
-		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", new byte[0])
 				.submittedFileName("documents/images/example.png").and()
 				.param("a", "apple", "avocado").param("b", "banana").build());
@@ -344,11 +337,10 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	public void basicAuthCredentialsAreSuppliedUsingUserOption() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -u 'user:secret'"));
-		new CurlRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo")
-						.header(HttpHeaders.AUTHORIZATION,
-								"Basic " + Base64Utils
-										.encodeToString("user:secret".getBytes()))
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/foo")
+				.header(HttpHeaders.AUTHORIZATION,
+						"Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
 				.build());
 	}
 
@@ -375,12 +367,11 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.withContents(codeBlock("bash").content(
 						"$ curl 'http://localhost/foo' -i" + " -H 'Host: api.example.com'"
 								+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
-		new CurlRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo")
-						.header(HttpHeaders.HOST, "api.example.com")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.APPLICATION_JSON_VALUE)
-						.header("a", "alpha").build());
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/foo")
+				.header(HttpHeaders.HOST, "api.example.com")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.header("a", "alpha").build());
 	}
 
 	@Test
