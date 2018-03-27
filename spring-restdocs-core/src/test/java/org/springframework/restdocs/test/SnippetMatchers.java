@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -335,10 +335,17 @@ public final class SnippetMatchers {
 		@Override
 		public AsciidoctorTableMatcher row(String... entries) {
 			for (String entry : entries) {
-				this.addLine(-1, "|" + entry);
+				this.addLine(-1, "|" + escapeEntry(entry));
 			}
 			this.addLine(-1, "");
 			return this;
+		}
+
+		private String escapeEntry(String entry) {
+			if (entry.startsWith("`") && entry.endsWith("`")) {
+				return "`+" + entry.substring(1, entry.length() - 1) + "+`";
+			}
+			return entry;
 		}
 
 		@Override
