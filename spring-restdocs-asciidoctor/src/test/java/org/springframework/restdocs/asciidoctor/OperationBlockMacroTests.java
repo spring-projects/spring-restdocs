@@ -77,6 +77,16 @@ public class OperationBlockMacroTests {
 	}
 
 	@Test
+	public void operationWithParameterizedName() throws Exception {
+		Attributes attributes = getAttributes();
+		attributes.setAttribute("name", "some");
+		this.options.setAttributes(attributes);
+		String result = this.asciidoctor.convert(
+				"operation::{name}-operation[snippets='curl-request']", this.options);
+		assertThat(result, equalTo(getExpectedContentFromFile("snippet-simple")));
+	}
+
+	@Test
 	public void codeBlockSnippetIncludeWithPdfBackend() throws Exception {
 		File output = configurePdfOutput();
 		this.asciidoctor.convert("operation::some-operation[snippets='curl-request']",

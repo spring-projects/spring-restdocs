@@ -15,6 +15,7 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
   def process(parent, operation, attributes)
     snippets_dir = parent.document.attributes['snippets'].to_s
     snippet_names = attributes.fetch 'snippets', ''
+    operation = parent.sub_attributes operation
     snippet_titles = SnippetTitles.new parent.document.attributes
     content = read_snippets(snippets_dir, snippet_names, parent, operation,
                             snippet_titles)
