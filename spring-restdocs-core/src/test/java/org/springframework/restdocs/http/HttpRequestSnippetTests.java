@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -278,10 +278,9 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new HttpRequestSnippet().document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", "<< data >>".getBytes()).build());
 	}
 
@@ -294,10 +293,9 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new HttpRequestSnippet().document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", "<< data >>".getBytes()).submittedFileName("image.png")
 				.build());
 	}
@@ -321,10 +319,9 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new HttpRequestSnippet().document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.param("a", "apple", "avocado").param("b", "banana")
 				.part("image", "<< data >>".getBytes()).build());
 	}
@@ -341,11 +338,10 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
-						.param("a").part("image", "<< data >>".getBytes()).build());
+		new HttpRequestSnippet().document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+				.param("a").part("image", "<< data >>".getBytes()).build());
 	}
 
 	@Test
@@ -358,10 +354,9 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 						.header("Content-Type",
 								"multipart/form-data; boundary=" + BOUNDARY)
 						.header(HttpHeaders.HOST, "localhost").content(expectedContent));
-		new HttpRequestSnippet().document(
-				this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.MULTIPART_FORM_DATA_VALUE)
+		new HttpRequestSnippet().document(this.operationBuilder
+				.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 				.part("image", "<< data >>".getBytes())
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE).build());
 	}
@@ -383,15 +378,11 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("http-request"))
 				.willReturn(snippetResource("http-request-with-title"));
-		new HttpRequestSnippet(
-				attributes(
-						key("title").value("Title for the request")))
-								.document(
-										this.operationBuilder
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.request("http://localhost/foo").build());
+		new HttpRequestSnippet(attributes(key("title").value("Title for the request")))
+				.document(this.operationBuilder
+						.attribute(TemplateEngine.class.getName(),
+								new MustacheTemplateEngine(resolver))
+						.request("http://localhost/foo").build());
 	}
 
 	private String createPart(String content) {

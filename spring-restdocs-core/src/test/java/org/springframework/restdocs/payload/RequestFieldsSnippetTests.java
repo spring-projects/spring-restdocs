@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,7 +118,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 						.document(this.operationBuilder.request("http://localhost")
 								.content("[{\"a\": {\"b\": 5, \"c\":\"charlie\"}},"
 										+ "{\"a\": {\"b\": 4, \"c\":\"chalk\"}}]")
-						.build());
+								.build());
 	}
 
 	@Test
@@ -235,8 +235,8 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 				.willReturn(snippetResource("request-fields-with-title"));
 		this.snippets.expectRequestFields().withContents(containsString("Custom title"));
 
-		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")),
-				attributes(
+		new RequestFieldsSnippet(
+				Arrays.asList(fieldWithPath("a").description("one")), attributes(
 						key("title").value("Custom title")))
 								.document(
 										this.operationBuilder
@@ -265,15 +265,13 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 						.attributes(key("foo").value("bravo")),
 				fieldWithPath("a").description("three")
 						.attributes(key("foo").value("charlie"))))
-								.document(
-										this.operationBuilder
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.request("http://localhost")
-												.content(
-														"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
-												.build());
+								.document(this.operationBuilder
+										.attribute(TemplateEngine.class.getName(),
+												new MustacheTemplateEngine(resolver))
+										.request("http://localhost")
+										.content(
+												"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
+										.build());
 	}
 
 	@Test

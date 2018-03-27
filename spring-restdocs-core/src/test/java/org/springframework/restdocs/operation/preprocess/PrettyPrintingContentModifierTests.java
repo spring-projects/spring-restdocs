@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class PrettyPrintingContentModifierTests {
 				equalTo(String
 						.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
 								+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n")
-								.getBytes()));
+						.getBytes()));
 	}
 
 	@Test

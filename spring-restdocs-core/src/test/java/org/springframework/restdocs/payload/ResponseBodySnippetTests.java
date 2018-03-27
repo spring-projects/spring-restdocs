@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,16 +77,11 @@ public class ResponseBodySnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-body"))
 				.willReturn(snippetResource("response-body-with-language"));
-		responseBody(
-				attributes(
-						key("language").value("json")))
-								.document(
-										this.operationBuilder
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.response().content("{\"a\":\"alpha\"}")
-												.build());
+		responseBody(attributes(key("language").value("json")))
+				.document(this.operationBuilder
+						.attribute(TemplateEngine.class.getName(),
+								new MustacheTemplateEngine(resolver))
+						.response().content("{\"a\":\"alpha\"}").build());
 	}
 
 }

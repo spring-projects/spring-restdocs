@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class ResponseFieldsSnippetFailureTests {
 												.content("<a>foo</a>")
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
-										.build());
+												.build());
 	}
 
 	@Test
@@ -202,7 +202,7 @@ public class ResponseFieldsSnippetFailureTests {
 								this.operationBuilder.response()
 										.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
 												+ "{\"c\": 2}, {\"b\": 1,\"c\": 2}]}")
-								.build());
+										.build());
 	}
 
 }

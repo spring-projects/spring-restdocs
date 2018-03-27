@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,17 +88,15 @@ public class RestAssuredRestDocumentationConfigurerTests {
 		assertThat(configuration, hasEntry(equalTo(WriterResolver.class.getName()),
 				instanceOf(WriterResolver.class)));
 		assertThat(configuration,
-				hasEntry(
-						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
+				hasEntry(equalTo(
+						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
 						instanceOf(List.class)));
-		assertThat(configuration,
-				hasEntry(
-						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR),
-						instanceOf(OperationRequestPreprocessor.class)));
-		assertThat(configuration,
-				hasEntry(
-						equalTo(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR),
-						instanceOf(OperationResponsePreprocessor.class)));
+		assertThat(configuration, hasEntry(equalTo(
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR),
+				instanceOf(OperationRequestPreprocessor.class)));
+		assertThat(configuration, hasEntry(equalTo(
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR),
+				instanceOf(OperationResponsePreprocessor.class)));
 	}
 
 }

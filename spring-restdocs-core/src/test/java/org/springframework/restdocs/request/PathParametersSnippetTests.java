@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,11 +77,10 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`",
 						"two"));
 		new PathParametersSnippet(
-				Arrays.asList(parameterWithName("b").description("two")),
-				true).document(this.operationBuilder
-						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-								"/{a}/{b}")
-						.build());
+				Arrays.asList(parameterWithName("b").description("two")), true)
+						.document(this.operationBuilder.attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}").build());
 	}
 
 	@Test
@@ -143,13 +142,12 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 				Arrays.asList(
 						parameterWithName("a").description("one")
 								.attributes(key("foo").value("alpha")),
-				parameterWithName("b").description("two")
-						.attributes(key("foo").value("bravo"))),
+						parameterWithName("b").description("two")
+								.attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title")))
-						.document(this.operationBuilder
-								.attribute(
-										RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-										"/{a}/{b}")
+						.document(this.operationBuilder.attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}")
 								.attribute(TemplateEngine.class.getName(),
 										new MustacheTemplateEngine(resolver))
 								.build());
@@ -168,15 +166,13 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 		new PathParametersSnippet(Arrays.asList(
 				parameterWithName("a").description("one")
 						.attributes(key("foo").value("alpha")),
-				parameterWithName("b").description("two")
-						.attributes(key("foo").value("bravo"))))
-								.document(this.operationBuilder
-										.attribute(
-												RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-												"/{a}/{b}")
-										.attribute(TemplateEngine.class.getName(),
-												new MustacheTemplateEngine(resolver))
-										.build());
+				parameterWithName("b").description("two").attributes(key("foo")
+						.value("bravo")))).document(this.operationBuilder.attribute(
+								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
+								"/{a}/{b}")
+								.attribute(TemplateEngine.class.getName(),
+										new MustacheTemplateEngine(resolver))
+								.build());
 	}
 
 	@Test

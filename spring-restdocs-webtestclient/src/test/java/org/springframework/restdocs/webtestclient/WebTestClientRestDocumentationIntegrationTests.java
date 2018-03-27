@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,9 +133,8 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				.consumeWith(document("request-parameters", requestParameters(
 						parameterWithName("a").description("Alpha description"),
 						parameterWithName("b").description("Bravo description"))));
-		assertThat(
-				new File(
-						"build/generated-snippets/request-parameters/request-parameters.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/request-parameters/request-parameters.adoc"),
 				is(snippet(asciidoctor()).withContents(
 						tableWithHeader(TemplateFormats.asciidoctor(), "Parameter",
 								"Description").row("`a`", "Alpha description").row("`b`",
@@ -176,9 +175,8 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		this.webTestClient.get().uri("/").cookie("cookieName", "cookieVal")
 				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectBody().consumeWith(document("curl-snippet-with-cookies"));
-		assertThat(
-				new File(
-						"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
 						.content(String.format("$ curl 'https://api.example.com/' -i \\%n"
 								+ "    -H 'Accept: application/json' \\%n"
@@ -190,9 +188,8 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		this.webTestClient.get().uri("/").cookie("cookieName", "cookieVal")
 				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectBody().consumeWith(document("httpie-snippet-with-cookies"));
-		assertThat(
-				new File(
-						"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"),
+		assertThat(new File(
+				"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"),
 				is(snippet(asciidoctor())
 						.withContents(codeBlock(asciidoctor(), "bash").content(
 								String.format("$ http GET 'https://api.example.com/' \\%n"

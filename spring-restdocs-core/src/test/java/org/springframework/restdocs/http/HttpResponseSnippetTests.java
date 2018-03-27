@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,11 +65,9 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 	public void responseWithHeaders() throws IOException {
 		this.snippets.expectHttpResponse().withContents(httpResponse(HttpStatus.OK)
 				.header("Content-Type", "application/json").header("a", "alpha"));
-		new HttpResponseSnippet()
-				.document(this.operationBuilder.response()
-						.header(HttpHeaders.CONTENT_TYPE,
-								MediaType.APPLICATION_JSON_VALUE)
-						.header("a", "alpha").build());
+		new HttpResponseSnippet().document(this.operationBuilder.response()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.header("a", "alpha").build());
 	}
 
 	@Test

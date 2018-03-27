@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,11 +148,10 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 								.attributes(key("foo").value("alpha")),
 						new LinkDescriptor("b").description("two")
 								.attributes(key("foo").value("bravo"))))
-										.document(this.operationBuilder
-												.attribute(TemplateEngine.class
-														.getName(),
+										.document(this.operationBuilder.attribute(
+												TemplateEngine.class.getName(),
 												new MustacheTemplateEngine(resolver))
-										.build());
+												.build());
 	}
 
 	@Test
@@ -163,7 +162,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 		HypermediaDocumentation
 				.links(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
-				new LinkDescriptor("a").description("one"))
+						new LinkDescriptor("a").description("one"))
 				.and(new LinkDescriptor("b").description("two"))
 				.document(this.operationBuilder.build());
 	}

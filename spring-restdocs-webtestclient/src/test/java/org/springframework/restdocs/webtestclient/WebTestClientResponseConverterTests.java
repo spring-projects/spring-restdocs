@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class WebTestClientResponseConverterTests {
 						(req) -> ServerResponse.ok()
 								.cookie(ResponseCookie.from("name", "value")
 										.domain("localhost").httpOnly(true).build())
-						.build()))
+								.build()))
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
 				.exchange().expectBody().returnResult();
 		OperationResponse response = this.converter.convert(result);
