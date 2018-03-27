@@ -177,10 +177,11 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				.expectBody().consumeWith(document("curl-snippet-with-cookies"));
 		assertThat(new File(
 				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
-				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content(String.format("$ curl 'https://api.example.com/' -i \\%n"
-								+ "    -H 'Accept: application/json' \\%n"
-								+ "    --cookie 'cookieName=cookieVal'")))));
+				is(snippet(asciidoctor())
+						.withContents(codeBlock(asciidoctor(), "bash").content(String
+								.format("$ curl 'https://api.example.com/' -i -X GET \\%n"
+										+ "    -H 'Accept: application/json' \\%n"
+										+ "    --cookie 'cookieName=cookieVal'")))));
 	}
 
 	@Test

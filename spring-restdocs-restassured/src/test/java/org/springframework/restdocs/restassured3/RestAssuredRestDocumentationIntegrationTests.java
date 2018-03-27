@@ -121,7 +121,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
 				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
 						.content(String.format("$ curl 'http://localhost:"
-								+ tomcat.getPort() + "/' -i \\%n"
+								+ tomcat.getPort() + "/' -i -X GET \\%n"
 								+ "    -H 'Accept: application/json' \\%n"
 								+ "    -H 'Content-Type: " + contentType + "' \\%n"
 								+ "    --cookie 'cookieName=cookieVal'")))));

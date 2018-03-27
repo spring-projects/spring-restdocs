@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 		CliOperationRequest request = new CliOperationRequest(operation.getRequest());
 		writeUserOptionIfNecessary(request, builder);
-		writeHttpMethodIfNecessary(request, builder);
+		writeHttpMethod(request, builder);
 
 		List<String> additionalLines = new ArrayList<>();
 		writeHeaders(request, additionalLines);
@@ -144,11 +144,8 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writeHttpMethodIfNecessary(OperationRequest request,
-			StringBuilder builder) {
-		if (!HttpMethod.GET.equals(request.getMethod())) {
-			builder.append(String.format(" -X %s", request.getMethod()));
-		}
+	private void writeHttpMethod(OperationRequest request, StringBuilder builder) {
+		builder.append(String.format(" -X %s", request.getMethod()));
 	}
 
 	private void writeHeaders(CliOperationRequest request, List<String> lines) {

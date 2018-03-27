@@ -179,10 +179,11 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andDo(document("curl-snippet-with-cookies"));
 		assertThat(new File(
 				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
-				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content(String.format("$ curl 'http://localhost:8080/' -i \\%n"
-								+ "    -H 'Accept: application/json' \\%n"
-								+ "    --cookie 'cookieName=cookieVal'")))));
+				is(snippet(asciidoctor())
+						.withContents(codeBlock(asciidoctor(), "bash").content(String
+								.format("$ curl 'http://localhost:8080/' -i -X GET \\%n"
+										+ "    -H 'Accept: application/json' \\%n"
+										+ "    --cookie 'cookieName=cookieVal'")))));
 	}
 
 	@Test
@@ -617,9 +618,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 		assertThat(
 				new File(
 						"build/generated-snippets/custom-context-path/curl-request.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(codeBlock(asciidoctor(), "bash").content(String
-								.format("$ curl 'http://localhost:8080/custom/' -i \\%n"
+				is(snippet(asciidoctor()).withContents(
+						codeBlock(asciidoctor(), "bash").content(String.format(
+								"$ curl 'http://localhost:8080/custom/' -i -X GET \\%n"
 										+ "    -H 'Accept: application/json'")))));
 	}
 
