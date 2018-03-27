@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,7 +141,15 @@ class RestAssuredRequestConverter
 	private Parameters extractParameters(FilterableRequestSpecification requestSpec) {
 		Parameters parameters = new Parameters();
 		for (Entry<String, ?> entry : requestSpec.getQueryParams().entrySet()) {
-			parameters.add(entry.getKey(), entry.getValue().toString());
+			if (entry.getValue() instanceof Collection) {
+				Collection<?> queryParams = ((Collection<?>) entry.getValue());
+				for (Object queryParam : queryParams) {
+					parameters.add(entry.getKey(), queryParam.toString());
+				}
+			}
+			else {
+				parameters.add(entry.getKey(), entry.getValue().toString());
+			}
 		}
 		for (Entry<String, ?> entry : requestSpec.getRequestParams().entrySet()) {
 			parameters.add(entry.getKey(), entry.getValue().toString());
