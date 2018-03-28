@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured3.operation.preprocess;
+package org.springframework.restdocs.operation.preprocess;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -41,9 +41,7 @@ import static org.junit.Assert.assertThat;
  * Tests for {@link UriModifyingOperationPreprocessor}.
  *
  * @author Andy Wilkinson
- * @deprecated use {@link org.springframework.restdocs.operation.preprocess.UriModifyingOperationPreprocessorTests} instead
  */
-@Deprecated
 public class UriModifyingOperationPreprocessorTests {
 
 	private final OperationRequestFactory requestFactory = new OperationRequestFactory();
