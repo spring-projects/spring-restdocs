@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,6 +149,17 @@ public final class Preprocessors {
 	 */
 	public static ParametersModifyingOperationPreprocessor modifyParameters() {
 		return new ParametersModifyingOperationPreprocessor();
+	}
+
+	/**
+	 * Returns a {@code UriModifyingOperationPreprocessor} that will modify URIs in the
+	 * request or response by changing one or more of their host, scheme, and port.
+	 *
+	 * @return the preprocessor
+	 * @since 2.0.1
+	 */
+	public static UriModifyingOperationPreprocessor modifyUris() {
+		return new UriModifyingOperationPreprocessor();
 	}
 
 }

@@ -143,12 +143,13 @@ parameters.
 [[customizing-requests-and-responses-preprocessors-modify-uris]]
 ==== Modifying URIs
 
-TIP: If you are using MockMvc or WebTestclient, URIs should be customized by
-<<configuration-uris, changing the configuration>>.
+TIP: If you are using MockMvc or a WebTestClient that is not bound to a server,
+URIs should be customized by <<configuration-uris, changing the configuration>>.
 
-`modifyUris` on `RestAssuredPreprocessors` can be used to modify any URIs in a request
-or a response. When using REST Assured, this allows you to customize the URIs that appear
-in the documentation while testing a local instance of the service.
+`modifyUris` on `Preprocessors` can be used to modify any URIs in a request
+or a response. When using REST Assured or WebTestClient bound to a server, this
+allows you to customize the URIs that appear in the documentation while testing a
+local instance of the service.
 
 
 

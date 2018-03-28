@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package org.springframework.restdocs.restassured3.operation.preprocess;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
+import org.springframework.restdocs.operation.preprocess.UriModifyingOperationPreprocessor;
 
 /**
  * Static factory methods for creating
@@ -29,7 +31,10 @@ import org.springframework.restdocs.operation.OperationResponse;
  *
  * @author Andy Wilkinson
  * @since 1.1.0
+ * @deprecated since 2.0.1 in favor of {@link Preprocessors} and, specifically,
+ * {@link Preprocessors#modifyUris()}
  */
+@Deprecated
 public abstract class RestAssuredPreprocessors {
 
 	private RestAssuredPreprocessors() {
@@ -41,7 +46,9 @@ public abstract class RestAssuredPreprocessors {
 	 * request or response by changing one or more of their host, scheme, and port.
 	 *
 	 * @return the preprocessor
+	 * @deprecated since 2.0.1 in favor of {@link Preprocessors#modifyUris()}
 	 */
+	@Deprecated
 	public static UriModifyingOperationPreprocessor modifyUris() {
 		return new UriModifyingOperationPreprocessor();
 	}
