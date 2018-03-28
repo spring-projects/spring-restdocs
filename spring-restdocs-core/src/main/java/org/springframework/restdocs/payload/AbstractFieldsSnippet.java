@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -294,6 +294,16 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 */
 	protected final boolean isIgnoredUndocumentedFields() {
 		return this.ignoreUndocumentedFields;
+	}
+
+	/**
+	 * Returns the {@link PayloadSubsectionExtractor}, if any, used by this snippet.
+	 *
+	 * @return the subsection extractor or {@code null}
+	 * @since 1.2.4
+	 */
+	protected final PayloadSubsectionExtractor<?> getSubsectionExtractor() {
+		return this.subsectionExtractor;
 	}
 
 	/**

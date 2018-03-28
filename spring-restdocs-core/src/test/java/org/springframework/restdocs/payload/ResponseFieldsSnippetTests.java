@@ -96,6 +96,17 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void subsectionOfMapResponseWithCommonsPrefix() throws IOException {
+		this.snippets.expect("response-fields-beneath-a")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`b.c`",
+						"`String`", "two"));
+		responseFields(beneathPath("a"))
+				.andWithPrefix("b.", fieldWithPath("c").description("two"))
+				.document(this.operationBuilder.response()
+						.content("{\"a\": {\"b\": {\"c\": \"charlie\"}}}").build());
+	}
+
+	@Test
 	public void arrayResponseWithFields() throws IOException {
 		this.snippets.expectResponseFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")

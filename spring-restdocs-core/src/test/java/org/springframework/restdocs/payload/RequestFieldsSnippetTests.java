@@ -104,6 +104,18 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void subsectionOfMapRequestWithCommonPrefix() throws IOException {
+		this.snippets.expect("request-fields-beneath-a")
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`b.c`",
+						"`String`", "two"));
+
+		requestFields(beneathPath("a"))
+				.andWithPrefix("b.", fieldWithPath("c").description("two"))
+				.document(this.operationBuilder.request("http://localhost")
+						.content("{\"a\": {\"b\": {\"c\": \"charlie\"}}}").build());
+	}
+
+	@Test
 	public void arrayRequestWithFields() throws IOException {
 		this.snippets.expectRequestFields()
 				.withContents(tableWithHeader("Path", "Type", "Description")
