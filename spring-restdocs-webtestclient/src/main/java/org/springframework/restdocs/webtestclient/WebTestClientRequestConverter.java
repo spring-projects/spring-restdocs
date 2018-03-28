@@ -85,7 +85,7 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 		Parameters parameters = new Parameters();
 		parameters.addAll(this.queryStringParser.parse(result.getUrl()));
 		if (MediaType.APPLICATION_FORM_URLENCODED
-				.equals(result.getRequestHeaders().getContentType())) {
+				.isCompatibleWith(result.getRequestHeaders().getContentType())) {
 			parameters.addAll(this.formDataReader
 					.readMono(FORM_DATA_TYPE,
 							new ExchangeResultReactiveHttpInputMessage(result), null)
