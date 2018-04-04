@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
 import org.springframework.test.web.reactive.server.ExchangeResult;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 /**
@@ -37,8 +36,6 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 
 	@Override
 	public OperationResponse convert(ExchangeResult result) {
-		MultiValueMap<String, ResponseCookie> responseCookies = result
-				.getResponseCookies();
 		return new OperationResponseFactory().create(result.getStatus(),
 				extractHeaders(result), result.getResponseBodyContent());
 	}

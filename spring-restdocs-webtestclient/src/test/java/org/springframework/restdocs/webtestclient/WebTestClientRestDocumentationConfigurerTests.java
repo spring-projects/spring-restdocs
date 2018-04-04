@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class WebTestClientRestDocumentationConfigurerTests {
 
 	@Test
 	public void configurationCanBeRetrievedButOnlyOnce() {
-		ClientRequest request = ClientRequest.method(HttpMethod.GET, URI.create("/test"))
+		ClientRequest request = ClientRequest.create(HttpMethod.GET, URI.create("/test"))
 				.header(WebTestClient.WEBTESTCLIENT_REQUEST_ID, "1").build();
 		this.configurer.filter(request, mock(ExchangeFunction.class));
 		Map<String, Object> configuration = WebTestClientRestDocumentationConfigurer
@@ -65,7 +65,7 @@ public class WebTestClientRestDocumentationConfigurerTests {
 	@Test
 	public void requestUriHasDefaultsAppliedWhenItHasNoHost() {
 		ClientRequest request = ClientRequest
-				.method(HttpMethod.GET, URI.create("/test?foo=bar#baz"))
+				.create(HttpMethod.GET, URI.create("/test?foo=bar#baz"))
 				.header(WebTestClient.WEBTESTCLIENT_REQUEST_ID, "1").build();
 		ExchangeFunction exchangeFunction = mock(ExchangeFunction.class);
 		this.configurer.filter(request, exchangeFunction);
@@ -79,7 +79,7 @@ public class WebTestClientRestDocumentationConfigurerTests {
 	@Test
 	public void requestUriIsNotChangedWhenItHasAHost() {
 		ClientRequest request = ClientRequest
-				.method(HttpMethod.GET,
+				.create(HttpMethod.GET,
 						URI.create("https://api.example.com:4567/test?foo=bar#baz"))
 				.header(WebTestClient.WEBTESTCLIENT_REQUEST_ID, "1").build();
 		ExchangeFunction exchangeFunction = mock(ExchangeFunction.class);
