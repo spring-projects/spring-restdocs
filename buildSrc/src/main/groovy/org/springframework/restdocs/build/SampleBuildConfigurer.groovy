@@ -120,7 +120,7 @@ public class SampleBuildConfigurer {
 		gradleBuild.description = "Builds the ${name} sample with Gradle"
 		gradleBuild.group = "Build"
 		gradleBuild.workingDir = this.workingDir
-		gradleBuild.commandLine = [isWindows() ? "${sampleDir.absolutePath}/gradlew.bat" : './gradlew', 'clean', 'build']
+		gradleBuild.commandLine = [isWindows() ? "${sampleDir.absolutePath}/gradlew.bat" : './gradlew', 'clean', 'build', '--no-daemon']
 		gradleBuild.dependsOn dependencies
 		return gradleBuild
 	}
