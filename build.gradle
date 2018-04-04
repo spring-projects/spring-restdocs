@@ -66,7 +66,7 @@ subprojects {
 			dependency 'javax.servlet:javax.servlet-api:3.1.0'
 			dependency 'javax.validation:validation-api:1.1.0.Final'
 			dependency 'junit:junit:4.12'
-			dependency 'io.rest-assured:rest-assured:3.0.3'
+			dependency 'io.rest-assured:rest-assured:3.0.7'
 			dependency 'org.apache.pdfbox:pdfbox:2.0.7'
 			dependency 'org.asciidoctor:asciidoctorj:1.5.6'
 			dependency 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
