@@ -34,7 +34,7 @@ ext {
 	junitJupiterVersion = '5.0.0'
 }
 
-ext['spring-restdocs.version'] = '2.0.1.BUILD-SNAPSHOT'
+ext['spring-restdocs.version'] = '2.0.1.RELEASE'
 
 dependencies {
 	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
