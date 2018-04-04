@@ -60,7 +60,7 @@ subprojects {
 			mavenBom "org.springframework:spring-framework-bom:$springVersion"
 		}
 		dependencies {
-			dependency 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
+			dependency 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
 			dependency 'com.samskivert:jmustache:1.12'
 			dependency 'commons-codec:commons-codec:1.10'
 			dependency 'javax.servlet:javax.servlet-api:3.1.0'
