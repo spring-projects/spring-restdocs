@@ -19,6 +19,6 @@ Spring REST Docs in the [ApiDocumentation][3] tests are incorporated into this
 documentation by [ERB][4]. The combined Markdown document is then turned into HTML.
 
 [1]: https://github.com/tripit/slate
-[2]: slate/api-guide.md.erb
+[2]: slate/source/api-guide.html.md.erb
 [3]: src/test/java/com/example/notes/ApiDocumentation.java
 [4]: http://ruby-doc.org/stdlib-2.2.3/libdoc/erb/rdoc/ERB.html
