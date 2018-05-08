@@ -132,7 +132,7 @@ the configuration are described below.
 					<dependency> <4>
 						<groupId>org.springframework.restdocs</groupId>
 						<artifactId>spring-restdocs-asciidoctor</artifactId>
-						<version>{project-version}</version>
+						<version>{project-version}</version> <5>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -149,8 +149,10 @@ the configuration are described below.
 	will automatically configure the `snippets` attribute for use in your `.adoc` files to
 	point to `target/generated-snippets`. It will also allow you to use the `operation`
 	block macro.
+<5> If you are using along with `spring-boot` then replace version with ${spring-restdocs.version} 
+        which handles version upgrading when parent version is upgraded.
 
-[source,indent=0,subs="verbatim,attributes",role="secondary"]
+[source,indent=0,subs="verbatim,attributes",role="secondary"] 
 .Gradle
 ----
 	plugins { <1>
