@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
@@ -133,6 +134,21 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		new HttpRequestSnippet().document(
 				this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo")
 						.param("a", "alpha").param("b", "bravo").build());
+	}
+
+	@Test
+	public void getRequestWithUrlTemplate() throws IOException {
+		this.snippets.expectHttpRequest().withContents(containsString("/{a}"));
+
+		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
+		given(resolver.resolveTemplateResource("http-request"))
+				.willReturn(snippetResource("http-request-with-template"));
+
+		new HttpRequestSnippet().document(this.operationBuilder
+				.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}")
+				.attribute(TemplateEngine.class.getName(),
+						new MustacheTemplateEngine(resolver))
+				.request("http://localhost/foo").header("Alpha", "a").build());
 	}
 
 	@Test
