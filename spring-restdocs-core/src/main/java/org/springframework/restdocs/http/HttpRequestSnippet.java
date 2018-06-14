@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
@@ -71,6 +72,13 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		model.put("path", getPath(operation.getRequest()));
 		model.put("headers", getHeaders(operation.getRequest()));
 		model.put("requestBody", getRequestBody(operation.getRequest()));
+
+		String urlTemplate = extractUrlTemplate(operation);
+
+		if (urlTemplate != null) {
+			model.put("urlTemplate", urlTemplate);
+		}
+
 		return model;
 	}
 
@@ -214,6 +222,25 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		header.put("name", name);
 		header.put("value", value);
 		return header;
+	}
+
+	private String extractUrlTemplate(Operation operation) {
+		String urlTemplate = (String) operation.getAttributes()
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE);
+
+		if (urlTemplate != null) {
+			urlTemplate = removeQueryStringIfPresent(urlTemplate);
+		}
+
+		return urlTemplate;
+	}
+
+	private String removeQueryStringIfPresent(String urlTemplate) {
+		int index = urlTemplate.indexOf('?');
+		if (index == -1) {
+			return urlTemplate;
+		}
+		return urlTemplate.substring(0, index);
 	}
 
 }
