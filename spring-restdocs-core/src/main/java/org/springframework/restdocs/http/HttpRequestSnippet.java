@@ -78,6 +78,9 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		if (urlTemplate != null) {
 			model.put("urlTemplate", urlTemplate);
 		}
+		else {
+			model.put("urlTemplate", "");
+		}
 
 		return model;
 	}
