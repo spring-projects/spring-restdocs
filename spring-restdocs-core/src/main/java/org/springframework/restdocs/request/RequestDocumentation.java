@@ -35,6 +35,28 @@ public abstract class RequestDocumentation {
 	}
 
 	/**
+	 * Returns a new {@code Snippet} that will document the request URI for the API
+	 * operation.
+	 *
+	 * @return the snippet that will document the request URI
+	 */
+	public static RequestUriSnippet requestUri() {
+		return new RequestUriSnippet();
+	}
+
+	/**
+	 * Returns a new {@code Snippet} that will document the request URI for the API
+	 * operation. The given {@code attributes} will be available during snippet
+	 * generation.
+	 *
+	 * @param attributes the attributes
+	 * @return the snippet that will document the request URI
+	 */
+	public static RequestUriSnippet requestUri(Map<String, Object> attributes) {
+		return new RequestUriSnippet(attributes);
+	}
+
+	/**
 	 * Creates a {@link ParameterDescriptor} that describes a request or path parameter
 	 * with the given {@code name}.
 	 *

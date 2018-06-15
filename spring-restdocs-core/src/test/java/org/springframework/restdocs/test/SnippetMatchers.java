@@ -87,6 +87,16 @@ public final class SnippetMatchers {
 		return new HttpResponseMatcher(status, new MarkdownCodeBlockMatcher<>("http"), 2);
 	}
 
+	public static RequestUriMatcher requestUri(TemplateFormat format,
+			RequestMethod requestMethod, String urlTemplate) {
+		if ("adoc".equals(format.getFileExtension())) {
+			return new RequestUriMatcher(requestMethod, urlTemplate,
+					new AsciidoctorCodeBlockMatcher<>("http", "nowrap"), 3);
+		}
+		return new RequestUriMatcher(requestMethod, urlTemplate,
+				new MarkdownCodeBlockMatcher<>("http"), 2);
+	}
+
 	@SuppressWarnings({ "rawtypes" })
 	public static CodeBlockMatcher<?> codeBlock(TemplateFormat format, String language) {
 		if ("adoc".equals(format.getFileExtension())) {
@@ -291,6 +301,19 @@ public final class SnippetMatchers {
 			super(delegate, headerOffset);
 			this.content(requestMethod.name() + " " + uri + " HTTP/1.1");
 			this.content("");
+		}
+
+	}
+
+	/**
+	 * A {@link Matcher} for an HTTP request.
+	 */
+	public static final class RequestUriMatcher extends HttpMatcher<RequestUriMatcher> {
+
+		private RequestUriMatcher(RequestMethod requestMethod, String uri,
+				CodeBlockMatcher<?> delegate, int headerOffset) {
+			super(delegate, headerOffset);
+			this.content(requestMethod.name() + " " + uri);
 		}
 
 	}

@@ -109,6 +109,10 @@ public class ExpectedSnippets extends OperationTestRule {
 		return expect("http-response");
 	}
 
+	public ExpectedSnippet expectRequestUri() {
+		return expect("request-uri");
+	}
+
 	public ExpectedSnippet expectRequestParameters() {
 		return expect("request-parameters");
 	}

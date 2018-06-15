@@ -58,6 +58,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.restdocs.request.RequestDocumentation.requestUri;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
@@ -155,6 +156,17 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
 				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
 				"links.adoc");
+	}
+
+	@Test
+	public void requestUriSnippet() throws Exception {
+		given().port(tomcat.getPort())
+				.filter(documentationConfiguration(this.restDocumentation))
+				.filter(document("request-uri", requestUri())).accept("application/json")
+				.get("/{foo}", "").then().statusCode(200);
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/request-uri"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
+				"request-uri.adoc");
 	}
 
 	@Test

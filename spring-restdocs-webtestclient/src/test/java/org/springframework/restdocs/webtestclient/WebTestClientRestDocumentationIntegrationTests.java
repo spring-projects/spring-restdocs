@@ -54,6 +54,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.restdocs.request.RequestDocumentation.requestUri;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
 import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
@@ -108,6 +109,17 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		assertExpectedSnippetFilesExist(outputDir, "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc", "httpie-request.adoc",
 				"request-body.adoc", "response-body.adoc");
+	}
+
+	@Test
+	public void requestUriSnippet() {
+		File outputDir = new File("build/generated-snippets/request-uri");
+		FileSystemUtils.deleteRecursively(outputDir);
+		this.webTestClient.get().uri("/{foo}/{bar}", "1", "2").exchange().expectStatus()
+				.isOk().expectBody().consumeWith(document("request-uri", requestUri()));
+		assertExpectedSnippetFilesExist(outputDir, "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc", "httpie-request.adoc",
+				"request-body.adoc", "response-body.adoc", "request-uri.adoc");
 	}
 
 	@Test

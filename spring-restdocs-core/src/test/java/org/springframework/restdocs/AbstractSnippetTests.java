@@ -33,6 +33,7 @@ import org.springframework.restdocs.test.SnippetMatchers;
 import org.springframework.restdocs.test.SnippetMatchers.CodeBlockMatcher;
 import org.springframework.restdocs.test.SnippetMatchers.HttpRequestMatcher;
 import org.springframework.restdocs.test.SnippetMatchers.HttpResponseMatcher;
+import org.springframework.restdocs.test.SnippetMatchers.RequestUriMatcher;
 import org.springframework.restdocs.test.SnippetMatchers.TableMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -90,6 +91,10 @@ public abstract class AbstractSnippetTests {
 
 	public HttpResponseMatcher httpResponse(HttpStatus responseStatus) {
 		return SnippetMatchers.httpResponse(this.templateFormat, responseStatus);
+	}
+
+	public RequestUriMatcher requestUri(RequestMethod method, String urlTemplate) {
+		return SnippetMatchers.requestUri(this.templateFormat, method, urlTemplate);
 	}
 
 	protected FileSystemResource snippetResource(String name) {

@@ -85,6 +85,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.restdocs.request.RequestDocumentation.requestUri;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
@@ -292,6 +293,19 @@ public class MockMvcRestDocumentationIntegrationTests {
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
 				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
 				"links.adoc");
+	}
+
+	@Test
+	public void requestUriSnippet() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+
+		mockMvc.perform(get("{foo}", "/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(document("links", requestUri()));
+
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
+				"request-uri.adoc");
 	}
 
 	@Test
