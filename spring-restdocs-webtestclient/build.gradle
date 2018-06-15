@@ -15,3 +15,10 @@ dependencies {
 test {
 	jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*"
 }
+
+matrixTest {
+	springFramework {
+		group = 'org.springframework'
+		versions = ['5.1.0.BUILD-SNAPSHOT']
+	}
+}
