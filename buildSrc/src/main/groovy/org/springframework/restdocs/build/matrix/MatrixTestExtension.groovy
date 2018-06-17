@@ -65,7 +65,6 @@ public class MatrixTestExtension {
 					versionSelectors
 							.findAll{ it.group == dependency.requested.group }
 							.each { dependency.useVersion it.version }
-					}
 				}
 			}
 			classpath = project.files(testSourceSet.output, project.sourceSets.main.output, configuration)
