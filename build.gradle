@@ -16,6 +16,7 @@ allprojects {
 	group = 'org.springframework.restdocs'
 	repositories {
 		mavenCentral()
+		maven { url 'https://repo.spring.io/libs-snapshot' }
 	}
 }
 
@@ -51,6 +52,7 @@ subprojects {
 	apply plugin: 'propdeps-eclipse'
 	apply plugin: 'propdeps-maven'
 	apply plugin: 'maven'
+	apply plugin: 'matrixtest'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8

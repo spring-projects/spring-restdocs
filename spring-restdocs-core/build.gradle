@@ -62,3 +62,10 @@ artifacts {
 test {
 	jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*,excludes=org.springframework.restdocs.mustache.*"
 }
+
+matrixTest {
+	springFramework {
+		group = 'org.springframework'
+		versions = ['5.1.0.BUILD-SNAPSHOT']
+	}
+}
