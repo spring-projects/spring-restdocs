@@ -19,7 +19,7 @@ package org.springframework.restdocs.operation.preprocess;
 import org.springframework.restdocs.operation.OperationResponse;
 
 /**
- * An {@code OperationRequestPreprocessor} is used to modify an {@code OperationRequest}
+ * An {@code OperationResponsePreprocessor} is used to modify an {@code OperationResponse}
  * prior to it being documented.
  *
  * @author Andy Wilkinson
