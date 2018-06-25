@@ -84,11 +84,8 @@ class JsonContentHandler implements ContentHandler {
 		try {
 			ExtractedField extracted = this.fieldProcessor.extract(candidate.getPath(),
 					payload);
-			if (extracted.getValue() instanceof Collection
-					&& ((Collection<?>) extracted.getValue()).isEmpty()) {
-				return true;
-			}
-			return false;
+			return extracted.getValue() instanceof Collection
+					&& ((Collection<?>) extracted.getValue()).isEmpty();
 		}
 		catch (FieldDoesNotExistException ex) {
 			return true;
