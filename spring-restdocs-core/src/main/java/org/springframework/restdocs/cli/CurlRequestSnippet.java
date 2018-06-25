@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
@@ -96,7 +97,9 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	}
 
 	private boolean includeParametersInUri(OperationRequest request) {
-		return request.getMethod() == HttpMethod.GET || request.getContent().length > 0;
+		return request.getMethod() == HttpMethod.GET || (request.getContent().length > 0
+				&& !MediaType.APPLICATION_FORM_URLENCODED
+						.isCompatibleWith(request.getHeaders().getContentType()));
 	}
 
 	private String getOptions(Operation operation) {

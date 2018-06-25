@@ -129,13 +129,22 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	private void writeOptions(OperationRequest request, PrintWriter writer) {
 		if (!request.getParts().isEmpty()
 				|| (!request.getParameters().getUniqueParameters(request.getUri())
-						.isEmpty() && !includeParametersInUri(request))) {
+						.isEmpty() && !includeParametersInUri(request)
+						&& includeParametersAsFormOptions(request))) {
 			writer.print("--form ");
 		}
 	}
 
 	private boolean includeParametersInUri(OperationRequest request) {
-		return request.getMethod() == HttpMethod.GET || request.getContent().length > 0;
+		return request.getMethod() == HttpMethod.GET || (request.getContent().length > 0
+				&& !MediaType.APPLICATION_FORM_URLENCODED
+						.isCompatibleWith(request.getHeaders().getContentType()));
+	}
+
+	private boolean includeParametersAsFormOptions(OperationRequest request) {
+		return request.getMethod() != HttpMethod.GET && (request.getContent().length == 0
+				|| !MediaType.APPLICATION_FORM_URLENCODED
+						.isCompatibleWith(request.getHeaders().getContentType()));
 	}
 
 	private void writeUserOptionIfNecessary(CliOperationRequest request,

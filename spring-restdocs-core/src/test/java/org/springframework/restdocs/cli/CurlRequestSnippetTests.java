@@ -214,6 +214,20 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void postRequestWithOverlappingParametersAndFormUrlEncodedBody()
+			throws IOException {
+		this.snippets.expectCurlRequest().withContents(
+				codeBlock("bash").content("$ curl 'http://localhost/foo' -i -X POST "
+						+ "-H 'Content-Type: application/x-www-form-urlencoded' "
+						+ "-d 'a=alpha&b=bravo'"));
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/foo").method("POST").content("a=alpha&b=bravo")
+				.header(HttpHeaders.CONTENT_TYPE,
+						MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("a", "alpha").param("b", "bravo").build());
+	}
+
+	@Test
 	public void putRequestWithOneParameter() throws IOException {
 		this.snippets.expectCurlRequest().withContents(codeBlock("bash")
 				.content("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=v1'"));
