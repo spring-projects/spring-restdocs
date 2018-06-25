@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,15 @@ package org.springframework.restdocs.payload;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
 /**
  * A {@link ContentHandler} for JSON content.
@@ -70,11 +73,26 @@ class JsonContentHandler implements ContentHandler {
 		for (FieldDescriptor candidate : candidates) {
 			if (candidate.isOptional()
 					&& missing.getPath().startsWith(candidate.getPath())
-					&& !this.fieldProcessor.hasField(candidate.getPath(), payload)) {
+					&& isMissing(candidate, payload)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private boolean isMissing(FieldDescriptor candidate, Object payload) {
+		try {
+			ExtractedField extracted = this.fieldProcessor.extract(candidate.getPath(),
+					payload);
+			if (extracted.getValue() instanceof Collection
+					&& ((Collection<?>) extracted.getValue()).isEmpty()) {
+				return true;
+			}
+			return false;
+		}
+		catch (FieldDoesNotExistException ex) {
+			return true;
+		}
 	}
 
 	@Override

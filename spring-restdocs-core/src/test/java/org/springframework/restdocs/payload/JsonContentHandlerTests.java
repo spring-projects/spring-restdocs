@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,6 +144,16 @@ public class JsonContentHandlerTests {
 				"{\"b\":\"bravo\"}".getBytes()).findMissingFields(
 						Arrays.asList(new FieldDescriptor("a").optional(),
 								new FieldDescriptor("b"), new FieldDescriptor("a.c")));
+		assertThat(missingFields.size(), is(equalTo(0)));
+	}
+
+	@Test
+	public void describedFieldThatIsNotPresentNestedBeneathOptionalArrayThatIsEmptyIsNotConsideredMissing() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"outer\":[]}".getBytes())
+						.findMissingFields(Arrays.asList(new FieldDescriptor("outer"),
+								new FieldDescriptor("outer[]").optional(),
+								new FieldDescriptor("outer[].inner")));
 		assertThat(missingFields.size(), is(equalTo(0)));
 	}
 
