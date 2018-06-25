@@ -203,6 +203,23 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void postRequestWithOverlappingParametersAndFormUrlEncodedBody()
+			throws IOException {
+		String content = "a=alpha&b=bravo";
+		this.snippets.expectHttpRequest()
+				.withContents(httpRequest(RequestMethod.POST, "/foo")
+						.header(HttpHeaders.CONTENT_TYPE,
+								MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+						.header(HttpHeaders.HOST, "localhost").content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+		new HttpRequestSnippet().document(this.operationBuilder
+				.request("http://localhost/foo").method("POST").content("a=alpha&b=bravo")
+				.header(HttpHeaders.CONTENT_TYPE,
+						MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("a", "alpha").param("b", "bravo").build());
+	}
+
+	@Test
 	public void postRequestWithCharset() throws IOException {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		byte[] contentBytes = japaneseContent.getBytes("UTF-8");

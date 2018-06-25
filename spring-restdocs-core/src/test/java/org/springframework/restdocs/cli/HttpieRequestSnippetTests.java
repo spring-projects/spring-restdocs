@@ -215,6 +215,20 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void postRequestWithOverlappingParametersAndFormUrlEncodedBody()
+			throws IOException {
+		this.snippets.expectHttpieRequest()
+				.withContents(codeBlock("bash").content(
+						"$ echo 'a=alpha&b=bravo' | http POST 'http://localhost/foo' "
+								+ "'Content-Type:application/x-www-form-urlencoded'"));
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
+				.request("http://localhost/foo").method("POST").content("a=alpha&b=bravo")
+				.header(HttpHeaders.CONTENT_TYPE,
+						MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.param("a", "alpha").param("b", "bravo").build());
+	}
+
+	@Test
 	public void putRequestWithOneParameter() throws IOException {
 		this.snippets.expectHttpieRequest().withContents(codeBlock("bash")
 				.content("$ http --form PUT 'http://localhost/foo' 'k1=v1'"));

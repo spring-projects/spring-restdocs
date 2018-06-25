@@ -94,7 +94,9 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	}
 
 	private boolean includeParametersInUri(OperationRequest request) {
-		return request.getMethod() == HttpMethod.GET || request.getContent().length > 0;
+		return request.getMethod() == HttpMethod.GET || (request.getContent().length > 0
+				&& !MediaType.APPLICATION_FORM_URLENCODED
+						.isCompatibleWith(request.getHeaders().getContentType()));
 	}
 
 	private List<Map<String, String>> getHeaders(OperationRequest request) {
