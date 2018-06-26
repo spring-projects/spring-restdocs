@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 
 package org.springframework.restdocs;
 
-import java.lang.reflect.Method;
-
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
@@ -31,28 +30,18 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  *
  * @author Andy Wilkinson
  */
-public class RestDocumentationExtension implements Extension, BeforeEachCallback,
-		AfterEachCallback, RestDocumentationContextProvider, ParameterResolver {
-
-	private final ManualRestDocumentation delegate = new ManualRestDocumentation();
+public class RestDocumentationExtension
+		implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
 	@Override
 	public void beforeEach(ExtensionContext context) throws Exception {
-		Class<?> testClass = context.getTestClass().orElseThrow(
-				() -> new IllegalStateException("No test class was available"));
-		Method testMethod = context.getTestMethod().orElseThrow(
-				() -> new IllegalStateException("No test method was available"));
-		this.delegate.beforeTest(testClass, testMethod.getName());
+		this.getDelegate(context).beforeTest(context.getRequiredTestClass(),
+				context.getRequiredTestMethod().getName());
 	}
 
 	@Override
 	public void afterEach(ExtensionContext context) throws Exception {
-		this.delegate.afterTest();
-	}
-
-	@Override
-	public RestDocumentationContext beforeOperation() {
-		return this.delegate.beforeOperation();
+		this.getDelegate(context).afterTest();
 	}
 
 	@Override
@@ -64,8 +53,16 @@ public class RestDocumentationExtension implements Extension, BeforeEachCallback
 
 	@Override
 	public Object resolveParameter(ParameterContext parameterContext,
-			ExtensionContext extensionContext) {
-		return this;
+			ExtensionContext context) {
+		return (RestDocumentationContextProvider) () -> getDelegate(context)
+				.beforeOperation();
+	}
+
+	private ManualRestDocumentation getDelegate(ExtensionContext context) {
+		Namespace namespace = Namespace.create(getClass(), context.getUniqueId());
+		return context.getStore(namespace).getOrComputeIfAbsent(
+				ManualRestDocumentation.class, (key) -> new ManualRestDocumentation(),
+				ManualRestDocumentation.class);
 	}
 
 }
