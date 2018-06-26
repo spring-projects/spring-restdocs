@@ -245,7 +245,7 @@ from where it will be included in the jar file.
 [source,indent=0,role="secondary"]
 .Gradle
 ----
-	jar {
+	bootJar {
 		dependsOn asciidoctor <1>
 		from ("${asciidoctor.outputDir}/html5") { <2>
 			into 'static/docs'
