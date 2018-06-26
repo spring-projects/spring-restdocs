@@ -157,4 +157,14 @@ public class JsonContentHandlerTests {
 		assertThat(missingFields.size(), is(equalTo(0)));
 	}
 
+	@Test
+	public void describedFieldThatIsSometimesPresentChildOfOptionalArrayIsNotConsideredMissing() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"a\":[ {\"b\": \"bravo\"}, {\"b\": \"bravo\", \"c\": { \"d\": \"delta\"}}]}"
+						.getBytes()).findMissingFields(
+								Arrays.asList(new FieldDescriptor("a.[].c").optional(),
+										new FieldDescriptor("a.[].c.d]")));
+		assertThat(missingFields.size(), is(equalTo(0)));
+	}
+
 }

@@ -81,6 +81,9 @@ class JsonContentHandler implements ContentHandler {
 	}
 
 	private boolean isMissing(FieldDescriptor candidate, Object payload) {
+		if (!this.fieldProcessor.hasField(candidate.getPath(), payload)) {
+			return true;
+		}
 		try {
 			ExtractedField extracted = this.fieldProcessor.extract(candidate.getPath(),
 					payload);
