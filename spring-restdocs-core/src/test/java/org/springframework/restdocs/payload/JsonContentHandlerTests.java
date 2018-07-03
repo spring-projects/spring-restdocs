@@ -163,7 +163,7 @@ public class JsonContentHandlerTests {
 				"{\"a\":[ {\"b\": \"bravo\"}, {\"b\": \"bravo\", \"c\": { \"d\": \"delta\"}}]}"
 						.getBytes()).findMissingFields(
 								Arrays.asList(new FieldDescriptor("a.[].c").optional(),
-										new FieldDescriptor("a.[].c.d]")));
+										new FieldDescriptor("a.[].c.d")));
 		assertThat(missingFields.size(), is(equalTo(0)));
 	}
 
