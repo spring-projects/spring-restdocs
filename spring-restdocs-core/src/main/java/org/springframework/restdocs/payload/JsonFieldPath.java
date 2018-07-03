@@ -127,7 +127,7 @@ final class JsonFieldPath {
 	/**
 	 * The type of a field path.
 	 */
-	static enum PathType {
+	enum PathType {
 
 		/**
 		 * The path identifies a single item in the payload.

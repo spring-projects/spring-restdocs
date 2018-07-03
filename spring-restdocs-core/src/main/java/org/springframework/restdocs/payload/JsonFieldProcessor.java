@@ -195,7 +195,7 @@ final class JsonFieldProcessor {
 					|| this.matchType == MatchType.NULL;
 		}
 
-		private static enum MatchType {
+		private enum MatchType {
 
 			ABSENT, MIXED, NONE, NULL, NON_NULL;
 
