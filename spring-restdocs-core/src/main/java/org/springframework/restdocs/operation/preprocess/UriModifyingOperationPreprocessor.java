@@ -138,10 +138,10 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 		HttpHeaders modifiedHeaders = modify(request.getHeaders());
 		modifiedHeaders.set(HttpHeaders.HOST, modifiedUri.getHost()
 				+ (modifiedUri.getPort() == -1 ? "" : ":" + modifiedUri.getPort()));
-		return this.contentModifyingDelegate.preprocess(
-				new OperationRequestFactory().create(uriBuilder.build(true).toUri(),
-						request.getMethod(), request.getContent(), modifiedHeaders,
-						request.getParameters(), modify(request.getParts())));
+		return this.contentModifyingDelegate.preprocess(new OperationRequestFactory()
+				.create(uriBuilder.build(true).toUri(), request.getMethod(),
+						request.getContent(), modifiedHeaders, request.getParameters(),
+						modify(request.getParts()), request.getCookies()));
 	}
 
 	@Override
