@@ -121,7 +121,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				new File("build/generated-snippets/path-parameters/path-parameters.adoc"),
 				is(snippet(asciidoctor()).withContents(
 						tableWithTitleAndHeader(TemplateFormats.asciidoctor(),
-								"/{foo}/{bar}", "Parameter", "Description")
+								"+/{foo}/{bar}+", "Parameter", "Description")
 										.row("`foo`", "Foo description")
 										.row("`bar`", "Bar description"))));
 	}
