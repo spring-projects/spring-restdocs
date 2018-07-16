@@ -31,6 +31,9 @@ import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
@@ -455,6 +458,17 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 										.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
 												+ "{\"c\": 2}, {\"b\": 1,\"c\": 2}]}")
 										.build());
+	}
+
+	@Test
+	public void typeDeterminationDoesNotSetTypeOnDescriptor() throws IOException {
+		this.snippets.expectResponseFields()
+				.withContents(tableWithHeader("Path", "Type", "Description").row("`id`",
+						"`Number`", "one"));
+		FieldDescriptor descriptor = fieldWithPath("id").description("one");
+		new ResponseFieldsSnippet(Arrays.asList(descriptor)).document(
+				this.operationBuilder.response().content("{\"id\": 67}").build());
+		assertThat(descriptor.getType(), is(nullValue()));
 	}
 
 	private String escapeIfNecessary(String input) {

@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
+import org.springframework.restdocs.snippet.Attributes;
+import org.springframework.restdocs.snippet.Attributes.Attribute;
 import org.springframework.restdocs.snippet.ModelCreationException;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
@@ -184,10 +186,12 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 		validateFieldDocumentation(contentHandler);
 
+		List<FieldDescriptor> descriptorsToDocument = new ArrayList<>();
 		for (FieldDescriptor descriptor : this.fieldDescriptors) {
 			if (!descriptor.isIgnored()) {
 				try {
-					descriptor.type(contentHandler.determineFieldType(descriptor));
+					Object type = contentHandler.determineFieldType(descriptor);
+					descriptorsToDocument.add(copyWithType(descriptor, type));
 				}
 				catch (FieldDoesNotExistException ex) {
 					String message = "Cannot determine the type of the field '"
@@ -202,7 +206,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		Map<String, Object> model = new HashMap<>();
 		List<Map<String, Object>> fields = new ArrayList<>();
 		model.put("fields", fields);
-		for (FieldDescriptor descriptor : this.fieldDescriptors) {
+		for (FieldDescriptor descriptor : descriptorsToDocument) {
 			if (!descriptor.isIgnored()) {
 				fields.add(createModelForDescriptor(descriptor));
 			}
@@ -338,6 +342,30 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		model.put("optional", descriptor.isOptional());
 		model.putAll(descriptor.getAttributes());
 		return model;
+	}
+
+	private FieldDescriptor copyWithType(FieldDescriptor source, Object type) {
+		FieldDescriptor result = source instanceof SubsectionDescriptor
+				? new SubsectionDescriptor(source.getPath())
+				: new FieldDescriptor(source.getPath());
+		result.description(source.getDescription()).type(type)
+				.attributes(asArray(source.getAttributes()));
+		if (source.isIgnored()) {
+			result.ignored();
+		}
+		if (source.isOptional()) {
+			result.optional();
+		}
+		return result;
+	}
+
+	private static Attribute[] asArray(Map<String, Object> attributeMap) {
+		List<Attributes.Attribute> attributes = new ArrayList<>();
+		for (Map.Entry<String, Object> attribute : attributeMap.entrySet()) {
+			attributes
+					.add(Attributes.key(attribute.getKey()).value(attribute.getValue()));
+		}
+		return attributes.toArray(new Attribute[attributes.size()]);
 	}
 
 }
