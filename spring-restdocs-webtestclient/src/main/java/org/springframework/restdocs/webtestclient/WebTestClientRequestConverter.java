@@ -101,7 +101,9 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 			return Collections.emptyList();
 		}
 		return new MultipartHttpMessageReader(new SynchronossPartHttpMessageReader())
-				.readMono(null, new ExchangeResultReactiveHttpInputMessage(result), null)
+				.readMono(ResolvableType.forClass(Part.class),
+						new ExchangeResultReactiveHttpInputMessage(result),
+						Collections.emptyMap())
 				.onErrorReturn(new LinkedMultiValueMap<>()).block().values().stream()
 				.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart))
 				.collect(Collectors.toList());
