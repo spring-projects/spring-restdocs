@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.springframework.restdocs.restassured.operation.preprocess;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -32,6 +33,7 @@ import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
+import org.springframework.restdocs.operation.RequestCookie;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -322,6 +324,17 @@ public class UriModifyingOperationPreprocessorTests {
 		assertThat(processed.getUri(),
 				is(equalTo(URI.create("https://localhost:12345?foo=%7B%7D"))));
 
+	}
+
+	@Test
+	public void resultingRequestHasCookiesFromOriginalRequst() {
+		List<RequestCookie> cookies = Arrays.asList(new RequestCookie("a", "alpha"));
+		OperationRequest request = this.requestFactory.create(
+				URI.create("http://localhost:12345"), HttpMethod.GET, new byte[0],
+				new HttpHeaders(), new Parameters(),
+				Collections.<OperationRequestPart>emptyList(), cookies);
+		OperationRequest processed = this.preprocessor.preprocess(request);
+		assertThat(processed.getCookies().size(), is(equalTo(1)));
 	}
 
 	private OperationRequest createRequestWithUri(String uri) {
