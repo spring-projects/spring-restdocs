@@ -85,9 +85,11 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void missingOptionalPathParameter() throws IOException {
-		this.snippets.expectPathParameters().withContents(tableWithTitleAndHeader(
-				this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}" : "`/{a}`",
-				"Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+		this.snippets.expectPathParameters()
+				.withContents(tableWithTitleAndHeader(
+						this.templateFormat == TemplateFormats.asciidoctor() ? "+/{a}+"
+								: "`/{a}`",
+						"Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
 				parameterWithName("b").description("two").optional()))
 						.document(this.operationBuilder.attribute(
@@ -97,9 +99,11 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void presentOptionalPathParameter() throws IOException {
-		this.snippets.expectPathParameters().withContents(tableWithTitleAndHeader(
-				this.templateFormat == TemplateFormats.asciidoctor() ? "/{a}" : "`/{a}`",
-				"Parameter", "Description").row("`a`", "one"));
+		this.snippets.expectPathParameters()
+				.withContents(tableWithTitleAndHeader(
+						this.templateFormat == TemplateFormats.asciidoctor() ? "+/{a}+"
+								: "`/{a}`",
+						"Parameter", "Description").row("`a`", "one"));
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").optional()))
 						.document(this.operationBuilder.attribute(
@@ -216,7 +220,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 
 	private String getTitle(String title) {
 		if (this.templateFormat.equals(TemplateFormats.asciidoctor())) {
-			return title;
+			return "+" + title + "+";
 		}
 		return "`" + title + "`";
 	}
