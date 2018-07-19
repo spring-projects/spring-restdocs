@@ -158,13 +158,34 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void describedFieldThatIsSometimesPresentChildOfOptionalArrayIsNotConsideredMissing() {
+	public void describedSometimesPresentFieldThatIsChildOfSometimesPresentOptionalArrayIsNotConsideredMissing() {
 		List<FieldDescriptor> missingFields = new JsonContentHandler(
 				"{\"a\":[ {\"b\": \"bravo\"}, {\"b\": \"bravo\", \"c\": { \"d\": \"delta\"}}]}"
 						.getBytes()).findMissingFields(
 								Arrays.asList(new FieldDescriptor("a.[].c").optional(),
 										new FieldDescriptor("a.[].c.d")));
 		assertThat(missingFields.size(), is(equalTo(0)));
+	}
+
+	@Test
+	public void describedMissingFieldThatIsChildOfNestedOptionalArrayThatIsEmptyIsNotConsideredMissing() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"a\":[{\"b\":[]}]}".getBytes()).findMissingFields(
+						Arrays.asList(new FieldDescriptor("a.[].b").optional(),
+								new FieldDescriptor("a.[].b.[]").optional(),
+								new FieldDescriptor("a.[].b.[].c")));
+		assertThat(missingFields.size(), is(equalTo(0)));
+	}
+
+	@Test
+	public void describedMissingFieldThatIsChildOfNestedOptionalArrayThatContainsAnObjectIsConsideredMissing() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"a\":[{\"b\":[{}]}]}".getBytes()).findMissingFields(
+						Arrays.asList(new FieldDescriptor("a.[].b").optional(),
+								new FieldDescriptor("a.[].b.[]").optional(),
+								new FieldDescriptor("a.[].b.[].c")));
+		assertThat(missingFields.size(), is(equalTo(1)));
+		assertThat(missingFields.get(0).getPath(), is(equalTo("a.[].b.[].c")));
 	}
 
 }
