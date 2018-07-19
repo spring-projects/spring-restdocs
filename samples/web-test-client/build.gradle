@@ -20,7 +20,7 @@ ext {
 	snippetsDir = file('build/generated-snippets')
 }
 
-ext['spring-restdocs.version'] = '2.0.2.BUILD-SNAPSHOT'
+ext['spring-restdocs.version'] = '2.0.2.RELEASE'
 
 dependencies {
 	compile 'io.projectreactor.ipc:reactor-netty:0.7.1.RELEASE'
