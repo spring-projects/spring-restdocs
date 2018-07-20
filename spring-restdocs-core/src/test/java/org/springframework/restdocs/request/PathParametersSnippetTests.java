@@ -87,8 +87,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	public void missingOptionalPathParameter() throws IOException {
 		this.snippets.expectPathParameters()
 				.withContents(tableWithTitleAndHeader(
-						this.templateFormat == TemplateFormats.asciidoctor() ? "+/{a}+"
-								: "`/{a}`",
+						getTitle("/{a}"),
 						"Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
 				parameterWithName("b").description("two").optional()))
@@ -101,8 +100,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	public void presentOptionalPathParameter() throws IOException {
 		this.snippets.expectPathParameters()
 				.withContents(tableWithTitleAndHeader(
-						this.templateFormat == TemplateFormats.asciidoctor() ? "+/{a}+"
-								: "`/{a}`",
+						getTitle("/{a}"),
 						"Parameter", "Description").row("`a`", "one"));
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").optional()))
@@ -208,7 +206,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	private String escapeIfNecessary(String input) {
-		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+		if (this.templateFormat.getId().equals(TemplateFormats.markdown().getId())) {
 			return input;
 		}
 		return input.replace("|", "\\|");
@@ -219,7 +217,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	private String getTitle(String title) {
-		if (this.templateFormat.equals(TemplateFormats.asciidoctor())) {
+		if (this.templateFormat.getId().equals(TemplateFormats.asciidoctor().getId())) {
 			return "+" + title + "+";
 		}
 		return "`" + title + "`";

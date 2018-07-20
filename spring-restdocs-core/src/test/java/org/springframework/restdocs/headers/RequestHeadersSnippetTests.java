@@ -173,7 +173,7 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 	}
 
 	private String escapeIfNecessary(String input) {
-		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+		if (this.templateFormat.getId().equals(TemplateFormats.markdown().getId())) {
 			return input;
 		}
 		return input.replace("|", "\\|");
