@@ -208,7 +208,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	private String escapeIfNecessary(String input) {
-		if (this.templateFormat.equals(TemplateFormats.markdown())) {
+		if (this.templateFormat.getId().equals(TemplateFormats.markdown().getId())) {
 			return input;
 		}
 		return input.replace("|", "\\|");
@@ -219,7 +219,7 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	private String getTitle(String title) {
-		if (this.templateFormat.equals(TemplateFormats.asciidoctor())) {
+		if (this.templateFormat.getId().equals(TemplateFormats.asciidoctor().getId())) {
 			return "+" + title + "+";
 		}
 		return "`" + title + "`";
