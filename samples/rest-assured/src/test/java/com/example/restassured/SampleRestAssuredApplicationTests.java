@@ -21,7 +21,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.restassured3.operation.preprocess.RestAssuredPreprocessors.modifyUris;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -31,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import io.restassured.builder.RequestSpecBuilder;
@@ -59,7 +59,7 @@ public class SampleRestAssuredApplicationTests {
 		given(this.documentationSpec)
 				.accept("text/plain")
 				.filter(document("sample",
-						preprocessRequest(modifyUris()
+						preprocessRequest(Preprocessors.modifyUris()
 								.scheme("https")
 								.host("api.example.com")
 								.removePort())))
