@@ -1644,12 +1644,9 @@ public abstract class PayloadDocumentation {
 	}
 
 	private static Attribute[] asArray(Map<String, Object> attributeMap) {
-		List<Attributes.Attribute> attributes = new ArrayList<>();
-		for (Map.Entry<String, Object> attribute : attributeMap.entrySet()) {
-			attributes
-					.add(Attributes.key(attribute.getKey()).value(attribute.getValue()));
-		}
-		return attributes.toArray(new Attribute[attributes.size()]);
+		return attributeMap.entrySet().stream()
+				.map((attribute) -> Attributes.key(attribute.getKey()).value(attribute.getValue()))
+				.toArray(Attribute[]::new);
 	}
 
 }
