@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,14 +38,14 @@ public class JsonContentHandlerTests {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void typeForFieldWithNullValueMustMatch() throws IOException {
+	public void typeForFieldWithNullValueMustMatch() {
 		this.thrown.expect(FieldTypesDoNotMatchException.class);
 		new JsonContentHandler("{\"a\": null}".getBytes())
 				.determineFieldType(new FieldDescriptor("a").type(JsonFieldType.STRING));
 	}
 
 	@Test
-	public void typeForFieldWithNotNullAndThenNullValueMustMatch() throws IOException {
+	public void typeForFieldWithNotNullAndThenNullValueMustMatch() {
 		this.thrown.expect(FieldTypesDoNotMatchException.class);
 		new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}".getBytes())
 				.determineFieldType(
@@ -54,7 +53,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForFieldWithNullAndThenNotNullValueMustMatch() throws IOException {
+	public void typeForFieldWithNullAndThenNotNullValueMustMatch() {
 		this.thrown.expect(FieldTypesDoNotMatchException.class);
 		new JsonContentHandler("{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
 				.determineFieldType(
@@ -62,8 +61,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForOptionalFieldWithNumberAndThenNullValueIsNumber()
-			throws IOException {
+	public void typeForOptionalFieldWithNumberAndThenNullValueIsNumber() {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes())
 						.determineFieldType(new FieldDescriptor("a[].id").optional());
@@ -71,7 +69,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForOptionalFieldWithNullAndThenNumberIsNumber() throws IOException {
+	public void typeForOptionalFieldWithNullAndThenNumberIsNumber() {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
 						.determineFieldType(new FieldDescriptor("a[].id").optional());
@@ -79,7 +77,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForFieldWithNumberAndThenNullValueIsVaries() throws IOException {
+	public void typeForFieldWithNumberAndThenNullValueIsVaries() {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes())
 						.determineFieldType(new FieldDescriptor("a[].id"));
@@ -87,7 +85,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForFieldWithNullAndThenNumberIsVaries() throws IOException {
+	public void typeForFieldWithNullAndThenNumberIsVaries() {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
 						.determineFieldType(new FieldDescriptor("a[].id"));
@@ -95,8 +93,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForOptionalFieldWithNullValueCanBeProvidedExplicitly()
-			throws IOException {
+	public void typeForOptionalFieldWithNullValueCanBeProvidedExplicitly() {
 		Object fieldType = new JsonContentHandler("{\"a\": null}".getBytes())
 				.determineFieldType(
 						new FieldDescriptor("a").type(JsonFieldType.STRING).optional());
