@@ -94,9 +94,6 @@ class JsonContentHandler implements ContentHandler {
 			return false;
 		}
 		Collection<?> collection = (Collection<?>) value;
-		if (collection.isEmpty()) {
-			return true;
-		}
 		for (Object entry : collection) {
 			if (!isEmptyCollection(entry)) {
 				return false;
