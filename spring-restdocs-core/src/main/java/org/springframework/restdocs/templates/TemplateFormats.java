@@ -17,7 +17,7 @@
 package org.springframework.restdocs.templates;
 
 /**
- * An enumeration of the built-in formats for which templates are provuded.
+ * An enumeration of the built-in formats for which templates are provided.
  *
  * @author Andy Wilkinson
  * @since 1.1.0

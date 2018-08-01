@@ -100,8 +100,8 @@ public class RestDocumentationConfigurerTests {
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getEncoding(), is(equalTo("UTF-8")));
-		assertThat(snippetConfiguration.getTemplateFormat(),
-				is(equalTo(TemplateFormats.asciidoctor())));
+		assertThat(snippetConfiguration.getTemplateFormat().getId(),
+				is(equalTo(TemplateFormats.asciidoctor().getId())));
 
 		OperationRequestPreprocessor defaultOperationRequestPreprocessor = (OperationRequestPreprocessor) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
@@ -190,8 +190,8 @@ public class RestDocumentationConfigurerTests {
 				instanceOf(SnippetConfiguration.class)));
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
-		assertThat(snippetConfiguration.getTemplateFormat(),
-				is(equalTo(TemplateFormats.markdown())));
+		assertThat(snippetConfiguration.getTemplateFormat().getId(),
+				is(equalTo(TemplateFormats.markdown().getId())));
 	}
 
 	@SuppressWarnings("unchecked")
