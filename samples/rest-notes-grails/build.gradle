@@ -1,5 +1,6 @@
 buildscript {
 	repositories {
+		mavenCentral()
 		maven { url "https://repo.grails.org/grails/core" }
 	}
 	dependencies {
@@ -58,7 +59,7 @@ dependencies {
 	compile "org.grails:grails-plugin-services"
 	compile "org.grails:grails-plugin-datasource"
 	compile "org.grails:grails-plugin-databinding"
-	compile "org.grails:grails-plugin-async"
+	compile "org.grails.plugins:async"
 	compile "org.grails:grails-web-boot"
 	compile "org.grails:grails-logging"
 	compile "org.grails.plugins:cache"
@@ -72,9 +73,10 @@ dependencies {
 	profile "org.grails.profiles:rest-api"
 
 	runtime "com.h2database:h2"
+	runtime 'org.apache.tomcat:tomcat-jdbc'
 
 	testCompile "io.rest-assured:rest-assured:3.0.2"
-	testCompile "org.grails:grails-plugin-testing"
+	testCompile "org.grails:grails-test-mixins:3.3.0"
 	testCompile "org.grails.plugins:geb"
 	testCompile "org.grails:grails-datastore-rest-client"
 	testCompile "org.springframework.restdocs:spring-restdocs-restassured"

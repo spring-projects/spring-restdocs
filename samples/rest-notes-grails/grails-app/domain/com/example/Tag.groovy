@@ -18,7 +18,7 @@ package com.example
 
 import grails.rest.Resource
 
-@Resource(uri='/tags', formats = ['json', 'xml'])
+@Resource(uri='/tags')
 class Tag {
 
 	Long id
