@@ -26,6 +26,7 @@ import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
@@ -46,42 +47,39 @@ public class ResponseBodySnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithBody() throws IOException {
-		this.snippets.expect("response-body")
-				.withContents(codeBlock(null, "nowrap").content("some content"));
-
-		PayloadDocumentation.responseBody().document(
+		new ResponseBodySnippet().document(
 				this.operationBuilder.response().content("some content").build());
+		assertThat(this.generatedSnippets.snippet("response-body"))
+				.is(codeBlock(null, "nowrap").withContent("some content"));
 	}
 
 	@Test
 	public void responseWithNoBody() throws IOException {
-		this.snippets.expect("response-body")
-				.withContents(codeBlock(null, "nowrap").content(""));
-		PayloadDocumentation.responseBody()
-				.document(this.operationBuilder.response().build());
+		new ResponseBodySnippet().document(this.operationBuilder.response().build());
+		assertThat(this.generatedSnippets.snippet("response-body"))
+				.is(codeBlock(null, "nowrap").withContent(""));
 	}
 
 	@Test
 	public void subsectionOfResponseBody() throws IOException {
-		this.snippets.expect("response-body-beneath-a.b")
-				.withContents(codeBlock(null, "nowrap").content("{\"c\":5}"));
-
 		responseBody(beneathPath("a.b")).document(this.operationBuilder.response()
 				.content("{\"a\":{\"b\":{\"c\":5}}}").build());
+		assertThat(this.generatedSnippets.snippet("response-body-beneath-a.b"))
+				.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
 	}
 
 	@Test
 	public void customSnippetAttributes() throws IOException {
-		this.snippets.expect("response-body")
-				.withContents(codeBlock("json", "nowrap").content("{\"a\":\"alpha\"}"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-body"))
 				.willReturn(snippetResource("response-body-with-language"));
-		responseBody(attributes(key("language").value("json")))
+		new ResponseBodySnippet(attributes(key("language").value("json")))
 				.document(this.operationBuilder
 						.attribute(TemplateEngine.class.getName(),
 								new MustacheTemplateEngine(resolver))
 						.response().content("{\"a\":\"alpha\"}").build());
+		assertThat(this.generatedSnippets.snippet("response-body"))
+				.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
 	}
 
 }

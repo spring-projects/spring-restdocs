@@ -30,9 +30,7 @@ import org.junit.Test;
 
 import org.springframework.restdocs.hypermedia.Link;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link LinkMaskingContentModifier}.
@@ -53,39 +51,36 @@ public class LinkMaskingContentModifierTests {
 	@Test
 	public void halLinksAreMasked() throws Exception {
 		assertThat(
-				this.contentModifier.modifyContent(halPayloadWithLinks(this.links), null),
-				is(equalTo(halPayloadWithLinks(this.maskedLinks))));
+				this.contentModifier.modifyContent(halPayloadWithLinks(this.links), null))
+						.isEqualTo(halPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void formattedHalLinksAreMasked() throws Exception {
-		assertThat(
-				this.contentModifier
-						.modifyContent(formattedHalPayloadWithLinks(this.links), null),
-				is(equalTo(formattedHalPayloadWithLinks(this.maskedLinks))));
+		assertThat(this.contentModifier
+				.modifyContent(formattedHalPayloadWithLinks(this.links), null))
+						.isEqualTo(formattedHalPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void atomLinksAreMasked() throws Exception {
 		assertThat(this.contentModifier.modifyContent(atomPayloadWithLinks(this.links),
-				null), is(equalTo(atomPayloadWithLinks(this.maskedLinks))));
+				null)).isEqualTo(atomPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void formattedAtomLinksAreMasked() throws Exception {
-		assertThat(
-				this.contentModifier
-						.modifyContent(formattedAtomPayloadWithLinks(this.links), null),
-				is(equalTo(formattedAtomPayloadWithLinks(this.maskedLinks))));
+		assertThat(this.contentModifier
+				.modifyContent(formattedAtomPayloadWithLinks(this.links), null))
+						.isEqualTo(formattedAtomPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void maskCanBeCustomized() throws Exception {
-		assertThat(
-				new LinkMaskingContentModifier("custom")
-						.modifyContent(formattedAtomPayloadWithLinks(this.links), null),
-				is(equalTo(formattedAtomPayloadWithLinks(new Link("a", "custom"),
-						new Link("b", "custom")))));
+		assertThat(new LinkMaskingContentModifier("custom")
+				.modifyContent(formattedAtomPayloadWithLinks(this.links), null))
+						.isEqualTo(formattedAtomPayloadWithLinks(new Link("a", "custom"),
+								new Link("b", "custom")));
 	}
 
 	private byte[] atomPayloadWithLinks(Link... links) throws JsonProcessingException {

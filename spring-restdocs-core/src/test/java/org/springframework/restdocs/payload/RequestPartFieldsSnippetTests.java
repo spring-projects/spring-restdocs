@@ -26,6 +26,7 @@ import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.templates.TemplateFormat;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
@@ -43,11 +44,6 @@ public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void mapRequestPartFields() throws IOException {
-		this.snippets.expectRequestPartFields("one")
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a.b`", "`Number`", "one").row("`a.c`", "`String`", "two")
-						.row("`a`", "`Object`", "three"));
-
 		new RequestPartFieldsSnippet("one", Arrays.asList(
 				fieldWithPath("a.b").description("one"),
 				fieldWithPath("a.c").description("two"),
@@ -55,52 +51,50 @@ public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
 						.request("http://localhost")
 						.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
 						.build());
+		assertThat(this.generatedSnippets.requestPartFields("one"))
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`a.b`", "`Number`", "one").row("`a.c`", "`String`", "two")
+						.row("`a`", "`Object`", "three"));
 	}
 
 	@Test
 	public void mapRequestPartSubsectionFields() throws IOException {
-		this.snippets.expect("request-part-one-fields-beneath-a")
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
-
 		new RequestPartFieldsSnippet("one", beneathPath("a"), Arrays.asList(
 				fieldWithPath("b").description("one"),
 				fieldWithPath("c").description("two"))).document(this.operationBuilder
 						.request("http://localhost")
 						.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
 						.build());
+		assertThat(this.generatedSnippets.snippet("request-part-one-fields-beneath-a"))
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
 	}
 
 	@Test
 	public void multipleRequestParts() throws IOException {
-		this.snippets.expectRequestPartFields("one");
-		this.snippets.expectRequestPartFields("two");
 		Operation operation = this.operationBuilder.request("http://localhost")
 				.part("one", "{}".getBytes()).and().part("two", "{}".getBytes()).build();
 		new RequestPartFieldsSnippet("one", Collections.<FieldDescriptor>emptyList())
 				.document(operation);
 		new RequestPartFieldsSnippet("two", Collections.<FieldDescriptor>emptyList())
 				.document(operation);
+		assertThat(this.generatedSnippets.requestPartFields("one")).isNotNull();
+		assertThat(this.generatedSnippets.requestPartFields("two")).isNotNull();
 	}
 
 	@Test
 	public void allUndocumentedRequestPartFieldsCanBeIgnored() throws IOException {
-		this.snippets.expectRequestPartFields("one")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
-						"`Number`", "Field b"));
 		new RequestPartFieldsSnippet("one",
 				Arrays.asList(fieldWithPath("b").description("Field b")), true)
 						.document(this.operationBuilder.request("http://localhost")
 								.part("one", "{\"a\": 5, \"b\": 4}".getBytes()).build());
+		assertThat(this.generatedSnippets.requestPartFields("one"))
+				.is(tableWithHeader("Path", "Type", "Description").row("`b`", "`Number`",
+						"Field b"));
 	}
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippets.expectRequestPartFields("one")
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a.b`", "`Number`", "one").row("`a.c`", "`String`", "two")
-						.row("`a`", "`Object`", "three"));
-
 		PayloadDocumentation
 				.requestPartFields("one", fieldWithPath("a.b").description("one"),
 						fieldWithPath("a.c").description("two"))
@@ -108,15 +102,14 @@ public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
 				.document(this.operationBuilder.request("http://localhost")
 						.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
 						.build());
+		assertThat(this.generatedSnippets.requestPartFields("one"))
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`a.b`", "`Number`", "one").row("`a.c`", "`String`", "two")
+						.row("`a`", "`Object`", "three"));
 	}
 
 	@Test
 	public void prefixedAdditionalDescriptors() throws IOException {
-		this.snippets.expectRequestPartFields("one")
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
-						.row("`a.c`", "`String`", "three"));
-
 		PayloadDocumentation
 				.requestPartFields("one", fieldWithPath("a").description("one"))
 				.andWithPrefix("a.", fieldWithPath("b").description("two"),
@@ -124,6 +117,10 @@ public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
 				.document(this.operationBuilder.request("http://localhost")
 						.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
 						.build());
+		assertThat(this.generatedSnippets.requestPartFields("one"))
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
+						.row("`a.c`", "`String`", "three"));
 	}
 
 }

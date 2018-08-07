@@ -30,10 +30,7 @@ import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
@@ -55,13 +52,6 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void mapResponseWithFields() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
-						.row("`assets`", "`Array`", "three")
-						.row("`assets[]`", "`Array`", "four")
-						.row("`assets[].id`", "`Number`", "five")
-						.row("`assets[].name`", "`String`", "six"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("id").description("one"),
 				fieldWithPath("date").description("two"),
 				fieldWithPath("assets").description("three"),
@@ -73,49 +63,50 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 										"{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
 												+ " [{\"id\":356,\"name\": \"sample\"}]}")
 								.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
+						.row("`assets`", "`Array`", "three")
+						.row("`assets[]`", "`Array`", "four")
+						.row("`assets[].id`", "`Number`", "five")
+						.row("`assets[].name`", "`String`", "six"));
 	}
 
 	@Test
 	public void mapResponseWithNullField() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
-						"`Null`", "one"));
-
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")))
 				.document(this.operationBuilder.response()
 						.content("{\"a\": {\"b\": null}}").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`a.b`", "`Null`",
+						"one"));
 	}
 
 	@Test
 	public void subsectionOfMapResponse() throws IOException {
-		this.snippets.expect("response-fields-beneath-a")
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
 		responseFields(beneathPath("a"), fieldWithPath("b").description("one"),
 				fieldWithPath("c").description("two"))
 						.document(this.operationBuilder.response()
 								.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
 								.build());
+		assertThat(this.generatedSnippets.snippet("response-fields-beneath-a"))
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "one").row("`c`", "`String`", "two"));
 	}
 
 	@Test
 	public void subsectionOfMapResponseWithCommonsPrefix() throws IOException {
-		this.snippets.expect("response-fields-beneath-a")
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`b.c`",
-						"`String`", "two"));
 		responseFields(beneathPath("a"))
 				.andWithPrefix("b.", fieldWithPath("c").description("two"))
 				.document(this.operationBuilder.response()
 						.content("{\"a\": {\"b\": {\"c\": \"charlie\"}}}").build());
+		assertThat(this.generatedSnippets.snippet("response-fields-beneath-a"))
+				.is(tableWithHeader("Path", "Type", "Description").row("`b.c`",
+						"`String`", "two"));
 	}
 
 	@Test
 	public void arrayResponseWithFields() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`[]a.b`", "`Number`", "one")
-						.row("`[]a.c`", "`String`", "two")
-						.row("`[]a`", "`Object`", "three"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]a.b").description("one"),
 				fieldWithPath("[]a.c").description("two"),
 				fieldWithPath("[]a").description("three")))
@@ -123,68 +114,69 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 								.content("[{\"a\": {\"b\": 5, \"c\":\"charlie\"}},"
 										+ "{\"a\": {\"b\": 4, \"c\":\"chalk\"}}]")
 								.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`[]a.b`", "`Number`", "one")
+						.row("`[]a.c`", "`String`", "two")
+						.row("`[]a`", "`Object`", "three"));
 	}
 
 	@Test
 	public void arrayResponseWithAlwaysNullField() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`[]a.b`", "`Null`", "one"));
-
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("[]a.b").description("one")))
 						.document(this.operationBuilder.response().content(
 								"[{\"a\": {\"b\": null}}," + "{\"a\": {\"b\": null}}]")
 								.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`[]a.b`",
+						"`Null`", "one"));
 	}
 
 	@Test
 	public void arrayResponse() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`[]`",
-						"`Array`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("[]").description("one")))
 				.document(this.operationBuilder.response()
 						.content("[\"a\", \"b\", \"c\"]").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`[]`", "`Array`",
+						"one"));
 	}
 
 	@Test
 	public void ignoredResponseField() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
-						"`Number`", "Field b"));
-
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").ignored(),
 				fieldWithPath("b").description("Field b")))
 						.document(this.operationBuilder.response()
 								.content("{\"a\": 5, \"b\": 4}").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`b`", "`Number`",
+						"Field b"));
 	}
 
 	@Test
 	public void allUndocumentedFieldsCanBeIgnored() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`b`",
-						"`Number`", "Field b"));
-
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("b").description("Field b")), true)
 						.document(this.operationBuilder.response()
 								.content("{\"a\": 5, \"b\": 4}").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`b`", "`Number`",
+						"Field b"));
 	}
 
 	@Test
 	public void allUndocumentedFieldsContinueToBeIgnoredAfterAddingDescriptors()
 			throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`b`", "`Number`", "Field b")
-						.row("`c.d`", "`Number`", "Field d"));
-
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("b").description("Field b")), true)
 						.andWithPrefix("c.", fieldWithPath("d").description("Field d"))
 						.document(this.operationBuilder.response()
 								.content("{\"a\":5,\"b\":4,\"c\":{\"d\": 3}}").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`b`", "`Number`", "Field b")
+						.row("`c.d`", "`Number`", "Field d"));
 	}
 
 	@Test
@@ -192,8 +184,6 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-fields"))
 				.willReturn(snippetResource("response-fields-with-title"));
-		this.snippets.expectResponseFields().withContents(containsString("Custom title"));
-
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one")), attributes(
 						key("title").value("Custom title")))
@@ -204,37 +194,38 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 																resolver))
 												.response().content("{\"a\": \"foo\"}")
 												.build());
+		assertThat(this.generatedSnippets.responseFields()).contains("Custom title");
 	}
 
 	@Test
 	public void missingOptionalResponseField() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
-						"`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
 				.type(JsonFieldType.STRING).optional()))
 						.document(this.operationBuilder.response().content("{}").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`a.b`",
+						"`String`", "one"));
 	}
 
 	@Test
 	public void missingIgnoredOptionalResponseFieldDoesNotRequireAType()
 			throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description"));
 		new ResponseFieldsSnippet(Arrays
 				.asList(fieldWithPath("a.b").description("one").ignored().optional()))
 						.document(this.operationBuilder.response().content("{}").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description"));
 	}
 
 	@Test
 	public void presentOptionalResponseField() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`a.b`",
-						"`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")
 				.type(JsonFieldType.STRING).optional()))
 						.document(this.operationBuilder.response()
 								.content("{\"a\": { \"b\": \"bravo\"}}").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`a.b`",
+						"`String`", "one"));
 	}
 
 	@Test
@@ -242,12 +233,6 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-fields"))
 				.willReturn(snippetResource("response-fields-with-extra-column"));
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description", "Foo")
-						.row("a.b", "Number", "one", "alpha")
-						.row("a.c", "String", "two", "bravo")
-						.row("a", "Object", "three", "charlie"));
-
 		new ResponseFieldsSnippet(Arrays.asList(
 				fieldWithPath("a.b").description("one")
 						.attributes(key("foo").value("alpha")),
@@ -262,30 +247,33 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 										.content(
 												"{\"a\": {\"b\": 5, \"c\": \"charlie\"}}")
 										.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description", "Foo")
+						.row("a.b", "Number", "one", "alpha")
+						.row("a.c", "String", "two", "bravo")
+						.row("a", "Object", "three", "charlie"));
 	}
 
 	@Test
 	public void fieldWithExplictExactlyMatchingType() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
-						"`Number`", "one"));
-
 		new ResponseFieldsSnippet(Arrays
 				.asList(fieldWithPath("a").description("one").type(JsonFieldType.NUMBER)))
 						.document(this.operationBuilder.response().content("{\"a\": 5 }")
 								.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`a`", "`Number`",
+						"one"));
 	}
 
 	@Test
 	public void fieldWithExplictVariesType() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`a`",
-						"`Varies`", "one"));
-
 		new ResponseFieldsSnippet(Arrays
 				.asList(fieldWithPath("a").description("one").type(JsonFieldType.VARIES)))
 						.document(this.operationBuilder.response().content("{\"a\": 5 }")
 								.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`a`", "`Varies`",
+						"one"));
 	}
 
 	@Test
@@ -304,10 +292,6 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	private void xmlResponseFields(MediaType contentType) throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a/b`", "`b`", "one").row("`a/c`", "`c`", "two")
-						.row("`a`", "`a`", "three"));
 		new ResponseFieldsSnippet(Arrays.asList(
 				fieldWithPath("a/b").description("one").type("b"),
 				fieldWithPath("a/c").description("two").type("c"),
@@ -316,13 +300,13 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 								.content("<a><b>5</b><c>charlie</c></a>")
 								.header(HttpHeaders.CONTENT_TYPE, contentType.toString())
 								.build());
+		assertThat(this.generatedSnippets.responseFields()).is(
+				tableWithHeader("Path", "Type", "Description").row("`a/b`", "`b`", "one")
+						.row("`a/c`", "`c`", "two").row("`a`", "`a`", "three"));
 	}
 
 	@Test
 	public void xmlAttribute() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one").type("b"),
 						fieldWithPath("a/@id").description("two").type("c")))
@@ -332,13 +316,13 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
 												.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 	}
 
 	@Test
 	public void missingOptionalXmlAttribute() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one").type("b"),
 						fieldWithPath("a/@id").description("two").type("c").optional()))
@@ -348,29 +332,25 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												.header(HttpHeaders.CONTENT_TYPE,
 														MediaType.APPLICATION_XML_VALUE)
 												.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`a`", "`b`", "one").row("`a/@id`", "`c`", "two"));
 	}
 
 	@Test
 	public void undocumentedAttributeDoesNotCauseFailure() throws IOException {
-		this.snippets.expectResponseFields().withContents(
-				tableWithHeader("Path", "Type", "Description").row("`a`", "`a`", "one"));
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("a").description("one").type("a"))).document(
 						this.operationBuilder.response().content("<a id=\"foo\">bar</a>")
 								.header(HttpHeaders.CONTENT_TYPE,
 										MediaType.APPLICATION_XML_VALUE)
 								.build());
+		assertThat(this.generatedSnippets.responseFields()).is(
+				tableWithHeader("Path", "Type", "Description").row("`a`", "`a`", "one"));
 	}
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
-						.row("`assets`", "`Array`", "three")
-						.row("`assets[]`", "`Array`", "four")
-						.row("`assets[].id`", "`Number`", "five")
-						.row("`assets[].name`", "`String`", "six"));
 		PayloadDocumentation
 				.responseFields(fieldWithPath("id").description("one"),
 						fieldWithPath("date").description("two"),
@@ -382,42 +362,42 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 						.content("{\"id\": 67,\"date\": \"2015-01-20\",\"assets\":"
 								+ " [{\"id\":356,\"name\": \"sample\"}]}")
 						.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`id`", "`Number`", "one").row("`date`", "`String`", "two")
+						.row("`assets`", "`Array`", "three")
+						.row("`assets[]`", "`Array`", "four")
+						.row("`assets[].id`", "`Number`", "five")
+						.row("`assets[].name`", "`String`", "six"));
 	}
 
 	@Test
 	public void prefixedAdditionalDescriptors() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
-						.row("`a.c`", "`String`", "three"));
-
 		PayloadDocumentation.responseFields(fieldWithPath("a").description("one"))
 				.andWithPrefix("a.", fieldWithPath("b").description("two"),
 						fieldWithPath("c").description("three"))
 				.document(this.operationBuilder.response()
 						.content("{\"a\": {\"b\": 5, \"c\": \"charlie\"}}").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`a`", "`Object`", "one").row("`a.b`", "`Number`", "two")
+						.row("`a.c`", "`String`", "three"));
 	}
 
 	@Test
 	public void responseWithFieldsWithEscapedContent() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row(
-						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("`one|two`"),
-						escapeIfNecessary("three|four")));
-
 		new ResponseFieldsSnippet(Arrays.asList(
 				fieldWithPath("Foo|Bar").type("one|two").description("three|four")))
 						.document(this.operationBuilder.response()
 								.content("{\"Foo|Bar\": 5}").build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row(
+						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("`one|two`"),
+						escapeIfNecessary("three|four")));
 	}
 
 	@Test
 	public void mapResponseWithVaryingKeysMatchedUsingWildcard() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`things.*.size`", "`String`", "one")
-						.row("`things.*.type`", "`String`", "two"));
-
 		new ResponseFieldsSnippet(
 				Arrays.asList(fieldWithPath("things.*.size").description("one"),
 						fieldWithPath("things.*.type").description("two")))
@@ -427,13 +407,14 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 												+ "\"gzM33\" : {\"type\": \"Screw\","
 												+ "\"size\": \"SMALL\"}}}")
 										.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`things.*.size`", "`String`", "one")
+						.row("`things.*.type`", "`String`", "two"));
 	}
 
 	@Test
 	public void responseWithArrayContainingFieldThatIsSometimesNull() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`assets[].name`", "`String`", "one"));
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("assets[].name")
 				.description("one").type(JsonFieldType.STRING).optional()))
 						.document(this.operationBuilder.response()
@@ -441,14 +422,13 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 										+ "{\"name\": null}, "
 										+ "{\"name\": \"sample2\"}]}")
 								.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`assets[].name`",
+						"`String`", "one"));
 	}
 
 	@Test
 	public void optionalFieldBeneathArrayThatIsSometimesAbsent() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description")
-						.row("`a[].b`", "`Number`", "one")
-						.row("`a[].c`", "`Number`", "two"));
 		new ResponseFieldsSnippet(Arrays.asList(
 				fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER)
 						.optional(),
@@ -458,17 +438,21 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 										.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
 												+ "{\"c\": 2}, {\"b\": 1,\"c\": 2}]}")
 										.build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`a[].b`", "`Number`", "one")
+						.row("`a[].c`", "`Number`", "two"));
 	}
 
 	@Test
 	public void typeDeterminationDoesNotSetTypeOnDescriptor() throws IOException {
-		this.snippets.expectResponseFields()
-				.withContents(tableWithHeader("Path", "Type", "Description").row("`id`",
-						"`Number`", "one"));
 		FieldDescriptor descriptor = fieldWithPath("id").description("one");
 		new ResponseFieldsSnippet(Arrays.asList(descriptor)).document(
 				this.operationBuilder.response().content("{\"id\": 67}").build());
-		assertThat(descriptor.getType(), is(nullValue()));
+		assertThat(descriptor.getType()).isNull();
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description").row("`id`", "`Number`",
+						"one"));
 	}
 
 	private String escapeIfNecessary(String input) {

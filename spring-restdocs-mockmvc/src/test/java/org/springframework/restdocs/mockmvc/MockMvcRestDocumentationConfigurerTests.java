@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link MockMvcRestDocumentationConfigurer}.
@@ -51,7 +48,6 @@ public class MockMvcRestDocumentationConfigurerTests {
 		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
 				this.restDocumentation).beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
-
 		assertUriConfiguration("http", "localhost", 8080);
 	}
 
@@ -61,7 +57,6 @@ public class MockMvcRestDocumentationConfigurerTests {
 				this.restDocumentation).uris().withScheme("https")
 						.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
-
 		assertUriConfiguration("https", "localhost", 8080);
 	}
 
@@ -71,7 +66,6 @@ public class MockMvcRestDocumentationConfigurerTests {
 				this.restDocumentation).uris().withHost("api.example.com")
 						.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
-
 		assertUriConfiguration("http", "api.example.com", 8080);
 	}
 
@@ -81,7 +75,6 @@ public class MockMvcRestDocumentationConfigurerTests {
 				this.restDocumentation).uris().withPort(8081).beforeMockMvcCreated(null,
 						null);
 		postProcessor.postProcessRequest(this.request);
-
 		assertUriConfiguration("http", "localhost", 8081);
 	}
 
@@ -91,20 +84,20 @@ public class MockMvcRestDocumentationConfigurerTests {
 				this.restDocumentation).uris().withPort(8081).beforeMockMvcCreated(null,
 						null);
 		postProcessor.postProcessRequest(this.request);
-		assertThat(this.request.getHeader("Content-Length"), is(nullValue()));
+		assertThat(this.request.getHeader("Content-Length")).isNull();
 	}
 
 	private void assertUriConfiguration(String scheme, String host, int port) {
-		assertEquals(scheme, this.request.getScheme());
-		assertEquals(host, this.request.getServerName());
-		assertEquals(port, this.request.getServerPort());
+		assertThat(scheme).isEqualTo(this.request.getScheme());
+		assertThat(host).isEqualTo(this.request.getServerName());
+		assertThat(port).isEqualTo(this.request.getServerPort());
 		RequestContextHolder
 				.setRequestAttributes(new ServletRequestAttributes(this.request));
 		try {
 			URI uri = BasicLinkBuilder.linkToCurrentMapping().toUri();
-			assertEquals(scheme, uri.getScheme());
-			assertEquals(host, uri.getHost());
-			assertEquals(port, uri.getPort());
+			assertThat(scheme).isEqualTo(uri.getScheme());
+			assertThat(host).isEqualTo(uri.getHost());
+			assertThat(port).isEqualTo(uri.getPort());
 		}
 		finally {
 			RequestContextHolder.resetRequestAttributes();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,17 +31,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
+import org.assertj.core.api.Condition;
+import org.assertj.core.description.TextDescription;
 import org.hibernate.validator.constraints.CompositionType;
 import org.hibernate.validator.constraints.ConstraintComposition;
 import org.hibernate.validator.constraints.NotBlank;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link ValidatorConstraintResolver}.
@@ -56,36 +53,36 @@ public class ValidatorConstraintResolverTests {
 	public void singleFieldConstraint() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("single",
 				ConstrainedFields.class);
-		assertThat(constraints, hasSize(1));
-		assertThat(constraints.get(0).getName(), is(NotNull.class.getName()));
+		assertThat(constraints).hasSize(1);
+		assertThat(constraints.get(0).getName()).isEqualTo(NotNull.class.getName());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void multipleFieldConstraints() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("multiple",
 				ConstrainedFields.class);
-		assertThat(constraints, hasSize(2));
-		assertThat(constraints, containsInAnyOrder(constraint(NotNull.class),
-				constraint(Size.class).config("min", 8).config("max", 16)));
+		assertThat(constraints).hasSize(2);
+		assertThat(constraints.get(0)).is(constraint(NotNull.class));
+		assertThat(constraints.get(1))
+				.is(constraint(Size.class).config("min", 8).config("max", 16));
 	}
 
 	@Test
 	public void noFieldConstraints() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("none",
 				ConstrainedFields.class);
-		assertThat(constraints, hasSize(0));
+		assertThat(constraints).hasSize(0);
 	}
 
 	@Test
 	public void compositeConstraint() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("composite",
 				ConstrainedFields.class);
-		assertThat(constraints, hasSize(1));
+		assertThat(constraints).hasSize(1);
 	}
 
-	private ConstraintMatcher constraint(final Class<? extends Annotation> annotation) {
-		return new ConstraintMatcher(annotation);
+	private ConstraintCondition constraint(final Class<? extends Annotation> annotation) {
+		return new ConstraintCondition(annotation);
 	}
 
 	private static class ConstrainedFields {
@@ -121,27 +118,25 @@ public class ValidatorConstraintResolverTests {
 
 	}
 
-	private static final class ConstraintMatcher extends BaseMatcher<Constraint> {
+	private static final class ConstraintCondition extends Condition<Constraint> {
 
 		private final Class<?> annotation;
 
 		private final Map<String, Object> configuration = new HashMap<>();
 
-		private ConstraintMatcher(Class<?> annotation) {
+		private ConstraintCondition(Class<?> annotation) {
 			this.annotation = annotation;
+			as(new TextDescription("Constraint named %s with configuration %s",
+					this.annotation, this.configuration));
 		}
 
-		public ConstraintMatcher config(String key, Object value) {
+		public ConstraintCondition config(String key, Object value) {
 			this.configuration.put(key, value);
 			return this;
 		}
 
 		@Override
-		public boolean matches(Object item) {
-			if (!(item instanceof Constraint)) {
-				return false;
-			}
-			Constraint constraint = (Constraint) item;
+		public boolean matches(Constraint constraint) {
 			if (!constraint.getName().equals(this.annotation.getName())) {
 				return false;
 			}
@@ -152,12 +147,6 @@ public class ValidatorConstraintResolverTests {
 				}
 			}
 			return true;
-		}
-
-		@Override
-		public void describeTo(Description description) {
-			description.appendText("Constraint named " + this.annotation.getName()
-					+ " with configuration " + this.configuration);
 		}
 
 	}

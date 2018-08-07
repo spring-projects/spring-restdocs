@@ -26,6 +26,7 @@ import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
@@ -46,35 +47,31 @@ public class RequestBodyPartSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestPartWithBody() throws IOException {
-		this.snippets.expect("request-part-one-body")
-				.withContents(codeBlock(null, "nowrap").content("some content"));
-
 		requestPartBody("one").document(this.operationBuilder.request("http://localhost")
 				.part("one", "some content".getBytes()).build());
+		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
+				.is(codeBlock(null, "nowrap").withContent("some content"));
 	}
 
 	@Test
 	public void requestPartWithNoBody() throws IOException {
-		this.snippets.expect("request-part-one-body")
-				.withContents(codeBlock(null, "nowrap").content(""));
 		requestPartBody("one").document(this.operationBuilder.request("http://localhost")
 				.part("one", new byte[0]).build());
+		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
+				.is(codeBlock(null, "nowrap").withContent(""));
 	}
 
 	@Test
 	public void subsectionOfRequestPartBody() throws IOException {
-		this.snippets.expect("request-part-one-body-beneath-a.b")
-				.withContents(codeBlock(null, "nowrap").content("{\"c\":5}"));
-
 		requestPartBody("one", beneathPath("a.b"))
 				.document(this.operationBuilder.request("http://localhost")
 						.part("one", "{\"a\":{\"b\":{\"c\":5}}}".getBytes()).build());
+		assertThat(this.generatedSnippets.snippet("request-part-one-body-beneath-a.b"))
+				.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
 	}
 
 	@Test
 	public void customSnippetAttributes() throws IOException {
-		this.snippets.expect("request-part-one-body")
-				.withContents(codeBlock("json", "nowrap").content("{\"a\":\"alpha\"}"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-part-body"))
 				.willReturn(snippetResource("request-part-body-with-language"));
@@ -84,6 +81,8 @@ public class RequestBodyPartSnippetTests extends AbstractSnippetTests {
 								new MustacheTemplateEngine(resolver))
 						.request("http://localhost")
 						.part("one", "{\"a\":\"alpha\"}".getBytes()).build());
+		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
+				.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
 	}
 
 }

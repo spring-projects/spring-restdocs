@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,7 @@ import org.junit.Test;
 
 import org.springframework.restdocs.payload.JsonFieldPath.PathType;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link JsonFieldPath}.
@@ -36,137 +33,138 @@ public class JsonFieldPathTests {
 	@Test
 	public void pathTypeOfSingleFieldIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("a");
-		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
+		assertThat(path.getType()).isEqualTo(PathType.SINGLE);
 	}
 
 	@Test
 	public void pathTypeOfSingleNestedFieldIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("a.b");
-		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
+		assertThat(path.getType()).isEqualTo(PathType.SINGLE);
 	}
 
 	@Test
 	public void pathTypeOfTopLevelArrayIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("[]");
-		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
+		assertThat(path.getType()).isEqualTo(PathType.SINGLE);
 	}
 
 	@Test
 	public void pathTypeOfFieldBeneathTopLevelArrayIsMulti() {
 		JsonFieldPath path = JsonFieldPath.compile("[]a");
-		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
+		assertThat(path.getType()).isEqualTo(PathType.MULTI);
 	}
 
 	@Test
 	public void pathTypeOfSingleNestedArrayIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("a[]");
-		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
+		assertThat(path.getType()).isEqualTo(PathType.SINGLE);
 	}
 
 	@Test
 	public void pathTypeOfArrayBeneathNestedFieldsIsSingle() {
 		JsonFieldPath path = JsonFieldPath.compile("a.b[]");
-		assertThat(path.getType(), is(equalTo(PathType.SINGLE)));
+		assertThat(path.getType()).isEqualTo(PathType.SINGLE);
 	}
 
 	@Test
 	public void pathTypeOfArrayOfArraysIsMulti() {
 		JsonFieldPath path = JsonFieldPath.compile("a[][]");
-		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
+		assertThat(path.getType()).isEqualTo(PathType.MULTI);
 	}
 
 	@Test
 	public void pathTypeOfFieldBeneathAnArrayIsMulti() {
 		JsonFieldPath path = JsonFieldPath.compile("a[].b");
-		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
+		assertThat(path.getType()).isEqualTo(PathType.MULTI);
 	}
 
 	@Test
 	public void pathTypeOfFieldBeneathTopLevelWildcardIsMulti() {
 		JsonFieldPath path = JsonFieldPath.compile("*.a");
-		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
+		assertThat(path.getType()).isEqualTo(PathType.MULTI);
 	}
 
 	@Test
 	public void pathTypeOfFieldBeneathNestedWildcardIsMulti() {
 		JsonFieldPath path = JsonFieldPath.compile("a.*.b");
-		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
+		assertThat(path.getType()).isEqualTo(PathType.MULTI);
 	}
 
 	@Test
 	public void pathTypeOfLeafWidlcardIsMulti() {
 		JsonFieldPath path = JsonFieldPath.compile("a.*");
-		assertThat(path.getType(), is(equalTo(PathType.MULTI)));
+		assertThat(path.getType()).isEqualTo(PathType.MULTI);
 	}
 
 	@Test
 	public void compilationOfSingleElementPath() {
-		assertThat(JsonFieldPath.compile("a").getSegments(), contains("a"));
+		assertThat(JsonFieldPath.compile("a").getSegments()).containsExactly("a");
 	}
 
 	@Test
 	public void compilationOfMultipleElementPath() {
-		assertThat(JsonFieldPath.compile("a.b.c").getSegments(), contains("a", "b", "c"));
+		assertThat(JsonFieldPath.compile("a.b.c").getSegments()).containsExactly("a", "b",
+				"c");
 	}
 
 	@Test
 	public void compilationOfPathWithArraysWithNoDotSeparators() {
-		assertThat(JsonFieldPath.compile("a[]b[]c").getSegments(),
-				contains("a", "[]", "b", "[]", "c"));
+		assertThat(JsonFieldPath.compile("a[]b[]c").getSegments()).containsExactly("a",
+				"[]", "b", "[]", "c");
 	}
 
 	@Test
 	public void compilationOfPathWithArraysWithPreAndPostDotSeparators() {
-		assertThat(JsonFieldPath.compile("a.[].b.[].c").getSegments(),
-				contains("a", "[]", "b", "[]", "c"));
+		assertThat(JsonFieldPath.compile("a.[].b.[].c").getSegments())
+				.containsExactly("a", "[]", "b", "[]", "c");
 	}
 
 	@Test
 	public void compilationOfPathWithArraysWithPreDotSeparators() {
-		assertThat(JsonFieldPath.compile("a.[]b.[]c").getSegments(),
-				contains("a", "[]", "b", "[]", "c"));
+		assertThat(JsonFieldPath.compile("a.[]b.[]c").getSegments()).containsExactly("a",
+				"[]", "b", "[]", "c");
 	}
 
 	@Test
 	public void compilationOfPathWithArraysWithPostDotSeparators() {
-		assertThat(JsonFieldPath.compile("a[].b[].c").getSegments(),
-				contains("a", "[]", "b", "[]", "c"));
+		assertThat(JsonFieldPath.compile("a[].b[].c").getSegments()).containsExactly("a",
+				"[]", "b", "[]", "c");
 	}
 
 	@Test
 	public void compilationOfPathStartingWithAnArray() {
-		assertThat(JsonFieldPath.compile("[]a.b.c").getSegments(),
-				contains("[]", "a", "b", "c"));
+		assertThat(JsonFieldPath.compile("[]a.b.c").getSegments()).containsExactly("[]",
+				"a", "b", "c");
 	}
 
 	@Test
 	public void compilationOfMultipleElementPathWithBrackets() {
-		assertThat(JsonFieldPath.compile("['a']['b']['c']").getSegments(),
-				contains("a", "b", "c"));
+		assertThat(JsonFieldPath.compile("['a']['b']['c']").getSegments())
+				.containsExactly("a", "b", "c");
 	}
 
 	@Test
 	public void compilationOfMultipleElementPathWithAndWithoutBrackets() {
-		assertThat(JsonFieldPath.compile("['a'][].b['c']").getSegments(),
-				contains("a", "[]", "b", "c"));
+		assertThat(JsonFieldPath.compile("['a'][].b['c']").getSegments())
+				.containsExactly("a", "[]", "b", "c");
 	}
 
 	@Test
 	public void compilationOfMultipleElementPathWithAndWithoutBracketsAndEmbeddedDots() {
-		assertThat(JsonFieldPath.compile("['a.key'][].b['c']").getSegments(),
-				contains("a.key", "[]", "b", "c"));
+		assertThat(JsonFieldPath.compile("['a.key'][].b['c']").getSegments())
+				.containsExactly("a.key", "[]", "b", "c");
 	}
 
 	@Test
 	public void compilationOfPathWithAWildcard() {
-		assertThat(JsonFieldPath.compile("a.b.*.c").getSegments(),
-				contains("a", "b", "*", "c"));
+		assertThat(JsonFieldPath.compile("a.b.*.c").getSegments()).containsExactly("a",
+				"b", "*", "c");
 	}
 
 	@Test
 	public void compilationOfPathWithAWildcardInBrackets() {
-		assertThat(JsonFieldPath.compile("a.b.['*'].c").getSegments(),
-				contains("a", "b", "*", "c"));
+		assertThat(JsonFieldPath.compile("a.b.['*'].c").getSegments())
+				.containsExactly("a", "b", "*", "c");
 	}
 
 }

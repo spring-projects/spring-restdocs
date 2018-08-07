@@ -25,10 +25,8 @@ import org.junit.Test;
 
 import org.springframework.restdocs.test.OutputCapture;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.isEmptyString;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link PrettyPrintingContentModifier}.
@@ -44,25 +42,23 @@ public class PrettyPrintingContentModifierTests {
 	@Test
 	public void prettyPrintJson() throws Exception {
 		assertThat(new PrettyPrintingContentModifier()
-				.modifyContent("{\"a\":5}".getBytes(), null),
-				equalTo(String.format("{%n  \"a\" : 5%n}").getBytes()));
+				.modifyContent("{\"a\":5}".getBytes(), null))
+						.isEqualTo(String.format("{%n  \"a\" : 5%n}").getBytes());
 	}
 
 	@Test
 	public void prettyPrintXml() throws Exception {
-		assertThat(
-				new PrettyPrintingContentModifier().modifyContent(
-						"<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null),
-				equalTo(String
-						.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
+		assertThat(new PrettyPrintingContentModifier().modifyContent(
+				"<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null)).isEqualTo(
+						String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
 								+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n")
-						.getBytes()));
+								.getBytes());
 	}
 
 	@Test
 	public void empytContentIsHandledGracefully() throws Exception {
-		assertThat(new PrettyPrintingContentModifier().modifyContent("".getBytes(), null),
-				equalTo("".getBytes()));
+		assertThat(new PrettyPrintingContentModifier().modifyContent("".getBytes(), null))
+				.isEqualTo("".getBytes());
 	}
 
 	@Test
@@ -70,7 +66,7 @@ public class PrettyPrintingContentModifierTests {
 		String content = "abcdefg";
 		this.outputCapture.expect(isEmptyString());
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(),
-				null), equalTo(content.getBytes()));
+				null)).isEqualTo(content.getBytes());
 
 	}
 
@@ -83,7 +79,7 @@ public class PrettyPrintingContentModifierTests {
 		Map<String, String> output = objectMapper
 				.readValue(new PrettyPrintingContentModifier().modifyContent(
 						objectMapper.writeValueAsBytes(input), null), Map.class);
-		assertThat(output, is(equalTo(input)));
+		assertThat(output).isEqualTo(input);
 	}
 
 }

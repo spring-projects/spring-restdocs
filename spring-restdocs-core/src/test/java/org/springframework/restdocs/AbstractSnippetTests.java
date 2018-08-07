@@ -27,13 +27,13 @@ import org.junit.runners.Parameterized.Parameters;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.test.ExpectedSnippets;
+import org.springframework.restdocs.test.GeneratedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
-import org.springframework.restdocs.test.SnippetMatchers;
-import org.springframework.restdocs.test.SnippetMatchers.CodeBlockMatcher;
-import org.springframework.restdocs.test.SnippetMatchers.HttpRequestMatcher;
-import org.springframework.restdocs.test.SnippetMatchers.HttpResponseMatcher;
-import org.springframework.restdocs.test.SnippetMatchers.TableMatcher;
+import org.springframework.restdocs.test.SnippetConditions;
+import org.springframework.restdocs.test.SnippetConditions.CodeBlockCondition;
+import org.springframework.restdocs.test.SnippetConditions.HttpRequestCondition;
+import org.springframework.restdocs.test.SnippetConditions.HttpResponseCondition;
+import org.springframework.restdocs.test.SnippetConditions.TableCondition;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
@@ -50,7 +50,7 @@ public abstract class AbstractSnippetTests {
 	protected final TemplateFormat templateFormat;
 
 	@Rule
-	public ExpectedSnippets snippets;
+	public GeneratedSnippets generatedSnippets;
 
 	@Rule
 	public OperationBuilder operationBuilder;
@@ -62,34 +62,34 @@ public abstract class AbstractSnippetTests {
 	}
 
 	public AbstractSnippetTests(String name, TemplateFormat templateFormat) {
-		this.snippets = new ExpectedSnippets(templateFormat);
+		this.generatedSnippets = new GeneratedSnippets(templateFormat);
 		this.templateFormat = templateFormat;
 		this.operationBuilder = new OperationBuilder(this.templateFormat);
 	}
 
-	public CodeBlockMatcher<?> codeBlock(String language) {
+	public CodeBlockCondition<?> codeBlock(String language) {
 		return this.codeBlock(language, null);
 	}
 
-	public CodeBlockMatcher<?> codeBlock(String language, String options) {
-		return SnippetMatchers.codeBlock(this.templateFormat, language, options);
+	public CodeBlockCondition<?> codeBlock(String language, String options) {
+		return SnippetConditions.codeBlock(this.templateFormat, language, options);
 	}
 
-	public TableMatcher<?> tableWithHeader(String... headers) {
-		return SnippetMatchers.tableWithHeader(this.templateFormat, headers);
+	public TableCondition<?> tableWithHeader(String... headers) {
+		return SnippetConditions.tableWithHeader(this.templateFormat, headers);
 	}
 
-	public TableMatcher<?> tableWithTitleAndHeader(String title, String... headers) {
-		return SnippetMatchers.tableWithTitleAndHeader(this.templateFormat, title,
+	public TableCondition<?> tableWithTitleAndHeader(String title, String... headers) {
+		return SnippetConditions.tableWithTitleAndHeader(this.templateFormat, title,
 				headers);
 	}
 
-	public HttpRequestMatcher httpRequest(RequestMethod method, String uri) {
-		return SnippetMatchers.httpRequest(this.templateFormat, method, uri);
+	public HttpRequestCondition httpRequest(RequestMethod method, String uri) {
+		return SnippetConditions.httpRequest(this.templateFormat, method, uri);
 	}
 
-	public HttpResponseMatcher httpResponse(HttpStatus responseStatus) {
-		return SnippetMatchers.httpResponse(this.templateFormat, responseStatus);
+	public HttpResponseCondition httpResponse(HttpStatus responseStatus) {
+		return SnippetConditions.httpResponse(this.templateFormat, responseStatus);
 	}
 
 	protected FileSystemResource snippetResource(String name) {

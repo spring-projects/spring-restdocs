@@ -5,6 +5,7 @@ dependencies {
 	testCompile 'junit:junit'
 	testCompile 'org.apache.pdfbox:pdfbox'
 	testCompile 'org.asciidoctor:asciidoctorj'
+	testCompile 'org.assertj:assertj-core'
 	testCompile 'org.springframework:spring-core'
 	testRuntime 'org.asciidoctor:asciidoctorj-pdf'
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link RestDocumentationContextPlaceholderResolver}.
@@ -35,43 +34,45 @@ public class RestDocumentationContextPlaceholderResolverTests {
 
 	@Test
 	public void kebabCaseMethodName() throws Exception {
-		assertThat(createResolver("dashSeparatedMethodName").resolvePlaceholder(
-				"method-name"), equalTo("dash-separated-method-name"));
+		assertThat(createResolver("dashSeparatedMethodName")
+				.resolvePlaceholder("method-name"))
+						.isEqualTo("dash-separated-method-name");
 	}
 
 	@Test
 	public void snakeCaseMethodName() throws Exception {
-		assertThat(createResolver("underscoreSeparatedMethodName").resolvePlaceholder(
-				"method_name"), equalTo("underscore_separated_method_name"));
+		assertThat(createResolver("underscoreSeparatedMethodName")
+				.resolvePlaceholder("method_name"))
+						.isEqualTo("underscore_separated_method_name");
 	}
 
 	@Test
 	public void camelCaseMethodName() throws Exception {
-		assertThat(createResolver("camelCaseMethodName").resolvePlaceholder("methodName"),
-				equalTo("camelCaseMethodName"));
+		assertThat(createResolver("camelCaseMethodName").resolvePlaceholder("methodName"))
+				.isEqualTo("camelCaseMethodName");
 	}
 
 	@Test
 	public void kebabCaseClassName() throws Exception {
-		assertThat(createResolver().resolvePlaceholder("class-name"),
-				equalTo("rest-documentation-context-placeholder-resolver-tests"));
+		assertThat(createResolver().resolvePlaceholder("class-name"))
+				.isEqualTo("rest-documentation-context-placeholder-resolver-tests");
 	}
 
 	@Test
 	public void snakeCaseClassName() throws Exception {
-		assertThat(createResolver().resolvePlaceholder("class_name"),
-				equalTo("rest_documentation_context_placeholder_resolver_tests"));
+		assertThat(createResolver().resolvePlaceholder("class_name"))
+				.isEqualTo("rest_documentation_context_placeholder_resolver_tests");
 	}
 
 	@Test
 	public void camelCaseClassName() throws Exception {
-		assertThat(createResolver().resolvePlaceholder("ClassName"),
-				equalTo("RestDocumentationContextPlaceholderResolverTests"));
+		assertThat(createResolver().resolvePlaceholder("ClassName"))
+				.isEqualTo("RestDocumentationContextPlaceholderResolverTests");
 	}
 
 	@Test
 	public void stepCount() throws Exception {
-		assertThat(createResolver("stepCount").resolvePlaceholder("step"), equalTo("1"));
+		assertThat(createResolver("stepCount").resolvePlaceholder("step")).isEqualTo("1");
 	}
 
 	private PlaceholderResolver createResolver() {

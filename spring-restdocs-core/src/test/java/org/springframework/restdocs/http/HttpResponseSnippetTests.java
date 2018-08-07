@@ -29,7 +29,7 @@ import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
@@ -49,61 +49,60 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void basicResponse() throws IOException {
-		this.snippets.expectHttpResponse().withContents(httpResponse(HttpStatus.OK));
 		new HttpResponseSnippet().document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.OK));
 	}
 
 	@Test
 	public void nonOkResponse() throws IOException {
-		this.snippets.expectHttpResponse()
-				.withContents(httpResponse(HttpStatus.BAD_REQUEST));
 		new HttpResponseSnippet().document(this.operationBuilder.response()
 				.status(HttpStatus.BAD_REQUEST.value()).build());
+		assertThat(this.generatedSnippets.httpResponse())
+				.is(httpResponse(HttpStatus.BAD_REQUEST));
 	}
 
 	@Test
 	public void responseWithHeaders() throws IOException {
-		this.snippets.expectHttpResponse().withContents(httpResponse(HttpStatus.OK)
-				.header("Content-Type", "application/json").header("a", "alpha"));
 		new HttpResponseSnippet().document(this.operationBuilder.response()
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.header("a", "alpha").build());
+		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.OK)
+				.header("Content-Type", "application/json").header("a", "alpha"));
 	}
 
 	@Test
 	public void responseWithContent() throws IOException {
 		String content = "content";
-		this.snippets.expectHttpResponse()
-				.withContents(httpResponse(HttpStatus.OK).content(content)
-						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 		new HttpResponseSnippet()
 				.document(this.operationBuilder.response().content(content).build());
+		assertThat(this.generatedSnippets.httpResponse())
+				.is(httpResponse(HttpStatus.OK).content(content)
+						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 	}
 
 	@Test
 	public void responseWithCharset() throws IOException {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
-		this.snippets.expectHttpResponse()
-				.withContents(httpResponse(HttpStatus.OK)
-						.header("Content-Type", "text/plain;charset=UTF-8")
-						.content(japaneseContent)
-						.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length));
 		new HttpResponseSnippet().document(this.operationBuilder.response()
 				.header("Content-Type", "text/plain;charset=UTF-8").content(contentBytes)
 				.build());
+		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.OK)
+				.header("Content-Type", "text/plain;charset=UTF-8")
+				.content(japaneseContent)
+				.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length));
 	}
 
 	@Test
 	public void responseWithCustomSnippetAttributes() throws IOException {
-		this.snippets.expectHttpResponse()
-				.withContents(containsString("Title for the response"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("http-response"))
 				.willReturn(snippetResource("http-response-with-title"));
 		new HttpResponseSnippet(attributes(key("title").value("Title for the response")))
 				.document(this.operationBuilder.attribute(TemplateEngine.class.getName(),
 						new MustacheTemplateEngine(resolver)).build());
+		assertThat(this.generatedSnippets.httpResponse())
+				.contains("Title for the response");
 	}
 
 }

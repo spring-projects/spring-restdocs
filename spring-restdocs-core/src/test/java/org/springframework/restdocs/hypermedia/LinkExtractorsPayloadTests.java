@@ -36,7 +36,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Parameterized tests for {@link HalLinkExtractor} and {@link AtomLinkExtractor} with
@@ -109,7 +109,7 @@ public class LinkExtractorsPayloadTests {
 		for (Link expectedLink : expectedLinks) {
 			expectedLinksByRel.add(expectedLink.getRel(), expectedLink);
 		}
-		assertEquals(expectedLinksByRel, actualLinks);
+		assertThat(actualLinks).isEqualTo(expectedLinksByRel);
 	}
 
 	private OperationResponse createResponse(String contentName) throws IOException {

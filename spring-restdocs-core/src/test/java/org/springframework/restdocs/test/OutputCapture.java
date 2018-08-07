@@ -23,13 +23,14 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.api.HamcrestCondition;
 import org.hamcrest.Matcher;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.allOf;
-import static org.junit.Assert.assertThat;
 
 /**
  * JUnit {@code @Rule} to capture output from System.out and System.err.
@@ -59,8 +60,8 @@ public class OutputCapture implements TestRule {
 				finally {
 					try {
 						if (!OutputCapture.this.matchers.isEmpty()) {
-							assertThat(getOutputAsString(),
-									allOf(OutputCapture.this.matchers));
+							assertThat(getOutputAsString()).is(new HamcrestCondition<>(
+									allOf(OutputCapture.this.matchers)));
 						}
 					}
 					finally {

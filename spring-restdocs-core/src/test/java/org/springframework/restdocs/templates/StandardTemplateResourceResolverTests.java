@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,8 @@ import org.junit.rules.ExpectedException;
 
 import org.springframework.core.io.Resource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
@@ -69,8 +68,8 @@ public class StandardTemplateResourceResolverTests {
 
 				});
 
-		assertThat(snippet.getURL(), is(
-				equalTo(getClass().getResource("test-format-specific-custom.snippet"))));
+		assertThat(snippet.getURL())
+				.isEqualTo(getClass().getResource("test-format-specific-custom.snippet"));
 	}
 
 	@Test
@@ -93,8 +92,8 @@ public class StandardTemplateResourceResolverTests {
 
 				});
 
-		assertThat(snippet.getURL(),
-				is(equalTo(getClass().getResource("test-custom.snippet"))));
+		assertThat(snippet.getURL())
+				.isEqualTo(getClass().getResource("test-custom.snippet"));
 	}
 
 	@Test
@@ -113,8 +112,8 @@ public class StandardTemplateResourceResolverTests {
 
 				});
 
-		assertThat(snippet.getURL(),
-				is(equalTo(getClass().getResource("test-default.snippet"))));
+		assertThat(snippet.getURL())
+				.isEqualTo(getClass().getResource("test-default.snippet"));
 	}
 
 	@Test

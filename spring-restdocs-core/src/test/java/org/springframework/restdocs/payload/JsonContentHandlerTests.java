@@ -23,9 +23,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link JsonContentHandler}.
@@ -65,7 +63,7 @@ public class JsonContentHandlerTests {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes())
 						.determineFieldType(new FieldDescriptor("a[].id").optional());
-		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.NUMBER)));
+		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
@@ -73,7 +71,7 @@ public class JsonContentHandlerTests {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
 						.determineFieldType(new FieldDescriptor("a[].id").optional());
-		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.NUMBER)));
+		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
@@ -81,7 +79,7 @@ public class JsonContentHandlerTests {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes())
 						.determineFieldType(new FieldDescriptor("a[].id"));
-		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.VARIES)));
+		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
@@ -89,7 +87,7 @@ public class JsonContentHandlerTests {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
 						.determineFieldType(new FieldDescriptor("a[].id"));
-		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.VARIES)));
+		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
@@ -97,7 +95,7 @@ public class JsonContentHandlerTests {
 		Object fieldType = new JsonContentHandler("{\"a\": null}".getBytes())
 				.determineFieldType(
 						new FieldDescriptor("a").type(JsonFieldType.STRING).optional());
-		assertThat((JsonFieldType) fieldType, is(equalTo(JsonFieldType.STRING)));
+		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.STRING);
 	}
 
 	@Test
@@ -112,8 +110,8 @@ public class JsonContentHandlerTests {
 				"{\"a\": \"alpha\", \"b\":\"bravo\"}".getBytes())
 						.findMissingFields(Arrays.asList(new FieldDescriptor("a"),
 								new FieldDescriptor("b"), new FieldDescriptor("c")));
-		assertThat(missingFields.size(), is(equalTo(1)));
-		assertThat(missingFields.get(0).getPath(), is(equalTo("c")));
+		assertThat(missingFields.size()).isEqualTo(1);
+		assertThat(missingFields.get(0).getPath()).isEqualTo("c");
 	}
 
 	@Test
@@ -122,7 +120,7 @@ public class JsonContentHandlerTests {
 				"{\"a\": \"alpha\", \"b\":\"bravo\"}".getBytes()).findMissingFields(
 						Arrays.asList(new FieldDescriptor("a"), new FieldDescriptor("b"),
 								new FieldDescriptor("c").optional()));
-		assertThat(missingFields.size(), is(equalTo(0)));
+		assertThat(missingFields.size()).isEqualTo(0);
 	}
 
 	@Test
@@ -131,8 +129,8 @@ public class JsonContentHandlerTests {
 				"{\"a\":\"alpha\",\"b\":\"bravo\"}".getBytes()).findMissingFields(
 						Arrays.asList(new FieldDescriptor("a").optional(),
 								new FieldDescriptor("b"), new FieldDescriptor("a.c")));
-		assertThat(missingFields.size(), is(equalTo(1)));
-		assertThat(missingFields.get(0).getPath(), is(equalTo("a.c")));
+		assertThat(missingFields.size()).isEqualTo(1);
+		assertThat(missingFields.get(0).getPath()).isEqualTo("a.c");
 	}
 
 	@Test
@@ -141,7 +139,7 @@ public class JsonContentHandlerTests {
 				"{\"b\":\"bravo\"}".getBytes()).findMissingFields(
 						Arrays.asList(new FieldDescriptor("a").optional(),
 								new FieldDescriptor("b"), new FieldDescriptor("a.c")));
-		assertThat(missingFields.size(), is(equalTo(0)));
+		assertThat(missingFields.size()).isEqualTo(0);
 	}
 
 	@Test
@@ -151,7 +149,7 @@ public class JsonContentHandlerTests {
 						.findMissingFields(Arrays.asList(new FieldDescriptor("outer"),
 								new FieldDescriptor("outer[]").optional(),
 								new FieldDescriptor("outer[].inner")));
-		assertThat(missingFields.size(), is(equalTo(0)));
+		assertThat(missingFields.size()).isEqualTo(0);
 	}
 
 	@Test
@@ -161,7 +159,7 @@ public class JsonContentHandlerTests {
 						.getBytes()).findMissingFields(
 								Arrays.asList(new FieldDescriptor("a.[].c").optional(),
 										new FieldDescriptor("a.[].c.d")));
-		assertThat(missingFields.size(), is(equalTo(0)));
+		assertThat(missingFields.size()).isEqualTo(0);
 	}
 
 	@Test
@@ -171,7 +169,7 @@ public class JsonContentHandlerTests {
 						Arrays.asList(new FieldDescriptor("a.[].b").optional(),
 								new FieldDescriptor("a.[].b.[]").optional(),
 								new FieldDescriptor("a.[].b.[].c")));
-		assertThat(missingFields.size(), is(equalTo(0)));
+		assertThat(missingFields.size()).isEqualTo(0);
 	}
 
 	@Test
@@ -181,8 +179,8 @@ public class JsonContentHandlerTests {
 						Arrays.asList(new FieldDescriptor("a.[].b").optional(),
 								new FieldDescriptor("a.[].b.[]").optional(),
 								new FieldDescriptor("a.[].b.[].c")));
-		assertThat(missingFields.size(), is(equalTo(1)));
-		assertThat(missingFields.get(0).getPath(), is(equalTo("a.[].b.[].c")));
+		assertThat(missingFields.size()).isEqualTo(1);
+		assertThat(missingFields.get(0).getPath()).isEqualTo("a.[].b.[].c");
 	}
 
 }

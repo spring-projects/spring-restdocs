@@ -17,12 +17,17 @@
 package org.springframework.restdocs.restassured3;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
+import org.assertj.core.api.Condition;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,13 +36,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
@@ -61,10 +65,9 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.restassured3.operation.preprocess.RestAssuredPreprocessors.modifyUris;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
-import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
-import static org.springframework.restdocs.test.SnippetMatchers.httpRequest;
-import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
-import static org.springframework.restdocs.test.SnippetMatchers.snippet;
+import static org.springframework.restdocs.test.SnippetConditions.codeBlock;
+import static org.springframework.restdocs.test.SnippetConditions.httpRequest;
+import static org.springframework.restdocs.test.SnippetConditions.httpResponse;
 
 /**
  * Integration tests for using Spring REST Docs with REST Assured.
@@ -99,13 +102,13 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.statusCode(200);
 
 		assertThat(new File(
-				"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"),
-				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content(String.format("$ curl 'http://localhost:"
-								+ tomcat.getPort() + "/' -i -X POST \\%n"
-								+ "    -H 'Accept: application/json' \\%n"
-								+ "    -H 'Content-Type: " + contentType + "' \\%n"
-								+ "    -d 'content'")))));
+				"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"))
+						.has(content(codeBlock(asciidoctor(), "bash")
+								.withContent(String.format("$ curl 'http://localhost:"
+										+ tomcat.getPort() + "/' -i -X POST \\%n"
+										+ "    -H 'Accept: application/json' \\%n"
+										+ "    -H 'Content-Type: " + contentType
+										+ "' \\%n" + "    -d 'content'"))));
 	}
 
 	@Test
@@ -117,13 +120,14 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.contentType(contentType).cookie("cookieName", "cookieVal").get("/")
 				.then().statusCode(200);
 		assertThat(new File(
-				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
-				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content(String.format("$ curl 'http://localhost:"
-								+ tomcat.getPort() + "/' -i -X GET \\%n"
-								+ "    -H 'Accept: application/json' \\%n"
-								+ "    -H 'Content-Type: " + contentType + "' \\%n"
-								+ "    --cookie 'cookieName=cookieVal'")))));
+				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"))
+						.has(content(codeBlock(asciidoctor(), "bash")
+								.withContent(String.format("$ curl 'http://localhost:"
+										+ tomcat.getPort() + "/' -i -X GET \\%n"
+										+ "    -H 'Accept: application/json' \\%n"
+										+ "    -H 'Content-Type: " + contentType
+										+ "' \\%n"
+										+ "    --cookie 'cookieName=cookieVal'"))));
 	}
 
 	@Test
@@ -135,13 +139,13 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.post("/?foo=bar").then().statusCode(200);
 		String contentType = "application/x-www-form-urlencoded; charset=ISO-8859-1";
 		assertThat(new File(
-				"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"),
-				is(snippet(asciidoctor()).withContents(codeBlock(asciidoctor(), "bash")
-						.content(String.format("$ curl " + "'http://localhost:"
-								+ tomcat.getPort() + "/?foo=bar' -i -X POST \\%n"
-								+ "    -H 'Accept: application/json' \\%n"
-								+ "    -H 'Content-Type: " + contentType + "' \\%n"
-								+ "    -d 'a=alpha'")))));
+				"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"))
+						.has(content(codeBlock(asciidoctor(), "bash").withContent(
+								String.format("$ curl " + "'http://localhost:"
+										+ tomcat.getPort() + "/?foo=bar' -i -X POST \\%n"
+										+ "    -H 'Accept: application/json' \\%n"
+										+ "    -H 'Content-Type: " + contentType
+										+ "' \\%n" + "    -d 'a=alpha'"))));
 	}
 
 	@Test
@@ -218,7 +222,6 @@ public class RestAssuredRestDocumentationIntegrationTests {
 								subsectionWithPath("links")
 										.description("Links to other resources"))))
 				.accept("application/json").get("/").then().statusCode(200);
-
 		assertExpectedSnippetFilesExist(
 				new File("build/generated-snippets/response-fields"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc", "response-fields.adoc");
@@ -280,12 +283,10 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.get("/set-cookie").then().statusCode(200);
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/set-cookie"),
 				"http-request.adoc", "http-response.adoc", "curl-request.adoc");
-
-		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(httpResponse(asciidoctor(), HttpStatus.OK).header(
-								HttpHeaders.SET_COOKIE,
-								"name=value; Domain=localhost; HttpOnly"))));
+		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"))
+				.has(content(httpResponse(asciidoctor(), HttpStatus.OK).header(
+						HttpHeaders.SET_COOKIE,
+						"name=value; Domain=localhost; HttpOnly")));
 	}
 
 	@Test
@@ -303,24 +304,22 @@ public class RestAssuredRestDocumentationIntegrationTests {
 								removeHeaders("a", HttpHeaders.CONTENT_LENGTH))))
 				.get("/").then().statusCode(200);
 		assertThat(
-				new File("build/generated-snippets/original-request/http-request.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(httpRequest(asciidoctor(), RequestMethod.GET, "/")
+				new File("build/generated-snippets/original-request/http-request.adoc"))
+						.has(content(httpRequest(asciidoctor(), RequestMethod.GET, "/")
 								.header("a", "alpha").header("b", "bravo")
 								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
 								.header("Content-Type", "application/json; charset=UTF-8")
 								.header("Host", "localhost:" + tomcat.getPort())
 								.header("Content-Length", "13")
-								.content("{\"a\":\"alpha\"}"))));
+								.content("{\"a\":\"alpha\"}")));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
 		assertThat(new File(
-				"build/generated-snippets/preprocessed-request/http-request.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(httpRequest(asciidoctor(), RequestMethod.GET, "/")
+				"build/generated-snippets/preprocessed-request/http-request.adoc"))
+						.has(content(httpRequest(asciidoctor(), RequestMethod.GET, "/")
 								.header("b", "bravo")
 								.header("Accept", MediaType.APPLICATION_JSON_VALUE)
 								.header("Content-Type", "application/json; charset=UTF-8")
-								.header("Host", "localhost").content(prettyPrinted))));
+								.header("Host", "localhost").content(prettyPrinted)));
 	}
 
 	@Test
@@ -338,14 +337,13 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
 				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
 		assertThat(new File(
-				"build/generated-snippets/preprocessed-response/http-response.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(httpResponse(asciidoctor(), HttpStatus.OK)
+				"build/generated-snippets/preprocessed-response/http-response.adoc"))
+						.has(content(httpResponse(asciidoctor(), HttpStatus.OK)
 								.header("Foo", "https://api.example.com/foo/bar")
 								.header("Content-Type", "application/json;charset=UTF-8")
 								.header(HttpHeaders.CONTENT_LENGTH,
 										prettyPrinted.getBytes().length)
-								.content(prettyPrinted))));
+								.content(prettyPrinted)));
 	}
 
 	@Test
@@ -365,15 +363,33 @@ public class RestAssuredRestDocumentationIntegrationTests {
 			Thread.currentThread().setContextClassLoader(previous);
 		}
 		assertThat(new File(
-				"build/generated-snippets/custom-snippet-template/curl-request.adoc"),
-				is(snippet(asciidoctor()).withContents(equalTo("Custom curl request"))));
+				"build/generated-snippets/custom-snippet-template/curl-request.adoc"))
+						.hasContent("Custom curl request");
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
 		for (String snippet : snippets) {
-			File snippetFile = new File(directory, snippet);
-			assertTrue("Snippet " + snippetFile + " not found", snippetFile.isFile());
+			assertThat(new File(directory, snippet)).isFile();
 		}
+	}
+
+	private Condition<File> content(final Condition<String> delegate) {
+		return new Condition<File>() {
+
+			@Override
+			public boolean matches(File value) {
+				try {
+					return delegate
+							.matches(FileCopyUtils.copyToString(new InputStreamReader(
+									new FileInputStream(value), StandardCharsets.UTF_8)));
+				}
+				catch (IOException ex) {
+					fail("Failed to read '" + value + "'", ex);
+					return false;
+				}
+			}
+
+		};
 	}
 
 }

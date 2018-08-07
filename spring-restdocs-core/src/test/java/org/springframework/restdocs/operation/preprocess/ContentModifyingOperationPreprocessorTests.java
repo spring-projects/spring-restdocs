@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,7 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link ContentModifyingOperationPreprocessor}.
@@ -65,7 +63,7 @@ public class ContentModifyingOperationPreprocessorTests {
 				new HttpHeaders(), new Parameters(),
 				Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
-		assertThat(preprocessed.getContent(), is(equalTo("modified".getBytes())));
+		assertThat(preprocessed.getContent()).isEqualTo("modified".getBytes());
 	}
 
 	@Test
@@ -73,7 +71,7 @@ public class ContentModifyingOperationPreprocessorTests {
 		OperationResponse response = this.responseFactory.create(HttpStatus.OK,
 				new HttpHeaders(), "content".getBytes());
 		OperationResponse preprocessed = this.preprocessor.preprocess(response);
-		assertThat(preprocessed.getContent(), is(equalTo("modified".getBytes())));
+		assertThat(preprocessed.getContent()).isEqualTo("modified".getBytes());
 	}
 
 	@Test
@@ -85,7 +83,7 @@ public class ContentModifyingOperationPreprocessorTests {
 				httpHeaders, new Parameters(),
 				Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
-		assertThat(preprocessed.getHeaders().getContentLength(), is(equalTo(8L)));
+		assertThat(preprocessed.getHeaders().getContentLength()).isEqualTo(8L);
 	}
 
 }

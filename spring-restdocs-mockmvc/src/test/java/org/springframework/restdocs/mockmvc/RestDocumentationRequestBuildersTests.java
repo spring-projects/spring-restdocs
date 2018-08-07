@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,7 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -144,18 +142,17 @@ public class RestDocumentationRequestBuildersTests {
 	private void assertTemplate(MockHttpServletRequestBuilder builder,
 			HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
-		assertThat(
-				(String) request.getAttribute(
-						RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE),
-				is(equalTo("{template}")));
-		assertThat(request.getRequestURI(), is(equalTo("t")));
-		assertThat(request.getMethod(), is(equalTo(httpMethod.name())));
+		assertThat((String) request
+				.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE))
+						.isEqualTo("{template}");
+		assertThat(request.getRequestURI()).isEqualTo("t");
+		assertThat(request.getMethod()).isEqualTo(httpMethod.name());
 	}
 
 	private void assertUri(MockHttpServletRequestBuilder builder, HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
-		assertThat(request.getRequestURI(), is(equalTo("/uri")));
-		assertThat(request.getMethod(), is(equalTo(httpMethod.name())));
+		assertThat(request.getRequestURI()).isEqualTo("/uri");
+		assertThat(request.getMethod()).isEqualTo(httpMethod.name());
 	}
 
 }

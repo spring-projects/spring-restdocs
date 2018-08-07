@@ -28,7 +28,7 @@ import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
@@ -47,68 +47,68 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void ignoredLink() throws IOException {
-		this.snippets.expectLinks().withContents(
-				tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
 				Arrays.asList(new LinkDescriptor("a").ignored(),
 						new LinkDescriptor("b").description("Link b")))
 								.document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.links())
+				.is(tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 	}
 
 	@Test
 	public void allUndocumentedLinksCanBeIgnored() throws IOException {
-		this.snippets.expectLinks().withContents(
-				tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
 				Arrays.asList(new LinkDescriptor("b").description("Link b")), true)
 						.document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.links())
+				.is(tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 	}
 
 	@Test
 	public void presentOptionalLink() throws IOException {
-		this.snippets.expectLinks().withContents(
-				tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "blah")),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
 						.document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.links())
+				.is(tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 	}
 
 	@Test
 	public void missingOptionalLink() throws IOException {
-		this.snippets.expectLinks().withContents(
-				tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 		new LinksSnippet(new StubLinkExtractor(),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
 						.document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.links())
+				.is(tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 	}
 
 	@Test
 	public void documentedLinks() throws IOException {
-		this.snippets.expectLinks()
-				.withContents(tableWithHeader("Relation", "Description").row("`a`", "one")
-						.row("`b`", "two"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
 				Arrays.asList(new LinkDescriptor("a").description("one"),
 						new LinkDescriptor("b").description("two")))
 								.document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.links())
+				.is(tableWithHeader("Relation", "Description").row("`a`", "one")
+						.row("`b`", "two"));
 	}
 
 	@Test
 	public void linkDescriptionFromTitleInPayload() throws IOException {
-		this.snippets.expectLinks()
-				.withContents(tableWithHeader("Relation", "Description").row("`a`", "one")
-						.row("`b`", "Link b"));
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha", "Link a"),
 						new Link("b", "bravo", "Link b")),
 				Arrays.asList(new LinkDescriptor("a").description("one"),
 						new LinkDescriptor("b"))).document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.links())
+				.is(tableWithHeader("Relation", "Description").row("`a`", "one")
+						.row("`b`", "Link b"));
 	}
 
 	@Test
@@ -116,8 +116,6 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("links"))
 				.willReturn(snippetResource("links-with-title"));
-		this.snippets.expectLinks().withContents(containsString("Title for the links"));
-
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
@@ -129,6 +127,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 										.attribute(TemplateEngine.class.getName(),
 												new MustacheTemplateEngine(resolver))
 										.build());
+		assertThat(this.generatedSnippets.links()).contains("Title for the links");
 	}
 
 	@Test
@@ -136,10 +135,6 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("links"))
 				.willReturn(snippetResource("links-with-extra-column"));
-		this.snippets.expectLinks()
-				.withContents(tableWithHeader("Relation", "Description", "Foo")
-						.row("a", "one", "alpha").row("b", "two", "bravo"));
-
 		new LinksSnippet(
 				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
@@ -152,29 +147,32 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 												TemplateEngine.class.getName(),
 												new MustacheTemplateEngine(resolver))
 												.build());
+		assertThat(this.generatedSnippets.links())
+				.is(tableWithHeader("Relation", "Description", "Foo")
+						.row("a", "one", "alpha").row("b", "two", "bravo"));
 	}
 
 	@Test
 	public void additionalDescriptors() throws IOException {
-		this.snippets.expectLinks()
-				.withContents(tableWithHeader("Relation", "Description").row("`a`", "one")
-						.row("`b`", "two"));
 		HypermediaDocumentation
 				.links(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
 						new Link("b", "bravo")),
 						new LinkDescriptor("a").description("one"))
 				.and(new LinkDescriptor("b").description("two"))
 				.document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.links())
+				.is(tableWithHeader("Relation", "Description").row("`a`", "one")
+						.row("`b`", "two"));
 	}
 
 	@Test
 	public void tableCellContentIsEscapedWhenNecessary() throws IOException {
-		this.snippets.expectLinks()
-				.withContents(tableWithHeader("Relation", "Description").row(
-						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("Foo|Bar", "foo")),
 				Arrays.asList(new LinkDescriptor("Foo|Bar").description("one|two")))
 						.document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.links())
+				.is(tableWithHeader("Relation", "Description").row(
+						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
 	}
 
 	private String escapeIfNecessary(String input) {

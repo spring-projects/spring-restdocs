@@ -34,6 +34,7 @@ dependencies {
 	optional 'javax.validation:validation-api'
 	optional 'junit:junit'
 	optional 'org.hibernate:hibernate-validator'
+	testCompile 'org.assertj:assertj-core'
 	testCompile 'org.mockito:mockito-core'
 	testCompile 'org.hamcrest:hamcrest-core'
 	testCompile 'org.hamcrest:hamcrest-library'

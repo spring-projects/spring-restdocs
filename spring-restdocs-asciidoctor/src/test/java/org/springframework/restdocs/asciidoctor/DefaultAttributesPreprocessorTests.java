@@ -23,8 +23,7 @@ import org.asciidoctor.Attributes;
 import org.asciidoctor.Options;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link DefaultAttributesPreprocessor}.
@@ -38,8 +37,8 @@ public class DefaultAttributesPreprocessorTests {
 		Options options = new Options();
 		options.setAttributes(new Attributes("projectdir=../../.."));
 		String converted = Asciidoctor.Factory.create().convert("{snippets}", options);
-		assertThat(converted,
-				containsString("build" + File.separatorChar + "generated-snippets"));
+		assertThat(converted)
+				.contains("build" + File.separatorChar + "generated-snippets");
 	}
 
 	@Test
@@ -47,7 +46,7 @@ public class DefaultAttributesPreprocessorTests {
 		Options options = new Options();
 		options.setAttributes(new Attributes("snippets=custom projectdir=../../.."));
 		String converted = Asciidoctor.Factory.create().convert("{snippets}", options);
-		assertThat(converted, containsString("custom"));
+		assertThat(converted).contains("custom");
 	}
 
 	@Test
@@ -56,7 +55,7 @@ public class DefaultAttributesPreprocessorTests {
 		options.setAttributes(new Attributes("projectdir=../../.."));
 		String converted = Asciidoctor.Factory.create()
 				.convert(":snippets: custom\n{snippets}", options);
-		assertThat(converted, containsString("custom"));
+		assertThat(converted).contains("custom");
 	}
 
 }

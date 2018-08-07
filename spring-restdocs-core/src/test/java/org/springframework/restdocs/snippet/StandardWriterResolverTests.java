@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,7 @@ import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
@@ -56,29 +54,26 @@ public class StandardWriterResolverTests {
 	@Test
 	public void absoluteInput() {
 		String absolutePath = new File("foo").getAbsolutePath();
-		assertThat(
-				this.resolver.resolveFile(absolutePath, "bar.txt",
-						createContext(absolutePath)),
-				is(new File(absolutePath, "bar.txt")));
+		assertThat(this.resolver.resolveFile(absolutePath, "bar.txt",
+				createContext(absolutePath)))
+						.isEqualTo(new File(absolutePath, "bar.txt"));
 	}
 
 	@Test
 	public void configuredOutputAndRelativeInput() {
 		File outputDir = new File("foo").getAbsoluteFile();
-		assertThat(
-				this.resolver.resolveFile("bar", "baz.txt",
-						createContext(outputDir.getAbsolutePath())),
-				is(new File(outputDir, "bar/baz.txt")));
+		assertThat(this.resolver.resolveFile("bar", "baz.txt",
+				createContext(outputDir.getAbsolutePath())))
+						.isEqualTo(new File(outputDir, "bar/baz.txt"));
 	}
 
 	@Test
 	public void configuredOutputAndAbsoluteInput() {
 		File outputDir = new File("foo").getAbsoluteFile();
 		String absolutePath = new File("bar").getAbsolutePath();
-		assertThat(
-				this.resolver.resolveFile(absolutePath, "baz.txt",
-						createContext(outputDir.getAbsolutePath())),
-				is(new File(absolutePath, "baz.txt")));
+		assertThat(this.resolver.resolveFile(absolutePath, "baz.txt",
+				createContext(outputDir.getAbsolutePath())))
+						.isEqualTo(new File(absolutePath, "baz.txt"));
 	}
 
 	@Test
@@ -117,9 +112,9 @@ public class StandardWriterResolverTests {
 			throws IOException {
 		writer.write("test");
 		writer.flush();
-		assertThat(expectedLocation.exists(), is(true));
-		assertThat(FileCopyUtils.copyToString(new FileReader(expectedLocation)),
-				is(equalTo("test")));
+		assertThat(expectedLocation).exists();
+		assertThat(FileCopyUtils.copyToString(new FileReader(expectedLocation)))
+				.isEqualTo("test");
 	}
 
 }

@@ -26,6 +26,7 @@ import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
@@ -46,34 +47,30 @@ public class RequestBodySnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestWithBody() throws IOException {
-		this.snippets.expect("request-body")
-				.withContents(codeBlock(null, "nowrap").content("some content"));
-
 		requestBody().document(this.operationBuilder.request("http://localhost")
 				.content("some content").build());
+		assertThat(this.generatedSnippets.snippet("request-body"))
+				.is(codeBlock(null, "nowrap").withContent("some content"));
 	}
 
 	@Test
 	public void requestWithNoBody() throws IOException {
-		this.snippets.expect("request-body")
-				.withContents(codeBlock(null, "nowrap").content(""));
 		requestBody().document(this.operationBuilder.request("http://localhost").build());
+		assertThat(this.generatedSnippets.snippet("request-body"))
+				.is(codeBlock(null, "nowrap").withContent(""));
 	}
 
 	@Test
 	public void subsectionOfRequestBody() throws IOException {
-		this.snippets.expect("request-body-beneath-a.b")
-				.withContents(codeBlock(null, "nowrap").content("{\"c\":5}"));
-
 		requestBody(beneathPath("a.b"))
 				.document(this.operationBuilder.request("http://localhost")
 						.content("{\"a\":{\"b\":{\"c\":5}}}").build());
+		assertThat(this.generatedSnippets.snippet("request-body-beneath-a.b"))
+				.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
 	}
 
 	@Test
 	public void customSnippetAttributes() throws IOException {
-		this.snippets.expect("request-body")
-				.withContents(codeBlock("json", "nowrap").content("{\"a\":\"alpha\"}"));
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-body"))
 				.willReturn(snippetResource("request-body-with-language"));
@@ -83,6 +80,8 @@ public class RequestBodySnippetTests extends AbstractSnippetTests {
 								new MustacheTemplateEngine(resolver))
 						.request("http://localhost").content("{\"a\":\"alpha\"}")
 						.build());
+		assertThat(this.generatedSnippets.snippet("request-body"))
+				.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
 	}
 
 }

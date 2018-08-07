@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,7 @@ import org.junit.Test;
 
 import org.springframework.restdocs.mustache.Template.Fragment;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -42,7 +40,7 @@ public class AsciidoctorTableCellContentLambdaTests {
 		given(fragment.execute()).willReturn("|foo|bar|baz|");
 		StringWriter writer = new StringWriter();
 		new AsciidoctorTableCellContentLambda().execute(fragment, writer);
-		assertThat(writer.toString(), is(equalTo("\\|foo\\|bar\\|baz\\|")));
+		assertThat(writer.toString()).isEqualTo("\\|foo\\|bar\\|baz\\|");
 	}
 
 	@Test
@@ -51,7 +49,7 @@ public class AsciidoctorTableCellContentLambdaTests {
 		given(fragment.execute()).willReturn("\\|foo|bar\\|baz|");
 		StringWriter writer = new StringWriter();
 		new AsciidoctorTableCellContentLambda().execute(fragment, writer);
-		assertThat(writer.toString(), is(equalTo("\\|foo\\|bar\\|baz\\|")));
+		assertThat(writer.toString()).isEqualTo("\\|foo\\|bar\\|baz\\|");
 	}
 
 }

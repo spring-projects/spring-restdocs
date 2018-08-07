@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package com.example.notes;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
 
@@ -35,25 +34,25 @@ public class NullOrNotBlankTests {
 	@Test
 	public void nullValue() {
 		Set<ConstraintViolation<Constrained>> violations = validator.validate(new Constrained(null));
-		assertThat(violations.size(), is(0));
+		assertThat(violations).isEmpty();
 	}
 
 	@Test
 	public void zeroLengthValue() {
 		Set<ConstraintViolation<Constrained>> violations = validator.validate(new Constrained(""));
-		assertThat(violations.size(), is(2));
+		assertThat(violations).hasSize(2);
 	}
 
 	@Test
 	public void blankValue() {
 		Set<ConstraintViolation<Constrained>> violations = validator.validate(new Constrained("   "));
-		assertThat(violations.size(), is(2));
+		assertThat(violations).hasSize(2);
 	}
 
 	@Test
 	public void nonBlankValue() {
 		Set<ConstraintViolation<Constrained>> violations = validator.validate(new Constrained("test"));
-		assertThat(violations.size(), is(0));
+		assertThat(violations).isEmpty();
 	}
 
 	static class Constrained {

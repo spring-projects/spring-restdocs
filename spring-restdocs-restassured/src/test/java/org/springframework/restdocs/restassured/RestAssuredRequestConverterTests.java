@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import com.jayway.restassured.RestAssured;
@@ -33,15 +34,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.RequestCookie;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link RestAssuredRequestConverter}.
@@ -64,8 +64,8 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.get("/foo/bar");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getUri(), is(equalTo(
-				URI.create("http://localhost:" + tomcat.getPort() + "/foo/bar"))));
+		assertThat(request.getUri()).isEqualTo(
+				URI.create("http://localhost:" + tomcat.getPort() + "/foo/bar"));
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.head("/foo/bar");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getMethod(), is(equalTo(HttpMethod.HEAD)));
+		assertThat(request.getMethod()).isEqualTo(HttpMethod.HEAD);
 	}
 
 	@Test
@@ -84,8 +84,9 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.get("/");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParameters().size(), is(1));
-		assertThat(request.getParameters().get("foo"), is(equalTo(Arrays.asList("bar"))));
+		assertThat(request.getParameters()).hasSize(1);
+		assertThat(request.getParameters()).containsEntry("foo",
+				Collections.singletonList("bar"));
 	}
 
 	@Test
@@ -94,9 +95,9 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.get("/?foo=bar&foo=qix");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParameters().size(), is(1));
-		assertThat(request.getParameters().get("foo"),
-				is(equalTo(Arrays.asList("bar", "qix"))));
+		assertThat(request.getParameters()).hasSize(1);
+		assertThat(request.getParameters()).containsEntry("foo",
+				Arrays.asList("bar", "qix"));
 	}
 
 	@Test
@@ -106,8 +107,9 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.get("/");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParameters().size(), is(1));
-		assertThat(request.getParameters().get("foo"), is(equalTo(Arrays.asList("bar"))));
+		assertThat(request.getParameters()).hasSize(1);
+		assertThat(request.getParameters()).containsEntry("foo",
+				Collections.singletonList("bar"));
 	}
 
 	@Test
@@ -117,8 +119,9 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.get("/");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParameters().size(), is(1));
-		assertThat(request.getParameters().get("foo"), is(equalTo(Arrays.asList("bar"))));
+		assertThat(request.getParameters()).hasSize(1);
+		assertThat(request.getParameters()).containsEntry("foo",
+				Collections.singletonList("bar"));
 	}
 
 	@Test
@@ -128,10 +131,11 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.get("/");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getHeaders().toString(), request.getHeaders().size(), is(2));
-		assertThat(request.getHeaders().get("Foo"), is(equalTo(Arrays.asList("bar"))));
-		assertThat(request.getHeaders().get("Host"),
-				is(equalTo(Arrays.asList("localhost:" + tomcat.getPort()))));
+		assertThat(request.getHeaders()).hasSize(2);
+		assertThat(request.getHeaders()).containsEntry("Foo",
+				Collections.singletonList("bar"));
+		assertThat(request.getHeaders()).containsEntry("Host",
+				Collections.singletonList("localhost:" + tomcat.getPort()));
 	}
 
 	@Test
@@ -141,12 +145,13 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.get("/");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getHeaders().toString(), request.getHeaders().size(), is(3));
-		assertThat(request.getHeaders().get("Foo"), is(equalTo(Arrays.asList("bar"))));
-		assertThat(request.getHeaders().get("Accept"),
-				is(equalTo(Arrays.asList("application/json"))));
-		assertThat(request.getHeaders().get("Host"),
-				is(equalTo(Arrays.asList("localhost:" + tomcat.getPort()))));
+		assertThat(request.getHeaders()).hasSize(3);
+		assertThat(request.getHeaders()).containsEntry("Foo",
+				Collections.singletonList("bar"));
+		assertThat(request.getHeaders()).containsEntry("Accept",
+				Collections.singletonList("application/json"));
+		assertThat(request.getHeaders()).containsEntry("Host",
+				Collections.singletonList("localhost:" + tomcat.getPort()));
 	}
 
 	@Test
@@ -156,17 +161,17 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.get("/");
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getCookies().size(), is(equalTo(2)));
+		assertThat(request.getCookies().size()).isEqualTo(2);
 
 		Iterator<RequestCookie> cookieIterator = request.getCookies().iterator();
 		RequestCookie cookie1 = cookieIterator.next();
 
-		assertThat(cookie1.getName(), is(equalTo("cookie1")));
-		assertThat(cookie1.getValue(), is(equalTo("cookieVal1")));
+		assertThat(cookie1.getName()).isEqualTo("cookie1");
+		assertThat(cookie1.getValue()).isEqualTo("cookieVal1");
 
 		RequestCookie cookie2 = cookieIterator.next();
-		assertThat(cookie2.getName(), is(equalTo("cookie2")));
-		assertThat(cookie2.getValue(), is(equalTo("cookieVal2")));
+		assertThat(cookie2.getName()).isEqualTo("cookie2");
+		assertThat(cookie2.getValue()).isEqualTo("cookieVal2");
 	}
 
 	@Test
@@ -178,19 +183,15 @@ public class RestAssuredRequestConverterTests {
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
 		Collection<OperationRequestPart> parts = request.getParts();
-		assertThat(parts.size(), is(2));
-		Iterator<OperationRequestPart> iterator = parts.iterator();
-		OperationRequestPart part = iterator.next();
-		assertThat(part.getName(), is(equalTo("a")));
-		assertThat(part.getSubmittedFileName(), is(equalTo("a.txt")));
-		assertThat(part.getContentAsString(), is(equalTo("alpha")));
-		assertThat(part.getHeaders().getContentType(), is(equalTo(MediaType.TEXT_PLAIN)));
-		part = iterator.next();
-		assertThat(part.getName(), is(equalTo("b")));
-		assertThat(part.getSubmittedFileName(), is(equalTo("file")));
-		assertThat(part.getContentAsString(), is(equalTo("{\"foo\":\"bar\"}")));
-		assertThat(part.getHeaders().getContentType(),
-				is(equalTo(MediaType.APPLICATION_JSON)));
+		assertThat(parts).hasSize(2);
+		assertThat(parts).extracting("name").containsExactly("a", "b");
+		assertThat(parts).extracting("submittedFileName").containsExactly("a.txt",
+				"file");
+		assertThat(parts).extracting("contentAsString").containsExactly("alpha",
+				"{\"foo\":\"bar\"}");
+		assertThat(parts).extracting("headers").extracting(HttpHeaders.CONTENT_TYPE)
+				.containsExactly(Collections.singletonList(MediaType.TEXT_PLAIN_VALUE),
+						Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
 	}
 
 	@Test
@@ -208,7 +209,7 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getContentAsString(), is(equalTo("body")));
+		assertThat(request.getContentAsString()).isEqualTo("body");
 	}
 
 	@Test
@@ -218,7 +219,7 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getContentAsString(), is(equalTo("{\"foo\":\"bar\"}")));
+		assertThat(request.getContentAsString()).isEqualTo("{\"foo\":\"bar\"}");
 	}
 
 	@Test
@@ -229,7 +230,7 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getContent(), is(equalTo(new byte[] { 1, 2, 3, 4 })));
+		assertThat(request.getContent()).isEqualTo(new byte[] { 1, 2, 3, 4 });
 	}
 
 	@Test
@@ -239,7 +240,7 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getContentAsString(), is(equalTo("file")));
+		assertThat(request.getContentAsString()).isEqualTo("file");
 	}
 
 	@Test
@@ -261,8 +262,8 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParts().iterator().next().getContentAsString(),
-				is(equalTo("foo")));
+		assertThat(request.getParts().iterator().next().getContentAsString())
+				.isEqualTo("foo");
 	}
 
 	@Test
@@ -272,8 +273,8 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParts().iterator().next().getContentAsString(),
-				is(equalTo("foo")));
+		assertThat(request.getParts().iterator().next().getContentAsString())
+				.isEqualTo("foo");
 	}
 
 	@Test
@@ -283,8 +284,8 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParts().iterator().next().getContentAsString(),
-				is(equalTo("foo")));
+		assertThat(request.getParts().iterator().next().getContentAsString())
+				.isEqualTo("foo");
 	}
 
 	@Test
@@ -294,8 +295,8 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParts().iterator().next().getContentAsString(),
-				is(equalTo("file")));
+		assertThat(request.getParts().iterator().next().getContentAsString())
+				.isEqualTo("file");
 	}
 
 	@Test
@@ -317,8 +318,8 @@ public class RestAssuredRequestConverterTests {
 		requestSpec.post();
 		OperationRequest request = this.factory
 				.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParts().iterator().next().getContentAsString(),
-				is(equalTo("{\"foo\":\"bar\"}")));
+		assertThat(request.getParts().iterator().next().getContentAsString())
+				.isEqualTo("{\"foo\":\"bar\"}");
 	}
 
 	/**
