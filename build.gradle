@@ -8,7 +8,7 @@ buildscript {
 	dependencies {
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 		classpath 'io.spring.gradle:spring-io-plugin:0.0.8.RELEASE'
-		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5'
+		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2'
 	}
 }
 
