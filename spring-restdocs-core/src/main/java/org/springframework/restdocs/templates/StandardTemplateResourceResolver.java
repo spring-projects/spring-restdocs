@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,6 @@ public class StandardTemplateResourceResolver implements TemplateResourceResolve
 	/**
 	 * Creates a new {@code StandardTemplateResourceResolver} that will produce default
 	 * template resources formatted with the given {@code templateFormat}.
-	 *
 	 * @param templateFormat the format for the default snippet templates
 	 */
 	public StandardTemplateResourceResolver(TemplateFormat templateFormat) {

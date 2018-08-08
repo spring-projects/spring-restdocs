@@ -30,7 +30,6 @@ public interface OperationPreprocessor {
 
 	/**
 	 * Processes the given {@code request}.
-	 *
 	 * @param request the request to process
 	 * @return the processed request
 	 */
@@ -38,7 +37,6 @@ public interface OperationPreprocessor {
 
 	/**
 	 * Processes the given {@code response}.
-	 *
 	 * @param response the response to process
 	 * @return the processed response
 	 */

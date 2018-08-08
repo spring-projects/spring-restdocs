@@ -41,7 +41,6 @@ public final class Preprocessors {
 	/**
 	 * Returns an {@link OperationRequestPreprocessor} that will preprocess the request by
 	 * applying the given {@code preprocessors} to it.
-	 *
 	 * @param preprocessors the preprocessors
 	 * @return the request preprocessor
 	 */
@@ -53,7 +52,6 @@ public final class Preprocessors {
 	/**
 	 * Returns an {@link OperationResponsePreprocessor} that will preprocess the response
 	 * by applying the given {@code preprocessors} to it.
-	 *
 	 * @param preprocessors the preprocessors
 	 * @return the response preprocessor
 	 */
@@ -65,7 +63,6 @@ public final class Preprocessors {
 	/**
 	 * Returns an {@code OperationPreprocessor} that will pretty print the content of the
 	 * request or response.
-	 *
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor prettyPrint() {
@@ -77,7 +74,6 @@ public final class Preprocessors {
 	 * Returns an {@code OperationPreprocessor} that will remove any header from the
 	 * request or response with a name that is equal to one of the given
 	 * {@code headersToRemove}.
-	 *
 	 * @param headerNames the header names
 	 * @return the preprocessor
 	 * @see String#equals(Object)
@@ -91,7 +87,6 @@ public final class Preprocessors {
 	 * Returns an {@code OperationPreprocessor} that will remove any headers from the
 	 * request or response with a name that matches one of the given
 	 * {@code headerNamePatterns} regular expressions.
-	 *
 	 * @param headerNamePatterns the header name patterns
 	 * @return the preprocessor
 	 * @see java.util.regex.Matcher#matches()
@@ -105,7 +100,6 @@ public final class Preprocessors {
 	/**
 	 * Returns an {@code OperationPreprocessor} that will mask the href of hypermedia
 	 * links in the request or response.
-	 *
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor maskLinks() {
@@ -116,7 +110,6 @@ public final class Preprocessors {
 	/**
 	 * Returns an {@code OperationPreprocessor} that will mask the href of hypermedia
 	 * links in the request or response.
-	 *
 	 * @param mask the link mask
 	 * @return the preprocessor
 	 */
@@ -129,7 +122,6 @@ public final class Preprocessors {
 	 * Returns an {@code OperationPreprocessor} that will modify the content of the
 	 * request or response by replacing occurrences of the given {@code pattern} with the
 	 * given {@code replacement}.
-	 *
 	 * @param pattern the pattern
 	 * @param replacement the replacement
 	 * @return the preprocessor
@@ -143,7 +135,6 @@ public final class Preprocessors {
 	/**
 	 * Returns a {@code ParametersModifyingOperationPreprocessor} that can then be
 	 * configured to modify the parameters of the request.
-	 *
 	 * @return the preprocessor
 	 * @since 1.1.0
 	 */
@@ -154,7 +145,6 @@ public final class Preprocessors {
 	/**
 	 * Returns a {@code UriModifyingOperationPreprocessor} that will modify URIs in the
 	 * request or response by changing one or more of their host, scheme, and port.
-	 *
 	 * @return the preprocessor
 	 * @since 2.0.1
 	 */

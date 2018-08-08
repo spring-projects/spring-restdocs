@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * {@code responseConverter} are used to convert the operation's request and response
 	 * into generic {@code OperationRequest} and {@code OperationResponse} instances that
 	 * can then be documented. The given documentation {@code snippets} will be produced.
-	 *
 	 * @param identifier the identifier for the operation
 	 * @param requestConverter the request converter
 	 * @param responseConverter the response converter
@@ -109,7 +108,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * can then be documented. The given {@code requestPreprocessor} is applied to the
 	 * request before it is documented. The given documentation {@code snippets} will be
 	 * produced.
-	 *
 	 * @param identifier the identifier for the operation
 	 * @param requestConverter the request converter
 	 * @param responseConverter the response converter
@@ -132,7 +130,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * can then be documented. The given {@code responsePreprocessor} is applied to the
 	 * response before it is documented. The given documentation {@code snippets} will be
 	 * produced.
-	 *
 	 * @param identifier the identifier for the operation
 	 * @param requestConverter the request converter
 	 * @param responseConverter the response converter
@@ -156,7 +153,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * can then be documented. The given {@code requestPreprocessor} and
 	 * {@code responsePreprocessor} are applied to the request and response before they
 	 * are documented. The given documentation {@code snippets} will be produced.
-	 *
 	 * @param identifier the identifier for the operation
 	 * @param requestConverter the request converter
 	 * @param responseConverter the response converter
@@ -187,7 +183,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	/**
 	 * Handles the given {@code request} and {@code response}, producing documentation
 	 * snippets for them using the given {@code configuration}.
-	 *
 	 * @param request the request
 	 * @param response the request
 	 * @param configuration the configuration
@@ -215,7 +210,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * Creates a new {@link RestDocumentationGenerator} with the same configuration as
 	 * this one other than its snippets. The new generator will use the given
 	 * {@code snippets}.
-	 *
 	 * @param snippets the snippets
 	 * @return the new generator
 	 */

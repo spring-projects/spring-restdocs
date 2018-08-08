@@ -279,6 +279,7 @@ public class RestDocumentationConfigurerTests {
 		public TestOperationPreprocessorsConfigurer operationPreprocessors() {
 			return this.operationPreprocessorsConfigurer;
 		}
+
 	}
 
 	private static final class TestSnippetConfigurer extends
@@ -297,6 +298,7 @@ public class RestDocumentationConfigurerTests {
 				TestRestDocumentationConfigurer parent) {
 			super(parent);
 		}
+
 	}
 
 }

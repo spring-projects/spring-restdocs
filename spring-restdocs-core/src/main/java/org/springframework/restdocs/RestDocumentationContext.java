@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,28 +28,24 @@ public interface RestDocumentationContext {
 
 	/**
 	 * Returns the class whose tests are currently executing.
-	 *
-	 * @return The test class
+	 * @return the test class
 	 */
 	Class<?> getTestClass();
 
 	/**
 	 * Returns the name of the test method that is currently executing.
-	 *
-	 * @return The name of the test method
+	 * @return the name of the test method
 	 */
 	String getTestMethodName();
 
 	/**
 	 * Returns the current step count.
-	 *
-	 * @return The current step count
+	 * @return the current step count
 	 */
 	int getStepCount();
 
 	/**
 	 * Returns the output directory to which generated snippets should be written.
-	 *
 	 * @return the output directory
 	 */
 	File getOutputDirectory();

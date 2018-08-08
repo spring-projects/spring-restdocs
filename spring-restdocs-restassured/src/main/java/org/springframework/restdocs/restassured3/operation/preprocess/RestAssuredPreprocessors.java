@@ -44,7 +44,6 @@ public abstract class RestAssuredPreprocessors {
 	/**
 	 * Returns a {@code UriModifyingOperationPreprocessor} that will modify URIs in the
 	 * request or response by changing one or more of their host, scheme, and port.
-	 *
 	 * @return the preprocessor
 	 * @deprecated since 2.0.1 in favor of {@link Preprocessors#modifyUris()}
 	 */

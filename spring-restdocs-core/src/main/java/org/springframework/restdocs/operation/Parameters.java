@@ -36,7 +36,6 @@ public class Parameters extends LinkedMultiValueMap<String, String> {
 	/**
 	 * Converts the parameters to a query string suitable for use in a URI or the body of
 	 * a form-encoded request.
-	 *
 	 * @return the query string
 	 */
 	public String toQueryString() {
@@ -57,7 +56,6 @@ public class Parameters extends LinkedMultiValueMap<String, String> {
 	/**
 	 * Returns a new {@code Parameters} containing only the parameters that do no appear
 	 * in the query string of the given {@code uri}.
-	 *
 	 * @param uri the uri
 	 * @return the unique parameters
 	 */

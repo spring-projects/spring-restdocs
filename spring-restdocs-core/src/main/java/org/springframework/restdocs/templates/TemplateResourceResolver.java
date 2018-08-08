@@ -28,7 +28,6 @@ public interface TemplateResourceResolver {
 
 	/**
 	 * Resolves a {@link Resource} for the template with the given {@code name}.
-	 *
 	 * @param name the name of the template
 	 * @return the {@code Resource} from which the template can be read
 	 */

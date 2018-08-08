@@ -45,8 +45,7 @@ public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 	/**
 	 * Specifies the type of the field. When documenting a JSON payload, the
 	 * {@link JsonFieldType} enumeration will typically be used.
-	 *
-	 * @param type The type of the field
+	 * @param type the type of the field
 	 * @return {@code this}
 	 * @see JsonFieldType
 	 */
@@ -57,7 +56,6 @@ public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 
 	/**
 	 * Marks the field as optional.
-	 *
 	 * @return {@code this}
 	 */
 	public final FieldDescriptor optional() {
@@ -67,7 +65,6 @@ public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 
 	/**
 	 * Returns the path of the field described by this descriptor.
-	 *
 	 * @return the path
 	 */
 	public final String getPath() {
@@ -76,7 +73,6 @@ public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 
 	/**
 	 * Returns the type of the field described by this descriptor.
-	 *
 	 * @return the type
 	 */
 	public final Object getType() {
@@ -85,7 +81,6 @@ public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 
 	/**
 	 * Returns {@code true} if the described field is optional, otherwise {@code false}.
-	 *
 	 * @return {@code true} if the described field is optional, otherwise {@code false}
 	 */
 	public final boolean isOptional() {

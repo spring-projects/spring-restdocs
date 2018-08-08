@@ -29,7 +29,6 @@ import org.springframework.core.io.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for {@link TemplateResourceResolver}.
@@ -42,7 +41,7 @@ public class StandardTemplateResourceResolverTests {
 	public final ExpectedException thrown = ExpectedException.none();
 
 	private final TemplateResourceResolver resolver = new StandardTemplateResourceResolver(
-			asciidoctor());
+			TemplateFormats.asciidoctor());
 
 	private final TestClassLoader classLoader = new TestClassLoader();
 

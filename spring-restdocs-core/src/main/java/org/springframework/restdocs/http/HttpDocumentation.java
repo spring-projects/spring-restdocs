@@ -33,7 +33,6 @@ public abstract class HttpDocumentation {
 	/**
 	 * Returns a new {@code Snippet} that will document the HTTP request for the API
 	 * operation.
-	 *
 	 * @return the snippet that will document the HTTP request
 	 */
 	public static HttpRequestSnippet httpRequest() {
@@ -44,7 +43,6 @@ public abstract class HttpDocumentation {
 	 * Returns a new {@code Snippet} that will document the HTTP request for the API
 	 * operation. The given {@code attributes} will be available during snippet
 	 * generation.
-	 *
 	 * @param attributes the attributes
 	 * @return the snippet that will document the HTTP request
 	 */
@@ -55,7 +53,6 @@ public abstract class HttpDocumentation {
 	/**
 	 * Returns a {@code Snippet} that will document the HTTP response for the API
 	 * operation.
-	 *
 	 * @return the snippet that will document the HTTP response
 	 */
 	public static HttpResponseSnippet httpResponse() {
@@ -66,7 +63,6 @@ public abstract class HttpDocumentation {
 	 * Returns a {@code Snippet} that will document the HTTP response for the API
 	 * operation. The given {@code attributes} will be available during snippet
 	 * generation.
-	 *
 	 * @param attributes the attributes
 	 * @return the snippet that will document the HTTP response
 	 */

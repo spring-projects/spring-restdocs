@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,6 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 	 * contain the subsection of the body extracted by the given
 	 * {@code subsectionExtractor}. The given {@code attributes} will be included in the
 	 * model during template rendering
-	 *
 	 * @param type the type of the body
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -59,7 +58,6 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 	 * contain the subsection of the body extracted by the given
 	 * {@code subsectionExtractor}. The given {@code attributes} will be included in the
 	 * model during template rendering
-	 *
 	 * @param name the name of the snippet
 	 * @param type the type of the body
 	 * @param subsectionExtractor the subsection extractor
@@ -69,7 +67,7 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 			PayloadSubsectionExtractor<?> subsectionExtractor,
 			Map<String, Object> attributes) {
 		super(name + "-body"
-				+ (subsectionExtractor != null
+				+ ((subsectionExtractor != null)
 						? "-" + subsectionExtractor.getSubsectionId() : ""),
 				type + "-body", attributes);
 		this.subsectionExtractor = subsectionExtractor;
@@ -85,7 +83,7 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 						contentType);
 			}
 			Charset charset = extractCharset(contentType);
-			String body = charset != null ? new String(content, charset)
+			String body = (charset != null) ? new String(content, charset)
 					: new String(content);
 			Map<String, Object> model = new HashMap<>();
 			model.put("body", body);
@@ -106,9 +104,8 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 	/**
 	 * Returns the content of the request or response extracted from the given
 	 * {@code operation}.
-	 *
-	 * @param operation The operation
-	 * @return The content
+	 * @param operation the operation
+	 * @return the content
 	 * @throws IOException if the content cannot be extracted
 	 */
 	protected abstract byte[] getContent(Operation operation) throws IOException;
@@ -116,9 +113,8 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 	/**
 	 * Returns the content type of the request or response extracted from the given
 	 * {@code operation}.
-	 *
-	 * @param operation The operation
-	 * @return The content type
+	 * @param operation the operation
+	 * @return the content type
 	 */
 	protected abstract MediaType getContentType(Operation operation);
 

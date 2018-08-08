@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,12 +57,11 @@ final class IterableEnumeration<T> implements Iterable<T> {
 
 	/**
 	 * Creates an {@code Iterable} that will iterate over the given {@code enumeration}.
-	 *
 	 * @param <T> the type of the enumeration's elements
-	 * @param enumeration The enumeration to expose as an {@code Iterable}
+	 * @param enumeration the enumeration to expose as an {@code Iterable}
 	 * @return the iterable
 	 */
-	static <T> Iterable<T> iterable(Enumeration<T> enumeration) {
+	static <T> Iterable<T> of(Enumeration<T> enumeration) {
 		return new IterableEnumeration<>(enumeration);
 	}
 

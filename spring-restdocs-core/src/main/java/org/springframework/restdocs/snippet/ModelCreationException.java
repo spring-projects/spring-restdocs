@@ -28,7 +28,6 @@ public class ModelCreationException extends RuntimeException {
 
 	/**
 	 * Creates a new {@code ModelCreationException} with the given {@code cause}.
-	 *
 	 * @param cause the cause
 	 */
 	public ModelCreationException(Throwable cause) {
@@ -38,7 +37,6 @@ public class ModelCreationException extends RuntimeException {
 	/**
 	 * Creates a new {@code ModelCreationException} with the given {@code message} and
 	 * {@code cause}.
-	 *
 	 * @param message the message
 	 * @param cause the cause
 	 */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,8 +54,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code HttpieRequestSnippet} that will use the given
 	 * {@code commandFormatter} to format the HTTPie command.
-	 *
-	 * @param commandFormatter The formatter
+	 * @param commandFormatter the formatter
 	 */
 	protected HttpieRequestSnippet(CommandFormatter commandFormatter) {
 		this(null, commandFormatter);
@@ -65,9 +64,8 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	 * Creates a new {@code HttpieRequestSnippet} with the given additional
 	 * {@code attributes} that will be included in the model during template rendering.
 	 * The given {@code commandFormaatter} will be used to format the HTTPie command.
-	 *
-	 * @param attributes The additional attributes
-	 * @param commandFormatter The formatter for generating the snippet
+	 * @param attributes the additional attributes
+	 * @param commandFormatter the formatter for generating the snippet
 	 */
 	protected HttpieRequestSnippet(Map<String, Object> attributes,
 			CommandFormatter commandFormatter) {

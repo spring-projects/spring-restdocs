@@ -26,7 +26,6 @@ interface HeaderFilter {
 	/**
 	 * Called to determine whether a header should be excluded. Return {@code true} to
 	 * exclude a header, otherwise {@code false}.
-	 *
 	 * @param name the name of the header
 	 * @return {@code true} to exclude the header, otherwise {@code false}
 	 */

@@ -37,7 +37,6 @@ class PatternReplacingContentModifier implements ContentModifier {
 	/**
 	 * Creates a new {@link PatternReplacingContentModifier} that will replace occurrences
 	 * of the given {@code pattern} with the given {@code replacement}.
-	 *
 	 * @param pattern the pattern
 	 * @param replacement the replacement
 	 */

@@ -45,7 +45,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in the
 	 * request part using the given {@code descriptors}. Undocumented fields will trigger
 	 * a failure.
-	 *
 	 * @param partName the part name
 	 * @param descriptors the descriptors
 	 */
@@ -59,7 +58,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * request part using the given {@code descriptors}. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param partName the part name
 	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
@@ -74,7 +72,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * request using the given {@code descriptors}. The given {@code attributes} will be
 	 * included in the model during template rendering. Undocumented fields will trigger a
 	 * failure.
-	 *
 	 * @param partName the part name
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
@@ -90,7 +87,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param partName the part name
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
@@ -106,7 +102,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * subsection of the request part using the given {@code descriptors}. The subsection
 	 * will be extracted using the given {@code subsectionExtractor}. Undocumented fields
 	 * will trigger a failure.
-	 *
 	 * @param partName the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptors
@@ -123,7 +118,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * will be extracted using the given {@code subsectionExtractor}. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param partName the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptors
@@ -141,7 +135,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * will be extracted using the given {@code subsectionExtractor}. The given
 	 * {@code attributes} will be included in the model during template rendering.
 	 * Undocumented fields will trigger a failure.
-	 *
 	 * @param partName the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptors
@@ -160,7 +153,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * {@code attributes} will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param partName the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptors
@@ -200,7 +192,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * Returns a new {@code RequestPartFieldsSnippet} configured with this snippet's
 	 * attributes and its descriptors combined with the given
 	 * {@code additionalDescriptors}.
-	 *
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
@@ -212,7 +203,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * Returns a new {@code RequestPartFieldsSnippet} configured with this snippet's
 	 * attributes and its descriptors combined with the given
 	 * {@code additionalDescriptors}.
-	 *
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
@@ -226,7 +216,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * attributes and its descriptors combined with the given
 	 * {@code additionalDescriptors}. The given {@code pathPrefix} is applied to the path
 	 * of each additional descriptor.
-	 *
 	 * @param pathPrefix the prefix to apply to the additional descriptors
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
@@ -246,7 +235,6 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * attributes and its descriptors combined with the given
 	 * {@code additionalDescriptors}. The given {@code pathPrefix} is applied to the path
 	 * of each additional descriptor.
-	 *
 	 * @param pathPrefix the prefix to apply to the additional descriptors
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet

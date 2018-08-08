@@ -27,7 +27,6 @@ class FieldTypesDoNotMatchException extends RuntimeException {
 	/**
 	 * Creates a new {@code FieldTypesDoNotMatchException} for the field described by the
 	 * given {@code fieldDescriptor} that has the given {@code actualType}.
-	 *
 	 * @param fieldDescriptor the field
 	 * @param actualType the actual type of the field
 	 */

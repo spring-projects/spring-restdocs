@@ -44,7 +44,6 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	 * {@code <type>-headers}. The headers will be documented using the given
 	 * {@code  descriptors} and the given {@code attributes} will be included in the model
 	 * during template rendering.
-	 *
 	 * @param type the type of the headers
 	 * @param descriptors the header descriptors
 	 * @param attributes the additional attributes
@@ -91,7 +90,6 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	 * Finds the headers that are missing from the operation. A header is missing if it is
 	 * described by one of the {@code headerDescriptors} but is not present in the
 	 * operation.
-	 *
 	 * @param operation the operation
 	 * @return descriptors for the headers that are missing from the operation
 	 */
@@ -111,7 +109,6 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	/**
 	 * Extracts the names of the headers from the request or response of the given
 	 * {@code operation}.
-	 *
 	 * @param operation the operation
 	 * @return the header names
 	 */
@@ -120,7 +117,6 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	/**
 	 * Returns the list of {@link HeaderDescriptor HeaderDescriptors} that will be used to
 	 * generate the documentation.
-	 *
 	 * @return the header descriptors
 	 */
 	protected final List<HeaderDescriptor> getHeaderDescriptors() {
@@ -129,7 +125,6 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 
 	/**
 	 * Returns a model for the given {@code descriptor}.
-	 *
 	 * @param descriptor the descriptor
 	 * @return the model
 	 */

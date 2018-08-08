@@ -31,7 +31,6 @@ public abstract class OperationPreprocessorAdapter implements OperationPreproces
 
 	/**
 	 * Returns the given {@code request} as-is.
-	 *
 	 * @param request the request
 	 * @return the unmodified request
 	 */
@@ -42,7 +41,6 @@ public abstract class OperationPreprocessorAdapter implements OperationPreproces
 
 	/**
 	 * Returns the given {@code response} as-is.
-	 *
 	 * @param response the response
 	 * @return the unmodified response
 	 */

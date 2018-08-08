@@ -43,7 +43,6 @@ public class HeaderDescriptor extends AbstractDescriptor<HeaderDescriptor> {
 
 	/**
 	 * Marks the header as optional.
-	 *
 	 * @return {@code this}
 	 */
 	public final HeaderDescriptor optional() {
@@ -53,7 +52,6 @@ public class HeaderDescriptor extends AbstractDescriptor<HeaderDescriptor> {
 
 	/**
 	 * Returns the name for the header.
-	 *
 	 * @return the header name
 	 */
 	public final String getName() {
@@ -62,7 +60,6 @@ public class HeaderDescriptor extends AbstractDescriptor<HeaderDescriptor> {
 
 	/**
 	 * Returns {@code true} if the described header is optional, otherwise {@code false}.
-	 *
 	 * @return {@code true} if the described header is optional, otherwise {@code false}
 	 */
 	public final boolean isOptional() {

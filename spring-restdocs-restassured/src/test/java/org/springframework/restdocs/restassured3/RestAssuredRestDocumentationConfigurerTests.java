@@ -87,11 +87,11 @@ public class RestAssuredRestDocumentationConfigurerTests {
 		assertThat(configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
 						.isInstanceOf(List.class);
-		assertThat(configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR))
+		assertThat(configuration.get(
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR))
 						.isInstanceOf(OperationRequestPreprocessor.class);
-		assertThat(configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR))
+		assertThat(configuration.get(
+				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR))
 						.isInstanceOf(OperationResponsePreprocessor.class);
 	}
 

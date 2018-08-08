@@ -69,7 +69,6 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 	/**
 	 * Modifies the URI to use the given {@code scheme}. {@code null}, the default, will
 	 * leave the scheme unchanged.
-	 *
 	 * @param scheme the scheme
 	 * @return {@code this}
 	 */
@@ -82,7 +81,6 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 	/**
 	 * Modifies the URI to use the given {@code host}. {@code null}, the default, will
 	 * leave the host unchanged.
-	 *
 	 * @param host the host
 	 * @return {@code this}
 	 */
@@ -94,7 +92,6 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 
 	/**
 	 * Modifies the URI to use the given {@code port}.
-	 *
 	 * @param port the port
 	 * @return {@code this}
 	 */
@@ -104,7 +101,6 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 
 	/**
 	 * Removes the port from the URI.
-	 *
 	 * @return {@code this}
 	 */
 	public UriModifyingOperationPreprocessor removePort() {
@@ -137,7 +133,7 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 		URI modifiedUri = uriBuilder.build(true).toUri();
 		HttpHeaders modifiedHeaders = modify(request.getHeaders());
 		modifiedHeaders.set(HttpHeaders.HOST, modifiedUri.getHost()
-				+ (modifiedUri.getPort() == -1 ? "" : ":" + modifiedUri.getPort()));
+				+ ((modifiedUri.getPort() != -1) ? ":" + modifiedUri.getPort() : ""));
 		return this.contentModifyingDelegate.preprocess(new OperationRequestFactory()
 				.create(uriBuilder.build(true).toUri(), request.getMethod(),
 						request.getContent(), modifiedHeaders, request.getParameters(),

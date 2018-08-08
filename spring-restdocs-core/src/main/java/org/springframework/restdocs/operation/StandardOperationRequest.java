@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ class StandardOperationRequest extends AbstractOperationMessage
 	 * Creates a new request with the given {@code uri} and {@code method}. The request
 	 * will have the given {@code headers}, {@code parameters}, {@code parts}, and
 	 * {@code cookies}.
-	 *
 	 * @param uri the uri
 	 * @param method the method
 	 * @param content the content

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ public final class RequestCookie {
 
 	/**
 	 * Creates a new {@code RequestCookie} with the given {@code name} and {@code value}.
-	 *
 	 * @param name the name of the cookie
 	 * @param value the value of the cookie
 	 */
@@ -41,7 +40,6 @@ public final class RequestCookie {
 
 	/**
 	 * Returns the name of the cookie.
-	 *
 	 * @return the name
 	 */
 	public String getName() {
@@ -50,7 +48,6 @@ public final class RequestCookie {
 
 	/**
 	 * Returns the value of the cookie.
-	 *
 	 * @return the value
 	 */
 	public String getValue() {

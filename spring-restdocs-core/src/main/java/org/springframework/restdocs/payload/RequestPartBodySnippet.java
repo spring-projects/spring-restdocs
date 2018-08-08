@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,6 @@ public class RequestPartBodySnippet extends AbstractBodySnippet {
 	/**
 	 * Creates a new {@code RequestPartBodySnippet} that will document the body of the
 	 * request part with the given {@code partName}.
-	 *
 	 * @param partName the name of the request part
 	 */
 	public RequestPartBodySnippet(String partName) {
@@ -48,7 +47,6 @@ public class RequestPartBodySnippet extends AbstractBodySnippet {
 	 * Creates a new {@code RequestPartBodySnippet} that will document the subsection of
 	 * the body of the request part with the given {@code partName} extracted by the given
 	 * {@code subsectionExtractor}.
-	 *
 	 * @param partName the name of the request part
 	 * @param subsectionExtractor the subsection extractor
 	 */
@@ -61,7 +59,6 @@ public class RequestPartBodySnippet extends AbstractBodySnippet {
 	 * Creates a new {@code RequestPartBodySnippet} that will document the body of the
 	 * request part with the given {@code partName}. The given additional
 	 * {@code attributes} will be included in the model during template rendering.
-	 *
 	 * @param partName the name of the request part
 	 * @param attributes the additional attributes
 	 */
@@ -75,10 +72,9 @@ public class RequestPartBodySnippet extends AbstractBodySnippet {
 	 * by the given {@code subsectionExtractor} will be documented and the given
 	 * additional {@code attributes} that will be included in the model during template
 	 * rendering.
-	 *
 	 * @param partName the name of the request part
 	 * @param subsectionExtractor the subsection extractor
-	 * @param attributes The additional attributes
+	 * @param attributes the additional attributes
 	 */
 	public RequestPartBodySnippet(String partName,
 			PayloadSubsectionExtractor<?> subsectionExtractor,

@@ -27,7 +27,6 @@ class PayloadHandlingException extends RuntimeException {
 
 	/**
 	 * Creates a new {@code PayloadHandlingException} with the given {@code message}.
-	 *
 	 * @param message the message
 	 * @since 1.2.0
 	 */
@@ -37,7 +36,6 @@ class PayloadHandlingException extends RuntimeException {
 
 	/**
 	 * Creates a new {@code PayloadHandlingException} with the given {@code cause}.
-	 *
 	 * @param cause the cause of the failure
 	 */
 	PayloadHandlingException(Throwable cause) {

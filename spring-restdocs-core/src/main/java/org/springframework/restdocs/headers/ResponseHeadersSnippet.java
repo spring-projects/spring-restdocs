@@ -38,7 +38,6 @@ public class ResponseHeadersSnippet extends AbstractHeadersSnippet {
 	/**
 	 * Creates a new {@code ResponseHeadersSnippet} that will document the headers in the
 	 * response using the given {@code descriptors}.
-	 *
 	 * @param descriptors the descriptors
 	 */
 	protected ResponseHeadersSnippet(List<HeaderDescriptor> descriptors) {
@@ -49,7 +48,6 @@ public class ResponseHeadersSnippet extends AbstractHeadersSnippet {
 	 * Creates a new {@code ResponseHeadersSnippet} that will document the headers in the
 	 * response using the given {@code descriptors}. The given {@code attributes} will be
 	 * included in the model during template rendering.
-	 *
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */

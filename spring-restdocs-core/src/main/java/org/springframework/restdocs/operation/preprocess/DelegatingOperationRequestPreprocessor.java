@@ -37,7 +37,6 @@ class DelegatingOperationRequestPreprocessor implements OperationRequestPreproce
 	 * Creates a new {@code DelegatingOperationRequestPreprocessor} that will delegate to
 	 * the given {@code delegates} by calling
 	 * {@link OperationPreprocessor#preprocess(OperationRequest)}.
-	 *
 	 * @param delegates the delegates
 	 */
 	DelegatingOperationRequestPreprocessor(List<OperationPreprocessor> delegates) {

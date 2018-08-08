@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ public class OperationRequestFactory {
 	 * Creates a new {@link OperationRequest}. The given {@code headers} will be augmented
 	 * to ensure that they always include a {@code Content-Length} header if the request
 	 * has any content and a {@code Host} header.
-	 *
 	 * @param uri the request's uri
 	 * @param method the request method
 	 * @param content the content of the request
@@ -55,7 +54,6 @@ public class OperationRequestFactory {
 	 * Creates a new {@link OperationRequest}. The given {@code headers} will be augmented
 	 * to ensure that they always include a {@code Content-Length} header if the request
 	 * has any content and a {@code Host} header.
-	 *
 	 * @param uri the request's uri
 	 * @param method the request method
 	 * @param content the content of the request
@@ -75,11 +73,9 @@ public class OperationRequestFactory {
 	 * Creates a new {@code OperationRequest} based on the given {@code original} but with
 	 * the given {@code newContent}. If the original request had a {@code Content-Length}
 	 * header it will be modified to match the length of the new content.
-	 *
-	 * @param original The original request
-	 * @param newContent The new content
-	 *
-	 * @return The new request with the new content
+	 * @param original the original request
+	 * @param newContent the new content
+	 * @return the new request with the new content
 	 */
 	public OperationRequest createFrom(OperationRequest original, byte[] newContent) {
 		return new StandardOperationRequest(original.getUri(), original.getMethod(),
@@ -90,11 +86,9 @@ public class OperationRequestFactory {
 	/**
 	 * Creates a new {@code OperationRequest} based on the given {@code original} but with
 	 * the given {@code newHeaders}.
-	 *
-	 * @param original The original request
-	 * @param newHeaders The new headers
-	 *
-	 * @return The new request with the new headers
+	 * @param original the original request
+	 * @param newHeaders the new headers
+	 * @return the new request with the new headers
 	 */
 	public OperationRequest createFrom(OperationRequest original,
 			HttpHeaders newHeaders) {
@@ -106,11 +100,9 @@ public class OperationRequestFactory {
 	/**
 	 * Creates a new {@code OperationRequest} based on the given {@code original} but with
 	 * the given {@code newParameters}.
-	 *
-	 * @param original The original request
-	 * @param newParameters The new parameters
-	 *
-	 * @return The new request with the new parameters
+	 * @param original the original request
+	 * @param newParameters the new parameters
+	 * @return the new request with the new parameters
 	 */
 	public OperationRequest createFrom(OperationRequest original,
 			Parameters newParameters) {

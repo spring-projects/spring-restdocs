@@ -38,7 +38,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
+import org.springframework.restdocs.test.SnippetConditions;
+import org.springframework.restdocs.test.SnippetConditions.CodeBlockCondition;
+import org.springframework.restdocs.test.SnippetConditions.HttpResponseCondition;
+import org.springframework.restdocs.test.SnippetConditions.TableCondition;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.FileCopyUtils;
@@ -59,11 +64,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
-import static org.springframework.restdocs.test.SnippetConditions.codeBlock;
-import static org.springframework.restdocs.test.SnippetConditions.httpResponse;
-import static org.springframework.restdocs.test.SnippetConditions.tableWithHeader;
-import static org.springframework.restdocs.test.SnippetConditions.tableWithTitleAndHeader;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
@@ -89,11 +89,11 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				.andRoute(RequestPredicates.GET("/{foo}/{bar}"),
 						(request) -> ServerResponse.status(HttpStatus.OK)
 								.body(fromObject(new Person("Jane", "Doe"))))
-				.andRoute(RequestPredicates.POST("/upload"), (request) -> {
-					return request.body(BodyExtractors.toMultipartData()).map((parts) -> {
-						return ServerResponse.status(HttpStatus.OK).build().block();
-					});
-				}).andRoute(RequestPredicates.GET("/set-cookie"),
+				.andRoute(RequestPredicates.POST("/upload"),
+						(request) -> request.body(BodyExtractors.toMultipartData())
+								.map((parts) -> ServerResponse.status(HttpStatus.OK)
+										.build().block()))
+				.andRoute(RequestPredicates.GET("/set-cookie"),
 						(request) -> ServerResponse.ok()
 								.cookie(ResponseCookie.from("name", "value")
 										.domain("localhost").httpOnly(true).build())
@@ -166,9 +166,9 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		this.webTestClient.get().uri("/set-cookie").exchange().expectStatus().isOk()
 				.expectBody().consumeWith(document("set-cookie"));
 		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"))
-				.has(content(httpResponse(asciidoctor(), HttpStatus.OK).header(
-						HttpHeaders.SET_COOKIE,
-						"name=value; Domain=localhost; HttpOnly")));
+				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
+						.header(HttpHeaders.SET_COOKIE,
+								"name=value; Domain=localhost; HttpOnly")));
 	}
 
 	@Test
@@ -178,10 +178,11 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				.expectBody().consumeWith(document("curl-snippet-with-cookies"));
 		assertThat(new File(
 				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash").withContent(String
-								.format("$ curl 'https://api.example.com/' -i -X GET \\%n"
-										+ "    -H 'Accept: application/json' \\%n"
-										+ "    --cookie 'cookieName=cookieVal'"))));
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String.format(
+										"$ curl 'https://api.example.com/' -i -X GET \\%n"
+												+ "    -H 'Accept: application/json' \\%n"
+												+ "    --cookie 'cookieName=cookieVal'"))));
 	}
 
 	@Test
@@ -191,10 +192,11 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				.expectBody().consumeWith(document("httpie-snippet-with-cookies"));
 		assertThat(new File(
 				"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash").withContent(
-								String.format("$ http GET 'https://api.example.com/' \\%n"
-										+ "    'Accept:application/json' \\%n"
-										+ "    'Cookie:cookieName=cookieVal'"))));
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String.format(
+										"$ http GET 'https://api.example.com/' \\%n"
+												+ "    'Accept:application/json' \\%n"
+												+ "    'Cookie:cookieName=cookieVal'"))));
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
@@ -222,6 +224,23 @@ public class WebTestClientRestDocumentationIntegrationTests {
 			}
 
 		};
+	}
+
+	private CodeBlockCondition<?> codeBlock(TemplateFormat format, String language) {
+		return SnippetConditions.codeBlock(format, language);
+	}
+
+	private HttpResponseCondition httpResponse(TemplateFormat format, HttpStatus status) {
+		return SnippetConditions.httpResponse(format, status);
+	}
+
+	private TableCondition<?> tableWithHeader(TemplateFormat format, String... headers) {
+		return SnippetConditions.tableWithHeader(format, headers);
+	}
+
+	private TableCondition<?> tableWithTitleAndHeader(TemplateFormat format, String title,
+			String... headers) {
+		return SnippetConditions.tableWithTitleAndHeader(format, title, headers);
 	}
 
 	/**

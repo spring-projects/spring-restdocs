@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ public interface WriterResolver {
 	/**
 	 * Returns a writer that can be used to write the snippet with the given name for the
 	 * operation with the given name.
-	 *
 	 * @param operationName the name of the operation that is being documented
 	 * @param snippetName the name of the snippet
 	 * @param restDocumentationContext the current documentation context

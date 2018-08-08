@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,8 @@ public interface Template {
 	/**
 	 * Renders the template to a {@link String} using the given {@code context} for
 	 * variable/property resolution.
-	 *
-	 * @param context The context to use
-	 * @return The rendered template
+	 * @param context the context to use
+	 * @return the rendered template
 	 */
 	String render(Map<String, Object> context);
 

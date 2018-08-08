@@ -33,9 +33,8 @@ public class Link {
 
 	/**
 	 * Creates a new {@code Link} with the given {@code rel} and {@code href}.
-	 *
-	 * @param rel The link's rel
-	 * @param href The link's href
+	 * @param rel the link's rel
+	 * @param href the link's href
 	 */
 	public Link(String rel, String href) {
 		this(rel, href, null);
@@ -44,10 +43,9 @@ public class Link {
 	/**
 	 * Creates a new {@code Link} with the given {@code rel}, {@code href}, and
 	 * {@code title}.
-	 *
-	 * @param rel The link's rel
-	 * @param href The link's href
-	 * @param title The link's title
+	 * @param rel the link's rel
+	 * @param href the link's href
+	 * @param title the link's title
 	 */
 	public Link(String rel, String href, String title) {
 		this.rel = rel;
@@ -80,16 +78,6 @@ public class Link {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + this.href.hashCode();
-		result = prime * result + this.rel.hashCode();
-		result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -116,6 +104,16 @@ public class Link {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.href.hashCode();
+		result = prime * result + this.rel.hashCode();
+		result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+		return result;
 	}
 
 	@Override

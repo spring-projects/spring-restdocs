@@ -54,7 +54,7 @@ final class JsonFieldProcessor {
 			throw new FieldDoesNotExistException(path);
 		}
 		return new ExtractedField(
-				compiledPath.getType() == PathType.SINGLE ? matches.get(0) : matches,
+				(compiledPath.getType() != PathType.SINGLE) ? matches : matches.get(0),
 				compiledPath.getType());
 	}
 
@@ -167,7 +167,7 @@ final class JsonFieldProcessor {
 		@Override
 		public void foundMatch(Match match) {
 			this.matchType = this.matchType.combinedWith(
-					match.getValue() == null ? MatchType.NULL : MatchType.NON_NULL);
+					(match.getValue() != null) ? MatchType.NON_NULL : MatchType.NULL);
 		}
 
 		@Override
@@ -394,7 +394,7 @@ final class JsonFieldProcessor {
 				List<String> segments, Match parent) {
 			this.payload = payload;
 			this.path = path;
-			this.segments = segments == null ? path.getSegments() : segments;
+			this.segments = (segments != null) ? segments : path.getSegments();
 			this.parent = parent;
 		}
 

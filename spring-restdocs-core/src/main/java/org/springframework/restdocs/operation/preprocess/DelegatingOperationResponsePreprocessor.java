@@ -36,7 +36,6 @@ class DelegatingOperationResponsePreprocessor implements OperationResponsePrepro
 	 * Creates a new {@code DelegatingOperationResponsePreprocessor} that will delegate to
 	 * the given {@code delegates} by calling
 	 * {@link OperationPreprocessor#preprocess(OperationResponse)}.
-	 *
 	 * @param delegates the delegates
 	 */
 	DelegatingOperationResponsePreprocessor(List<OperationPreprocessor> delegates) {

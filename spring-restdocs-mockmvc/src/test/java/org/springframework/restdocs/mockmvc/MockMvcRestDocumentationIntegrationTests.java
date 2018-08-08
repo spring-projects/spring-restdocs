@@ -48,7 +48,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentationIntegrationTests.TestConfiguration;
+import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
+import org.springframework.restdocs.test.SnippetConditions;
+import org.springframework.restdocs.test.SnippetConditions.CodeBlockCondition;
 import org.springframework.restdocs.test.SnippetConditions.HttpRequestCondition;
+import org.springframework.restdocs.test.SnippetConditions.HttpResponseCondition;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -69,7 +74,6 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
-import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -88,11 +92,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
-import static org.springframework.restdocs.templates.TemplateFormats.markdown;
-import static org.springframework.restdocs.test.SnippetConditions.codeBlock;
-import static org.springframework.restdocs.test.SnippetConditions.httpRequest;
-import static org.springframework.restdocs.test.SnippetConditions.httpResponse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -142,7 +141,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 	public void markdownSnippetGeneration() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(new MockMvcRestDocumentationConfigurer(this.restDocumentation)
-						.snippets().withEncoding("UTF-8").withTemplateFormat(markdown()))
+						.snippets().withEncoding("UTF-8")
+						.withTemplateFormat(TemplateFormats.markdown()))
 				.build();
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(document("basic-markdown"));
@@ -159,10 +159,11 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andExpect(status().isOk()).andDo(document("curl-snippet-with-content"));
 		assertThat(new File(
 				"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash").withContent(String
-								.format("$ curl 'http://localhost:8080/' -i -X POST \\%n"
-										+ "    -H 'Accept: application/json' \\%n"
-										+ "    -d 'content'"))));
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String.format(
+										"$ curl 'http://localhost:8080/' -i -X POST \\%n"
+												+ "    -H 'Accept: application/json' \\%n"
+												+ "    -d 'content'"))));
 	}
 
 	@Test
@@ -174,10 +175,11 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andDo(document("curl-snippet-with-cookies"));
 		assertThat(new File(
 				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash").withContent(String
-								.format("$ curl 'http://localhost:8080/' -i -X GET \\%n"
-										+ "    -H 'Accept: application/json' \\%n"
-										+ "    --cookie 'cookieName=cookieVal'"))));
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String.format(
+										"$ curl 'http://localhost:8080/' -i -X GET \\%n"
+												+ "    -H 'Accept: application/json' \\%n"
+												+ "    --cookie 'cookieName=cookieVal'"))));
 	}
 
 	@Test
@@ -189,7 +191,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andDo(document("curl-snippet-with-query-string"));
 		assertThat(new File(
 				"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash")
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
 								.withContent(String.format("$ curl "
 										+ "'http://localhost:8080/?foo=bar' -i -X POST \\%n"
 										+ "    -H 'Accept: application/json' \\%n"
@@ -205,10 +207,11 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andDo(document("curl-snippet-with-content-and-parameters"));
 		assertThat(new File(
 				"build/generated-snippets/curl-snippet-with-content-and-parameters/curl-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash").withContent(String
-								.format("$ curl 'http://localhost:8080/?a=alpha' -i -X POST \\%n"
-										+ "    -H 'Accept: application/json' \\%n"
-										+ "    -d 'some content'"))));
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String.format(
+										"$ curl 'http://localhost:8080/?a=alpha' -i -X POST \\%n"
+												+ "    -H 'Accept: application/json' \\%n"
+												+ "    -d 'some content'"))));
 	}
 
 	@Test
@@ -220,7 +223,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andDo(document("httpie-snippet-with-content"));
 		assertThat(new File(
 				"build/generated-snippets/httpie-snippet-with-content/httpie-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash")
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
 								.withContent(String.format("$ echo 'content' | "
 										+ "http POST 'http://localhost:8080/' \\%n"
 										+ "    'Accept:application/json'"))));
@@ -235,10 +238,11 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andDo(document("httpie-snippet-with-cookies"));
 		assertThat(new File(
 				"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash").withContent(
-								String.format("$ http GET 'http://localhost:8080/' \\%n"
-										+ "    'Accept:application/json' \\%n"
-										+ "    'Cookie:cookieName=cookieVal'"))));
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String
+										.format("$ http GET 'http://localhost:8080/' \\%n"
+												+ "    'Accept:application/json' \\%n"
+												+ "    'Cookie:cookieName=cookieVal'"))));
 	}
 
 	@Test
@@ -250,7 +254,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andDo(document("httpie-snippet-with-query-string"));
 		assertThat(new File(
 				"build/generated-snippets/httpie-snippet-with-query-string/httpie-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash")
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
 								.withContent(String.format("$ http "
 										+ "--form POST 'http://localhost:8080/?foo=bar' \\%n"
 										+ "    'Accept:application/json' \\%n    'a=alpha'"))));
@@ -265,10 +269,11 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andDo(document("httpie-snippet-post-with-content-and-parameters"));
 		assertThat(new File(
 				"build/generated-snippets/httpie-snippet-post-with-content-and-parameters/httpie-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash").withContent(
-								String.format("$ echo " + "'some content' | http POST "
-										+ "'http://localhost:8080/?a=alpha' \\%n"
-										+ "    'Accept:application/json'"))));
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String
+										.format("$ echo " + "'some content' | http POST "
+												+ "'http://localhost:8080/?a=alpha' \\%n"
+												+ "    'Accept:application/json'"))));
 	}
 
 	@Test
@@ -357,9 +362,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 						responseHeaders(headerWithName(HttpHeaders.SET_COOKIE)
 								.description("set-cookie"))));
 		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"))
-				.has(content(httpResponse(asciidoctor(), HttpStatus.OK).header(
-						HttpHeaders.SET_COOKIE,
-						"name=value; Domain=localhost; HttpOnly")));
+				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
+						.header(HttpHeaders.SET_COOKIE,
+								"name=value; Domain=localhost; HttpOnly")));
 	}
 
 	@Test
@@ -428,9 +433,10 @@ public class MockMvcRestDocumentationIntegrationTests {
 										HttpHeaders.CONTENT_LENGTH),
 								replacePattern(pattern, "\"<<beta>>\""))))
 				.andReturn();
-		HttpRequestCondition originalRequest = httpRequest(asciidoctor(),
+		HttpRequestCondition originalRequest = httpRequest(TemplateFormats.asciidoctor(),
 				RequestMethod.GET, "/");
-		for (String headerName : iterable(result.getRequest().getHeaderNames())) {
+		for (String headerName : IterableEnumeration
+				.of(result.getRequest().getHeaderNames())) {
 			originalRequest.header(headerName, result.getRequest().getHeader(headerName));
 		}
 		assertThat(
@@ -438,11 +444,12 @@ public class MockMvcRestDocumentationIntegrationTests {
 						.has(content(originalRequest.header("Host", "localhost:8080")
 								.header("Content-Length", "13")
 								.content("{\"a\":\"alpha\"}")));
-		HttpRequestCondition preprocessedRequest = httpRequest(asciidoctor(),
-				RequestMethod.GET, "/");
+		HttpRequestCondition preprocessedRequest = httpRequest(
+				TemplateFormats.asciidoctor(), RequestMethod.GET, "/");
 		List<String> removedHeaders = Arrays.asList("a", HttpHeaders.HOST,
 				HttpHeaders.CONTENT_LENGTH);
-		for (String headerName : iterable(result.getRequest().getHeaderNames())) {
+		for (String headerName : IterableEnumeration
+				.of(result.getRequest().getHeaderNames())) {
 			if (!removedHeaders.contains(headerName)) {
 				preprocessedRequest.header(headerName,
 						result.getRequest().getHeader(headerName));
@@ -471,11 +478,12 @@ public class MockMvcRestDocumentationIntegrationTests {
 						.accept(MediaType.APPLICATION_JSON).content("{\"a\":\"alpha\"}"))
 				.andDo(document("default-preprocessed-request")).andReturn();
 
-		HttpRequestCondition preprocessedRequest = httpRequest(asciidoctor(),
-				RequestMethod.GET, "/");
+		HttpRequestCondition preprocessedRequest = httpRequest(
+				TemplateFormats.asciidoctor(), RequestMethod.GET, "/");
 		List<String> removedHeaders = Arrays.asList("a", HttpHeaders.HOST,
 				HttpHeaders.CONTENT_LENGTH);
-		for (String headerName : iterable(result.getRequest().getHeaderNames())) {
+		for (String headerName : IterableEnumeration
+				.of(result.getRequest().getHeaderNames())) {
 			if (!removedHeaders.contains(headerName)) {
 				preprocessedRequest.header(headerName,
 						result.getRequest().getHeader(headerName));
@@ -502,9 +510,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 
 		String original = "{\"a\":\"alpha\",\"links\":[{\"rel\":\"rel\","
 				+ "\"href\":\"href\"}]}";
-		assertThat(
-				new File("build/generated-snippets/original-response/http-response.adoc"))
-						.has(content(httpResponse(asciidoctor(), HttpStatus.OK)
+		assertThat(new File(
+				"build/generated-snippets/original-response/http-response.adoc")).has(
+						content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
 								.header("a", "alpha")
 								.header("Content-Type", "application/json;charset=UTF-8")
 								.header(HttpHeaders.CONTENT_LENGTH,
@@ -513,8 +521,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
 				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
 		assertThat(new File(
-				"build/generated-snippets/preprocessed-response/http-response.adoc"))
-						.has(content(httpResponse(asciidoctor(), HttpStatus.OK)
+				"build/generated-snippets/preprocessed-response/http-response.adoc")).has(
+						content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
 								.header("Content-Type", "application/json;charset=UTF-8")
 								.header(HttpHeaders.CONTENT_LENGTH,
 										prettyPrinted.getBytes().length)
@@ -539,11 +547,13 @@ public class MockMvcRestDocumentationIntegrationTests {
 				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
 		assertThat(new File(
 				"build/generated-snippets/default-preprocessed-response/http-response.adoc"))
-						.has(content(httpResponse(asciidoctor(), HttpStatus.OK)
-								.header("Content-Type", "application/json;charset=UTF-8")
-								.header(HttpHeaders.CONTENT_LENGTH,
-										prettyPrinted.getBytes().length)
-								.content(prettyPrinted)));
+						.has(content(
+								httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
+										.header("Content-Type",
+												"application/json;charset=UTF-8")
+										.header(HttpHeaders.CONTENT_LENGTH,
+												prettyPrinted.getBytes().length)
+										.content(prettyPrinted)));
 	}
 
 	@Test
@@ -578,9 +588,10 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andExpect(status().isOk()).andDo(document("custom-context-path"));
 		assertThat(new File(
 				"build/generated-snippets/custom-context-path/curl-request.adoc"))
-						.has(content(codeBlock(asciidoctor(), "bash").withContent(String
-								.format("$ curl 'http://localhost:8080/custom/' -i -X GET \\%n"
-										+ "    -H 'Accept: application/json'"))));
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String.format(
+										"$ curl 'http://localhost:8080/custom/' -i -X GET \\%n"
+												+ "    -H 'Accept: application/json'"))));
 	}
 
 	@Test
@@ -615,6 +626,19 @@ public class MockMvcRestDocumentationIntegrationTests {
 			}
 
 		};
+	}
+
+	private CodeBlockCondition<?> codeBlock(TemplateFormat format, String language) {
+		return SnippetConditions.codeBlock(format, language);
+	}
+
+	private HttpRequestCondition httpRequest(TemplateFormat format,
+			RequestMethod requestMethod, String uri) {
+		return SnippetConditions.httpRequest(format, requestMethod, uri);
+	}
+
+	private HttpResponseCondition httpResponse(TemplateFormat format, HttpStatus status) {
+		return SnippetConditions.httpResponse(format, status);
 	}
 
 	/**

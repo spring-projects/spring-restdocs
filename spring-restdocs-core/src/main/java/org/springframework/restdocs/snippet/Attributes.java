@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,8 @@ public abstract class Attributes {
 	/**
 	 * Creates an attribute with the given {@code key}. A value for the attribute must
 	 * still be specified.
-	 *
-	 * @param key The key of the attribute
-	 * @return An {@code AttributeBuilder} to use to specify the value of the attribute
+	 * @param key the key of the attribute
+	 * @return an {@code AttributeBuilder} to use to specify the value of the attribute
 	 * @see AttributeBuilder#value(Object)
 	 */
 	public static AttributeBuilder key(String key) {
@@ -44,9 +43,8 @@ public abstract class Attributes {
 
 	/**
 	 * Creates a {@code Map} of the given {@code attributes}.
-	 *
-	 * @param attributes The attributes
-	 * @return A Map of the attributes
+	 * @param attributes the attributes
+	 * @return a Map of the attributes
 	 */
 	public static Map<String, Object> attributes(Attribute... attributes) {
 		Map<String, Object> attributeMap = new HashMap<>();
@@ -69,9 +67,8 @@ public abstract class Attributes {
 
 		/**
 		 * Configures the value of the attribute.
-		 *
-		 * @param value The attribute's value
-		 * @return A newly created {@code Attribute}
+		 * @param value the attribute's value
+		 * @return a newly created {@code Attribute}
 		 */
 		public Attribute value(Object value) {
 			return new Attribute(this.key, value);
@@ -90,7 +87,6 @@ public abstract class Attributes {
 
 		/**
 		 * Creates a new attribute with the given {@code key} and {@code value}.
-		 *
 		 * @param key the key
 		 * @param value the value
 		 */
@@ -101,7 +97,6 @@ public abstract class Attributes {
 
 		/**
 		 * Returns the attribute's key.
-		 *
 		 * @return the key
 		 */
 		public String getKey() {
@@ -110,7 +105,6 @@ public abstract class Attributes {
 
 		/**
 		 * Returns the attribute's value.
-		 *
 		 * @return the value
 		 */
 		public Object getValue() {

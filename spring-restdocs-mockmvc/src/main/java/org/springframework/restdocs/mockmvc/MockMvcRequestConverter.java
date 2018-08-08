@@ -46,8 +46,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.springframework.restdocs.mockmvc.IterableEnumeration.iterable;
-
 /**
  * A converter for creating an {@link OperationRequest} from a
  * {@link MockHttpServletRequest}.
@@ -172,7 +170,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 
 	private Parameters extractParameters(MockHttpServletRequest servletRequest) {
 		Parameters parameters = new Parameters();
-		for (String name : iterable(servletRequest.getParameterNames())) {
+		for (String name : IterableEnumeration.of(servletRequest.getParameterNames())) {
 			for (String value : servletRequest.getParameterValues(name)) {
 				parameters.add(name, value);
 			}
@@ -182,8 +180,10 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 
 	private HttpHeaders extractHeaders(MockHttpServletRequest servletRequest) {
 		HttpHeaders headers = new HttpHeaders();
-		for (String headerName : iterable(servletRequest.getHeaderNames())) {
-			for (String value : iterable(servletRequest.getHeaders(headerName))) {
+		for (String headerName : IterableEnumeration
+				.of(servletRequest.getHeaderNames())) {
+			for (String value : IterableEnumeration
+					.of(servletRequest.getHeaders(headerName))) {
 				headers.add(headerName, value);
 			}
 		}

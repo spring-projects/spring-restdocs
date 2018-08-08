@@ -29,7 +29,6 @@ interface ContentHandler {
 	 * Finds the fields that are missing from the handler's payload. A field is missing if
 	 * it is described by one of the {@code fieldDescriptors} but is not present in the
 	 * payload.
-	 *
 	 * @param fieldDescriptors the descriptors
 	 * @return descriptors for the fields that are missing from the payload
 	 * @throws PayloadHandlingException if a failure occurs
@@ -41,7 +40,6 @@ interface ContentHandler {
 	 * are undocumented. A field is undocumented if it is present in the handler's content
 	 * but is not described by the given {@code fieldDescriptors}. If the content is
 	 * completely documented, {@code null} is returned
-	 *
 	 * @param fieldDescriptors the descriptors
 	 * @return the undocumented content, or {@code null} if all of the content is
 	 * documented
@@ -52,7 +50,6 @@ interface ContentHandler {
 	/**
 	 * Returns the type of the field that is described by the given
 	 * {@code fieldDescriptor} based on the content of the payload.
-	 *
 	 * @param fieldDescriptor the field descriptor
 	 * @return the type of the field
 	 */

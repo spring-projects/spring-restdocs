@@ -38,8 +38,7 @@ public abstract class HeaderDocumentation {
 	/**
 	 * Creates a {@code HeaderDescriptor} that describes a header with the given
 	 * {@code name}.
-	 *
-	 * @param name The name of the header
+	 * @param name the name of the header
 	 * @return a {@code HeaderDescriptor} ready for further configuration
 	 */
 	public static HeaderDescriptor headerWithName(String name) {
@@ -52,7 +51,6 @@ public abstract class HeaderDocumentation {
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur.
-	 *
 	 * @param descriptors the descriptions of the request's headers
 	 * @return the snippet that will document the request headers
 	 * @see #headerWithName(String)
@@ -67,7 +65,6 @@ public abstract class HeaderDocumentation {
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur.
-	 *
 	 * @param descriptors the descriptions of the request's headers
 	 * @return the snippet that will document the request headers
 	 * @see #headerWithName(String)
@@ -84,7 +81,6 @@ public abstract class HeaderDocumentation {
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's headers
 	 * @return the snippet that will document the request headers
@@ -102,7 +98,6 @@ public abstract class HeaderDocumentation {
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's headers
 	 * @return the snippet that will document the request headers
@@ -119,7 +114,6 @@ public abstract class HeaderDocumentation {
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur.
-	 *
 	 * @param descriptors the descriptions of the response's headers
 	 * @return the snippet that will document the response headers
 	 * @see #headerWithName(String)
@@ -135,7 +129,6 @@ public abstract class HeaderDocumentation {
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur.
-	 *
 	 * @param descriptors the descriptions of the response's headers
 	 * @return the snippet that will document the response headers
 	 * @see #headerWithName(String)
@@ -153,7 +146,6 @@ public abstract class HeaderDocumentation {
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
 	 * response, a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's headers
 	 * @return the snippet that will document the response headers
@@ -172,7 +164,6 @@ public abstract class HeaderDocumentation {
 	 * <p>
 	 * If a header is documented, is not marked as optional, and is not present in the
 	 * response, a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's headers
 	 * @return the snippet that will document the response headers

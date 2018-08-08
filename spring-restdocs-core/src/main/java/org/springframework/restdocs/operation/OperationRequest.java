@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ public interface OperationRequest {
 	/**
 	 * Returns the content of the request. If the request has no content an empty array is
 	 * returned.
-	 *
 	 * @return the contents, never {@code null}
 	 */
 	byte[] getContent();
@@ -43,21 +42,18 @@ public interface OperationRequest {
 	 * content an empty string is returned. If the request has a {@code Content-Type}
 	 * header that specifies a charset then that charset will be used when converting the
 	 * contents to a {@code String}.
-	 *
 	 * @return the contents as string, never {@code null}
 	 */
 	String getContentAsString();
 
 	/**
 	 * Returns the headers that were included in the request.
-	 *
 	 * @return the headers
 	 */
 	HttpHeaders getHeaders();
 
 	/**
 	 * Returns the HTTP method of the request.
-	 *
 	 * @return the HTTP method
 	 */
 	HttpMethod getMethod();
@@ -66,7 +62,6 @@ public interface OperationRequest {
 	 * Returns the request's parameters. For a {@code GET} request, the parameters are
 	 * derived from the query string. For a {@code POST} request, the parameters are
 	 * derived form the request's body.
-	 *
 	 * @return the parameters
 	 */
 	Parameters getParameters();
@@ -74,14 +69,12 @@ public interface OperationRequest {
 	/**
 	 * Returns the request's parts, provided that it is a multipart request. If not, then
 	 * an empty {@link Collection} is returned.
-	 *
 	 * @return the parts
 	 */
 	Collection<OperationRequestPart> getParts();
 
 	/**
 	 * Returns the request's URI.
-	 *
 	 * @return the URI
 	 */
 	URI getUri();
@@ -89,7 +82,6 @@ public interface OperationRequest {
 	/**
 	 * Returns the {@link RequestCookie cookies} sent with the request. If no cookies were
 	 * sent an empty collection is returned.
-	 *
 	 * @return the cookies, never {@code null}
 	 * @since 1.2.0
 	 */

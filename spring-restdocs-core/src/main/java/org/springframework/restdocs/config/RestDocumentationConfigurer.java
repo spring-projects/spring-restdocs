@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 /**
  * Abstract base class for the configuration of Spring REST Docs.
  *
- * @param <S> The concrete type of the {@link SnippetConfigurer}
- * @param <P> The concrete type of the {@link OperationPreprocessorsConfigurer}
- * @param <T> The concrete type of this configurer, to be returned from methods that
+ * @param <S> the concrete type of the {@link SnippetConfigurer}
+ * @param <P> the concrete type of the {@link OperationPreprocessorsConfigurer}
+ * @param <T> the concrete type of this configurer, to be returned from methods that
  * support chaining
  * @author Andy Wilkinson
  * @author Filip Hrisafov
@@ -52,7 +52,6 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 	/**
 	 * Returns a {@link SnippetConfigurer} that can be used to configure the snippets that
 	 * will be generated.
-	 *
 	 * @return the snippet configurer
 	 */
 	public abstract S snippets();
@@ -60,14 +59,12 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 	/**
 	 * Returns an {@link OperationPreprocessorsConfigurer} that can be used to configure
 	 * the operation request and response preprocessors that will be used.
-	 *
 	 * @return the operation preprocessors configurer
 	 */
 	public abstract P operationPreprocessors();
 
 	/**
 	 * Configures the {@link TemplateEngine} that will be used for snippet rendering.
-	 *
 	 * @param templateEngine the template engine to use
 	 * @return {@code this}
 	 */
@@ -80,8 +77,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 	/**
 	 * Configures the {@link WriterResolver} that will be used to resolve a writer for a
 	 * snippet.
-	 *
-	 * @param writerResolver The writer resolver to use
+	 * @param writerResolver the writer resolver to use
 	 * @return {@code this}
 	 */
 	@SuppressWarnings("unchecked")
@@ -93,7 +89,6 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 	/**
 	 * Applies this configurer to the given {@code configuration} within the given
 	 * {@code context}.
-	 *
 	 * @param configuration the configuration
 	 * @param context the current context
 	 */

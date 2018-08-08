@@ -29,7 +29,6 @@ public interface PlaceholderResolverFactory {
 
 	/**
 	 * Creates a new {@link PlaceholderResolver} using the given {@code context}.
-	 *
 	 * @param context the context
 	 * @return the placeholder resolver
 	 */

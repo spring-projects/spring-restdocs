@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,6 @@ public abstract class WebTestClientRestDocumentation {
 	/**
 	 * Provides access to a {@link ExchangeFilterFunction} that can be used to configure a
 	 * {@link WebTestClient} instance using the given {@code contextProvider}.
-	 *
 	 * @param contextProvider the context provider
 	 * @return the configurer
 	 * @see Builder#filter(ExchangeFilterFunction)
@@ -66,7 +65,6 @@ public abstract class WebTestClientRestDocumentation {
 	 * Returns a {@link Consumer} that, when called, documents the API call with the given
 	 * {@code identifier} using the given {@code snippets} in addition to any default
 	 * snippets.
-	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param snippets the snippets
 	 * @param <T> the type of {@link ExchangeResult} that will be consumed
@@ -86,7 +84,6 @@ public abstract class WebTestClientRestDocumentation {
 	 * Documents the API call with the given {@code identifier} using the given
 	 * {@code snippets} in addition to any default snippets. The given
 	 * {@code requestPreprocessor} is applied to the request before it is documented.
-	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param requestPreprocessor the request preprocessor
 	 * @param snippets the snippets
@@ -105,7 +102,6 @@ public abstract class WebTestClientRestDocumentation {
 	 * Documents the API call with the given {@code identifier} using the given
 	 * {@code snippets} in addition to any default snippets. The given
 	 * {@code responsePreprocessor} is applied to the request before it is documented.
-	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param responsePreprocessor the response preprocessor
 	 * @param snippets the snippets
@@ -125,7 +121,6 @@ public abstract class WebTestClientRestDocumentation {
 	 * {@code snippets} in addition to any default snippets. The given
 	 * {@code requestPreprocessor} and {@code responsePreprocessor} are applied to the
 	 * request and response respectively before they are documented.
-	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param requestPreprocessor the request preprocessor
 	 * @param responsePreprocessor the response preprocessor

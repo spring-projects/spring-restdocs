@@ -96,7 +96,7 @@ public final class SnippetConditions {
 		return new MarkdownCodeBlockCondition(language);
 	}
 
-	private static abstract class AbstractSnippetContentCondition
+	private abstract static class AbstractSnippetContentCondition
 			extends Condition<String> {
 
 		private List<String> lines = new ArrayList<>();
@@ -143,6 +143,7 @@ public final class SnippetConditions {
 			}
 			return writer.toString();
 		}
+
 	}
 
 	/**
@@ -170,8 +171,8 @@ public final class SnippetConditions {
 			extends CodeBlockCondition<T> {
 
 		protected AsciidoctorCodeBlockCondition(String language, String options) {
-			this.addLine("[source" + (language == null ? "" : "," + language)
-					+ (options == null ? "" : ",options=\"" + options + "\"") + "]");
+			this.addLine("[source" + ((language != null) ? "," + language : "")
+					+ ((options != null) ? ",options=\"" + options + "\"" : "") + "]");
 			this.addLine("----");
 			this.addLine("----");
 		}
@@ -187,7 +188,7 @@ public final class SnippetConditions {
 			extends CodeBlockCondition<T> {
 
 		protected MarkdownCodeBlockCondition(String language) {
-			this.addLine("```" + (language == null ? "" : language));
+			this.addLine("```" + ((language != null) ? language : ""));
 			this.addLine("```");
 		}
 
@@ -198,7 +199,7 @@ public final class SnippetConditions {
 	 *
 	 * @param <T> The type of the Condition
 	 */
-	public static abstract class HttpCondition<T extends HttpCondition<T>>
+	public abstract static class HttpCondition<T extends HttpCondition<T>>
 			extends Condition<String> {
 
 		private final CodeBlockCondition<?> delegate;
@@ -232,11 +233,6 @@ public final class SnippetConditions {
 		public boolean matches(String item) {
 			return this.delegate.matches(item);
 		}
-
-		// @Override
-		// public void describeTo(Description description) {
-		// this.delegate.describeTo(description);
-		// }
 
 	}
 
@@ -275,7 +271,7 @@ public final class SnippetConditions {
 	 *
 	 * @param <T> The concrete type of the Condition
 	 */
-	public static abstract class TableCondition<T extends TableCondition<T>>
+	public abstract static class TableCondition<T extends TableCondition<T>>
 			extends AbstractSnippetContentCondition {
 
 		public abstract T row(String... entries);

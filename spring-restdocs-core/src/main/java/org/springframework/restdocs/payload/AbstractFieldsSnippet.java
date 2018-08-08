@@ -56,7 +56,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param type the type of the fields
 	 * @param descriptors the field descriptors
 	 * @param attributes the additional attributes
@@ -75,7 +74,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * {@code attributes} will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param type the type of the fields
 	 * @param descriptors the field descriptors
 	 * @param attributes the additional attributes
@@ -97,7 +95,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param name the name of the snippet
 	 * @param type the type of the fields
 	 * @param descriptors the field descriptors
@@ -118,7 +115,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param name the name of the snippet
 	 * @param type the type of the fields
 	 * @param descriptors the field descriptors
@@ -133,7 +129,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 			boolean ignoreUndocumentedFields,
 			PayloadSubsectionExtractor<?> subsectionExtractor) {
 		super(name + "-fields"
-				+ (subsectionExtractor != null
+				+ ((subsectionExtractor != null)
 						? "-" + subsectionExtractor.getSubsectionId() : ""),
 				type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
@@ -265,18 +261,16 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	/**
 	 * Returns the content type of the request or response extracted from the given
 	 * {@code operation}.
-	 *
-	 * @param operation The operation
-	 * @return The content type
+	 * @param operation the operation
+	 * @return the content type
 	 */
 	protected abstract MediaType getContentType(Operation operation);
 
 	/**
 	 * Returns the content of the request or response extracted form the given
 	 * {@code operation}.
-	 *
-	 * @param operation The operation
-	 * @return The content
+	 * @param operation the operation
+	 * @return the content
 	 * @throws IOException if the content cannot be extracted
 	 */
 	protected abstract byte[] getContent(Operation operation) throws IOException;
@@ -284,7 +278,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	/**
 	 * Returns the list of {@link FieldDescriptor FieldDescriptors} that will be used to
 	 * generate the documentation.
-	 *
 	 * @return the field descriptors
 	 */
 	protected final List<FieldDescriptor> getFieldDescriptors() {
@@ -293,7 +286,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	/**
 	 * Returns whether or not this snippet ignores undocumented fields.
-	 *
 	 * @return {@code true} if undocumented fields are ignored, otherwise {@code false}
 	 */
 	protected final boolean isIgnoredUndocumentedFields() {
@@ -302,7 +294,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	/**
 	 * Returns the {@link PayloadSubsectionExtractor}, if any, used by this snippet.
-	 *
 	 * @return the subsection extractor or {@code null}
 	 * @since 1.2.4
 	 */
@@ -312,7 +303,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	/**
 	 * Returns a model for the given {@code descriptor}.
-	 *
 	 * @param descriptor the descriptor
 	 * @return the model
 	 */
@@ -327,7 +317,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	}
 
 	private FieldDescriptor copyWithType(FieldDescriptor source, Object type) {
-		FieldDescriptor result = source instanceof SubsectionDescriptor
+		FieldDescriptor result = (source instanceof SubsectionDescriptor)
 				? new SubsectionDescriptor(source.getPath())
 				: new FieldDescriptor(source.getPath());
 		result.description(source.getDescription()).type(type)

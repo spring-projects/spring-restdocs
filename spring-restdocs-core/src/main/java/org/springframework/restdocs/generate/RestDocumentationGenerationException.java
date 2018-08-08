@@ -27,7 +27,6 @@ public class RestDocumentationGenerationException extends RuntimeException {
 
 	/**
 	 * Creates a new {@code RestDocumentationException} with the given {@code cause}.
-	 *
 	 * @param cause the cause
 	 */
 	public RestDocumentationGenerationException(Throwable cause) {
@@ -37,7 +36,6 @@ public class RestDocumentationGenerationException extends RuntimeException {
 	/**
 	 * Creates a new {@code RestDocumentationException} with the given {@code message} and
 	 * {@code cause}.
-	 *
 	 * @param message the message
 	 * @param cause the cause
 	 */

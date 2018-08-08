@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors;
 /**
  * A configurer that can be used to configure the default operation preprocessors.
  *
- * @param <PARENT> The type of the configurer's parent
- * @param <TYPE> The concrete type of the configurer to be returned from chained methods
+ * @param <PARENT> the type of the configurer's parent
+ * @param <TYPE> the concrete type of the configurer to be returned from chained methods
  * @author Filip Hrisafov
  * @author Andy Wilkinson
  * @since 2.0.0
@@ -44,7 +44,6 @@ public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE>
 	/**
 	 * Creates a new {@code OperationPreprocessorConfigurer} with the given
 	 * {@code parent}.
-	 *
 	 * @param parent the parent
 	 */
 	protected OperationPreprocessorsConfigurer(PARENT parent) {
@@ -64,7 +63,6 @@ public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE>
 
 	/**
 	 * Configures the default operation request preprocessors.
-	 *
 	 * @param preprocessors the preprocessors
 	 * @return {@code this}
 	 */
@@ -77,7 +75,6 @@ public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE>
 
 	/**
 	 * Configures the default operation response preprocessors.
-	 *
 	 * @param preprocessors the preprocessors
 	 * @return {@code this}
 	 */

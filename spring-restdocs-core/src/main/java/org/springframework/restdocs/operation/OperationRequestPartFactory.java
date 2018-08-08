@@ -29,7 +29,6 @@ public class OperationRequestPartFactory {
 	 * Creates a new {@link OperationRequestPart}. The given {@code headers} will be
 	 * augmented to ensure that they always include a {@code Content-Length} header if the
 	 * part has any content.
-	 *
 	 * @param name the name of the part
 	 * @param submittedFileName the name of the file being submitted by the part
 	 * @param content the content of the part
