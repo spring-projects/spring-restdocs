@@ -28,7 +28,6 @@ public interface RestDocumentationContextProvider {
 	/**
 	 * Returns a {@link RestDocumentationContext} for the operation that is about to be
 	 * performed.
-	 *
 	 * @return the context for the operation
 	 */
 	RestDocumentationContext beforeOperation();

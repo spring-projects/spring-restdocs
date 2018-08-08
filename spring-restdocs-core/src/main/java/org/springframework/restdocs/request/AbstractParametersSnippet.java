@@ -48,10 +48,9 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * the given {@code snippetName} that will document parameters using the given
 	 * {@code descriptors}. The given {@code attributes} will be included in the model
 	 * during template rendering. Undocumented parameters will trigger a failure.
-	 *
-	 * @param snippetName The snippet name
-	 * @param descriptors The descriptors
-	 * @param attributes The additional attributes
+	 * @param snippetName the snippet name
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
 	 * @deprecated since 1.1 in favour of
 	 * {@link #AbstractParametersSnippet(String, List, Map, boolean)}
 	 */
@@ -67,10 +66,9 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * {@code descriptors}. The given {@code attributes} will be included in the model
 	 * during template rendering. If {@code ignoreUndocumentedParameters} is {@code true},
 	 * undocumented parameters will be ignored and will not trigger a failure.
-	 *
-	 * @param snippetName The snippet name
-	 * @param descriptors The descriptors
-	 * @param attributes The additional attributes
+	 * @param snippetName the snippet name
+	 * @param descriptors the descriptors
+	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
 	 * ignored
 	 */
@@ -137,7 +135,6 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	/**
 	 * Extracts the names of the parameters that were present in the given
 	 * {@code operation}.
-	 *
 	 * @param operation the operation
 	 * @return the parameters
 	 */
@@ -145,7 +142,6 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 
 	/**
 	 * Called when the documented parameters do not match the actual parameters.
-	 *
 	 * @param undocumentedParameters the parameters that were found in the operation but
 	 * were not documented
 	 * @param missingParameters the parameters that were documented but were not found in
@@ -158,7 +154,6 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will
 	 * be used to generate the documentation key by their
 	 * {@link ParameterDescriptor#getName()}.
-	 *
 	 * @return the map of path descriptors
 	 * @deprecated since 1.1.0 in favor of {@link #getParameterDescriptors()}
 	 */
@@ -171,7 +166,6 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will
 	 * be used to generate the documentation key by their
 	 * {@link ParameterDescriptor#getName()}.
-	 *
 	 * @return the map of path descriptors
 	 */
 	protected final Map<String, ParameterDescriptor> getParameterDescriptors() {
@@ -180,7 +174,6 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 
 	/**
 	 * Returns a model for the given {@code descriptor}.
-	 *
 	 * @param descriptor the descriptor
 	 * @return the model
 	 */

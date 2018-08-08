@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.springframework.http.MediaType;
 /**
  * Strategy interface for extracting a subsection of a payload.
  *
- * @param <T> The subsection extractor subclass
+ * @param <T> the subsection extractor subclass
  * @author Andy Wilkinson
  * @since 1.2.0
  */
@@ -30,7 +30,6 @@ public interface PayloadSubsectionExtractor<T extends PayloadSubsectionExtractor
 	/**
 	 * Extracts a subsection of the given {@code payload} that has the given
 	 * {@code contentType}.
-	 *
 	 * @param payload the payload
 	 * @param contentType the content type of the payload
 	 * @return the subsection of the payload
@@ -39,14 +38,12 @@ public interface PayloadSubsectionExtractor<T extends PayloadSubsectionExtractor
 
 	/**
 	 * Returns an identifier for the subsection that this extractor will extract.
-	 *
 	 * @return the identifier
 	 */
 	String getSubsectionId();
 
 	/**
 	 * Returns an extractor with the given {@code subsectionId}.
-	 *
 	 * @param subsectionId the subsection ID
 	 * @return the customized extractor
 	 */

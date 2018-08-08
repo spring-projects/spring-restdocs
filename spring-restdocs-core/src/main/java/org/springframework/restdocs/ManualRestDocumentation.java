@@ -46,7 +46,6 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 	/**
 	 * Creates a new {@code ManualRestDocumentation} instance that will generate snippets
 	 * to the given {@code outputDirectory}.
-	 *
 	 * @param outputDirectory the output directory
 	 */
 	public ManualRestDocumentation(String outputDirectory) {
@@ -62,7 +61,6 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 	 * {@link RestDocumentationContext} for the test on the given {@code testClass} with
 	 * the given {@code testMethodName}. Must be followed by a call to
 	 * {@link #afterTest()} once the test has completed.
-	 *
 	 * @param testClass the test class
 	 * @param testMethodName the name of the test method
 	 * @throws IllegalStateException if a context has already be created

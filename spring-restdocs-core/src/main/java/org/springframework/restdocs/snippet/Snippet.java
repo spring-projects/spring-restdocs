@@ -29,7 +29,6 @@ public interface Snippet {
 
 	/**
 	 * Documents the call to the RESTful API described by the given {@code operation}.
-	 *
 	 * @param operation the API operation
 	 * @throws IOException if a failure occurs will documenting the operation
 	 */

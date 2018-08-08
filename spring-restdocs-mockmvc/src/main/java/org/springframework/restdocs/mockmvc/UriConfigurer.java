@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,8 +69,7 @@ public class UriConfigurer
 	/**
 	 * Configures any documented URIs to use the given {@code scheme}. The default is
 	 * {@code http}.
-	 *
-	 * @param scheme The URI scheme
+	 * @param scheme the URI scheme
 	 * @return {@code this}
 	 */
 	public UriConfigurer withScheme(String scheme) {
@@ -81,8 +80,7 @@ public class UriConfigurer
 	/**
 	 * Configures any documented URIs to use the given {@code host}. The default is
 	 * {@code localhost}.
-	 *
-	 * @param host The URI host
+	 * @param host the URI host
 	 * @return {@code this}
 	 */
 	public UriConfigurer withHost(String host) {
@@ -93,8 +91,7 @@ public class UriConfigurer
 	/**
 	 * Configures any documented URIs to use the given {@code port}. The default is
 	 * {@code 8080}.
-	 *
-	 * @param port The URI port
+	 * @param port the URI port
 	 * @return {@code this}
 	 */
 	public UriConfigurer withPort(int port) {

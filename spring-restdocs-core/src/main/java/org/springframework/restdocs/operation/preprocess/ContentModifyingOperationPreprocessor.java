@@ -38,7 +38,6 @@ public class ContentModifyingOperationPreprocessor implements OperationPreproces
 	/**
 	 * Create a new {@code ContentModifyingOperationPreprocessor} that will apply the
 	 * given {@code contentModifier} to the operation's request or response.
-	 *
 	 * @param contentModifier the contentModifier
 	 */
 	public ContentModifyingOperationPreprocessor(ContentModifier contentModifier) {

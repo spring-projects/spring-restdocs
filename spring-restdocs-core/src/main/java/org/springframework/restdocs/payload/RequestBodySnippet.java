@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ public class RequestBodySnippet extends AbstractBodySnippet {
 	/**
 	 * Creates a new {@code RequestBodySnippet} that will document the subsection of the
 	 * request body extracted by the given {@code subsectionExtractor}.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 */
 	public RequestBodySnippet(PayloadSubsectionExtractor<?> subsectionExtractor) {
@@ -50,8 +49,7 @@ public class RequestBodySnippet extends AbstractBodySnippet {
 	/**
 	 * Creates a new {@code RequestBodySnippet} with the given additional
 	 * {@code attributes} that will be included in the model during template rendering.
-	 *
-	 * @param attributes The additional attributes
+	 * @param attributes the additional attributes
 	 */
 	public RequestBodySnippet(Map<String, Object> attributes) {
 		this(null, attributes);
@@ -62,9 +60,8 @@ public class RequestBodySnippet extends AbstractBodySnippet {
 	 * request body extracted by the given {@code subsectionExtractor}. The given
 	 * additional {@code attributes} that will be included in the model during template
 	 * rendering.
-	 *
 	 * @param subsectionExtractor the subsection extractor
-	 * @param attributes The additional attributes
+	 * @param attributes the additional attributes
 	 */
 	public RequestBodySnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
 			Map<String, Object> attributes) {

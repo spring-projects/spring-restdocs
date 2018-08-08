@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,7 @@ public abstract class HypermediaDocumentation {
 
 	/**
 	 * Creates a {@code LinkDescriptor} that describes a link with the given {@code rel}.
-	 *
-	 * @param rel The rel of the link
+	 * @param rel the rel of the link
 	 * @return a {@code LinkDescriptor} ready for further configuration
 	 */
 	public static LinkDescriptor linkWithRel(String rel) {
@@ -59,7 +58,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
 	 */
@@ -84,7 +82,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
 	 */
@@ -103,7 +100,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
 	 */
@@ -122,7 +118,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
 	 */
@@ -148,7 +143,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
@@ -176,7 +170,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
@@ -198,7 +191,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
@@ -220,7 +212,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
@@ -248,7 +239,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param linkExtractor used to extract the links from the response
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
@@ -275,7 +265,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param linkExtractor used to extract the links from the response
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
@@ -296,7 +285,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param linkExtractor used to extract the links from the response
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
@@ -317,7 +305,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param linkExtractor used to extract the links from the response
 	 * @param descriptors the descriptions of the response's links
 	 * @return the snippet that will document the links
@@ -345,7 +332,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param linkExtractor used to extract the links from the response
 	 * @param descriptors the descriptions of the response's links
@@ -374,7 +360,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param linkExtractor used to extract the links from the response
 	 * @param descriptors the descriptions of the response's links
@@ -397,7 +382,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param linkExtractor used to extract the links from the response
 	 * @param descriptors the descriptions of the response's links
@@ -420,7 +404,6 @@ public abstract class HypermediaDocumentation {
 	 * If a descriptor does not have a {@link LinkDescriptor#description(Object)
 	 * description}, the {@link Link#getTitle() title} of the link will be used. If the
 	 * link does not have a title a failure will occur.
-	 *
 	 * @param attributes the attributes
 	 * @param linkExtractor used to extract the links from the response
 	 * @param descriptors the descriptions of the response's links
@@ -445,8 +428,7 @@ public abstract class HypermediaDocumentation {
 	 *     }
 	 * }
 	 * </pre>
-	 *
-	 * @return The extractor for HAL-style links
+	 * @return the extractor for HAL-style links
 	 */
 	public static LinkExtractor halLinks() {
 		return new HalLinkExtractor();
@@ -466,8 +448,7 @@ public abstract class HypermediaDocumentation {
 	 *     ]
 	 * }
 	 * </pre>
-	 *
-	 * @return The extractor for Atom-style links
+	 * @return the extractor for Atom-style links
 	 */
 	public static LinkExtractor atomLinks() {
 		return new AtomLinkExtractor();

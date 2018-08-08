@@ -25,10 +25,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for failures when rendering {@link LinksSnippet} due to missing or undocumented
@@ -39,7 +39,8 @@ import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor
 public class LinksSnippetFailureTests {
 
 	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(
+			TemplateFormats.asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();

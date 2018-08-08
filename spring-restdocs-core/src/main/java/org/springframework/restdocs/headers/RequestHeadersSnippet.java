@@ -38,7 +38,6 @@ public class RequestHeadersSnippet extends AbstractHeadersSnippet {
 	/**
 	 * Creates a new {@code RequestHeadersSnippet} that will document the headers in the
 	 * request using the given {@code descriptors}.
-	 *
 	 * @param descriptors the descriptors
 	 */
 	protected RequestHeadersSnippet(List<HeaderDescriptor> descriptors) {
@@ -49,7 +48,6 @@ public class RequestHeadersSnippet extends AbstractHeadersSnippet {
 	 * Creates a new {@code RequestHeadersSnippet} that will document the headers in the
 	 * request using the given {@code descriptors}. The given {@code attributes} will be
 	 * included in the model during template rendering.
-	 *
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */

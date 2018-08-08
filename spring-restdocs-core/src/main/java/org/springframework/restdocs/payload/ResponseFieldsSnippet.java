@@ -39,7 +39,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
 	 * response using the given {@code descriptors}. Undocumented fields will trigger a
 	 * failure.
-	 *
 	 * @param descriptors the descriptors
 	 */
 	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors) {
@@ -51,7 +50,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * response using the given {@code descriptors}. If {@code ignoreUndocumentedFields}
 	 * is {@code true}, undocumented fields will be ignored and will not trigger a
 	 * failure.
-	 *
 	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
@@ -65,7 +63,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * response using the given {@code descriptors}. The given {@code attributes} will be
 	 * included in the model during template rendering. Undocumented fields will trigger a
 	 * failure.
-	 *
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
@@ -80,7 +77,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
@@ -95,7 +91,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * subsection of the response using the given {@code descriptors}. The subsection will
 	 * be extracted using the given {@code subsectionExtractor}. Undocumented fields will
 	 * trigger a failure.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptors
 	 * @since 1.2.0
@@ -111,7 +106,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * be extracted using the given {@code subsectionExtractor}. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
@@ -128,7 +122,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * be extracted using the given {@code subsectionExtractor}. The given
 	 * {@code attributes} will be included in the model during template rendering.
 	 * Undocumented fields will trigger a failure.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
@@ -146,7 +139,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * {@code attributes} will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
@@ -174,7 +166,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * Returns a new {@code ResponseFieldsSnippet} configured with this snippet's
 	 * attributes and its descriptors combined with the given
 	 * {@code additionalDescriptors}.
-	 *
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
@@ -186,7 +177,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * Returns a new {@code ResponseFieldsSnippet} configured with this snippet's
 	 * attributes and its descriptors combined with the given
 	 * {@code additionalDescriptors}.
-	 *
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
@@ -199,7 +189,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * attributes and its descriptors combined with the given
 	 * {@code additionalDescriptors}. The given {@code pathPrefix} is applied to the path
 	 * of each additional descriptor.
-	 *
 	 * @param pathPrefix the prefix to apply to the additional descriptors
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
@@ -219,7 +208,6 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * attributes and its descriptors combined with the given
 	 * {@code additionalDescriptors}. The given {@code pathPrefix} is applied to the path
 	 * of each additional descriptor.
-	 *
 	 * @param pathPrefix the prefix to apply to the additional descriptors
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet

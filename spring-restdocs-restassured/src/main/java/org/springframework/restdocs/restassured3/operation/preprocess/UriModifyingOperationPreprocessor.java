@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,6 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 	/**
 	 * Modifies the URI to use the given {@code scheme}. {@code null}, the default, will
 	 * leave the scheme unchanged.
-	 *
 	 * @param scheme the scheme
 	 * @return {@code this}
 	 */
@@ -85,7 +84,6 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 	/**
 	 * Modifies the URI to use the given {@code host}. {@code null}, the default, will
 	 * leave the host unchanged.
-	 *
 	 * @param host the host
 	 * @return {@code this}
 	 */
@@ -97,7 +95,6 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 
 	/**
 	 * Modifies the URI to use the given {@code port}.
-	 *
 	 * @param port the port
 	 * @return {@code this}
 	 */
@@ -107,7 +104,6 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 
 	/**
 	 * Removes the port from the URI.
-	 *
 	 * @return {@code this}
 	 */
 	public UriModifyingOperationPreprocessor removePort() {
@@ -140,7 +136,7 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 		URI modifiedUri = uriBuilder.build(true).toUri();
 		HttpHeaders modifiedHeaders = modify(request.getHeaders());
 		modifiedHeaders.set(HttpHeaders.HOST, modifiedUri.getHost()
-				+ (modifiedUri.getPort() == -1 ? "" : ":" + modifiedUri.getPort()));
+				+ ((modifiedUri.getPort() != -1) ? ":" + modifiedUri.getPort() : ""));
 		return this.contentModifyingDelegate.preprocess(new OperationRequestFactory()
 				.create(uriBuilder.build(true).toUri(), request.getMethod(),
 						request.getContent(), modifiedHeaders, request.getParameters(),

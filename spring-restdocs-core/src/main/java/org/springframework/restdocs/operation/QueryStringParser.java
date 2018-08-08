@@ -33,7 +33,6 @@ public class QueryStringParser {
 	/**
 	 * Parses the query string of the given {@code uri} and returns the resulting
 	 * {@link Parameters}.
-	 *
 	 * @param uri the uri to parse
 	 * @return the parameters parsed from the query string
 	 */

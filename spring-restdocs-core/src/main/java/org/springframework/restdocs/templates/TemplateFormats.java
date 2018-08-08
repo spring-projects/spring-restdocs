@@ -35,7 +35,6 @@ public abstract class TemplateFormats {
 	/**
 	 * Returns the Asciidoctor template format with the ID {@code asciidoctor} and the
 	 * file extension {@code adoc}.
-	 *
 	 * @return the template format
 	 */
 	public static TemplateFormat asciidoctor() {
@@ -45,7 +44,6 @@ public abstract class TemplateFormats {
 	/**
 	 * Returns the Markdown template format with the ID {@code markdown} and the file
 	 * extension {@code md}.
-	 *
 	 * @return the template format
 	 */
 	public static TemplateFormat markdown() {

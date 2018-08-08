@@ -47,7 +47,6 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	/**
 	 * Creates a new {@code MustacheTemplateEngine} that will use the given
 	 * {@code templateResourceResolver} to resolve template paths.
-	 *
 	 * @param templateResourceResolver the resolver to use
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver) {
@@ -58,7 +57,6 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	 * Creates a new {@code MustacheTemplateEngine} that will use the given
 	 * {@code templateResourceResolver} to resolve templates and the given
 	 * {@code compiler} to compile them.
-	 *
 	 * @param templateResourceResolver the resolver to use
 	 * @param compiler the compiler to use
 	 */
@@ -72,7 +70,6 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	 * {@code templateResourceResolver} to resolve templates and the given
 	 * {@code compiler} to compile them. Compiled templates will be created with the given
 	 * {@code context}.
-	 *
 	 * @param templateResourceResolver the resolver to use
 	 * @param compiler the compiler to use
 	 * @param context the context to pass to compiled templates
@@ -98,7 +95,6 @@ public class MustacheTemplateEngine implements TemplateEngine {
 
 	/**
 	 * Returns the {@link Compiler} used to compile Mustache templates.
-	 *
 	 * @return the compiler
 	 */
 	protected final Compiler getCompiler() {
@@ -108,7 +104,6 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	/**
 	 * Returns the {@link TemplateResourceResolver} used to resolve the template resources
 	 * prior to compilation.
-	 *
 	 * @return the resolver
 	 */
 	protected final TemplateResourceResolver getTemplateResourceResolver() {

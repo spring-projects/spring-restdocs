@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ import org.springframework.restdocs.templates.TemplateFormats;
 /**
  * A configurer that can be used to configure the generated documentation snippets.
  *
- * @param <PARENT> The type of the configurer's parent
- * @param <TYPE> The concrete type of the configurer to be returned from chained methods
+ * @param <PARENT> the type of the configurer's parent
+ * @param <TYPE> the concrete type of the configurer to be returned from chained methods
  * @author Andy Wilkinson
  * @since 1.1.0
  */
@@ -67,7 +67,6 @@ public abstract class SnippetConfigurer<PARENT, TYPE>
 
 	/**
 	 * Creates a new {@code SnippetConfigurer} with the given {@code parent}.
-	 *
 	 * @param parent the parent
 	 */
 	protected SnippetConfigurer(PARENT parent) {
@@ -86,7 +85,6 @@ public abstract class SnippetConfigurer<PARENT, TYPE>
 	/**
 	 * Configures any documentation snippets to be written using the given
 	 * {@code encoding}. The default is UTF-8.
-	 *
 	 * @param encoding the encoding
 	 * @return {@code this}
 	 */
@@ -98,7 +96,6 @@ public abstract class SnippetConfigurer<PARENT, TYPE>
 
 	/**
 	 * Configures the documentation snippets that will be produced by default.
-	 *
 	 * @param defaultSnippets the default snippets
 	 * @return {@code this}
 	 * @see #withAdditionalDefaults(Snippet...)
@@ -111,7 +108,6 @@ public abstract class SnippetConfigurer<PARENT, TYPE>
 
 	/**
 	 * Configures additional documentation snippets that will be produced by default.
-	 *
 	 * @param additionalDefaultSnippets the additional default snippets
 	 * @return {@code this}
 	 * @see #withDefaults(Snippet...)
@@ -124,7 +120,6 @@ public abstract class SnippetConfigurer<PARENT, TYPE>
 
 	/**
 	 * Configures the format of the documentation snippet templates.
-	 *
 	 * @param format the snippet template format
 	 * @return {@code this}
 	 */

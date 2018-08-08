@@ -27,13 +27,13 @@ import org.junit.rules.ExpectedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for failures when rendering {@link ResponseFieldsSnippet} due to missing or
@@ -44,7 +44,8 @@ import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor
 public class ResponseFieldsSnippetFailureTests {
 
 	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(
+			TemplateFormats.asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();

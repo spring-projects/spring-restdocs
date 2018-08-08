@@ -27,7 +27,6 @@ public interface TemplateFormat {
 
 	/**
 	 * Returns the id of this template format.
-	 *
 	 * @return the id
 	 */
 	String getId();
@@ -35,7 +34,6 @@ public interface TemplateFormat {
 	/**
 	 * Returns the file extension to use for files generated from templates in this
 	 * format.
-	 *
 	 * @return the file extension
 	 */
 	String getFileExtension();

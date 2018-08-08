@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ package org.springframework.restdocs.operation;
  * A {@code ResponseConverter} is used to convert an implementation-specific response into
  * an {@link OperationResponse}.
  *
- * @param <R> The implementation-specific response type
+ * @param <R> the implementation-specific response type
  * @author Andy Wilkinson
  * @since 1.1.0
  */
@@ -28,7 +28,6 @@ public interface ResponseConverter<R> {
 
 	/**
 	 * Converts the given {@code response} into an {@code OperationResponse}.
-	 *
 	 * @param response the response
 	 * @return the operation response
 	 * @throws ConversionException if the conversion fails

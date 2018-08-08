@@ -41,9 +41,7 @@ public abstract class CurlDocumentation {
 	/**
 	 * Returns a new {@code Snippet} that will document the curl request for the API
 	 * operation.
-	 *
 	 * @return the snippet that will document the curl request
-	 *
 	 * @deprecated Since 1.1 in favor of
 	 * {@link org.springframework.restdocs.cli.CliDocumentation#curlRequest()}.
 	 */
@@ -56,10 +54,8 @@ public abstract class CurlDocumentation {
 	 * Returns a new {@code Snippet} that will document the curl request for the API
 	 * operation. The given {@code attributes} will be available during snippet
 	 * generation.
-	 *
 	 * @param attributes the attributes
 	 * @return the snippet that will document the curl request
-	 *
 	 * @deprecated Since 1.1 in favor of
 	 * {@link org.springframework.restdocs.cli.CliDocumentation#curlRequest(Map)}.
 	 */

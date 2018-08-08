@@ -34,7 +34,6 @@ public class RequestPartDescriptor extends IgnorableDescriptor<RequestPartDescri
 	/**
 	 * Creates a new {@code RequestPartDescriptor} describing the request part with the
 	 * given {@code name}.
-	 *
 	 * @param name the name of the request part
 	 */
 	protected RequestPartDescriptor(String name) {
@@ -43,7 +42,6 @@ public class RequestPartDescriptor extends IgnorableDescriptor<RequestPartDescri
 
 	/**
 	 * Marks the request part as optional.
-	 *
 	 * @return {@code this}
 	 */
 	public final RequestPartDescriptor optional() {
@@ -53,7 +51,6 @@ public class RequestPartDescriptor extends IgnorableDescriptor<RequestPartDescri
 
 	/**
 	 * Returns the name of the request part being described by this descriptor.
-	 *
 	 * @return the name of the parameter
 	 */
 	public final String getName() {
@@ -63,7 +60,6 @@ public class RequestPartDescriptor extends IgnorableDescriptor<RequestPartDescri
 	/**
 	 * Returns {@code true} if the described request part is optional, otherwise
 	 * {@code false}.
-	 *
 	 * @return {@code true} if the described request part is optional, otherwise
 	 * {@code false}
 	 */

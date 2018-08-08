@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,8 +94,7 @@ public abstract class PayloadDocumentation {
 	 * <td>The string "three"</td>
 	 * </tr>
 	 * </table>
-	 *
-	 * @param path The path of the field
+	 * @param path the path of the field
 	 * @return a {@code FieldDescriptor} ready for further configuration
 	 */
 	public static FieldDescriptor fieldWithPath(String path) {
@@ -162,8 +161,7 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * A subsection descriptor for the array with the path {@code a.b[]} will also
 	 * describe its descendants {@code a.b[].c} and {@code a.b[].d}.
-	 *
-	 * @param path The path of the subsection
+	 * @param path the path of the subsection
 	 * @return a {@code SubsectionDescriptor} ready for further configuration
 	 */
 	public static SubsectionDescriptor subsectionWithPath(String path) {
@@ -185,7 +183,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
@@ -211,7 +208,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
@@ -227,7 +223,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
@@ -244,7 +239,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
@@ -271,7 +265,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
@@ -299,7 +292,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
@@ -318,7 +310,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
@@ -337,7 +328,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
@@ -366,7 +356,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
@@ -398,7 +387,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
@@ -420,7 +408,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
@@ -442,7 +429,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the request payload's fields
 	 * @return the snippet that will document the fields
@@ -475,7 +461,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
@@ -509,7 +494,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
@@ -533,7 +517,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
@@ -558,7 +541,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request payload's fields
@@ -592,7 +574,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param part the part name
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
@@ -622,7 +603,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param part the part name
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
@@ -641,7 +621,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param part the part name
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
@@ -660,7 +639,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param part the part name
 	 * @param descriptors the descriptions of the request part's fields
 	 * @return the snippet that will document the fields
@@ -690,7 +668,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param part the part name
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request part's fields
@@ -721,7 +698,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param part the part name
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request part's fields
@@ -742,7 +718,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param part the part name
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request part's fields
@@ -763,7 +738,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param part the part name
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request part's fields
@@ -794,7 +768,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the subsection's fields
@@ -828,7 +801,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the subsection's fields
@@ -852,7 +824,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the request part's fields
@@ -877,7 +848,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the request part's fields
@@ -912,7 +882,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -949,7 +918,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -976,7 +944,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -1003,7 +970,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param part the part name
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -1037,7 +1003,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
@@ -1063,7 +1028,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
@@ -1083,7 +1047,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @since 1.2.0
@@ -1103,7 +1066,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
 	 * @see #fieldWithPath(String)
@@ -1130,7 +1092,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
@@ -1158,7 +1119,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
@@ -1177,7 +1137,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
@@ -1196,7 +1155,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
@@ -1226,7 +1184,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
@@ -1259,7 +1216,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
@@ -1282,7 +1238,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
@@ -1305,7 +1260,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptions of the response payload's fields
 	 * @return the snippet that will document the fields
@@ -1339,7 +1293,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
@@ -1375,7 +1328,6 @@ public abstract class PayloadDocumentation {
 	 * {@link FieldDescriptor#ignored configured to ignore it}. The ignored field or
 	 * subsection will not appear in the generated snippet and the failure described above
 	 * will not occur.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
@@ -1400,7 +1352,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
@@ -1426,7 +1377,6 @@ public abstract class PayloadDocumentation {
 	 * <p>
 	 * If a field is documented, is not marked as optional, and is not present in the
 	 * request, a failure will occur. Any undocumented fields will be ignored.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response payload's fields
@@ -1446,7 +1396,6 @@ public abstract class PayloadDocumentation {
 	/**
 	 * Returns a {@code Snippet} that will document the body of the API operation's
 	 * request payload.
-	 *
 	 * @return the snippet that will document the request body
 	 */
 	public static RequestBodySnippet requestBody() {
@@ -1457,7 +1406,6 @@ public abstract class PayloadDocumentation {
 	 * Returns a {@code Snippet} that will document the body of the API operation's
 	 * request payload. The given attributes will be made available during snippet
 	 * generation.
-	 *
 	 * @param attributes the attributes
 	 * @return the snippet that will document the request body
 	 */
@@ -1469,7 +1417,6 @@ public abstract class PayloadDocumentation {
 	 * Returns a {@code Snippet} that will document a subsection of the body of the API
 	 * operation's request payload. The subsection will be extracted using the given
 	 * {@code subsectionExtractor}.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @return the snippet that will document the request body subsection
 	 */
@@ -1483,7 +1430,6 @@ public abstract class PayloadDocumentation {
 	 * operation's request payload. The subsection will be extracted using the given
 	 * {@code subsectionExtractor}. The given attributes will be made available during
 	 * snippet generation.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @return the snippet that will document the request body subsection
@@ -1497,7 +1443,6 @@ public abstract class PayloadDocumentation {
 	/**
 	 * Returns a {@code Snippet} that will document the body of the API operation's
 	 * response payload.
-	 *
 	 * @return the snippet that will document the response body
 	 */
 	public static ResponseBodySnippet responseBody() {
@@ -1508,7 +1453,6 @@ public abstract class PayloadDocumentation {
 	 * Returns a {@code Snippet} that will document the body of the API operation's
 	 * response payload. The given attributes will be made available during snippet
 	 * generation.
-	 *
 	 * @param attributes the attributes
 	 * @return the snippet that will document the response body
 	 */
@@ -1520,7 +1464,6 @@ public abstract class PayloadDocumentation {
 	 * Returns a {@code Snippet} that will document a subsection of the body of the API
 	 * operation's response payload. The subsection will be extracted using the given
 	 * {@code subsectionExtractor}.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @return the snippet that will document the response body subsection
 	 */
@@ -1534,7 +1477,6 @@ public abstract class PayloadDocumentation {
 	 * operation's response payload. The subsection will be extracted using the given
 	 * {@code subsectionExtractor}. The given attributes will be made available during
 	 * snippet generation.
-	 *
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 * @return the snippet that will document the response body subsection
@@ -1548,7 +1490,6 @@ public abstract class PayloadDocumentation {
 	/**
 	 * Returns a {@code Snippet} that will document the body of specified part of the API
 	 * operation's request payload.
-	 *
 	 * @param partName the name of the request part
 	 * @return the snippet that will document the response body
 	 */
@@ -1560,7 +1501,6 @@ public abstract class PayloadDocumentation {
 	 * Returns a {@code Snippet} that will document the body of specified part of the API
 	 * operation's request payload. The given attributes will be made available during
 	 * snippet generation.
-	 *
 	 * @param partName the name of the request part
 	 * @param attributes the attributes
 	 * @return the snippet that will document the response body
@@ -1574,7 +1514,6 @@ public abstract class PayloadDocumentation {
 	 * Returns a {@code Snippet} that will document a subsection of the body of specified
 	 * part of the API operation's request payload. The subsection will be extracted using
 	 * the given {@code subsectionExtractor}.
-	 *
 	 * @param partName the name of the request part
 	 * @param subsectionExtractor the subsection extractor
 	 * @return the snippet that will document the response body
@@ -1589,7 +1528,6 @@ public abstract class PayloadDocumentation {
 	 * part of the API operation's request payload. The subsection will be extracted using
 	 * the given {@code subsectionExtractor}. The given attributes will be made available
 	 * during snippet generation.
-	 *
 	 * @param partName the name of the request part
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
@@ -1604,7 +1542,6 @@ public abstract class PayloadDocumentation {
 	/**
 	 * Creates a copy of the given {@code descriptors} with the given {@code pathPrefix}
 	 * applied to their paths.
-	 *
 	 * @param pathPrefix the path prefix
 	 * @param descriptors the descriptors to copy
 	 * @return the copied descriptors with the prefix applied
@@ -1614,7 +1551,7 @@ public abstract class PayloadDocumentation {
 		List<FieldDescriptor> prefixedDescriptors = new ArrayList<>();
 		for (FieldDescriptor descriptor : descriptors) {
 			String prefixedPath = pathPrefix + descriptor.getPath();
-			FieldDescriptor prefixedDescriptor = descriptor instanceof SubsectionDescriptor
+			FieldDescriptor prefixedDescriptor = (descriptor instanceof SubsectionDescriptor)
 					? new SubsectionDescriptor(prefixedPath)
 					: new FieldDescriptor(prefixedPath);
 			prefixedDescriptor.description(descriptor.getDescription())
@@ -1634,7 +1571,6 @@ public abstract class PayloadDocumentation {
 	/**
 	 * Returns a {@link PayloadSubsectionExtractor} that will extract the subsection of
 	 * the JSON payload found beneath the given {@code path}.
-	 *
 	 * @param path the path
 	 * @return the subsection extractor
 	 * @since 1.2.0

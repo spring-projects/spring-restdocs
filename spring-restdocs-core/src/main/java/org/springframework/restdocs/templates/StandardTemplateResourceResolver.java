@@ -44,7 +44,6 @@ public class StandardTemplateResourceResolver implements TemplateResourceResolve
 	/**
 	 * Creates a new {@code StandardTemplateResourceResolver} that will produce default
 	 * template resources formatted with Asciidoctor.
-	 *
 	 * @deprecated since 1.1.0 in favour of
 	 * {@link #StandardTemplateResourceResolver(TemplateFormat)}
 	 */
@@ -56,7 +55,6 @@ public class StandardTemplateResourceResolver implements TemplateResourceResolve
 	/**
 	 * Creates a new {@code StandardTemplateResourceResolver} that will produce default
 	 * template resources formatted with the given {@code templateFormat}.
-	 *
 	 * @param templateFormat the format for the default snippet templates
 	 */
 	public StandardTemplateResourceResolver(TemplateFormat templateFormat) {

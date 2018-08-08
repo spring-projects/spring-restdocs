@@ -29,7 +29,6 @@ public interface OperationResponsePreprocessor {
 	/**
 	 * Processes and potentially modifies the given {@code response} before it is
 	 * documented.
-	 *
 	 * @param response the response
 	 * @return the modified response
 	 */

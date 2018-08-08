@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ public class OperationResponseFactory {
 	 * Creates a new {@link OperationResponse}. If the response has any content, the given
 	 * {@code headers} will be augmented to ensure that they include a
 	 * {@code Content-Length} header.
-	 *
 	 * @param status the status of the response
 	 * @param headers the request's headers
 	 * @param content the content of the request
@@ -47,11 +46,9 @@ public class OperationResponseFactory {
 	 * with the given {@code newContent}. If the original response had a
 	 * {@code Content-Length} header it will be modified to match the length of the new
 	 * content.
-	 *
-	 * @param original The original response
-	 * @param newContent The new content
-	 *
-	 * @return The new response with the new content
+	 * @param original the original response
+	 * @param newContent the new content
+	 * @return the new response with the new content
 	 */
 	public OperationResponse createFrom(OperationResponse original, byte[] newContent) {
 		return new StandardOperationResponse(original.getStatus(),
@@ -61,11 +58,9 @@ public class OperationResponseFactory {
 	/**
 	 * Creates a new {@code OperationResponse} based on the given {@code original} but
 	 * with the given {@code newHeaders}.
-	 *
-	 * @param original The original response
-	 * @param newHeaders The new headers
-	 *
-	 * @return The new response with the new headers
+	 * @param original the original response
+	 * @param newHeaders the new headers
+	 * @return the new response with the new headers
 	 */
 	public OperationResponse createFrom(OperationResponse original,
 			HttpHeaders newHeaders) {

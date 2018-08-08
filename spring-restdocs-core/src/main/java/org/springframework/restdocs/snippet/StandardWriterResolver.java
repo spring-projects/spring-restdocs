@@ -49,7 +49,6 @@ public final class StandardWriterResolver implements WriterResolver {
 	 * {@code placeholderResolver} to resolve any placeholders in the
 	 * {@code operationName}. Writers will use {@code UTF-8} encoding and, when writing to
 	 * a file, will use a filename appropriate for Asciidoctor content.
-	 *
 	 * @param placeholderResolver the placeholder resolver
 	 * @deprecated since 1.1.0 in favor of
 	 * {@link #StandardWriterResolver(PlaceholderResolverFactory, String, TemplateFormat)}
@@ -67,7 +66,6 @@ public final class StandardWriterResolver implements WriterResolver {
 	 * {@code operationName}. Writers will use the given {@code encoding} and, when
 	 * writing to a file, will use a filename appropriate for content generated from
 	 * templates in the given {@code templateFormat}.
-	 *
 	 * @param placeholderResolverFactory the placeholder resolver factory
 	 * @param encoding the encoding
 	 * @param templateFormat the snippet format

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ public class FieldPathPayloadSubsectionExtractor
 	 * Creates a new {@code FieldPathPayloadSubsectionExtractor} that will extract the
 	 * subsection of the JSON payload found at the given {@code fieldPath}. The
 	 * {@code fieldPath} prefixed with {@code beneath-} with be used as the subsection ID.
-	 *
 	 * @param fieldPath the path of the field
 	 */
 	protected FieldPathPayloadSubsectionExtractor(String fieldPath) {
@@ -57,7 +56,6 @@ public class FieldPathPayloadSubsectionExtractor
 	 * Creates a new {@code FieldPathPayloadSubsectionExtractor} that will extract the
 	 * subsection of the JSON payload found at the given {@code fieldPath} and that will
 	 * us the given {@code subsectionId} to identify the subsection.
-	 *
 	 * @param fieldPath the path of the field
 	 * @param subsectionId the ID of the subsection
 	 */
@@ -96,7 +94,6 @@ public class FieldPathPayloadSubsectionExtractor
 
 	/**
 	 * Returns the path of the field that will be extracted.
-	 *
 	 * @return the path of the field
 	 */
 	protected String getFieldPath() {

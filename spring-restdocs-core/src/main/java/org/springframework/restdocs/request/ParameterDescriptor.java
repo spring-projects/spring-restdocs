@@ -34,7 +34,6 @@ public class ParameterDescriptor extends IgnorableDescriptor<ParameterDescriptor
 	/**
 	 * Creates a new {@code ParameterDescriptor} describing the parameter with the given
 	 * {@code name}.
-	 *
 	 * @param name the name of the parameter
 	 */
 	protected ParameterDescriptor(String name) {
@@ -43,7 +42,6 @@ public class ParameterDescriptor extends IgnorableDescriptor<ParameterDescriptor
 
 	/**
 	 * Marks the parameter as optional.
-	 *
 	 * @return {@code this}
 	 */
 	public final ParameterDescriptor optional() {
@@ -53,7 +51,6 @@ public class ParameterDescriptor extends IgnorableDescriptor<ParameterDescriptor
 
 	/**
 	 * Returns the name of the parameter being described by this descriptor.
-	 *
 	 * @return the name of the parameter
 	 */
 	public final String getName() {
@@ -63,7 +60,6 @@ public class ParameterDescriptor extends IgnorableDescriptor<ParameterDescriptor
 	/**
 	 * Returns {@code true} if the described parameter is optional, otherwise
 	 * {@code false}.
-	 *
 	 * @return {@code true} if the described parameter is optional, otherwise
 	 * {@code false}
 	 */

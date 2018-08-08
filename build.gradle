@@ -3,11 +3,13 @@ buildscript {
 		mavenCentral()
 		maven { url 'https://repo.spring.io/plugins-release' }
 		maven { url 'https://plugins.gradle.org/m2/' }
+		mavenLocal()
 	}
 	dependencies {
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 		classpath 'io.spring.gradle:spring-io-plugin:0.0.8.RELEASE'
 		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2'
+		classpath "io.spring.javaformat:spring-javaformat-gradle-plugin:$javaFormatVersion"
 	}
 }
 
@@ -15,6 +17,7 @@ allprojects {
 	group = 'org.springframework.restdocs'
 	repositories {
 		mavenCentral()
+		mavenLocal()
 	}
 }
 
@@ -103,7 +106,7 @@ subprojects {
 }
 
 configure(subprojects - project(":docs")) { subproject ->
-
+	apply plugin: 'io.spring.javaformat'
 	apply plugin: 'checkstyle'
 	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
 
@@ -134,6 +137,7 @@ configure(subprojects - project(":docs")) { subproject ->
 	}
 
 	dependencies {
+		checkstyle "io.spring.javaformat:spring-javaformat-checkstyle:$javaFormatVersion"
 		jacoco 'org.jacoco:org.jacoco.agent::runtime'
 	}
 

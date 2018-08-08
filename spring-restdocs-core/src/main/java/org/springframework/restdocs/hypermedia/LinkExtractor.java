@@ -34,9 +34,8 @@ public interface LinkExtractor {
 	/**
 	 * Extract the links from the given {@code response}, returning a {@code Map} of links
 	 * where the keys are the link rels.
-	 *
-	 * @param response The response from which the links are to be extracted
-	 * @return The extracted links, keyed by rel
+	 * @param response the response from which the links are to be extracted
+	 * @return the extracted links, keyed by rel
 	 * @throws IOException if link extraction fails
 	 */
 	Map<String, List<Link>> extractLinks(OperationResponse response) throws IOException;

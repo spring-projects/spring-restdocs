@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ public abstract class RestAssuredRestDocumentation {
 	/**
 	 * Documents the API call with the given {@code identifier} using the given
 	 * {@code snippets}.
-	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param snippets the snippets that will document the API call
 	 * @return a {@link RestDocumentationFilter} that will produce the documentation
@@ -56,7 +55,6 @@ public abstract class RestAssuredRestDocumentation {
 	 * Documents the API call with the given {@code identifier} using the given
 	 * {@code snippets} in addition to any default snippets. The given
 	 * {@code requestPreprocessor} is applied to the request before it is documented.
-	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param requestPreprocessor the request preprocessor
 	 * @param snippets the snippets
@@ -72,7 +70,6 @@ public abstract class RestAssuredRestDocumentation {
 	 * Documents the API call with the given {@code identifier} using the given
 	 * {@code snippets} in addition to any default snippets. The given
 	 * {@code responsePreprocessor} is applied to the request before it is documented.
-	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param responsePreprocessor the response preprocessor
 	 * @param snippets the snippets
@@ -89,7 +86,6 @@ public abstract class RestAssuredRestDocumentation {
 	 * {@code snippets} in addition to any default snippets. The given
 	 * {@code requestPreprocessor} and {@code responsePreprocessor} are applied to the
 	 * request and response respectively before they are documented.
-	 *
 	 * @param identifier an identifier for the API call that is being documented
 	 * @param requestPreprocessor the request preprocessor
 	 * @param responsePreprocessor the response preprocessor
@@ -107,7 +103,6 @@ public abstract class RestAssuredRestDocumentation {
 	/**
 	 * Provides access to a {@link RestAssuredRestDocumentationConfigurer} that can be
 	 * used to configure Spring REST Docs using the given {@code contextProvider}.
-	 *
 	 * @param contextProvider the context provider
 	 * @return the configurer
 	 */

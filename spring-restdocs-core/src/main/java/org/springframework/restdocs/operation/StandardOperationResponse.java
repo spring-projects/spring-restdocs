@@ -32,7 +32,6 @@ class StandardOperationResponse extends AbstractOperationMessage
 	/**
 	 * Creates a new response with the given {@code status}, {@code headers}, and
 	 * {@code content}.
-	 *
 	 * @param status the status of the response
 	 * @param headers the headers of the response
 	 * @param content the content of the response

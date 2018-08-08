@@ -45,7 +45,6 @@ import org.springframework.util.StringUtils;
  * @see CliDocumentation#curlRequest()
  * @see CliDocumentation#curlRequest(CommandFormatter)
  * @see CliDocumentation#curlRequest(Map)
- * @see CliDocumentation#curlRequest(Map, CommandFormatter)
  */
 public class CurlRequestSnippet extends TemplatedSnippet {
 
@@ -53,7 +52,6 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with no additional attributes.
-	 *
 	 * @deprecated since 1.2.0 in favor of {@link #CurlRequestSnippet(CommandFormatter)}
 	 */
 	@Deprecated
@@ -64,8 +62,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code CurlRequestSnippet} that will use the given
 	 * {@code commandFormatter} to format the curl command.
-	 *
-	 * @param commandFormatter The formatter
+	 * @param commandFormatter the formatter
 	 */
 	protected CurlRequestSnippet(CommandFormatter commandFormatter) {
 		this(null, commandFormatter);
@@ -74,8 +71,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with the given additional
 	 * {@code attributes} that will be included in the model during template rendering.
-	 *
-	 * @param attributes The additional attributes
+	 * @param attributes the additional attributes
 	 * @deprecated since 1.2.0 in favor of
 	 * {@link #CurlRequestSnippet(Map, CommandFormatter)}
 	 */
@@ -88,9 +84,8 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	 * Creates a new {@code CurlRequestSnippet} with the given additional
 	 * {@code attributes} that will be included in the model during template rendering.
 	 * The given {@code commandFormaatter} will be used to format the curl command.
-	 *
-	 * @param attributes The additional attributes
-	 * @param commandFormatter The formatter for generating the snippet
+	 * @param attributes the additional attributes
+	 * @param commandFormatter the formatter for generating the snippet
 	 */
 	protected CurlRequestSnippet(Map<String, Object> attributes,
 			CommandFormatter commandFormatter) {

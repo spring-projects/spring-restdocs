@@ -36,7 +36,6 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 
 	/**
 	 * Adds the given {@code attributes} to the descriptor.
-	 *
 	 * @param attributes the attributes
 	 * @return the descriptor
 	 */
@@ -50,7 +49,6 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 
 	/**
 	 * Specifies the description.
-	 *
 	 * @param description the description
 	 * @return the descriptor
 	 */
@@ -62,7 +60,6 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 
 	/**
 	 * Returns the description.
-	 *
 	 * @return the description
 	 */
 	public final Object getDescription() {
@@ -71,7 +68,6 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 
 	/**
 	 * Returns the descriptor's attributes.
-	 *
 	 * @return the attributes
 	 */
 	public final Map<String, Object> getAttributes() {

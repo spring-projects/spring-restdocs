@@ -41,7 +41,6 @@ public abstract class CliDocumentation {
 	/**
 	 * Returns a new {@code Snippet} that will document the curl request for the API
 	 * operation.
-	 *
 	 * @return the snippet that will document the curl request
 	 */
 	public static Snippet curlRequest() {
@@ -52,7 +51,6 @@ public abstract class CliDocumentation {
 	 * Returns a new {@code Snippet} that will document the curl request for the API
 	 * operation. The given {@code attributes} will be available during snippet
 	 * generation.
-	 *
 	 * @param attributes the attributes
 	 * @return the snippet that will document the curl request
 	 */
@@ -64,7 +62,6 @@ public abstract class CliDocumentation {
 	 * Returns a new {@code Snippet} that will document the curl request for the API
 	 * operation. The given {@code commandFormatter} will be used to format the curl
 	 * command in the snippet.
-	 *
 	 * @param commandFormatter the command formatter
 	 * @return the snippet that will document the curl request
 	 * @since 1.2.0
@@ -78,7 +75,6 @@ public abstract class CliDocumentation {
 	 * operation. The given {@code attributes} will be available during snippet
 	 * generation. The given {@code commandFormatter} will be used to format the curl
 	 * command in the snippet.
-	 *
 	 * @param attributes the attributes
 	 * @param commandFormatter the command formatter
 	 * @return the snippet that will document the curl request
@@ -92,7 +88,6 @@ public abstract class CliDocumentation {
 	/**
 	 * Returns a new {@code Snippet} that will document the HTTPie request for the API
 	 * operation.
-	 *
 	 * @return the snippet that will document the HTTPie request
 	 */
 	public static Snippet httpieRequest() {
@@ -103,7 +98,6 @@ public abstract class CliDocumentation {
 	 * Returns a new {@code Snippet} that will document the HTTPie request for the API
 	 * operation. The given {@code attributes} will be available during snippet
 	 * generation.
-	 *
 	 * @param attributes the attributes
 	 * @return the snippet that will document the HTTPie request
 	 */
@@ -115,7 +109,6 @@ public abstract class CliDocumentation {
 	 * Returns a new {@code Snippet} that will document the HTTPie request for the API
 	 * operation. The given {@code commandFormatter} will be used to format the HTTPie
 	 * command in the snippet.
-	 *
 	 * @param commandFormatter the command formatter
 	 * @return the snippet that will document the HTTPie request
 	 * @since 1.2.0
@@ -129,7 +122,6 @@ public abstract class CliDocumentation {
 	 * operation. The given {@code attributes} will be available during snippet
 	 * generation. The given {@code commandFormatter} will be used to format the HTTPie
 	 * command in the snippet snippet.
-	 *
 	 * @param attributes the attributes
 	 * @param commandFormatter the command formatter
 	 * @return the snippet that will document the HTTPie request
@@ -142,8 +134,7 @@ public abstract class CliDocumentation {
 
 	/**
 	 * Creates a new {@code CommandFormatter} that produces multi-line output.
-	 *
-	 * @return A multi-line {@code CommandFormatter}
+	 * @return a multi-line {@code CommandFormatter}
 	 */
 	public static CommandFormatter multiLineFormat() {
 		return new ConcatenatingCommandFormatter(" \\%n    ");
@@ -151,8 +142,7 @@ public abstract class CliDocumentation {
 
 	/**
 	 * Creates a new {@code CommandFormatter} that produces single-line output.
-	 *
-	 * @return A single-line {@code CommandFormatter}
+	 * @return a single-line {@code CommandFormatter}
 	 */
 	public static CommandFormatter singleLineFormat() {
 		return new ConcatenatingCommandFormatter(" ");

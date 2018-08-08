@@ -24,17 +24,17 @@ import org.junit.Test;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 import org.springframework.restdocs.test.GeneratedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
+import org.springframework.restdocs.test.SnippetConditions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
-import static org.springframework.restdocs.test.SnippetConditions.tableWithHeader;
 
 /**
  * Tests for {@link RequestFieldsSnippet} that are specific to Asciidoctor.
@@ -44,10 +44,12 @@ import static org.springframework.restdocs.test.SnippetConditions.tableWithHeade
 public class AsciidoctorRequestFieldsSnippetTests {
 
 	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(
+			TemplateFormats.asciidoctor());
 
 	@Rule
-	public GeneratedSnippets generatedSnippets = new GeneratedSnippets(asciidoctor());
+	public GeneratedSnippets generatedSnippets = new GeneratedSnippets(
+			TemplateFormats.asciidoctor());
 
 	@Test
 	public void requestFieldsWithListDescription() throws IOException {
@@ -64,11 +66,12 @@ public class AsciidoctorRequestFieldsSnippetTests {
 																resolver))
 												.request("http://localhost")
 												.content("{\"a\": \"foo\"}").build());
-		assertThat(this.generatedSnippets.requestFields())
-				.is(tableWithHeader(asciidoctor(), "Path", "Type", "Description")
-						//
-						.row("a", "String", String.format(" - one%n - two"))
-						.configuration("[cols=\"1,1,1a\"]"));
+		assertThat(this.generatedSnippets.requestFields()).is(SnippetConditions
+				.tableWithHeader(TemplateFormats.asciidoctor(), "Path", "Type",
+						"Description")
+				//
+				.row("a", "String", String.format(" - one%n - two"))
+				.configuration("[cols=\"1,1,1a\"]"));
 	}
 
 	private FileSystemResource snippetResource(String name) {

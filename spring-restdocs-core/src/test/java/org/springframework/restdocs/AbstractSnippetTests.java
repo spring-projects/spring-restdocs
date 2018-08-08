@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.test.GeneratedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
 import org.springframework.restdocs.test.SnippetConditions;
@@ -35,9 +36,6 @@ import org.springframework.restdocs.test.SnippetConditions.HttpRequestCondition;
 import org.springframework.restdocs.test.SnippetConditions.HttpResponseCondition;
 import org.springframework.restdocs.test.SnippetConditions.TableCondition;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
-import static org.springframework.restdocs.templates.TemplateFormats.markdown;
 
 /**
  * Abstract base class for testing snippet generation.
@@ -57,8 +55,9 @@ public abstract class AbstractSnippetTests {
 
 	@Parameters(name = "{0}")
 	public static List<Object[]> parameters() {
-		return Arrays.asList(new Object[] { "Asciidoctor", asciidoctor() },
-				new Object[] { "Markdown", markdown() });
+		return Arrays.asList(
+				new Object[] { "Asciidoctor", TemplateFormats.asciidoctor() },
+				new Object[] { "Markdown", TemplateFormats.markdown() });
 	}
 
 	public AbstractSnippetTests(String name, TemplateFormat templateFormat) {

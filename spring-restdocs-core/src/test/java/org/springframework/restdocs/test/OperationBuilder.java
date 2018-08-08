@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,10 +115,10 @@ public class OperationBuilder extends OperationTestRule {
 						new RestDocumentationContextPlaceholderResolverFactory(), "UTF-8",
 						this.templateFormat));
 		return new StandardOperation(this.name,
-				(this.requestBuilder == null
+				((this.requestBuilder == null)
 						? new OperationRequestBuilder("http://localhost/").buildRequest()
 						: this.requestBuilder.buildRequest()),
-				this.responseBuilder == null
+				(this.responseBuilder == null)
 						? new OperationResponseBuilder().buildResponse()
 						: this.responseBuilder.buildResponse(),
 				this.attributes);
@@ -259,7 +259,9 @@ public class OperationBuilder extends OperationTestRule {
 				this.headers.add(name, value);
 				return this;
 			}
+
 		}
+
 	}
 
 	/**

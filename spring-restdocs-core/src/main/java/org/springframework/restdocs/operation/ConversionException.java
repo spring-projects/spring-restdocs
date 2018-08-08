@@ -30,7 +30,6 @@ public class ConversionException extends RuntimeException {
 
 	/**
 	 * Creates a new {@code ConversionException} with the given {@code cause}.
-	 *
 	 * @param cause the cause
 	 */
 	public ConversionException(Throwable cause) {
@@ -40,7 +39,6 @@ public class ConversionException extends RuntimeException {
 	/**
 	 * Creates a new {@code ConversionException} with the given {@code message} and
 	 * {@code cause}.
-	 *
 	 * @param message the message
 	 * @param cause the cause
 	 */

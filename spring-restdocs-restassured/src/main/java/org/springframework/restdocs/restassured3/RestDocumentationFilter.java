@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,6 @@ public class RestDocumentationFilter implements Filter {
 	/**
 	 * Returns the configuration that should be used when calling the delgate. The
 	 * configuration is derived from the given {@code requestSpec} and {@code context}.
-	 *
 	 * @param requestSpec the request specification
 	 * @param context the filter context
 	 * @return the configuration
@@ -83,7 +82,6 @@ public class RestDocumentationFilter implements Filter {
 	/**
 	 * Adds the given {@code snippets} such that they are documented when this result
 	 * handler is called.
-	 *
 	 * @param snippets the snippets to add
 	 * @return this {@code RestDocumentationFilter}
 	 * @deprecated since 1.1 in favor of {@link #document(Snippet...)}
@@ -97,7 +95,6 @@ public class RestDocumentationFilter implements Filter {
 	/**
 	 * Creates a new {@link RestDocumentationFilter} that will produce documentation using
 	 * the given {@code snippets}.
-	 *
 	 * @param snippets the snippets
 	 * @return the new result handler
 	 */

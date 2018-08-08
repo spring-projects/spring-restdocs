@@ -31,7 +31,6 @@ public abstract class AbstractConfigurer {
 
 	/**
 	 * Applies the configurer to the given {@code configuration}.
-	 *
 	 * @param configuration the configuration to be configured
 	 * @param context the current documentation context
 	 */

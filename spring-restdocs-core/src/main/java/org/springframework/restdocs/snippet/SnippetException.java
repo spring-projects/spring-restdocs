@@ -27,7 +27,6 @@ public class SnippetException extends RuntimeException {
 
 	/**
 	 * Creates a new {@code SnippetException} described by the given {@code message}.
-	 *
 	 * @param message the message that describes the problem
 	 */
 	public SnippetException(String message) {

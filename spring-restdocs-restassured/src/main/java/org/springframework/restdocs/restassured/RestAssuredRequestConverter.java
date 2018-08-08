@@ -165,9 +165,9 @@ class RestAssuredRequestConverter
 		List<OperationRequestPart> parts = new ArrayList<>();
 		for (MultiPartSpecification multiPartSpec : requestSpec.getMultiPartParams()) {
 			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(
-					multiPartSpec.getMimeType() == null ? MediaType.TEXT_PLAIN
-							: MediaType.parseMediaType(multiPartSpec.getMimeType()));
+			headers.setContentType((multiPartSpec.getMimeType() != null)
+					? MediaType.parseMediaType(multiPartSpec.getMimeType())
+					: MediaType.TEXT_PLAIN);
 			parts.add(new OperationRequestPartFactory().create(
 					multiPartSpec.getControlName(), multiPartSpec.getFileName(),
 					convertContent(multiPartSpec.getContent()), headers));

@@ -32,7 +32,6 @@ class StandardOperationRequestPart extends AbstractOperationMessage
 
 	/**
 	 * Creates a new {@code StandardOperationRequestPart} with the given {@code name}.
-	 *
 	 * @param name the name of the part
 	 * @param submittedFileName the name of the file being uploaded by this part
 	 * @param content the contents of the part

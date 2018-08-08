@@ -26,7 +26,7 @@ import org.springframework.restdocs.snippet.Snippet;
  * @author Andy Wilkinson
  * @author Paul-Christian Volkmer
  * @author Raman Gupta
- * @deprecated Since 1.1 in favor of
+ * @deprecated since 1.1 in favor of
  * {@link org.springframework.restdocs.cli.CurlRequestSnippet}.
  */
 @Deprecated
@@ -35,8 +35,7 @@ public class CurlRequestSnippet
 
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with no additional attributes.
-	 *
-	 * @deprecated Since 1.1 in favor of
+	 * @deprecated since 1.1 in favor of
 	 * {@link org.springframework.restdocs.cli.CurlRequestSnippet}.
 	 */
 	@Deprecated
@@ -46,9 +45,8 @@ public class CurlRequestSnippet
 
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with additional attributes.
-	 * @param attributes The additional attributes.
-	 *
-	 * @deprecated Since 1.1 in favor of
+	 * @param attributes the additional attributes.
+	 * @deprecated since 1.1 in favor of
 	 * {@link org.springframework.restdocs.cli.CurlRequestSnippet}.
 	 */
 	@Deprecated

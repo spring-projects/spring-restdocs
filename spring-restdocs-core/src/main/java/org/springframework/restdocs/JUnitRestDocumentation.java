@@ -43,7 +43,6 @@ public class JUnitRestDocumentation
 	/**
 	 * Creates a new {@code JUnitRestDocumentation} instance that will generate snippets
 	 * to the given {@code outputDirectory}.
-	 *
 	 * @param outputDirectory the output directory
 	 */
 	public JUnitRestDocumentation(String outputDirectory) {

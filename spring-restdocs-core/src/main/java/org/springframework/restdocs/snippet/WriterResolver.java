@@ -32,7 +32,6 @@ public interface WriterResolver {
 	/**
 	 * Returns a writer that can be used to write the snippet with the given name for the
 	 * operation with the given name.
-	 *
 	 * @param operationName the name of the operation that is being documented
 	 * @param snippetName the name of the snippet
 	 * @param restDocumentationContext the current documentation context
@@ -45,7 +44,6 @@ public interface WriterResolver {
 	/**
 	 * Configures the encoding that should be used by any writers produced by this
 	 * resolver.
-	 *
 	 * @param encoding the encoding
 	 * @deprecated since 1.1.0 in favour of configuring the encoding when to resolver is
 	 * created

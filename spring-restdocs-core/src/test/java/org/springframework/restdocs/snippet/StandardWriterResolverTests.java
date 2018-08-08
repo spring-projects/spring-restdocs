@@ -27,13 +27,13 @@ import org.junit.rules.TemporaryFolder;
 
 import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
 
 /**
  * Tests for {@link StandardWriterResolver}.
@@ -49,7 +49,7 @@ public class StandardWriterResolverTests {
 			PlaceholderResolverFactory.class);
 
 	private final StandardWriterResolver resolver = new StandardWriterResolver(
-			this.placeholderResolverFactory, "UTF-8", asciidoctor());
+			this.placeholderResolverFactory, "UTF-8", TemplateFormats.asciidoctor());
 
 	@Test
 	public void absoluteInput() {

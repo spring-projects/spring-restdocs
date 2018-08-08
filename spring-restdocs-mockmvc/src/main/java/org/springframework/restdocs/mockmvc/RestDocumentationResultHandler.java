@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,6 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	/**
 	 * Adds the given {@code snippets} such that they are documented when this result
 	 * handler is called.
-	 *
 	 * @param snippets the snippets to add
 	 * @return this {@code RestDocumentationResultHandler}
 	 * @deprecated since 1.1 in favor of {@link #document(Snippet...)} and passing the
@@ -82,7 +81,6 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 *          fieldWithPath("page").description("The requested Page")
 	 *     ));
 	 * </pre>
-	 *
 	 * @param snippets the snippets
 	 * @return the new result handler
 	 */
@@ -106,7 +104,6 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	/**
 	 * Returns the {@link RestDocumentationGenerator} that is used as a delegate.
-	 *
 	 * @return the delegate
 	 */
 	protected final RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> getDelegate() {

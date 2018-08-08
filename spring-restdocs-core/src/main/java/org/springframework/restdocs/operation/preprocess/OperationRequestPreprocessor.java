@@ -29,7 +29,6 @@ public interface OperationRequestPreprocessor {
 	/**
 	 * Processes and potentially modifies the given {@code request} before it is
 	 * documented.
-	 *
 	 * @param request the request
 	 * @return the modified request
 	 */

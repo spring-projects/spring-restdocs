@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,7 @@ public class MustacheTemplate implements Template {
 
 	/**
 	 * Creates a new {@code MustacheTemplate} that adapts the given {@code delegate}.
-	 *
-	 * @param delegate The delegate to adapt
+	 * @param delegate the delegate to adapt
 	 */
 	public MustacheTemplate(org.springframework.restdocs.mustache.Template delegate) {
 		this(delegate, Collections.<String, Object>emptyMap());
@@ -48,9 +47,8 @@ public class MustacheTemplate implements Template {
 	 * During rendering, the given {@code context} and the context passed into
 	 * {@link #render(Map)} will be combined and then passed to the delegate when it is
 	 * {@link org.springframework.restdocs.mustache.Template#execute executed}.
-	 *
-	 * @param delegate The delegate to adapt
-	 * @param context The context
+	 * @param delegate the delegate to adapt
+	 * @param context the context
 	 */
 	public MustacheTemplate(org.springframework.restdocs.mustache.Template delegate,
 			Map<String, Object> context) {

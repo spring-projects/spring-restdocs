@@ -35,7 +35,6 @@ public class StandardOperation implements Operation {
 
 	/**
 	 * Creates a new {@code StandardOperation}.
-	 *
 	 * @param name the name of the operation
 	 * @param request the request that was sent
 	 * @param response the response that was received

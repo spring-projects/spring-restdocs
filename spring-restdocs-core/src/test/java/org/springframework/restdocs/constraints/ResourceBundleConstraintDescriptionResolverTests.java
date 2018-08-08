@@ -347,6 +347,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 		@org.hibernate.validator.constraints.URL
 		private String url;
+
 	}
 
 }

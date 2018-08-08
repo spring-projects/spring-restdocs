@@ -39,7 +39,6 @@ public final class RestDocumentationContext {
 	 * Creates a new {@code RestDocumentationContext} for a test on the given
 	 * {@code testClass} with given {@code testMethodName} that will generate
 	 * documentation to the given {@code outputDirectory}.
-	 *
 	 * @param testClass the class whose test is being executed
 	 * @param testMethodName the name of the test method that is being executed
 	 * @param outputDirectory the directory to which documentation should be written.
@@ -55,8 +54,7 @@ public final class RestDocumentationContext {
 
 	/**
 	 * Returns the class whose tests are currently executing.
-	 *
-	 * @return The test class
+	 * @return the test class
 	 */
 	public Class<?> getTestClass() {
 		return this.testClass;
@@ -64,8 +62,7 @@ public final class RestDocumentationContext {
 
 	/**
 	 * Returns the name of the test method that is currently executing.
-	 *
-	 * @return The name of the test method
+	 * @return the name of the test method
 	 */
 	public String getTestMethodName() {
 		return this.testMethodName;
@@ -73,8 +70,7 @@ public final class RestDocumentationContext {
 
 	/**
 	 * Returns the current step count and then increments it.
-	 *
-	 * @return The step count prior to it being incremented
+	 * @return the step count prior to it being incremented
 	 */
 	int getAndIncrementStepCount() {
 		return this.stepCount.getAndIncrement();
@@ -82,8 +78,7 @@ public final class RestDocumentationContext {
 
 	/**
 	 * Returns the current step count.
-	 *
-	 * @return The current step count
+	 * @return the current step count
 	 */
 	public int getStepCount() {
 		return this.stepCount.get();
@@ -91,7 +86,6 @@ public final class RestDocumentationContext {
 
 	/**
 	 * Returns the output directory to which generated snippets should be written.
-	 *
 	 * @return the output directory
 	 */
 	public File getOutputDirectory() {

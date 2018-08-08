@@ -28,21 +28,18 @@ public interface OperationRequestPart {
 
 	/**
 	 * Returns the name of the part.
-	 *
 	 * @return the name
 	 */
 	String getName();
 
 	/**
 	 * Returns the name of the file that is being uploaded in this part.
-	 *
 	 * @return the name of the file
 	 */
 	String getSubmittedFileName();
 
 	/**
 	 * Returns the contents of the part.
-	 *
 	 * @return the contents
 	 */
 	byte[] getContent();
@@ -52,14 +49,12 @@ public interface OperationRequestPart {
 	 * empty string is returned. If the part has a {@code Content-Type} header that
 	 * specifies a charset then that charset will be used when converting the contents to
 	 * a {@code String}.
-	 *
 	 * @return the contents as string, never {@code null}
 	 */
 	String getContentAsString();
 
 	/**
 	 * Returns the part's headers.
-	 *
 	 * @return the headers
 	 */
 	HttpHeaders getHeaders();

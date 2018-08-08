@@ -32,7 +32,6 @@ public class LinkDescriptor extends IgnorableDescriptor<LinkDescriptor> {
 
 	/**
 	 * Creates a new {@code LinkDescriptor} describing a link with the given {@code rel}.
-	 *
 	 * @param rel the rel of the link
 	 */
 	protected LinkDescriptor(String rel) {
@@ -41,7 +40,6 @@ public class LinkDescriptor extends IgnorableDescriptor<LinkDescriptor> {
 
 	/**
 	 * Marks the link as optional.
-	 *
 	 * @return {@code this}
 	 */
 	public final LinkDescriptor optional() {
@@ -51,7 +49,6 @@ public class LinkDescriptor extends IgnorableDescriptor<LinkDescriptor> {
 
 	/**
 	 * Returns the rel of the link described by this descriptor.
-	 *
 	 * @return the rel
 	 */
 	public final String getRel() {
@@ -60,7 +57,6 @@ public class LinkDescriptor extends IgnorableDescriptor<LinkDescriptor> {
 
 	/**
 	 * Returns {@code true} if the described link is optional, otherwise {@code false}.
-	 *
 	 * @return {@code true} if the described link is optional, otherwise {@code false}
 	 */
 	public final boolean isOptional() {

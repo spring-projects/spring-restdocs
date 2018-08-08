@@ -53,7 +53,6 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code RequestPartsSnippet} that will document the request's parts
 	 * using the given {@code descriptors}. Undocumented parts will trigger a failure.
-	 *
 	 * @param descriptors the parameter descriptors
 	 */
 	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors) {
@@ -64,7 +63,6 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	 * Creates a new {@code RequestPartsSnippet} that will document the request's parts
 	 * using the given {@code descriptors}. If {@code ignoreUndocumentedParts} is
 	 * {@code true}, undocumented parts will be ignored and will not trigger a failure.
-	 *
 	 * @param descriptors the parameter descriptors
 	 * @param ignoreUndocumentedParts whether undocumented parts should be ignored
 	 */
@@ -77,7 +75,6 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	 * Creates a new {@code RequestPartsSnippet} that will document the request's parts
 	 * using the given {@code descriptors}. The given {@code attributes} will be included
 	 * in the model during template rendering. Undocumented parts will trigger a failure.
-	 *
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */
@@ -91,7 +88,6 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	 * using the given {@code descriptors}. The given {@code attributes} will be included
 	 * in the model during template rendering. If {@code ignoreUndocumentedParts} is
 	 * {@code true}, undocumented parts will be ignored and will not trigger a failure.
-	 *
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedParts whether undocumented parts should be ignored

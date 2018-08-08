@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,8 @@ public interface CommandFormatter {
 
 	/**
 	 * Formats a list of {@code elements} into a single {@code String}.
-	 *
-	 * @param elements The {@code String} elements to be formatted
-	 * @return A single formatted {@code String}
+	 * @param elements the {@code String} elements to be formatted
+	 * @return a single formatted {@code String}
 	 */
 	String format(List<String> elements);
 
