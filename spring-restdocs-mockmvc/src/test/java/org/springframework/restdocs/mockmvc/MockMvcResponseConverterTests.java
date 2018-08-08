@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link MockMvcResponseConverter}.
@@ -46,29 +43,22 @@ public class MockMvcResponseConverterTests {
 	public void basicResponse() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setStatus(HttpServletResponse.SC_OK);
-
 		OperationResponse operationResponse = this.factory.convert(response);
-
-		assertThat(operationResponse.getStatus(), is(HttpStatus.OK));
+		assertThat(operationResponse.getStatus()).isEqualTo(HttpStatus.OK);
 	}
 
 	@Test
 	public void responseWithCookie() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setStatus(HttpServletResponse.SC_OK);
-
 		Cookie cookie = new Cookie("name", "value");
 		cookie.setDomain("localhost");
 		cookie.setHttpOnly(true);
-
 		response.addCookie(cookie);
-
 		OperationResponse operationResponse = this.factory.convert(response);
-
-		assertThat(operationResponse.getHeaders().size(), is(1));
-		assertTrue(operationResponse.getHeaders().containsKey(HttpHeaders.SET_COOKIE));
-		assertThat(operationResponse.getHeaders().get(HttpHeaders.SET_COOKIE), equalTo(
-				Collections.singletonList("name=value; Domain=localhost; HttpOnly")));
+		assertThat(operationResponse.getHeaders()).hasSize(1);
+		assertThat(operationResponse.getHeaders()).containsEntry(HttpHeaders.SET_COOKIE,
+				Collections.singletonList("name=value; Domain=localhost; HttpOnly"));
 	}
 
 }

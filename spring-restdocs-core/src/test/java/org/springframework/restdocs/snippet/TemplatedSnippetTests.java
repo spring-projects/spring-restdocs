@@ -26,15 +26,10 @@ import org.junit.Test;
 
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.templates.TemplateFormats;
-import org.springframework.restdocs.test.ExpectedSnippets;
+import org.springframework.restdocs.test.GeneratedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link TemplatedSnippet}.
@@ -48,7 +43,7 @@ public class TemplatedSnippetTests {
 			TemplateFormats.asciidoctor());
 
 	@Rule
-	public ExpectedSnippets snippets = new ExpectedSnippets(
+	public GeneratedSnippets snippets = new GeneratedSnippets(
 			TemplateFormats.asciidoctor());
 
 	@Test
@@ -57,30 +52,30 @@ public class TemplatedSnippetTests {
 		attributes.put("a", "alpha");
 		TemplatedSnippet snippet = new TestTemplatedSnippet(attributes);
 		attributes.put("b", "bravo");
-		assertThat(snippet.getAttributes().size(), is(1));
-		assertThat(snippet.getAttributes(), hasEntry("a", (Object) "alpha"));
+		assertThat(snippet.getAttributes()).hasSize(1);
+		assertThat(snippet.getAttributes()).containsEntry("a", "alpha");
 	}
 
 	@Test
 	public void nullAttributesAreTolerated() {
-		assertThat(new TestTemplatedSnippet(null).getAttributes(), is(not(nullValue())));
-		assertThat(new TestTemplatedSnippet(null).getAttributes().size(), is(0));
+		assertThat(new TestTemplatedSnippet(null).getAttributes()).isNotNull();
+		assertThat(new TestTemplatedSnippet(null).getAttributes()).isEmpty();
 	}
 
 	@Test
 	public void snippetName() {
 		assertThat(new TestTemplatedSnippet(Collections.<String, Object>emptyMap())
-				.getSnippetName(), is(equalTo("test")));
+				.getSnippetName()).isEqualTo("test");
 	}
 
 	@Test
 	public void multipleSnippetsCanBeProducedFromTheSameTemplate() throws IOException {
-		this.snippets.expect("multiple-snippets-one");
-		this.snippets.expect("multiple-snippets-two");
 		new TestTemplatedSnippet("one", "multiple-snippets")
 				.document(this.operationBuilder.build());
 		new TestTemplatedSnippet("two", "multiple-snippets")
 				.document(this.operationBuilder.build());
+		assertThat(this.snippets.snippet("multiple-snippets-one")).isNotNull();
+		assertThat(this.snippets.snippet("multiple-snippets-two")).isNotNull();
 	}
 
 	private static class TestTemplatedSnippet extends TemplatedSnippet {

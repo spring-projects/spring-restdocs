@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link CommandFormatter}.
@@ -37,25 +35,25 @@ public class ConcatenatingCommandFormatterTests {
 
 	@Test
 	public void formattingAnEmptyListProducesAnEmptyString() {
-		assertThat(this.singleLineFormat.format(Collections.<String>emptyList()),
-				is(equalTo("")));
+		assertThat(this.singleLineFormat.format(Collections.<String>emptyList()))
+				.isEqualTo("");
 	}
 
 	@Test
 	public void formattingNullProducesAnEmptyString() {
-		assertThat(this.singleLineFormat.format(null), is(equalTo("")));
+		assertThat(this.singleLineFormat.format(null)).isEqualTo("");
 	}
 
 	@Test
 	public void formattingASingleElement() {
-		assertThat(this.singleLineFormat.format(Collections.singletonList("alpha")),
-				is(equalTo(" alpha")));
+		assertThat(this.singleLineFormat.format(Collections.singletonList("alpha")))
+				.isEqualTo(" alpha");
 	}
 
 	@Test
 	public void formattingMultipleElements() {
-		assertThat(this.singleLineFormat.format(Arrays.asList("alpha", "bravo")),
-				is(equalTo(String.format(" alpha bravo"))));
+		assertThat(this.singleLineFormat.format(Arrays.asList("alpha", "bravo")))
+				.isEqualTo(String.format(" alpha bravo"));
 	}
 
 }

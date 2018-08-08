@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link SnippetsDirectoryResolver}.
@@ -52,9 +51,9 @@ public class SnippetsDirectoryResolverTests {
 				new File(this.temporaryFolder.getRoot(), "src/main/asciidoc")
 						.getAbsolutePath());
 		File snippetsDirectory = getMavenSnippetsDirectory(attributes);
-		assertThat(snippetsDirectory.isAbsolute(), is(false));
-		assertThat(snippetsDirectory,
-				equalTo(new File("../../../target/generated-snippets")));
+		assertThat(snippetsDirectory).isRelative();
+		assertThat(snippetsDirectory)
+				.isEqualTo(new File("../../../target/generated-snippets"));
 	}
 
 	@Test
@@ -85,8 +84,8 @@ public class SnippetsDirectoryResolverTests {
 		attributes.put("projectdir", "project/dir");
 		File snippetsDirectory = new SnippetsDirectoryResolver()
 				.getSnippetsDirectory(attributes);
-		assertThat(snippetsDirectory,
-				equalTo(new File("project/dir/build/generated-snippets")));
+		assertThat(snippetsDirectory)
+				.isEqualTo(new File("project/dir/build/generated-snippets"));
 	}
 
 	@Test

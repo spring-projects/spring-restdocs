@@ -17,6 +17,10 @@
 package org.springframework.restdocs.webtestclient;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,6 +41,7 @@ import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -46,20 +52,18 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
-import static org.springframework.restdocs.test.SnippetMatchers.codeBlock;
-import static org.springframework.restdocs.test.SnippetMatchers.httpResponse;
-import static org.springframework.restdocs.test.SnippetMatchers.snippet;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithTitleAndHeader;
+import static org.springframework.restdocs.test.SnippetConditions.codeBlock;
+import static org.springframework.restdocs.test.SnippetConditions.httpResponse;
+import static org.springframework.restdocs.test.SnippetConditions.tableWithHeader;
+import static org.springframework.restdocs.test.SnippetConditions.tableWithTitleAndHeader;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
@@ -118,12 +122,12 @@ public class WebTestClientRestDocumentationIntegrationTests {
 						parameterWithName("foo").description("Foo description"),
 						parameterWithName("bar").description("Bar description"))));
 		assertThat(
-				new File("build/generated-snippets/path-parameters/path-parameters.adoc"),
-				is(snippet(asciidoctor()).withContents(
-						tableWithTitleAndHeader(TemplateFormats.asciidoctor(),
-								"+/{foo}/{bar}+", "Parameter", "Description")
-										.row("`foo`", "Foo description")
-										.row("`bar`", "Bar description"))));
+				new File("build/generated-snippets/path-parameters/path-parameters.adoc"))
+						.has(content(
+								tableWithTitleAndHeader(TemplateFormats.asciidoctor(),
+										"+/{foo}/{bar}+", "Parameter", "Description")
+												.row("`foo`", "Foo description")
+												.row("`bar`", "Bar description")));
 	}
 
 	@Test
@@ -134,11 +138,11 @@ public class WebTestClientRestDocumentationIntegrationTests {
 						parameterWithName("a").description("Alpha description"),
 						parameterWithName("b").description("Bravo description"))));
 		assertThat(new File(
-				"build/generated-snippets/request-parameters/request-parameters.adoc"),
-				is(snippet(asciidoctor()).withContents(
-						tableWithHeader(TemplateFormats.asciidoctor(), "Parameter",
-								"Description").row("`a`", "Alpha description").row("`b`",
-										"Bravo description"))));
+				"build/generated-snippets/request-parameters/request-parameters.adoc"))
+						.has(content(tableWithHeader(TemplateFormats.asciidoctor(),
+								"Parameter", "Description")
+										.row("`a`", "Alpha description")
+										.row("`b`", "Bravo description")));
 	}
 
 	@Test
@@ -152,22 +156,19 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		this.webTestClient.post().uri("/upload")
 				.body(BodyInserters.fromMultipartData(multipartData)).exchange()
 				.expectStatus().isOk().expectBody().consumeWith(documentation);
-		assertThat(new File("build/generated-snippets/multipart/request-parts.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(tableWithHeader(TemplateFormats.asciidoctor(),
-								"Part", "Description").row("`a`", "Part a").row("`b`",
-										"Part b"))));
+		assertThat(new File("build/generated-snippets/multipart/request-parts.adoc"))
+				.has(content(tableWithHeader(TemplateFormats.asciidoctor(), "Part",
+						"Description").row("`a`", "Part a").row("`b`", "Part b")));
 	}
 
 	@Test
 	public void responseWithSetCookie() throws Exception {
 		this.webTestClient.get().uri("/set-cookie").exchange().expectStatus().isOk()
 				.expectBody().consumeWith(document("set-cookie"));
-		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(httpResponse(asciidoctor(), HttpStatus.OK).header(
-								HttpHeaders.SET_COOKIE,
-								"name=value; Domain=localhost; HttpOnly"))));
+		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"))
+				.has(content(httpResponse(asciidoctor(), HttpStatus.OK).header(
+						HttpHeaders.SET_COOKIE,
+						"name=value; Domain=localhost; HttpOnly")));
 	}
 
 	@Test
@@ -176,12 +177,11 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectBody().consumeWith(document("curl-snippet-with-cookies"));
 		assertThat(new File(
-				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(codeBlock(asciidoctor(), "bash").content(String
+				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"))
+						.has(content(codeBlock(asciidoctor(), "bash").withContent(String
 								.format("$ curl 'https://api.example.com/' -i -X GET \\%n"
 										+ "    -H 'Accept: application/json' \\%n"
-										+ "    --cookie 'cookieName=cookieVal'")))));
+										+ "    --cookie 'cookieName=cookieVal'"))));
 	}
 
 	@Test
@@ -190,12 +190,11 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectBody().consumeWith(document("httpie-snippet-with-cookies"));
 		assertThat(new File(
-				"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"),
-				is(snippet(asciidoctor())
-						.withContents(codeBlock(asciidoctor(), "bash").content(
+				"build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"))
+						.has(content(codeBlock(asciidoctor(), "bash").withContent(
 								String.format("$ http GET 'https://api.example.com/' \\%n"
 										+ "    'Accept:application/json' \\%n"
-										+ "    'Cookie:cookieName=cookieVal'")))));
+										+ "    'Cookie:cookieName=cookieVal'"))));
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
@@ -203,7 +202,26 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		Set<File> expected = Stream.of(snippets)
 				.map((snippet) -> new File(directory, snippet))
 				.collect(Collectors.toSet());
-		assertThat(actual, equalTo(expected));
+		assertThat(actual).isEqualTo(expected);
+	}
+
+	private Condition<File> content(final Condition<String> delegate) {
+		return new Condition<File>() {
+
+			@Override
+			public boolean matches(File value) {
+				try {
+					return delegate
+							.matches(FileCopyUtils.copyToString(new InputStreamReader(
+									new FileInputStream(value), StandardCharsets.UTF_8)));
+				}
+				catch (IOException ex) {
+					fail("Failed to read '" + value + "'", ex);
+					return false;
+				}
+			}
+
+		};
 	}
 
 	/**

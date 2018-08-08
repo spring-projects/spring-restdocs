@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 
@@ -43,7 +40,7 @@ public class XmlContentHandlerTests {
 	public void topLevelElementCanBeDocumented() {
 		String undocumentedContent = createHandler("<a>5</a>").getUndocumentedContent(
 				Arrays.asList(fieldWithPath("a").type("a").description("description")));
-		assertThat(undocumentedContent, is(nullValue()));
+		assertThat(undocumentedContent).isNull();
 	}
 
 	@Test
@@ -51,7 +48,7 @@ public class XmlContentHandlerTests {
 		String undocumentedContent = createHandler("<a><b>5</b></a>")
 				.getUndocumentedContent(Arrays.asList(
 						fieldWithPath("a/b").type("b").description("description")));
-		assertThat(undocumentedContent, is(equalTo(String.format("<a/>%n"))));
+		assertThat(undocumentedContent).isEqualTo(String.format("<a/>%n"));
 	}
 
 	@Test
@@ -59,8 +56,8 @@ public class XmlContentHandlerTests {
 		String undocumentedContent = createHandler("<a><b>5</b></a>")
 				.getUndocumentedContent(Arrays
 						.asList(fieldWithPath("a").type("a").description("description")));
-		assertThat(undocumentedContent,
-				is(equalTo(String.format("<a>%n    <b>5</b>%n</a>%n"))));
+		assertThat(undocumentedContent)
+				.isEqualTo(String.format("<a>%n    <b>5</b>%n</a>%n"));
 	}
 
 	@Test
@@ -68,7 +65,7 @@ public class XmlContentHandlerTests {
 		String undocumentedContent = createHandler("<a><b>5</b></a>")
 				.getUndocumentedContent(Arrays.asList(
 						subsectionWithPath("a").type("a").description("description")));
-		assertThat(undocumentedContent, is(nullValue()));
+		assertThat(undocumentedContent).isNull();
 	}
 
 	@Test
@@ -77,7 +74,7 @@ public class XmlContentHandlerTests {
 				.getUndocumentedContent(Arrays.asList(
 						fieldWithPath("a").type("a").description("description"),
 						fieldWithPath("a/b").type("b").description("description")));
-		assertThat(undocumentedContent, is(nullValue()));
+		assertThat(undocumentedContent).isNull();
 	}
 
 	@Test
@@ -86,7 +83,7 @@ public class XmlContentHandlerTests {
 				.getUndocumentedContent(Arrays.asList(
 						fieldWithPath("a/b").type("b").description("description"),
 						fieldWithPath("a").type("a").description("description")));
-		assertThat(undocumentedContent, is(nullValue()));
+		assertThat(undocumentedContent).isNull();
 	}
 
 	@Test

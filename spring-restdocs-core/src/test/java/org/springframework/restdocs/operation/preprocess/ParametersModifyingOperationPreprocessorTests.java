@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.restdocs.operation.preprocess;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -28,11 +29,7 @@ import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.Parameters;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link ParametersModifyingOperationPreprocessor}.
@@ -47,63 +44,58 @@ public class ParametersModifyingOperationPreprocessorTests {
 	public void addNewParameter() {
 		Parameters parameters = new Parameters();
 		assertThat(this.preprocessor.add("a", "alpha")
-				.preprocess(createRequest(parameters)).getParameters(),
-				hasEntry(equalTo("a"), contains("alpha")));
+				.preprocess(createRequest(parameters)).getParameters()).containsEntry("a",
+						Arrays.asList("alpha"));
 	}
 
 	@Test
 	public void addValueToExistingParameter() {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
-		assertThat(
-				this.preprocessor.add("a", "alpha").preprocess(createRequest(parameters))
-						.getParameters(),
-				hasEntry(equalTo("a"), contains("apple", "alpha")));
+		assertThat(this.preprocessor.add("a", "alpha")
+				.preprocess(createRequest(parameters)).getParameters()).containsEntry("a",
+						Arrays.asList("apple", "alpha"));
 	}
 
 	@Test
 	public void setNewParameter() {
 		Parameters parameters = new Parameters();
-		assertThat(
-				this.preprocessor.set("a", "alpha", "avocado")
-						.preprocess(createRequest(parameters)).getParameters(),
-				hasEntry(equalTo("a"), contains("alpha", "avocado")));
+		assertThat(this.preprocessor.set("a", "alpha", "avocado")
+				.preprocess(createRequest(parameters)).getParameters()).containsEntry("a",
+						Arrays.asList("alpha", "avocado"));
 	}
 
 	@Test
 	public void setExistingParameter() {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
-		assertThat(
-				this.preprocessor.set("a", "alpha", "avocado")
-						.preprocess(createRequest(parameters)).getParameters(),
-				hasEntry(equalTo("a"), contains("alpha", "avocado")));
+		assertThat(this.preprocessor.set("a", "alpha", "avocado")
+				.preprocess(createRequest(parameters)).getParameters()).containsEntry("a",
+						Arrays.asList("alpha", "avocado"));
 	}
 
 	@Test
 	public void removeNonExistentParameter() {
 		Parameters parameters = new Parameters();
 		assertThat(this.preprocessor.remove("a").preprocess(createRequest(parameters))
-				.getParameters().size(), is(equalTo(0)));
+				.getParameters().size()).isEqualTo(0);
 	}
 
 	@Test
 	public void removeParameter() {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
-		assertThat(
-				this.preprocessor.set("a", "alpha", "avocado")
-						.preprocess(createRequest(parameters)).getParameters(),
-				hasEntry(equalTo("a"), contains("alpha", "avocado")));
+		assertThat(this.preprocessor.set("a", "alpha", "avocado")
+				.preprocess(createRequest(parameters)).getParameters()).containsEntry("a",
+						Arrays.asList("alpha", "avocado"));
 	}
 
 	@Test
 	public void removeParameterValueForNonExistentParameter() {
 		Parameters parameters = new Parameters();
-		assertThat(
-				this.preprocessor.remove("a", "apple")
-						.preprocess(createRequest(parameters)).getParameters().size(),
-				is(equalTo(0)));
+		assertThat(this.preprocessor.remove("a", "apple")
+				.preprocess(createRequest(parameters)).getParameters().size())
+						.isEqualTo(0);
 	}
 
 	@Test
@@ -111,20 +103,18 @@ public class ParametersModifyingOperationPreprocessorTests {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
 		parameters.add("a", "alpha");
-		assertThat(
-				this.preprocessor.remove("a", "apple")
-						.preprocess(createRequest(parameters)).getParameters(),
-				hasEntry(equalTo("a"), contains("alpha")));
+		assertThat(this.preprocessor.remove("a", "apple")
+				.preprocess(createRequest(parameters)).getParameters()).containsEntry("a",
+						Arrays.asList("alpha"));
 	}
 
 	@Test
 	public void removeParameterValueWithSingleValueRemovesEntryEntirely() {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
-		assertThat(
-				this.preprocessor.remove("a", "apple")
-						.preprocess(createRequest(parameters)).getParameters().size(),
-				is(equalTo(0)));
+		assertThat(this.preprocessor.remove("a", "apple")
+				.preprocess(createRequest(parameters)).getParameters().size())
+						.isEqualTo(0);
 	}
 
 	private OperationRequest createRequest(Parameters parameters) {

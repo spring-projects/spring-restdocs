@@ -30,10 +30,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 
 /**
@@ -53,11 +50,11 @@ public class WebTestClientResponseConverterTests {
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
 				.exchange().expectBody().returnResult();
 		OperationResponse response = this.converter.convert(result);
-		assertThat(response.getStatus(), is(HttpStatus.OK));
-		assertThat(response.getContentAsString(), is(equalTo("Hello, World!")));
-		assertThat(response.getHeaders().getContentType(),
-				is(MediaType.parseMediaType("text/plain;charset=UTF-8")));
-		assertThat(response.getHeaders().getContentLength(), is(13L));
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK);
+		assertThat(response.getContentAsString()).isEqualTo("Hello, World!");
+		assertThat(response.getHeaders().getContentType())
+				.isEqualTo(MediaType.parseMediaType("text/plain;charset=UTF-8"));
+		assertThat(response.getHeaders().getContentLength()).isEqualTo(13);
 	}
 
 	@Test
@@ -71,10 +68,9 @@ public class WebTestClientResponseConverterTests {
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
 				.exchange().expectBody().returnResult();
 		OperationResponse response = this.converter.convert(result);
-		assertThat(response.getHeaders().size(), is(1));
-		assertTrue(response.getHeaders().containsKey(HttpHeaders.SET_COOKIE));
-		assertThat(response.getHeaders().get(HttpHeaders.SET_COOKIE), equalTo(
-				Collections.singletonList("name=value; Domain=localhost; HttpOnly")));
+		assertThat(response.getHeaders()).hasSize(1);
+		assertThat(response.getHeaders()).containsEntry(HttpHeaders.SET_COOKIE,
+				Collections.singletonList("name=value; Domain=localhost; HttpOnly"));
 	}
 
 }

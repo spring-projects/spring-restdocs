@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,12 @@ import org.junit.Test;
 
 import org.springframework.http.MediaType;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link PatternReplacingContentModifier}.
  *
  * @author Andy Wilkinson
- *
  */
 public class PatternReplacingContentModifierTests {
 
@@ -43,8 +40,8 @@ public class PatternReplacingContentModifierTests {
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(
 				pattern, "<<uuid>>");
 		assertThat(contentModifier.modifyContent(
-				"{\"id\" : \"CA761232-ED42-11CE-BACD-00AA0057B223\"}".getBytes(), null),
-				is(equalTo("{\"id\" : \"<<uuid>>\"}".getBytes())));
+				"{\"id\" : \"CA761232-ED42-11CE-BACD-00AA0057B223\"}".getBytes(), null))
+						.isEqualTo("{\"id\" : \"<<uuid>>\"}".getBytes());
 	}
 
 	@Test
@@ -54,10 +51,9 @@ public class PatternReplacingContentModifierTests {
 				Pattern.CASE_INSENSITIVE);
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(
 				pattern, "<<uuid>>");
-		assertThat(
-				contentModifier.modifyContent(
-						"{\"id\" : \"CA76-ED42-11CE-BACD\"}".getBytes(), null),
-				is(equalTo("{\"id\" : \"CA76-ED42-11CE-BACD\"}".getBytes())));
+		assertThat(contentModifier
+				.modifyContent("{\"id\" : \"CA76-ED42-11CE-BACD\"}".getBytes(), null))
+						.isEqualTo("{\"id\" : \"CA76-ED42-11CE-BACD\"}".getBytes());
 	}
 
 	@Test
@@ -66,10 +62,9 @@ public class PatternReplacingContentModifierTests {
 		Pattern pattern = Pattern.compile("[0-9]+");
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(
 				pattern, "<<number>>");
-		assertThat(
-				contentModifier.modifyContent((japaneseContent + " 123").getBytes(),
-						new MediaType("text", "plain", Charset.forName("UTF-8"))),
-				is(equalTo((japaneseContent + " <<number>>").getBytes())));
+		assertThat(contentModifier.modifyContent((japaneseContent + " 123").getBytes(),
+				new MediaType("text", "plain", Charset.forName("UTF-8"))))
+						.isEqualTo((japaneseContent + " <<number>>").getBytes());
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,7 @@ import org.springframework.restdocs.operation.preprocess.OperationResponsePrepro
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.snippet.Snippet;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -206,10 +204,9 @@ public class RestDocumentationGeneratorTests {
 			throws IOException {
 		ArgumentCaptor<Operation> operation = ArgumentCaptor.forClass(Operation.class);
 		verify(snippet).document(operation.capture());
-		assertThat(this.operationRequest, is(equalTo(operation.getValue().getRequest())));
-		assertThat(this.operationResponse,
-				is(equalTo(operation.getValue().getResponse())));
-		assertThat(attributes, is(equalTo(operation.getValue().getAttributes())));
+		assertThat(this.operationRequest).isEqualTo(operation.getValue().getRequest());
+		assertThat(this.operationResponse).isEqualTo(operation.getValue().getResponse());
+		assertThat(attributes).isEqualTo(operation.getValue().getAttributes());
 	}
 
 	private void verifySnippetInvocation(Snippet snippet,
@@ -217,18 +214,17 @@ public class RestDocumentationGeneratorTests {
 			Map<String, Object> attributes, int times) throws IOException {
 		ArgumentCaptor<Operation> operation = ArgumentCaptor.forClass(Operation.class);
 		verify(snippet, Mockito.times(times)).document(operation.capture());
-		assertThat(operationRequest, is(equalTo(operation.getValue().getRequest())));
-		assertThat(operationResponse, is(equalTo(operation.getValue().getResponse())));
+		assertThat(operationRequest).isEqualTo(operation.getValue().getRequest());
+		assertThat(operationResponse).isEqualTo(operation.getValue().getResponse());
 	}
 
 	private void verifySnippetInvocation(InOrder inOrder, Snippet snippet,
 			Map<String, Object> attributes) throws IOException {
 		ArgumentCaptor<Operation> operation = ArgumentCaptor.forClass(Operation.class);
 		inOrder.verify(snippet).document(operation.capture());
-		assertThat(this.operationRequest, is(equalTo(operation.getValue().getRequest())));
-		assertThat(this.operationResponse,
-				is(equalTo(operation.getValue().getResponse())));
-		assertThat(attributes, is(equalTo(operation.getValue().getAttributes())));
+		assertThat(this.operationRequest).isEqualTo(operation.getValue().getRequest());
+		assertThat(this.operationResponse).isEqualTo(operation.getValue().getResponse());
+		assertThat(attributes).isEqualTo(operation.getValue().getAttributes());
 	}
 
 	private static OperationRequest createRequest() {

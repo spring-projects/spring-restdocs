@@ -32,10 +32,7 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link HeaderRemovingOperationPreprocessorTests}.
@@ -59,18 +56,18 @@ public class HeaderRemovingOperationPreprocessorTests {
 				getHttpHeaders(), new Parameters(),
 				Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
-		assertThat(preprocessed.getHeaders().size(), is(equalTo(2)));
-		assertThat(preprocessed.getHeaders(), hasEntry("a", Arrays.asList("alpha")));
-		assertThat(preprocessed.getHeaders(),
-				hasEntry("Host", Arrays.asList("localhost")));
+		assertThat(preprocessed.getHeaders().size()).isEqualTo(2);
+		assertThat(preprocessed.getHeaders()).containsEntry("a", Arrays.asList("alpha"));
+		assertThat(preprocessed.getHeaders()).containsEntry("Host",
+				Arrays.asList("localhost"));
 	}
 
 	@Test
 	public void modifyResponseHeaders() {
 		OperationResponse response = createResponse();
 		OperationResponse preprocessed = this.preprocessor.preprocess(response);
-		assertThat(preprocessed.getHeaders().size(), is(equalTo(1)));
-		assertThat(preprocessed.getHeaders(), hasEntry("a", Arrays.asList("alpha")));
+		assertThat(preprocessed.getHeaders().size()).isEqualTo(1);
+		assertThat(preprocessed.getHeaders()).containsEntry("a", Arrays.asList("alpha"));
 	}
 
 	@Test
@@ -79,10 +76,10 @@ public class HeaderRemovingOperationPreprocessorTests {
 		HeaderRemovingOperationPreprocessor processor = new HeaderRemovingOperationPreprocessor(
 				new PatternMatchHeaderFilter("co.*le(.)gth]"));
 		OperationResponse preprocessed = processor.preprocess(response);
-		assertThat(preprocessed.getHeaders().size(), is(equalTo(2)));
-		assertThat(preprocessed.getHeaders(), hasEntry("a", Arrays.asList("alpha")));
-		assertThat(preprocessed.getHeaders(),
-				hasEntry("b", Arrays.asList("bravo", "banana")));
+		assertThat(preprocessed.getHeaders().size()).isEqualTo(2);
+		assertThat(preprocessed.getHeaders()).containsEntry("a", Arrays.asList("alpha"));
+		assertThat(preprocessed.getHeaders()).containsEntry("b",
+				Arrays.asList("bravo", "banana"));
 	}
 
 	@Test
@@ -90,7 +87,7 @@ public class HeaderRemovingOperationPreprocessorTests {
 		HeaderRemovingOperationPreprocessor processor = new HeaderRemovingOperationPreprocessor(
 				new PatternMatchHeaderFilter(".*"));
 		OperationResponse preprocessed = processor.preprocess(createResponse());
-		assertThat(preprocessed.getHeaders().size(), is(equalTo(0)));
+		assertThat(preprocessed.getHeaders().size()).isEqualTo(0);
 	}
 
 	private OperationResponse createResponse(String... extraHeaders) {

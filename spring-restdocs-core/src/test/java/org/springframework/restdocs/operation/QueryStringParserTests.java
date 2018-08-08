@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link QueryStringParser}.
@@ -44,41 +42,41 @@ public class QueryStringParserTests {
 	public void noParameters() {
 		Parameters parameters = this.queryStringParser
 				.parse(URI.create("http://localhost"));
-		assertThat(parameters.size(), is(equalTo(0)));
+		assertThat(parameters.size()).isEqualTo(0);
 	}
 
 	@Test
 	public void singleParameter() {
 		Parameters parameters = this.queryStringParser
 				.parse(URI.create("http://localhost?a=alpha"));
-		assertThat(parameters.size(), is(equalTo(1)));
-		assertThat(parameters, hasEntry("a", Arrays.asList("alpha")));
+		assertThat(parameters.size()).isEqualTo(1);
+		assertThat(parameters).containsEntry("a", Arrays.asList("alpha"));
 	}
 
 	@Test
 	public void multipleParameters() {
 		Parameters parameters = this.queryStringParser
 				.parse(URI.create("http://localhost?a=alpha&b=bravo&c=charlie"));
-		assertThat(parameters.size(), is(equalTo(3)));
-		assertThat(parameters, hasEntry("a", Arrays.asList("alpha")));
-		assertThat(parameters, hasEntry("b", Arrays.asList("bravo")));
-		assertThat(parameters, hasEntry("c", Arrays.asList("charlie")));
+		assertThat(parameters.size()).isEqualTo(3);
+		assertThat(parameters).containsEntry("a", Arrays.asList("alpha"));
+		assertThat(parameters).containsEntry("b", Arrays.asList("bravo"));
+		assertThat(parameters).containsEntry("c", Arrays.asList("charlie"));
 	}
 
 	@Test
 	public void multipleParametersWithSameKey() {
 		Parameters parameters = this.queryStringParser
 				.parse(URI.create("http://localhost?a=apple&a=avocado"));
-		assertThat(parameters.size(), is(equalTo(1)));
-		assertThat(parameters, hasEntry("a", Arrays.asList("apple", "avocado")));
+		assertThat(parameters.size()).isEqualTo(1);
+		assertThat(parameters).containsEntry("a", Arrays.asList("apple", "avocado"));
 	}
 
 	@Test
 	public void encoded() {
 		Parameters parameters = this.queryStringParser
 				.parse(URI.create("http://localhost?a=al%26%3Dpha"));
-		assertThat(parameters.size(), is(equalTo(1)));
-		assertThat(parameters, hasEntry("a", Arrays.asList("al&=pha")));
+		assertThat(parameters.size()).isEqualTo(1);
+		assertThat(parameters).containsEntry("a", Arrays.asList("al&=pha"));
 	}
 
 	@Test

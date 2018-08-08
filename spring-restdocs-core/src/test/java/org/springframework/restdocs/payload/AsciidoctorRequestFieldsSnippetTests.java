@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,15 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.ExpectedSnippets;
+import org.springframework.restdocs.test.GeneratedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.templates.TemplateFormats.asciidoctor;
-import static org.springframework.restdocs.test.SnippetMatchers.tableWithHeader;
+import static org.springframework.restdocs.test.SnippetConditions.tableWithHeader;
 
 /**
  * Tests for {@link RequestFieldsSnippet} that are specific to Asciidoctor.
@@ -46,19 +47,13 @@ public class AsciidoctorRequestFieldsSnippetTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
 
 	@Rule
-	public ExpectedSnippets snippets = new ExpectedSnippets(asciidoctor());
+	public GeneratedSnippets generatedSnippets = new GeneratedSnippets(asciidoctor());
 
 	@Test
 	public void requestFieldsWithListDescription() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-fields"))
 				.willReturn(snippetResource("request-fields-with-list-description"));
-		this.snippets.expectRequestFields().withContents(
-				tableWithHeader(asciidoctor(), "Path", "Type", "Description")
-						//
-						.row("a", "String", String.format(" - one%n - two"))
-						.configuration("[cols=\"1,1,1a\"]"));
-
 		new RequestFieldsSnippet(
 				Arrays.asList(
 						fieldWithPath("a").description(Arrays.asList("one", "two"))))
@@ -69,6 +64,11 @@ public class AsciidoctorRequestFieldsSnippetTests {
 																resolver))
 												.request("http://localhost")
 												.content("{\"a\": \"foo\"}").build());
+		assertThat(this.generatedSnippets.requestFields())
+				.is(tableWithHeader(asciidoctor(), "Path", "Type", "Description")
+						//
+						.row("a", "String", String.format(" - one%n - two"))
+						.configuration("[cols=\"1,1,1a\"]"));
 	}
 
 	private FileSystemResource snippetResource(String name) {

@@ -34,10 +34,7 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.TemplateEngine;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -83,20 +80,19 @@ public class RestAssuredRestDocumentationConfigurerTests {
 				configurationCaptor.capture());
 		@SuppressWarnings("unchecked")
 		Map<String, Object> configuration = configurationCaptor.getValue();
-		assertThat(configuration, hasEntry(equalTo(TemplateEngine.class.getName()),
-				instanceOf(TemplateEngine.class)));
-		assertThat(configuration, hasEntry(equalTo(WriterResolver.class.getName()),
-				instanceOf(WriterResolver.class)));
-		assertThat(configuration,
-				hasEntry(equalTo(
-						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS),
-						instanceOf(List.class)));
-		assertThat(configuration, hasEntry(equalTo(
-				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR),
-				instanceOf(OperationRequestPreprocessor.class)));
-		assertThat(configuration, hasEntry(equalTo(
-				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR),
-				instanceOf(OperationResponsePreprocessor.class)));
+		assertThat(configuration.get(TemplateEngine.class.getName()))
+				.isInstanceOf(TemplateEngine.class);
+		assertThat(configuration.get(WriterResolver.class.getName()))
+				.isInstanceOf(WriterResolver.class);
+		assertThat(configuration
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
+						.isInstanceOf(List.class);
+		assertThat(configuration
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR))
+						.isInstanceOf(OperationRequestPreprocessor.class);
+		assertThat(configuration
+				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR))
+						.isInstanceOf(OperationResponsePreprocessor.class);
 	}
 
 }

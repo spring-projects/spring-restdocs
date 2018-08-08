@@ -21,10 +21,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -56,16 +53,16 @@ public class ConstraintDescriptionsTests {
 				.willReturn("Bravo");
 		given(this.constraintDescriptionResolver.resolveDescription(constraint2))
 				.willReturn("Alpha");
-		assertThat(this.constraintDescriptions.descriptionsForProperty("foo"),
-				contains("Alpha", "Bravo"));
+		assertThat(this.constraintDescriptions.descriptionsForProperty("foo"))
+				.containsExactly("Alpha", "Bravo");
 	}
 
 	@Test
 	public void emptyListOfDescriptionsWhenThereAreNoConstraints() {
 		given(this.constraintResolver.resolveForProperty("foo", Constrained.class))
 				.willReturn(Collections.<Constraint>emptyList());
-		assertThat(this.constraintDescriptions.descriptionsForProperty("foo").size(),
-				is(equalTo(0)));
+		assertThat(this.constraintDescriptions.descriptionsForProperty("foo").size())
+				.isEqualTo(0);
 	}
 
 	private static class Constrained {

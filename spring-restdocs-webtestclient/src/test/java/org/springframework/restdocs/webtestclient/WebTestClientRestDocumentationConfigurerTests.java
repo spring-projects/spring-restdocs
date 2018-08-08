@@ -17,7 +17,6 @@
 package org.springframework.restdocs.webtestclient;
 
 import java.net.URI;
-import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,11 +28,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -55,11 +50,10 @@ public class WebTestClientRestDocumentationConfigurerTests {
 		ClientRequest request = ClientRequest.create(HttpMethod.GET, URI.create("/test"))
 				.header(WebTestClient.WEBTESTCLIENT_REQUEST_ID, "1").build();
 		this.configurer.filter(request, mock(ExchangeFunction.class));
-		Map<String, Object> configuration = WebTestClientRestDocumentationConfigurer
-				.retrieveConfiguration(request.headers());
-		assertThat(configuration, notNullValue());
 		assertThat(WebTestClientRestDocumentationConfigurer
-				.retrieveConfiguration(request.headers()), nullValue());
+				.retrieveConfiguration(request.headers())).isNotNull();
+		assertThat(WebTestClientRestDocumentationConfigurer
+				.retrieveConfiguration(request.headers())).isNull();
 	}
 
 	@Test
@@ -72,8 +66,8 @@ public class WebTestClientRestDocumentationConfigurerTests {
 		ArgumentCaptor<ClientRequest> requestCaptor = ArgumentCaptor
 				.forClass(ClientRequest.class);
 		verify(exchangeFunction).exchange(requestCaptor.capture());
-		assertThat(requestCaptor.getValue().url(),
-				is(equalTo(URI.create("http://localhost:8080/test?foo=bar#baz"))));
+		assertThat(requestCaptor.getValue().url())
+				.isEqualTo(URI.create("http://localhost:8080/test?foo=bar#baz"));
 	}
 
 	@Test
@@ -87,8 +81,8 @@ public class WebTestClientRestDocumentationConfigurerTests {
 		ArgumentCaptor<ClientRequest> requestCaptor = ArgumentCaptor
 				.forClass(ClientRequest.class);
 		verify(exchangeFunction).exchange(requestCaptor.capture());
-		assertThat(requestCaptor.getValue().url(),
-				is(equalTo(URI.create("https://api.example.com:4567/test?foo=bar#baz"))));
+		assertThat(requestCaptor.getValue().url())
+				.isEqualTo(URI.create("https://api.example.com:4567/test?foo=bar#baz"));
 	}
 
 }

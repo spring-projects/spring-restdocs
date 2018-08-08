@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.snippet.SnippetException;
-import org.springframework.restdocs.test.ExpectedSnippets;
 import org.springframework.restdocs.test.OperationBuilder;
 
 import static org.hamcrest.CoreMatchers.endsWith;
@@ -42,9 +41,6 @@ public class ResponseHeadersSnippetFailureTests {
 
 	@Rule
 	public OperationBuilder operationBuilder = new OperationBuilder(asciidoctor());
-
-	@Rule
-	public ExpectedSnippets snippets = new ExpectedSnippets(asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
