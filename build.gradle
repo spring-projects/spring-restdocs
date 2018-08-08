@@ -3,7 +3,7 @@ buildscript {
 		mavenCentral()
 		maven { url 'https://repo.spring.io/plugins-release' }
 		maven { url 'https://plugins.gradle.org/m2/' }
-		mavenLocal()
+		maven { url 'https://repo.spring.io/snapshot' }
 	}
 	dependencies {
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
@@ -17,7 +17,7 @@ allprojects {
 	group = 'org.springframework.restdocs'
 	repositories {
 		mavenCentral()
-		mavenLocal()
+		maven { url 'https://repo.spring.io/snapshot' }
 	}
 }
 
