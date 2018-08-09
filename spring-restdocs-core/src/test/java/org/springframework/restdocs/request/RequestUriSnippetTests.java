@@ -71,8 +71,7 @@ public class RequestUriSnippetTests extends AbstractSnippetTests {
 				.request("http://localhost/foo").header("Alpha", "a").param("b", "bravo")
 				.build());
 	}
-
-	// TODO
+	
 	@Test
 	public void getRequestWithQueryString() throws IOException {
 		this.snippets.expectRequestUri()
