@@ -41,6 +41,7 @@ There are several that you can contribute to Spring REST Docs:
 | [restdocsext-jersey][19] | Enables Spring REST Docs to be used with [Jersey's test framework][20] |
 | [spring-auto-restdocs][21] | Uses introspection and Javadoc to automatically document request and response parameters |
 | [restdocs-raml][22] | A Spring REST Docs extension that adds RAML support |
+| [restdocs-openapi][23] | A Spring REST Docs extension that adds [OpenAPI 2.0][24] support |
 
 ## Licence
 
@@ -68,3 +69,5 @@ Spring REST Docs is open source software released under the [Apache 2.0 license]
 [20]: https://jersey.java.net/documentation/latest/test-framework.html
 [21]: https://github.com/ScaCap/spring-auto-restdocs
 [22]: https://github.com/ePages-de/restdocs-raml
+[23]: https://github.com/ePages-de/restdocs-openapi
+[24]: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md
