@@ -4,5 +4,8 @@ env:
 language: java
 jdk:
   - oraclejdk8
+cache:
+  directories:
+  - "$HOME/.gradle"
 script:
   - ./gradlew build buildSamples --continue
