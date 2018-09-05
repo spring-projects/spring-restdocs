@@ -47,7 +47,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andy Wilkinson
  */
-class XmlContentHandler implements ContentHandler {
+class XmlContentHandler implements ContentHandler, FieldTypeResolver {
 
 	private final DocumentBuilder documentBuilder;
 
@@ -144,6 +144,11 @@ class XmlContentHandler implements ContentHandler {
 			return prettyPrint(payload);
 		}
 		return null;
+	}
+
+	@Override
+	public FieldTypeResolver getFieldTypeResolver() {
+		return this;
 	}
 
 	private void removeLeafNodes(List<Node> candidates) {

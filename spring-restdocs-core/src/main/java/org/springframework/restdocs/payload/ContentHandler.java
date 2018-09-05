@@ -22,6 +22,7 @@ import java.util.List;
  * A handler for the content of a request or response.
  *
  * @author Andy Wilkinson
+ * @author Mathias Düsterhöft
  */
 interface ContentHandler {
 
@@ -48,11 +49,10 @@ interface ContentHandler {
 	String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors);
 
 	/**
-	 * Returns the type of the field that is described by the given
-	 * {@code fieldDescriptor} based on the content of the payload.
-	 * @param fieldDescriptor the field descriptor
-	 * @return the type of the field
+	 * Return a {@link FieldTypeResolver} that can be used for the content type this
+	 * ContentHandler can process.
+	 * @return a {@link FieldTypeResolver}
 	 */
-	Object determineFieldType(FieldDescriptor fieldDescriptor);
+	FieldTypeResolver getFieldTypeResolver();
 
 }
