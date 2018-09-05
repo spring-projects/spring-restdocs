@@ -29,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests for {@link JsonContentHandler}.
  *
  * @author Andy Wilkinson
+ * @author Mathias Düsterhöft
  */
 public class JsonContentHandlerTests {
 
@@ -39,14 +40,14 @@ public class JsonContentHandlerTests {
 	public void typeForFieldWithNullValueMustMatch() {
 		this.thrown.expect(FieldTypesDoNotMatchException.class);
 		new JsonContentHandler("{\"a\": null}".getBytes())
-				.determineFieldType(new FieldDescriptor("a").type(JsonFieldType.STRING));
+				.resolveFieldType(new FieldDescriptor("a").type(JsonFieldType.STRING));
 	}
 
 	@Test
 	public void typeForFieldWithNotNullAndThenNullValueMustMatch() {
 		this.thrown.expect(FieldTypesDoNotMatchException.class);
 		new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}".getBytes())
-				.determineFieldType(
+				.resolveFieldType(
 						new FieldDescriptor("a[].id").type(JsonFieldType.STRING));
 	}
 
@@ -54,7 +55,7 @@ public class JsonContentHandlerTests {
 	public void typeForFieldWithNullAndThenNotNullValueMustMatch() {
 		this.thrown.expect(FieldTypesDoNotMatchException.class);
 		new JsonContentHandler("{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
-				.determineFieldType(
+				.resolveFieldType(
 						new FieldDescriptor("a.[].id").type(JsonFieldType.STRING));
 	}
 
@@ -62,7 +63,7 @@ public class JsonContentHandlerTests {
 	public void typeForOptionalFieldWithNumberAndThenNullValueIsNumber() {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes())
-						.determineFieldType(new FieldDescriptor("a[].id").optional());
+						.resolveFieldType(new FieldDescriptor("a[].id").optional());
 		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.NUMBER);
 	}
 
@@ -70,7 +71,7 @@ public class JsonContentHandlerTests {
 	public void typeForOptionalFieldWithNullAndThenNumberIsNumber() {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
-						.determineFieldType(new FieldDescriptor("a[].id").optional());
+						.resolveFieldType(new FieldDescriptor("a[].id").optional());
 		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.NUMBER);
 	}
 
@@ -78,7 +79,7 @@ public class JsonContentHandlerTests {
 	public void typeForFieldWithNumberAndThenNullValueIsVaries() {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes())
-						.determineFieldType(new FieldDescriptor("a[].id"));
+						.resolveFieldType(new FieldDescriptor("a[].id"));
 		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.VARIES);
 	}
 
@@ -86,14 +87,14 @@ public class JsonContentHandlerTests {
 	public void typeForFieldWithNullAndThenNumberIsVaries() {
 		Object fieldType = new JsonContentHandler(
 				"{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes())
-						.determineFieldType(new FieldDescriptor("a[].id"));
+						.resolveFieldType(new FieldDescriptor("a[].id"));
 		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void typeForOptionalFieldWithNullValueCanBeProvidedExplicitly() {
 		Object fieldType = new JsonContentHandler("{\"a\": null}".getBytes())
-				.determineFieldType(
+				.resolveFieldType(
 						new FieldDescriptor("a").type(JsonFieldType.STRING).optional());
 		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.STRING);
 	}

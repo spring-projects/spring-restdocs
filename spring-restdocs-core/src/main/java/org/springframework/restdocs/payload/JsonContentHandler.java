@@ -32,8 +32,9 @@ import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
  * A {@link ContentHandler} for JSON content.
  *
  * @author Andy Wilkinson
+ * @author Mathias Düsterhöft
  */
-class JsonContentHandler implements ContentHandler {
+class JsonContentHandler implements ContentHandler, FieldTypeResolver {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
@@ -145,7 +146,7 @@ class JsonContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public Object determineFieldType(FieldDescriptor fieldDescriptor) {
+	public Object resolveFieldType(FieldDescriptor fieldDescriptor) {
 		if (fieldDescriptor.getType() == null) {
 			return this.fieldTypesDiscoverer
 					.discoverFieldTypes(fieldDescriptor.getPath(), readContent())
