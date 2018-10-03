@@ -37,7 +37,7 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 
 	/**
 	 * Creates a new {@code ManualRestDocumentation} instance that will generate snippets
-	 * to &lt;gradle/maven build path&gt;/generated-snippet.
+	 * to &lt;gradle/maven build path&gt;/generated-snippets.
 	 */
 	public ManualRestDocumentation() {
 		this(getDefaultOutputDirectory());
