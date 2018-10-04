@@ -18,13 +18,15 @@ package org.springframework.restdocs.payload;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
+
 /**
  * A handler for the content of a request or response.
  *
  * @author Andy Wilkinson
  * @author Mathias Düsterhöft
  */
-interface ContentHandler {
+interface ContentHandler extends FieldTypeResolver {
 
 	/**
 	 * Finds the fields that are missing from the handler's payload. A field is missing if
@@ -49,10 +51,26 @@ interface ContentHandler {
 	String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors);
 
 	/**
-	 * Return a {@link FieldTypeResolver} that can be used for the content type this
-	 * ContentHandler can process.
-	 * @return a {@link FieldTypeResolver}
+	 * Create a {@link ContentHandler} for the given content type and payload.
+	 * @param content the payload
+	 * @param contentType the content type
+	 * @return the ContentHandler
+	 * @throws PayloadHandlingException if no known ContentHandler can handle the content
 	 */
-	FieldTypeResolver getFieldTypeResolver();
+	static ContentHandler forContent(byte[] content, MediaType contentType) {
+
+		try {
+			return new JsonContentHandler(content);
+		}
+		catch (Exception je) {
+			try {
+				return new XmlContentHandler(content);
+			}
+			catch (Exception xe) {
+				throw new PayloadHandlingException("Cannot handle " + contentType
+						+ " content as it could not be parsed as JSON or XML");
+			}
+		}
+	}
 
 }

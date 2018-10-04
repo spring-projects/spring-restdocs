@@ -34,8 +34,7 @@ public interface FieldTypeResolver {
 	 * @return the {@link FieldTypeResolver}
 	 */
 	static FieldTypeResolver forContent(byte[] content, MediaType contentType) {
-		return ContentTypeHandlerFactory.create(content, contentType)
-				.getFieldTypeResolver();
+		return ContentHandler.forContent(content, contentType);
 	}
 
 	/**
@@ -44,6 +43,6 @@ public interface FieldTypeResolver {
 	 * @param fieldDescriptor the field descriptor
 	 * @return the type of the field
 	 */
-	Object determineFieldType(FieldDescriptor fieldDescriptor);
+	Object resolveFieldType(FieldDescriptor fieldDescriptor);
 
 }

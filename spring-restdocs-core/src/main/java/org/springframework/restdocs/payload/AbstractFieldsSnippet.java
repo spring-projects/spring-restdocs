@@ -161,8 +161,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 			content = verifyContent(
 					this.subsectionExtractor.extractSubsection(content, contentType));
 		}
-		ContentHandler contentHandler = ContentTypeHandlerFactory.create(content,
-				contentType);
+		ContentHandler contentHandler = ContentHandler.forContent(content, contentType);
 
 		validateFieldDocumentation(contentHandler);
 
@@ -170,8 +169,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		for (FieldDescriptor descriptor : this.fieldDescriptors) {
 			if (!descriptor.isIgnored()) {
 				try {
-					Object type = contentHandler.getFieldTypeResolver()
-							.determineFieldType(descriptor);
+					Object type = contentHandler.resolveFieldType(descriptor);
 					descriptorsToDocument.add(copyWithType(descriptor, type));
 				}
 				catch (FieldDoesNotExistException ex) {

@@ -37,7 +37,7 @@ public class FieldTypeResolverTests {
 	@Test
 	public void returnJsonFieldTypeResolver() {
 		assertThat(FieldTypeResolver.forContent("{\"field\": \"value\"}".getBytes(),
-				MediaType.APPLICATION_JSON)).isInstanceOf(JsonFieldTypeResolver.class);
+				MediaType.APPLICATION_JSON)).isInstanceOf(JsonContentHandler.class);
 	}
 
 	@Test

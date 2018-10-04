@@ -31,70 +31,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests for {@link JsonFieldTypeResolver}.
  *
  * @author Andy Wilkinson
- * @author Mathias Düsterhöft
  */
 public class JsonFieldTypeResolverTests {
 
+	private final JsonFieldTypeResolver fieldTypeResolver = new JsonFieldTypeResolver();
+
 	@Rule
 	public ExpectedException thrownException = ExpectedException.none();
-
-	@Test
-	public void typeForFieldWithNullValueMustMatch() throws IOException {
-		this.thrownException.expect(FieldTypesDoNotMatchException.class);
-		determineFieldType("{\"a\": null}",
-				new FieldDescriptor("a").type(JsonFieldType.STRING));
-	}
-
-	@Test
-	public void typeForFieldWithNotNullAndThenNullValueMustMatch() throws IOException {
-		this.thrownException.expect(FieldTypesDoNotMatchException.class);
-		determineFieldType("{\"a\":[{\"id\":1},{\"id\":null}]}",
-				new FieldDescriptor("a[].id").type(JsonFieldType.STRING));
-	}
-
-	@Test
-	public void typeForFieldWithNullAndThenNotNullValueMustMatch() throws IOException {
-		this.thrownException.expect(FieldTypesDoNotMatchException.class);
-		determineFieldType("{\"a\":[{\"id\":null},{\"id\":1}]}",
-				new FieldDescriptor("a.[].id").type(JsonFieldType.STRING));
-	}
-
-	@Test
-	public void typeForOptionalFieldWithNumberAndThenNullValueIsNumber()
-			throws IOException {
-		Object fieldType = determineFieldType("{\"a\":[{\"id\":1},{\"id\":null}]}\"",
-				new FieldDescriptor("a[].id").optional());
-		assertThat(fieldType).isEqualTo(JsonFieldType.NUMBER);
-	}
-
-	@Test
-	public void typeForOptionalFieldWithNullAndThenNumberIsNumber() throws IOException {
-		Object fieldType = determineFieldType("{\"a\":[{\"id\":null},{\"id\":1}]}",
-				new FieldDescriptor("a[].id").optional());
-		assertThat(fieldType).isEqualTo(JsonFieldType.NUMBER);
-	}
-
-	@Test
-	public void typeForFieldWithNumberAndThenNullValueIsVaries() throws IOException {
-		Object fieldType = determineFieldType("{\"a\":[{\"id\":1},{\"id\":null}]}\"",
-				new FieldDescriptor("a[].id"));
-		assertThat(fieldType).isEqualTo(JsonFieldType.VARIES);
-	}
-
-	@Test
-	public void typeForFieldWithNullAndThenNumberIsVaries() throws IOException {
-		Object fieldType = determineFieldType("{\"a\":[{\"id\":null},{\"id\":1}]}",
-				new FieldDescriptor("a[].id"));
-		assertThat(fieldType).isEqualTo(JsonFieldType.VARIES);
-	}
-
-	@Test
-	public void typeForOptionalFieldWithNullValueCanBeProvidedExplicitly()
-			throws IOException {
-		Object fieldType = determineFieldType("{\"a\": null}",
-				new FieldDescriptor("a").type(JsonFieldType.STRING).optional());
-		assertThat(fieldType).isEqualTo(JsonFieldType.STRING);
-	}
 
 	@Test
 	public void arrayField() throws IOException {
@@ -103,28 +46,31 @@ public class JsonFieldTypeResolverTests {
 
 	@Test
 	public void topLevelArray() throws IOException {
-		assertThat(new JsonFieldTypeResolver(
-				new ObjectMapper().readValue("[{\"a\":\"alpha\"}]", List.class))
-						.resolveFieldType(new FieldDescriptor("[]")))
-								.isEqualTo(JsonFieldType.ARRAY);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("[]"),
+				new ObjectMapper().readValue("[{\"a\":\"alpha\"}]", List.class)))
+						.isEqualTo(JsonFieldType.ARRAY);
 	}
 
 	@Test
 	public void nestedArray() throws IOException {
-		assertThat(resolveFieldType("{\"a\": [{\"b\":\"bravo\"}]}", "a[]"))
-				.isEqualTo(JsonFieldType.ARRAY);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[]"),
+				createPayload("{\"a\": [{\"b\":\"bravo\"}]}")))
+						.isEqualTo(JsonFieldType.ARRAY);
 	}
 
 	@Test
 	public void arrayNestedBeneathAnArray() throws IOException {
-		assertThat(resolveFieldType("{\"a\": [{\"b\": [ 1, 2 ]}]}", "a[].b[]"))
-				.isEqualTo(JsonFieldType.ARRAY);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].b[]"),
+				createPayload("{\"a\": [{\"b\": [ 1, 2 ]}]}")))
+						.isEqualTo(JsonFieldType.ARRAY);
 	}
 
 	@Test
 	public void specificFieldOfObjectInArrayNestedBeneathAnArray() throws IOException {
-		assertThat(resolveFieldType("{\"a\": [{\"b\": [ {\"c\": 5}, {\"c\": 5}]}]}",
-				"a[].b[].c")).isEqualTo(JsonFieldType.NUMBER);
+		assertThat(
+				this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].b[].c"),
+						createPayload("{\"a\": [{\"b\": [ {\"c\": 5}, {\"c\": 5}]}]}")))
+								.isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
@@ -154,91 +100,101 @@ public class JsonFieldTypeResolverTests {
 
 	@Test
 	public void nestedField() throws IOException {
-		assertThat(fieldTypeResolver("{\"a\":{\"b\":{\"c\":{}}}}")
-				.resolveFieldType(new FieldDescriptor("a.b.c")))
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.b.c"),
+				createPayload("{\"a\":{\"b\":{\"c\":{}}}}")))
 						.isEqualTo(JsonFieldType.OBJECT);
 	}
 
 	@Test
 	public void multipleFieldsWithSameType() throws IOException {
-		assertThat(fieldTypeResolver("{\"a\":[{\"id\":1},{\"id\":2}]}")
-				.resolveFieldType(new FieldDescriptor("a[].id")))
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].id"),
+				createPayload("{\"a\":[{\"id\":1},{\"id\":2}]}")))
 						.isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void multipleFieldsWithDifferentTypes() throws IOException {
-		assertThat(fieldTypeResolver("{\"a\":[{\"id\":1},{\"id\":true}]}")
-				.resolveFieldType(new FieldDescriptor("a[].id")))
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].id"),
+				createPayload("{\"a\":[{\"id\":1},{\"id\":true}]}")))
 						.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void multipleFieldsWithDifferentTypesAndSometimesAbsent() throws IOException {
-		assertThat(resolveFieldType("{\"a\":[{\"id\":1},{\"id\":true}, { }]}", "a[].id"))
-				.isEqualTo(JsonFieldType.VARIES);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].id"),
+				createPayload("{\"a\":[{\"id\":1},{\"id\":true}, { }]}")))
+						.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void multipleFieldsWithDifferentTypesAndSometimesAbsentWhenOptionalResolvesToVaries()
 			throws IOException {
-		assertThat(fieldTypeResolver("{\"a\":[{\"id\":1},{\"id\":true}, { }]}")
-				.resolveFieldType(new FieldDescriptor("a[].id").optional()))
+		assertThat(this.fieldTypeResolver.resolveFieldType(
+				new FieldDescriptor("a[].id").optional(),
+				createPayload("{\"a\":[{\"id\":1},{\"id\":true}, { }]}")))
 						.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void multipleFieldsWhenSometimesAbsent() throws IOException {
-		assertThat(resolveFieldType("{\"a\":[{\"id\":1},{ }]}", "a[].id"))
-				.isEqualTo(JsonFieldType.NUMBER);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].id"),
+				createPayload("{\"a\":[{\"id\":1},{ }]}")))
+						.isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void multipleFieldsWithDifferentTypesAndSometimesNull() throws IOException {
-		assertThat(resolveFieldType("{\"a\":[{\"id\":1},{\"id\":true}, {\"id\":null}]}",
-				"a[].id")).isEqualTo(JsonFieldType.VARIES);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].id"),
+				createPayload("{\"a\":[{\"id\":1},{\"id\":true}, {\"id\":null}]}")))
+						.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void multipleFieldsWhenNotNullThenNullWhenRequiredHasVariesType()
 			throws IOException {
-		assertThat(resolveFieldType("{\"a\":[{\"id\":1},{\"id\":null}]}", "a[].id"))
-				.isEqualTo(JsonFieldType.VARIES);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].id"),
+				createPayload("{\"a\":[{\"id\":1},{\"id\":null}]}")))
+						.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void multipleFieldsWhenNotNullThenNullWhenOptionalHasSpecificType()
 			throws IOException {
-		assertThat(fieldTypeResolver("{\"a\":[{\"id\":1},{\"id\":null}]}")
-				.resolveFieldType(new FieldDescriptor("a[].id").optional()))
+		assertThat(this.fieldTypeResolver.resolveFieldType(
+				new FieldDescriptor("a[].id").optional(),
+				createPayload("{\"a\":[{\"id\":1},{\"id\":null}]}")))
 						.isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void multipleFieldsWhenNullThenNotNullWhenRequiredHasVariesType()
 			throws IOException {
-		assertThat(resolveFieldType("{\"a\":[{\"id\":null},{\"id\":1}]}", "a[].id"))
-				.isEqualTo(JsonFieldType.VARIES);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].id"),
+				createPayload("{\"a\":[{\"id\":null},{\"id\":1}]}")))
+						.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void multipleFieldsWhenNullThenNotNullWhenOptionalHasSpecificType()
 			throws IOException {
-		assertThat(fieldTypeResolver("{\"a\":[{\"id\":null},{\"id\":1}]}")
-				.resolveFieldType(new FieldDescriptor("a[].id").optional()))
+		assertThat(this.fieldTypeResolver.resolveFieldType(
+				new FieldDescriptor("a[].id").optional(),
+				createPayload("{\"a\":[{\"id\":null},{\"id\":1}]}")))
 						.isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void multipleFieldsWhenEitherNullOrAbsent() throws IOException {
-		assertThat(resolveFieldType("{\"a\":[{},{\"id\":null}]}", "a[].id"))
-				.isEqualTo(JsonFieldType.NULL);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].id"),
+				createPayload("{\"a\":[{},{\"id\":null}]}")))
+						.isEqualTo(JsonFieldType.NULL);
 	}
 
 	@Test
 	public void multipleFieldsThatAreAllNull() throws IOException {
-		assertThat(resolveFieldType("{\"a\":[{\"id\":null},{\"id\":null}]}", "a[].id"))
-				.isEqualTo(JsonFieldType.NULL);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].id"),
+				createPayload("{\"a\":[{\"id\":null},{\"id\":null}]}")))
+						.isEqualTo(JsonFieldType.NULL);
 	}
 
 	@Test
@@ -247,7 +203,8 @@ public class JsonFieldTypeResolverTests {
 		this.thrownException.expect(FieldDoesNotExistException.class);
 		this.thrownException.expectMessage(
 				"The payload does not contain a field with the path 'a.b'");
-		resolveFieldType("{\"a\":{}}", "a.b");
+		this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.b"),
+				createPayload("{\"a\":{}}"));
 	}
 
 	@Test
@@ -256,38 +213,42 @@ public class JsonFieldTypeResolverTests {
 		this.thrownException.expect(FieldDoesNotExistException.class);
 		this.thrownException.expectMessage(
 				"The payload does not contain a field with the path 'a[].b'");
-		resolveFieldType("{\"a\":[{\"c\":1},{\"c\":2}]}", "a[].b");
+		this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a[].b"),
+				createPayload("{\"a\":[{\"c\":1},{\"c\":2}]}"));
 	}
 
 	@Test
 	public void leafWildcardWithCommonType() throws IOException {
-		assertThat(resolveFieldType("{\"a\": {\"b\": 5, \"c\": 6}}", "a.*"))
-				.isEqualTo(JsonFieldType.NUMBER);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*"),
+				createPayload("{\"a\": {\"b\": 5, \"c\": 6}}")))
+						.isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void leafWildcardWithVaryingType() throws IOException {
-		assertThat(resolveFieldType("{\"a\": {\"b\": 5, \"c\": \"six\"}}", "a.*"))
-				.isEqualTo(JsonFieldType.VARIES);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*"),
+				createPayload("{\"a\": {\"b\": 5, \"c\": \"six\"}}")))
+						.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void intermediateWildcardWithCommonType() throws IOException {
-		assertThat(resolveFieldType("{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": 5}}}}",
-				"a.*.d")).isEqualTo(JsonFieldType.NUMBER);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*.d"),
+				createPayload("{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": 5}}}}")))
+						.isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void intermediateWildcardWithVaryingType() throws IOException {
-		assertThat(resolveFieldType(
-				"{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": \"four\"}}}}", "a.*.d"))
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("a.*.d"),
+				createPayload("{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": \"four\"}}}}")))
 						.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	private void assertFieldType(JsonFieldType expectedType, String jsonValue)
 			throws IOException {
-		assertThat(new JsonFieldTypeResolver(createSimplePayload(jsonValue))
-				.resolveFieldType(new FieldDescriptor("field"))).isEqualTo(expectedType);
+		assertThat(this.fieldTypeResolver.resolveFieldType(new FieldDescriptor("field"),
+				createSimplePayload(jsonValue))).isEqualTo(expectedType);
 	}
 
 	private Map<String, Object> createSimplePayload(String value) throws IOException {
@@ -297,20 +258,6 @@ public class JsonFieldTypeResolverTests {
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> createPayload(String json) throws IOException {
 		return new ObjectMapper().readValue(json, Map.class);
-	}
-
-	private Object determineFieldType(String json, FieldDescriptor fieldDescriptor)
-			throws IOException {
-		return new JsonFieldTypeResolver(createPayload(json))
-				.determineFieldType(fieldDescriptor);
-	}
-
-	private JsonFieldTypeResolver fieldTypeResolver(String json) throws IOException {
-		return new JsonFieldTypeResolver(createPayload(json));
-	}
-
-	private JsonFieldType resolveFieldType(String json, String path) throws IOException {
-		return fieldTypeResolver(json).resolveFieldType(new FieldDescriptor(path));
 	}
 
 }

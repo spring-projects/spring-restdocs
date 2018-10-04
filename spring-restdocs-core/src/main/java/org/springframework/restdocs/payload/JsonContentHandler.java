@@ -32,10 +32,13 @@ import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
  * A {@link ContentHandler} for JSON content.
  *
  * @author Andy Wilkinson
+ * @author Mathias Düsterhöft
  */
-class JsonContentHandler implements ContentHandler {
+class JsonContentHandler implements ContentHandler, FieldTypeResolver {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
+
+	private final JsonFieldTypeResolver fieldTypeResolver = new JsonFieldTypeResolver();
 
 	private final ObjectMapper objectMapper = new ObjectMapper()
 			.enable(SerializationFeature.INDENT_OUTPUT);
@@ -122,11 +125,6 @@ class JsonContentHandler implements ContentHandler {
 		return null;
 	}
 
-	@Override
-	public FieldTypeResolver getFieldTypeResolver() {
-		return new JsonFieldTypeResolver(readContent());
-	}
-
 	private boolean describesSubsection(FieldDescriptor fieldDescriptor) {
 		return fieldDescriptor instanceof SubsectionDescriptor;
 	}
@@ -145,6 +143,32 @@ class JsonContentHandler implements ContentHandler {
 			return ((Map<?, ?>) object).isEmpty();
 		}
 		return ((List<?>) object).isEmpty();
+	}
+
+	@Override
+	public Object resolveFieldType(FieldDescriptor fieldDescriptor) {
+		if (fieldDescriptor.getType() == null) {
+			return this.fieldTypeResolver.resolveFieldType(fieldDescriptor,
+					readContent());
+		}
+		if (!(fieldDescriptor.getType() instanceof JsonFieldType)) {
+			return fieldDescriptor.getType();
+		}
+		JsonFieldType descriptorFieldType = (JsonFieldType) fieldDescriptor.getType();
+		try {
+			JsonFieldType actualFieldType = this.fieldTypeResolver
+					.resolveFieldType(fieldDescriptor, readContent());
+			if (descriptorFieldType == JsonFieldType.VARIES
+					|| descriptorFieldType == actualFieldType
+					|| (fieldDescriptor.isOptional()
+							&& actualFieldType == JsonFieldType.NULL)) {
+				return descriptorFieldType;
+			}
+			throw new FieldTypesDoNotMatchException(fieldDescriptor, actualFieldType);
+		}
+		catch (FieldDoesNotExistException ex) {
+			return fieldDescriptor.getType();
+		}
 	}
 
 }

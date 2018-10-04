@@ -26,45 +26,14 @@ import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
  * Resolves the type of a field in a JSON request or response payload.
  *
  * @author Andy Wilkinson
- * @author Mathias Düsterhöft
  */
-class JsonFieldTypeResolver implements FieldTypeResolver {
-
-	private final Object content;
+class JsonFieldTypeResolver {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
-	JsonFieldTypeResolver(Object content) {
-		this.content = content;
-	}
-
-	@Override
-	public Object determineFieldType(FieldDescriptor fieldDescriptor) {
-		if (fieldDescriptor.getType() == null) {
-			return resolveFieldType(fieldDescriptor);
-		}
-		if (!(fieldDescriptor.getType() instanceof JsonFieldType)) {
-			return fieldDescriptor.getType();
-		}
-		JsonFieldType descriptorFieldType = (JsonFieldType) fieldDescriptor.getType();
-		try {
-			JsonFieldType actualFieldType = resolveFieldType(fieldDescriptor);
-			if (descriptorFieldType == JsonFieldType.VARIES
-					|| descriptorFieldType == actualFieldType
-					|| (fieldDescriptor.isOptional()
-							&& actualFieldType == JsonFieldType.NULL)) {
-				return descriptorFieldType;
-			}
-			throw new FieldTypesDoNotMatchException(fieldDescriptor, actualFieldType);
-		}
-		catch (FieldDoesNotExistException ex) {
-			return fieldDescriptor.getType();
-		}
-	}
-
-	JsonFieldType resolveFieldType(FieldDescriptor fieldDescriptor) {
+	JsonFieldType resolveFieldType(FieldDescriptor fieldDescriptor, Object payload) {
 		ExtractedField extractedField = this.fieldProcessor
-				.extract(fieldDescriptor.getPath(), this.content);
+				.extract(fieldDescriptor.getPath(), payload);
 		Object value = extractedField.getValue();
 		if (value instanceof Collection && extractedField.getType() == PathType.MULTI) {
 			JsonFieldType commonType = null;
