@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
  * payloads.
  *
  * @author Mathias Düsterhöft
+ * @since 2.0.3
  */
 public interface FieldTypeResolver {
 
@@ -32,7 +33,7 @@ public interface FieldTypeResolver {
 	 * @param contentType the content type of the payload
 	 * @return the {@link FieldTypeResolver}
 	 */
-	static FieldTypeResolver create(byte[] content, MediaType contentType) {
+	static FieldTypeResolver forContent(byte[] content, MediaType contentType) {
 		return ContentTypeHandlerFactory.create(content, contentType)
 				.getFieldTypeResolver();
 	}

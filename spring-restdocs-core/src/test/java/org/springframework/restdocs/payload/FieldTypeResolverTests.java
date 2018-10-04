@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,13 @@
 
 package org.springframework.restdocs.payload;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link FieldTypeResolver}.
@@ -30,22 +31,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 public class FieldTypeResolverTests {
 
+	@Rule
+	public ExpectedException thrownException = ExpectedException.none();
+
 	@Test
 	public void returnJsonFieldTypeResolver() {
-		assertThat(FieldTypeResolver.create("{\"field\": \"value\"}".getBytes(),
+		assertThat(FieldTypeResolver.forContent("{\"field\": \"value\"}".getBytes(),
 				MediaType.APPLICATION_JSON)).isInstanceOf(JsonFieldTypeResolver.class);
 	}
 
 	@Test
 	public void returnXmlContentHandler() {
-		assertThat(FieldTypeResolver.create("<a><b>5</b></a>".getBytes(),
+		assertThat(FieldTypeResolver.forContent("<a><b>5</b></a>".getBytes(),
 				MediaType.APPLICATION_XML)).isInstanceOf(XmlContentHandler.class);
 	}
 
 	@Test
 	public void throwOnInvalidContent() {
-		assertThatThrownBy(() -> FieldTypeResolver.create("some".getBytes(),
-				MediaType.APPLICATION_XML)).isInstanceOf(PayloadHandlingException.class);
+		this.thrownException.expect(PayloadHandlingException.class);
+		FieldTypeResolver.forContent("some".getBytes(), MediaType.APPLICATION_XML);
 	}
 
 }
