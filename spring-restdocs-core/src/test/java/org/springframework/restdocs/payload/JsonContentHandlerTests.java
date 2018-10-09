@@ -17,6 +17,7 @@
 package org.springframework.restdocs.payload;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Rule;
@@ -29,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests for {@link JsonContentHandler}.
  *
  * @author Andy Wilkinson
+ * @author Mathias Düsterhöft
  */
 public class JsonContentHandlerTests {
 
@@ -181,6 +183,14 @@ public class JsonContentHandlerTests {
 								new FieldDescriptor("a.[].b.[].c")));
 		assertThat(missingFields.size()).isEqualTo(1);
 		assertThat(missingFields.get(0).getPath()).isEqualTo("a.[].b.[].c");
+	}
+
+	@Test
+	public void describedFieldThatIsPresentInArrayWithDifferentTypes() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"a\":[ {\"b\": \"bravo\"}, {\"b\": null}]}".getBytes())
+				.findMissingFields(Collections.singletonList(new FieldDescriptor("a[].b")));
+		assertThat(missingFields.size()).isEqualTo(0);
 	}
 
 }

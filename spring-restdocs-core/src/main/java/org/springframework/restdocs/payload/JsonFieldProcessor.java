@@ -29,6 +29,7 @@ import org.springframework.restdocs.payload.JsonFieldPath.PathType;
  * extracted and removed.
  *
  * @author Andy Wilkinson
+ * @author Mathias Düsterhöft
  *
  */
 final class JsonFieldProcessor {
@@ -177,7 +178,8 @@ final class JsonFieldProcessor {
 
 		boolean fieldFound() {
 			return this.matchType == MatchType.NON_NULL
-					|| this.matchType == MatchType.NULL;
+					|| this.matchType == MatchType.NULL
+					|| this.matchType == MatchType.MIXED;
 		}
 
 		private enum MatchType {
