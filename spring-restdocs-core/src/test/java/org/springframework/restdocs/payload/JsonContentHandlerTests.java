@@ -183,4 +183,13 @@ public class JsonContentHandlerTests {
 		assertThat(missingFields.get(0).getPath()).isEqualTo("a.[].b.[].c");
 	}
 
+	@Test
+	public void describedMissingFieldThatIsChildOfOptionalObjectThatIsNullIsNotConsideredMissing() {
+		List<FieldDescriptor> missingFields = new JsonContentHandler(
+				"{\"a\":null}".getBytes()).findMissingFields(
+						Arrays.asList(new FieldDescriptor("a").optional(),
+								new FieldDescriptor("a.b")));
+		assertThat(missingFields.size()).isEqualTo(0);
+	}
+
 }
