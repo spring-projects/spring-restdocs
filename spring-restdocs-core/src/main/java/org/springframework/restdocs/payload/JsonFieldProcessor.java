@@ -41,20 +41,25 @@ final class JsonFieldProcessor {
 
 	ExtractedField extract(String path, Object payload) {
 		JsonFieldPath compiledPath = JsonFieldPath.compile(path);
-		final List<Object> matches = new ArrayList<>();
+		final List<Object> values = new ArrayList<>();
 		traverse(new ProcessingContext(payload, compiledPath), new MatchCallback() {
 
 			@Override
 			public void foundMatch(Match match) {
-				matches.add(match.getValue());
+				values.add(match.getValue());
+			}
+
+			@Override
+			public void absent() {
+				values.add(ExtractedField.ABSENT);
 			}
 
 		});
-		if (matches.isEmpty()) {
-			throw new FieldDoesNotExistException(path);
+		if (values.isEmpty()) {
+			values.add(ExtractedField.ABSENT);
 		}
 		return new ExtractedField(
-				(compiledPath.getType() != PathType.SINGLE) ? matches : matches.get(0),
+				(compiledPath.getType() != PathType.SINGLE) ? values : values.get(0),
 				compiledPath.getType());
 	}
 
@@ -426,6 +431,8 @@ final class JsonFieldProcessor {
 	 * A field that has been extracted from a JSON payload.
 	 */
 	static class ExtractedField {
+
+		static final Object ABSENT = new Object();
 
 		private final Object value;
 

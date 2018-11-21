@@ -28,6 +28,8 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
+import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -109,7 +111,7 @@ public class JsonFieldProcessorTests {
 				new HashMap<String, Object>());
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract("a[].b", payload).getValue())
-				.isEqualTo(Arrays.asList("bravo"));
+				.isEqualTo(Arrays.asList("bravo", ExtractedField.ABSENT));
 	}
 
 	@Test
@@ -165,54 +167,61 @@ public class JsonFieldProcessorTests {
 						Arrays.asList(4)));
 	}
 
-	@Test(expected = FieldDoesNotExistException.class)
+	@Test
 	public void nonExistentTopLevelField() {
-		this.fieldProcessor.extract("a", Collections.emptyMap());
+		assertThat(this.fieldProcessor.extract("a", Collections.emptyMap()).getValue())
+				.isEqualTo(ExtractedField.ABSENT);
 	}
 
-	@Test(expected = FieldDoesNotExistException.class)
+	@Test
 	public void nonExistentNestedField() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", new HashMap<String, Object>());
-		this.fieldProcessor.extract("a.b", payload);
+		assertThat(this.fieldProcessor.extract("a.b", payload).getValue())
+				.isEqualTo(ExtractedField.ABSENT);
 	}
 
-	@Test(expected = FieldDoesNotExistException.class)
+	@Test
 	public void nonExistentNestedFieldWhenParentIsNotAMap() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
-		this.fieldProcessor.extract("a.b", payload);
+		assertThat(this.fieldProcessor.extract("a.b", payload).getValue())
+				.isEqualTo(ExtractedField.ABSENT);
 	}
 
-	@Test(expected = FieldDoesNotExistException.class)
+	@Test
 	public void nonExistentFieldWhenParentIsAnArray() {
 		HashMap<String, Object> payload = new HashMap<>();
 		HashMap<String, Object> alpha = new HashMap<>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
-		this.fieldProcessor.extract("a.b.c", payload);
+		assertThat(this.fieldProcessor.extract("a.b.c", payload).getValue())
+				.isEqualTo(ExtractedField.ABSENT);
 	}
 
-	@Test(expected = FieldDoesNotExistException.class)
+	@Test
 	public void nonExistentArrayField() {
 		HashMap<String, Object> payload = new HashMap<>();
-		this.fieldProcessor.extract("a[]", payload);
+		assertThat(this.fieldProcessor.extract("a[]", payload).getValue())
+				.isEqualTo(ExtractedField.ABSENT);
 	}
 
-	@Test(expected = FieldDoesNotExistException.class)
+	@Test
 	public void nonExistentArrayFieldAsTypeDoesNotMatch() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
-		this.fieldProcessor.extract("a[]", payload);
+		assertThat(this.fieldProcessor.extract("a[]", payload).getValue())
+				.isEqualTo(ExtractedField.ABSENT);
 	}
 
-	@Test(expected = FieldDoesNotExistException.class)
+	@Test
 	public void nonExistentFieldBeneathAnArray() {
 		HashMap<String, Object> payload = new HashMap<>();
 		HashMap<String, Object> alpha = new HashMap<>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
-		this.fieldProcessor.extract("a.b[].id", payload);
+		assertThat(this.fieldProcessor.extract("a.b[].id", payload).getValue())
+				.isEqualTo(Arrays.asList(ExtractedField.ABSENT));
 	}
 
 	@Test

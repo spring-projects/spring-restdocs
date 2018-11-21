@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,50 +17,45 @@
 package org.springframework.restdocs.payload;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.restdocs.payload.JsonFieldPath.PathType;
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
 /**
- * Resolves the type of a field in a JSON request or response payload.
+ * Discovers the types of the fields found at a path in a JSON request or response
+ * payload.
  *
  * @author Andy Wilkinson
  */
-class JsonFieldTypeResolver {
+class JsonFieldTypesDiscoverer {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
-	JsonFieldType resolveFieldType(FieldDescriptor fieldDescriptor, Object payload) {
-		ExtractedField extractedField = this.fieldProcessor
-				.extract(fieldDescriptor.getPath(), payload);
+	JsonFieldTypes discoverFieldTypes(String path, Object payload) {
+		ExtractedField extractedField = this.fieldProcessor.extract(path, payload);
 		Object value = extractedField.getValue();
 		if (value instanceof Collection && extractedField.getType() == PathType.MULTI) {
-			JsonFieldType commonType = null;
-			for (Object item : (Collection<?>) value) {
-				JsonFieldType fieldType = determineFieldType(item);
-				if (commonType == null) {
-					commonType = fieldType;
-				}
-				else if (fieldType != commonType) {
-					if (!fieldDescriptor.isOptional()) {
-						return JsonFieldType.VARIES;
-					}
-					if (commonType == JsonFieldType.NULL) {
-						commonType = fieldType;
-					}
-					else if (fieldType != JsonFieldType.NULL) {
-						return JsonFieldType.VARIES;
-					}
-				}
+			Collection<?> values = (Collection<?>) value;
+			if (allAbsent(values)) {
+				throw new FieldDoesNotExistException(path);
 			}
-			return commonType;
+			Set<JsonFieldType> fieldTypes = new HashSet<>();
+			for (Object item : values) {
+				fieldTypes.add(determineFieldType(item));
+			}
+			return new JsonFieldTypes(fieldTypes);
 		}
-		return determineFieldType(value);
+		if (value == ExtractedField.ABSENT) {
+			throw new FieldDoesNotExistException(path);
+		}
+		return new JsonFieldTypes(determineFieldType(value));
 	}
 
 	private JsonFieldType determineFieldType(Object fieldValue) {
-		if (fieldValue == null) {
+		if (fieldValue == null || fieldValue == ExtractedField.ABSENT) {
 			return JsonFieldType.NULL;
 		}
 		if (fieldValue instanceof String) {
@@ -76,6 +71,15 @@ class JsonFieldTypeResolver {
 			return JsonFieldType.BOOLEAN;
 		}
 		return JsonFieldType.NUMBER;
+	}
+
+	private boolean allAbsent(Collection<?> values) {
+		for (Object value : values) {
+			if (value != ExtractedField.ABSENT) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

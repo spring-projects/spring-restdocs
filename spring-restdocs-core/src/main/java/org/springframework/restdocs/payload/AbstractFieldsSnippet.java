@@ -38,6 +38,7 @@ import org.springframework.util.StringUtils;
  *
  * @author Andreas Evers
  * @author Andy Wilkinson
+ * @author Mathias Düsterhöft
  */
 public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
@@ -160,7 +161,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 			content = verifyContent(
 					this.subsectionExtractor.extractSubsection(content, contentType));
 		}
-		ContentHandler contentHandler = getContentHandler(content, contentType);
+		ContentHandler contentHandler = ContentHandler.forContent(content, contentType);
 
 		validateFieldDocumentation(contentHandler);
 
@@ -168,7 +169,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		for (FieldDescriptor descriptor : this.fieldDescriptors) {
 			if (!descriptor.isIgnored()) {
 				try {
-					Object type = contentHandler.determineFieldType(descriptor);
+					Object type = contentHandler.resolveFieldType(descriptor);
 					descriptorsToDocument.add(copyWithType(descriptor, type));
 				}
 				catch (FieldDoesNotExistException ex) {
@@ -198,36 +199,6 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 					+ this.type + " body is empty");
 		}
 		return content;
-	}
-
-	private ContentHandler getContentHandler(byte[] content, MediaType contentType) {
-		ContentHandler contentHandler = createJsonContentHandler(content);
-		if (contentHandler == null) {
-			contentHandler = createXmlContentHandler(content);
-			if (contentHandler == null) {
-				throw new PayloadHandlingException("Cannot handle " + contentType
-						+ " content as it could not be parsed as JSON or XML");
-			}
-		}
-		return contentHandler;
-	}
-
-	private ContentHandler createJsonContentHandler(byte[] content) {
-		try {
-			return new JsonContentHandler(content);
-		}
-		catch (Exception ex) {
-			return null;
-		}
-	}
-
-	private ContentHandler createXmlContentHandler(byte[] content) {
-		try {
-			return new XmlContentHandler(content);
-		}
-		catch (Exception ex) {
-			return null;
-		}
 	}
 
 	private void validateFieldDocumentation(ContentHandler payloadHandler) {

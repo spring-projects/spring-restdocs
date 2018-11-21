@@ -190,7 +190,7 @@ class XmlContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public Object determineFieldType(FieldDescriptor fieldDescriptor) {
+	public Object resolveFieldType(FieldDescriptor fieldDescriptor) {
 		if (fieldDescriptor.getType() != null) {
 			return fieldDescriptor.getType();
 		}
