@@ -30,7 +30,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
  * Tests for {@link XmlContentHandler}.
  *
  * @author Andy Wilkinson
- * @author Mathias Düsterhöft
  */
 public class XmlContentHandlerTests {
 

@@ -19,26 +19,27 @@ package org.springframework.restdocs.payload;
 import org.springframework.http.MediaType;
 
 /**
- * Public abstraction for external access to field type determination for xml and json
- * payloads.
+ * Resolves the type of a field in a request or response payload.
  *
  * @author Mathias Düsterhöft
+ * @author Andy Wilkinson
  * @since 2.0.3
  */
 public interface FieldTypeResolver {
 
 	/**
-	 * Create a FieldTypeResolver for the given content and contentType.
-	 * @param content the payload that the {@link FieldTypeResolver} should handle
+	 * Create a {@code FieldTypeResolver} for the given {@code content} and
+	 * {@code contentType}.
+	 * @param content the payload that the {@code FieldTypeResolver} should handle
 	 * @param contentType the content type of the payload
-	 * @return the {@link FieldTypeResolver}
+	 * @return the {@code FieldTypeResolver}
 	 */
 	static FieldTypeResolver forContent(byte[] content, MediaType contentType) {
 		return ContentHandler.forContent(content, contentType);
 	}
 
 	/**
-	 * Returns the type of the field that is described by the given
+	 * Resolves the type of the field that is described by the given
 	 * {@code fieldDescriptor} based on the content of the payload.
 	 * @param fieldDescriptor the field descriptor
 	 * @return the type of the field

@@ -34,7 +34,7 @@ import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
  * @author Andy Wilkinson
  * @author Mathias Düsterhöft
  */
-class JsonContentHandler implements ContentHandler, FieldTypeResolver {
+class JsonContentHandler implements ContentHandler {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
