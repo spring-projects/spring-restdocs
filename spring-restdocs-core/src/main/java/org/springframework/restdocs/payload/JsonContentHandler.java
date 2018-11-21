@@ -37,7 +37,7 @@ class JsonContentHandler implements ContentHandler {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
-	private final JsonFieldTypeResolver fieldTypeResolver = new JsonFieldTypeResolver();
+	private final JsonFieldTypesDiscoverer fieldTypesDiscoverer = new JsonFieldTypesDiscoverer();
 
 	private final ObjectMapper objectMapper = new ObjectMapper()
 			.enable(SerializationFeature.INDENT_OUTPUT);
@@ -147,16 +147,18 @@ class JsonContentHandler implements ContentHandler {
 	@Override
 	public Object determineFieldType(FieldDescriptor fieldDescriptor) {
 		if (fieldDescriptor.getType() == null) {
-			return this.fieldTypeResolver.resolveFieldType(fieldDescriptor,
-					readContent());
+			return this.fieldTypesDiscoverer
+					.discoverFieldTypes(fieldDescriptor.getPath(), readContent())
+					.coalesce(fieldDescriptor.isOptional());
 		}
 		if (!(fieldDescriptor.getType() instanceof JsonFieldType)) {
 			return fieldDescriptor.getType();
 		}
 		JsonFieldType descriptorFieldType = (JsonFieldType) fieldDescriptor.getType();
 		try {
-			JsonFieldType actualFieldType = this.fieldTypeResolver
-					.resolveFieldType(fieldDescriptor, readContent());
+			JsonFieldType actualFieldType = this.fieldTypesDiscoverer
+					.discoverFieldTypes(fieldDescriptor.getPath(), readContent())
+					.coalesce(fieldDescriptor.isOptional());
 			if (descriptorFieldType == JsonFieldType.VARIES
 					|| descriptorFieldType == actualFieldType
 					|| (fieldDescriptor.isOptional()
