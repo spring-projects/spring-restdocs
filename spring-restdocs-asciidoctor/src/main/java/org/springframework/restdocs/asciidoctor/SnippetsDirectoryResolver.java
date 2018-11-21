@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Resolves the directory from which snippets can be read for inclusion in an Asciidoctor
@@ -57,13 +58,23 @@ class SnippetsDirectoryResolver {
 	}
 
 	private File getGradleSnippetsDirectory(Map<String, Object> attributes) {
-		return new File(getRequiredAttribute(attributes, "projectdir"),
+		return new File(
+				getRequiredAttribute(attributes, "gradle-projectdir",
+						() -> getRequiredAttribute(attributes, "projectdir")),
 				"build/generated-snippets");
 	}
 
 	private String getRequiredAttribute(Map<String, Object> attributes, String name) {
+		return getRequiredAttribute(attributes, name, null);
+	}
+
+	private String getRequiredAttribute(Map<String, Object> attributes, String name,
+			Supplier<String> fallback) {
 		String attribute = (String) attributes.get(name);
 		if (attribute == null || attribute.length() == 0) {
+			if (fallback != null) {
+				return fallback.get();
+			}
 			throw new IllegalStateException(name + " attribute not found");
 		}
 		return attribute;

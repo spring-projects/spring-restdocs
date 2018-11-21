@@ -78,7 +78,30 @@ public class SnippetsDirectoryResolverTests {
 	}
 
 	@Test
-	public void gradleProjectsUseBuildGeneratedSnippetsBeneathProjectDir()
+	public void gradleProjectsUseBuildGeneratedSnippetsBeneathGradleProjectdir()
+			throws IOException {
+		Map<String, Object> attributes = new HashMap<>();
+		attributes.put("gradle-projectdir", "project/dir");
+		File snippetsDirectory = new SnippetsDirectoryResolver()
+				.getSnippetsDirectory(attributes);
+		assertThat(snippetsDirectory)
+				.isEqualTo(new File("project/dir/build/generated-snippets"));
+	}
+
+	@Test
+	public void gradleProjectsUseBuildGeneratedSnippetsBeneathGradleProjectdirWhenBothItAndProjectdirAreSet()
+			throws IOException {
+		Map<String, Object> attributes = new HashMap<>();
+		attributes.put("gradle-projectdir", "project/dir");
+		attributes.put("projectdir", "fallback/dir");
+		File snippetsDirectory = new SnippetsDirectoryResolver()
+				.getSnippetsDirectory(attributes);
+		assertThat(snippetsDirectory)
+				.isEqualTo(new File("project/dir/build/generated-snippets"));
+	}
+
+	@Test
+	public void gradleProjectsUseBuildGeneratedSnippetsBeneathProjectdirWhenGradleProjectdirIsNotSet()
 			throws IOException {
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("projectdir", "project/dir");
@@ -89,7 +112,7 @@ public class SnippetsDirectoryResolverTests {
 	}
 
 	@Test
-	public void illegalStateWhenProjectdirAttributeIsNotSetInGradleProject()
+	public void illegalStateWhenGradleProjectdirAndProjectdirAttributesAreNotSetInGradleProject()
 			throws IOException {
 		Map<String, Object> attributes = new HashMap<>();
 		this.thrown.expect(IllegalStateException.class);
