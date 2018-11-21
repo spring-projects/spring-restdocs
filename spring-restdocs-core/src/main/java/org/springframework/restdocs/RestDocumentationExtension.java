@@ -47,8 +47,11 @@ public class RestDocumentationExtension
 	@Override
 	public boolean supportsParameter(ParameterContext parameterContext,
 			ExtensionContext extensionContext) {
-		return RestDocumentationContextProvider.class
-				.isAssignableFrom(parameterContext.getParameter().getType());
+		if (isTestMethodContext(extensionContext)) {
+			return RestDocumentationContextProvider.class
+					.isAssignableFrom(parameterContext.getParameter().getType());
+		}
+		return false;
 	}
 
 	@Override
@@ -56,6 +59,10 @@ public class RestDocumentationExtension
 			ExtensionContext context) {
 		return (RestDocumentationContextProvider) () -> getDelegate(context)
 				.beforeOperation();
+	}
+
+	private boolean isTestMethodContext(ExtensionContext context) {
+		return context.getTestClass().isPresent() && context.getTestMethod().isPresent();
 	}
 
 	private ManualRestDocumentation getDelegate(ExtensionContext context) {
