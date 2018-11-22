@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
@@ -38,6 +39,9 @@ public class FieldPathPayloadSubsectionExtractor
 		implements PayloadSubsectionExtractor<FieldPathPayloadSubsectionExtractor> {
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
+
+	private static final ObjectMapper prettyPrintingOjectMapper = new ObjectMapper()
+			.enable(SerializationFeature.INDENT_OUTPUT);
 
 	private final String fieldPath;
 
@@ -90,7 +94,7 @@ public class FieldPathPayloadSubsectionExtractor
 					throw new PayloadHandlingException(message);
 				}
 			}
-			return objectMapper.writeValueAsBytes(value);
+			return getObjectMapper(payload).writeValueAsBytes(value);
 		}
 		catch (IOException ex) {
 			throw new PayloadHandlingException(ex);
@@ -113,6 +117,22 @@ public class FieldPathPayloadSubsectionExtractor
 	@Override
 	public FieldPathPayloadSubsectionExtractor withSubsectionId(String subsectionId) {
 		return new FieldPathPayloadSubsectionExtractor(this.fieldPath, subsectionId);
+	}
+
+	private ObjectMapper getObjectMapper(byte[] payload) {
+		if (isPrettyPrinted(payload)) {
+			return prettyPrintingOjectMapper;
+		}
+		return objectMapper;
+	}
+
+	private boolean isPrettyPrinted(byte[] payload) {
+		for (byte b : payload) {
+			if (b == '\n') {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

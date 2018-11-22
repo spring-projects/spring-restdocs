@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -114,6 +116,36 @@ public class FieldPathPayloadSubsectionExtractorTests {
 		new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
 				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(),
 				MediaType.APPLICATION_JSON);
+	}
+
+	@Test
+	public void extractedSubsectionIsPrettyPrintedWhenInputIsPrettyPrinted()
+			throws JsonParseException, JsonMappingException, JsonProcessingException,
+			IOException {
+		ObjectMapper objectMapper = new ObjectMapper()
+				.enable(SerializationFeature.INDENT_OUTPUT);
+		byte[] prettyPrintedPayload = objectMapper.writeValueAsBytes(
+				objectMapper.readValue("{\"a\": { \"b\": { \"c\": 1 }}}", Object.class));
+		byte[] extractedSubsection = new FieldPathPayloadSubsectionExtractor("a.b")
+				.extractSubsection(prettyPrintedPayload, MediaType.APPLICATION_JSON);
+		byte[] prettyPrintedSubsection = objectMapper
+				.writeValueAsBytes(objectMapper.readValue("{\"c\": 1 }", Object.class));
+		assertThat(new String(extractedSubsection))
+				.isEqualTo(new String(prettyPrintedSubsection));
+	}
+
+	@Test
+	public void extractedSubsectionIsNotPrettyPrintedWhenInputIsNotPrettyPrinted()
+			throws JsonParseException, JsonMappingException, JsonProcessingException,
+			IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		byte[] payload = objectMapper.writeValueAsBytes(
+				objectMapper.readValue("{\"a\": { \"b\": { \"c\": 1 }}}", Object.class));
+		byte[] extractedSubsection = new FieldPathPayloadSubsectionExtractor("a.b")
+				.extractSubsection(payload, MediaType.APPLICATION_JSON);
+		byte[] subsection = objectMapper
+				.writeValueAsBytes(objectMapper.readValue("{\"c\": 1 }", Object.class));
+		assertThat(new String(extractedSubsection)).isEqualTo(new String(subsection));
 	}
 
 }
