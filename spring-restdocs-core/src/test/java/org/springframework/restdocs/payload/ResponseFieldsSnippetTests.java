@@ -95,6 +95,19 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void subsectionOfMapResponseBeneathAnArray() throws IOException {
+		responseFields(beneathPath("a.b.[]"), fieldWithPath("c").description("one"),
+				fieldWithPath("d.[].e").description("two"))
+						.document(this.operationBuilder.response().content(
+								"{\"a\": {\"b\": [{\"c\": 1, \"d\": [{\"e\": 5}]}, {\"c\": 3, \"d\": [{\"e\": 4}]}]}}")
+								.build());
+		assertThat(this.generatedSnippets.snippet("response-fields-beneath-a.b.[]"))
+				.is(tableWithHeader("Path", "Type", "Description")
+						.row("`c`", "`Number`", "one")
+						.row("`d.[].e`", "`Number`", "two"));
+	}
+
+	@Test
 	public void subsectionOfMapResponseWithCommonsPrefix() throws IOException {
 		responseFields(beneathPath("a"))
 				.andWithPrefix("b.", fieldWithPath("c").description("two"))

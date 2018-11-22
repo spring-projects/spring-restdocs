@@ -17,7 +17,6 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -30,7 +29,6 @@ import org.junit.rules.ExpectedException;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
 
 /**
  * Tests for {@link FieldPathPayloadSubsectionExtractor}.
@@ -57,29 +55,28 @@ public class FieldPathPayloadSubsectionExtractorTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void extractMultiElementArraySubsectionOfJsonMap()
-			throws JsonParseException, JsonMappingException, IOException {
-		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a")
-				.extractSubsection("{\"a\":[{\"b\":5},{\"b\":4}]}".getBytes(),
-						MediaType.APPLICATION_JSON);
-		List<Map<String, Object>> extracted = new ObjectMapper()
-				.readValue(extractedPayload, List.class);
-		assertThat(extracted.size()).isEqualTo(2);
-		assertThat(extracted.get(0).get("b")).isEqualTo(5);
-		assertThat(extracted.get(1).get("b")).isEqualTo(4);
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
 	public void extractSingleElementArraySubsectionOfJsonMap()
 			throws JsonParseException, JsonMappingException, IOException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[]")
 				.extractSubsection("{\"a\":[{\"b\":5}]}".getBytes(),
 						MediaType.APPLICATION_JSON);
-		List<Map<String, Object>> extracted = new ObjectMapper()
-				.readValue(extractedPayload, List.class);
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload,
+				Map.class);
 		assertThat(extracted.size()).isEqualTo(1);
-		assertThat(extracted.get(0).get("b")).isEqualTo(5);
+		assertThat(extracted).containsOnlyKeys("b");
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void extractMultiElementArraySubsectionOfJsonMap()
+			throws JsonParseException, JsonMappingException, IOException {
+		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a")
+				.extractSubsection("{\"a\":[{\"b\":5},{\"b\":4}]}".getBytes(),
+						MediaType.APPLICATION_JSON);
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload,
+				Map.class);
+		assertThat(extracted.size()).isEqualTo(1);
+		assertThat(extracted).containsOnlyKeys("b");
 	}
 
 	@Test
@@ -96,13 +93,26 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
-	public void extractMapSubsectionFromMultiElementArrayInAJsonMap()
+	@SuppressWarnings("unchecked")
+	public void extractMapSubsectionWithCommonStructureFromMultiElementArrayInAJsonMap()
+			throws JsonParseException, JsonMappingException, IOException {
+		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b")
+				.extractSubsection(
+						"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6}}]}".getBytes(),
+						MediaType.APPLICATION_JSON);
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload,
+				Map.class);
+		assertThat(extracted.size()).isEqualTo(1);
+		assertThat(extracted).containsOnlyKeys("c");
+	}
+
+	@Test
+	public void extractMapSubsectionWithVaryingStructureFromMultiElementArrayInAJsonMap()
 			throws JsonParseException, JsonMappingException, IOException {
 		this.thrown.expect(PayloadHandlingException.class);
-		this.thrown.expectMessage(
-				equalTo("a.[].b does not uniquely identify a subsection of the payload"));
+		this.thrown.expectMessage("The following uncommon paths were found: [a.[].b.d]");
 		new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
-				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6}}]}".getBytes(),
+				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(),
 				MediaType.APPLICATION_JSON);
 	}
 
