@@ -17,12 +17,13 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.JsonFieldPath.PathType;
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
 /**
@@ -44,7 +45,7 @@ public class FieldPathPayloadSubsectionExtractor
 
 	/**
 	 * Creates a new {@code FieldPathPayloadSubsectionExtractor} that will extract the
-	 * subsection of the JSON payload found at the given {@code fieldPath}. The
+	 * subsection of the JSON payload beneath the given {@code fieldPath}. The
 	 * {@code fieldPath} prefixed with {@code beneath-} with be used as the subsection ID.
 	 * @param fieldPath the path of the field
 	 */
@@ -54,8 +55,8 @@ public class FieldPathPayloadSubsectionExtractor
 
 	/**
 	 * Creates a new {@code FieldPathPayloadSubsectionExtractor} that will extract the
-	 * subsection of the JSON payload found at the given {@code fieldPath} and that will
-	 * us the given {@code subsectionId} to identify the subsection.
+	 * subsection of the JSON payload beneath the given {@code fieldPath} and that will
+	 * use the given {@code subsectionId} to identify the subsection.
 	 * @param fieldPath the path of the field
 	 * @param subsectionId the ID of the subsection
 	 */
@@ -70,14 +71,23 @@ public class FieldPathPayloadSubsectionExtractor
 			ExtractedField extractedField = new JsonFieldProcessor().extract(
 					this.fieldPath, objectMapper.readValue(payload, Object.class));
 			Object value = extractedField.getValue();
-			if (value instanceof List && extractedField.getType() == PathType.MULTI) {
+			if (value instanceof List) {
 				List<?> extractedList = (List<?>) value;
-				if (extractedList.size() == 1) {
+				Set<String> uncommonPaths = JsonFieldPaths.from(extractedList)
+						.getUncommon();
+				if (uncommonPaths.isEmpty()) {
 					value = extractedList.get(0);
 				}
 				else {
-					throw new PayloadHandlingException(this.fieldPath
-							+ " does not uniquely identify a subsection of the payload");
+					String message = this.fieldPath + " identifies multiple sections of "
+							+ "the payload and they do not have a common structure. The "
+							+ "following uncommon paths were found: ";
+					List<String> prefixedPaths = new ArrayList<>();
+					for (String uncommonPath : uncommonPaths) {
+						prefixedPaths.add(this.fieldPath + "." + uncommonPath);
+					}
+					message += prefixedPaths;
+					throw new PayloadHandlingException(message);
 				}
 			}
 			return objectMapper.writeValueAsBytes(value);
