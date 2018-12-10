@@ -22,7 +22,7 @@ apply plugin: "idea"
 apply plugin: "org.grails.grails-web"
 
 ext {
-	restDocsVersion = "1.2.6.BUILD-SNAPSHOT"
+	restDocsVersion = "1.2.6.RELEASE"
 	snippetsDir = file('src/docs/generated-snippets')
 }
 
