@@ -1,5 +1,5 @@
 = Spring REST Docs
-Andy Wilkinson
+Andy Wilkinson; Jay Bryant
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs

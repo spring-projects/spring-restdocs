@@ -6,10 +6,9 @@ This section describes how to get started with Spring REST Docs.
 
 
 [[getting-started-sample-applications]]
-=== Sample applications
+=== Sample Applications
 
 If you want to jump straight in, a number of sample applications are available:
-
 
 [cols="3,2,10"]
 .MockMvc
@@ -19,12 +18,12 @@ If you want to jump straight in, a number of sample applications are available:
 | {samples}/rest-notes-spring-data-rest[Spring Data REST]
 | Maven
 | Demonstrates the creation of a getting started guide and an API guide for a service
-  implemented using http://projects.spring.io/spring-data-rest/[Spring Data REST].
+  implemented by using http://projects.spring.io/spring-data-rest/[Spring Data REST].
 
 | {samples}/rest-notes-spring-hateoas[Spring HATEOAS]
 | Gradle
 | Demonstrates the creation of a getting started guide and an API guide for a service
-  implemented using http://projects.spring.io/spring-hateoas/[Spring HATEOAS].
+  implemented by using http://projects.spring.io/spring-hateoas/[Spring HATEOAS].
 
 |===
 
@@ -82,13 +81,10 @@ If you want to jump straight in, a number of sample applications are available:
 
 Spring REST Docs has the following minimum requirements:
 
-- Java 8
-- Spring Framework 5 (5.0.2 or later)
+* Java 8
+* Spring Framework 5 (5.0.2 or later)
 
-Additionally, the `spring-restdocs-restassured` module has the following minimum
-requirements:
-
-- REST Assured 3.0
+Additionally, the `spring-restdocs-restassured` module requires REST Assured 3.0.
 
 [[getting-started-build-configuration]]
 === Build configuration
@@ -96,9 +92,10 @@ requirements:
 The first step in using Spring REST Docs is to configure your project's build. The
 {samples}/rest-notes-spring-hateoas[Spring HATEOAS] and
 {samples}/rest-notes-spring-data-rest[Spring Data REST] samples contain a `build.gradle`
-and `pom.xml` respectively that you may wish to use as a reference. The key parts of
-the configuration are described below.
+and `pom.xml`, respectively, that you may wish to use as a reference. The key parts of
+the configuration are described in the following listings:
 
+====
 [source,xml,indent=0,subs="verbatim,attributes",role="primary"]
 .Maven
 ----
@@ -189,18 +186,21 @@ the configuration are described below.
 <7> Configure the snippets directory as an input.
 <8> Make the task depend on the test task so that the tests are run before the
 	documentation is created.
-
+====
 
 [[getting-started-build-configuration-packaging-the-documentation]]
-==== Packaging the documentation
+==== Packaging the Documentation
 
-You may want to package the generated documentation in your project's jar file, for
-example to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
+You may want to package the generated documentation in your project's jar file -- for
+example, to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as
 static content] by Spring Boot. To do so, configure your project's build so that:
 
 1. The documentation is generated before the jar is built
 2. The generated documentation is included in the jar
 
+The following listings show how to do so in both Maven and Gradle:
+
+====
 [source,xml,indent=0,role="primary"]
 .Maven
 ----
@@ -254,14 +254,15 @@ from where it will be included in the jar file.
 ----
 <1> Ensure that the documentation has been generated before the jar is built.
 <2> Copy the generated documentation into the jar's `static/docs` directory.
+====
 
 
 
 [[getting-started-documentation-snippets]]
-=== Generating documentation snippets
+=== Generating Documentation Snippets
 Spring REST Docs uses Spring MVC's
 {spring-framework-docs}/testing.html#spring-mvc-test-framework[test framework],
-Spring WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`] or
+Spring WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`], or
 http://www.rest-assured.io[REST Assured] to make requests to the service that you are
 documenting. It then produces documentation snippets for the request and the resulting
 response.
@@ -269,25 +270,26 @@ response.
 
 
 [[getting-started-documentation-snippets-setup]]
-==== Setting up your tests
+==== Setting up Your Tests
 
-Exactly how you setup your tests depends on the test framework that you're using.
+Exactly how you set up your tests depends on the test framework that you use.
 Spring REST Docs provides first-class support for JUnit 4 and JUnit 5. Other frameworks,
-such as TestNG, are also supported although slightly more setup is required.
+such as TestNG, are also supported, although slightly more setup is required.
 
 [[getting-started-documentation-snippets-setup-junit]]
-===== Setting up your JUnit 4 tests
+===== Setting up Your JUnit 4 Tests
 
 When using JUnit 4, the first step in generating documentation snippets is to declare a
-`public` `JUnitRestDocumentation` field that's annotated as a JUnit `@Rule`.
+`public` `JUnitRestDocumentation` field that is annotated as a JUnit `@Rule`.
+The following example shows how to do so:
 
-
+====
 [source,java,indent=0]
 ----
 @Rule
 public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 ----
-
+====
 
 By default, the `JUnitRestDocumentation` rule is automatically configured with an output
 directory based on your project's build tool:
@@ -304,24 +306,29 @@ directory based on your project's build tool:
 
 |===
 
-The default can be overridden by providing an output directory when creating the
-`JUnitRestDocumentation` instance:
+You can override the default by providing an output directory when you create the
+`JUnitRestDocumentation` instance.
+The following example shows how to do so:
 
+====
 [source,java,indent=0]
 ----
 @Rule
 public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("custom");
 ----
+====
 
-Next, provide an `@Before` method to configure MockMvc, WebTestClient or REST Assured:
+Next, you can provide an `@Before` method to configure MockMvc, WebTestClient or REST
+Assured. The following examples show how to do so:
 
+====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/ExampleApplicationTests.java[tags=setup]
 ----
-<1> The `MockMvc` instance is configured using a `MockMvcRestDocumentationConfigurer`. An
-instance of this class can be obtained from the static `documentationConfiguration()`
+<1> The `MockMvc` instance is configured by using a `MockMvcRestDocumentationConfigurer`.
+You can obtain an instance of this class from the static `documentationConfiguration()`
 method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
@@ -330,8 +337,8 @@ method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
 include::{examples-dir}/com/example/webtestclient/ExampleApplicationTests.java[tags=setup]
 ----
 <1> The `WebTestClient` instance is configured by adding a
-`WebTestclientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.  An instance of
-this class can be obtained from the static `documentationConfiguration()` method on
+`WebTestclientRestDocumentationConfigurer` as an `ExchangeFilterFunction`. You can obtain
+an instance of this class from the static `documentationConfiguration()` method on
 `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
@@ -340,34 +347,40 @@ this class can be obtained from the static `documentationConfiguration()` method
 include::{examples-dir}/com/example/restassured/ExampleApplicationTests.java[tags=setup]
 ----
 <1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a
-`Filter`. An instance of this class can be obtained from the static
+`Filter`. You can obtain an instance of this class from the static
 `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the
 `org.springframework.restdocs.restassured3` package.
+====
 
 The configurer applies sensible defaults and also provides an API for customizing the
-configuration. Refer to the <<configuration, configuration section>> for more information.
+configuration. See the <<configuration, configuration section>> for more information.
 
 
 
 [[getting-started-documentation-snippets-setup-junit-5]]
-===== Setting up your JUnit 5 tests
+===== Setting up Your JUnit 5 Tests
 
 When using JUnit 5, the first step in generating documentation snippets is to apply
-the `RestDocumentationExtension` to your test class:
+the `RestDocumentationExtension` to your test class.
+The following example shows how to do so:
 
+====
 [source,java,indent=0]
 ----
 @ExtendWith(RestDocumentationExtension.class)
 public class JUnit5ExampleTests {
 ----
+====
 
-For testing a typical Spring application the `SpringExtension` should also be applied:
+When testing a typical Spring application, you should also apply the `SpringExtension`:
 
+====
 [source,java,indent=0]
 ----
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class JUnit5ExampleTests {
 ----
+====
 
 The `RestDocumentationExtension` is automatically configured with an output directory
 based on your project's build tool:
@@ -386,15 +399,17 @@ based on your project's build tool:
 
 
 
-Next, provide a `@BeforeEach` method to configure MockMvc, WebTestClient, or REST Assured:
+Next, you can provide a `@BeforeEach` method to configure MockMvc, WebTestClient, or REST
+Assured. The following listings show how to do so:
 
+====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/ExampleApplicationJUnit5Tests.java[tags=setup]
 ----
-<1> The `MockMvc` instance is configured using a `MockMvcRestDocumentationConfigurer`. An
-instance of this class can be obtained from the static `documentationConfiguration()`
+<1> The `MockMvc` instance is configured by using a `MockMvcRestDocumentationConfigurer`.
+You can obtain an instance of this class from the static `documentationConfiguration()`
 method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
@@ -403,8 +418,8 @@ method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
 include::{examples-dir}/com/example/webtestclient/ExampleApplicationJUnit5Tests.java[tags=setup]
 ----
 <1> The `WebTestClient` instance is configured by adding a
-`WebTestClientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.  An instance of
-this class can be obtained from the static `documentationConfiguration()` method on
+`WebTestClientRestDocumentationConfigurer` as an `ExchangeFilterFunction`. You can obtain
+an instance of this class from the static `documentationConfiguration()` method on
 `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
@@ -413,12 +428,13 @@ this class can be obtained from the static `documentationConfiguration()` method
 include::{examples-dir}/com/example/restassured/ExampleApplicationJUnit5Tests.java[tags=setup]
 ----
 <1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a
-`Filter`. An instance of this class can be obtained from the static
+`Filter`. You can obtain an instance of this class from the static
 `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the
 `org.springframework.restdocs.restassured3` package.
+====
 
 The configurer applies sensible defaults and also provides an API for customizing the
-configuration. Refer to the <<configuration, configuration section>> for more information.
+configuration. See the <<configuration, configuration section>> for more information.
 
 
 
@@ -429,18 +445,23 @@ The configuration when JUnit is not being used is largely similar to when it is 
 used. This section describes the key differences. The {samples}/testng[TestNG sample] also
 illustrates the approach.
 
-The first difference is that `ManualRestDocumentation` should be used in place of
-`JUnitRestDocumentation` and there's no need for the `@Rule` annotation:
+The first difference is that you should use `ManualRestDocumentation` in place of
+`JUnitRestDocumentation`. Also, you do not need the `@Rule` annotation.
+the following example shows hos to use `ManualRestDocumentation`:
 
+====
 [source,java,indent=0]
 ----
 private ManualRestDocumentation restDocumentation = new ManualRestDocumentation();
 ----
+====
 
-Secondly, `ManualRestDocumentation.beforeTest(Class, String)`
-must be called before each test. This can be done as part of the method that is
-configuring MockMvc, WebTestClient, or REST Assured:
+Secondly, you must call `ManualRestDocumentation.beforeTest(Class, String)`
+before each test. You can do so as part of the method that
+configures MockMvc, WebTestClient, or REST Assured.
+The following examples show how to do so:
 
+====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -458,21 +479,25 @@ include::{examples-dir}/com/example/webtestclient/ExampleApplicationTestNgTests.
 ----
 include::{examples-dir}/com/example/restassured/ExampleApplicationTestNgTests.java[tags=setup]
 ----
+====
 
-Lastly, `ManualRestDocumentation.afterTest` must be called after each test. For example,
-with TestNG:
+Finally, you must call `ManualRestDocumentation.afterTest` after each test.
+The following example shows how to do so with TestNG:
 
+====
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/restassured/ExampleApplicationTestNgTests.java[tags=teardown]
 ----
+====
 
 [[getting-started-documentation-snippets-invoking-the-service]]
-==== Invoking the RESTful service
+==== Invoking the RESTful Service
 
-Now that the testing framework has been configured, it can be used to invoke the RESTful
-service and document the request and response. For example:
+Now that you have configured the testing framework, you can use it to invoke the RESTful
+service and document the request and response. The following examples show how to do so:
 
+====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -482,8 +507,8 @@ include::{examples-dir}/com/example/mockmvc/InvokeService.java[tags=invoke-servi
 is required.
 <2> Assert that the service produced the expected response.
 <3> Document the call to the service, writing the snippets into a directory named `index`
-that will be located beneath the configured output directory. The snippets are written by
-a `RestDocumentationResultHandler`. An instance of this class can be obtained from the
+(which is located beneath the configured output directory). The snippets are written by
+a `RestDocumentationResultHandler`. You can obtain an instance of this clas from the
 static `document` method on
 `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
 
@@ -496,24 +521,26 @@ include::{examples-dir}/com/example/webtestclient/InvokeService.java[tags=invoke
 is required.
 <2> Assert that the service produced the expected response.
 <3> Document the call to the service, writing the snippets into a directory named `index`
-that will be located beneath the configured output directory. The snippets are written by
-a `Consumer` of the `ExchangeResult`. Such a consumer can be obtained from the static
-`document` method on `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
+(which is located beneath the configured output directory). The snippets are written by
+a `Consumer` of the `ExchangeResult`. You can obtain such a consumer from the static
+`document` method on
+`org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/InvokeService.java[tags=invoke-service]
 ----
-<1> Apply the specification that was initialised in the `@Before` method.
+<1> Apply the specification that was initialized in the `@Before` method.
 <2> Indicate that an `application/json` response is required.
 <3> Document the call to the service, writing the snippets into a directory named `index`
-that will be located beneath the configured output directory. The snippets are written by
-a `RestDocumentationFilter`. An instance of this class can be obtained from the
+(which is located beneath the configured output directory). The snippets are written by
+a `RestDocumentationFilter`. You can obtain an instance of this class from the
 static `document` method on `RestAssuredRestDocumentation`  in the
 `org.springframework.restdocs.restassured3` package.
 <4> Invoke the root (`/`) of the service.
 <5> Assert that the service produce the expected response.
+====
 
 By default, six snippets are written:
 
@@ -524,18 +551,18 @@ By default, six snippets are written:
  * `<output-directory>/index/request-body.adoc`
  * `<output-directory>/index/response-body.adoc`
 
-Refer to <<documenting-your-api>> for more information about these and other snippets
+See <<documenting-your-api>> for more information about these and other snippets
 that can be produced by Spring REST Docs.
 
 
 
 [[getting-started-using-the-snippets]]
-=== Using the snippets
+=== Using the Snippets
 
-Before using the generated snippets, a `.adoc` source file must be created. You can name
-the file whatever you like as long as it has a `.adoc` suffix. The result HTML file will
-have the same name but with a `.html` suffix. The default location of the source files and
-the resulting HTML files depends on whether you are using Maven or Gradle:
+Before using the generated snippets, you must create an `.adoc` source file. You can name
+the file whatever you like as long as it has a `.adoc` suffix. The resulting HTML file
+has the same name but with an `.html` suffix. The default location of the source files and
+the resulting HTML files depends on whether you use Maven or Gradle:
 
 [cols="2,5,8"]
 |===
@@ -551,14 +578,17 @@ the resulting HTML files depends on whether you are using Maven or Gradle:
 
 |===
 
-The generated snippets can then be included in the manually created Asciidoctor file from
-above using the
+You can then include the generated snippets in the manually created Asciidoc file
+(described earlier in this section) by using the
 http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
-The `snippets` attribute that is automatically set by `spring-restdocs-asciidoctor`
-configured in the <<getting-started-build-configuration, build
-configuration>> can be used to reference the snippets output directory. For example:
+You can use The `snippets` attribute that is automatically set by
+`spring-restdocs-asciidoctor` configured in the
+<<getting-started-build-configuration,build configuration>> to reference the snippets
+output directory. The following example shows how to do so:
 
+====
 [source,adoc,indent=0]
 ----
 \include::{snippets}/index/curl-request.adoc[]
 ----
+====

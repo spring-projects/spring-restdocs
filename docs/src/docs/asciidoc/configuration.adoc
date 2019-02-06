@@ -1,17 +1,18 @@
 [[configuration]]
 == Configuration
 
-
+This section covers how to configure Spring REST Docs.
 
 [[configuration-uris]]
 === Documented URIs
 
-
+This section covers configuring documented URIs.
 
 [[configuration-uris-mockmvc]]
-==== MockMvc URI customization
+==== MockMvc URI Customization
 
-When using MockMvc, the default configuration for URIs documented by Spring REST Docs is:
+When using MockMvc, the default configuration for URIs documented by Spring REST Docs is
+as follows:
 
 |===
 |Setting |Default
@@ -27,15 +28,18 @@ When using MockMvc, the default configuration for URIs documented by Spring REST
 |===
 
 This configuration is applied by `MockMvcRestDocumentationConfigurer`. You can use its API
-to change one or more of the defaults to suit your needs:
+to change one or more of the defaults to suit your needs. The following example shows how
+to do so:
 
+====
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/mockmvc/CustomUriConfiguration.java[tags=custom-uri-configuration]
 ----
+====
 
 NOTE: If the port is set to the default for the configured scheme (port 80 for HTTP or
-port 443 for HTTPS), it will be omitted from any URIs in the generated snippets.
+port 443 for HTTPS), it is omitted from any URIs in the generated snippets.
 
 TIP: To configure a request's context path, use the `contextPath` method on
 `MockHttpServletRequestBuilder`.
@@ -43,37 +47,43 @@ TIP: To configure a request's context path, use the `contextPath` method on
 
 
 [[configuration-uris-rest-assured]]
-==== REST Assured URI customization
+==== REST Assured URI Customization
 
 REST Assured tests a service by making actual HTTP requests. As a result, URIs must be
 customized once the operation on the service has been performed but before it is
-documented. A <<customizing-requests-and-responses-preprocessors-modify-uris, REST-Assured
-specific preprocessor>> is provided for this purpose.
+documented. A
+<<customizing-requests-and-responses-preprocessors-modify-uris, REST-Assured-specific
+preprocessor>> is provided for this purpose.
 
 
 
 [[configuration-uris-webtestclient]]
-==== WebTestClient URI customization
+==== WebTestClient URI Customization
 
 When using WebTestClient, the default base for URIs documented by Spring REST
-Docs is `http://localhost:8080`. This base can be customized using the
+Docs is `http://localhost:8080`. You can customize this base by using the
 {spring-framework-api}/org/springframework/test/web/reactive/server/WebTestClient.Builder.html#baseUrl-java.lang.String-[
-`baseUrl(String)` method on `WebTestClient.Builder`]:
+`baseUrl(String)` method on `WebTestClient.Builder`]. The following example shows how to
+do so:
 
+====
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/webtestclient/CustomUriConfiguration.java[tags=custom-uri-configuration]
 ----
 <1> Configure the base of documented URIs to be `https://api.example.com`.
+====
 
 
 
 [[configuration-snippet-encoding]]
-=== Snippet encoding
+=== Snippet Encoding
 
-The default snippet encoding is `UTF-8`. You can change the default snippet encoding
-using the `RestDocumentationConfigurer` API. For example, to use `ISO-8859-1`:
+The default snippet encoding is `UTF-8`. You can change the default snippet encoding by
+using the `RestDocumentationConfigurer` API. For example, the following examples use
+`ISO-8859-1`:
 
+====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -91,20 +101,23 @@ include::{examples-dir}/com/example/webtestclient/CustomEncoding.java[tags=custo
 ----
 include::{examples-dir}/com/example/restassured/CustomEncoding.java[tags=custom-encoding]
 ----
+====
 
-TIP: When Spring REST Docs converts a request or response's content to a String, the
-`charset` specified in the `Content-Type` header will be used if it is available. In its
-absence, the JVM's default `Charset` will be used. The JVM's default `Charset` can be
-configured using the `file.encoding` system property.
+TIP: When Spring REST Docs converts the content of a request or a response to a `String`.
+The `charset` specified in the `Content-Type` header is used if it is available. In its
+absence, the JVM's default `Charset` is used. You can configure the JVM's default
+`Charset` byusing the `file.encoding` system property.
 
 
 
 [[configuration-snippet-template-format]]
-=== Snippet template format
+=== Snippet Template Format
 
 The default snippet template format is Asciidoctor. Markdown is also supported out of the
-box. You can change the default format using the `RestDocumentationConfigurer` API:
+box. You can change the default format by using the `RestDocumentationConfigurer` API.
+The following examples show how to do so:
 
+====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -122,25 +135,27 @@ include::{examples-dir}/com/example/webtestclient/CustomFormat.java[tags=custom-
 ----
 include::{examples-dir}/com/example/restassured/CustomFormat.java[tags=custom-format]
 ----
+====
 
 
 
 [[configuration-default-snippets]]
-=== Default snippets
+=== Default Snippets
 
 Six snippets are produced by default:
 
-- `curl-request`
-- `http-request`
-- `http-response`
-- `httpie-request`
-- `request-body`
-- `response-body`
+* `curl-request`
+* `http-request`
+* `http-response`
+* `httpie-request`
+* `request-body`
+* `response-body`
 
-You can change the default snippet configuration during setup using the
-`RestDocumentationConfigurer` API. For example, to only produce the `curl-request`
+You can change the default snippet configuration during setup by using the
+`RestDocumentationConfigurer` API. The following examples produce only the `curl-request`
 snippet by default:
 
+====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -158,35 +173,37 @@ include::{examples-dir}/com/example/webtestclient/CustomDefaultSnippets.java[tag
 ----
 include::{examples-dir}/com/example/restassured/CustomDefaultSnippets.java[tags=custom-default-snippets]
 ----
+====
 
 [[configuration-default-preprocessors]]
-=== Default operation preprocessors
+=== Default Operation Preprocessors
 
-You can configure default request and response preprocessors during setup using the
-`RestDocumentationConfigurer` API. For example, to remove the `Foo` headers from all requests
-and pretty print all responses:
+You can configure default request and response preprocessors during setup by using the
+`RestDocumentationConfigurer` API. The following examples remove the `Foo` headers from
+all requests and pretty print all responses:
 
+====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/CustomDefaultOperationPreprocessors.java[tags=custom-default-operation-preprocessors]
 ----
-<1> Apply a request preprocessor that will remove the header named `Foo`.
-<2> Apply a response preprocessor that will pretty print its content.
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
 ----
 include::{examples-dir}/com/example/webtestclient/CustomDefaultOperationPreprocessors.java[tags=custom-default-operation-preprocessors]
 ----
-<1> Apply a request preprocessor that will remove the header named `Foo`.
-<2> Apply a response preprocessor that will pretty print its content.
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/CustomDefaultOperationPreprocessors.java[tags=custom-default-operation-preprocessors]
 ----
-<1> Apply a request preprocessor that will remove the header named `Foo`.
-<2> Apply a response preprocessor that will pretty print its content.
-
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
+====
