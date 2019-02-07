@@ -1,13 +1,10 @@
 = Spring REST Docs
 Andy Wilkinson
-:doctype: book
-:icons: font
-:source-highlighter: highlightjs
 :toc: left
-:toclevels: 3
+:toclevels: 4
 :sectlinks:
 
-:examples-dir: ../../test/java
+:examples-dir: ../../src/test/java
 :github: https://github.com/spring-projects/spring-restdocs
 :source: {github}/tree/{branch-or-tag}
 :samples: {source}/samples

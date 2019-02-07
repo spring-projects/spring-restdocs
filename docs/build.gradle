@@ -7,6 +7,10 @@ repositories {
 	maven { url 'https://repo.spring.io/snapshot' }
 }
 
+ext {
+	docResourcesVersion = '0.1.0.RELEASE'
+}
+
 dependencies {
 	asciidoctor 'io.spring.asciidoctor:spring-asciidoctor-extensions:0.1.2.RELEASE'
 	testCompile project(':spring-restdocs-mockmvc')
@@ -21,11 +25,45 @@ dependencies {
 
 tasks.findByPath("artifactoryPublish")?.enabled = false
 
+configurations {
+	docs
+}
+
+dependencies {
+	docs "io.spring.docresources:spring-doc-resources:${docResourcesVersion}@zip"
+}
+
+task prepareAsciidocBuild(type: Sync) {
+	dependsOn configurations.docs
+	from {
+		configurations.docs.collect { zipTree(it) }
+	}
+	from 'src/docs/asciidoc/'
+	into "$buildDir/asciidoc"
+}
+
 asciidoctor {
+	dependsOn 'prepareAsciidocBuild'
+	sourceDir "$buildDir/asciidoc"
 	sources {
 		include 'index.adoc'
 	}
+	resources {
+		from(sourceDir) {
+			include 'images/*', 'css/*', 'js/**'
+		}
+	}
+	options doctype: 'book'
 	attributes	'revnumber': project.version,
+	'icons': 'font',
+	docinfo: 'shared',
+	stylesdir: 'css/',
+	stylesheet: 'spring.css',
+	'linkcss': true,
+	sectanchors: true,
+	'source-highlighter=highlight.js',
+	'highlightjsdir=js/highlight',
+	'highlightjs-theme=atom-one-dark-reasonable',
 				'branch-or-tag': project.version.endsWith('SNAPSHOT') ? 'master': "v${project.version}"
 	inputs.files(sourceSets.test.java)
 }
