@@ -3,20 +3,18 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RELEASE'
-		classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.2.RELEASE'
 	}
 }
 
 plugins {
-	id "org.asciidoctor.convert" version "1.5.3"
+	id "org.asciidoctor.convert" version "1.5.9.2"
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'eclipse'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'org.junit.platform.gradle.plugin'
 
 repositories {
 	mavenLocal()
@@ -31,7 +29,6 @@ targetCompatibility = 1.8
 
 ext {
 	snippetsDir = file('build/generated-snippets')
-	junitJupiterVersion = '5.0.0'
 }
 
 ext['spring-restdocs.version'] = '2.0.3.BUILD-SNAPSHOT'
@@ -45,12 +42,13 @@ dependencies {
 		exclude group: 'junit', module: 'junit;'
 	}
 	testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+	testCompile "org.junit.jupiter:junit-jupiter-api"
+	testRuntime "org.junit.jupiter:junit-jupiter-engine"
 }
 
 test {
 	outputs.dir snippetsDir
+	useJUnitPlatform()
 }
 
 asciidoctor {
