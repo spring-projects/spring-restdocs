@@ -263,7 +263,7 @@ methods on
 `org.springframework.restdocs.payload.PayloadDocumentation`. This can be useful when
 documenting a particular scenario where you want to focus only on a subset of the payload.
 
-TIP: By default, Spring REST Docs assume that the payload you are documenting is
+TIP: By default, Spring REST Docs assumes that the payload you are documenting is
 JSON. If you want to document an XML payload, the content type of the request or response
 must be compatible with `application/xml`.
 
@@ -277,7 +277,7 @@ This section descries how to work with fields in JSON payloads.
 
 JSON field paths use either dot notation or bracket notation. Dot notation uses '.' to
 separate each key in the path (for example, `a.b`). Bracket notation wraps each key in
-square brackets and single quotatuon marks; `['a']['b']`, for example. In either case,
+square brackets and single quotation marks (for example, `['a']['b']`). In either case,
 `[]` is used to identify an array. Dot notation is more concise, but using bracket
 notation enables the use of `.` within a key name (for example, `['a.b']`). The two
 different notations can be used in the same path (for example, `a['b']`).
@@ -415,9 +415,9 @@ examining the payload. Seven different types are supported:
 |===
 
 You can also explicitly set the type by using the `type(Object)` method on
-`FieldDescriptor`. The result of the supplied `toString` method of the `Object` is used
+`FieldDescriptor`. The result of the `toString` method of the supplied `Object` is used
 in the documentation. Typically, one of the values enumerated by `JsonFieldType` is
-used. The following example show how to do so:
+used. The following examples show how to do so:
 
 ====
 [source,java,indent=0,role="primary"]
@@ -647,7 +647,7 @@ The result is a snippet with the following contents:
 ====
 
 To make the snippet's name distinct, an identifier for the subsection is included. By
-default, this identifier is `beneath-${path}`. For example, the precding code results in
+default, this identifier is `beneath-${path}`. For example, the preceding code results in
 a snippet named `response-body-beneath-weather.temperature.adoc`. You can customized the
 identifier by using the `withSubsectionId(String)` method, as follows:
 
@@ -929,7 +929,7 @@ When documenting request parts, the test fails if an undocumented part is used i
 request. Similarly, the test also fails if a documented part is not found in the
 request and the part has not been marked as optional.
 
-You can also document Request parts in a relaxed mode where any undocumented
+You can also document request parts in a relaxed mode where any undocumented
 parts do not cause a test failure. To do so, use the `relaxedRequestParts` method on
 `org.springframework.restdocs.request.RequestDocumentation`. This can be useful
 when documenting a particular scenario where you only want to focus on a subset of the
@@ -1116,7 +1116,7 @@ the request or response.
 === Reusing Snippets
 
 It is common for an API that is being documented to have some features that are common
-across several of its resources. To avoid repetition when documenting such resources, you'
+across several of its resources. To avoid repetition when documenting such resources, you
 can reuse a `Snippet` configured with the common elements.
 
 First, create the `Snippet` that describes the common elements. The following example

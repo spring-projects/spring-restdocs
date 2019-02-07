@@ -103,8 +103,8 @@ include::{examples-dir}/com/example/restassured/CustomEncoding.java[tags=custom-
 ----
 ====
 
-TIP: When Spring REST Docs converts the content of a request or a response to a `String`.
-The `charset` specified in the `Content-Type` header is used if it is available. In its
+TIP: When Spring REST Docs converts the content of a request or a response to a `String`,
+the `charset` specified in the `Content-Type` header is used if it is available. In its
 absence, the JVM's default `Charset` is used. You can configure the JVM's default
 `Charset` byusing the `file.encoding` system property.
 

@@ -318,7 +318,7 @@ public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("cu
 ----
 ====
 
-Next, you can provide an `@Before` method to configure MockMvc, WebTestClient or REST
+Next, you must provide an `@Before` method to configure MockMvc, WebTestClient or REST
 Assured. The following examples show how to do so:
 
 ====
@@ -399,7 +399,7 @@ based on your project's build tool:
 
 
 
-Next, you can provide a `@BeforeEach` method to configure MockMvc, WebTestClient, or REST
+Next, you must provide a `@BeforeEach` method to configure MockMvc, WebTestClient, or REST
 Assured. The following listings show how to do so:
 
 ====
@@ -581,7 +581,7 @@ the resulting HTML files depends on whether you use Maven or Gradle:
 You can then include the generated snippets in the manually created Asciidoc file
 (described earlier in this section) by using the
 http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
-You can use The `snippets` attribute that is automatically set by
+You can use the `snippets` attribute that is automatically set by
 `spring-restdocs-asciidoctor` configured in the
 <<getting-started-build-configuration,build configuration>> to reference the snippets
 output directory. The following example shows how to do so:

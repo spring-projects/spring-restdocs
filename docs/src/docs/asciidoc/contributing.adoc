@@ -29,7 +29,7 @@ ideally, includes a test that reproduces it.
 [[contributing-enhancements]]
 === Enhancements
 
-If you want an enhancement to be made to Spring REST Docs, pull requests are most
+If you would like an enhancement to be made to Spring REST Docs, pull requests are most
 welcome. The source code is on {github}[GitHub]. You may want to search the
 {github}/issues?q=is%3Aissue[existing issues] and {github}/pulls?q=is%3Apr[pull requests]
 to see if the enhancement has already been proprosed. You may also want to

@@ -85,8 +85,8 @@ The preceding example is the equivalent of the following:
 [[working-with-asciidoctor-including-snippets-operation-titles]]
 ===== Section Titles
 
-For each snippet that includes `operation`, a section with a title is
-created. Default titles are provided for the following built-in snippets:
+For each snippet that is included by using the `operation` macro, a section with a title
+is created. Default titles are provided for the following built-in snippets:
 
 |===
 | Snippet | Title
@@ -204,7 +204,7 @@ The following example shows how to do so:
 ==== Avoiding Table Formatting Problems
 
 Asciidoctor uses the `|` character to delimit cells in a table. This can cause problems
-if you want a `|` to appear in a cell's contents. You can avoide the problem by
+if you want a `|` to appear in a cell's contents. You can avoid the problem by
 escaping the `|` with a backslash -- in other words, by using `\|` rather than `|`.
 
 All of the default Asciidoctor snippet templates perform this escaping automatically
