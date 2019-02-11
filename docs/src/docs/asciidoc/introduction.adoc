@@ -1,26 +1,26 @@
 [[introduction]]
 == Introduction
 
-The aim of Spring REST Docs is to help you to produce documentation for your RESTful
-services that is accurate and readable.
+The aim of Spring REST Docs is to help you produce accurate and readable documentation for
+your RESTful services.
 
 Writing high-quality documentation is difficult. One way to ease that difficulty is to use
 tools that are well-suited to the job. To this end, Spring REST Docs uses
 http://asciidoctor.org[Asciidoctor] by default. Asciidoctor processes plain text and
-produces HTML, styled and layed out to suit your needs. If you prefer, Spring REST Docs
-can also be configured to use Markdown.
+produces HTML, styled and laid out to suit your needs. If you prefer, you can also
+configure Spring REST Docs to use Markdown.
 
-Spring REST Docs makes use of snippets produced by tests written with Spring MVC's
+Spring REST Docs uses snippets produced by tests written with Spring MVC's
 {spring-framework-docs}/testing.html#spring-mvc-test-framework[test framework], Spring
 WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`] or
 http://www.rest-assured.io[REST Assured 3]. This test-driven approach helps to guarantee
-the accuracy of your service's documentation. If a snippet is incorrect the test that
-produces it will fail.
+the accuracy of your service's documentation. If a snippet is incorrect, the test that
+produces it fails.
 
 Documenting a RESTful service is largely about describing its resources. Two key parts
 of each resource's description are the details of the HTTP requests that it consumes
-and the HTTP responses that it produces. Spring REST Docs allows you to work with these
-resources and the HTTP requests and responses, shielding your documentation
-from the inner-details of your service's implementation. This separation helps you to
-document your service's API rather than its implementation. It also frees you to evolve
-the implementation without having to rework the documentation.
+and the HTTP responses that it produces. Spring REST Docs lets you work with these
+resources and the HTTP requests and responses, shielding your documentation from the
+inner-details of your service's implementation. This separation helps you document your
+service's API rather than its implementation. It also frees you to evolve the
+implementation without having to rework the documentation.
