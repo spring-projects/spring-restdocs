@@ -43,7 +43,7 @@ public class HttpHeaders {
 									"Remaining requests permitted in current period"),
 							headerWithName("X-RateLimit-Reset").description(
 									"Time at which the rate limit period will reset"))))
-			.header("Authroization", "Basic dXNlcjpzZWNyZXQ=") // <4>
+			.header("Authorization", "Basic dXNlcjpzZWNyZXQ=") // <4>
 			.when().get("/people")
 			.then().assertThat().statusCode(is(200));
 		// end::headers[]
