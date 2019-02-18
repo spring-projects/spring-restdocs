@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package com.example.webtestclient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 
@@ -34,9 +34,9 @@ public class ExampleApplicationJUnit5Tests {
 	private WebTestClient webTestClient;
 
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext,
+	public void setUp(ApplicationContext applicationContext,
 			RestDocumentationContextProvider restDocumentation) {
-		this.webTestClient = WebTestClient.bindToApplicationContext(webApplicationContext)
+		this.webTestClient = WebTestClient.bindToApplicationContext(applicationContext)
 				.configureClient()
 				.filter(documentationConfiguration(restDocumentation)) // <1>
 				.build();

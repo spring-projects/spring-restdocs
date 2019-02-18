@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package com.example.webtestclient;
 import org.junit.Before;
 import org.junit.Rule;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -37,7 +37,7 @@ public class EveryTestPreprocessing {
 	@Rule
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
-	private WebApplicationContext context;
+	private ApplicationContext context;
 
 	// tag::setup[]
 	private WebTestClient webTestClient;

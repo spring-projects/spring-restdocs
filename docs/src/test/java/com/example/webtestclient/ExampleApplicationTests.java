@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import org.junit.Before;
 import org.junit.Rule;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 
@@ -36,7 +36,7 @@ public class ExampleApplicationTests {
 	private WebTestClient webTestClient;
 
 	@Autowired
-	private WebApplicationContext context;
+	private ApplicationContext context;
 
 	@Before
 	public void setUp() {
