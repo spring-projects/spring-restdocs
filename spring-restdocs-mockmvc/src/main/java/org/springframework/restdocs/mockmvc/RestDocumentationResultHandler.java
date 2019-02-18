@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,10 +49,8 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	@Override
 	public void handle(MvcResult result) throws Exception {
-		@SuppressWarnings("unchecked")
-		Map<String, Object> configuration = (Map<String, Object>) result.getRequest()
-				.getAttribute(ATTRIBUTE_NAME_CONFIGURATION);
-		this.delegate.handle(result.getRequest(), result.getResponse(), configuration);
+		this.delegate.handle(result.getRequest(), result.getResponse(),
+				getRequiredConfiguration(result));
 	}
 
 	/**
@@ -75,10 +73,8 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 			@Override
 			public void handle(MvcResult result) throws Exception {
-				@SuppressWarnings("unchecked")
 				Map<String, Object> configuration = new HashMap<>(
-						(Map<String, Object>) result.getRequest()
-								.getAttribute(ATTRIBUTE_NAME_CONFIGURATION));
+						getRequiredConfiguration(result));
 				configuration.remove(
 						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 				getDelegate().handle(result.getRequest(), result.getResponse(),
@@ -94,6 +90,17 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	 */
 	protected final RestDocumentationGenerator<MockHttpServletRequest, MockHttpServletResponse> getDelegate() {
 		return this.delegate;
+	}
+
+	private static Map<String, Object> getRequiredConfiguration(MvcResult result) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> configuration = (Map<String, Object>) result.getRequest()
+				.getAttribute(ATTRIBUTE_NAME_CONFIGURATION);
+		Assert.state(configuration != null,
+				() -> String.format("There is no REST Docs configuration. Looks like "
+						+ "'%s' was not invoked. Please check your configuration.",
+						MockMvcRestDocumentationConfigurer.class.getName()));
+		return configuration;
 	}
 
 }

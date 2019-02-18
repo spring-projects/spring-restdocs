@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.BodyContentSpec;
 import org.springframework.test.web.reactive.server.WebTestClient.BodySpec;
 import org.springframework.test.web.reactive.server.WebTestClient.Builder;
+import org.springframework.util.Assert;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 
 /**
@@ -77,7 +78,7 @@ public abstract class WebTestClientRestDocumentation {
 			Snippet... snippets) {
 		return (result) -> new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
 				RESPONSE_CONVERTER, snippets).handle(result, result,
-						retrieveConfiguration(result));
+						getRequiredConfiguration(result));
 	}
 
 	/**
@@ -95,7 +96,7 @@ public abstract class WebTestClientRestDocumentation {
 			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
 		return (result) -> new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
 				RESPONSE_CONVERTER, requestPreprocessor, snippets).handle(result, result,
-						retrieveConfiguration(result));
+						getRequiredConfiguration(result));
 	}
 
 	/**
@@ -113,7 +114,7 @@ public abstract class WebTestClientRestDocumentation {
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
 		return (result) -> new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
 				RESPONSE_CONVERTER, responsePreprocessor, snippets).handle(result, result,
-						retrieveConfiguration(result));
+						getRequiredConfiguration(result));
 	}
 
 	/**
@@ -134,13 +135,17 @@ public abstract class WebTestClientRestDocumentation {
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
 		return (result) -> new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
 				RESPONSE_CONVERTER, requestPreprocessor, responsePreprocessor, snippets)
-						.handle(result, result, retrieveConfiguration(result));
+						.handle(result, result, getRequiredConfiguration(result));
 	}
 
-	private static Map<String, Object> retrieveConfiguration(ExchangeResult result) {
-		Map<String, Object> configuration = new HashMap<>(
-				WebTestClientRestDocumentationConfigurer
-						.retrieveConfiguration(result.getRequestHeaders()));
+	private static Map<String, Object> getRequiredConfiguration(ExchangeResult result) {
+		Map<String, Object> config = WebTestClientRestDocumentationConfigurer
+				.retrieveConfiguration(result.getRequestHeaders());
+		Assert.state(config != null, () -> String.format(
+				"There is no REST Docs configuration. Looks like '%s' "
+						+ "was not invoked or configuration has already been removed. Please check your configuration.",
+				WebTestClientRestDocumentationConfigurer.class.getName()));
+		Map<String, Object> configuration = new HashMap<>(config);
 		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
 				result.getUriTemplate());
 		return configuration;

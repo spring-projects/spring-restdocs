@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -58,6 +59,7 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
@@ -197,6 +199,23 @@ public class WebTestClientRestDocumentationIntegrationTests {
 										"$ http GET 'https://api.example.com/' \\%n"
 												+ "    'Accept:application/json' \\%n"
 												+ "    'Cookie:cookieName=cookieVal'"))));
+	}
+
+	@Test
+	public void illegalStateExceptionShouldBeThrownWhenCallDocumentWebClientNotConfigured() {
+		assertThatThrownBy(() -> this.webTestClient
+				.mutateWith((builder, httpHandlerBuilder, connector) -> builder
+						.filters(List::clear).build())
+				.get().uri("/").exchange().expectBody()
+				.consumeWith(document("default-snippets")))
+						.isInstanceOf(IllegalStateException.class)
+						.hasMessageContaining(missingConfiguration());
+	}
+
+	private String missingConfiguration() {
+		return "There is no REST Docs configuration. Looks like "
+				+ "'org.springframework.restdocs.webtestclient.WebTestClientRestDocumentationConfigurer' "
+				+ "was not invoked or configuration has already been removed. Please check your configuration.";
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {

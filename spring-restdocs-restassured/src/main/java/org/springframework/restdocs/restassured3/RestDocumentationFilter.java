@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class RestDocumentationFilter implements Filter {
 	protected Map<String, Object> getConfiguration(
 			FilterableRequestSpecification requestSpec, FilterContext context) {
 		Map<String, Object> configuration = new HashMap<>(
-				context.<Map<String, Object>>getValue(CONTEXT_KEY_CONFIGURATION));
+				getRequiredConfiguration(context));
 		configuration.put(RestDocumentationContext.class.getName(),
 				context.<RestDocumentationContext>getValue(
 						RestDocumentationContext.class.getName()));
@@ -103,6 +103,15 @@ public class RestDocumentationFilter implements Filter {
 			}
 
 		};
+	}
+
+	private static Map<String, Object> getRequiredConfiguration(FilterContext context) {
+		Map<String, Object> configuration = context.getValue(CONTEXT_KEY_CONFIGURATION);
+		Assert.state(configuration != null,
+				() -> String.format("There is no REST Docs configuration. Looks like "
+						+ "'%s' was not invoked. Please check your configuration.",
+						RestDocumentationFilter.class.getName()));
+		return configuration;
 	}
 
 }
