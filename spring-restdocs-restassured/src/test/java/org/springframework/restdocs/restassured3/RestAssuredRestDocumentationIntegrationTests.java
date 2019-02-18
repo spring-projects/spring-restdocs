@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -337,6 +338,27 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		}
 		assertThat(new File("build/generated-snippets/custom-snippet-template/curl-request.adoc"))
 				.hasContent("Custom curl request");
+	}
+
+	@Test
+	public void exceptionShouldBeThrownWhenCallDocumentRequestSpecificationNotConfigured() {
+		assertThatThrownBy(() -> given().port(tomcat.getPort()).filter(document("default")).get("/"))
+				.isInstanceOf(IllegalStateException.class).hasMessageContaining(messingConfigurationMessage());
+	}
+
+	@Test
+	public void exceptionShouldBeThrownWhenCallDocumentSnippetsRequestSpecificationNotConfigured() {
+		RestDocumentationFilter documentation = document("{method-name}-{step}");
+		assertThatThrownBy(() -> given().port(tomcat.getPort())
+				.filter(documentation.document(responseHeaders(headerWithName("a").description("one")))).get("/"))
+						.isInstanceOf(IllegalStateException.class).hasMessageContaining(messingConfigurationMessage());
+	}
+
+	private String messingConfigurationMessage() {
+		return "There is no REST Docs configuration. Looks like 'org.springframework."
+				+ "restdocs.restassured3.RestDocumentationFilter' was not invoked."
+				+ " Please check your configuration.";
+
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
