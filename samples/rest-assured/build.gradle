@@ -3,7 +3,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RELEASE'
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.3.RELEASE'
 	}
 }
 
@@ -34,11 +34,11 @@ ext {
 ext['spring-restdocs.version'] = '2.0.4.BUILD-SNAPSHOT'
 
 dependencies {
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	testCompile 'io.rest-assured:rest-assured:3.0.2'
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	testCompile 'org.springframework.restdocs:spring-restdocs-restassured'
-	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
 }
 
 test {
