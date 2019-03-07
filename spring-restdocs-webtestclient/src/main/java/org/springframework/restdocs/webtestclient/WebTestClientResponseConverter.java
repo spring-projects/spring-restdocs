@@ -17,14 +17,15 @@
 package org.springframework.restdocs.webtestclient;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
+import org.springframework.restdocs.operation.ResponseCookie;
 import org.springframework.test.web.reactive.server.ExchangeResult;
-import org.springframework.util.StringUtils;
 
 /**
  * A {@link ResponseConverter} for creating an {@link OperationResponse} derived from an
@@ -36,54 +37,32 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 
 	@Override
 	public OperationResponse convert(ExchangeResult result) {
-		return new OperationResponseFactory().create(result.getStatus(),
-				extractHeaders(result), result.getResponseBodyContent());
-	}
-
-	private HttpHeaders extractHeaders(ExchangeResult result) {
 		HttpHeaders headers = result.getResponseHeaders();
-		if (result.getResponseCookies().isEmpty()
-				|| headers.containsKey(HttpHeaders.SET_COOKIE)) {
-			return headers;
-		}
-		result.getResponseCookies().values().stream().flatMap(Collection::stream)
-				.forEach((cookie) -> headers.add(HttpHeaders.SET_COOKIE,
-						generateSetCookieHeader(cookie)));
-		return headers;
+		Collection<ResponseCookie> cookies = extractCookies(result, headers);
+		return new OperationResponseFactory().create(result.getStatus(), headers,
+				result.getResponseBodyContent(), cookies);
 	}
 
-	private String generateSetCookieHeader(ResponseCookie cookie) {
-		StringBuilder header = new StringBuilder();
-		header.append(cookie.getName());
-		header.append('=');
-		appendIfAvailable(header, cookie.getValue());
-		long maxAge = cookie.getMaxAge().getSeconds();
-		if (maxAge > -1) {
-			header.append("; Max-Age=");
-			header.append(maxAge);
+	private Collection<ResponseCookie> extractCookies(ExchangeResult result,
+			HttpHeaders headers) {
+		List<String> cookieHeaders = headers.get(HttpHeaders.COOKIE);
+		if (cookieHeaders == null) {
+			return result.getResponseCookies().values().stream().flatMap(List::stream)
+					.map(this::createResponseCookie).collect(Collectors.toSet());
 		}
-		appendIfAvailable(header, "; Domain=", cookie.getDomain());
-		appendIfAvailable(header, "; Path=", cookie.getPath());
-		if (cookie.isSecure()) {
-			header.append("; Secure");
-		}
-		if (cookie.isHttpOnly()) {
-			header.append("; HttpOnly");
-		}
-		return header.toString();
+		headers.remove(HttpHeaders.COOKIE);
+		return cookieHeaders.stream().map(this::createResponseCookie)
+				.collect(Collectors.toList());
 	}
 
-	private void appendIfAvailable(StringBuilder header, String value) {
-		if (StringUtils.hasText(value)) {
-			header.append(value);
-		}
+	private ResponseCookie createResponseCookie(
+			org.springframework.http.ResponseCookie original) {
+		return new ResponseCookie(original.getName(), original.getValue());
 	}
 
-	private void appendIfAvailable(StringBuilder header, String name, String value) {
-		if (StringUtils.hasText(value)) {
-			header.append(name);
-			header.append(value);
-		}
+	private ResponseCookie createResponseCookie(String header) {
+		String[] components = header.split("=");
+		return new ResponseCookie(components[0], components[1]);
 	}
 
 }
