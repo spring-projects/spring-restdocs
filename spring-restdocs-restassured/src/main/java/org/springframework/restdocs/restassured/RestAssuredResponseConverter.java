@@ -16,6 +16,12 @@
 
 package org.springframework.restdocs.restassured;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import io.restassured.http.Header;
 import io.restassured.response.Response;
 
@@ -23,19 +29,35 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
+import org.springframework.restdocs.operation.ResponseCookie;
 
 /**
  * A converter for creating an {@link OperationResponse} from a REST Assured
  * {@link Response}.
  *
  * @author Andy Wilkinson
+ * @author Clyde Stubbs
  */
 class RestAssuredResponseConverter implements ResponseConverter<Response> {
 
 	@Override
 	public OperationResponse convert(Response response) {
+		HttpHeaders headers = extractHeaders(response);
+		Collection<ResponseCookie> cookies = extractCookies(response, headers);
 		return new OperationResponseFactory().create(response.getStatusCode(), extractHeaders(response),
-				extractContent(response));
+				extractContent(response), cookies);
+	}
+
+	private Collection<ResponseCookie> extractCookies(Response response, HttpHeaders headers) {
+		if (response.getCookies() == null || response.getCookies().size() == 0) {
+			return Collections.emptyList();
+		}
+		List<ResponseCookie> cookies = new ArrayList<>();
+		for (Map.Entry<String, String> servletCookie : response.getCookies().entrySet()) {
+			cookies.add(new ResponseCookie(servletCookie.getKey(), servletCookie.getValue()));
+		}
+		headers.remove(HttpHeaders.COOKIE);
+		return cookies;
 	}
 
 	private HttpHeaders extractHeaders(Response response) {

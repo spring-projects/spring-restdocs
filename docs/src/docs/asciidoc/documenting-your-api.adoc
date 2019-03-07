@@ -988,6 +988,61 @@ Each contains a table describing the headers.
 When documenting HTTP Headers, the test fails if a documented header is not found in the request or response.
 
 
+[[documenting-your-api-http-cookies]]
+=== HTTP Cookies
+
+You can document the cookies in a request or response by using `requestCookies` and
+`responseCookies`, respectively. The following examples show how to do so:
+
+====
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/HttpCookies.java[tags=cookies]
+----
+<1> Configure Spring REST Docs to produce a snippet describing the request's cookies.
+	Uses the static `requestCookies` method on
+	`org.springframework.restdocs.cookies.CookieDocumentation`.
+<2> Document the `JSESSIONID` cookie. Uses the static `cookieWithName` method on
+	`org.springframework.restdocs.cookies.CookieDocumentation.
+<3> Produce a snippet describing the response's cookies. Uses the static `responseCookies`
+	method on `org.springframework.restdocs.cookies.CookieDocumentation`.
+<4> Configure the request with an `JSESSIONID` and an additional cookie `logged_in`.
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/HttpCookies.java[tags=cookies]
+----
+<1> Configure Spring REST Docs to produce a snippet describing the request's cookies.
+	Uses the static `requestCookies` method on
+	`org.springframework.restdocs.cookies.CookieDocumentation`.
+<2> Document the `JSESSIONID` cookie. Uses the static `cookieWithName` method on
+	`org.springframework.restdocs.cookies.CookieDocumentation.
+<3> Produce a snippet describing the response's cookies. Uses the static `responseCookies`
+	method on `org.springframework.restdocs.cookies.CookieDocumentation`.
+<4> Configure the request with an `JSESSIONID` and an additional cookie `logged_in`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/HttpCookies.java[tags=cookies]
+----
+<1> Configure Spring REST Docs to produce a snippet describing the request's cookies.
+	Uses the static `requestCookies` method on
+	`org.springframework.restdocs.cookies.CookieDocumentation`.
+<2> Document the `JSESSIONID` cookie. Uses the static `cookieWithName` method on
+	`org.springframework.restdocs.cookies.CookieDocumentation.
+<3> Produce a snippet describing the response's cookies. Uses the static `responseCookies`
+	method on `org.springframework.restdocs.cookies.CookieDocumentation`.
+<4> Configure the request with an `JSESSIONID` and an additional cookie `logged_in`.
+====
+
+The result is a snippet named `request-cookies.adoc` and a snippet named
+`response-cookies.adoc`. Each contains a table describing the cookies.
+
+When documenting HTTP Cookies, the test fails if a documented cookie is not found in
+the request or response.
 
 [[documenting-your-api-reusing-snippets]]
 === Reusing Snippets

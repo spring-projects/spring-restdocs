@@ -70,6 +70,14 @@ public class GeneratedSnippets extends OperationTestRule {
 		return snippet("response-headers");
 	}
 
+	public String requestCookies() {
+		return snippet("request-cookies");
+	}
+
+	public String responseCookies() {
+		return snippet("response-cookies");
+	}
+
 	public String httpRequest() {
 		return snippet("http-request");
 	}
