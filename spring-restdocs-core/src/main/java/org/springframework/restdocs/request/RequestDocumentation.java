@@ -65,8 +65,8 @@ public abstract class RequestDocumentation {
 	 * request path, a failure will also occur.
 	 * <p>
 	 * If you do not want to document a path parameter, a parameter descriptor can be
-	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
-	 * in the generated snippet while avoiding the failure described above.
+	 * marked as {@link ParameterDescriptor#ignored()}. This will prevent it from
+	 * appearing in the generated snippet while avoiding the failure described above.
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
@@ -86,8 +86,8 @@ public abstract class RequestDocumentation {
 	 * request path, a failure will also occur.
 	 * <p>
 	 * If you do not want to document a path parameter, a parameter descriptor can be
-	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
-	 * in the generated snippet while avoiding the failure described above.
+	 * marked as {@link ParameterDescriptor#ignored()}. This will prevent it from
+	 * appearing in the generated snippet while avoiding the failure described above.
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
@@ -138,8 +138,8 @@ public abstract class RequestDocumentation {
 	 * request path, a failure will also occur.
 	 * <p>
 	 * If you do not want to document a path parameter, a parameter descriptor can be
-	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
-	 * in the generated snippet while avoiding the failure described above.
+	 * marked as {@link ParameterDescriptor#ignored()}. This will prevent it from
+	 * appearing in the generated snippet while avoiding the failure described above.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
@@ -161,8 +161,8 @@ public abstract class RequestDocumentation {
 	 * request path, a failure will also occur.
 	 * <p>
 	 * If you do not want to document a path parameter, a parameter descriptor can be
-	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
-	 * in the generated snippet while avoiding the failure described above.
+	 * marked as {@link ParameterDescriptor#ignored()}. This will prevent it from
+	 * appearing in the generated snippet while avoiding the failure described above.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
@@ -217,8 +217,8 @@ public abstract class RequestDocumentation {
 	 * request, a failure will also occur.
 	 * <p>
 	 * If you do not want to document a request parameter, a parameter descriptor can be
-	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
-	 * in the generated snippet while avoiding the failure described above.
+	 * marked as {@link ParameterDescriptor#ignored()}. This will prevent it from
+	 * appearing in the generated snippet while avoiding the failure described above.
 	 * @param descriptors the descriptions of the request's parameters
 	 * @return the snippet
 	 * @see OperationRequest#getParameters()
@@ -239,8 +239,8 @@ public abstract class RequestDocumentation {
 	 * request, a failure will also occur.
 	 * <p>
 	 * If you do not want to document a request parameter, a parameter descriptor can be
-	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
-	 * in the generated snippet while avoiding the failure described above.
+	 * marked as {@link ParameterDescriptor#ignored()}. This will prevent it from
+	 * appearing in the generated snippet while avoiding the failure described above.
 	 * @param descriptors the descriptions of the request's parameters
 	 * @return the snippet
 	 * @see OperationRequest#getParameters()
@@ -294,8 +294,8 @@ public abstract class RequestDocumentation {
 	 * request, a failure will also occur.
 	 * <p>
 	 * If you do not want to document a request parameter, a parameter descriptor can be
-	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
-	 * in the generated snippet while avoiding the failure described above.
+	 * marked as {@link ParameterDescriptor#ignored()}. This will prevent it from
+	 * appearing in the generated snippet while avoiding the failure described above.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's parameters
 	 * @return the snippet that will document the parameters
@@ -318,8 +318,8 @@ public abstract class RequestDocumentation {
 	 * request, a failure will also occur.
 	 * <p>
 	 * If you do not want to document a request parameter, a parameter descriptor can be
-	 * marked as {@link ParameterDescriptor#ignored}. This will prevent it from appearing
-	 * in the generated snippet while avoiding the failure described above.
+	 * marked as {@link ParameterDescriptor#ignored()}. This will prevent it from
+	 * appearing in the generated snippet while avoiding the failure described above.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's parameters
 	 * @return the snippet that will document the parameters
@@ -376,7 +376,7 @@ public abstract class RequestDocumentation {
 	 * failure will also occur.
 	 * <p>
 	 * If you do not want to document a part, a part descriptor can be marked as
-	 * {@link RequestPartDescriptor#ignored}. This will prevent it from appearing in the
+	 * {@link RequestPartDescriptor#ignored()}. This will prevent it from appearing in the
 	 * generated snippet while avoiding the failure described above.
 	 * @param descriptors the descriptions of the request's parts
 	 * @return the snippet
@@ -396,7 +396,7 @@ public abstract class RequestDocumentation {
 	 * failure will also occur.
 	 * <p>
 	 * If you do not want to document a part, a part descriptor can be marked as
-	 * {@link RequestPartDescriptor#ignored}. This will prevent it from appearing in the
+	 * {@link RequestPartDescriptor#ignored()}. This will prevent it from appearing in the
 	 * generated snippet while avoiding the failure described above.
 	 * @param descriptors the descriptions of the request's parts
 	 * @return the snippet
@@ -448,7 +448,7 @@ public abstract class RequestDocumentation {
 	 * failure will also occur.
 	 * <p>
 	 * If you do not want to document a part, a part descriptor can be marked as
-	 * {@link RequestPartDescriptor#ignored}. This will prevent it from appearing in the
+	 * {@link RequestPartDescriptor#ignored()}. This will prevent it from appearing in the
 	 * generated snippet while avoiding the failure described above.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's parts
@@ -471,7 +471,7 @@ public abstract class RequestDocumentation {
 	 * failure will also occur.
 	 * <p>
 	 * If you do not want to document a part, a part descriptor can be marked as
-	 * {@link RequestPartDescriptor#ignored}. This will prevent it from appearing in the
+	 * {@link RequestPartDescriptor#ignored()}. This will prevent it from appearing in the
 	 * generated snippet while avoiding the failure described above.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's parts
