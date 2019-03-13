@@ -105,7 +105,6 @@ subprojects {
 
 	compileJava {
 		options.compilerArgs = [ '-Xlint:deprecation', '-Xlint:-options', '-Werror' ]
-		options.encoding = 'UTF-8'
 	}
 
 	tasks.withType(JavaCompile) {
