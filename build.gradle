@@ -107,6 +107,10 @@ subprojects {
 		options.compilerArgs = [ '-Xlint:deprecation', '-Xlint:-options', '-Werror' ]
 	}
 
+	tasks.withType(JavaCompile) {
+		options.encoding = 'UTF-8'
+	}
+
 }
 
 configure(subprojects - project(":docs")) { subproject ->
@@ -153,6 +157,7 @@ configure(subprojects - project(":docs")) { subproject ->
 		options.docTitle = "${options.header} API"
 		options.links = javadocLinks
 		options.addStringOption '-quiet'
+		options.encoding = 'UTF-8'
 	}
 
 	task sourcesJar(type: Jar) {
