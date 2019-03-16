@@ -15,12 +15,12 @@ def customizePom(pom, gradleProject) {
 			url = "https://github.com/spring-projects/spring-restdocs"
 			organization {
 				name = "Spring IO"
-				url = "http://projects.spring.io/spring-restdocs"
+				url = "https://projects.spring.io/spring-restdocs"
 			}
 			licenses {
 				license {
 					name "The Apache Software License, Version 2.0"
-					url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+					url "https://www.apache.org/licenses/LICENSE-2.0.txt"
 					distribution "repo"
 				}
 			}
