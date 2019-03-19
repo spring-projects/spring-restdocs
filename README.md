@@ -34,14 +34,14 @@ Spring REST Docs is open source software released under the [Apache 2.0 license]
 
 [1]: https://build.spring.io/plugins/servlet/buildStatusImage/SRD-PUB (Build status)
 [2]: https://build.spring.io/browse/SRD-PUB
-[3]: http://asciidoctor.org
-[4]: http://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/htmlsingle/#spring-mvc-test-framework
+[3]: https://asciidoctor.org
+[4]: https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/htmlsingle/#spring-mvc-test-framework
 [5]: https://developer.github.com/v3/
-[6]: http://swagger.io
+[6]: https://swagger.io
 [7]: https://speakerdeck.com/ankinson/documenting-restful-apis-webinar
 [8]: https://www.youtube.com/watch?v=knH5ihPNiUs&feature=youtu.be
-[9]: http://docs.spring.io/spring-restdocs/docs/
-[10]: http://gradle.org
+[9]: https://docs.spring.io/spring-restdocs/docs/
+[10]: https://gradle.org
 [11]: CODE_OF_CONDUCT.md
 [12]: https://help.github.com/articles/using-pull-requests/
 [13]: CONTRIBUTING.md
