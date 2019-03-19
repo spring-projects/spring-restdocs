@@ -37,8 +37,8 @@ sonarqube {
 ext {
 	springVersion = '4.1.8.RELEASE'
 	javadocLinks = [
-		'http://docs.oracle.com/javase/8/docs/api/',
-		"http://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
+		'https://docs.oracle.com/javase/8/docs/api/',
+		"https://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
 		'https://docs.jboss.org/hibernate/stable/beanvalidation/api/'
 	] as String[]
 }
