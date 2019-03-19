@@ -45,5 +45,5 @@ Spring REST Docs is open source software released under the [Apache 2.0 license]
 [11]: CODE_OF_CONDUCT.md
 [12]: https://help.github.com/articles/using-pull-requests/
 [13]: CONTRIBUTING.md
-[14]: http://www.apache.org/licenses/LICENSE-2.0.html
+[14]: https://www.apache.org/licenses/LICENSE-2.0.html
 
