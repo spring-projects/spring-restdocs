@@ -37,8 +37,8 @@ There are several that you can contribute to Spring REST Docs:
 
 | Name | Description |
 | ---- | ----------- |
-| [restdocs-wiremock][17] | Auto-generate [WireMock][18] stubs as part of documenting your RESTful API |
-| [restdocsext-jersey][19] | Enables Spring REST Docs to be used with [Jersey's test framework][20] |
+| [restdocs-wiremock][17] | Auto-generate WireMock stubs as part of documenting your RESTful API |
+| [restdocsext-jersey][18] | Enables Spring REST Docs to be used with [Jersey's test framework][19] |
 
 ## Licence
 
@@ -46,21 +46,20 @@ Spring REST Docs is open source software released under the [Apache 2.0 license]
 
 [1]: https://build.spring.io/plugins/servlet/buildStatusImage/SRD-PUB (Build status)
 [2]: https://build.spring.io/browse/SRD-PUB
-[3]: http://asciidoctor.org
-[4]: http://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/htmlsingle/#spring-mvc-test-framework
+[3]: https://asciidoctor.org
+[4]: https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/htmlsingle/#spring-mvc-test-framework
 [5]: https://developer.github.com/v3/
-[6]: http://swagger.io
+[6]: https://swagger.io
 [7]: https://speakerdeck.com/ankinson/documenting-restful-apis-webinar
 [8]: https://www.youtube.com/watch?v=knH5ihPNiUs&feature=youtu.be
-[9]: http://docs.spring.io/spring-restdocs/docs/
-[10]: http://gradle.org
+[9]: https://docs.spring.io/spring-restdocs/docs/
+[10]: https://gradle.org
 [11]: CODE_OF_CONDUCT.md
 [12]: https://help.github.com/articles/using-pull-requests/
 [13]: CONTRIBUTING.md
 [14]: https://www.apache.org/licenses/LICENSE-2.0.html
-[15]: http://stackoverflow.com/tags/spring-restdocs
+[15]: https://stackoverflow.com/tags/spring-restdocs
 [16]: https://gitter.im/spring-projects/spring-restdocs
 [17]: https://github.com/ePages-de/restdocs-wiremock
-[18]: http://wiremock.org/
-[19]: https://github.com/RESTDocsEXT/restdocsext-jersey
-[20]: https://jersey.java.net/documentation/latest/test-framework.html
+[18]: https://github.com/RESTDocsEXT/restdocsext-jersey
+[19]: https://jersey.java.net/documentation/latest/test-framework.html
