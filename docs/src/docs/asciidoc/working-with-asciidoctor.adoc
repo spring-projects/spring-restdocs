@@ -12,8 +12,8 @@ NOTE: Asciidoc is the document format. Asciidoctor is the tool that produces con
 [[working-with-asciidoctor-resources]]
 === Resources
 
- * http://asciidoctor.org/docs/asciidoc-syntax-quick-reference[Syntax quick reference]
- * http://asciidoctor.org/docs/user-manual[User manual]
+ * https://asciidoctor.org/docs/asciidoc-syntax-quick-reference[Syntax quick reference]
+ * https://asciidoctor.org/docs/user-manual[User manual]
 
 
 
@@ -139,7 +139,7 @@ the `curl-request` snippet to be "Example request", you can use the following at
 [[working-with-asciidoctor-including-snippets-individual]]
 ==== Including Individual Snippets
 
-The http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include
+The https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include
 macro] is used to include individual snippets in your documentation. You can use the
 `snippets` attribute (which is automatically set by `spring-restdocs-asciidoctor`
 configured  in the <<getting-started-build-configuration, build configuration>>) to
@@ -167,7 +167,7 @@ snippet is included or by using a custom snippet template.
 ==== Formatting Columns
 
 Asciidoctor has rich support for
-http://asciidoctor.org/docs/user-manual/#cols-format[formatting a table's columns]. As the
+https://asciidoctor.org/docs/user-manual/#cols-format[formatting a table's columns]. As the
 following example shows, you can specify the widths of a table's columns by using the
 `cols` attribute:
 
@@ -222,5 +222,5 @@ in a cell that contains the value of a `description` attribute:
 
 ==== Further Reading
 
-See the http://asciidoctor.org/docs/user-manual/#tables[Tables section of the
+See the https://asciidoctor.org/docs/user-manual/#tables[Tables section of the
 Asciidoctor user manual] for more information about customizing tables.

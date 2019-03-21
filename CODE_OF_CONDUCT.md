@@ -42,5 +42,5 @@ with regard to the reporter of an incident.
 This Code of Conduct is adapted from the [Contributor Covenant][1], version 1.3.0, available
 at [contributor-covenant.org/version/1/3/0/][2].
 
-[1]: http://contributor-covenant.org
-[2]: http://contributor-covenant.org/version/1/3/0/
+[1]: https://contributor-covenant.org
+[2]: https://contributor-covenant.org/version/1/3/0/

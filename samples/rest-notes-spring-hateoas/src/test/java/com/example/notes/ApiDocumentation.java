@@ -146,7 +146,7 @@ public class ApiDocumentation {
 	public void notesListExample() throws Exception {
 		this.noteRepository.deleteAll();
 
-		createNote("REST maturity model", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		createNote("REST maturity model", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 		createNote("Hypertext Application Language (HAL)", "http://stateless.co/hal_specification.html");
 		createNote("Application-Level Profile Semantics (ALPS)", "http://alps.io/spec/");
 
@@ -172,7 +172,7 @@ public class ApiDocumentation {
 
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
 		ConstrainedFields fields = new ConstrainedFields(NoteInput.class);
@@ -204,7 +204,7 @@ public class ApiDocumentation {
 
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
 		String noteLocation = this.mockMvc
@@ -270,7 +270,7 @@ public class ApiDocumentation {
 	public void noteUpdateExample() throws Exception {
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 
 		String noteLocation = this.mockMvc
 			.perform(post("/notes")

@@ -12,7 +12,7 @@ Andy Wilkinson; Jay Bryant
 :source: {github}/tree/{branch-or-tag}
 :samples: {source}/samples
 :templates: {source}spring-restdocs/src/main/resources/org/springframework/restdocs/templates
-:spring-boot-docs: http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle
+:spring-boot-docs: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle
 :spring-framework-docs: https://docs.spring.io/spring-framework/docs/5.0.x/spring-framework-reference
 :spring-framework-api: https://docs.spring.io/spring-framework/docs/5.0.x/javadoc-api
 

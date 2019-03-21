@@ -63,9 +63,9 @@ public class UriModifyingOperationPreprocessorTests {
 	public void requestUriHostCanBeModified() {
 		this.preprocessor.host("api.example.com");
 		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithUri("http://api.foo.com:12345"));
+				.preprocess(createRequestWithUri("https://api.foo.com:12345"));
 		assertThat(processed.getUri())
-				.isEqualTo(URI.create("http://api.example.com:12345"));
+				.isEqualTo(URI.create("https://api.example.com:12345"));
 		assertThat(processed.getHeaders().getFirst(HttpHeaders.HOST))
 				.isEqualTo("api.example.com:12345");
 	}
@@ -74,9 +74,9 @@ public class UriModifyingOperationPreprocessorTests {
 	public void requestUriPortCanBeModified() {
 		this.preprocessor.port(23456);
 		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithUri("http://api.example.com:12345"));
+				.preprocess(createRequestWithUri("https://api.example.com:12345"));
 		assertThat(processed.getUri())
-				.isEqualTo(URI.create("http://api.example.com:23456"));
+				.isEqualTo(URI.create("https://api.example.com:23456"));
 		assertThat(processed.getHeaders().getFirst(HttpHeaders.HOST))
 				.isEqualTo("api.example.com:23456");
 	}
@@ -85,8 +85,8 @@ public class UriModifyingOperationPreprocessorTests {
 	public void requestUriPortCanBeRemoved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithUri("http://api.example.com:12345"));
-		assertThat(processed.getUri()).isEqualTo(URI.create("http://api.example.com"));
+				.preprocess(createRequestWithUri("https://api.example.com:12345"));
+		assertThat(processed.getUri()).isEqualTo(URI.create("https://api.example.com"));
 		assertThat(processed.getHeaders().getFirst(HttpHeaders.HOST))
 				.isEqualTo("api.example.com");
 	}
@@ -95,27 +95,27 @@ public class UriModifyingOperationPreprocessorTests {
 	public void requestUriPathIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithUri("http://api.example.com:12345/foo/bar"));
+				.preprocess(createRequestWithUri("https://api.example.com:12345/foo/bar"));
 		assertThat(processed.getUri())
-				.isEqualTo(URI.create("http://api.example.com/foo/bar"));
+				.isEqualTo(URI.create("https://api.example.com/foo/bar"));
 	}
 
 	@Test
 	public void requestUriQueryIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithUri("http://api.example.com:12345?foo=bar"));
+				.preprocess(createRequestWithUri("https://api.example.com:12345?foo=bar"));
 		assertThat(processed.getUri())
-				.isEqualTo(URI.create("http://api.example.com?foo=bar"));
+				.isEqualTo(URI.create("https://api.example.com?foo=bar"));
 	}
 
 	@Test
 	public void requestUriAnchorIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithUri("http://api.example.com:12345#foo"));
+				.preprocess(createRequestWithUri("https://api.example.com:12345#foo"));
 		assertThat(processed.getUri())
-				.isEqualTo(URI.create("http://api.example.com#foo"));
+				.isEqualTo(URI.create("https://api.example.com#foo"));
 	}
 
 	@Test
@@ -135,7 +135,7 @@ public class UriModifyingOperationPreprocessorTests {
 				.preprocess(createRequestWithContent(
 						"The uri 'http://localhost:12345' should be used"));
 		assertThat(new String(processed.getContent()))
-				.isEqualTo("The uri 'http://api.example.com:12345' should be used");
+				.isEqualTo("The uri 'https://api.example.com:12345' should be used");
 	}
 
 	@Test
@@ -215,7 +215,7 @@ public class UriModifyingOperationPreprocessorTests {
 				.preprocess(createResponseWithContent(
 						"The uri 'http://localhost:12345' should be used"));
 		assertThat(new String(processed.getContent()))
-				.isEqualTo("The uri 'http://api.example.com:12345' should be used");
+				.isEqualTo("The uri 'https://api.example.com:12345' should be used");
 	}
 
 	@Test
@@ -281,26 +281,26 @@ public class UriModifyingOperationPreprocessorTests {
 	@Test
 	public void urisInRequestHeadersCanBeModified() {
 		OperationRequest processed = this.preprocessor.host("api.example.com")
-				.preprocess(createRequestWithHeader("Foo", "http://locahost:12345"));
+				.preprocess(createRequestWithHeader("Foo", "https://locahost:12345"));
 		assertThat(processed.getHeaders().getFirst("Foo"))
-				.isEqualTo("http://api.example.com:12345");
+				.isEqualTo("https://api.example.com:12345");
 		assertThat(processed.getHeaders().getFirst("Host")).isEqualTo("api.example.com");
 	}
 
 	@Test
 	public void urisInResponseHeadersCanBeModified() {
 		OperationResponse processed = this.preprocessor.host("api.example.com")
-				.preprocess(createResponseWithHeader("Foo", "http://locahost:12345"));
+				.preprocess(createResponseWithHeader("Foo", "https://locahost:12345"));
 		assertThat(processed.getHeaders().getFirst("Foo"))
-				.isEqualTo("http://api.example.com:12345");
+				.isEqualTo("https://api.example.com:12345");
 	}
 
 	@Test
 	public void urisInRequestPartHeadersCanBeModified() {
 		OperationRequest processed = this.preprocessor.host("api.example.com").preprocess(
-				createRequestWithPartWithHeader("Foo", "http://locahost:12345"));
+				createRequestWithPartWithHeader("Foo", "https://locahost:12345"));
 		assertThat(processed.getParts().iterator().next().getHeaders().getFirst("Foo"))
-				.isEqualTo("http://api.example.com:12345");
+				.isEqualTo("https://api.example.com:12345");
 	}
 
 	@Test
@@ -309,7 +309,7 @@ public class UriModifyingOperationPreprocessorTests {
 				.preprocess(createRequestWithPartWithContent(
 						"The uri 'http://localhost:12345' should be used"));
 		assertThat(new String(processed.getParts().iterator().next().getContent()))
-				.isEqualTo("The uri 'http://api.example.com:12345' should be used");
+				.isEqualTo("The uri 'https://api.example.com:12345' should be used");
 	}
 
 	@Test
