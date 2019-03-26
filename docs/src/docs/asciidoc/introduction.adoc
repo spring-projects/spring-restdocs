@@ -6,7 +6,7 @@ services that is accurate and readable.
 
 Writing high-quality documentation is difficult. One way to ease that difficulty is to use
 tools that are well-suited to the job. To this end, Spring REST Docs uses
-http://asciidoctor.org[Asciidoctor]. Asciidoctor processes plain text and produces
+https://asciidoctor.org[Asciidoctor]. Asciidoctor processes plain text and produces
 HTML, styled and layed out to suit your needs.
 
 Spring REST Docs makes use of snippets produced by tests written with

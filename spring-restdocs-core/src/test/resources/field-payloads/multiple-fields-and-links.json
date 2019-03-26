@@ -1,7 +1,7 @@
 {
 	"_links": {
-		"alpha": "http://alpha.example.com",
-		"bravo": "http://bravo.example.com"
+		"alpha": "https://alpha.example.com",
+		"bravo": "https://bravo.example.com"
 	},
 	"beta": "beta-value",
 	"charlie": "charlie-value"
