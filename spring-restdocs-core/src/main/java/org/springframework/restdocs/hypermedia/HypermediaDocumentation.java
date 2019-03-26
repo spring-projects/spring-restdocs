@@ -440,7 +440,7 @@ public abstract class HypermediaDocumentation {
 	 * {
 	 *     "_links": {
 	 *         "self": {
-	 *             "href": "http://example.com/foo"
+	 *             "href": "https://example.com/foo"
 	 *         }
 	 *     }
 	 * }
@@ -461,7 +461,7 @@ public abstract class HypermediaDocumentation {
 	 *     "links": [
 	 *         {
 	 *             "rel": "self",
-	 *             "href": "http://example.com/foo"
+	 *             "href": "https://example.com/foo"
 	 *         }
 	 *     ]
 	 * }

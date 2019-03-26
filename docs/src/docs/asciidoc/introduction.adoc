@@ -6,13 +6,13 @@ services that is accurate and readable.
 
 Writing high-quality documentation is difficult. One way to ease that difficulty is to use
 tools that are well-suited to the job. To this end, Spring REST Docs uses
-http://asciidoctor.org[Asciidoctor] by default. Asciidoctor processes plain text and
+https://asciidoctor.org[Asciidoctor] by default. Asciidoctor processes plain text and
 produces HTML, styled and layed out to suit your needs. If you prefer, Spring REST Docs
 can also be configured to use Markdown.
 
 Spring REST Docs makes use of snippets produced by tests written with
 {spring-framework-docs}/#spring-mvc-test-framework[Spring MVC Test] or
-http://www.rest-assured.io[REST Assured]. This test-driven approach helps to guarantee the
+http://rest-assured.io/[REST Assured]. This test-driven approach helps to guarantee the
 accuracy of your service's documentation. If a snippet is incorrect the test that produces
 it will fail.
 
