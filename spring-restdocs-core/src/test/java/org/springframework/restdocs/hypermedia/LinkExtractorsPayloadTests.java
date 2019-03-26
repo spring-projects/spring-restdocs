@@ -68,7 +68,8 @@ public class LinkExtractorsPayloadTests {
 	public void singleLink() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("single-link"));
-		assertLinks(Arrays.asList(new Link("alpha", "https://alpha.example.com", "Alpha")),
+		assertLinks(
+				Arrays.asList(new Link("alpha", "https://alpha.example.com", "Alpha")),
 				links);
 	}
 

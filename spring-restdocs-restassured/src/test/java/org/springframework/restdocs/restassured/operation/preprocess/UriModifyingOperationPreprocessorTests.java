@@ -94,8 +94,8 @@ public class UriModifyingOperationPreprocessorTests {
 	@Test
 	public void requestUriPathIsPreserved() {
 		this.preprocessor.removePort();
-		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithUri("https://api.example.com:12345/foo/bar"));
+		OperationRequest processed = this.preprocessor.preprocess(
+				createRequestWithUri("https://api.example.com:12345/foo/bar"));
 		assertThat(processed.getUri())
 				.isEqualTo(URI.create("https://api.example.com/foo/bar"));
 	}
@@ -103,8 +103,8 @@ public class UriModifyingOperationPreprocessorTests {
 	@Test
 	public void requestUriQueryIsPreserved() {
 		this.preprocessor.removePort();
-		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithUri("https://api.example.com:12345?foo=bar"));
+		OperationRequest processed = this.preprocessor.preprocess(
+				createRequestWithUri("https://api.example.com:12345?foo=bar"));
 		assertThat(processed.getUri())
 				.isEqualTo(URI.create("https://api.example.com?foo=bar"));
 	}

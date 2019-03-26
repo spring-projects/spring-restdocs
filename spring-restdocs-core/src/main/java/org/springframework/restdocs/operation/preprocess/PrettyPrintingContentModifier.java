@@ -82,7 +82,7 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 		public byte[] prettyPrint(byte[] original) throws Exception {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{https://xml.apache.org/xslt}indent-amount",
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
 					"4");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
 			ByteArrayOutputStream transformed = new ByteArrayOutputStream();
