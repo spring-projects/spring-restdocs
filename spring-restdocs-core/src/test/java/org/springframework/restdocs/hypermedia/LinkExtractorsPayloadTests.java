@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,8 @@ public class LinkExtractorsPayloadTests {
 	public void singleLink() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("single-link"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com", "Alpha")),
+		assertLinks(
+				Arrays.asList(new Link("alpha", "https://alpha.example.com", "Alpha")),
 				links);
 	}
 
@@ -76,8 +77,8 @@ public class LinkExtractorsPayloadTests {
 	public void multipleLinksWithDifferentRels() throws IOException {
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("multiple-links-different-rels"));
-		assertLinks(Arrays.asList(new Link("alpha", "http://alpha.example.com", "Alpha"),
-				new Link("bravo", "http://bravo.example.com")), links);
+		assertLinks(Arrays.asList(new Link("alpha", "https://alpha.example.com", "Alpha"),
+				new Link("bravo", "https://bravo.example.com")), links);
 	}
 
 	@Test
@@ -85,8 +86,8 @@ public class LinkExtractorsPayloadTests {
 		Map<String, List<Link>> links = this.linkExtractor
 				.extractLinks(createResponse("multiple-links-same-rels"));
 		assertLinks(Arrays.asList(
-				new Link("alpha", "http://alpha.example.com/one", "Alpha one"),
-				new Link("alpha", "http://alpha.example.com/two")), links);
+				new Link("alpha", "https://alpha.example.com/one", "Alpha one"),
+				new Link("alpha", "https://alpha.example.com/two")), links);
 	}
 
 	@Test

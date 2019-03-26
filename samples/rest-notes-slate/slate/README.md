@@ -27,7 +27,7 @@ Features
 
 * **Let your users update your documentation for you** — By default, your Slate-generated documentation is hosted in a public Github repository. Not only does this mean you get free hosting for your docs with Github Pages, but it also makes it simple for other developers to make pull requests to your docs if they find typos or other problems. Of course, if you don't want to use GitHub, you're also welcome to host your docs elsewhere.
 
-Getting started with Slate is super easy! Simply fork this repository and follow the instructions below. Or, if you'd like to check out what Slate is capable of, take a look at the [sample docs](http://lord.github.io/slate).
+Getting started with Slate is super easy! Simply fork this repository and follow the instructions below. Or, if you'd like to check out what Slate is capable of, take a look at the [sample docs](https://lord.github.io/slate).
 
 Getting Started with Slate
 ------------------------------
@@ -67,18 +67,18 @@ Companies Using Slate
 
 * [NASA](https://api.nasa.gov)
 * [IBM](https://docs.cloudant.com/api.html)
-* [Sony](http://developers.cimediacloud.com)
-* [Mozilla](http://localforage.github.io/localForage/)
+* [Sony](https://developers.cimediacloud.com)
+* [Mozilla](https://localforage.github.io/localForage/)
 * [Best Buy](https://bestbuyapis.github.io/api-documentation/)
 * [Travis-CI](https://docs.travis-ci.com/api/)
 * [Greenhouse](https://developers.greenhouse.io/harvest.html)
-* [Woocommerce](http://woocommerce.github.io/woocommerce-rest-api-docs/)
-* [Appium](http://appium.io/slate/en/master)
+* [Woocommerce](https://woocommerce.github.io/woocommerce-rest-api-docs/)
+* [Appium](https://appium.io/slate/en/master)
 * [Dwolla](https://docs.dwolla.com/)
 * [Clearbit](https://clearbit.com/docs)
 * [Coinbase](https://developers.coinbase.com/api)
-* [Parrot Drones](http://developer.parrot.com/docs/bebop/)
-* [Fidor Bank](http://docs.fidor.de/)
+* [Parrot Drones](https://developer.parrot.com/docs/bebop/)
+* [Fidor Bank](https://api-docs.fidor.de)
 * [Scale](https://docs.scaleapi.com/)
 
 You can view more in [the list on the wiki](https://github.com/lord/slate/wiki/Slate-in-the-Wild).
@@ -100,7 +100,7 @@ Thanks to the following people who have submitted major pull requests:
 - [@realityking](https://github.com/realityking)
 - [@cvkef](https://github.com/cvkef)
 
-Also, thanks to [Sauce Labs](http://saucelabs.com) for helping sponsor the project.
+Also, thanks to [Sauce Labs](https://saucelabs.com) for helping sponsor the project.
 
 Special Thanks
 --------------------
@@ -108,4 +108,4 @@ Special Thanks
 - [jquery.tocify.js](https://github.com/gfranko/jquery.tocify.js)
 - [middleman-syntax](https://github.com/middleman/middleman-syntax)
 - [middleman-gh-pages](https://github.com/edgecase/middleman-gh-pages)
-- [Font Awesome](http://fortawesome.github.io/Font-Awesome/)
+- [Font Awesome](https://fortawesome.github.io/Font-Awesome/)

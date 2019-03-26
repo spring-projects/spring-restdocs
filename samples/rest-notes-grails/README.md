@@ -3,7 +3,7 @@
 ## Overview
 
 This is a sample project using Grails 3, Spock, and Spring REST docs. For more
-information about the Grails framework please see [grails.org](http://grails.org).
+information about the Grails framework please see [grails.org](https://grails.org).
 
 Grails is built on top of Spring Boot and Gradle so there are a few different ways to
 run this project including:

@@ -1287,11 +1287,11 @@ A number of snippets are produced automatically when you document a request and 
 |Snippet | Description
 
 | `curl-request.adoc`
-| Contains the http://curl.haxx.se[`curl`] command that is equivalent to the `MockMvc`
+| Contains the https://curl.haxx.se[`curl`] command that is equivalent to the `MockMvc`
 call that is being documented.
 
 | `httpie-request.adoc`
-| Contains the http://httpie.org[`HTTPie`] command that is equivalent to the `MockMvc`
+| Contains the https://httpie.org[`HTTPie`] command that is equivalent to the `MockMvc`
 call that is being documented.
 
 | `http-request.adoc`

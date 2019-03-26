@@ -10,7 +10,7 @@ your contributions.
 [[contributing-questions]]
 === Questions
 
-You can ask questions about Spring REST Docs on http://stackoverflow.com[Stack Overflow]
+You can ask questions about Spring REST Docs on https://stackoverflow.com[Stack Overflow]
 by using the `spring-restdocs` tag. Similarly, we encourage you to help your fellow
 Spring REST Docs users by answering questions.
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,10 +124,10 @@ public class ApiDocumentation {
 		this.noteRepository.deleteAll();
 
 		createNote("REST maturity model",
-				"http://martinfowler.com/articles/richardsonMaturityModel.html");
+				"https://martinfowler.com/articles/richardsonMaturityModel.html");
 		createNote("Hypertext Application Language (HAL)",
-				"http://stateless.co/hal_specification.html");
-		createNote("Application-Level Profile Semantics (ALPS)", "http://alps.io/spec/");
+				"https://github.com/mikekelly/hal_specification");
+		createNote("Application-Level Profile Semantics (ALPS)", "https://github.com/alps-io/spec");
 
 		this.mockMvc.perform(get("/notes"))
 			.andExpect(status().isOk())
@@ -154,7 +154,7 @@ public class ApiDocumentation {
 
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
 		this.mockMvc.perform(
@@ -182,7 +182,7 @@ public class ApiDocumentation {
 
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
 		String noteLocation = this.mockMvc
@@ -248,7 +248,7 @@ public class ApiDocumentation {
 	public void noteUpdateExample() throws Exception {
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 
 		String noteLocation = this.mockMvc
 				.perform(

@@ -20,7 +20,7 @@ to describe the relationships between resources and to allow navigation between 
 
 [getting-started-running-the-service]
 == Running the service
-RESTful Notes is written using http://projects.spring.io/spring-boot[Spring Boot] which
+RESTful Notes is written using https://projects.spring.io/spring-boot[Spring Boot] which
 makes it easy to get it up and running so that you can start exploring the REST API.
 
 The first step is to clone the Git repository:
@@ -45,7 +45,8 @@ cURL:
 include::{snippets}/index/1/curl-request.adoc[]
 
 This request should yield the following response in the
-http://stateless.co/hal_specification.html[Hypertext Application Language (HAL)] format:
+https://github.com/mikekelly/hal_specification[Hypertext Application Language (HAL)]
+format:
 
 include::{snippets}/index/1/http-response.adoc[]
 
