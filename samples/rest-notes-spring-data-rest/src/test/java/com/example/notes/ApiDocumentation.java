@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,8 +127,8 @@ public class ApiDocumentation {
 		createNote("REST maturity model",
 				"https://martinfowler.com/articles/richardsonMaturityModel.html");
 		createNote("Hypertext Application Language (HAL)",
-				"http://stateless.co/hal_specification.html");
-		createNote("Application-Level Profile Semantics (ALPS)", "http://alps.io/spec/");
+				"https://github.com/mikekelly/hal_specification");
+		createNote("Application-Level Profile Semantics (ALPS)", "https://github.com/alps-io/spec");
 
 		this.mockMvc.perform(get("/notes"))
 			.andExpect(status().isOk())
