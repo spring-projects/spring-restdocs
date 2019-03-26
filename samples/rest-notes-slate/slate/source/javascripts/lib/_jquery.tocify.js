@@ -1,5 +1,5 @@
 /* jquery Tocify - v1.8.0 - 2013-09-16
-* http://www.gregfranko.com/jquery.tocify.js/
+* http://gregfranko.com/jquery.tocify.js/
 * Copyright (c) 2013 Greg Franko; Licensed MIT
 * Modified lightly by Robert Lord to fix a bug I found,
 * and also so it adds ids to headers
@@ -10,7 +10,7 @@
 // Immediately-Invoked Function Expression (IIFE) [Ben Alman Blog Post](http://benalman.com/news/2010/11/immediately-invoked-function-expression/) that calls another IIFE that contains all of the plugin logic.  I used this pattern so that anyone viewing this code would not have to scroll to the bottom of the page to view the local parameters that were passed to the main IIFE.
 (function(tocify) {
 
-    // ECMAScript 5 Strict Mode: [John Resig Blog Post](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)
+    // ECMAScript 5 Strict Mode: [John Resig Blog Post](https://johnresig.com/blog/ecmascript-5-strict-mode-json-and-more/)
     "use strict";
 
     // Calls the second IIFE and locally passes in the global jQuery, window, and document objects
@@ -21,7 +21,7 @@
 // Locally passes in `jQuery`, the `window` object, the `document` object, and an `undefined` variable.  The `jQuery`, `window` and `document` objects are passed in locally, to improve performance, since javascript first searches for a variable match within the local variables set before searching the global variables set.  All of the global variables are also passed in locally to be minifier friendly. `undefined` can be passed in locally, because it is not a reserved word in JavaScript.
 (function($, window, document, undefined) {
 
-    // ECMAScript 5 Strict Mode: [John Resig Blog Post](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)
+    // ECMAScript 5 Strict Mode: [John Resig Blog Post](https://johnresig.com/blog/ecmascript-5-strict-mode-json-and-more/)
     "use strict";
 
     var tocClassName = "tocify",

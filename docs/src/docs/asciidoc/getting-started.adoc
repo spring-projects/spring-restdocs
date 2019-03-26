@@ -19,12 +19,12 @@ If you want to jump straight in, a number of sample applications are available:
 | {samples}/rest-notes-spring-data-rest[Spring Data REST]
 | Maven
 | Demonstrates the creation of a getting started guide and an API guide for a service
-  implemented using http://projects.spring.io/spring-data-rest/[Spring Data REST].
+  implemented using https://projects.spring.io/spring-data-rest/[Spring Data REST].
 
 | {samples}/rest-notes-spring-hateoas[Spring HATEOAS]
 | Gradle
 | Demonstrates the creation of a getting started guide and an API guide for a service
-  implemented using http://projects.spring.io/spring-hateoas/[Spring HATEOAS].
+  implemented using https://projects.spring.io/spring-hateoas/[Spring HATEOAS].
 
 |===
 
@@ -54,7 +54,7 @@ If you want to jump straight in, a number of sample applications are available:
 | {samples}/rest-notes-slate[Slate]
 | Gradle
 | Demonstrates the use of Spring REST Docs with Markdown and
-  http://github.com/tripit/slate[Slate].
+  https://github.com/tripit/slate[Slate].
 
 | {samples}/testng[TestNG]
 | Gradle
@@ -244,7 +244,7 @@ from where it will be included in the jar file.
 === Generating documentation snippets
 Spring REST Docs uses
 {spring-framework-docs}/#spring-mvc-test-framework[Spring's MVC Test framework] or
-http://www.rest-assured.io[REST Assured] to make requests to the service that you are
+http://rest-assured.io/[REST Assured] to make requests to the service that you are
 documenting. It then produces documentation snippets for the request and the resulting
 response.
 

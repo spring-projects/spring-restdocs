@@ -147,7 +147,7 @@ public class ApiDocumentation {
 	public void notesListExample() throws Exception {
 		this.noteRepository.deleteAll();
 
-		createNote("REST maturity model", "https://martinfowler.com/articles/richardsonMaturityModel.html");
+		createNote("REST maturity model", "https://martinfowler.com/articles/richardsonMaturityModel.html");<<<<<<< HEAD
 		createNote("Hypertext Application Language (HAL)", "https://github.com/mikekelly/hal_specification");
 		createNote("Application-Level Profile Semantics (ALPS)", "https://github.com/alps-io/spec");
 

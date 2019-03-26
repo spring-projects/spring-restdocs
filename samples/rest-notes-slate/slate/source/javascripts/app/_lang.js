@@ -61,7 +61,7 @@ under the License.
 
       key = decodeURIComponent(key);
       // missing `=` should be `null`:
-      // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+      // https://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
       val = val === undefined ? null : decodeURIComponent(val);
 
       if (!ret.hasOwnProperty(key)) {
