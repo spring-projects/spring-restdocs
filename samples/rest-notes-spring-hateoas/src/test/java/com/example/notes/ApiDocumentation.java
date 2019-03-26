@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,11 +68,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringApplicationConfiguration(classes = RestNotesSpringHateoas.class)
 @WebAppConfiguration
 public class ApiDocumentation {
-	
+
 	@Rule
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build/generated-snippets");
-	
-	private RestDocumentationResultHandler documentationHandler; 
+
+	private RestDocumentationResultHandler documentationHandler;
 
 	@Autowired
 	private NoteRepository noteRepository;
@@ -93,13 +93,13 @@ public class ApiDocumentation {
 		this.documentationHandler = document("{method-name}",
 			preprocessRequest(prettyPrint()),
 			preprocessResponse(prettyPrint()));
-		
+
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.alwaysDo(this.documentationHandler)
 			.build();
 	}
-	
+
 	@Test
 	public void headersExample() throws Exception {
 		this.mockMvc
@@ -147,10 +147,10 @@ public class ApiDocumentation {
 	public void notesListExample() throws Exception {
 		this.noteRepository.deleteAll();
 
-		createNote("REST maturity model", "http://martinfowler.com/articles/richardsonMaturityModel.html");
-		createNote("Hypertext Application Language (HAL)", "http://stateless.co/hal_specification.html");
-		createNote("Application-Level Profile Semantics (ALPS)", "http://alps.io/spec/");
-		
+		createNote("REST maturity model", "https://martinfowler.com/articles/richardsonMaturityModel.html");
+		createNote("Hypertext Application Language (HAL)", "https://github.com/mikekelly/hal_specification");
+		createNote("Application-Level Profile Semantics (ALPS)", "https://github.com/alps-io/spec");
+
 		this.mockMvc
 			.perform(get("/notes"))
 			.andExpect(status().isOk())
@@ -173,11 +173,11 @@ public class ApiDocumentation {
 
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
 		ConstrainedFields fields = new ConstrainedFields(NoteInput.class);
-		
+
 		this.mockMvc
 			.perform(post("/notes")
 				.contentType(MediaTypes.HAL_JSON)
@@ -205,7 +205,7 @@ public class ApiDocumentation {
 
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
 		String noteLocation = this.mockMvc
@@ -214,7 +214,7 @@ public class ApiDocumentation {
 				.content(this.objectMapper.writeValueAsString(note)))
 			.andExpect(status().isCreated())
 			.andReturn().getResponse().getHeader("Location");
-		
+
 		this.mockMvc
 			.perform(get(noteLocation))
 			.andExpect(status().isOk())
@@ -241,7 +241,7 @@ public class ApiDocumentation {
 		createTag("REST");
 		createTag("Hypermedia");
 		createTag("HTTP");
-		
+
 		this.mockMvc
 			.perform(get("/tags"))
 			.andExpect(status().isOk())
@@ -256,7 +256,7 @@ public class ApiDocumentation {
 		tag.put("name", "REST");
 
 		ConstrainedFields fields = new ConstrainedFields(TagInput.class);
-		
+
 		this.mockMvc
 			.perform(post("/tags")
 				.contentType(MediaTypes.HAL_JSON)
@@ -271,7 +271,7 @@ public class ApiDocumentation {
 	public void noteUpdateExample() throws Exception {
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 
 		String noteLocation = this.mockMvc
 			.perform(post("/notes")
@@ -363,7 +363,7 @@ public class ApiDocumentation {
 		tagUpdate.put("name", "RESTful");
 
 		ConstrainedFields fields = new ConstrainedFields(TagPatchInput.class);
-		
+
 		this.mockMvc
 			.perform(patch(tagLocation)
 				.contentType(MediaTypes.HAL_JSON)

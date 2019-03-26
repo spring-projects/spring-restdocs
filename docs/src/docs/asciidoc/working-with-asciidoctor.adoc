@@ -9,15 +9,15 @@ relevant to Spring REST Docs.
 [[working-with-asciidoctor-resources]]
 === Resources
 
- * http://asciidoctor.org/docs/asciidoc-syntax-quick-reference[Syntax quick reference]
- * http://asciidoctor.org/docs/user-manual[User manual]
+ * https://asciidoctor.org/docs/asciidoc-syntax-quick-reference[Syntax quick reference]
+ * https://asciidoctor.org/docs/user-manual[User manual]
 
 
 
 [[working-with-asciidoctor-including-snippets]]
 === Including snippets
 
-The  http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include
+The  https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include
 macro] is used to include generated snippets in your documentation. The `snippets`
 attribute specified in the <<getting-started-build-configuration, build configuration>>
 can be used to reference the snippets output directory, for example:
@@ -42,7 +42,7 @@ snippet is included or by using a custom snippet template.
 ==== Formatting columns
 
 Asciidoctor has rich support for
-http://asciidoctor.org/docs/user-manual/#cols-format[formatting a table's columns]. For
+https://asciidoctor.org/docs/user-manual/#cols-format[formatting a table's columns]. For
 example, the widths of a table's columns can be specified using the `cols` attribute:
 
 [source,indent=0]
@@ -89,5 +89,5 @@ in a cell that contains the value of a `description` attribute:
 
 ==== Further reading
 
-Refer to the http://asciidoctor.org/docs/user-manual/#tables[Tables section of
+Refer to the https://asciidoctor.org/docs/user-manual/#tables[Tables section of
 the Asciidoctor user manual] for more information about customizing tables.

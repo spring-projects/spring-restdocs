@@ -430,7 +430,7 @@ the resulting HTML files depends on whether you are using Maven or Gradle:
 
 The generated snippets can then be included in the manually created Asciidoctor file from
 above using the
-http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
+https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
 The `snippets` attribute specified in the <<getting-started-build-configuration, build
 configuration>> can be used to reference the snippets output directory. For example:
 
