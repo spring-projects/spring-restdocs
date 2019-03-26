@@ -10,9 +10,9 @@ This section describes how to get started with Spring REST Docs.
 
 If you want to jump straight in, there are two sample applications available.
 {samples}/rest-notes-spring-hateoas[One sample] uses
-http://projects.spring.io/spring-hateoas/[Spring HATEOAS] and
+https://projects.spring.io/spring-hateoas/[Spring HATEOAS] and
 {samples}/rest-notes-spring-data-rest[the other] uses
-http://projects.spring.io/spring-data-rest/[Spring Data REST]. Both samples use
+https://projects.spring.io/spring-data-rest/[Spring Data REST]. Both samples use
 Spring REST Docs to produce a detailed API guide and a getting started walkthrough.
 
 Each sample contains a file named `api-guide.adoc` that produces an API guide for the
@@ -295,7 +295,7 @@ that can be produced by Spring REST Docs.
 === Using the snippets
 
 The generated snippets can be included in your documentation using the
-http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
+https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
 The `snippets` attribute specified in the <<getting-started-build-configuration, build
 configuration>> can be used to reference the snippets output directory. For example:
 
