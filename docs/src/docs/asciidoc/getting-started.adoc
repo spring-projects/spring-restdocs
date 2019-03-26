@@ -72,7 +72,7 @@ If you want to jump straight in, a number of sample applications are available:
 
 | {samples}/junit5[JUnit 5]
 | Gradle
-| Demonstrates the use of Spring REST Docs with http://junit.org/junit5/[JUnit 5].
+| Demonstrates the use of Spring REST Docs with https://junit.org/junit5/[JUnit 5].
 
 |===
 
