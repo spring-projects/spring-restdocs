@@ -21,4 +21,4 @@ documentation by [ERB][4]. The combined Markdown document is then turned into HT
 [1]: https://github.com/lord/slate
 [2]: slate/source/api-guide.html.md.erb
 [3]: src/test/java/com/example/notes/ApiDocumentation.java
-[4]: http://ruby-doc.org/stdlib-2.2.3/libdoc/erb/rdoc/ERB.html
+[4]: https://ruby-doc.org/stdlib-2.2.3/libdoc/erb/rdoc/ERB.html
