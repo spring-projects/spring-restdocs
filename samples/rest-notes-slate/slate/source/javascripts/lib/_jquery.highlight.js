@@ -2,7 +2,7 @@
  * jQuery Highlight plugin
  *
  * Based on highlight v3 by Johann Burkard
- * http://johannburkard.de/blog/programming/javascript/highlight-javascript-text-higlighting-jquery-plugin.html
+ * https://johannburkard.de/blog/programming/javascript/highlight-javascript-text-higlighting-jquery-plugin.html
  *
  * Code a little bit refactored and cleaned (in my humble opinion).
  * Most important changes:

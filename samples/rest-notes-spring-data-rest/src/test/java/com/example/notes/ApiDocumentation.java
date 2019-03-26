@@ -124,7 +124,7 @@ public class ApiDocumentation {
 		this.noteRepository.deleteAll();
 
 		createNote("REST maturity model",
-				"http://martinfowler.com/articles/richardsonMaturityModel.html");
+				"https://martinfowler.com/articles/richardsonMaturityModel.html");
 		createNote("Hypertext Application Language (HAL)",
 				"http://stateless.co/hal_specification.html");
 		createNote("Application-Level Profile Semantics (ALPS)", "http://alps.io/spec/");
@@ -154,7 +154,7 @@ public class ApiDocumentation {
 
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
 		this.mockMvc.perform(
@@ -182,7 +182,7 @@ public class ApiDocumentation {
 
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 		note.put("tags", Arrays.asList(tagLocation));
 
 		String noteLocation = this.mockMvc
@@ -248,7 +248,7 @@ public class ApiDocumentation {
 	public void noteUpdateExample() throws Exception {
 		Map<String, Object> note = new HashMap<String, Object>();
 		note.put("title", "REST maturity model");
-		note.put("body", "http://martinfowler.com/articles/richardsonMaturityModel.html");
+		note.put("body", "https://martinfowler.com/articles/richardsonMaturityModel.html");
 
 		String noteLocation = this.mockMvc
 				.perform(
