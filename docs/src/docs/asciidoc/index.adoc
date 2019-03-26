@@ -12,8 +12,8 @@ Andy Wilkinson
 :source: {github}/tree/{branch-or-tag}
 :samples: {source}/samples
 :templates: {source}spring-restdocs/src/main/resources/org/springframework/restdocs/templates
-:spring-boot-docs: http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle
-:spring-framework-docs: http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle
+:spring-boot-docs: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle
+:spring-framework-docs: https://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle
 
 [[abstract]]
 
