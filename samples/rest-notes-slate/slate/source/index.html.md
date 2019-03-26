@@ -55,7 +55,7 @@ let api = kittn.authorize('meowmeowmeow');
 
 > Make sure to replace `meowmeowmeow` with your API key.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](https://example.com/developers).
 
 Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
 
@@ -84,7 +84,7 @@ api.kittens.get()
 ```
 
 ```shell
-curl "http://example.com/api/kittens"
+curl "https://example.com/api/kittens"
   -H "Authorization: meowmeowmeow"
 ```
 
@@ -120,7 +120,7 @@ This endpoint retrieves all kittens.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET https://example.com/api/kittens`
 
 ### Query Parameters
 
@@ -150,7 +150,7 @@ api.kittens.get(2)
 ```
 
 ```shell
-curl "http://example.com/api/kittens/2"
+curl "https://example.com/api/kittens/2"
   -H "Authorization: meowmeowmeow"
 ```
 
@@ -179,7 +179,7 @@ This endpoint retrieves a specific kitten.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET https://example.com/kittens/<ID>`
 
 ### URL Parameters
 
