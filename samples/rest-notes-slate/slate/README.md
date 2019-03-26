@@ -7,7 +7,7 @@ Slate helps you create beautiful API documentation. Think of it as an intelligen
 
 <img src="https://dl.dropboxusercontent.com/u/95847291/github%20images/slate/slate_screenshot_new.png" width=700 alt="Screenshot of Example Documentation created with Slate">
 
-*The example above was created with Slate. Check it out at [tripit.github.io/slate](http://tripit.github.io/slate).*
+*The example above was created with Slate. Check it out at [tripit.github.io/slate](https://tripit.github.io/slate).*
 
 Features
 ------------
@@ -20,15 +20,15 @@ Features
 
 * **Write code samples in multiple languages** — if your API has bindings in multiple programming languages, you easily put in tabs to switch between them. In your document, you'll distinguish different languages by specifying the language name at the top of each code block, just like with Github Flavored Markdown!
 
-* **Out-of-the-box syntax highlighting** for [almost 60 languages](http://rouge.jayferd.us/demo), no configuration required.
+* **Out-of-the-box syntax highlighting** for [almost 60 languages](https://rouge.jayferd.us/demo), no configuration required.
 
 * **Automatic, smoothly scrolling table of contents** on the far left of the page. As you scroll, it displays your current position in the document. It's fast, too. We're using Slate at TripIt to build documentation for our new API, where our table of contents has over 180 entries. We've made sure that the performance remains excellent, even for larger documents.
 
 * **Let your users update your documentation for you** — by default, your Slate-generated documentation is hosted in a public Github repository. Not only does this mean you get free hosting for your docs with Github Pages, but it also makes it's simple for other developers to make pull requests to your docs if they find typos or other problems. Of course, if you don't want to, you're welcome to not use Github and host your docs elsewhere!
 
-Getting starting with Slate is super easy! Simply fork this repository, and then follow the instructions below. Or, if you'd like to check out what Slate is capable of, take a look at the [sample docs](http://tripit.github.io/slate).
+Getting starting with Slate is super easy! Simply fork this repository, and then follow the instructions below. Or, if you'd like to check out what Slate is capable of, take a look at the [sample docs](https://tripit.github.io/slate).
 
-<!--As an example, you can check out the [TripIt API docs](http://tripit.github.io/api), which we create with Slate. You can also view the source of the [markdown file used to generate it](http://github.com/tripit/api/blob/master/source/index.md).-->
+<!--As an example, you can check out the [TripIt API docs](https://tripit.github.io/api), which we create with Slate. You can also view the source of the [markdown file used to generate it](https://github.com/tripit/api/blob/master/source/index.md).-->
 
 Getting Started with Slate
 ------------------------------
@@ -66,34 +66,34 @@ Now that Slate is all set up your machine, you'll probably want to learn more ab
 Examples of Slate in the Wild
 ---------------------------------
 
-* [Travis-CI's API docs](http://docs.travis-ci.com/api/)
-* [Mozilla's localForage docs](http://mozilla.github.io/localForage/)
-* [Mozilla Recroom](http://mozilla.github.io/recroom/)
-* [ChaiOne Gameplan API docs](http://chaione.github.io/gameplanb2b/#introduction)
-* [Drcaban's Build a Quine tutorial](http://drcabana.github.io/build-a-quine/#introduction)
+* [Travis-CI's API docs](https://docs.travis-ci.com/api/)
+* [Mozilla's localForage docs](https://mozilla.github.io/localForage/)
+* [Mozilla Recroom](https://mozilla.github.io/recroom/)
+* [ChaiOne Gameplan API docs](https://chaione.github.io/gameplanb2b/#introduction)
+* [Drcaban's Build a Quine tutorial](https://drcabana.github.io/build-a-quine/#introduction)
 * [PricePlow API docs](https://www.priceplow.com/api/documentation)
-* [Emerging Threats API docs](http://apidocs.emergingthreats.net/)
-* [Appium docs](http://appium.io/slate/en/master)
-* [Golazon Developer](http://developer.golazon.com)
+* [Emerging Threats API docs](https://apidocs.emergingthreats.net/)
+* [Appium docs](https://appium.io/slate/en/master)
+* [Golazon Developer](https://developer.golazon.com)
 * [Dwolla API docs](https://docs.dwolla.com/)
-* [RozpisyZapasu API docs](http://www.rozpisyzapasu.cz/dev/api/)
-* [Codestar Framework Docs](http://codestarframework.com/documentation/)
+* [RozpisyZapasu API docs](https://www.rozpisyzapasu.cz/dev/api/)
+* [Codestar Framework Docs](https://codestarframework.com/documentation/)
 * [Buddycloud API](http://buddycloud.com/api)
 * [Crafty Clicks API](https://craftyclicks.co.uk/api/)
 * [Paracel API Reference](http://paracel.io/docs/api_reference.html)
-* [Switch Payments Documentation](http://switchpayments.com/docs/) & [API](http://switchpayments.com/developers/)
+* [Switch Payments Documentation](https://switchpayments.com/docs/) & [API](https://switchpayments.com/developers/)
 * [Coinbase API Reference](https://developers.coinbase.com/api)
 * [Whispir.io API](https://whispir.github.io/api)
 * [NASA API](https://data.nasa.gov/developer/external/planetary/)
 * [CardPay API](https://developers.cardpay.com/)
 * [IBM Cloudant](https://docs-testb.cloudant.com/content-review/_design/couchapp/index.html)
-* [Bitrix basis components](http://bbc.bitrix.expert/)
-* [viagogo API Documentation](http://developer.viagogo.net/)
-* [Fidor Bank API Documentation](http://docs.fidor.de/)
-* [Market Prophit API Documentation](http://developer.marketprophit.com/)
-* [OAuth.io API Documentation](http://docs.oauth.io/)
-* [Aircall for Developers](http://developer.aircall.io/)
-* [SupportKit API Docs](http://docs.supportkit.io/)
+* [Bitrix basis components](https://bbc.bitrix.expert/)
+* [viagogo API Documentation](https://developer.viagogo.net/)
+* [Fidor Bank API Documentation](https://docs.fidor.de/)
+* [Market Prophit API Documentation](https://developer.marketprophit.com/)
+* [OAuth.io API Documentation](https://docs.oauth.io/)
+* [Aircall for Developers](https://developer.aircall.io/)
+* [SupportKit API Docs](https://docs.smooch.io/)
 * [SocialRadar's LocationKit Docs](https://docs.locationkit.io/)
 * [SafetyCulture API Documentation](https://developer.safetyculture.io/)
 * [hosting.de API Documentation](https://www.hosting.de/docs/api/)
@@ -109,7 +109,7 @@ Just [submit a issue](https://github.com/tripit/slate/issues) to the Slate Githu
 Contributors
 --------------------
 
-Slate was built by [Robert Lord](https://lord.io) while at [TripIt](http://tripit.com).
+Slate was built by [Robert Lord](https://lord.io) while at [TripIt](https://tripit.com).
 
 Thanks to the following people who have submitted major pull requests:
 
@@ -117,7 +117,7 @@ Thanks to the following people who have submitted major pull requests:
 - [@bootstraponline](https://github.com/bootstraponline)
 - [@realityking](https://github.com/realityking)
 
-Also, thanks to [Sauce Labs](http://saucelabs.com) for helping sponsor the project.
+Also, thanks to [Sauce Labs](https://saucelabs.com) for helping sponsor the project.
 
 Special Thanks
 --------------------
@@ -125,4 +125,4 @@ Special Thanks
 - [jquery.tocify.js](https://github.com/gfranko/jquery.tocify.js)
 - [middleman-syntax](https://github.com/middleman/middleman-syntax)
 - [middleman-gh-pages](https://github.com/neo/middleman-gh-pages)
-- [Font Awesome](http://fortawesome.github.io/Font-Awesome/)
+- [Font Awesome](https://fortawesome.github.io/Font-Awesome/)

@@ -769,7 +769,7 @@ A number of snippets are produced automatically when you document a request and 
 call that is being documented
 
 | `httpie-request.adoc`
-| Contains the http://httpie.org[`HTTPie`] command that is equivalent to the `MockMvc`
+| Contains the https://httpie.org[`HTTPie`] command that is equivalent to the `MockMvc`
 call that is being documented
 
 | `http-request.adoc`

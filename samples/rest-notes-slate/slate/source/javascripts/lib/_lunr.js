@@ -1,5 +1,5 @@
 /**
- * lunr - http://lunrjs.com - A bit like Solr, but much smaller and not as bright - 0.5.7
+ * lunr - https://lunrjs.com - A bit like Solr, but much smaller and not as bright - 0.5.7
  * Copyright (C) 2014 Oliver Nightingale
  * MIT Licensed
  * @license
@@ -1298,12 +1298,12 @@
   /*!
    * lunr.stemmer
    * Copyright (C) 2014 Oliver Nightingale
-   * Includes code from - http://tartarus.org/~martin/PorterStemmer/js.txt
+   * Includes code from - https://tartarus.org/~martin/PorterStemmer/js.txt
    */
 
   /**
    * lunr.stemmer is an english language stemmer, this is a JavaScript
-   * implementation of the PorterStemmer taken from http://tartaurs.org/~martin
+   * implementation of the PorterStemmer taken from https://tartaurs.org/~martin
    *
    * @module
    * @param {String} str The string to stem
@@ -1689,7 +1689,7 @@
   /*!
    * lunr.stemmer
    * Copyright (C) 2014 Oliver Nightingale
-   * Includes code from - http://tartarus.org/~martin/PorterStemmer/js.txt
+   * Includes code from - https://tartarus.org/~martin/PorterStemmer/js.txt
    */
 
   /**
