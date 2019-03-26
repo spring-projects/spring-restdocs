@@ -45,7 +45,8 @@ cURL:
 include::{snippets}/index/1/curl-request.adoc[]
 
 This request should yield the following response in the
-http://stateless.co/hal_specification.html[Hypertext Application Language (HAL)] format:
+https://github.com/mikekelly/hal_specification[Hypertext Application Language (HAL)]
+format:
 
 include::{snippets}/index/1/http-response.adoc[]
 

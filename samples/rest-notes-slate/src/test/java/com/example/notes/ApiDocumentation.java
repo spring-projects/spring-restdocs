@@ -128,8 +128,8 @@ public class ApiDocumentation {
 		createNote("REST maturity model",
 				"https://martinfowler.com/articles/richardsonMaturityModel.html");
 		createNote("Hypertext Application Language (HAL)",
-				"http://stateless.co/hal_specification.html");
-		createNote("Application-Level Profile Semantics (ALPS)", "http://alps.io/spec/");
+				"https://github.com/mikekelly/hal_specification");
+		createNote("Application-Level Profile Semantics (ALPS)", "https://github.com/alps-io/spec");
 
 		this.mockMvc.perform(get("/notes"))
 			.andExpect(status().isOk())
