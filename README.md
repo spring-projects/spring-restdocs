@@ -37,7 +37,6 @@ There are several that you can contribute to Spring REST Docs:
 
 | Name | Description |
 | ---- | ----------- |
-<<<<<<< HEAD
 | [restdocs-wiremock][17] | Auto-generate WireMock stubs as part of documenting your RESTful API |
 | [restdocsext-jersey][18] | Enables Spring REST Docs to be used with [Jersey's test framework][19] |
 | [spring-auto-restdocs][20] | Uses introspection and Javadoc to automatically document request and response parameters |
