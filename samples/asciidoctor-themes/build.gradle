@@ -49,9 +49,19 @@ test {
 	outputs.dir snippetsDir
 }
 
+//This is required as we are linking css instead of embedding it
+task copyResources(type: Copy) {
+	from ("src/docs/asciidoc/stylesheets") {
+		include '*.css'
+	}
+	into("${asciidoctor.outputDir}/html5/stylesheets")
+}
+
 asciidoctor {
 	inputs.dir snippetsDir
 	dependsOn test
+	dependsOn copyResources
+	attributes 'stylesheet': 'iconic.css', stylesdir: 'stylesheets', 'linkcss': 'true'
 }
 
 bootJar {
