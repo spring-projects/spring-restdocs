@@ -11,6 +11,7 @@ buildscript {
 		classpath 'io.spring.gradle:spring-io-plugin:0.0.8.RELEASE'
 		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2'
 		classpath "io.spring.javaformat:spring-javaformat-gradle-plugin:$javaFormatVersion"
+		classpath 'io.spring.nohttp:nohttp-gradle:0.0.2.RELEASE'
 	}
 }
 
@@ -24,6 +25,7 @@ allprojects {
 
 apply plugin: 'samples'
 apply plugin: 'org.sonarqube'
+apply plugin: 'io.spring.nohttp'
 
 sonarqube {
 	properties {
@@ -34,6 +36,14 @@ sonarqube {
 		property 'sonar.links.issue', 'https://github.com/spring-projects/spring-restdocs'
 		property 'sonar.links.scm', 'https://github.com/spring-projects/spring-restdocs'
 	}
+}
+
+nohttp {
+	source.exclude 'samples/rest-notes-slate/slate/source/javascripts/lib/_jquery*.js'
+	source.exclude 'buildSrc/.gradle/**'
+	source.exclude '**/build/**'
+	source.exclude '**/target/**'
+	whitelistFile = project.file('config/nohttp/whitelist.lines')
 }
 
 ext {
