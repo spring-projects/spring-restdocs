@@ -144,7 +144,7 @@ configure(codeProjects) {
 	}
 }
 
-def publishedCodeProjects = codeProjects.findAll { codeProject -> !codeProject.name.contains('spring-restdocs-asciidoctor')}
+def publishedCodeProjects = codeProjects.findAll { codeProject -> !codeProject.name.contains('spring-restdocs-asciidoctor-')}
 configure(publishedCodeProjects) { subproject ->
 	javadoc {
 		description = "Generates project-level javadoc for use in -javadoc jar"
@@ -230,7 +230,8 @@ task api (type: Javadoc) {
 	options.links = javadocLinks
 	options.addStringOption '-quiet'
 
-	source publishedCodeProjects.collect { project -> project.sourceSets.main.allJava }
+	source publishedCodeProjects.findAll { !it.name == 'spring-restdocs-asciidoctor' }
+			.collect { it.sourceSets.main.allJava }
 
 	destinationDir = new File(buildDir, "api")
 
