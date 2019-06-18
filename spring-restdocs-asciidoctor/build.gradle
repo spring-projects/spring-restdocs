@@ -16,6 +16,9 @@ dependencies {
 }
 
 jar {
+	dependsOn ':spring-restdocs-asciidoctor-1.5:jar'
+	dependsOn ':spring-restdocs-asciidoctor-1.6:jar'
+	dependsOn ':spring-restdocs-asciidoctor-2.0:jar'
 	from configurations.merge.collect { file -> zipTree(file) }
 }
 
