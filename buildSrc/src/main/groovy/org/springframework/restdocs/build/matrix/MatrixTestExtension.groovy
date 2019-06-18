@@ -74,9 +74,6 @@ public class MatrixTestExtension {
 	}
 
 	List<List<Map<String, String>>> cartesianProduct(List<List<Map<String, String>>> lists) {
-		if (lists.size() == 1) {
-			return lists
-		}
 		return cartesianProduct(lists, 0)
 	}
 
