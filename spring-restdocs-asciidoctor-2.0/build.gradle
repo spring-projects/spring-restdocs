@@ -4,7 +4,7 @@ dependencies {
 	compileOnly "org.asciidoctor:asciidoctorj:$asciidoctorj20Version"
 	implementation project(':spring-restdocs-asciidoctor-support')
 	testCompile 'junit:junit'
-	testCompile "org.asciidoctor:asciidoctorj:$asciidoctorj15Version"
+	testCompile "org.asciidoctor:asciidoctorj:$asciidoctorj20Version"
 	testCompile 'org.assertj:assertj-core'
 	testRuntime project(':spring-restdocs-asciidoctor-support')
 }
