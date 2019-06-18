@@ -7,8 +7,8 @@ buildscript {
 	}
 	dependencies {
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
-		classpath 'io.spring.gradle:spring-io-plugin:0.0.8.RELEASE'
 		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2'
+		classpath 'io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE'
 		classpath "io.spring.javaformat:spring-javaformat-gradle-plugin:$javaFormatVersion"
 		classpath 'io.spring.nohttp:nohttp-gradle:0.0.2.RELEASE'
 	}
@@ -123,22 +123,6 @@ configure(subprojects - project(":docs")) { subproject ->
 	apply plugin: 'io.spring.javaformat'
 	apply plugin: 'checkstyle'
 	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
-
-	if (project.hasProperty('platformVersion') && subproject.path != ':spring-restdocs-asciidoctor') {
-		apply plugin: 'spring-io'
-
-		repositories {
-			maven { url "https://repo.spring.io/libs-snapshot" }
-		}
-
-		dependencyManagement {
-			springIoTestRuntime {
-				imports {
-					mavenBom "io.spring.platform:platform-bom:${platformVersion}"
-				}
-			}
-		}
-	}
 
 	checkstyle {
 		configFile = rootProject.file('config/checkstyle/checkstyle.xml')
