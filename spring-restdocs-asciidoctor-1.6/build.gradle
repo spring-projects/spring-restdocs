@@ -1,0 +1,10 @@
+description = 'AsciidoctorJ 1.6 extensions for Spring REST Docs'
+
+dependencies {
+	compileOnly "org.asciidoctor:asciidoctorj:$asciidoctorj16Version"
+	implementation project(':spring-restdocs-asciidoctor-support')
+	testCompile 'junit:junit'
+	testCompile "org.asciidoctor:asciidoctorj:$asciidoctorj16Version"
+	testCompile 'org.assertj:assertj-core'
+	testRuntime project(':spring-restdocs-asciidoctor-support')
+}

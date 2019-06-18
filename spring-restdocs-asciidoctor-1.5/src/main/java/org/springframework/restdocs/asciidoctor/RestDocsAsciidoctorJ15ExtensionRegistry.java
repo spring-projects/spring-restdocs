@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,33 @@ import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.extension.spi.ExtensionRegistry;
 
 /**
- * Asciidoctor {@link ExtensionRegistry} for Spring REST Docs.
+ * AsciidoctorJ 1.5 {@link ExtensionRegistry} for Spring REST Docs.
  *
  * @author Andy Wilkinson
  */
-public final class RestDocsExtensionRegistry implements ExtensionRegistry {
+public final class RestDocsAsciidoctorJ15ExtensionRegistry implements ExtensionRegistry {
 
 	@Override
 	public void register(Asciidoctor asciidoctor) {
+		if (!asciidoctorJ15()) {
+			return;
+		}
 		asciidoctor.javaExtensionRegistry()
-				.preprocessor(new DefaultAttributesPreprocessor());
+				.preprocessor(new DefaultAttributesAsciidoctorJ15Preprocessor());
 		asciidoctor.rubyExtensionRegistry()
-				.loadClass(RestDocsExtensionRegistry.class
+				.loadClass(RestDocsAsciidoctorJ15ExtensionRegistry.class
 						.getResourceAsStream("/extensions/operation_block_macro.rb"))
 				.blockMacro("operation", "OperationBlockMacro");
+	}
 
+	private boolean asciidoctorJ15() {
+		try {
+			return !Class.forName("org.asciidoctor.extension.JavaExtensionRegistry")
+					.isInterface();
+		}
+		catch (Throwable ex) {
+			return false;
+		}
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,36 +26,45 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for {@link DefaultAttributesPreprocessor}.
+ * Tests for {@link DefaultAttributesAsciidoctorJ16Preprocessor}.
  *
  * @author Andy Wilkinson
  */
-public class DefaultAttributesPreprocessorTests {
+public class DefaultAttributesAsciidoctorJ16PreprocessorTests {
 
 	@Test
 	public void snippetsAttributeIsSet() {
-		Options options = new Options();
-		options.setAttributes(new Attributes("projectdir=../../.."));
-		String converted = Asciidoctor.Factory.create().convert("{snippets}", options);
+		String converted = createAsciidoctor().convert("{snippets}",
+				createOptions("projectdir=../../.."));
 		assertThat(converted)
 				.contains("build" + File.separatorChar + "generated-snippets");
 	}
 
 	@Test
 	public void snippetsAttributeFromConvertArgumentIsNotOverridden() {
-		Options options = new Options();
-		options.setAttributes(new Attributes("snippets=custom projectdir=../../.."));
-		String converted = Asciidoctor.Factory.create().convert("{snippets}", options);
+		String converted = createAsciidoctor().convert("{snippets}",
+				createOptions("snippets=custom projectdir=../../.."));
 		assertThat(converted).contains("custom");
 	}
 
 	@Test
 	public void snippetsAttributeFromDocumentPreambleIsNotOverridden() {
-		Options options = new Options();
-		options.setAttributes(new Attributes("projectdir=../../.."));
-		String converted = Asciidoctor.Factory.create()
-				.convert(":snippets: custom\n{snippets}", options);
+		String converted = createAsciidoctor().convert(":snippets: custom\n{snippets}",
+				createOptions("projectdir=../../.."));
 		assertThat(converted).contains("custom");
+	}
+
+	private Options createOptions(String attributes) {
+		Options options = new Options();
+		options.setAttributes(new Attributes(attributes));
+		return options;
+	}
+
+	private Asciidoctor createAsciidoctor() {
+		Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+		asciidoctor.javaExtensionRegistry()
+				.preprocessor(new DefaultAttributesAsciidoctorJ16Preprocessor());
+		return asciidoctor;
 	}
 
 }

@@ -1,11 +1,28 @@
-description = 'Asciidoctor extensions for Spring REST Docs'
+configurations {
+	merge
+	testRuntime { extendsFrom merge }
+}
 
 dependencies {
-	provided 'org.asciidoctor:asciidoctorj'
-	testCompile 'junit:junit'
+	merge project(':spring-restdocs-asciidoctor-1.5')
+	merge project(':spring-restdocs-asciidoctor-1.6')
+	merge project(':spring-restdocs-asciidoctor-2.0')
 	testCompile 'org.apache.pdfbox:pdfbox'
-	testCompile 'org.asciidoctor:asciidoctorj'
+	testCompile 'org.asciidoctor:asciidoctorj:1.5.8.1'
 	testCompile 'org.assertj:assertj-core'
+	testCompile 'junit:junit'
 	testCompile 'org.springframework:spring-core'
 	testRuntime 'org.asciidoctor:asciidoctorj-pdf'
+}
+
+jar {
+	from configurations.merge.collect { file -> zipTree(file) }
+}
+
+matrixTest {
+	asciidoctorj {
+		group = 'org.asciidoctor'
+		artifact = 'asciidoctorj'
+		versions = [ asciidoctorj16Version, asciidoctorj20Version ]
+	}
 }

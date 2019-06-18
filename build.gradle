@@ -83,7 +83,6 @@ subprojects {
 			dependency 'io.rest-assured:rest-assured:3.0.7'
 			dependency 'org.apache.pdfbox:pdfbox:2.0.7'
 			dependency 'org.assertj:assertj-core:2.9.1'
-			dependency 'org.asciidoctor:asciidoctorj:1.5.8.1'
 			dependency 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
 			dependency 'org.hamcrest:hamcrest-core:1.3'
 			dependency 'org.hamcrest:hamcrest-library:1.3'
@@ -123,26 +122,11 @@ subprojects {
 
 }
 
-configure(subprojects - project(":docs")) { subproject ->
+def codeProjects = subprojects - project(":docs")
+configure(codeProjects) {
 	apply plugin: 'io.spring.javaformat'
 	apply plugin: 'checkstyle'
 	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
-
-	if (project.hasProperty('platformVersion') && subproject.path != ':spring-restdocs-asciidoctor') {
-		apply plugin: 'spring-io'
-
-		repositories {
-			maven { url "https://repo.spring.io/libs-snapshot" }
-		}
-
-		dependencyManagement {
-			springIoTestRuntime {
-				imports {
-					mavenBom "io.spring.platform:platform-bom:${platformVersion}"
-				}
-			}
-		}
-	}
 
 	checkstyle {
 		configFile = rootProject.file('config/checkstyle/checkstyle.xml')
@@ -158,7 +142,10 @@ configure(subprojects - project(":docs")) { subproject ->
 		checkstyle "io.spring.javaformat:spring-javaformat-checkstyle:$javaFormatVersion"
 		jacoco 'org.jacoco:org.jacoco.agent::runtime'
 	}
+}
 
+def publishedCodeProjects = codeProjects.findAll { codeProject -> !codeProject.name.contains('spring-restdocs-asciidoctor')}
+configure(publishedCodeProjects) { subproject ->
 	javadoc {
 		description = "Generates project-level javadoc for use in -javadoc jar"
 		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
@@ -243,8 +230,7 @@ task api (type: Javadoc) {
 	options.links = javadocLinks
 	options.addStringOption '-quiet'
 
-	source subprojects.findAll { project -> project.path != ":spring-restdocs-asciidoctor" }
-			.collect { project -> project.sourceSets.main.allJava }
+	source publishedCodeProjects.collect { project -> project.sourceSets.main.allJava }
 
 	destinationDir = new File(buildDir, "api")
 
