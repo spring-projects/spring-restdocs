@@ -47,8 +47,7 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
   end
 
   def add_blocks(content, doc, parent)
-    options = { safe: doc.options[:safe],
-                attributes: { 'projectdir' => doc.attr(:projectdir) } }
+    options = { safe: doc.options[:safe], attributes: doc.attributes }
     fragment = Asciidoctor.load content, options
     fragment.blocks.each do |b|
       b.parent = parent

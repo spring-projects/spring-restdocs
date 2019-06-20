@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,37 +33,46 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
 import org.asciidoctor.Options;
+import org.asciidoctor.OptionsBuilder;
+import org.asciidoctor.SafeMode;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import org.springframework.util.FileSystemUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for Ruby operation block macro.
+ * Base class for tests for the Ruby operation block macro.
  *
  * @author Gerrit Meier
  * @author Andy Wilkinson
  */
-public class OperationBlockMacroTests {
+public abstract class AbstractOperationBlockMacroTests {
 
-	private final Options options = new Options();
+	@Rule
+	public TemporaryFolder temp = new TemporaryFolder();
+
+	private Options options;
 
 	private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
 
-	@BeforeClass
-	public static void prepareOperationSnippets() throws IOException {
-		File destination = new File("build/generated-snippets/some-operation");
+	@Before
+	public void setUp() throws IOException {
+		prepareOperationSnippets(getBuildOutputLocation());
+		this.options = OptionsBuilder.options().safe(SafeMode.UNSAFE)
+				.baseDir(getSourceLocation()).get();
+		this.options.setAttributes(getAttributes());
+	}
+
+	public void prepareOperationSnippets(File buildOutputLocation) throws IOException {
+		File destination = new File(buildOutputLocation,
+				"generated-snippets/some-operation");
 		destination.mkdirs();
 		FileSystemUtils.copyRecursively(new File("src/test/resources/some-operation"),
 				destination);
-	}
-
-	@Before
-	public void setUp() {
-		this.options.setAttributes(getAttributes());
 	}
 
 	@Test
@@ -208,11 +217,11 @@ public class OperationBlockMacroTests {
 		return File.separatorChar == '\\';
 	}
 
-	private Attributes getAttributes() {
-		Attributes attributes = new Attributes();
-		attributes.setAttribute("projectdir", new File(".").getAbsolutePath());
-		return attributes;
-	}
+	protected abstract Attributes getAttributes();
+
+	protected abstract File getBuildOutputLocation();
+
+	protected abstract File getSourceLocation();
 
 	private File configurePdfOutput() {
 		this.options.setBackend("pdf");
