@@ -397,6 +397,18 @@ based on your project's build tool:
 
 |===
 
+The default can be overridden by providing an output directory when registering the
+`RestDocumentationExtension` instance:
+
+[source,java,indent=0]
+----
+public class JUnit5ExampleTests {
+    @RegisterExtension
+    static final RestDocumentationExtension restDocumentation =
+        new RestDocumentationExtension ("custom");
+}
+----
+
 
 
 Next, you must provide a `@BeforeEach` method to configure MockMvc, WebTestClient, or
