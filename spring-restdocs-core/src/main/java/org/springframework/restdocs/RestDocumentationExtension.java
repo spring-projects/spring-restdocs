@@ -32,6 +32,16 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  */
 public class RestDocumentationExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
+	private final String outputDirectory;
+
+	public RestDocumentationExtension () {
+		this(null);
+	}
+
+	public RestDocumentationExtension (String outputDirectory) {
+		this.outputDirectory = outputDirectory;
+	}
+
 	@Override
 	public void beforeEach(ExtensionContext context) throws Exception {
 		this.getDelegate(context).beforeTest(context.getRequiredTestClass(), context.getRequiredTestMethod().getName());
@@ -62,7 +72,14 @@ public class RestDocumentationExtension implements BeforeEachCallback, AfterEach
 	private ManualRestDocumentation getDelegate(ExtensionContext context) {
 		Namespace namespace = Namespace.create(getClass(), context.getUniqueId());
 		return context.getStore(namespace).getOrComputeIfAbsent(ManualRestDocumentation.class,
-				(key) -> new ManualRestDocumentation(), ManualRestDocumentation.class);
+				this::createManualRestDocumentation, ManualRestDocumentation.class);
 	}
 
+	private ManualRestDocumentation createManualRestDocumentation (Class<ManualRestDocumentation> key) {
+		if (outputDirectory != null) {
+			return new ManualRestDocumentation(outputDirectory);
+		} else {
+			return new ManualRestDocumentation();
+		}
+	}
 }
