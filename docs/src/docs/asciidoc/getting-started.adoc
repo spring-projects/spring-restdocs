@@ -397,8 +397,8 @@ based on your project's build tool:
 
 |===
 
-The default can be overridden by providing an output directory when registering the
-`RestDocumentationExtension` instance:
+If you are using JUnit 5.1 or later the default can be overridden by providing
+an output directory when registering the `RestDocumentationExtension` instance:
 
 [source,java,indent=0]
 ----
