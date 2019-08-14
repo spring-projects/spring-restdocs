@@ -16,6 +16,11 @@
 
 package org.springframework.restdocs.mockmvc;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 
 import org.springframework.http.HttpHeaders;
@@ -24,6 +29,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
+import org.springframework.restdocs.operation.ResponseCookie;
 import org.springframework.util.StringUtils;
 
 /**
@@ -31,14 +37,31 @@ import org.springframework.util.StringUtils;
  * {@link MockHttpServletResponse}.
  *
  * @author Andy Wilkinson
+ * @author Clyde Stubbs
  */
 class MockMvcResponseConverter implements ResponseConverter<MockHttpServletResponse> {
 
 	@Override
 	public OperationResponse convert(MockHttpServletResponse mockResponse) {
+		HttpHeaders headers = extractHeaders(mockResponse);
+		Collection<ResponseCookie> cookies = extractCookies(mockResponse, headers);
 		return new OperationResponseFactory().create(
-				HttpStatus.valueOf(mockResponse.getStatus()),
-				extractHeaders(mockResponse), mockResponse.getContentAsByteArray());
+				HttpStatus.valueOf(mockResponse.getStatus()), headers,
+				mockResponse.getContentAsByteArray(), cookies);
+	}
+
+	private Collection<ResponseCookie> extractCookies(MockHttpServletResponse mockRequest,
+			HttpHeaders headers) {
+		if (mockRequest.getCookies() == null || mockRequest.getCookies().length == 0) {
+			return Collections.emptyList();
+		}
+		List<ResponseCookie> cookies = new ArrayList<>();
+		for (javax.servlet.http.Cookie servletCookie : mockRequest.getCookies()) {
+			cookies.add(new ResponseCookie(servletCookie.getName(),
+					servletCookie.getValue()));
+		}
+		headers.remove(HttpHeaders.COOKIE);
+		return cookies;
 	}
 
 	private HttpHeaders extractHeaders(MockHttpServletResponse response) {

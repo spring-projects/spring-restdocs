@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.operation;
 
+import java.util.Collection;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
@@ -23,11 +25,14 @@ import org.springframework.http.HttpStatus;
  * Standard implementation of {@link OperationResponse}.
  *
  * @author Andy Wilkinson
+ * @author Clyde Stubbs
  */
 class StandardOperationResponse extends AbstractOperationMessage
 		implements OperationResponse {
 
 	private final HttpStatus status;
+
+	private Collection<ResponseCookie> cookies;
 
 	/**
 	 * Creates a new response with the given {@code status}, {@code headers}, and
@@ -35,15 +40,23 @@ class StandardOperationResponse extends AbstractOperationMessage
 	 * @param status the status of the response
 	 * @param headers the headers of the response
 	 * @param content the content of the response
+	 * @param cookies any cookies included in the response
 	 */
-	StandardOperationResponse(HttpStatus status, HttpHeaders headers, byte[] content) {
+	StandardOperationResponse(HttpStatus status, HttpHeaders headers, byte[] content,
+			Collection<ResponseCookie> cookies) {
 		super(content, headers);
 		this.status = status;
+		this.cookies = cookies;
 	}
 
 	@Override
 	public HttpStatus getStatus() {
 		return this.status;
+	}
+
+	@Override
+	public Collection<ResponseCookie> getCookies() {
+		return this.cookies;
 	}
 
 }
