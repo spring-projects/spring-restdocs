@@ -37,10 +37,9 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
 
   def do_read_snippets(snippets, parent, operation, snippet_titles)
     content = StringIO.new
-    section_level = parent.level + 1
     section_id = parent.id
     snippets.each do |snippet|
-      append_snippet_block(content, snippet, section_level, section_id,
+      append_snippet_block(content, snippet, section_id,
                            operation, snippet_titles)
     end
     content.string
@@ -51,11 +50,12 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
     fragment = Asciidoctor.load content, options
     fragment.blocks.each do |b|
       b.parent = parent
+      b.level += parent.level
       parent << b
     end
     parent.find_by.each do |b|
-	  b.parent = b.parent unless b.is_a? Asciidoctor::Document
-	end
+      b.parent = b.parent unless b.is_a? Asciidoctor::Document
+    end
   end
 
   def snippets_to_include(snippet_names, snippets_dir, operation)
@@ -78,9 +78,9 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
        .map { |file| Snippet.new(File.join(operation_dir, file), file[0..-6]) }
   end
 
-  def append_snippet_block(content, snippet, section_level, section_id,
+  def append_snippet_block(content, snippet, section_id,
                            operation, snippet_titles)
-    write_title content, snippet, section_level, section_id, snippet_titles
+    write_title content, snippet, section_id, snippet_titles
     write_content content, snippet, operation
   end
 
@@ -96,8 +96,8 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
     end
   end
 
-  def write_title(content, snippet, level, id, snippet_titles)
-    section_level = '=' * (level + 1)
+  def write_title(content, snippet, id, snippet_titles)
+    section_level = '=='
     title = snippet_titles.title_for_snippet snippet
     content.puts "[[#{id}_#{snippet.name.sub '-', '_'}]]"
     content.puts "#{section_level} #{title}"
