@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,11 +80,9 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * @param responseConverter the response converter
 	 * @param snippets the snippets
 	 */
-	public RestDocumentationGenerator(String identifier,
-			RequestConverter<REQ> requestConverter,
+	public RestDocumentationGenerator(String identifier, RequestConverter<REQ> requestConverter,
 			ResponseConverter<RESP> responseConverter, Snippet... snippets) {
-		this(identifier, requestConverter, responseConverter,
-				new IdentityOperationRequestPreprocessor(),
+		this(identifier, requestConverter, responseConverter, new IdentityOperationRequestPreprocessor(),
 				new IdentityOperationResponsePreprocessor(), snippets);
 	}
 
@@ -102,10 +100,9 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * @param requestPreprocessor the request preprocessor
 	 * @param snippets the snippets
 	 */
-	public RestDocumentationGenerator(String identifier,
-			RequestConverter<REQ> requestConverter,
-			ResponseConverter<RESP> responseConverter,
-			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
+	public RestDocumentationGenerator(String identifier, RequestConverter<REQ> requestConverter,
+			ResponseConverter<RESP> responseConverter, OperationRequestPreprocessor requestPreprocessor,
+			Snippet... snippets) {
 		this(identifier, requestConverter, responseConverter, requestPreprocessor,
 				new IdentityOperationResponsePreprocessor(), snippets);
 	}
@@ -124,13 +121,11 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * @param responsePreprocessor the response preprocessor
 	 * @param snippets the snippets
 	 */
-	public RestDocumentationGenerator(String identifier,
-			RequestConverter<REQ> requestConverter,
-			ResponseConverter<RESP> responseConverter,
-			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		this(identifier, requestConverter, responseConverter,
-				new IdentityOperationRequestPreprocessor(), responsePreprocessor,
-				snippets);
+	public RestDocumentationGenerator(String identifier, RequestConverter<REQ> requestConverter,
+			ResponseConverter<RESP> responseConverter, OperationResponsePreprocessor responsePreprocessor,
+			Snippet... snippets) {
+		this(identifier, requestConverter, responseConverter, new IdentityOperationRequestPreprocessor(),
+				responsePreprocessor, snippets);
 	}
 
 	/**
@@ -148,10 +143,8 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * @param responsePreprocessor the response preprocessor
 	 * @param snippets the snippets
 	 */
-	public RestDocumentationGenerator(String identifier,
-			RequestConverter<REQ> requestConverter,
-			ResponseConverter<RESP> responseConverter,
-			OperationRequestPreprocessor requestPreprocessor,
+	public RestDocumentationGenerator(String identifier, RequestConverter<REQ> requestConverter,
+			ResponseConverter<RESP> responseConverter, OperationRequestPreprocessor requestPreprocessor,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
 		Assert.notNull(identifier, "identifier must be non-null");
 		Assert.notNull(requestConverter, "requestConverter must be non-null");
@@ -178,14 +171,12 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * @throws RestDocumentationGenerationException if a failure occurs during handling
 	 */
 	public void handle(REQ request, RESP response, Map<String, Object> configuration) {
-		OperationRequest operationRequest = this.requestPreprocessor
-				.preprocess(this.requestConverter.convert(request));
+		OperationRequest operationRequest = this.requestPreprocessor.preprocess(this.requestConverter.convert(request));
 
 		OperationResponse operationResponse = this.responsePreprocessor
 				.preprocess(this.responseConverter.convert(response));
 		Map<String, Object> attributes = new HashMap<>(configuration);
-		Operation operation = new StandardOperation(this.identifier, operationRequest,
-				operationResponse, attributes);
+		Operation operation = new StandardOperation(this.identifier, operationRequest, operationResponse, attributes);
 		try {
 			for (Snippet snippet : getSnippets(attributes)) {
 				snippet.document(operation);
@@ -215,16 +206,14 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 	 * @return the new generator
 	 */
 	public RestDocumentationGenerator<REQ, RESP> withSnippets(Snippet... snippets) {
-		return new RestDocumentationGenerator<>(this.identifier, this.requestConverter,
-				this.responseConverter, this.requestPreprocessor,
-				this.responsePreprocessor, snippets);
+		return new RestDocumentationGenerator<>(this.identifier, this.requestConverter, this.responseConverter,
+				this.requestPreprocessor, this.responsePreprocessor, snippets);
 	}
 
 	@SuppressWarnings("unchecked")
 	private List<Snippet> getSnippets(Map<String, Object> configuration) {
 		List<Snippet> combinedSnippets = new ArrayList<>();
-		List<Snippet> defaultSnippets = (List<Snippet>) configuration
-				.get(ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+		List<Snippet> defaultSnippets = (List<Snippet>) configuration.get(ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		if (defaultSnippets != null) {
 			combinedSnippets.addAll(defaultSnippets);
 		}
@@ -234,8 +223,7 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		return combinedSnippets;
 	}
 
-	private static final class IdentityOperationRequestPreprocessor
-			implements OperationRequestPreprocessor {
+	private static final class IdentityOperationRequestPreprocessor implements OperationRequestPreprocessor {
 
 		@Override
 		public OperationRequest preprocess(OperationRequest request) {
@@ -244,8 +232,7 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 
 	}
 
-	private static final class IdentityOperationResponsePreprocessor
-			implements OperationResponsePreprocessor {
+	private static final class IdentityOperationResponsePreprocessor implements OperationResponsePreprocessor {
 
 		@Override
 		public OperationResponse preprocess(OperationResponse response) {

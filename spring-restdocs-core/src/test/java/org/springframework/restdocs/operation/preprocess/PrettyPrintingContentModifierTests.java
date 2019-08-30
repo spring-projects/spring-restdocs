@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,32 +41,29 @@ public class PrettyPrintingContentModifierTests {
 
 	@Test
 	public void prettyPrintJson() throws Exception {
-		assertThat(new PrettyPrintingContentModifier()
-				.modifyContent("{\"a\":5}".getBytes(), null))
-						.isEqualTo(String.format("{%n  \"a\" : 5%n}").getBytes());
+		assertThat(new PrettyPrintingContentModifier().modifyContent("{\"a\":5}".getBytes(), null))
+				.isEqualTo(String.format("{%n  \"a\" : 5%n}").getBytes());
 	}
 
 	@Test
 	public void prettyPrintXml() throws Exception {
-		assertThat(new PrettyPrintingContentModifier().modifyContent(
-				"<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null)).isEqualTo(
-						String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
-								+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n")
-								.getBytes());
+		assertThat(new PrettyPrintingContentModifier()
+				.modifyContent("<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null))
+						.isEqualTo(String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
+								+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n").getBytes());
 	}
 
 	@Test
 	public void empytContentIsHandledGracefully() throws Exception {
-		assertThat(new PrettyPrintingContentModifier().modifyContent("".getBytes(), null))
-				.isEqualTo("".getBytes());
+		assertThat(new PrettyPrintingContentModifier().modifyContent("".getBytes(), null)).isEqualTo("".getBytes());
 	}
 
 	@Test
 	public void nonJsonAndNonXmlContentIsHandledGracefully() throws Exception {
 		String content = "abcdefg";
 		this.outputCapture.expect(isEmptyString());
-		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(),
-				null)).isEqualTo(content.getBytes());
+		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
+				.isEqualTo(content.getBytes());
 
 	}
 
@@ -76,9 +73,9 @@ public class PrettyPrintingContentModifierTests {
 		input.put("japanese", "\u30b3\u30f3\u30c6\u30f3\u30c4");
 		ObjectMapper objectMapper = new ObjectMapper();
 		@SuppressWarnings("unchecked")
-		Map<String, String> output = objectMapper
-				.readValue(new PrettyPrintingContentModifier().modifyContent(
-						objectMapper.writeValueAsBytes(input), null), Map.class);
+		Map<String, String> output = objectMapper.readValue(
+				new PrettyPrintingContentModifier().modifyContent(objectMapper.writeValueAsBytes(input), null),
+				Map.class);
 		assertThat(output).isEqualTo(input);
 	}
 

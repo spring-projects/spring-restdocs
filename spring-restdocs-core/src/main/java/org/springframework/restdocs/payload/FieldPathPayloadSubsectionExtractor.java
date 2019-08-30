@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,13 +72,12 @@ public class FieldPathPayloadSubsectionExtractor
 	@Override
 	public byte[] extractSubsection(byte[] payload, MediaType contentType) {
 		try {
-			ExtractedField extractedField = new JsonFieldProcessor().extract(
-					this.fieldPath, objectMapper.readValue(payload, Object.class));
+			ExtractedField extractedField = new JsonFieldProcessor().extract(this.fieldPath,
+					objectMapper.readValue(payload, Object.class));
 			Object value = extractedField.getValue();
 			if (value instanceof List) {
 				List<?> extractedList = (List<?>) value;
-				Set<String> uncommonPaths = JsonFieldPaths.from(extractedList)
-						.getUncommon();
+				Set<String> uncommonPaths = JsonFieldPaths.from(extractedList).getUncommon();
 				if (uncommonPaths.isEmpty()) {
 					value = extractedList.get(0);
 				}

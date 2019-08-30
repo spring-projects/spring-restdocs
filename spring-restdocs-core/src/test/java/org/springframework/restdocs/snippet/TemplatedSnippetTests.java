@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,12 +39,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TemplatedSnippetTests {
 
 	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(
-			TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Rule
-	public GeneratedSnippets snippets = new GeneratedSnippets(
-			TemplateFormats.asciidoctor());
+	public GeneratedSnippets snippets = new GeneratedSnippets(TemplateFormats.asciidoctor());
 
 	@Test
 	public void attributesAreCopied() {
@@ -64,16 +62,13 @@ public class TemplatedSnippetTests {
 
 	@Test
 	public void snippetName() {
-		assertThat(new TestTemplatedSnippet(Collections.<String, Object>emptyMap())
-				.getSnippetName()).isEqualTo("test");
+		assertThat(new TestTemplatedSnippet(Collections.<String, Object>emptyMap()).getSnippetName()).isEqualTo("test");
 	}
 
 	@Test
 	public void multipleSnippetsCanBeProducedFromTheSameTemplate() throws IOException {
-		new TestTemplatedSnippet("one", "multiple-snippets")
-				.document(this.operationBuilder.build());
-		new TestTemplatedSnippet("two", "multiple-snippets")
-				.document(this.operationBuilder.build());
+		new TestTemplatedSnippet("one", "multiple-snippets").document(this.operationBuilder.build());
+		new TestTemplatedSnippet("two", "multiple-snippets").document(this.operationBuilder.build());
 		assertThat(this.snippets.snippet("multiple-snippets-one")).isNotNull();
 		assertThat(this.snippets.snippet("multiple-snippets-two")).isNotNull();
 	}
@@ -81,8 +76,7 @@ public class TemplatedSnippetTests {
 	private static class TestTemplatedSnippet extends TemplatedSnippet {
 
 		protected TestTemplatedSnippet(String snippetName, String templateName) {
-			super(templateName + "-" + snippetName, templateName,
-					Collections.<String, Object>emptyMap());
+			super(templateName + "-" + snippetName, templateName, Collections.<String, Object>emptyMap());
 		}
 
 		protected TestTemplatedSnippet(Map<String, Object> attributes) {

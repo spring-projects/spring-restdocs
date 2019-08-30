@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,8 @@ public class ContentTypeLinkExtractorTests {
 	@Test
 	public void extractionFailsWithNullContentType() throws IOException {
 		this.thrown.expect(IllegalStateException.class);
-		new ContentTypeLinkExtractor().extractLinks(
-				this.responseFactory.create(HttpStatus.OK, new HttpHeaders(), null));
+		new ContentTypeLinkExtractor()
+				.extractLinks(this.responseFactory.create(HttpStatus.OK, new HttpHeaders(), null));
 	}
 
 	@Test
@@ -59,8 +59,7 @@ public class ContentTypeLinkExtractorTests {
 		extractors.put(MediaType.APPLICATION_JSON, extractor);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		OperationResponse response = this.responseFactory.create(HttpStatus.OK,
-				httpHeaders, null);
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK, httpHeaders, null);
 		new ContentTypeLinkExtractor(extractors).extractLinks(response);
 		verify(extractor).extractLinks(response);
 	}
@@ -72,8 +71,7 @@ public class ContentTypeLinkExtractorTests {
 		extractors.put(MediaType.APPLICATION_JSON, extractor);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.parseMediaType("application/json;foo=bar"));
-		OperationResponse response = this.responseFactory.create(HttpStatus.OK,
-				httpHeaders, null);
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK, httpHeaders, null);
 		new ContentTypeLinkExtractor(extractors).extractLinks(response);
 		verify(extractor).extractLinks(response);
 	}

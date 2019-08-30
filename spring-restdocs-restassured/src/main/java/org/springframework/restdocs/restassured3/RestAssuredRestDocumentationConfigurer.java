@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,17 +35,15 @@ import org.springframework.restdocs.config.RestDocumentationConfigurer;
  * @author Andy Wilkinson
  * @since 1.2.0
  */
-public final class RestAssuredRestDocumentationConfigurer extends
-		RestDocumentationConfigurer<RestAssuredSnippetConfigurer, RestAssuredRestDocumentationConfigurer>
+public final class RestAssuredRestDocumentationConfigurer
+		extends RestDocumentationConfigurer<RestAssuredSnippetConfigurer, RestAssuredRestDocumentationConfigurer>
 		implements Filter {
 
-	private final RestAssuredSnippetConfigurer snippetConfigurer = new RestAssuredSnippetConfigurer(
-			this);
+	private final RestAssuredSnippetConfigurer snippetConfigurer = new RestAssuredSnippetConfigurer(this);
 
 	private final RestDocumentationContextProvider contextProvider;
 
-	RestAssuredRestDocumentationConfigurer(
-			RestDocumentationContextProvider contextProvider) {
+	RestAssuredRestDocumentationConfigurer(RestDocumentationContextProvider contextProvider) {
 		this.contextProvider = contextProvider;
 	}
 
@@ -55,13 +53,12 @@ public final class RestAssuredRestDocumentationConfigurer extends
 	}
 
 	@Override
-	public Response filter(FilterableRequestSpecification requestSpec,
-			FilterableResponseSpecification responseSpec, FilterContext filterContext) {
+	public Response filter(FilterableRequestSpecification requestSpec, FilterableResponseSpecification responseSpec,
+			FilterContext filterContext) {
 		RestDocumentationContext context = this.contextProvider.beforeOperation();
 		filterContext.setValue(RestDocumentationContext.class.getName(), context);
 		Map<String, Object> configuration = new HashMap<>();
-		filterContext.setValue(RestDocumentationFilter.CONTEXT_KEY_CONFIGURATION,
-				configuration);
+		filterContext.setValue(RestDocumentationFilter.CONTEXT_KEY_CONFIGURATION, configuration);
 		apply(configuration, context);
 		return filterContext.next(requestSpec, responseSpec);
 	}

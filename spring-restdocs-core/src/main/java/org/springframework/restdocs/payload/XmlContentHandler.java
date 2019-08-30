@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,7 @@ class XmlContentHandler implements ContentHandler {
 
 	XmlContentHandler(byte[] rawContent) {
 		try {
-			this.documentBuilder = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
+			this.documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		}
 		catch (ParserConfigurationException ex) {
 			throw new IllegalStateException("Failed to create document builder", ex);
@@ -66,8 +65,7 @@ class XmlContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public List<FieldDescriptor> findMissingFields(
-			List<FieldDescriptor> fieldDescriptors) {
+	public List<FieldDescriptor> findMissingFields(List<FieldDescriptor> fieldDescriptors) {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
 		Document payload = readPayload();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
@@ -82,11 +80,9 @@ class XmlContentHandler implements ContentHandler {
 		return missingFields;
 	}
 
-	private NodeList findMatchingNodes(FieldDescriptor fieldDescriptor,
-			Document payload) {
+	private NodeList findMatchingNodes(FieldDescriptor fieldDescriptor, Document payload) {
 		try {
-			return (NodeList) createXPath(fieldDescriptor.getPath()).evaluate(payload,
-					XPathConstants.NODESET);
+			return (NodeList) createXPath(fieldDescriptor.getPath()).evaluate(payload, XPathConstants.NODESET);
 		}
 		catch (XPathExpressionException ex) {
 			throw new PayloadHandlingException(ex);
@@ -95,16 +91,14 @@ class XmlContentHandler implements ContentHandler {
 
 	private Document readPayload() {
 		try {
-			return this.documentBuilder
-					.parse(new InputSource(new ByteArrayInputStream(this.rawContent)));
+			return this.documentBuilder.parse(new InputSource(new ByteArrayInputStream(this.rawContent)));
 		}
 		catch (Exception ex) {
 			throw new PayloadHandlingException(ex);
 		}
 	}
 
-	private XPathExpression createXPath(String fieldPath)
-			throws XPathExpressionException {
+	private XPathExpression createXPath(String fieldPath) throws XPathExpressionException {
 		return XPathFactory.newInstance().newXPath().compile(fieldPath);
 	}
 
@@ -115,8 +109,8 @@ class XmlContentHandler implements ContentHandler {
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
 			NodeList matchingNodes;
 			try {
-				matchingNodes = (NodeList) createXPath(fieldDescriptor.getPath())
-						.evaluate(payload, XPathConstants.NODESET);
+				matchingNodes = (NodeList) createXPath(fieldDescriptor.getPath()).evaluate(payload,
+						XPathConstants.NODESET);
 			}
 			catch (XPathExpressionException ex) {
 				throw new PayloadHandlingException(ex);
@@ -128,8 +122,7 @@ class XmlContentHandler implements ContentHandler {
 					attr.getOwnerElement().removeAttributeNode(attr);
 				}
 				else {
-					if (fieldDescriptor instanceof SubsectionDescriptor
-							|| isLeafNode(node)) {
+					if (fieldDescriptor instanceof SubsectionDescriptor || isLeafNode(node)) {
 						node.getParentNode().removeChild(node);
 					}
 					else {

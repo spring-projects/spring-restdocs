@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,10 +48,9 @@ public abstract class RestAssuredRestDocumentation {
 	 * @param snippets the snippets that will document the API call
 	 * @return a {@link RestDocumentationFilter} that will produce the documentation
 	 */
-	public static RestDocumentationFilter document(String identifier,
-			Snippet... snippets) {
-		return new RestDocumentationFilter(new RestDocumentationGenerator<>(identifier,
-				REQUEST_CONVERTER, RESPONSE_CONVERTER, snippets));
+	public static RestDocumentationFilter document(String identifier, Snippet... snippets) {
+		return new RestDocumentationFilter(
+				new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, snippets));
 	}
 
 	/**
@@ -63,10 +62,10 @@ public abstract class RestAssuredRestDocumentation {
 	 * @param snippets the snippets
 	 * @return a {@link RestDocumentationFilter} that will produce the documentation
 	 */
-	public static RestDocumentationFilter document(String identifier,
-			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
-		return new RestDocumentationFilter(new RestDocumentationGenerator<>(identifier,
-				REQUEST_CONVERTER, RESPONSE_CONVERTER, requestPreprocessor, snippets));
+	public static RestDocumentationFilter document(String identifier, OperationRequestPreprocessor requestPreprocessor,
+			Snippet... snippets) {
+		return new RestDocumentationFilter(new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+				RESPONSE_CONVERTER, requestPreprocessor, snippets));
 	}
 
 	/**
@@ -80,8 +79,8 @@ public abstract class RestAssuredRestDocumentation {
 	 */
 	public static RestDocumentationFilter document(String identifier,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationFilter(new RestDocumentationGenerator<>(identifier,
-				REQUEST_CONVERTER, RESPONSE_CONVERTER, responsePreprocessor, snippets));
+		return new RestDocumentationFilter(new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+				RESPONSE_CONVERTER, responsePreprocessor, snippets));
 	}
 
 	/**
@@ -95,12 +94,10 @@ public abstract class RestAssuredRestDocumentation {
 	 * @param snippets the snippets
 	 * @return a {@link RestDocumentationFilter} that will produce the documentation
 	 */
-	public static RestDocumentationFilter document(String identifier,
-			OperationRequestPreprocessor requestPreprocessor,
+	public static RestDocumentationFilter document(String identifier, OperationRequestPreprocessor requestPreprocessor,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationFilter(new RestDocumentationGenerator<>(identifier,
-				REQUEST_CONVERTER, RESPONSE_CONVERTER, requestPreprocessor,
-				responsePreprocessor, snippets));
+		return new RestDocumentationFilter(new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+				RESPONSE_CONVERTER, requestPreprocessor, responsePreprocessor, snippets));
 	}
 
 	/**

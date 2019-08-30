@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,19 +138,17 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 		}
 		URI modifiedUri = uriBuilder.build(true).toUri();
 		HttpHeaders modifiedHeaders = modify(request.getHeaders());
-		modifiedHeaders.set(HttpHeaders.HOST, modifiedUri.getHost()
-				+ ((modifiedUri.getPort() != -1) ? ":" + modifiedUri.getPort() : ""));
-		return this.contentModifyingDelegate.preprocess(new OperationRequestFactory()
-				.create(uriBuilder.build(true).toUri(), request.getMethod(),
-						request.getContent(), modifiedHeaders, request.getParameters(),
-						modify(request.getParts()), request.getCookies()));
+		modifiedHeaders.set(HttpHeaders.HOST,
+				modifiedUri.getHost() + ((modifiedUri.getPort() != -1) ? ":" + modifiedUri.getPort() : ""));
+		return this.contentModifyingDelegate.preprocess(new OperationRequestFactory().create(
+				uriBuilder.build(true).toUri(), request.getMethod(), request.getContent(), modifiedHeaders,
+				request.getParameters(), modify(request.getParts()), request.getCookies()));
 	}
 
 	@Override
 	public OperationResponse preprocess(OperationResponse response) {
-		return this.contentModifyingDelegate
-				.preprocess(new OperationResponseFactory().create(response.getStatus(),
-						modify(response.getHeaders()), response.getContent()));
+		return this.contentModifyingDelegate.preprocess(new OperationResponseFactory().create(response.getStatus(),
+				modify(response.getHeaders()), response.getContent()));
 	}
 
 	private HttpHeaders modify(HttpHeaders headers) {
@@ -163,14 +161,12 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 		return modified;
 	}
 
-	private Collection<OperationRequestPart> modify(
-			Collection<OperationRequestPart> parts) {
+	private Collection<OperationRequestPart> modify(Collection<OperationRequestPart> parts) {
 		List<OperationRequestPart> modifiedParts = new ArrayList<>();
 		OperationRequestPartFactory factory = new OperationRequestPartFactory();
 		for (OperationRequestPart part : parts) {
 			modifiedParts.add(factory.create(part.getName(), part.getSubmittedFileName(),
-					this.contentModifier.modifyContent(part.getContent(),
-							part.getHeaders().getContentType()),
+					this.contentModifier.modifyContent(part.getContent(), part.getHeaders().getContentType()),
 					modify(part.getHeaders())));
 		}
 		return modifiedParts;
@@ -178,8 +174,7 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 
 	private static final class UriModifyingContentModifier implements ContentModifier {
 
-		private static final Pattern SCHEME_HOST_PORT_PATTERN = Pattern
-				.compile("(http[s]?)://([^/:#?]+)(:[0-9]+)?");
+		private static final Pattern SCHEME_HOST_PORT_PATTERN = Pattern.compile("(http[s]?)://([^/:#?]+)(:[0-9]+)?");
 
 		private String scheme;
 
@@ -228,8 +223,7 @@ public final class UriModifyingOperationPreprocessor implements OperationPreproc
 					if (matcher.start(i) >= 0) {
 						previous = matcher.end(i);
 					}
-					builder.append(
-							getReplacement(matcher.group(i), replacements.get(i - 1)));
+					builder.append(getReplacement(matcher.group(i), replacements.get(i - 1)));
 				}
 			}
 

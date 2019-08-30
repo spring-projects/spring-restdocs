@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,62 +59,48 @@ public class RestDocumentationConfigurerTests {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.apply(configuration, createContext());
 		assertThat(configuration).containsKey(TemplateEngine.class.getName());
-		assertThat(configuration.get(TemplateEngine.class.getName()))
-				.isInstanceOf(MustacheTemplateEngine.class);
+		assertThat(configuration.get(TemplateEngine.class.getName())).isInstanceOf(MustacheTemplateEngine.class);
 		assertThat(configuration).containsKey(WriterResolver.class.getName());
-		assertThat(configuration.get(WriterResolver.class.getName()))
-				.isInstanceOf(StandardWriterResolver.class);
-		assertThat(configuration)
-				.containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-		assertThat(configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
-						.isInstanceOf(List.class);
+		assertThat(configuration.get(WriterResolver.class.getName())).isInstanceOf(StandardWriterResolver.class);
+		assertThat(configuration).containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
+				.isInstanceOf(List.class);
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-		assertThat(defaultSnippets).extracting("class").containsExactlyInAnyOrder(
-				CurlRequestSnippet.class, HttpieRequestSnippet.class,
-				HttpRequestSnippet.class, HttpResponseSnippet.class,
+		assertThat(defaultSnippets).extracting("class").containsExactlyInAnyOrder(CurlRequestSnippet.class,
+				HttpieRequestSnippet.class, HttpRequestSnippet.class, HttpResponseSnippet.class,
 				RequestBodySnippet.class, ResponseBodySnippet.class);
 		assertThat(configuration).containsKey(SnippetConfiguration.class.getName());
-		assertThat(configuration.get(SnippetConfiguration.class.getName()))
-				.isInstanceOf(SnippetConfiguration.class);
+		assertThat(configuration.get(SnippetConfiguration.class.getName())).isInstanceOf(SnippetConfiguration.class);
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getEncoding()).isEqualTo("UTF-8");
-		assertThat(snippetConfiguration.getTemplateFormat().getId())
-				.isEqualTo(TemplateFormats.asciidoctor().getId());
+		assertThat(snippetConfiguration.getTemplateFormat().getId()).isEqualTo(TemplateFormats.asciidoctor().getId());
 	}
 
 	@Test
 	public void customTemplateEngine() {
 		Map<String, Object> configuration = new HashMap<>();
 		TemplateEngine templateEngine = mock(TemplateEngine.class);
-		this.configurer.templateEngine(templateEngine).apply(configuration,
-				createContext());
-		assertThat(configuration).containsEntry(TemplateEngine.class.getName(),
-				templateEngine);
+		this.configurer.templateEngine(templateEngine).apply(configuration, createContext());
+		assertThat(configuration).containsEntry(TemplateEngine.class.getName(), templateEngine);
 	}
 
 	@Test
 	public void customWriterResolver() {
 		Map<String, Object> configuration = new HashMap<>();
 		WriterResolver writerResolver = mock(WriterResolver.class);
-		this.configurer.writerResolver(writerResolver).apply(configuration,
-				createContext());
-		assertThat(configuration).containsEntry(WriterResolver.class.getName(),
-				writerResolver);
+		this.configurer.writerResolver(writerResolver).apply(configuration, createContext());
+		assertThat(configuration).containsEntry(WriterResolver.class.getName(), writerResolver);
 	}
 
 	@Test
 	public void customDefaultSnippets() {
 		Map<String, Object> configuration = new HashMap<>();
-		this.configurer.snippets().withDefaults(CliDocumentation.curlRequest())
-				.apply(configuration, createContext());
-		assertThat(configuration)
-				.containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-		assertThat(configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
-						.isInstanceOf(List.class);
+		this.configurer.snippets().withDefaults(CliDocumentation.curlRequest()).apply(configuration, createContext());
+		assertThat(configuration).containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
+				.isInstanceOf(List.class);
 		@SuppressWarnings("unchecked")
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
@@ -127,29 +113,23 @@ public class RestDocumentationConfigurerTests {
 	public void additionalDefaultSnippets() {
 		Map<String, Object> configuration = new HashMap<>();
 		Snippet snippet = mock(Snippet.class);
-		this.configurer.snippets().withAdditionalDefaults(snippet).apply(configuration,
-				createContext());
-		assertThat(configuration)
-				.containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-		assertThat(configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
-						.isInstanceOf(List.class);
+		this.configurer.snippets().withAdditionalDefaults(snippet).apply(configuration, createContext());
+		assertThat(configuration).containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
+				.isInstanceOf(List.class);
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-		assertThat(defaultSnippets).extracting("class").containsExactlyInAnyOrder(
-				CurlRequestSnippet.class, HttpieRequestSnippet.class,
-				HttpRequestSnippet.class, HttpResponseSnippet.class,
+		assertThat(defaultSnippets).extracting("class").containsExactlyInAnyOrder(CurlRequestSnippet.class,
+				HttpieRequestSnippet.class, HttpRequestSnippet.class, HttpResponseSnippet.class,
 				RequestBodySnippet.class, ResponseBodySnippet.class, snippet.getClass());
 	}
 
 	@Test
 	public void customSnippetEncoding() {
 		Map<String, Object> configuration = new HashMap<>();
-		this.configurer.snippets().withEncoding("ISO 8859-1").apply(configuration,
-				createContext());
+		this.configurer.snippets().withEncoding("ISO 8859-1").apply(configuration, createContext());
 		assertThat(configuration).containsKey(SnippetConfiguration.class.getName());
-		assertThat(configuration.get(SnippetConfiguration.class.getName()))
-				.isInstanceOf(SnippetConfiguration.class);
+		assertThat(configuration.get(SnippetConfiguration.class.getName())).isInstanceOf(SnippetConfiguration.class);
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getEncoding()).isEqualTo("ISO 8859-1");
@@ -158,15 +138,12 @@ public class RestDocumentationConfigurerTests {
 	@Test
 	public void customTemplateFormat() {
 		Map<String, Object> configuration = new HashMap<>();
-		this.configurer.snippets().withTemplateFormat(TemplateFormats.markdown())
-				.apply(configuration, createContext());
+		this.configurer.snippets().withTemplateFormat(TemplateFormats.markdown()).apply(configuration, createContext());
 		assertThat(configuration).containsKey(SnippetConfiguration.class.getName());
-		assertThat(configuration.get(SnippetConfiguration.class.getName()))
-				.isInstanceOf(SnippetConfiguration.class);
+		assertThat(configuration.get(SnippetConfiguration.class.getName())).isInstanceOf(SnippetConfiguration.class);
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
-		assertThat(snippetConfiguration.getTemplateFormat().getId())
-				.isEqualTo(TemplateFormats.markdown().getId());
+		assertThat(snippetConfiguration.getTemplateFormat().getId()).isEqualTo(TemplateFormats.markdown().getId());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -174,14 +151,12 @@ public class RestDocumentationConfigurerTests {
 	public void asciidoctorTableCellContentLambaIsInstalledWhenUsingAsciidoctorTemplateFormat() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.apply(configuration, createContext());
-		TemplateEngine templateEngine = (TemplateEngine) configuration
-				.get(TemplateEngine.class.getName());
+		TemplateEngine templateEngine = (TemplateEngine) configuration.get(TemplateEngine.class.getName());
 		MustacheTemplateEngine mustacheTemplateEngine = (MustacheTemplateEngine) templateEngine;
-		Map<String, Object> templateContext = (Map<String, Object>) ReflectionTestUtils
-				.getField(mustacheTemplateEngine, "context");
+		Map<String, Object> templateContext = (Map<String, Object>) ReflectionTestUtils.getField(mustacheTemplateEngine,
+				"context");
 		assertThat(templateContext).containsKey("tableCellContent");
-		assertThat(templateContext.get("tableCellContent"))
-				.isInstanceOf(AsciidoctorTableCellContentLambda.class);
+		assertThat(templateContext.get("tableCellContent")).isInstanceOf(AsciidoctorTableCellContentLambda.class);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -190,27 +165,24 @@ public class RestDocumentationConfigurerTests {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippetConfigurer.withTemplateFormat(TemplateFormats.markdown());
 		this.configurer.apply(configuration, createContext());
-		TemplateEngine templateEngine = (TemplateEngine) configuration
-				.get(TemplateEngine.class.getName());
+		TemplateEngine templateEngine = (TemplateEngine) configuration.get(TemplateEngine.class.getName());
 		MustacheTemplateEngine mustacheTemplateEngine = (MustacheTemplateEngine) templateEngine;
-		Map<String, Object> templateContext = (Map<String, Object>) ReflectionTestUtils
-				.getField(mustacheTemplateEngine, "context");
+		Map<String, Object> templateContext = (Map<String, Object>) ReflectionTestUtils.getField(mustacheTemplateEngine,
+				"context");
 		assertThat(templateContext.size()).isEqualTo(0);
 	}
 
 	private RestDocumentationContext createContext() {
-		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
-				"build");
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation("build");
 		manualRestDocumentation.beforeTest(null, null);
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;
 	}
 
-	private static final class TestRestDocumentationConfigurer extends
-			RestDocumentationConfigurer<TestSnippetConfigurer, TestRestDocumentationConfigurer> {
+	private static final class TestRestDocumentationConfigurer
+			extends RestDocumentationConfigurer<TestSnippetConfigurer, TestRestDocumentationConfigurer> {
 
-		private final TestSnippetConfigurer snippetConfigurer = new TestSnippetConfigurer(
-				this);
+		private final TestSnippetConfigurer snippetConfigurer = new TestSnippetConfigurer(this);
 
 		@Override
 		public TestSnippetConfigurer snippets() {
@@ -219,8 +191,8 @@ public class RestDocumentationConfigurerTests {
 
 	}
 
-	private static final class TestSnippetConfigurer extends
-			SnippetConfigurer<TestRestDocumentationConfigurer, TestSnippetConfigurer> {
+	private static final class TestSnippetConfigurer
+			extends SnippetConfigurer<TestRestDocumentationConfigurer, TestSnippetConfigurer> {
 
 		private TestSnippetConfigurer(TestRestDocumentationConfigurer parent) {
 			super(parent);

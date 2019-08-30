@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,24 +75,20 @@ public class StandardTemplateResourceResolver implements TemplateResourceResolve
 		if (defaultTemplate.exists()) {
 			return defaultTemplate;
 		}
-		throw new IllegalStateException(
-				"Template named '" + name + "' could not be resolved");
+		throw new IllegalStateException("Template named '" + name + "' could not be resolved");
 	}
 
 	private Resource getFormatSpecificCustomTemplate(String name) {
-		return new ClassPathResource(
-				String.format("org/springframework/restdocs/templates/%s/%s.snippet",
-						this.templateFormat.getId(), name));
+		return new ClassPathResource(String.format("org/springframework/restdocs/templates/%s/%s.snippet",
+				this.templateFormat.getId(), name));
 	}
 
 	private Resource getCustomTemplate(String name) {
-		return new ClassPathResource(
-				String.format("org/springframework/restdocs/templates/%s.snippet", name));
+		return new ClassPathResource(String.format("org/springframework/restdocs/templates/%s.snippet", name));
 	}
 
 	private Resource getDefaultTemplate(String name) {
-		return new ClassPathResource(String.format(
-				"org/springframework/restdocs/templates/%s/default-%s.snippet",
+		return new ClassPathResource(String.format("org/springframework/restdocs/templates/%s/default-%s.snippet",
 				this.templateFormat.getId(), name));
 	}
 

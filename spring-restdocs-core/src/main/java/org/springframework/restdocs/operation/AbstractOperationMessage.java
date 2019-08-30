@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.springframework.http.MediaType;
  *
  * @author Andy Wilkinson
  */
-abstract class AbstractOperationMessage {
+abstract class AbstractOperationMessage implements OperationMessage {
 
 	private final byte[] content;
 
@@ -38,19 +38,21 @@ abstract class AbstractOperationMessage {
 		this.headers = headers;
 	}
 
+	@Override
 	public byte[] getContent() {
 		return Arrays.copyOf(this.content, this.content.length);
 	}
 
+	@Override
 	public HttpHeaders getHeaders() {
 		return HttpHeaders.readOnlyHttpHeaders(this.headers);
 	}
 
+	@Override
 	public String getContentAsString() {
 		if (this.content.length > 0) {
 			Charset charset = extractCharsetFromContentTypeHeader();
-			return (charset != null) ? new String(this.content, charset)
-					: new String(this.content);
+			return (charset != null) ? new String(this.content, charset) : new String(this.content);
 		}
 		return "";
 	}

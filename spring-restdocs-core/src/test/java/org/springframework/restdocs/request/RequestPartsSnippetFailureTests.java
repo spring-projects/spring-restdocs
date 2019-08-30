@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 public class RequestPartsSnippetFailureTests {
 
 	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(
-			TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -49,18 +48,16 @@ public class RequestPartsSnippetFailureTests {
 	@Test
 	public void undocumentedPart() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo(
-				"Request parts with the following names were" + " not documented: [a]"));
+		this.thrown.expectMessage(equalTo("Request parts with the following names were" + " not documented: [a]"));
 		new RequestPartsSnippet(Collections.<RequestPartDescriptor>emptyList())
-				.document(this.operationBuilder.request("http://localhost")
-						.part("a", "alpha".getBytes()).build());
+				.document(this.operationBuilder.request("http://localhost").part("a", "alpha".getBytes()).build());
 	}
 
 	@Test
 	public void missingPart() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Request parts with the following names were"
-				+ " not found in the request: [a]"));
+		this.thrown.expectMessage(
+				equalTo("Request parts with the following names were" + " not found in the request: [a]"));
 		new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
 				.document(this.operationBuilder.request("http://localhost").build());
 	}
@@ -68,12 +65,11 @@ public class RequestPartsSnippetFailureTests {
 	@Test
 	public void undocumentedAndMissingParts() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Request parts with the following names were"
-				+ " not documented: [b]. Request parts with the following"
-				+ " names were not found in the request: [a]"));
+		this.thrown.expectMessage(equalTo(
+				"Request parts with the following names were" + " not documented: [b]. Request parts with the following"
+						+ " names were not found in the request: [a]"));
 		new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
-				.document(this.operationBuilder.request("http://localhost")
-						.part("b", "bravo".getBytes()).build());
+				.document(this.operationBuilder.request("http://localhost").part("b", "bravo".getBytes()).build());
 	}
 
 }

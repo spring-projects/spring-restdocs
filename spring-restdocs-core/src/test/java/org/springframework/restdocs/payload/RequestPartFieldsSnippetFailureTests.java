@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,8 +42,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 public class RequestPartFieldsSnippetFailureTests {
 
 	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(
-			TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -51,33 +50,26 @@ public class RequestPartFieldsSnippetFailureTests {
 	@Test
 	public void undocumentedRequestPartField() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(
-				startsWith("The following parts of the payload were not documented:"));
-		new RequestPartFieldsSnippet("part", Collections.<FieldDescriptor>emptyList())
-				.document(this.operationBuilder.request("http://localhost")
-						.part("part", "{\"a\": 5}".getBytes()).build());
+		this.thrown.expectMessage(startsWith("The following parts of the payload were not documented:"));
+		new RequestPartFieldsSnippet("part", Collections.<FieldDescriptor>emptyList()).document(
+				this.operationBuilder.request("http://localhost").part("part", "{\"a\": 5}".getBytes()).build());
 	}
 
 	@Test
 	public void missingRequestPartField() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(
-				startsWith("The following parts of the payload were not documented:"));
-		new RequestPartFieldsSnippet("part",
-				Arrays.asList(fieldWithPath("b").description("one")))
-						.document(this.operationBuilder.request("http://localhost")
-								.part("part", "{\"a\": 5}".getBytes()).build());
+		this.thrown.expectMessage(startsWith("The following parts of the payload were not documented:"));
+		new RequestPartFieldsSnippet("part", Arrays.asList(fieldWithPath("b").description("one"))).document(
+				this.operationBuilder.request("http://localhost").part("part", "{\"a\": 5}".getBytes()).build());
 	}
 
 	@Test
 	public void missingRequestPart() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(
-				equalTo("A request part named 'another' was not found in the request"));
-		new RequestPartFieldsSnippet("another",
-				Arrays.asList(fieldWithPath("a.b").description("one")))
-						.document(this.operationBuilder.request("http://localhost")
-								.part("part", "{\"a\": {\"b\": 5}}".getBytes()).build());
+		this.thrown.expectMessage(equalTo("A request part named 'another' was not found in the request"));
+		new RequestPartFieldsSnippet("another", Arrays.asList(fieldWithPath("a.b").description("one")))
+				.document(this.operationBuilder.request("http://localhost")
+						.part("part", "{\"a\": {\"b\": 5}}".getBytes()).build());
 	}
 
 }

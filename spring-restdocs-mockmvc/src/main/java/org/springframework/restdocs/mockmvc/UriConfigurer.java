@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * @author Andy Wilkinson
  */
-public class UriConfigurer
-		extends AbstractNestedConfigurer<MockMvcRestDocumentationConfigurer>
+public class UriConfigurer extends AbstractNestedConfigurer<MockMvcRestDocumentationConfigurer>
 		implements MockMvcConfigurer {
 
 	/**
@@ -100,8 +99,7 @@ public class UriConfigurer
 	}
 
 	@Override
-	public void apply(Map<String, Object> configuration,
-			RestDocumentationContext context) {
+	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
 		MockHttpServletRequest request = (MockHttpServletRequest) configuration
 				.get(MockHttpServletRequest.class.getName());
 		request.setScheme(this.scheme);
@@ -115,8 +113,8 @@ public class UriConfigurer
 	}
 
 	@Override
-	public RequestPostProcessor beforeMockMvcCreated(
-			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
+	public RequestPostProcessor beforeMockMvcCreated(ConfigurableMockMvcBuilder<?> builder,
+			WebApplicationContext context) {
 		return and().beforeMockMvcCreated(builder, context);
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,7 @@ class SnippetsDirectoryResolver {
 
 	private File getMavenSnippetsDirectory(Map<String, Object> attributes) {
 		Path docdir = Paths.get(getRequiredAttribute(attributes, "docdir"));
-		return new File(docdir.relativize(findPom(docdir).getParent()).toFile(),
-				"target/generated-snippets");
+		return new File(docdir.relativize(findPom(docdir).getParent()).toFile(), "target/generated-snippets");
 	}
 
 	private Path findPom(Path docdir) {
@@ -57,8 +56,7 @@ class SnippetsDirectoryResolver {
 	}
 
 	private File getGradleSnippetsDirectory(Map<String, Object> attributes) {
-		return new File(getRequiredAttribute(attributes, "projectdir"),
-				"build/generated-snippets");
+		return new File(getRequiredAttribute(attributes, "projectdir"), "build/generated-snippets");
 	}
 
 	private String getRequiredAttribute(Map<String, Object> attributes, String name) {

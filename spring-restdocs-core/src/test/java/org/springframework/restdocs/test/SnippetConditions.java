@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,45 +42,37 @@ public final class SnippetConditions {
 
 	}
 
-	public static TableCondition<?> tableWithHeader(TemplateFormat format,
-			String... headers) {
+	public static TableCondition<?> tableWithHeader(TemplateFormat format, String... headers) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorTableCondition(null, headers);
 		}
 		return new MarkdownTableCondition(null, headers);
 	}
 
-	public static TableCondition<?> tableWithTitleAndHeader(TemplateFormat format,
-			String title, String... headers) {
+	public static TableCondition<?> tableWithTitleAndHeader(TemplateFormat format, String title, String... headers) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorTableCondition(title, headers);
 		}
 		return new MarkdownTableCondition(title, headers);
 	}
 
-	public static HttpRequestCondition httpRequest(TemplateFormat format,
-			RequestMethod requestMethod, String uri) {
+	public static HttpRequestCondition httpRequest(TemplateFormat format, RequestMethod requestMethod, String uri) {
 		if ("adoc".equals(format.getFileExtension())) {
-			return new HttpRequestCondition(requestMethod, uri,
-					new AsciidoctorCodeBlockCondition<>("http", "nowrap"), 3);
+			return new HttpRequestCondition(requestMethod, uri, new AsciidoctorCodeBlockCondition<>("http", "nowrap"),
+					3);
 		}
-		return new HttpRequestCondition(requestMethod, uri,
-				new MarkdownCodeBlockCondition<>("http"), 2);
+		return new HttpRequestCondition(requestMethod, uri, new MarkdownCodeBlockCondition<>("http"), 2);
 	}
 
-	public static HttpResponseCondition httpResponse(TemplateFormat format,
-			HttpStatus status) {
+	public static HttpResponseCondition httpResponse(TemplateFormat format, HttpStatus status) {
 		if ("adoc".equals(format.getFileExtension())) {
-			return new HttpResponseCondition(status,
-					new AsciidoctorCodeBlockCondition<>("http", "nowrap"), 3);
+			return new HttpResponseCondition(status, new AsciidoctorCodeBlockCondition<>("http", "nowrap"), 3);
 		}
-		return new HttpResponseCondition(status, new MarkdownCodeBlockCondition<>("http"),
-				2);
+		return new HttpResponseCondition(status, new MarkdownCodeBlockCondition<>("http"), 2);
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	public static CodeBlockCondition<?> codeBlock(TemplateFormat format,
-			String language) {
+	public static CodeBlockCondition<?> codeBlock(TemplateFormat format, String language) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorCodeBlockCondition(language, null);
 		}
@@ -88,16 +80,14 @@ public final class SnippetConditions {
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	public static CodeBlockCondition<?> codeBlock(TemplateFormat format, String language,
-			String options) {
+	public static CodeBlockCondition<?> codeBlock(TemplateFormat format, String language, String options) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorCodeBlockCondition(language, options);
 		}
 		return new MarkdownCodeBlockCondition(language);
 	}
 
-	private abstract static class AbstractSnippetContentCondition
-			extends Condition<String> {
+	private abstract static class AbstractSnippetContentCondition extends Condition<String> {
 
 		private List<String> lines = new ArrayList<>();
 
@@ -151,8 +141,7 @@ public final class SnippetConditions {
 	 *
 	 * @param <T> The type of the Condition
 	 */
-	public static class CodeBlockCondition<T extends CodeBlockCondition<T>>
-			extends AbstractSnippetContentCondition {
+	public static class CodeBlockCondition<T extends CodeBlockCondition<T>> extends AbstractSnippetContentCondition {
 
 		@SuppressWarnings("unchecked")
 		public T withContent(String content) {
@@ -199,8 +188,7 @@ public final class SnippetConditions {
 	 *
 	 * @param <T> The type of the Condition
 	 */
-	public abstract static class HttpCondition<T extends HttpCondition<T>>
-			extends Condition<String> {
+	public abstract static class HttpCondition<T extends HttpCondition<T>> extends Condition<String> {
 
 		private final CodeBlockCondition<?> delegate;
 
@@ -239,11 +227,9 @@ public final class SnippetConditions {
 	/**
 	 * A {@link Condition} for an HTTP response.
 	 */
-	public static final class HttpResponseCondition
-			extends HttpCondition<HttpResponseCondition> {
+	public static final class HttpResponseCondition extends HttpCondition<HttpResponseCondition> {
 
-		private HttpResponseCondition(HttpStatus status, CodeBlockCondition<?> delegate,
-				int headerOffset) {
+		private HttpResponseCondition(HttpStatus status, CodeBlockCondition<?> delegate, int headerOffset) {
 			super(delegate, headerOffset);
 			this.content("HTTP/1.1 " + status.value() + " " + status.getReasonPhrase());
 			this.content("");
@@ -254,11 +240,10 @@ public final class SnippetConditions {
 	/**
 	 * A {@link Condition} for an HTTP request.
 	 */
-	public static final class HttpRequestCondition
-			extends HttpCondition<HttpRequestCondition> {
+	public static final class HttpRequestCondition extends HttpCondition<HttpRequestCondition> {
 
-		private HttpRequestCondition(RequestMethod requestMethod, String uri,
-				CodeBlockCondition<?> delegate, int headerOffset) {
+		private HttpRequestCondition(RequestMethod requestMethod, String uri, CodeBlockCondition<?> delegate,
+				int headerOffset) {
 			super(delegate, headerOffset);
 			this.content(requestMethod.name() + " " + uri + " HTTP/1.1");
 			this.content("");
@@ -271,8 +256,7 @@ public final class SnippetConditions {
 	 *
 	 * @param <T> The concrete type of the Condition
 	 */
-	public abstract static class TableCondition<T extends TableCondition<T>>
-			extends AbstractSnippetContentCondition {
+	public abstract static class TableCondition<T extends TableCondition<T>> extends AbstractSnippetContentCondition {
 
 		public abstract T row(String... entries);
 
@@ -283,16 +267,14 @@ public final class SnippetConditions {
 	/**
 	 * A {@link Condition} for an Asciidoctor table.
 	 */
-	public static final class AsciidoctorTableCondition
-			extends TableCondition<AsciidoctorTableCondition> {
+	public static final class AsciidoctorTableCondition extends TableCondition<AsciidoctorTableCondition> {
 
 		private AsciidoctorTableCondition(String title, String... columns) {
 			if (StringUtils.hasText(title)) {
 				this.addLine("." + title);
 			}
 			this.addLine("|===");
-			String header = "|" + StringUtils
-					.collectionToDelimitedString(Arrays.asList(columns), "|");
+			String header = "|" + StringUtils.collectionToDelimitedString(Arrays.asList(columns), "|");
 			this.addLine(header);
 			this.addLine("");
 			this.addLine("|===");
@@ -325,16 +307,14 @@ public final class SnippetConditions {
 	/**
 	 * A {@link Condition} for a Markdown table.
 	 */
-	public static final class MarkdownTableCondition
-			extends TableCondition<MarkdownTableCondition> {
+	public static final class MarkdownTableCondition extends TableCondition<MarkdownTableCondition> {
 
 		private MarkdownTableCondition(String title, String... columns) {
 			if (StringUtils.hasText(title)) {
 				this.addLine(title);
 				this.addLine("");
 			}
-			String header = StringUtils
-					.collectionToDelimitedString(Arrays.asList(columns), " | ");
+			String header = StringUtils.collectionToDelimitedString(Arrays.asList(columns), " | ");
 			this.addLine(header);
 			List<String> components = new ArrayList<>();
 			for (String column : columns) {
@@ -350,15 +330,13 @@ public final class SnippetConditions {
 
 		@Override
 		public MarkdownTableCondition row(String... entries) {
-			this.addLine(-1, StringUtils
-					.collectionToDelimitedString(Arrays.asList(entries), " | "));
+			this.addLine(-1, StringUtils.collectionToDelimitedString(Arrays.asList(entries), " | "));
 			return this;
 		}
 
 		@Override
 		public MarkdownTableCondition configuration(String configuration) {
-			throw new UnsupportedOperationException(
-					"Markdown does not support table configuration");
+			throw new UnsupportedOperationException("Markdown does not support table configuration");
 		}
 
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,34 +43,27 @@ public class SnippetsDirectoryResolverTests {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void mavenProjectsUseTargetGeneratedSnippetsRelativeToDocdir()
-			throws IOException {
+	public void mavenProjectsUseTargetGeneratedSnippetsRelativeToDocdir() throws IOException {
 		this.temporaryFolder.newFile("pom.xml");
 		Map<String, Object> attributes = new HashMap<>();
-		attributes.put("docdir",
-				new File(this.temporaryFolder.getRoot(), "src/main/asciidoc")
-						.getAbsolutePath());
+		attributes.put("docdir", new File(this.temporaryFolder.getRoot(), "src/main/asciidoc").getAbsolutePath());
 		File snippetsDirectory = getMavenSnippetsDirectory(attributes);
 		assertThat(snippetsDirectory).isRelative();
-		assertThat(snippetsDirectory)
-				.isEqualTo(new File("../../../target/generated-snippets"));
+		assertThat(snippetsDirectory).isEqualTo(new File("../../../target/generated-snippets"));
 	}
 
 	@Test
 	public void illegalStateExceptionWhenMavenPomCannotBeFound() throws IOException {
 		Map<String, Object> attributes = new HashMap<>();
-		String docdir = new File(this.temporaryFolder.getRoot(), "src/main/asciidoc")
-				.getAbsolutePath();
+		String docdir = new File(this.temporaryFolder.getRoot(), "src/main/asciidoc").getAbsolutePath();
 		attributes.put("docdir", docdir);
 		this.thrown.expect(IllegalStateException.class);
-		this.thrown
-				.expectMessage(equalTo("pom.xml not found in '" + docdir + "' or above"));
+		this.thrown.expectMessage(equalTo("pom.xml not found in '" + docdir + "' or above"));
 		getMavenSnippetsDirectory(attributes);
 	}
 
 	@Test
-	public void illegalStateWhenDocdirAttributeIsNotSetInMavenProject()
-			throws IOException {
+	public void illegalStateWhenDocdirAttributeIsNotSetInMavenProject() throws IOException {
 		Map<String, Object> attributes = new HashMap<>();
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage(equalTo("docdir attribute not found"));
@@ -78,19 +71,15 @@ public class SnippetsDirectoryResolverTests {
 	}
 
 	@Test
-	public void gradleProjectsUseBuildGeneratedSnippetsBeneathProjectDir()
-			throws IOException {
+	public void gradleProjectsUseBuildGeneratedSnippetsBeneathProjectDir() throws IOException {
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("projectdir", "project/dir");
-		File snippetsDirectory = new SnippetsDirectoryResolver()
-				.getSnippetsDirectory(attributes);
-		assertThat(snippetsDirectory)
-				.isEqualTo(new File("project/dir/build/generated-snippets"));
+		File snippetsDirectory = new SnippetsDirectoryResolver().getSnippetsDirectory(attributes);
+		assertThat(snippetsDirectory).isEqualTo(new File("project/dir/build/generated-snippets"));
 	}
 
 	@Test
-	public void illegalStateWhenProjectdirAttributeIsNotSetInGradleProject()
-			throws IOException {
+	public void illegalStateWhenProjectdirAttributeIsNotSetInGradleProject() throws IOException {
 		Map<String, Object> attributes = new HashMap<>();
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage(equalTo("projectdir attribute not found"));

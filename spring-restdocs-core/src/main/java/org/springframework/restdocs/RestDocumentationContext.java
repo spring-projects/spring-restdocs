@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,7 @@ public final class RestDocumentationContext {
 	 * @deprecated Since 1.1 in favor of {@link ManualRestDocumentation}.
 	 */
 	@Deprecated
-	public RestDocumentationContext(Class<?> testClass, String testMethodName,
-			File outputDirectory) {
+	public RestDocumentationContext(Class<?> testClass, String testMethodName, File outputDirectory) {
 		this.testClass = testClass;
 		this.testMethodName = testMethodName;
 		this.outputDirectory = outputDirectory;

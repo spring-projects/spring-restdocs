@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,319 +87,238 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	@Test
 	public void defaultSnippetGeneration() {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
-				.filter(RestAssuredRestDocumentation.document("default")).get("/").then()
-				.statusCode(200);
-		assertExpectedSnippetFilesExist(new File("build/generated-snippets/default"),
-				"http-request.adoc", "http-response.adoc", "curl-request.adoc");
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.document("default")).get("/").then().statusCode(200);
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/default"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc");
 	}
 
 	@Test
 	public void curlSnippetWithContent() throws Exception {
 		String contentType = "text/plain; charset=UTF-8";
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
-				.filter(RestAssuredRestDocumentation
-						.document("curl-snippet-with-content"))
-				.accept("application/json").content("content").contentType(contentType)
-				.post("/").then().statusCode(200);
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.document("curl-snippet-with-content")).accept("application/json")
+				.content("content").contentType(contentType).post("/").then().statusCode(200);
 
-		assertThat(new File(
-				"build/generated-snippets/curl-snippet-with-content/curl-request.adoc"))
-						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
-								.withContent(String.format("$ curl 'http://localhost:"
-										+ tomcat.getPort() + "/' -i -X POST \\%n"
-										+ "    -H 'Accept: application/json' \\%n"
-										+ "    -H 'Content-Type: " + contentType
-										+ "' \\%n" + "    -d 'content'"))));
+		assertThat(new File("build/generated-snippets/curl-snippet-with-content/curl-request.adoc")).has(content(
+				codeBlock(TemplateFormats.asciidoctor(), "bash").withContent(String.format("$ curl 'http://localhost:"
+						+ tomcat.getPort() + "/' -i -X POST \\%n" + "    -H 'Accept: application/json' \\%n"
+						+ "    -H 'Content-Type: " + contentType + "' \\%n" + "    -d 'content'"))));
 	}
 
 	@Test
 	public void curlSnippetWithCookies() throws Exception {
 		String contentType = "text/plain; charset=UTF-8";
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
-				.filter(RestAssuredRestDocumentation
-						.document("curl-snippet-with-cookies"))
-				.accept("application/json").contentType(contentType)
-				.cookie("cookieName", "cookieVal").get("/").then().statusCode(200);
-		assertThat(new File(
-				"build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"))
-						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
-								.withContent(String.format("$ curl 'http://localhost:"
-										+ tomcat.getPort() + "/' -i -X GET \\%n"
-										+ "    -H 'Accept: application/json' \\%n"
-										+ "    -H 'Content-Type: " + contentType
-										+ "' \\%n"
-										+ "    --cookie 'cookieName=cookieVal'"))));
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.document("curl-snippet-with-cookies")).accept("application/json")
+				.contentType(contentType).cookie("cookieName", "cookieVal").get("/").then().statusCode(200);
+		assertThat(new File("build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc")).has(content(
+				codeBlock(TemplateFormats.asciidoctor(), "bash").withContent(String.format("$ curl 'http://localhost:"
+						+ tomcat.getPort() + "/' -i -X GET \\%n" + "    -H 'Accept: application/json' \\%n"
+						+ "    -H 'Content-Type: " + contentType + "' \\%n" + "    --cookie 'cookieName=cookieVal'"))));
 	}
 
 	@Test
 	public void curlSnippetWithQueryStringOnPost() throws Exception {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
-				.filter(RestAssuredRestDocumentation
-						.document("curl-snippet-with-query-string"))
-				.accept("application/json").param("foo", "bar").param("a", "alpha")
-				.post("/?foo=bar").then().statusCode(200);
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.document("curl-snippet-with-query-string"))
+				.accept("application/json").param("foo", "bar").param("a", "alpha").post("/?foo=bar").then()
+				.statusCode(200);
 		String contentType = "application/x-www-form-urlencoded; charset=ISO-8859-1";
-		assertThat(new File(
-				"build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"))
-						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
-								.withContent(String.format("$ curl "
-										+ "'http://localhost:" + tomcat.getPort()
-										+ "/?foo=bar' -i -X POST \\%n"
-										+ "    -H 'Accept: application/json' \\%n"
-										+ "    -H 'Content-Type: " + contentType
-										+ "' \\%n" + "    -d 'a=alpha'"))));
+		assertThat(new File("build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"))
+				.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+						.withContent(String.format("$ curl " + "'http://localhost:" + tomcat.getPort()
+								+ "/?foo=bar' -i -X POST \\%n" + "    -H 'Accept: application/json' \\%n"
+								+ "    -H 'Content-Type: " + contentType + "' \\%n" + "    -d 'a=alpha'"))));
 	}
 
 	@Test
 	public void linksSnippet() throws Exception {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
 				.filter(RestAssuredRestDocumentation.document("links",
 						links(linkWithRel("rel").description("The description"))))
 				.accept("application/json").get("/").then().statusCode(200);
-		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"),
-				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
-				"links.adoc");
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc", "links.adoc");
 	}
 
 	@Test
 	public void pathParametersSnippet() throws Exception {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
 				.filter(RestAssuredRestDocumentation.document("path-parameters",
-						pathParameters(
-								parameterWithName("foo").description("The description"))))
+						pathParameters(parameterWithName("foo").description("The description"))))
 				.accept("application/json").get("/{foo}", "").then().statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/path-parameters"), "http-request.adoc",
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/path-parameters"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc", "path-parameters.adoc");
 	}
 
 	@Test
 	public void requestParametersSnippet() throws Exception {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
 				.filter(RestAssuredRestDocumentation.document("request-parameters",
-						requestParameters(
-								parameterWithName("foo").description("The description"))))
-				.accept("application/json").param("foo", "bar").get("/").then()
-				.statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/request-parameters"),
-				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
-				"request-parameters.adoc");
+						requestParameters(parameterWithName("foo").description("The description"))))
+				.accept("application/json").param("foo", "bar").get("/").then().statusCode(200);
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/request-parameters"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc", "request-parameters.adoc");
 	}
 
 	@Test
 	public void requestFieldsSnippet() throws Exception {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
 				.filter(RestAssuredRestDocumentation.document("request-fields",
 						requestFields(fieldWithPath("a").description("The description"))))
-				.accept("application/json").content("{\"a\":\"alpha\"}").post("/").then()
-				.statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/request-fields"), "http-request.adoc",
+				.accept("application/json").content("{\"a\":\"alpha\"}").post("/").then().statusCode(200);
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/request-fields"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc", "request-fields.adoc");
 	}
 
 	@Test
 	public void requestPartsSnippet() throws Exception {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
 				.filter(RestAssuredRestDocumentation.document("request-parts",
 						requestParts(partWithName("a").description("The description"))))
 				.multiPart("a", "foo").post("/upload").then().statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/request-parts"), "http-request.adoc",
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/request-parts"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc", "request-parts.adoc");
 	}
 
 	@Test
 	public void responseFieldsSnippet() throws Exception {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
 				.filter(RestAssuredRestDocumentation.document("response-fields",
 						responseFields(fieldWithPath("a").description("The description"),
-								subsectionWithPath("links")
-										.description("Links to other resources"))))
+								subsectionWithPath("links").description("Links to other resources"))))
 				.accept("application/json").get("/").then().statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/response-fields"), "http-request.adoc",
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/response-fields"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc", "response-fields.adoc");
 	}
 
 	@Test
 	public void parameterizedOutputDirectory() throws Exception {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
-				.filter(RestAssuredRestDocumentation.document("{method-name}")).get("/")
-				.then().statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/parameterized-output-directory"),
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.document("{method-name}")).get("/").then().statusCode(200);
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/parameterized-output-directory"),
 				"http-request.adoc", "http-response.adoc", "curl-request.adoc");
 	}
 
 	@Test
 	public void multiStep() throws Exception {
 		RequestSpecification spec = new RequestSpecBuilder().setPort(tomcat.getPort())
-				.addFilter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
-				.addFilter(RestAssuredRestDocumentation.document("{method-name}-{step}"))
-				.build();
+				.addFilter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
+				.addFilter(RestAssuredRestDocumentation.document("{method-name}-{step}")).build();
 		RestAssured.given(spec).get("/").then().statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/multi-step-1/"), "http-request.adoc",
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/multi-step-1/"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc");
 		RestAssured.given(spec).get("/").then().statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/multi-step-2/"), "http-request.adoc",
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/multi-step-2/"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc");
 		RestAssured.given(spec).get("/").then().statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/multi-step-3/"), "http-request.adoc",
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/multi-step-3/"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc");
 	}
 
 	@Test
 	public void additionalSnippets() throws Exception {
-		RestDocumentationFilter documentation = RestAssuredRestDocumentation
-				.document("{method-name}-{step}");
+		RestDocumentationFilter documentation = RestAssuredRestDocumentation.document("{method-name}-{step}");
 		RequestSpecification spec = new RequestSpecBuilder().setPort(tomcat.getPort())
-				.addFilter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
+				.addFilter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
 				.addFilter(documentation).build();
-		RestAssured.given(spec)
-				.filter(documentation
-						.document(responseHeaders(headerWithName("a").description("one"),
-								headerWithName("Foo").description("two"))))
+		RestAssured.given(spec).filter(documentation.document(
+				responseHeaders(headerWithName("a").description("one"), headerWithName("Foo").description("two"))))
 				.get("/").then().statusCode(200);
-		assertExpectedSnippetFilesExist(
-				new File("build/generated-snippets/additional-snippets-1/"),
-				"http-request.adoc", "http-response.adoc", "curl-request.adoc",
-				"response-headers.adoc");
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/additional-snippets-1/"),
+				"http-request.adoc", "http-response.adoc", "curl-request.adoc", "response-headers.adoc");
 	}
 
 	@Test
 	public void responseWithCookie() {
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
 				.filter(RestAssuredRestDocumentation.document("set-cookie",
-						preprocessResponse(removeHeaders(HttpHeaders.DATE,
-								HttpHeaders.CONTENT_TYPE))))
+						preprocessResponse(removeHeaders(HttpHeaders.DATE, HttpHeaders.CONTENT_TYPE))))
 				.get("/set-cookie").then().statusCode(200);
-		assertExpectedSnippetFilesExist(new File("build/generated-snippets/set-cookie"),
-				"http-request.adoc", "http-response.adoc", "curl-request.adoc");
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/set-cookie"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc");
 		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"))
-				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
-						.header(HttpHeaders.SET_COOKIE,
-								"name=value; Domain=localhost; HttpOnly")));
+				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK).header(HttpHeaders.SET_COOKIE,
+						"name=value; Domain=localhost; HttpOnly")));
 	}
 
 	@Test
 	public void preprocessedRequest() throws Exception {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
-				.header("a", "alpha").header("b", "bravo").contentType("application/json")
-				.accept("application/json").content("{\"a\":\"alpha\"}")
-				.filter(RestAssuredRestDocumentation.document("original-request"))
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
+				.header("a", "alpha").header("b", "bravo").contentType("application/json").accept("application/json")
+				.content("{\"a\":\"alpha\"}").filter(RestAssuredRestDocumentation.document("original-request"))
 				.filter(RestAssuredRestDocumentation.document("preprocessed-request",
-						preprocessRequest(prettyPrint(),
-								replacePattern(pattern, "\"<<beta>>\""),
+						preprocessRequest(prettyPrint(), replacePattern(pattern, "\"<<beta>>\""),
 								RestAssuredPreprocessors.modifyUris().removePort(),
 								removeHeaders("a", HttpHeaders.CONTENT_LENGTH))))
 				.get("/").then().statusCode(200);
-		assertThat(
-				new File("build/generated-snippets/original-request/http-request.adoc"))
-						.has(content(httpRequest(TemplateFormats.asciidoctor(),
-								RequestMethod.GET, "/").header("a", "alpha")
-										.header("b", "bravo")
-										.header("Accept",
-												MediaType.APPLICATION_JSON_VALUE)
-										.header("Content-Type",
-												"application/json; charset=UTF-8")
-										.header("Host", "localhost:" + tomcat.getPort())
-										.header("Content-Length", "13")
-										.content("{\"a\":\"alpha\"}")));
+		assertThat(new File("build/generated-snippets/original-request/http-request.adoc"))
+				.has(content(httpRequest(TemplateFormats.asciidoctor(), RequestMethod.GET, "/").header("a", "alpha")
+						.header("b", "bravo").header("Accept", MediaType.APPLICATION_JSON_VALUE)
+						.header("Content-Type", "application/json; charset=UTF-8")
+						.header("Host", "localhost:" + tomcat.getPort()).header("Content-Length", "13")
+						.content("{\"a\":\"alpha\"}")));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
-		assertThat(new File(
-				"build/generated-snippets/preprocessed-request/http-request.adoc"))
-						.has(content(httpRequest(TemplateFormats.asciidoctor(),
-								RequestMethod.GET, "/")
-										.header("b", "bravo")
-										.header("Accept",
-												MediaType.APPLICATION_JSON_VALUE)
-										.header("Content-Type",
-												"application/json; charset=UTF-8")
-										.header("Host", "localhost")
-										.content(prettyPrinted)));
+		assertThat(new File("build/generated-snippets/preprocessed-request/http-request.adoc"))
+				.has(content(httpRequest(TemplateFormats.asciidoctor(), RequestMethod.GET, "/").header("b", "bravo")
+						.header("Accept", MediaType.APPLICATION_JSON_VALUE)
+						.header("Content-Type", "application/json; charset=UTF-8").header("Host", "localhost")
+						.content(prettyPrinted)));
 	}
 
 	@Test
 	public void preprocessedResponse() throws Exception {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		RestAssured.given().port(tomcat.getPort())
-				.filter(RestAssuredRestDocumentation
-						.documentationConfiguration(this.restDocumentation))
+				.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
 				.filter(RestAssuredRestDocumentation.document("original-response"))
 				.filter(RestAssuredRestDocumentation.document("preprocessed-response",
 						preprocessResponse(prettyPrint(), maskLinks(),
 								removeHeaders("a", "Transfer-Encoding", "Date", "Server"),
-								replacePattern(pattern, "\"<<beta>>\""),
-								RestAssuredPreprocessors.modifyUris().scheme("https")
-										.host("api.example.com").removePort())))
+								replacePattern(pattern, "\"<<beta>>\""), RestAssuredPreprocessors.modifyUris()
+										.scheme("https").host("api.example.com").removePort())))
 				.get("/").then().statusCode(200);
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\",%n  \"links\" : "
 				+ "[ {%n    \"rel\" : \"rel\",%n    \"href\" : \"...\"%n  } ]%n}");
-		assertThat(new File(
-				"build/generated-snippets/preprocessed-response/http-response.adoc")).has(
-						content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
-								.header("Foo", "https://api.example.com/foo/bar")
-								.header("Content-Type", "application/json;charset=UTF-8")
-								.header(HttpHeaders.CONTENT_LENGTH,
-										prettyPrinted.getBytes().length)
-								.content(prettyPrinted)));
+		assertThat(new File("build/generated-snippets/preprocessed-response/http-response.adoc"))
+				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
+						.header("Foo", "https://api.example.com/foo/bar")
+						.header("Content-Type", "application/json;charset=UTF-8")
+						.header(HttpHeaders.CONTENT_LENGTH, prettyPrinted.getBytes().length).content(prettyPrinted)));
 	}
 
 	@Test
 	public void customSnippetTemplate() throws Exception {
-		ClassLoader classLoader = new URLClassLoader(new URL[] {
-				new File("src/test/resources/custom-snippet-templates").toURI().toURL() },
+		ClassLoader classLoader = new URLClassLoader(
+				new URL[] { new File("src/test/resources/custom-snippet-templates").toURI().toURL() },
 				getClass().getClassLoader());
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(classLoader);
 		try {
 			RestAssured.given().port(tomcat.getPort()).accept("application/json")
-					.filter(RestAssuredRestDocumentation
-							.documentationConfiguration(this.restDocumentation))
-					.filter(RestAssuredRestDocumentation
-							.document("custom-snippet-template"))
-					.get("/").then().statusCode(200);
+					.filter(RestAssuredRestDocumentation.documentationConfiguration(this.restDocumentation))
+					.filter(RestAssuredRestDocumentation.document("custom-snippet-template")).get("/").then()
+					.statusCode(200);
 		}
 		finally {
 			Thread.currentThread().setContextClassLoader(previous);
 		}
-		assertThat(new File(
-				"build/generated-snippets/custom-snippet-template/curl-request.adoc"))
-						.hasContent("Custom curl request");
+		assertThat(new File("build/generated-snippets/custom-snippet-template/curl-request.adoc"))
+				.hasContent("Custom curl request");
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
@@ -412,8 +331,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		return SnippetConditions.codeBlock(format, language);
 	}
 
-	private HttpRequestCondition httpRequest(TemplateFormat format,
-			RequestMethod requestMethod, String uri) {
+	private HttpRequestCondition httpRequest(TemplateFormat format, RequestMethod requestMethod, String uri) {
 		return SnippetConditions.httpRequest(format, requestMethod, uri);
 	}
 
@@ -427,9 +345,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 			@Override
 			public boolean matches(File value) {
 				try {
-					return delegate
-							.matches(FileCopyUtils.copyToString(new InputStreamReader(
-									new FileInputStream(value), StandardCharsets.UTF_8)));
+					return delegate.matches(FileCopyUtils
+							.copyToString(new InputStreamReader(new FileInputStream(value), StandardCharsets.UTF_8)));
 				}
 				catch (IOException ex) {
 					fail("Failed to read '" + value + "'", ex);

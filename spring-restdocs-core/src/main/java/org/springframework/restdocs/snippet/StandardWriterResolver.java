@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@ public final class StandardWriterResolver implements WriterResolver {
 
 	private final PlaceholderResolverFactory placeholderResolverFactory;
 
-	private final PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper(
-			"{", "}");
+	private final PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper("{", "}");
 
 	private String encoding = "UTF-8";
 
@@ -55,8 +54,7 @@ public final class StandardWriterResolver implements WriterResolver {
 	 */
 	@Deprecated
 	public StandardWriterResolver(PlaceholderResolver placeholderResolver) {
-		this(new SingleInstancePlaceholderResolverFactory(placeholderResolver), "UTF-8",
-				TemplateFormats.asciidoctor());
+		this(new SingleInstancePlaceholderResolverFactory(placeholderResolver), "UTF-8", TemplateFormats.asciidoctor());
 	}
 
 	/**
@@ -70,26 +68,24 @@ public final class StandardWriterResolver implements WriterResolver {
 	 * @param encoding the encoding
 	 * @param templateFormat the snippet format
 	 */
-	public StandardWriterResolver(PlaceholderResolverFactory placeholderResolverFactory,
-			String encoding, TemplateFormat templateFormat) {
+	public StandardWriterResolver(PlaceholderResolverFactory placeholderResolverFactory, String encoding,
+			TemplateFormat templateFormat) {
 		this.placeholderResolverFactory = placeholderResolverFactory;
 		this.encoding = encoding;
 		this.templateFormat = templateFormat;
 	}
 
 	@Override
-	public Writer resolve(String operationName, String snippetName,
-			RestDocumentationContext context) throws IOException {
-		PlaceholderResolver placeholderResolver = this.placeholderResolverFactory
-				.create(context);
+	public Writer resolve(String operationName, String snippetName, RestDocumentationContext context)
+			throws IOException {
+		PlaceholderResolver placeholderResolver = this.placeholderResolverFactory.create(context);
 		String outputDirectory = replacePlaceholders(placeholderResolver, operationName);
 		String fileName = replacePlaceholders(placeholderResolver, snippetName) + "."
 				+ this.templateFormat.getFileExtension();
 		File outputFile = resolveFile(outputDirectory, fileName, context);
 		if (outputFile != null) {
 			createDirectoriesIfNecessary(outputFile);
-			return new OutputStreamWriter(new FileOutputStream(outputFile),
-					this.encoding);
+			return new OutputStreamWriter(new FileOutputStream(outputFile), this.encoding);
 		}
 		else {
 			return new OutputStreamWriter(System.out, this.encoding);
@@ -106,8 +102,7 @@ public final class StandardWriterResolver implements WriterResolver {
 		return this.propertyPlaceholderHelper.replacePlaceholders(input, resolver);
 	}
 
-	File resolveFile(String outputDirectory, String fileName,
-			RestDocumentationContext context) {
+	File resolveFile(String outputDirectory, String fileName, RestDocumentationContext context) {
 		File outputFile = new File(outputDirectory, fileName);
 		if (!outputFile.isAbsolute()) {
 			outputFile = makeRelativeToConfiguredOutputDir(outputFile, context);
@@ -115,8 +110,7 @@ public final class StandardWriterResolver implements WriterResolver {
 		return outputFile;
 	}
 
-	private File makeRelativeToConfiguredOutputDir(File outputFile,
-			RestDocumentationContext context) {
+	private File makeRelativeToConfiguredOutputDir(File outputFile, RestDocumentationContext context) {
 		File configuredOutputDir = context.getOutputDirectory();
 		if (configuredOutputDir != null) {
 			return new File(configuredOutputDir, outputFile.getPath());
@@ -127,18 +121,15 @@ public final class StandardWriterResolver implements WriterResolver {
 	private void createDirectoriesIfNecessary(File outputFile) {
 		File parent = outputFile.getParentFile();
 		if (!parent.isDirectory() && !parent.mkdirs()) {
-			throw new IllegalStateException(
-					"Failed to create directory '" + parent + "'");
+			throw new IllegalStateException("Failed to create directory '" + parent + "'");
 		}
 	}
 
-	private static final class SingleInstancePlaceholderResolverFactory
-			implements PlaceholderResolverFactory {
+	private static final class SingleInstancePlaceholderResolverFactory implements PlaceholderResolverFactory {
 
 		private final PlaceholderResolver placeholderResolver;
 
-		private SingleInstancePlaceholderResolverFactory(
-				PlaceholderResolver placeholderResolver) {
+		private SingleInstancePlaceholderResolverFactory(PlaceholderResolver placeholderResolver) {
 			this.placeholderResolver = placeholderResolver;
 		}
 

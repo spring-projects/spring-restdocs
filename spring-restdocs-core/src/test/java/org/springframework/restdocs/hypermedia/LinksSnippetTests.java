@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,25 +47,18 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void ignoredLink() throws IOException {
-		new LinksSnippet(
-				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-						new Link("b", "bravo")),
-				Arrays.asList(new LinkDescriptor("a").ignored(),
-						new LinkDescriptor("b").description("Link b")))
-								.document(this.operationBuilder.build());
-		assertThat(this.generatedSnippets.links())
-				.is(tableWithHeader("Relation", "Description").row("`b`", "Link b"));
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b", "bravo")),
+				Arrays.asList(new LinkDescriptor("a").ignored(), new LinkDescriptor("b").description("Link b")))
+						.document(this.operationBuilder.build());
+		assertThat(this.generatedSnippets.links()).is(tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 	}
 
 	@Test
 	public void allUndocumentedLinksCanBeIgnored() throws IOException {
-		new LinksSnippet(
-				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-						new Link("b", "bravo")),
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b", "bravo")),
 				Arrays.asList(new LinkDescriptor("b").description("Link b")), true)
 						.document(this.operationBuilder.build());
-		assertThat(this.generatedSnippets.links())
-				.is(tableWithHeader("Relation", "Description").row("`b`", "Link b"));
+		assertThat(this.generatedSnippets.links()).is(tableWithHeader("Relation", "Description").row("`b`", "Link b"));
 	}
 
 	@Test
@@ -73,8 +66,7 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "blah")),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
 						.document(this.operationBuilder.build());
-		assertThat(this.generatedSnippets.links())
-				.is(tableWithHeader("Relation", "Description").row("`foo`", "bar"));
+		assertThat(this.generatedSnippets.links()).is(tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 	}
 
 	@Test
@@ -82,87 +74,63 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 		new LinksSnippet(new StubLinkExtractor(),
 				Arrays.asList(new LinkDescriptor("foo").description("bar").optional()))
 						.document(this.operationBuilder.build());
-		assertThat(this.generatedSnippets.links())
-				.is(tableWithHeader("Relation", "Description").row("`foo`", "bar"));
+		assertThat(this.generatedSnippets.links()).is(tableWithHeader("Relation", "Description").row("`foo`", "bar"));
 	}
 
 	@Test
 	public void documentedLinks() throws IOException {
-		new LinksSnippet(
-				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-						new Link("b", "bravo")),
-				Arrays.asList(new LinkDescriptor("a").description("one"),
-						new LinkDescriptor("b").description("two")))
-								.document(this.operationBuilder.build());
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b", "bravo")),
+				Arrays.asList(new LinkDescriptor("a").description("one"), new LinkDescriptor("b").description("two")))
+						.document(this.operationBuilder.build());
 		assertThat(this.generatedSnippets.links())
-				.is(tableWithHeader("Relation", "Description").row("`a`", "one")
-						.row("`b`", "two"));
+				.is(tableWithHeader("Relation", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
 	public void linkDescriptionFromTitleInPayload() throws IOException {
 		new LinksSnippet(
-				new StubLinkExtractor().withLinks(new Link("a", "alpha", "Link a"),
-						new Link("b", "bravo", "Link b")),
-				Arrays.asList(new LinkDescriptor("a").description("one"),
-						new LinkDescriptor("b"))).document(this.operationBuilder.build());
+				new StubLinkExtractor().withLinks(new Link("a", "alpha", "Link a"), new Link("b", "bravo", "Link b")),
+				Arrays.asList(new LinkDescriptor("a").description("one"), new LinkDescriptor("b")))
+						.document(this.operationBuilder.build());
 		assertThat(this.generatedSnippets.links())
-				.is(tableWithHeader("Relation", "Description").row("`a`", "one")
-						.row("`b`", "Link b"));
+				.is(tableWithHeader("Relation", "Description").row("`a`", "one").row("`b`", "Link b"));
 	}
 
 	@Test
 	public void linksWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("links"))
-				.willReturn(snippetResource("links-with-title"));
-		new LinksSnippet(
-				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-						new Link("b", "bravo")),
-				Arrays.asList(new LinkDescriptor("a").description("one"),
-						new LinkDescriptor("b").description("two")),
+		given(resolver.resolveTemplateResource("links")).willReturn(snippetResource("links-with-title"));
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b", "bravo")),
+				Arrays.asList(new LinkDescriptor("a").description("one"), new LinkDescriptor("b").description("two")),
 				attributes(key("title").value("Title for the links")))
-						.document(
-								this.operationBuilder
-										.attribute(TemplateEngine.class.getName(),
-												new MustacheTemplateEngine(resolver))
-										.build());
+						.document(this.operationBuilder
+								.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+								.build());
 		assertThat(this.generatedSnippets.links()).contains("Title for the links");
 	}
 
 	@Test
 	public void linksWithCustomDescriptorAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("links"))
-				.willReturn(snippetResource("links-with-extra-column"));
-		new LinksSnippet(
-				new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-						new Link("b", "bravo")),
-				Arrays.asList(
-						new LinkDescriptor("a").description("one")
-								.attributes(key("foo").value("alpha")),
-						new LinkDescriptor("b").description("two")
-								.attributes(key("foo").value("bravo"))))
-										.document(this.operationBuilder.attribute(
-												TemplateEngine.class.getName(),
-												new MustacheTemplateEngine(resolver))
-												.build());
-		assertThat(this.generatedSnippets.links())
-				.is(tableWithHeader("Relation", "Description", "Foo")
-						.row("a", "one", "alpha").row("b", "two", "bravo"));
+		given(resolver.resolveTemplateResource("links")).willReturn(snippetResource("links-with-extra-column"));
+		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b", "bravo")),
+				Arrays.asList(new LinkDescriptor("a").description("one").attributes(key("foo").value("alpha")),
+						new LinkDescriptor("b").description("two").attributes(key("foo").value("bravo"))))
+								.document(this.operationBuilder
+										.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+										.build());
+		assertThat(this.generatedSnippets.links()).is(
+				tableWithHeader("Relation", "Description", "Foo").row("a", "one", "alpha").row("b", "two", "bravo"));
 	}
 
 	@Test
 	public void additionalDescriptors() throws IOException {
 		HypermediaDocumentation
-				.links(new StubLinkExtractor().withLinks(new Link("a", "alpha"),
-						new Link("b", "bravo")),
+				.links(new StubLinkExtractor().withLinks(new Link("a", "alpha"), new Link("b", "bravo")),
 						new LinkDescriptor("a").description("one"))
-				.and(new LinkDescriptor("b").description("two"))
-				.document(this.operationBuilder.build());
+				.and(new LinkDescriptor("b").description("two")).document(this.operationBuilder.build());
 		assertThat(this.generatedSnippets.links())
-				.is(tableWithHeader("Relation", "Description").row("`a`", "one")
-						.row("`b`", "two"));
+				.is(tableWithHeader("Relation", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
@@ -170,9 +138,8 @@ public class LinksSnippetTests extends AbstractSnippetTests {
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("Foo|Bar", "foo")),
 				Arrays.asList(new LinkDescriptor("Foo|Bar").description("one|two")))
 						.document(this.operationBuilder.build());
-		assertThat(this.generatedSnippets.links())
-				.is(tableWithHeader("Relation", "Description").row(
-						escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+		assertThat(this.generatedSnippets.links()).is(tableWithHeader("Relation", "Description")
+				.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
 	}
 
 	private String escapeIfNecessary(String input) {

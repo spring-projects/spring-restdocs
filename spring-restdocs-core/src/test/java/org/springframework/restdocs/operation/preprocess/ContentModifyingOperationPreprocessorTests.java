@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,9 +58,8 @@ public class ContentModifyingOperationPreprocessorTests {
 
 	@Test
 	public void modifyRequestContent() {
-		OperationRequest request = this.requestFactory.create(
-				URI.create("http://localhost"), HttpMethod.GET, "content".getBytes(),
-				new HttpHeaders(), new Parameters(),
+		OperationRequest request = this.requestFactory.create(URI.create("http://localhost"), HttpMethod.GET,
+				"content".getBytes(), new HttpHeaders(), new Parameters(),
 				Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
 		assertThat(preprocessed.getContent()).isEqualTo("modified".getBytes());
@@ -68,8 +67,8 @@ public class ContentModifyingOperationPreprocessorTests {
 
 	@Test
 	public void modifyResponseContent() {
-		OperationResponse response = this.responseFactory.create(HttpStatus.OK,
-				new HttpHeaders(), "content".getBytes());
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK, new HttpHeaders(),
+				"content".getBytes());
 		OperationResponse preprocessed = this.preprocessor.preprocess(response);
 		assertThat(preprocessed.getContent()).isEqualTo("modified".getBytes());
 	}
@@ -78,10 +77,8 @@ public class ContentModifyingOperationPreprocessorTests {
 	public void contentLengthIsUpdated() {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentLength(7);
-		OperationRequest request = this.requestFactory.create(
-				URI.create("http://localhost"), HttpMethod.GET, "content".getBytes(),
-				httpHeaders, new Parameters(),
-				Collections.<OperationRequestPart>emptyList());
+		OperationRequest request = this.requestFactory.create(URI.create("http://localhost"), HttpMethod.GET,
+				"content".getBytes(), httpHeaders, new Parameters(), Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
 		assertThat(preprocessed.getHeaders().getContentLength()).isEqualTo(8L);
 	}

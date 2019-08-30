@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 public class ResponseHeadersSnippetFailureTests {
 
 	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(
-			TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -49,24 +48,19 @@ public class ResponseHeadersSnippetFailureTests {
 	@Test
 	public void missingResponseHeader() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(equalTo("Headers with the following names were not found"
-						+ " in the response: [Content-Type]"));
-		new ResponseHeadersSnippet(
-				Arrays.asList(headerWithName("Content-Type").description("one")))
-						.document(this.operationBuilder.response().build());
+		this.thrown.expectMessage(
+				equalTo("Headers with the following names were not found" + " in the response: [Content-Type]"));
+		new ResponseHeadersSnippet(Arrays.asList(headerWithName("Content-Type").description("one")))
+				.document(this.operationBuilder.response().build());
 	}
 
 	@Test
 	public void undocumentedResponseHeaderAndMissingResponseHeader() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown
-				.expectMessage(endsWith("Headers with the following names were not found"
-						+ " in the response: [Content-Type]"));
-		new ResponseHeadersSnippet(
-				Arrays.asList(headerWithName("Content-Type").description("one")))
-						.document(this.operationBuilder.response()
-								.header("X-Test", "test").build());
+		this.thrown.expectMessage(
+				endsWith("Headers with the following names were not found" + " in the response: [Content-Type]"));
+		new ResponseHeadersSnippet(Arrays.asList(headerWithName("Content-Type").description("one")))
+				.document(this.operationBuilder.response().header("X-Test", "test").build());
 	}
 
 }

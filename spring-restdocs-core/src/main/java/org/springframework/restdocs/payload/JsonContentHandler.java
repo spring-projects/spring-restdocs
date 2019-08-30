@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,7 @@ class JsonContentHandler implements ContentHandler {
 
 	private final JsonFieldTypeResolver fieldTypeResolver = new JsonFieldTypeResolver();
 
-	private final ObjectMapper objectMapper = new ObjectMapper()
-			.enable(SerializationFeature.INDENT_OUTPUT);
+	private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
 	private final byte[] rawContent;
 
@@ -50,15 +49,12 @@ class JsonContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public List<FieldDescriptor> findMissingFields(
-			List<FieldDescriptor> fieldDescriptors) {
+	public List<FieldDescriptor> findMissingFields(List<FieldDescriptor> fieldDescriptors) {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
 		Object payload = readContent();
 		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
-			if (!fieldDescriptor.isOptional()
-					&& !this.fieldProcessor.hasField(fieldDescriptor.getPath(), payload)
-					&& !isNestedBeneathMissingOptionalField(fieldDescriptor,
-							fieldDescriptors, payload)) {
+			if (!fieldDescriptor.isOptional() && !this.fieldProcessor.hasField(fieldDescriptor.getPath(), payload)
+					&& !isNestedBeneathMissingOptionalField(fieldDescriptor, fieldDescriptors, payload)) {
 				missingFields.add(fieldDescriptor);
 			}
 		}
@@ -66,13 +62,12 @@ class JsonContentHandler implements ContentHandler {
 		return missingFields;
 	}
 
-	private boolean isNestedBeneathMissingOptionalField(FieldDescriptor missing,
-			List<FieldDescriptor> fieldDescriptors, Object payload) {
+	private boolean isNestedBeneathMissingOptionalField(FieldDescriptor missing, List<FieldDescriptor> fieldDescriptors,
+			Object payload) {
 		List<FieldDescriptor> candidates = new ArrayList<>(fieldDescriptors);
 		candidates.remove(missing);
 		for (FieldDescriptor candidate : candidates) {
-			if (candidate.isOptional()
-					&& missing.getPath().startsWith(candidate.getPath())
+			if (candidate.isOptional() && missing.getPath().startsWith(candidate.getPath())
 					&& isMissing(candidate, payload)) {
 				return true;
 			}
@@ -84,8 +79,7 @@ class JsonContentHandler implements ContentHandler {
 		if (!this.fieldProcessor.hasField(candidate.getPath(), payload)) {
 			return true;
 		}
-		ExtractedField extracted = this.fieldProcessor.extract(candidate.getPath(),
-				payload);
+		ExtractedField extracted = this.fieldProcessor.extract(candidate.getPath(), payload);
 		return extracted.getValue() == null || isEmptyCollection(extracted.getValue());
 	}
 
@@ -147,20 +141,16 @@ class JsonContentHandler implements ContentHandler {
 	@Override
 	public Object determineFieldType(FieldDescriptor fieldDescriptor) {
 		if (fieldDescriptor.getType() == null) {
-			return this.fieldTypeResolver.resolveFieldType(fieldDescriptor,
-					readContent());
+			return this.fieldTypeResolver.resolveFieldType(fieldDescriptor, readContent());
 		}
 		if (!(fieldDescriptor.getType() instanceof JsonFieldType)) {
 			return fieldDescriptor.getType();
 		}
 		JsonFieldType descriptorFieldType = (JsonFieldType) fieldDescriptor.getType();
 		try {
-			JsonFieldType actualFieldType = this.fieldTypeResolver
-					.resolveFieldType(fieldDescriptor, readContent());
-			if (descriptorFieldType == JsonFieldType.VARIES
-					|| descriptorFieldType == actualFieldType
-					|| (fieldDescriptor.isOptional()
-							&& actualFieldType == JsonFieldType.NULL)) {
+			JsonFieldType actualFieldType = this.fieldTypeResolver.resolveFieldType(fieldDescriptor, readContent());
+			if (descriptorFieldType == JsonFieldType.VARIES || descriptorFieldType == actualFieldType
+					|| (fieldDescriptor.isOptional() && actualFieldType == JsonFieldType.NULL)) {
 				return descriptorFieldType;
 			}
 			throw new FieldTypesDoNotMatchException(fieldDescriptor, actualFieldType);

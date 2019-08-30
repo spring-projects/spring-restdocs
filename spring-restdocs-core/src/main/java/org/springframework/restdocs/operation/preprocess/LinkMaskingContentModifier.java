@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@ class LinkMaskingContentModifier implements ContentModifier {
 
 	private static final String DEFAULT_MASK = "...";
 
-	private static final Pattern LINK_HREF = Pattern.compile("\"href\"\\s*:\\s*\"(.*?)\"",
-			Pattern.DOTALL);
+	private static final Pattern LINK_HREF = Pattern.compile("\"href\"\\s*:\\s*\"(.*?)\"", Pattern.DOTALL);
 
 	private final ContentModifier contentModifier;
 

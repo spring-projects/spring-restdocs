@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,12 +38,10 @@ import org.springframework.restdocs.templates.TemplateFormats;
  * @author Andy Wilkinson
  * @since 1.1.0
  */
-public abstract class SnippetConfigurer<PARENT, TYPE>
-		extends AbstractNestedConfigurer<PARENT> {
+public abstract class SnippetConfigurer<PARENT, TYPE> extends AbstractNestedConfigurer<PARENT> {
 
-	private List<Snippet> defaultSnippets = new ArrayList<>(Arrays.asList(
-			CliDocumentation.curlRequest(), CliDocumentation.httpieRequest(),
-			HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse(),
+	private List<Snippet> defaultSnippets = new ArrayList<>(Arrays.asList(CliDocumentation.curlRequest(),
+			CliDocumentation.httpieRequest(), HttpDocumentation.httpRequest(), HttpDocumentation.httpResponse(),
 			PayloadDocumentation.requestBody(), PayloadDocumentation.responseBody()));
 
 	/**
@@ -58,8 +56,7 @@ public abstract class SnippetConfigurer<PARENT, TYPE>
 	 *
 	 * @see #withTemplateFormat(TemplateFormat)
 	 */
-	public static final TemplateFormat DEFAULT_TEMPLATE_FORMAT = TemplateFormats
-			.asciidoctor();
+	public static final TemplateFormat DEFAULT_TEMPLATE_FORMAT = TemplateFormats.asciidoctor();
 
 	private String snippetEncoding = DEFAULT_SNIPPET_ENCODING;
 
@@ -74,12 +71,10 @@ public abstract class SnippetConfigurer<PARENT, TYPE>
 	}
 
 	@Override
-	public void apply(Map<String, Object> configuration,
-			RestDocumentationContext context) {
+	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
 		configuration.put(SnippetConfiguration.class.getName(),
 				new SnippetConfiguration(this.snippetEncoding, this.templateFormat));
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS,
-				this.defaultSnippets);
+		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS, this.defaultSnippets);
 	}
 
 	/**

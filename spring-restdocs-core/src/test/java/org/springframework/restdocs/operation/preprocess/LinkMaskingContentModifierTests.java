@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,53 +42,46 @@ public class LinkMaskingContentModifierTests {
 
 	private final ContentModifier contentModifier = new LinkMaskingContentModifier();
 
-	private final Link[] links = new Link[] { new Link("a", "alpha"),
-			new Link("b", "bravo") };
+	private final Link[] links = new Link[] { new Link("a", "alpha"), new Link("b", "bravo") };
 
-	private final Link[] maskedLinks = new Link[] { new Link("a", "..."),
-			new Link("b", "...") };
+	private final Link[] maskedLinks = new Link[] { new Link("a", "..."), new Link("b", "...") };
 
 	@Test
 	public void halLinksAreMasked() throws Exception {
-		assertThat(
-				this.contentModifier.modifyContent(halPayloadWithLinks(this.links), null))
-						.isEqualTo(halPayloadWithLinks(this.maskedLinks));
+		assertThat(this.contentModifier.modifyContent(halPayloadWithLinks(this.links), null))
+				.isEqualTo(halPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void formattedHalLinksAreMasked() throws Exception {
-		assertThat(this.contentModifier
-				.modifyContent(formattedHalPayloadWithLinks(this.links), null))
-						.isEqualTo(formattedHalPayloadWithLinks(this.maskedLinks));
+		assertThat(this.contentModifier.modifyContent(formattedHalPayloadWithLinks(this.links), null))
+				.isEqualTo(formattedHalPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void atomLinksAreMasked() throws Exception {
-		assertThat(this.contentModifier.modifyContent(atomPayloadWithLinks(this.links),
-				null)).isEqualTo(atomPayloadWithLinks(this.maskedLinks));
+		assertThat(this.contentModifier.modifyContent(atomPayloadWithLinks(this.links), null))
+				.isEqualTo(atomPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void formattedAtomLinksAreMasked() throws Exception {
-		assertThat(this.contentModifier
-				.modifyContent(formattedAtomPayloadWithLinks(this.links), null))
-						.isEqualTo(formattedAtomPayloadWithLinks(this.maskedLinks));
+		assertThat(this.contentModifier.modifyContent(formattedAtomPayloadWithLinks(this.links), null))
+				.isEqualTo(formattedAtomPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void maskCanBeCustomized() throws Exception {
-		assertThat(new LinkMaskingContentModifier("custom")
-				.modifyContent(formattedAtomPayloadWithLinks(this.links), null))
-						.isEqualTo(formattedAtomPayloadWithLinks(new Link("a", "custom"),
-								new Link("b", "custom")));
+		assertThat(
+				new LinkMaskingContentModifier("custom").modifyContent(formattedAtomPayloadWithLinks(this.links), null))
+						.isEqualTo(formattedAtomPayloadWithLinks(new Link("a", "custom"), new Link("b", "custom")));
 	}
 
 	private byte[] atomPayloadWithLinks(Link... links) throws JsonProcessingException {
 		return new ObjectMapper().writeValueAsBytes(createAtomPayload(links));
 	}
 
-	private byte[] formattedAtomPayloadWithLinks(Link... links)
-			throws JsonProcessingException {
+	private byte[] formattedAtomPayloadWithLinks(Link... links) throws JsonProcessingException {
 		return new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
 				.writeValueAsBytes(createAtomPayload(links));
 	}
@@ -103,8 +96,7 @@ public class LinkMaskingContentModifierTests {
 		return new ObjectMapper().writeValueAsBytes(createHalPayload(links));
 	}
 
-	private byte[] formattedHalPayloadWithLinks(Link... links)
-			throws JsonProcessingException {
+	private byte[] formattedHalPayloadWithLinks(Link... links) throws JsonProcessingException {
 		return new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
 				.writeValueAsBytes(createHalPayload(links));
 	}
@@ -121,11 +113,10 @@ public class LinkMaskingContentModifierTests {
 		return payload;
 	}
 
-	private static final class AtomPayload {
+	public static final class AtomPayload {
 
 		private List<Link> links;
 
-		@SuppressWarnings("unused")
 		public List<Link> getLinks() {
 			return this.links;
 		}
@@ -136,7 +127,7 @@ public class LinkMaskingContentModifierTests {
 
 	}
 
-	private static final class HalPayload {
+	public static final class HalPayload {
 
 		private Map<String, Object> links;
 

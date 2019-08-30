@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ public class ConstraintDescriptions {
 	 * @param clazz the class
 	 */
 	public ConstraintDescriptions(Class<?> clazz) {
-		this(clazz, new ValidatorConstraintResolver(),
-				new ResourceBundleConstraintDescriptionResolver());
+		this(clazz, new ValidatorConstraintResolver(), new ResourceBundleConstraintDescriptionResolver());
 	}
 
 	/**
@@ -54,8 +53,7 @@ public class ConstraintDescriptions {
 	 * @param constraintResolver the constraint resolver
 	 */
 	public ConstraintDescriptions(Class<?> clazz, ConstraintResolver constraintResolver) {
-		this(clazz, constraintResolver,
-				new ResourceBundleConstraintDescriptionResolver());
+		this(clazz, constraintResolver, new ResourceBundleConstraintDescriptionResolver());
 	}
 
 	/**
@@ -65,8 +63,7 @@ public class ConstraintDescriptions {
 	 * @param clazz the class
 	 * @param descriptionResolver the description resolver
 	 */
-	public ConstraintDescriptions(Class<?> clazz,
-			ConstraintDescriptionResolver descriptionResolver) {
+	public ConstraintDescriptions(Class<?> clazz, ConstraintDescriptionResolver descriptionResolver) {
 		this(clazz, new ValidatorConstraintResolver(), descriptionResolver);
 	}
 
@@ -91,8 +88,7 @@ public class ConstraintDescriptions {
 	 * @return the list of constraint descriptions
 	 */
 	public List<String> descriptionsForProperty(String property) {
-		List<Constraint> constraints = this.constraintResolver
-				.resolveForProperty(property, this.clazz);
+		List<Constraint> constraints = this.constraintResolver.resolveForProperty(property, this.clazz);
 		List<String> descriptions = new ArrayList<>();
 		for (Constraint constraint : constraints) {
 			descriptions.add(this.descriptionResolver.resolveDescription(constraint));

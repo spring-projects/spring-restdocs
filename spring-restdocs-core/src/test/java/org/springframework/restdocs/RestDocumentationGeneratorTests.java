@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,53 +54,43 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 public class RestDocumentationGeneratorTests {
 
 	@SuppressWarnings("unchecked")
-	private final RequestConverter<Object> requestConverter = mock(
-			RequestConverter.class);
+	private final RequestConverter<Object> requestConverter = mock(RequestConverter.class);
 
 	@SuppressWarnings("unchecked")
-	private final ResponseConverter<Object> responseConverter = mock(
-			ResponseConverter.class);
+	private final ResponseConverter<Object> responseConverter = mock(ResponseConverter.class);
 
 	private final Object request = new Object();
 
 	private final Object response = new Object();
 
 	private final OperationRequest operationRequest = new OperationRequestFactory()
-			.create(URI.create("http://localhost:8080"), null, null, new HttpHeaders(),
-					null, null);
+			.create(URI.create("http://localhost:8080"), null, null, new HttpHeaders(), null, null);
 
-	private final OperationResponse operationResponse = new OperationResponseFactory()
-			.create(null, null, null);
+	private final OperationResponse operationResponse = new OperationResponseFactory().create(null, null, null);
 
 	private final Snippet snippet = mock(Snippet.class);
 
 	@Test
 	public void basicHandling() throws IOException {
-		given(this.requestConverter.convert(this.request))
-				.willReturn(this.operationRequest);
-		given(this.responseConverter.convert(this.response))
-				.willReturn(this.operationResponse);
+		given(this.requestConverter.convert(this.request)).willReturn(this.operationRequest);
+		given(this.responseConverter.convert(this.response)).willReturn(this.operationResponse);
 		HashMap<String, Object> configuration = new HashMap<>();
-		new RestDocumentationGenerator<>("id", this.requestConverter,
-				this.responseConverter, this.snippet).handle(this.request, this.response,
-						configuration);
+		new RestDocumentationGenerator<>("id", this.requestConverter, this.responseConverter, this.snippet)
+				.handle(this.request, this.response, configuration);
 		verifySnippetInvocation(this.snippet, configuration);
 	}
 
 	@Test
 	public void defaultSnippetsAreCalled() throws IOException {
-		given(this.requestConverter.convert(this.request))
-				.willReturn(this.operationRequest);
-		given(this.responseConverter.convert(this.response))
-				.willReturn(this.operationResponse);
+		given(this.requestConverter.convert(this.request)).willReturn(this.operationRequest);
+		given(this.responseConverter.convert(this.response)).willReturn(this.operationResponse);
 		HashMap<String, Object> configuration = new HashMap<>();
 		Snippet defaultSnippet1 = mock(Snippet.class);
 		Snippet defaultSnippet2 = mock(Snippet.class);
 		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS,
 				Arrays.asList(defaultSnippet1, defaultSnippet2));
-		new RestDocumentationGenerator<>("id", this.requestConverter,
-				this.responseConverter, this.snippet).handle(this.request, this.response,
-						configuration);
+		new RestDocumentationGenerator<>("id", this.requestConverter, this.responseConverter, this.snippet)
+				.handle(this.request, this.response, configuration);
 		InOrder inOrder = Mockito.inOrder(defaultSnippet1, defaultSnippet2, this.snippet);
 		verifySnippetInvocation(inOrder, defaultSnippet1, configuration);
 		verifySnippetInvocation(inOrder, defaultSnippet2, configuration);
@@ -110,20 +100,17 @@ public class RestDocumentationGeneratorTests {
 	@Test
 	@Deprecated
 	public void additionalSnippetsAreCalled() throws IOException {
-		given(this.requestConverter.convert(this.request))
-				.willReturn(this.operationRequest);
-		given(this.responseConverter.convert(this.response))
-				.willReturn(this.operationResponse);
+		given(this.requestConverter.convert(this.request)).willReturn(this.operationRequest);
+		given(this.responseConverter.convert(this.response)).willReturn(this.operationResponse);
 		Snippet additionalSnippet1 = mock(Snippet.class);
 		Snippet additionalSnippet2 = mock(Snippet.class);
-		RestDocumentationGenerator<Object, Object> generator = new RestDocumentationGenerator<>(
-				"id", this.requestConverter, this.responseConverter, this.snippet);
+		RestDocumentationGenerator<Object, Object> generator = new RestDocumentationGenerator<>("id",
+				this.requestConverter, this.responseConverter, this.snippet);
 		generator.addSnippets(additionalSnippet1, additionalSnippet2);
 		HashMap<String, Object> configuration = new HashMap<>();
 		generator.handle(this.request, this.response, configuration);
 		generator.handle(this.request, this.response, configuration);
-		InOrder inOrder = Mockito.inOrder(this.snippet, additionalSnippet1,
-				additionalSnippet2);
+		InOrder inOrder = Mockito.inOrder(this.snippet, additionalSnippet1, additionalSnippet2);
 		verifySnippetInvocation(inOrder, this.snippet, configuration);
 		verifySnippetInvocation(inOrder, additionalSnippet1, configuration);
 		verifySnippetInvocation(inOrder, additionalSnippet2, configuration);
@@ -133,33 +120,25 @@ public class RestDocumentationGeneratorTests {
 
 	@Test
 	public void newGeneratorOnlyCallsItsSnippets() throws IOException {
-		OperationRequestPreprocessor requestPreprocessor = mock(
-				OperationRequestPreprocessor.class);
-		OperationResponsePreprocessor responsePreprocessor = mock(
-				OperationResponsePreprocessor.class);
-		given(this.requestConverter.convert(this.request))
-				.willReturn(this.operationRequest);
-		given(this.responseConverter.convert(this.response))
-				.willReturn(this.operationResponse);
-		given(requestPreprocessor.preprocess(this.operationRequest))
-				.willReturn(this.operationRequest);
-		given(responsePreprocessor.preprocess(this.operationResponse))
-				.willReturn(this.operationResponse);
+		OperationRequestPreprocessor requestPreprocessor = mock(OperationRequestPreprocessor.class);
+		OperationResponsePreprocessor responsePreprocessor = mock(OperationResponsePreprocessor.class);
+		given(this.requestConverter.convert(this.request)).willReturn(this.operationRequest);
+		given(this.responseConverter.convert(this.response)).willReturn(this.operationResponse);
+		given(requestPreprocessor.preprocess(this.operationRequest)).willReturn(this.operationRequest);
+		given(responsePreprocessor.preprocess(this.operationResponse)).willReturn(this.operationResponse);
 		Snippet additionalSnippet1 = mock(Snippet.class);
 		Snippet additionalSnippet2 = mock(Snippet.class);
-		RestDocumentationGenerator<Object, Object> generator = new RestDocumentationGenerator<>(
-				"id", this.requestConverter, this.responseConverter, requestPreprocessor,
-				responsePreprocessor, this.snippet);
+		RestDocumentationGenerator<Object, Object> generator = new RestDocumentationGenerator<>("id",
+				this.requestConverter, this.responseConverter, requestPreprocessor, responsePreprocessor, this.snippet);
 		HashMap<String, Object> configuration = new HashMap<>();
-		generator.withSnippets(additionalSnippet1, additionalSnippet2)
-				.handle(this.request, this.response, configuration);
+		generator.withSnippets(additionalSnippet1, additionalSnippet2).handle(this.request, this.response,
+				configuration);
 		verifyNoMoreInteractions(this.snippet);
 		verifySnippetInvocation(additionalSnippet1, configuration);
 		verifySnippetInvocation(additionalSnippet2, configuration);
 	}
 
-	private void verifySnippetInvocation(Snippet snippet, Map<String, Object> attributes)
-			throws IOException {
+	private void verifySnippetInvocation(Snippet snippet, Map<String, Object> attributes) throws IOException {
 		ArgumentCaptor<Operation> operation = ArgumentCaptor.forClass(Operation.class);
 		verify(snippet).document(operation.capture());
 		assertThat(this.operationRequest).isEqualTo(operation.getValue().getRequest());
@@ -167,8 +146,8 @@ public class RestDocumentationGeneratorTests {
 		assertThat(attributes).isEqualTo(operation.getValue().getAttributes());
 	}
 
-	private void verifySnippetInvocation(InOrder inOrder, Snippet snippet,
-			Map<String, Object> attributes) throws IOException {
+	private void verifySnippetInvocation(InOrder inOrder, Snippet snippet, Map<String, Object> attributes)
+			throws IOException {
 		ArgumentCaptor<Operation> operation = ArgumentCaptor.forClass(Operation.class);
 		inOrder.verify(snippet).document(operation.capture());
 		assertThat(this.operationRequest).isEqualTo(operation.getValue().getRequest());

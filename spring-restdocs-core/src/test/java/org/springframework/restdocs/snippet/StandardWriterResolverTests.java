@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,42 +45,37 @@ public class StandardWriterResolverTests {
 	@Rule
 	public final TemporaryFolder temp = new TemporaryFolder();
 
-	private final PlaceholderResolverFactory placeholderResolverFactory = mock(
-			PlaceholderResolverFactory.class);
+	private final PlaceholderResolverFactory placeholderResolverFactory = mock(PlaceholderResolverFactory.class);
 
-	private final StandardWriterResolver resolver = new StandardWriterResolver(
-			this.placeholderResolverFactory, "UTF-8", TemplateFormats.asciidoctor());
+	private final StandardWriterResolver resolver = new StandardWriterResolver(this.placeholderResolverFactory, "UTF-8",
+			TemplateFormats.asciidoctor());
 
 	@Test
 	public void absoluteInput() {
 		String absolutePath = new File("foo").getAbsolutePath();
-		assertThat(this.resolver.resolveFile(absolutePath, "bar.txt",
-				createContext(absolutePath)))
-						.isEqualTo(new File(absolutePath, "bar.txt"));
+		assertThat(this.resolver.resolveFile(absolutePath, "bar.txt", createContext(absolutePath)))
+				.isEqualTo(new File(absolutePath, "bar.txt"));
 	}
 
 	@Test
 	public void configuredOutputAndRelativeInput() {
 		File outputDir = new File("foo").getAbsoluteFile();
-		assertThat(this.resolver.resolveFile("bar", "baz.txt",
-				createContext(outputDir.getAbsolutePath())))
-						.isEqualTo(new File(outputDir, "bar/baz.txt"));
+		assertThat(this.resolver.resolveFile("bar", "baz.txt", createContext(outputDir.getAbsolutePath())))
+				.isEqualTo(new File(outputDir, "bar/baz.txt"));
 	}
 
 	@Test
 	public void configuredOutputAndAbsoluteInput() {
 		File outputDir = new File("foo").getAbsoluteFile();
 		String absolutePath = new File("bar").getAbsolutePath();
-		assertThat(this.resolver.resolveFile(absolutePath, "baz.txt",
-				createContext(outputDir.getAbsolutePath())))
-						.isEqualTo(new File(absolutePath, "baz.txt"));
+		assertThat(this.resolver.resolveFile(absolutePath, "baz.txt", createContext(outputDir.getAbsolutePath())))
+				.isEqualTo(new File(absolutePath, "baz.txt"));
 	}
 
 	@Test
 	public void placeholdersAreResolvedInOperationName() throws IOException {
 		File outputDirectory = this.temp.newFolder();
-		RestDocumentationContext context = createContext(
-				outputDirectory.getAbsolutePath());
+		RestDocumentationContext context = createContext(outputDirectory.getAbsolutePath());
 		PlaceholderResolver resolver = mock(PlaceholderResolver.class);
 		given(resolver.resolvePlaceholder("a")).willReturn("alpha");
 		given(this.placeholderResolverFactory.create(context)).willReturn(resolver);
@@ -91,8 +86,7 @@ public class StandardWriterResolverTests {
 	@Test
 	public void placeholdersAreResolvedInSnippetName() throws IOException {
 		File outputDirectory = this.temp.newFolder();
-		RestDocumentationContext context = createContext(
-				outputDirectory.getAbsolutePath());
+		RestDocumentationContext context = createContext(outputDirectory.getAbsolutePath());
 		PlaceholderResolver resolver = mock(PlaceholderResolver.class);
 		given(resolver.resolvePlaceholder("b")).willReturn("bravo");
 		given(this.placeholderResolverFactory.create(context)).willReturn(resolver);
@@ -101,20 +95,17 @@ public class StandardWriterResolverTests {
 	}
 
 	private RestDocumentationContext createContext(String outputDir) {
-		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(
-				outputDir);
+		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation(outputDir);
 		manualRestDocumentation.beforeTest(getClass(), null);
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;
 	}
 
-	private void assertSnippetLocation(Writer writer, File expectedLocation)
-			throws IOException {
+	private void assertSnippetLocation(Writer writer, File expectedLocation) throws IOException {
 		writer.write("test");
 		writer.flush();
 		assertThat(expectedLocation).exists();
-		assertThat(FileCopyUtils.copyToString(new FileReader(expectedLocation)))
-				.isEqualTo("test");
+		assertThat(FileCopyUtils.copyToString(new FileReader(expectedLocation))).isEqualTo("test");
 	}
 
 }

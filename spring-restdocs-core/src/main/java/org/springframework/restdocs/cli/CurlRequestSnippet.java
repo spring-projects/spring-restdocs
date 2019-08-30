@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,8 +87,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 * @param commandFormatter the formatter for generating the snippet
 	 */
-	protected CurlRequestSnippet(Map<String, Object> attributes,
-			CommandFormatter commandFormatter) {
+	protected CurlRequestSnippet(Map<String, Object> attributes, CommandFormatter commandFormatter) {
 		super("curl-request", attributes);
 		Assert.notNull(commandFormatter, "Command formatter must not be null");
 		this.commandFormatter = commandFormatter;
@@ -104,20 +103,17 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 	private String getUrl(Operation operation) {
 		OperationRequest request = operation.getRequest();
-		Parameters uniqueParameters = request.getParameters()
-				.getUniqueParameters(operation.getRequest().getUri());
+		Parameters uniqueParameters = request.getParameters().getUniqueParameters(operation.getRequest().getUri());
 		if (!uniqueParameters.isEmpty() && includeParametersInUri(request)) {
 			return String.format("'%s%s%s'", request.getUri(),
-					StringUtils.hasText(request.getUri().getRawQuery()) ? "&" : "?",
-					uniqueParameters.toQueryString());
+					StringUtils.hasText(request.getUri().getRawQuery()) ? "&" : "?", uniqueParameters.toQueryString());
 		}
 		return String.format("'%s'", request.getUri());
 	}
 
 	private boolean includeParametersInUri(OperationRequest request) {
 		return request.getMethod() == HttpMethod.GET || (request.getContent().length > 0
-				&& !MediaType.APPLICATION_FORM_URLENCODED
-						.isCompatibleWith(request.getHeaders().getContentType()));
+				&& !MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(request.getHeaders().getContentType()));
 	}
 
 	private String getOptions(Operation operation) {
@@ -146,8 +142,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 				if (cookiesBuilder.length() > 0) {
 					cookiesBuilder.append(";");
 				}
-				cookiesBuilder.append(
-						String.format("%s=%s", cookie.getName(), cookie.getValue()));
+				cookiesBuilder.append(String.format("%s=%s", cookie.getName(), cookie.getValue()));
 			}
 			lines.add(String.format("--cookie '%s'", cookiesBuilder.toString()));
 		}
@@ -157,8 +152,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		builder.append("-i");
 	}
 
-	private void writeUserOptionIfNecessary(CliOperationRequest request,
-			StringBuilder builder) {
+	private void writeUserOptionIfNecessary(CliOperationRequest request, StringBuilder builder) {
 		String credentials = request.getBasicAuthCredentials();
 		if (credentials != null) {
 			builder.append(String.format(" -u '%s'", credentials));
@@ -213,10 +207,8 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writeContentUsingParameters(OperationRequest request,
-			List<String> lines) {
-		Parameters uniqueParameters = request.getParameters()
-				.getUniqueParameters(request.getUri());
+	private void writeContentUsingParameters(OperationRequest request, List<String> lines) {
+		Parameters uniqueParameters = request.getParameters().getUniqueParameters(request.getUri());
 		String queryString = uniqueParameters.toQueryString();
 		if (StringUtils.hasText(queryString)) {
 			lines.add(String.format("-d '%s'", queryString));

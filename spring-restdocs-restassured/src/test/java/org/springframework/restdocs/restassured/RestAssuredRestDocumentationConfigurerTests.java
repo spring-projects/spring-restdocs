@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,11 +47,9 @@ public class RestAssuredRestDocumentationConfigurerTests {
 	@Rule
 	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
-	private final FilterableRequestSpecification requestSpec = mock(
-			FilterableRequestSpecification.class);
+	private final FilterableRequestSpecification requestSpec = mock(FilterableRequestSpecification.class);
 
-	private final FilterableResponseSpecification responseSpec = mock(
-			FilterableResponseSpecification.class);
+	private final FilterableResponseSpecification responseSpec = mock(FilterableResponseSpecification.class);
 
 	private final FilterContext filterContext = mock(FilterContext.class);
 
@@ -69,18 +67,14 @@ public class RestAssuredRestDocumentationConfigurerTests {
 		this.configurer.filter(this.requestSpec, this.responseSpec, this.filterContext);
 		@SuppressWarnings("rawtypes")
 		ArgumentCaptor<Map> configurationCaptor = ArgumentCaptor.forClass(Map.class);
-		verify(this.filterContext).setValue(
-				eq(RestDocumentationFilter.CONTEXT_KEY_CONFIGURATION),
+		verify(this.filterContext).setValue(eq(RestDocumentationFilter.CONTEXT_KEY_CONFIGURATION),
 				configurationCaptor.capture());
 		@SuppressWarnings("unchecked")
 		Map<String, Object> configuration = configurationCaptor.getValue();
-		assertThat(configuration.get(TemplateEngine.class.getName()))
-				.isInstanceOf(TemplateEngine.class);
-		assertThat(configuration.get(WriterResolver.class.getName()))
-				.isInstanceOf(WriterResolver.class);
-		assertThat(configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
-						.isInstanceOf(List.class);
+		assertThat(configuration.get(TemplateEngine.class.getName())).isInstanceOf(TemplateEngine.class);
+		assertThat(configuration.get(WriterResolver.class.getName())).isInstanceOf(WriterResolver.class);
+		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
+				.isInstanceOf(List.class);
 	}
 
 }

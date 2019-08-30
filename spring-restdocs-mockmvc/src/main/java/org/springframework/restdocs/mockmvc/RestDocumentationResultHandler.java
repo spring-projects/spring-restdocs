@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,12 +91,9 @@ public class RestDocumentationResultHandler implements ResultHandler {
 			public void handle(MvcResult result) throws Exception {
 				@SuppressWarnings("unchecked")
 				Map<String, Object> configuration = new HashMap<>(
-						(Map<String, Object>) result.getRequest()
-								.getAttribute(ATTRIBUTE_NAME_CONFIGURATION));
-				configuration.remove(
-						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-				getDelegate().handle(result.getRequest(), result.getResponse(),
-						configuration);
+						(Map<String, Object>) result.getRequest().getAttribute(ATTRIBUTE_NAME_CONFIGURATION));
+				configuration.remove(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+				getDelegate().handle(result.getRequest(), result.getResponse(), configuration);
 			}
 
 		};

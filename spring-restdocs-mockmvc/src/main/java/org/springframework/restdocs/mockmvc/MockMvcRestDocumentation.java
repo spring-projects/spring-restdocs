@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,7 @@ public abstract class MockMvcRestDocumentation {
 	@Deprecated
 	public static MockMvcRestDocumentationConfigurer documentationConfiguration(
 			org.springframework.restdocs.RestDocumentation restDocumentation) {
-		return documentationConfiguration(
-				(RestDocumentationContextProvider) restDocumentation);
+		return documentationConfiguration((RestDocumentationContextProvider) restDocumentation);
 	}
 
 	/**
@@ -78,10 +77,9 @@ public abstract class MockMvcRestDocumentation {
 	 * @see MockMvc#perform(org.springframework.test.web.servlet.RequestBuilder)
 	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
 	 */
-	public static RestDocumentationResultHandler document(String identifier,
-			Snippet... snippets) {
-		return new RestDocumentationResultHandler(new RestDocumentationGenerator<>(
-				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, snippets));
+	public static RestDocumentationResultHandler document(String identifier, Snippet... snippets) {
+		return new RestDocumentationResultHandler(
+				new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, snippets));
 	}
 
 	/**
@@ -97,9 +95,8 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationRequestPreprocessor requestPreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(
-				new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
-						RESPONSE_CONVERTER, requestPreprocessor, snippets));
+		return new RestDocumentationResultHandler(new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+				RESPONSE_CONVERTER, requestPreprocessor, snippets));
 	}
 
 	/**
@@ -115,9 +112,8 @@ public abstract class MockMvcRestDocumentation {
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
 			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(
-				new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
-						RESPONSE_CONVERTER, responsePreprocessor, snippets));
+		return new RestDocumentationResultHandler(new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+				RESPONSE_CONVERTER, responsePreprocessor, snippets));
 	}
 
 	/**
@@ -134,11 +130,10 @@ public abstract class MockMvcRestDocumentation {
 	 * @see ResultActions#andDo(org.springframework.test.web.servlet.ResultHandler)
 	 */
 	public static RestDocumentationResultHandler document(String identifier,
-			OperationRequestPreprocessor requestPreprocessor,
-			OperationResponsePreprocessor responsePreprocessor, Snippet... snippets) {
-		return new RestDocumentationResultHandler(new RestDocumentationGenerator<>(
-				identifier, REQUEST_CONVERTER, RESPONSE_CONVERTER, requestPreprocessor,
-				responsePreprocessor, snippets));
+			OperationRequestPreprocessor requestPreprocessor, OperationResponsePreprocessor responsePreprocessor,
+			Snippet... snippets) {
+		return new RestDocumentationResultHandler(new RestDocumentationGenerator<>(identifier, REQUEST_CONVERTER,
+				RESPONSE_CONVERTER, requestPreprocessor, responsePreprocessor, snippets));
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,20 +49,17 @@ import org.springframework.util.StreamUtils;
  *
  * @author Andy Wilkinson
  */
-class RestAssuredRequestConverter
-		implements RequestConverter<FilterableRequestSpecification> {
+class RestAssuredRequestConverter implements RequestConverter<FilterableRequestSpecification> {
 
 	@Override
 	public OperationRequest convert(FilterableRequestSpecification requestSpec) {
 		return new OperationRequestFactory().create(URI.create(requestSpec.getURI()),
-				HttpMethod.valueOf(requestSpec.getMethod().name()),
-				extractContent(requestSpec), extractHeaders(requestSpec),
-				extractParameters(requestSpec), extractParts(requestSpec),
+				HttpMethod.valueOf(requestSpec.getMethod().name()), extractContent(requestSpec),
+				extractHeaders(requestSpec), extractParameters(requestSpec), extractParts(requestSpec),
 				extractCookies(requestSpec));
 	}
 
-	private Collection<RequestCookie> extractCookies(
-			FilterableRequestSpecification requestSpec) {
+	private Collection<RequestCookie> extractCookies(FilterableRequestSpecification requestSpec) {
 		Collection<RequestCookie> cookies = new ArrayList<>();
 		for (Cookie cookie : requestSpec.getCookies()) {
 			cookies.add(new RequestCookie(cookie.getName(), cookie.getValue()));
@@ -91,8 +88,7 @@ class RestAssuredRequestConverter
 			return new byte[0];
 		}
 		else {
-			throw new IllegalStateException(
-					"Unsupported request content: " + content.getClass().getName());
+			throw new IllegalStateException("Unsupported request content: " + content.getClass().getName());
 		}
 	}
 
@@ -101,8 +97,7 @@ class RestAssuredRequestConverter
 			return FileCopyUtils.copyToByteArray(file);
 		}
 		catch (IOException ex) {
-			throw new IllegalStateException("Failed to read content from file " + file,
-					ex);
+			throw new IllegalStateException("Failed to read content from file " + file, ex);
 		}
 	}
 
@@ -111,15 +106,14 @@ class RestAssuredRequestConverter
 			inputStream.reset();
 		}
 		catch (IOException ex) {
-			throw new IllegalStateException("Cannot read content from input stream "
-					+ inputStream + " due to reset() failure");
+			throw new IllegalStateException(
+					"Cannot read content from input stream " + inputStream + " due to reset() failure");
 		}
 		try {
 			return StreamUtils.copyToByteArray(inputStream);
 		}
 		catch (IOException ex) {
-			throw new IllegalStateException(
-					"Failed to read content from input stream " + inputStream, ex);
+			throw new IllegalStateException("Failed to read content from input stream " + inputStream, ex);
 		}
 	}
 
@@ -134,8 +128,7 @@ class RestAssuredRequestConverter
 	}
 
 	private boolean isAllMediaTypesAcceptHeader(Header header) {
-		return HttpHeaders.ACCEPT.equals(header.getName())
-				&& "*/*".equals(header.getValue());
+		return HttpHeaders.ACCEPT.equals(header.getName()) && "*/*".equals(header.getValue());
 	}
 
 	private Parameters extractParameters(FilterableRequestSpecification requestSpec) {
@@ -160,17 +153,14 @@ class RestAssuredRequestConverter
 		return parameters;
 	}
 
-	private Collection<OperationRequestPart> extractParts(
-			FilterableRequestSpecification requestSpec) {
+	private Collection<OperationRequestPart> extractParts(FilterableRequestSpecification requestSpec) {
 		List<OperationRequestPart> parts = new ArrayList<>();
 		for (MultiPartSpecification multiPartSpec : requestSpec.getMultiPartParams()) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType((multiPartSpec.getMimeType() != null)
-					? MediaType.parseMediaType(multiPartSpec.getMimeType())
-					: MediaType.TEXT_PLAIN);
-			parts.add(new OperationRequestPartFactory().create(
-					multiPartSpec.getControlName(), multiPartSpec.getFileName(),
-					convertContent(multiPartSpec.getContent()), headers));
+					? MediaType.parseMediaType(multiPartSpec.getMimeType()) : MediaType.TEXT_PLAIN);
+			parts.add(new OperationRequestPartFactory().create(multiPartSpec.getControlName(),
+					multiPartSpec.getFileName(), convertContent(multiPartSpec.getContent()), headers));
 		}
 		return parts;
 	}

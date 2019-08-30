@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,7 @@ import org.springframework.http.MediaType;
 public class PrettyPrintingContentModifier implements ContentModifier {
 
 	private static final List<PrettyPrinter> PRETTY_PRINTERS = Collections
-			.unmodifiableList(
-					Arrays.asList(new JsonPrettyPrinter(), new XmlPrettyPrinter()));
+			.unmodifiableList(Arrays.asList(new JsonPrettyPrinter(), new XmlPrettyPrinter()));
 
 	@Override
 	public byte[] modifyContent(byte[] originalContent, MediaType contentType) {
@@ -82,44 +81,37 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 		public byte[] prettyPrint(byte[] original) throws Exception {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
-					"4");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
 			ByteArrayOutputStream transformed = new ByteArrayOutputStream();
 			transformer.setErrorListener(new SilentErrorListener());
-			transformer.transform(createSaxSource(original),
-					new StreamResult(transformed));
+			transformer.transform(createSaxSource(original), new StreamResult(transformed));
 
 			return transformed.toByteArray();
 		}
 
-		private SAXSource createSaxSource(byte[] original)
-				throws ParserConfigurationException, SAXException {
+		private SAXSource createSaxSource(byte[] original) throws ParserConfigurationException, SAXException {
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			SAXParser parser = parserFactory.newSAXParser();
 			XMLReader xmlReader = parser.getXMLReader();
 			xmlReader.setErrorHandler(new SilentErrorHandler());
-			return new SAXSource(xmlReader,
-					new InputSource(new ByteArrayInputStream(original)));
+			return new SAXSource(xmlReader, new InputSource(new ByteArrayInputStream(original)));
 		}
 
 		private static final class SilentErrorListener implements ErrorListener {
 
 			@Override
-			public void warning(TransformerException exception)
-					throws TransformerException {
+			public void warning(TransformerException exception) throws TransformerException {
 				// Suppress
 			}
 
 			@Override
-			public void error(TransformerException exception)
-					throws TransformerException {
+			public void error(TransformerException exception) throws TransformerException {
 				// Suppress
 			}
 
 			@Override
-			public void fatalError(TransformerException exception)
-					throws TransformerException {
+			public void fatalError(TransformerException exception) throws TransformerException {
 				// Suppress
 			}
 
@@ -148,13 +140,12 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 	private static final class JsonPrettyPrinter implements PrettyPrinter {
 
-		private final ObjectMapper objectMapper = new ObjectMapper()
-				.configure(SerializationFeature.INDENT_OUTPUT, true);
+		private final ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT,
+				true);
 
 		@Override
 		public byte[] prettyPrint(byte[] original) throws IOException {
-			return this.objectMapper
-					.writeValueAsBytes(this.objectMapper.readTree(original));
+			return this.objectMapper.writeValueAsBytes(this.objectMapper.readTree(original));
 		}
 
 	}

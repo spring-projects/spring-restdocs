@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@ public class DefaultAttributesPreprocessorTests {
 		Options options = new Options();
 		options.setAttributes(new Attributes("projectdir=../../.."));
 		String converted = Asciidoctor.Factory.create().convert("{snippets}", options);
-		assertThat(converted)
-				.contains("build" + File.separatorChar + "generated-snippets");
+		assertThat(converted).contains("build" + File.separatorChar + "generated-snippets");
 	}
 
 	@Test
@@ -53,8 +52,7 @@ public class DefaultAttributesPreprocessorTests {
 	public void snippetsAttributeFromDocumentPreambleIsNotOverridden() {
 		Options options = new Options();
 		options.setAttributes(new Attributes("projectdir=../../.."));
-		String converted = Asciidoctor.Factory.create()
-				.convert(":snippets: custom\n{snippets}", options);
+		String converted = Asciidoctor.Factory.create().convert(":snippets: custom\n{snippets}", options);
 		assertThat(converted).contains("custom");
 	}
 

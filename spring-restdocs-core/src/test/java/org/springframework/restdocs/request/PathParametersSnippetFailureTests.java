@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 public class PathParametersSnippetFailureTests {
 
 	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(
-			TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -50,25 +49,18 @@ public class PathParametersSnippetFailureTests {
 	@Test
 	public void undocumentedPathParameter() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Path parameters with the following names were"
-				+ " not documented: [a]"));
-		new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList())
-				.document(this.operationBuilder
-						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-								"/{a}/")
-						.build());
+		this.thrown.expectMessage(equalTo("Path parameters with the following names were" + " not documented: [a]"));
+		new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList()).document(this.operationBuilder
+				.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/").build());
 	}
 
 	@Test
 	public void missingPathParameter() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Path parameters with the following names were"
-				+ " not found in the request: [a]"));
-		new PathParametersSnippet(
-				Arrays.asList(parameterWithName("a").description("one")))
-						.document(this.operationBuilder.attribute(
-								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-								"/").build());
+		this.thrown.expectMessage(
+				equalTo("Path parameters with the following names were" + " not found in the request: [a]"));
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"))).document(
+				this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/").build());
 	}
 
 	@Test
@@ -77,11 +69,9 @@ public class PathParametersSnippetFailureTests {
 		this.thrown.expectMessage(equalTo("Path parameters with the following names were"
 				+ " not documented: [b]. Path parameters with the following"
 				+ " names were not found in the request: [a]"));
-		new PathParametersSnippet(
-				Arrays.asList(parameterWithName("a").description("one")))
-						.document(this.operationBuilder.attribute(
-								RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-								"/{b}").build());
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{b}").build());
 	}
 
 }
