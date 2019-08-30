@@ -397,19 +397,19 @@ based on your project's build tool:
 
 |===
 
-If you are using JUnit 5.1 or later the default can be overridden by providing
-an output directory when registering the `RestDocumentationExtension` instance:
+If you are using JUnit 5.1, you can override the default by registering the extension
+as a field in your test class and providing an output directory when creating it. The
+following example shows how to do so:
 
 [source,java,indent=0]
 ----
 public class JUnit5ExampleTests {
-    @RegisterExtension
-    static final RestDocumentationExtension restDocumentation =
-        new RestDocumentationExtension ("custom");
+
+	@RegisterExtension
+	final RestDocumentationExtension restDocumentation = new RestDocumentationExtension ("custom");
+
 }
 ----
-
-
 
 Next, you must provide a `@BeforeEach` method to configure MockMvc, WebTestClient, or
 REST Assured. The following listings show how to do so:

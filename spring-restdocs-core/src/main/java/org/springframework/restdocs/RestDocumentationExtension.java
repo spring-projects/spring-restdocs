@@ -34,11 +34,21 @@ public class RestDocumentationExtension implements BeforeEachCallback, AfterEach
 
 	private final String outputDirectory;
 
-	public RestDocumentationExtension () {
+	/**
+	 * Creates a new {@code RestDocumentationExtension} that will use the default output
+	 * directory.
+	 */
+	public RestDocumentationExtension() {
 		this(null);
 	}
 
-	public RestDocumentationExtension (String outputDirectory) {
+	/**
+	 * Creates a new {@code RestDocumentationExtension} that will use the given
+	 * {@code outputDirectory}.
+	 * @param outputDirectory snippet output directory
+	 * @since 2.0.4
+	 */
+	public RestDocumentationExtension(String outputDirectory) {
 		this.outputDirectory = outputDirectory;
 	}
 
@@ -75,11 +85,13 @@ public class RestDocumentationExtension implements BeforeEachCallback, AfterEach
 				this::createManualRestDocumentation, ManualRestDocumentation.class);
 	}
 
-	private ManualRestDocumentation createManualRestDocumentation (Class<ManualRestDocumentation> key) {
-		if (outputDirectory != null) {
-			return new ManualRestDocumentation(outputDirectory);
-		} else {
+	private ManualRestDocumentation createManualRestDocumentation(Class<ManualRestDocumentation> key) {
+		if (this.outputDirectory != null) {
+			return new ManualRestDocumentation(this.outputDirectory);
+		}
+		else {
 			return new ManualRestDocumentation();
 		}
 	}
+
 }
