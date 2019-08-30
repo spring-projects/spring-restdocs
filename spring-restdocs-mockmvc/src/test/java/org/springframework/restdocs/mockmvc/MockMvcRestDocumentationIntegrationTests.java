@@ -69,6 +69,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -489,6 +490,26 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
 						.withContent(String.format("$ curl 'http://localhost:8080/custom/' -i -X GET \\%n"
 								+ "    -H 'Accept: application/json'"))));
+	}
+
+	@Test
+	public void exceptionShouldBeThrownWhenCallDocumentMockMvcNotConfigured() {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
+		assertThatThrownBy(() -> mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andDo(document("basic")))
+				.isInstanceOf(IllegalStateException.class).hasMessage("REST Docs configuration not found. Did you "
+						+ "forget to apply a MockMvcRestDocumentationConfigurer when building the MockMvc instance?");
+
+	}
+
+	@Test
+	public void exceptionShouldBeThrownWhenCallDocumentSnippetsMockMvcNotConfigured() {
+		RestDocumentationResultHandler documentation = document("{method-name}-{step}");
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
+		assertThatThrownBy(() -> mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
+				.andDo(documentation.document(responseHeaders(headerWithName("a").description("one")))))
+						.isInstanceOf(IllegalStateException.class)
+						.hasMessage("REST Docs configuration not found. Did you forget to apply a "
+								+ "MockMvcRestDocumentationConfigurer when building the MockMvc instance?");
 	}
 
 	@Test

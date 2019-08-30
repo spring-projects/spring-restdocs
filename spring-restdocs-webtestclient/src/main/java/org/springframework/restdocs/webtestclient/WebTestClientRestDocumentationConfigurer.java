@@ -29,6 +29,7 @@ import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.config.RestDocumentationConfigurer;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -78,7 +79,10 @@ public class WebTestClientRestDocumentationConfigurer extends
 
 	static Map<String, Object> retrieveConfiguration(HttpHeaders headers) {
 		String requestId = headers.getFirst(WebTestClient.WEBTESTCLIENT_REQUEST_ID);
-		return configurations.remove(requestId);
+		Map<String, Object> configuration = configurations.remove(requestId);
+		Assert.state(configuration != null, () -> "REST Docs configuration not found. Did you forget to register a "
+				+ WebTestClientRestDocumentationConfigurer.class.getSimpleName() + " as a filter?");
+		return configuration;
 	}
 
 	@Override

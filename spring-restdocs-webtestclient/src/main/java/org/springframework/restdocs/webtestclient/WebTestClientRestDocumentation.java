@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.webtestclient;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -134,8 +133,8 @@ public abstract class WebTestClientRestDocumentation {
 	}
 
 	private static Map<String, Object> retrieveConfiguration(ExchangeResult result) {
-		Map<String, Object> configuration = new HashMap<>(
-				WebTestClientRestDocumentationConfigurer.retrieveConfiguration(result.getRequestHeaders()));
+		Map<String, Object> configuration = WebTestClientRestDocumentationConfigurer
+				.retrieveConfiguration(result.getRequestHeaders());
 		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, result.getUriTemplate());
 		return configuration;
 	}
