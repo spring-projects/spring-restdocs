@@ -32,6 +32,26 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  */
 public class RestDocumentationExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
+	private final String outputDirectory;
+
+	/**
+	 * Creates a new {@code RestDocumentationExtension} that will use the default output
+	 * directory.
+	 */
+	public RestDocumentationExtension() {
+		this(null);
+	}
+
+	/**
+	 * Creates a new {@code RestDocumentationExtension} that will use the given
+	 * {@code outputDirectory}.
+	 * @param outputDirectory snippet output directory
+	 * @since 2.0.4
+	 */
+	public RestDocumentationExtension(String outputDirectory) {
+		this.outputDirectory = outputDirectory;
+	}
+
 	@Override
 	public void beforeEach(ExtensionContext context) throws Exception {
 		this.getDelegate(context).beforeTest(context.getRequiredTestClass(), context.getRequiredTestMethod().getName());
@@ -62,7 +82,16 @@ public class RestDocumentationExtension implements BeforeEachCallback, AfterEach
 	private ManualRestDocumentation getDelegate(ExtensionContext context) {
 		Namespace namespace = Namespace.create(getClass(), context.getUniqueId());
 		return context.getStore(namespace).getOrComputeIfAbsent(ManualRestDocumentation.class,
-				(key) -> new ManualRestDocumentation(), ManualRestDocumentation.class);
+				this::createManualRestDocumentation, ManualRestDocumentation.class);
+	}
+
+	private ManualRestDocumentation createManualRestDocumentation(Class<ManualRestDocumentation> key) {
+		if (this.outputDirectory != null) {
+			return new ManualRestDocumentation(this.outputDirectory);
+		}
+		else {
+			return new ManualRestDocumentation();
+		}
 	}
 
 }
