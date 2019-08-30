@@ -75,6 +75,9 @@ public class FieldPathPayloadSubsectionExtractor
 			ExtractedField extractedField = new JsonFieldProcessor().extract(this.fieldPath,
 					objectMapper.readValue(payload, Object.class));
 			Object value = extractedField.getValue();
+			if (value == ExtractedField.ABSENT) {
+				throw new PayloadHandlingException(this.fieldPath + " does not identify a section of the payload");
+			}
 			if (value instanceof List) {
 				List<?> extractedList = (List<?>) value;
 				Set<String> uncommonPaths = JsonFieldPaths.from(extractedList).getUncommon();

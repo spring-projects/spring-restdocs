@@ -31,6 +31,7 @@ import org.junit.rules.ExpectedException;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Tests for {@link FieldPathPayloadSubsectionExtractor}.
@@ -128,6 +129,14 @@ public class FieldPathPayloadSubsectionExtractorTests {
 				MediaType.APPLICATION_JSON);
 		byte[] subsection = objectMapper.writeValueAsBytes(objectMapper.readValue("{\"c\": 1 }", Object.class));
 		assertThat(new String(extractedSubsection)).isEqualTo(new String(subsection));
+	}
+
+	@Test
+	public void extractNonExistentSubsection() throws JsonParseException, JsonMappingException, IOException {
+		assertThatThrownBy(() -> new FieldPathPayloadSubsectionExtractor("a.c")
+				.extractSubsection("{\"a\":{\"b\":{\"c\":5}}}".getBytes(), MediaType.APPLICATION_JSON))
+						.isInstanceOf(PayloadHandlingException.class)
+						.hasMessage("a.c does not identify a section of the payload");
 	}
 
 }
