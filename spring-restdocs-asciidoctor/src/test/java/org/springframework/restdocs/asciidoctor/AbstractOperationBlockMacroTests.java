@@ -35,6 +35,7 @@ import org.asciidoctor.Attributes;
 import org.asciidoctor.Options;
 import org.asciidoctor.OptionsBuilder;
 import org.asciidoctor.SafeMode;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -64,6 +65,12 @@ public abstract class AbstractOperationBlockMacroTests {
 		prepareOperationSnippets(getBuildOutputLocation());
 		this.options = OptionsBuilder.options().safe(SafeMode.UNSAFE).baseDir(getSourceLocation()).get();
 		this.options.setAttributes(getAttributes());
+		CapturingLogHandler.clear();
+	}
+
+	@After
+	public void verifyLogging() {
+		assertThat(CapturingLogHandler.getLogRecords()).isEmpty();
 	}
 
 	public void prepareOperationSnippets(File buildOutputLocation) throws IOException {
@@ -110,7 +117,8 @@ public abstract class AbstractOperationBlockMacroTests {
 
 	@Test
 	public void includeSnippetInSection() throws Exception {
-		String result = this.asciidoctor.convert("== Section\n" + "operation::some-operation[snippets='curl-request']",
+		String result = this.asciidoctor.convert(
+				"= A\n\nAlpha\n\n== B\n\nBravo\n\n" + "operation::some-operation[snippets='curl-request']",
 				this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-in-section"));
 	}
