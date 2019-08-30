@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 public class LinksSnippetFailureTests {
 
 	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(
-			TemplateFormats.asciidoctor());
+	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -48,43 +47,36 @@ public class LinksSnippetFailureTests {
 	@Test
 	public void undocumentedLink() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo(
-				"Links with the following relations were not" + " documented: [foo]"));
+		this.thrown.expectMessage(equalTo("Links with the following relations were not" + " documented: [foo]"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
-				Collections.<LinkDescriptor>emptyList())
-						.document(this.operationBuilder.build());
+				Collections.<LinkDescriptor>emptyList()).document(this.operationBuilder.build());
 	}
 
 	@Test
 	public void missingLink() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Links with the following relations were not"
-				+ " found in the response: [foo]"));
-		new LinksSnippet(new StubLinkExtractor(),
-				Arrays.asList(new LinkDescriptor("foo").description("bar")))
-						.document(this.operationBuilder.build());
+		this.thrown.expectMessage(
+				equalTo("Links with the following relations were not" + " found in the response: [foo]"));
+		new LinksSnippet(new StubLinkExtractor(), Arrays.asList(new LinkDescriptor("foo").description("bar")))
+				.document(this.operationBuilder.build());
 	}
 
 	@Test
 	public void undocumentedLinkAndMissingLink() throws IOException {
 		this.thrown.expect(SnippetException.class);
 		this.thrown.expectMessage(equalTo("Links with the following relations were not"
-				+ " documented: [a]. Links with the following relations were not"
-				+ " found in the response: [foo]"));
+				+ " documented: [a]. Links with the following relations were not" + " found in the response: [foo]"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha")),
-				Arrays.asList(new LinkDescriptor("foo").description("bar")))
-						.document(this.operationBuilder.build());
+				Arrays.asList(new LinkDescriptor("foo").description("bar"))).document(this.operationBuilder.build());
 	}
 
 	@Test
 	public void linkWithNoDescription() throws IOException {
 		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(
-				equalTo("No description was provided for the link with rel 'foo' and no"
-						+ " title was available from the link in the payload"));
+		this.thrown.expectMessage(equalTo("No description was provided for the link with rel 'foo' and no"
+				+ " title was available from the link in the payload"));
 		new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
-				Arrays.asList(new LinkDescriptor("foo")))
-						.document(this.operationBuilder.build());
+				Arrays.asList(new LinkDescriptor("foo"))).document(this.operationBuilder.build());
 	}
 
 }

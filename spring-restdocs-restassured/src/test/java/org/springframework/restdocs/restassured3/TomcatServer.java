@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,8 +89,7 @@ class TomcatServer extends ExternalResource {
 			respondWithJson(response);
 		}
 
-		private void respondWithJson(HttpServletResponse response)
-				throws IOException, JsonProcessingException {
+		private void respondWithJson(HttpServletResponse response) throws IOException, JsonProcessingException {
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/json");
 			Map<String, Object> content = new HashMap<>();
@@ -113,8 +112,7 @@ class TomcatServer extends ExternalResource {
 	private static final class CookiesServlet extends HttpServlet {
 
 		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-				throws ServletException, IOException {
+		protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			Cookie cookie = new Cookie("name", "value");
 			cookie.setDomain("localhost");
 			cookie.setHttpOnly(true);

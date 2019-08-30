@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,7 @@ public final class Preprocessors {
 	 * @param preprocessors the preprocessors
 	 * @return the request preprocessor
 	 */
-	public static OperationRequestPreprocessor preprocessRequest(
-			OperationPreprocessor... preprocessors) {
+	public static OperationRequestPreprocessor preprocessRequest(OperationPreprocessor... preprocessors) {
 		return new DelegatingOperationRequestPreprocessor(Arrays.asList(preprocessors));
 	}
 
@@ -55,8 +54,7 @@ public final class Preprocessors {
 	 * @param preprocessors the preprocessors
 	 * @return the response preprocessor
 	 */
-	public static OperationResponsePreprocessor preprocessResponse(
-			OperationPreprocessor... preprocessors) {
+	public static OperationResponsePreprocessor preprocessResponse(OperationPreprocessor... preprocessors) {
 		return new DelegatingOperationResponsePreprocessor(Arrays.asList(preprocessors));
 	}
 
@@ -66,8 +64,7 @@ public final class Preprocessors {
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor prettyPrint() {
-		return new ContentModifyingOperationPreprocessor(
-				new PrettyPrintingContentModifier());
+		return new ContentModifyingOperationPreprocessor(new PrettyPrintingContentModifier());
 	}
 
 	/**
@@ -79,8 +76,7 @@ public final class Preprocessors {
 	 * @see String#equals(Object)
 	 */
 	public static OperationPreprocessor removeHeaders(String... headerNames) {
-		return new HeaderRemovingOperationPreprocessor(
-				new ExactMatchHeaderFilter(headerNames));
+		return new HeaderRemovingOperationPreprocessor(new ExactMatchHeaderFilter(headerNames));
 	}
 
 	/**
@@ -91,10 +87,8 @@ public final class Preprocessors {
 	 * @return the preprocessor
 	 * @see java.util.regex.Matcher#matches()
 	 */
-	public static OperationPreprocessor removeMatchingHeaders(
-			String... headerNamePatterns) {
-		return new HeaderRemovingOperationPreprocessor(
-				new PatternMatchHeaderFilter(headerNamePatterns));
+	public static OperationPreprocessor removeMatchingHeaders(String... headerNamePatterns) {
+		return new HeaderRemovingOperationPreprocessor(new PatternMatchHeaderFilter(headerNamePatterns));
 	}
 
 	/**
@@ -103,8 +97,7 @@ public final class Preprocessors {
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor maskLinks() {
-		return new ContentModifyingOperationPreprocessor(
-				new LinkMaskingContentModifier());
+		return new ContentModifyingOperationPreprocessor(new LinkMaskingContentModifier());
 	}
 
 	/**
@@ -114,8 +107,7 @@ public final class Preprocessors {
 	 * @return the preprocessor
 	 */
 	public static OperationPreprocessor maskLinks(String mask) {
-		return new ContentModifyingOperationPreprocessor(
-				new LinkMaskingContentModifier(mask));
+		return new ContentModifyingOperationPreprocessor(new LinkMaskingContentModifier(mask));
 	}
 
 	/**
@@ -126,10 +118,8 @@ public final class Preprocessors {
 	 * @param replacement the replacement
 	 * @return the preprocessor
 	 */
-	public static OperationPreprocessor replacePattern(Pattern pattern,
-			String replacement) {
-		return new ContentModifyingOperationPreprocessor(
-				new PatternReplacingContentModifier(pattern, replacement));
+	public static OperationPreprocessor replacePattern(Pattern pattern, String replacement) {
+		return new ContentModifyingOperationPreprocessor(new PatternReplacingContentModifier(pattern, replacement));
 	}
 
 	/**

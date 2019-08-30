@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,8 +80,7 @@ public abstract class CliDocumentation {
 	 * @return the snippet that will document the curl request
 	 * @since 1.2.0
 	 */
-	public static Snippet curlRequest(Map<String, Object> attributes,
-			CommandFormatter commandFormatter) {
+	public static Snippet curlRequest(Map<String, Object> attributes, CommandFormatter commandFormatter) {
 		return new CurlRequestSnippet(attributes, commandFormatter);
 	}
 
@@ -127,8 +126,7 @@ public abstract class CliDocumentation {
 	 * @return the snippet that will document the HTTPie request
 	 * @since 1.2.0
 	 */
-	public static Snippet httpieRequest(Map<String, Object> attributes,
-			CommandFormatter commandFormatter) {
+	public static Snippet httpieRequest(Map<String, Object> attributes, CommandFormatter commandFormatter) {
 		return new HttpieRequestSnippet(attributes, commandFormatter);
 	}
 

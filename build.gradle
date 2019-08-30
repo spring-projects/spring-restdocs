@@ -131,7 +131,7 @@ configure(codeProjects) {
 	checkstyle {
 		configFile = rootProject.file('config/checkstyle/checkstyle.xml')
 		configProperties = [ 'checkstyle.config.dir' : rootProject.file('config/checkstyle') ]
-		toolVersion = '6.10.1'
+		toolVersion = '8.22'
 	}
 
 	configurations {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,7 @@ public class ResponseBodySnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithBody() throws IOException {
-		new ResponseBodySnippet().document(
-				this.operationBuilder.response().content("some content").build());
+		new ResponseBodySnippet().document(this.operationBuilder.response().content("some content").build());
 		assertThat(this.generatedSnippets.snippet("response-body"))
 				.is(codeBlock(null, "nowrap").withContent("some content"));
 	}
@@ -56,14 +55,13 @@ public class ResponseBodySnippetTests extends AbstractSnippetTests {
 	@Test
 	public void responseWithNoBody() throws IOException {
 		new ResponseBodySnippet().document(this.operationBuilder.response().build());
-		assertThat(this.generatedSnippets.snippet("response-body"))
-				.is(codeBlock(null, "nowrap").withContent(""));
+		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock(null, "nowrap").withContent(""));
 	}
 
 	@Test
 	public void subsectionOfResponseBody() throws IOException {
-		responseBody(beneathPath("a.b")).document(this.operationBuilder.response()
-				.content("{\"a\":{\"b\":{\"c\":5}}}").build());
+		responseBody(beneathPath("a.b"))
+				.document(this.operationBuilder.response().content("{\"a\":{\"b\":{\"c\":5}}}").build());
 		assertThat(this.generatedSnippets.snippet("response-body-beneath-a.b"))
 				.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
 	}
@@ -73,10 +71,8 @@ public class ResponseBodySnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-body"))
 				.willReturn(snippetResource("response-body-with-language"));
-		new ResponseBodySnippet(attributes(key("language").value("json")))
-				.document(this.operationBuilder
-						.attribute(TemplateEngine.class.getName(),
-								new MustacheTemplateEngine(resolver))
+		new ResponseBodySnippet(attributes(key("language").value("json"))).document(
+				this.operationBuilder.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
 						.response().content("{\"a\":\"alpha\"}").build());
 		assertThat(this.generatedSnippets.snippet("response-body"))
 				.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));

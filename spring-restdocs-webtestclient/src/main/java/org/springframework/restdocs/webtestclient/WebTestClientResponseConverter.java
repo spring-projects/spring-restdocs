@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,19 +36,17 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 
 	@Override
 	public OperationResponse convert(ExchangeResult result) {
-		return new OperationResponseFactory().create(result.getStatus(),
-				extractHeaders(result), result.getResponseBodyContent());
+		return new OperationResponseFactory().create(result.getStatus(), extractHeaders(result),
+				result.getResponseBodyContent());
 	}
 
 	private HttpHeaders extractHeaders(ExchangeResult result) {
 		HttpHeaders headers = result.getResponseHeaders();
-		if (result.getResponseCookies().isEmpty()
-				|| headers.containsKey(HttpHeaders.SET_COOKIE)) {
+		if (result.getResponseCookies().isEmpty() || headers.containsKey(HttpHeaders.SET_COOKIE)) {
 			return headers;
 		}
 		result.getResponseCookies().values().stream().flatMap(Collection::stream)
-				.forEach((cookie) -> headers.add(HttpHeaders.SET_COOKIE,
-						generateSetCookieHeader(cookie)));
+				.forEach((cookie) -> headers.add(HttpHeaders.SET_COOKIE, generateSetCookieHeader(cookie)));
 		return headers;
 	}
 

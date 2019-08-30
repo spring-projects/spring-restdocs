@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,7 @@ public final class MockMvcRestDocumentationConfigurer extends
 		RestDocumentationConfigurer<MockMvcSnippetConfigurer, MockMvcOperationPreprocessorsConfigurer, MockMvcRestDocumentationConfigurer>
 		implements MockMvcConfigurer {
 
-	private final MockMvcSnippetConfigurer snippetConfigurer = new MockMvcSnippetConfigurer(
-			this);
+	private final MockMvcSnippetConfigurer snippetConfigurer = new MockMvcSnippetConfigurer(this);
 
 	private final UriConfigurer uriConfigurer = new UriConfigurer(this);
 
@@ -64,8 +63,8 @@ public final class MockMvcRestDocumentationConfigurer extends
 	}
 
 	@Override
-	public RequestPostProcessor beforeMockMvcCreated(
-			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
+	public RequestPostProcessor beforeMockMvcCreated(ConfigurableMockMvcBuilder<?> builder,
+			WebApplicationContext context) {
 		return new ConfigurerApplyingRequestPostProcessor(this.contextManager);
 	}
 
@@ -84,13 +83,11 @@ public final class MockMvcRestDocumentationConfigurer extends
 		return this.operationPreprocessorsConfigurer;
 	}
 
-	private final class ConfigurerApplyingRequestPostProcessor
-			implements RequestPostProcessor {
+	private final class ConfigurerApplyingRequestPostProcessor implements RequestPostProcessor {
 
 		private final RestDocumentationContextProvider contextManager;
 
-		private ConfigurerApplyingRequestPostProcessor(
-				RestDocumentationContextProvider contextManager) {
+		private ConfigurerApplyingRequestPostProcessor(RestDocumentationContextProvider contextManager) {
 			this.contextManager = contextManager;
 		}
 
@@ -100,15 +97,11 @@ public final class MockMvcRestDocumentationConfigurer extends
 			Map<String, Object> configuration = new HashMap<>();
 			configuration.put(MockHttpServletRequest.class.getName(), request);
 			configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-					request.getAttribute(
-							RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE));
+					request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE));
 			configuration.put(RestDocumentationContext.class.getName(), context);
-			request.setAttribute(
-					RestDocumentationResultHandler.ATTRIBUTE_NAME_CONFIGURATION,
-					configuration);
+			request.setAttribute(RestDocumentationResultHandler.ATTRIBUTE_NAME_CONFIGURATION, configuration);
 			MockMvcRestDocumentationConfigurer.this.apply(configuration, context);
-			MockMvcRestDocumentationConfigurer.this.uriConfigurer.apply(configuration,
-					context);
+			MockMvcRestDocumentationConfigurer.this.uriConfigurer.apply(configuration, context);
 			return request;
 		}
 

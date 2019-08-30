@@ -62,23 +62,19 @@ public abstract class AbstractOperationBlockMacroTests {
 	@Before
 	public void setUp() throws IOException {
 		prepareOperationSnippets(getBuildOutputLocation());
-		this.options = OptionsBuilder.options().safe(SafeMode.UNSAFE)
-				.baseDir(getSourceLocation()).get();
+		this.options = OptionsBuilder.options().safe(SafeMode.UNSAFE).baseDir(getSourceLocation()).get();
 		this.options.setAttributes(getAttributes());
 	}
 
 	public void prepareOperationSnippets(File buildOutputLocation) throws IOException {
-		File destination = new File(buildOutputLocation,
-				"generated-snippets/some-operation");
+		File destination = new File(buildOutputLocation, "generated-snippets/some-operation");
 		destination.mkdirs();
-		FileSystemUtils.copyRecursively(new File("src/test/resources/some-operation"),
-				destination);
+		FileSystemUtils.copyRecursively(new File("src/test/resources/some-operation"), destination);
 	}
 
 	@Test
 	public void codeBlockSnippetInclude() throws Exception {
-		String result = this.asciidoctor.convert(
-				"operation::some-operation[snippets='curl-request']", this.options);
+		String result = this.asciidoctor.convert("operation::some-operation[snippets='curl-request']", this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-simple"));
 	}
 
@@ -87,41 +83,34 @@ public abstract class AbstractOperationBlockMacroTests {
 		Attributes attributes = getAttributes();
 		attributes.setAttribute("name", "some");
 		this.options.setAttributes(attributes);
-		String result = this.asciidoctor.convert(
-				"operation::{name}-operation[snippets='curl-request']", this.options);
+		String result = this.asciidoctor.convert("operation::{name}-operation[snippets='curl-request']", this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-simple"));
 	}
 
 	@Test
 	public void codeBlockSnippetIncludeWithPdfBackend() throws Exception {
 		File output = configurePdfOutput();
-		this.asciidoctor.convert("operation::some-operation[snippets='curl-request']",
-				this.options);
-		assertThat(extractStrings(output)).containsExactly("Curl request",
-				"$ curl 'http://localhost:8080/' -i", "1");
+		this.asciidoctor.convert("operation::some-operation[snippets='curl-request']", this.options);
+		assertThat(extractStrings(output)).containsExactly("Curl request", "$ curl 'http://localhost:8080/' -i", "1");
 	}
 
 	@Test
 	public void tableSnippetInclude() throws Exception {
-		String result = this.asciidoctor.convert(
-				"operation::some-operation[snippets='response-fields']", this.options);
+		String result = this.asciidoctor.convert("operation::some-operation[snippets='response-fields']", this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-table"));
 	}
 
 	@Test
 	public void tableSnippetIncludeWithPdfBackend() throws Exception {
 		File output = configurePdfOutput();
-		this.asciidoctor.convert("operation::some-operation[snippets='response-fields']",
-				this.options);
-		assertThat(extractStrings(output)).containsExactly("Response fields", "Path",
-				"Type", "Description", "a", "Object", "one", "a.b", "Number", "two",
-				"a.c", "String", "three", "1");
+		this.asciidoctor.convert("operation::some-operation[snippets='response-fields']", this.options);
+		assertThat(extractStrings(output)).containsExactly("Response fields", "Path", "Type", "Description", "a",
+				"Object", "one", "a.b", "Number", "two", "a.c", "String", "three", "1");
 	}
 
 	@Test
 	public void includeSnippetInSection() throws Exception {
-		String result = this.asciidoctor.convert(
-				"== Section\n" + "operation::some-operation[snippets='curl-request']",
+		String result = this.asciidoctor.convert("== Section\n" + "operation::some-operation[snippets='curl-request']",
 				this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-in-section"));
 	}
@@ -129,83 +118,64 @@ public abstract class AbstractOperationBlockMacroTests {
 	@Test
 	public void includeSnippetInSectionWithPdfBackend() throws Exception {
 		File output = configurePdfOutput();
-		this.asciidoctor.convert(
-				"== Section\n" + "operation::some-operation[snippets='curl-request']",
-				this.options);
+		this.asciidoctor.convert("== Section\n" + "operation::some-operation[snippets='curl-request']", this.options);
 		assertThat(extractStrings(output)).containsExactly("Section", "Curl request",
 				"$ curl 'http://localhost:8080/' -i", "1");
 	}
 
 	@Test
 	public void includeMultipleSnippets() throws Exception {
-		String result = this.asciidoctor.convert(
-				"operation::some-operation[snippets='curl-request,http-request']",
+		String result = this.asciidoctor.convert("operation::some-operation[snippets='curl-request,http-request']",
 				this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("multiple-snippets"));
 	}
 
 	@Test
 	public void useMacroWithoutSnippetAttributeAddsAllSnippets() throws Exception {
-		String result = this.asciidoctor.convert("operation::some-operation[]",
-				this.options);
+		String result = this.asciidoctor.convert("operation::some-operation[]", this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("all-snippets"));
 	}
 
 	@Test
 	public void useMacroWithEmptySnippetAttributeAddsAllSnippets() throws Exception {
-		String result = this.asciidoctor.convert("operation::some-operation[snippets=]",
-				this.options);
+		String result = this.asciidoctor.convert("operation::some-operation[snippets=]", this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("all-snippets"));
 	}
 
 	@Test
 	public void includingMissingSnippetAddsWarning() throws Exception {
-		String result = this.asciidoctor.convert(
-				"operation::some-operation[snippets='missing-snippet']", this.options);
+		String result = this.asciidoctor.convert("operation::some-operation[snippets='missing-snippet']", this.options);
 		assertThat(result).startsWith(getExpectedContentFromFile("missing-snippet"));
 	}
 
 	@Test
 	public void defaultTitleIsProvidedForCustomSnippet() throws Exception {
-		String result = this.asciidoctor.convert(
-				"operation::some-operation[snippets='custom-snippet']", this.options);
-		assertThat(result)
-				.isEqualTo(getExpectedContentFromFile("custom-snippet-default-title"));
+		String result = this.asciidoctor.convert("operation::some-operation[snippets='custom-snippet']", this.options);
+		assertThat(result).isEqualTo(getExpectedContentFromFile("custom-snippet-default-title"));
 	}
 
 	@Test
 	public void missingOperationIsHandledGracefully() throws Exception {
-		String result = this.asciidoctor.convert("operation::missing-operation[]",
-				this.options);
+		String result = this.asciidoctor.convert("operation::missing-operation[]", this.options);
 		assertThat(result).startsWith(getExpectedContentFromFile("missing-operation"));
 	}
 
 	@Test
-	public void titleOfBuiltInSnippetCanBeCustomizedUsingDocumentAttribute()
-			throws URISyntaxException, IOException {
-		String result = this.asciidoctor.convert(
-				":operation-curl-request-title: Example request\n"
-						+ "operation::some-operation[snippets='curl-request']",
-				this.options);
-		assertThat(result)
-				.isEqualTo(getExpectedContentFromFile("built-in-snippet-custom-title"));
+	public void titleOfBuiltInSnippetCanBeCustomizedUsingDocumentAttribute() throws URISyntaxException, IOException {
+		String result = this.asciidoctor.convert(":operation-curl-request-title: Example request\n"
+				+ "operation::some-operation[snippets='curl-request']", this.options);
+		assertThat(result).isEqualTo(getExpectedContentFromFile("built-in-snippet-custom-title"));
 	}
 
 	@Test
-	public void titleOfCustomSnippetCanBeCustomizedUsingDocumentAttribute()
-			throws Exception {
-		String result = this.asciidoctor.convert(
-				":operation-custom-snippet-title: Customized title\n"
-						+ "operation::some-operation[snippets='custom-snippet']",
-				this.options);
-		assertThat(result)
-				.isEqualTo(getExpectedContentFromFile("custom-snippet-custom-title"));
+	public void titleOfCustomSnippetCanBeCustomizedUsingDocumentAttribute() throws Exception {
+		String result = this.asciidoctor.convert(":operation-custom-snippet-title: Customized title\n"
+				+ "operation::some-operation[snippets='custom-snippet']", this.options);
+		assertThat(result).isEqualTo(getExpectedContentFromFile("custom-snippet-custom-title"));
 	}
 
-	private String getExpectedContentFromFile(String fileName)
-			throws URISyntaxException, IOException {
-		Path filePath = Paths.get(
-				this.getClass().getResource("/operations/" + fileName + ".html").toURI());
+	private String getExpectedContentFromFile(String fileName) throws URISyntaxException, IOException {
+		Path filePath = Paths.get(this.getClass().getResource("/operations/" + fileName + ".html").toURI());
 		String content = new String(Files.readAllBytes(filePath));
 		if (isWindows()) {
 			return content.replace("\r\n", "\n");
@@ -243,8 +213,7 @@ public abstract class AbstractOperationBlockMacroTests {
 		private final List<String> strings = new ArrayList<>();
 
 		@Override
-		protected void processOperator(Operator operator, List<COSBase> operands)
-				throws IOException {
+		protected void processOperator(Operator operator, List<COSBase> operands) throws IOException {
 			if ("Tj".equals(operator.getName())) {
 				for (COSBase operand : operands) {
 					if (operand instanceof COSString) {
@@ -254,7 +223,7 @@ public abstract class AbstractOperationBlockMacroTests {
 			}
 		}
 
-		public List<String> getStrings() {
+		private List<String> getStrings() {
 			return this.strings;
 		}
 

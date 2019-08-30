@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,7 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param partName the part name
 	 * @param descriptors the descriptors
 	 */
-	protected RequestPartFieldsSnippet(String partName,
-			List<FieldDescriptor> descriptors) {
+	protected RequestPartFieldsSnippet(String partName, List<FieldDescriptor> descriptors) {
 		this(partName, descriptors, null, false);
 	}
 
@@ -106,8 +105,7 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param subsectionExtractor the subsection extractor
 	 * @param descriptors the descriptors
 	 */
-	protected RequestPartFieldsSnippet(String partName,
-			PayloadSubsectionExtractor<?> subsectionExtractor,
+	protected RequestPartFieldsSnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
 			List<FieldDescriptor> descriptors) {
 		this(partName, subsectionExtractor, descriptors, null, false);
 	}
@@ -123,8 +121,7 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected RequestPartFieldsSnippet(String partName,
-			PayloadSubsectionExtractor<?> subsectionExtractor,
+	protected RequestPartFieldsSnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
 			List<FieldDescriptor> descriptors, boolean ignoreUndocumentedFields) {
 		this(partName, subsectionExtractor, descriptors, null, ignoreUndocumentedFields);
 	}
@@ -140,8 +137,7 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected RequestPartFieldsSnippet(String partName,
-			PayloadSubsectionExtractor<?> subsectionExtractor,
+	protected RequestPartFieldsSnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
 			List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
 		this(partName, subsectionExtractor, descriptors, attributes, false);
 	}
@@ -159,12 +155,10 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected RequestPartFieldsSnippet(String partName,
-			PayloadSubsectionExtractor<?> subsectionExtractor,
-			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
-			boolean ignoreUndocumentedFields) {
-		super("request-part-" + partName, "request-part", descriptors, attributes,
-				ignoreUndocumentedFields, subsectionExtractor);
+	protected RequestPartFieldsSnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+		super("request-part-" + partName, "request-part", descriptors, attributes, ignoreUndocumentedFields,
+				subsectionExtractor);
 		this.partName = partName;
 	}
 
@@ -184,8 +178,7 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 				return candidate;
 			}
 		}
-		throw new SnippetException("A request part named '" + this.partName
-				+ "' was not found in the request");
+		throw new SnippetException("A request part named '" + this.partName + "' was not found in the request");
 	}
 
 	/**
@@ -206,8 +199,7 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public final RequestPartFieldsSnippet and(
-			List<FieldDescriptor> additionalDescriptors) {
+	public final RequestPartFieldsSnippet and(List<FieldDescriptor> additionalDescriptors) {
 		return andWithPrefix("", additionalDescriptors);
 	}
 
@@ -220,14 +212,12 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public final RequestPartFieldsSnippet andWithPrefix(String pathPrefix,
-			FieldDescriptor... additionalDescriptors) {
+	public final RequestPartFieldsSnippet andWithPrefix(String pathPrefix, FieldDescriptor... additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
 		combinedDescriptors.addAll(getFieldDescriptors());
-		combinedDescriptors.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix,
-				Arrays.asList(additionalDescriptors)));
-		return new RequestPartFieldsSnippet(this.partName, combinedDescriptors,
-				this.getAttributes());
+		combinedDescriptors
+				.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
+		return new RequestPartFieldsSnippet(this.partName, combinedDescriptors, this.getAttributes());
 	}
 
 	/**
@@ -241,12 +231,9 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 */
 	public final RequestPartFieldsSnippet andWithPrefix(String pathPrefix,
 			List<FieldDescriptor> additionalDescriptors) {
-		List<FieldDescriptor> combinedDescriptors = new ArrayList<>(
-				getFieldDescriptors());
-		combinedDescriptors.addAll(
-				PayloadDocumentation.applyPathPrefix(pathPrefix, additionalDescriptors));
-		return new RequestPartFieldsSnippet(this.partName, combinedDescriptors,
-				this.getAttributes());
+		List<FieldDescriptor> combinedDescriptors = new ArrayList<>(getFieldDescriptors());
+		combinedDescriptors.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix, additionalDescriptors));
+		return new RequestPartFieldsSnippet(this.partName, combinedDescriptors, this.getAttributes());
 	}
 
 }

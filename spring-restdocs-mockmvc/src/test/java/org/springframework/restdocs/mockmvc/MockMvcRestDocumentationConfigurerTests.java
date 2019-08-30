@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,44 +45,40 @@ public class MockMvcRestDocumentationConfigurerTests {
 
 	@Test
 	public void defaultConfiguration() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).beforeMockMvcCreated(null, null);
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation)
+				.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 		assertUriConfiguration("http", "localhost", 8080);
 	}
 
 	@Test
 	public void customScheme() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).uris().withScheme("https")
-						.beforeMockMvcCreated(null, null);
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation).uris()
+				.withScheme("https").beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 		assertUriConfiguration("https", "localhost", 8080);
 	}
 
 	@Test
 	public void customHost() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).uris().withHost("api.example.com")
-						.beforeMockMvcCreated(null, null);
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation).uris()
+				.withHost("api.example.com").beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 		assertUriConfiguration("http", "api.example.com", 8080);
 	}
 
 	@Test
 	public void customPort() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).uris().withPort(8081).beforeMockMvcCreated(null,
-						null);
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation).uris()
+				.withPort(8081).beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 		assertUriConfiguration("http", "localhost", 8081);
 	}
 
 	@Test
 	public void noContentLengthHeaderWhenRequestHasNotContent() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(
-				this.restDocumentation).uris().withPort(8081).beforeMockMvcCreated(null,
-						null);
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation).uris()
+				.withPort(8081).beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 		assertThat(this.request.getHeader("Content-Length")).isNull();
 	}
@@ -91,8 +87,7 @@ public class MockMvcRestDocumentationConfigurerTests {
 		assertThat(scheme).isEqualTo(this.request.getScheme());
 		assertThat(host).isEqualTo(this.request.getServerName());
 		assertThat(port).isEqualTo(this.request.getServerPort());
-		RequestContextHolder
-				.setRequestAttributes(new ServletRequestAttributes(this.request));
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(this.request));
 		try {
 			URI uri = BasicLinkBuilder.linkToCurrentMapping().toUri();
 			assertThat(scheme).isEqualTo(uri.getScheme());

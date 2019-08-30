@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,7 @@ public class RequestPartBodySnippet extends AbstractBodySnippet {
 	 * @param partName the name of the request part
 	 * @param subsectionExtractor the subsection extractor
 	 */
-	public RequestPartBodySnippet(String partName,
-			PayloadSubsectionExtractor<?> subsectionExtractor) {
+	public RequestPartBodySnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor) {
 		this(partName, subsectionExtractor, null);
 	}
 
@@ -76,11 +75,9 @@ public class RequestPartBodySnippet extends AbstractBodySnippet {
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the additional attributes
 	 */
-	public RequestPartBodySnippet(String partName,
-			PayloadSubsectionExtractor<?> subsectionExtractor,
+	public RequestPartBodySnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
 			Map<String, Object> attributes) {
-		super("request-part-" + partName, "request-part", subsectionExtractor,
-				attributes);
+		super("request-part-" + partName, "request-part", subsectionExtractor, attributes);
 		this.partName = partName;
 	}
 
@@ -100,8 +97,7 @@ public class RequestPartBodySnippet extends AbstractBodySnippet {
 				return candidate;
 			}
 		}
-		throw new SnippetException("A request part named '" + this.partName
-				+ "' was not found in the request");
+		throw new SnippetException("A request part named '" + this.partName + "' was not found in the request");
 	}
 
 }

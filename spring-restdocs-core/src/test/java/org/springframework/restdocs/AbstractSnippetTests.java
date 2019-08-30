@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,7 @@ public abstract class AbstractSnippetTests {
 
 	@Parameters(name = "{0}")
 	public static List<Object[]> parameters() {
-		return Arrays.asList(
-				new Object[] { "Asciidoctor", TemplateFormats.asciidoctor() },
+		return Arrays.asList(new Object[] { "Asciidoctor", TemplateFormats.asciidoctor() },
 				new Object[] { "Markdown", TemplateFormats.markdown() });
 	}
 
@@ -79,8 +78,7 @@ public abstract class AbstractSnippetTests {
 	}
 
 	public TableCondition<?> tableWithTitleAndHeader(String title, String... headers) {
-		return SnippetConditions.tableWithTitleAndHeader(this.templateFormat, title,
-				headers);
+		return SnippetConditions.tableWithTitleAndHeader(this.templateFormat, title, headers);
 	}
 
 	public HttpRequestCondition httpRequest(RequestMethod method, String uri) {
@@ -92,8 +90,8 @@ public abstract class AbstractSnippetTests {
 	}
 
 	protected FileSystemResource snippetResource(String name) {
-		return new FileSystemResource("src/test/resources/custom-snippet-templates/"
-				+ this.templateFormat.getId() + "/" + name + ".snippet");
+		return new FileSystemResource(
+				"src/test/resources/custom-snippet-templates/" + this.templateFormat.getId() + "/" + name + ".snippet");
 	}
 
 }

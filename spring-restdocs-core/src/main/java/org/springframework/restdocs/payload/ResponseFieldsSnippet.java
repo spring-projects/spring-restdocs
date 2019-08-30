@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,7 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors,
-			boolean ignoreUndocumentedFields) {
+	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors, boolean ignoreUndocumentedFields) {
 		this(descriptors, null, ignoreUndocumentedFields);
 	}
 
@@ -66,8 +65,7 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes) {
+	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -81,8 +79,8 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
 		this(null, descriptors, attributes, ignoreUndocumentedFields);
 	}
 
@@ -146,10 +144,8 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @since 1.2.0
 	 */
 	protected ResponseFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
-			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
-			boolean ignoreUndocumentedFields) {
-		super("response", descriptors, attributes, ignoreUndocumentedFields,
-				subsectionExtractor);
+			List<FieldDescriptor> descriptors, Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+		super("response", descriptors, attributes, ignoreUndocumentedFields, subsectionExtractor);
 	}
 
 	@Override
@@ -193,14 +189,13 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public final ResponseFieldsSnippet andWithPrefix(String pathPrefix,
-			FieldDescriptor... additionalDescriptors) {
+	public final ResponseFieldsSnippet andWithPrefix(String pathPrefix, FieldDescriptor... additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
 		combinedDescriptors.addAll(getFieldDescriptors());
-		combinedDescriptors.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix,
-				Arrays.asList(additionalDescriptors)));
-		return new ResponseFieldsSnippet(getSubsectionExtractor(), combinedDescriptors,
-				this.getAttributes(), isIgnoredUndocumentedFields());
+		combinedDescriptors
+				.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
+		return new ResponseFieldsSnippet(getSubsectionExtractor(), combinedDescriptors, this.getAttributes(),
+				isIgnoredUndocumentedFields());
 	}
 
 	/**
@@ -212,14 +207,11 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public final ResponseFieldsSnippet andWithPrefix(String pathPrefix,
-			List<FieldDescriptor> additionalDescriptors) {
-		List<FieldDescriptor> combinedDescriptors = new ArrayList<>(
-				getFieldDescriptors());
-		combinedDescriptors.addAll(
-				PayloadDocumentation.applyPathPrefix(pathPrefix, additionalDescriptors));
-		return new ResponseFieldsSnippet(getSubsectionExtractor(), combinedDescriptors,
-				this.getAttributes(), isIgnoredUndocumentedFields());
+	public final ResponseFieldsSnippet andWithPrefix(String pathPrefix, List<FieldDescriptor> additionalDescriptors) {
+		List<FieldDescriptor> combinedDescriptors = new ArrayList<>(getFieldDescriptors());
+		combinedDescriptors.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix, additionalDescriptors));
+		return new ResponseFieldsSnippet(getSubsectionExtractor(), combinedDescriptors, this.getAttributes(),
+				isIgnoredUndocumentedFields());
 	}
 
 }

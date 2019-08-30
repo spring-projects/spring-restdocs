@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,11 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  *
  * @author Andy Wilkinson
  */
-public class RestDocumentationExtension
-		implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
+public class RestDocumentationExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
 	@Override
 	public void beforeEach(ExtensionContext context) throws Exception {
-		this.getDelegate(context).beforeTest(context.getRequiredTestClass(),
-				context.getRequiredTestMethod().getName());
+		this.getDelegate(context).beforeTest(context.getRequiredTestClass(), context.getRequiredTestMethod().getName());
 	}
 
 	@Override
@@ -45,20 +43,16 @@ public class RestDocumentationExtension
 	}
 
 	@Override
-	public boolean supportsParameter(ParameterContext parameterContext,
-			ExtensionContext extensionContext) {
+	public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
 		if (isTestMethodContext(extensionContext)) {
-			return RestDocumentationContextProvider.class
-					.isAssignableFrom(parameterContext.getParameter().getType());
+			return RestDocumentationContextProvider.class.isAssignableFrom(parameterContext.getParameter().getType());
 		}
 		return false;
 	}
 
 	@Override
-	public Object resolveParameter(ParameterContext parameterContext,
-			ExtensionContext context) {
-		return (RestDocumentationContextProvider) () -> getDelegate(context)
-				.beforeOperation();
+	public Object resolveParameter(ParameterContext parameterContext, ExtensionContext context) {
+		return (RestDocumentationContextProvider) () -> getDelegate(context).beforeOperation();
 	}
 
 	private boolean isTestMethodContext(ExtensionContext context) {
@@ -67,9 +61,8 @@ public class RestDocumentationExtension
 
 	private ManualRestDocumentation getDelegate(ExtensionContext context) {
 		Namespace namespace = Namespace.create(getClass(), context.getUniqueId());
-		return context.getStore(namespace).getOrComputeIfAbsent(
-				ManualRestDocumentation.class, (key) -> new ManualRestDocumentation(),
-				ManualRestDocumentation.class);
+		return context.getStore(namespace).getOrComputeIfAbsent(ManualRestDocumentation.class,
+				(key) -> new ManualRestDocumentation(), ManualRestDocumentation.class);
 	}
 
 }

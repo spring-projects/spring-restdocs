@@ -34,10 +34,8 @@ public class DefaultAttributesAsciidoctorJ20PreprocessorTests {
 
 	@Test
 	public void snippetsAttributeIsSet() {
-		String converted = createAsciidoctor().convert("{snippets}",
-				createOptions("projectdir=../../.."));
-		assertThat(converted)
-				.contains("build" + File.separatorChar + "generated-snippets");
+		String converted = createAsciidoctor().convert("{snippets}", createOptions("projectdir=../../.."));
+		assertThat(converted).contains("build" + File.separatorChar + "generated-snippets");
 	}
 
 	@Test
@@ -62,8 +60,7 @@ public class DefaultAttributesAsciidoctorJ20PreprocessorTests {
 
 	private Asciidoctor createAsciidoctor() {
 		Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-		asciidoctor.javaExtensionRegistry()
-				.preprocessor(new DefaultAttributesAsciidoctorJ20Preprocessor());
+		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesAsciidoctorJ20Preprocessor());
 		return asciidoctor;
 	}
 

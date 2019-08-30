@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,33 +51,28 @@ public class ValidatorConstraintResolverTests {
 
 	@Test
 	public void singleFieldConstraint() {
-		List<Constraint> constraints = this.resolver.resolveForProperty("single",
-				ConstrainedFields.class);
+		List<Constraint> constraints = this.resolver.resolveForProperty("single", ConstrainedFields.class);
 		assertThat(constraints).hasSize(1);
 		assertThat(constraints.get(0).getName()).isEqualTo(NotNull.class.getName());
 	}
 
 	@Test
 	public void multipleFieldConstraints() {
-		List<Constraint> constraints = this.resolver.resolveForProperty("multiple",
-				ConstrainedFields.class);
+		List<Constraint> constraints = this.resolver.resolveForProperty("multiple", ConstrainedFields.class);
 		assertThat(constraints).hasSize(2);
 		assertThat(constraints.get(0)).is(constraint(NotNull.class));
-		assertThat(constraints.get(1))
-				.is(constraint(Size.class).config("min", 8).config("max", 16));
+		assertThat(constraints.get(1)).is(constraint(Size.class).config("min", 8).config("max", 16));
 	}
 
 	@Test
 	public void noFieldConstraints() {
-		List<Constraint> constraints = this.resolver.resolveForProperty("none",
-				ConstrainedFields.class);
+		List<Constraint> constraints = this.resolver.resolveForProperty("none", ConstrainedFields.class);
 		assertThat(constraints).hasSize(0);
 	}
 
 	@Test
 	public void compositeConstraint() {
-		List<Constraint> constraints = this.resolver.resolveForProperty("composite",
-				ConstrainedFields.class);
+		List<Constraint> constraints = this.resolver.resolveForProperty("composite", ConstrainedFields.class);
 		assertThat(constraints).hasSize(1);
 	}
 
@@ -126,11 +121,10 @@ public class ValidatorConstraintResolverTests {
 
 		private ConstraintCondition(Class<?> annotation) {
 			this.annotation = annotation;
-			as(new TextDescription("Constraint named %s with configuration %s",
-					this.annotation, this.configuration));
+			as(new TextDescription("Constraint named %s with configuration %s", this.annotation, this.configuration));
 		}
 
-		public ConstraintCondition config(String key, Object value) {
+		private ConstraintCondition config(String key, Object value) {
 			this.configuration.put(key, value);
 			return this;
 		}
@@ -141,8 +135,7 @@ public class ValidatorConstraintResolverTests {
 				return false;
 			}
 			for (Entry<String, Object> entry : this.configuration.entrySet()) {
-				if (!constraint.getConfiguration().get(entry.getKey())
-						.equals(entry.getValue())) {
+				if (!constraint.getConfiguration().get(entry.getKey()).equals(entry.getValue())) {
 					return false;
 				}
 			}

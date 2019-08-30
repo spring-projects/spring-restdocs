@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,8 +59,7 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
 	 * ignored
 	 */
-	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors,
-			boolean ignoreUndocumentedParameters) {
+	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors, boolean ignoreUndocumentedParameters) {
 		this(descriptors, null, ignoreUndocumentedParameters);
 	}
 
@@ -72,8 +71,7 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors,
-			Map<String, Object> attributes) {
+	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors, Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -88,19 +86,16 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
 	 * ignored
 	 */
-	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedParameters) {
-		super("request-parameters", descriptors, attributes,
-				ignoreUndocumentedParameters);
+	protected RequestParametersSnippet(List<ParameterDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedParameters) {
+		super("request-parameters", descriptors, attributes, ignoreUndocumentedParameters);
 	}
 
 	@Override
-	protected void verificationFailed(Set<String> undocumentedParameters,
-			Set<String> missingParameters) {
+	protected void verificationFailed(Set<String> undocumentedParameters, Set<String> missingParameters) {
 		String message = "";
 		if (!undocumentedParameters.isEmpty()) {
-			message += "Request parameters with the following names were not documented: "
-					+ undocumentedParameters;
+			message += "Request parameters with the following names were not documented: " + undocumentedParameters;
 		}
 		if (!missingParameters.isEmpty()) {
 			if (message.length() > 0) {
@@ -136,8 +131,7 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 	 * @return the new snippet
 	 */
 	public RequestParametersSnippet and(List<ParameterDescriptor> additionalDescriptors) {
-		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>(
-				getParameterDescriptors().values());
+		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>(getParameterDescriptors().values());
 		combinedDescriptors.addAll(additionalDescriptors);
 		return new RequestParametersSnippet(combinedDescriptors, this.getAttributes());
 	}

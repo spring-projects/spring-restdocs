@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,7 @@ public class RequestHeadersSnippet extends AbstractHeadersSnippet {
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected RequestHeadersSnippet(List<HeaderDescriptor> descriptors,
-			Map<String, Object> attributes) {
+	protected RequestHeadersSnippet(List<HeaderDescriptor> descriptors, Map<String, Object> attributes) {
 		super("request", descriptors, attributes);
 	}
 
@@ -80,8 +79,7 @@ public class RequestHeadersSnippet extends AbstractHeadersSnippet {
 	 * @return the new snippet
 	 */
 	public final RequestHeadersSnippet and(List<HeaderDescriptor> additionalDescriptors) {
-		List<HeaderDescriptor> combinedDescriptors = new ArrayList<>(
-				this.getHeaderDescriptors());
+		List<HeaderDescriptor> combinedDescriptors = new ArrayList<>(this.getHeaderDescriptors());
 		combinedDescriptors.addAll(additionalDescriptors);
 		return new RequestHeadersSnippet(combinedDescriptors, getAttributes());
 	}

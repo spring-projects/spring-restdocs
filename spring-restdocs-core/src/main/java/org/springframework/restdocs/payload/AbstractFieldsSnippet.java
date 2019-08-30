@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
 		this(type, type, descriptors, attributes, ignoreUndocumentedFields);
 	}
 
@@ -82,11 +82,9 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @param subsectionExtractor the subsection extractor
 	 * @since 1.2.0
 	 */
-	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedFields,
-			PayloadSubsectionExtractor<?> subsectionExtractor) {
-		this(type, type, descriptors, attributes, ignoreUndocumentedFields,
-				subsectionExtractor);
+	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields, PayloadSubsectionExtractor<?> subsectionExtractor) {
+		this(type, type, descriptors, attributes, ignoreUndocumentedFields, subsectionExtractor);
 	}
 
 	/**
@@ -102,9 +100,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected AbstractFieldsSnippet(String name, String type,
-			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
-			boolean ignoreUndocumentedFields) {
+	protected AbstractFieldsSnippet(String name, String type, List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
 		this(name, type, descriptors, attributes, ignoreUndocumentedFields, null);
 	}
 
@@ -125,20 +122,16 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * empty string can be used to indicate that the entire payload should be documented.
 	 * @since 1.2.0
 	 */
-	protected AbstractFieldsSnippet(String name, String type,
-			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
-			boolean ignoreUndocumentedFields,
+	protected AbstractFieldsSnippet(String name, String type, List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedFields,
 			PayloadSubsectionExtractor<?> subsectionExtractor) {
-		super(name + "-fields"
-				+ ((subsectionExtractor != null)
-						? "-" + subsectionExtractor.getSubsectionId() : ""),
+		super(name + "-fields" + ((subsectionExtractor != null) ? "-" + subsectionExtractor.getSubsectionId() : ""),
 				type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getPath(), "Field descriptors must have a path");
 			if (!descriptor.isIgnored()) {
-				Assert.notNull(descriptor.getDescription() != null,
-						"The descriptor for '" + descriptor.getPath() + "' must have a"
-								+ " description or it must be marked as ignored");
+				Assert.notNull(descriptor.getDescription() != null, "The descriptor for '" + descriptor.getPath()
+						+ "' must have a" + " description or it must be marked as ignored");
 			}
 		}
 		this.fieldDescriptors = descriptors;
@@ -158,8 +151,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		}
 		MediaType contentType = getContentType(operation);
 		if (this.subsectionExtractor != null) {
-			content = verifyContent(
-					this.subsectionExtractor.extractSubsection(content, contentType));
+			content = verifyContent(this.subsectionExtractor.extractSubsection(content, contentType));
 		}
 		ContentHandler contentHandler = ContentHandler.forContent(content, contentType);
 
@@ -173,9 +165,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 					descriptorsToDocument.add(copyWithType(descriptor, type));
 				}
 				catch (FieldDoesNotExistException ex) {
-					String message = "Cannot determine the type of the field '"
-							+ descriptor.getPath() + "' as it is not present in the "
-							+ "payload. Please provide a type using "
+					String message = "Cannot determine the type of the field '" + descriptor.getPath()
+							+ "' as it is not present in the " + "payload. Please provide a type using "
 							+ "FieldDescriptor.type(Object type).";
 					throw new FieldTypeRequiredException(message);
 				}
@@ -195,15 +186,14 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	private byte[] verifyContent(byte[] content) {
 		if (content.length == 0) {
-			throw new SnippetException("Cannot document " + this.type + " fields as the "
-					+ this.type + " body is empty");
+			throw new SnippetException(
+					"Cannot document " + this.type + " fields as the " + this.type + " body is empty");
 		}
 		return content;
 	}
 
 	private void validateFieldDocumentation(ContentHandler payloadHandler) {
-		List<FieldDescriptor> missingFields = payloadHandler
-				.findMissingFields(this.fieldDescriptors);
+		List<FieldDescriptor> missingFields = payloadHandler.findMissingFields(this.fieldDescriptors);
 
 		String undocumentedPayload = this.ignoreUndocumentedFields ? null
 				: payloadHandler.getUndocumentedContent(this.fieldDescriptors);
@@ -211,8 +201,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		if (!missingFields.isEmpty() || StringUtils.hasText(undocumentedPayload)) {
 			String message = "";
 			if (StringUtils.hasText(undocumentedPayload)) {
-				message += String.format("The following parts of the payload were"
-						+ " not documented:%n%s", undocumentedPayload);
+				message += String.format("The following parts of the payload were" + " not documented:%n%s",
+						undocumentedPayload);
 			}
 			if (!missingFields.isEmpty()) {
 				if (message.length() > 0) {
@@ -222,8 +212,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 				for (FieldDescriptor fieldDescriptor : missingFields) {
 					paths.add(fieldDescriptor.getPath());
 				}
-				message += "Fields with the following paths were not found in the"
-						+ " payload: " + paths;
+				message += "Fields with the following paths were not found in the" + " payload: " + paths;
 			}
 			throw new SnippetException(message);
 		}
@@ -288,11 +277,9 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	}
 
 	private FieldDescriptor copyWithType(FieldDescriptor source, Object type) {
-		FieldDescriptor result = (source instanceof SubsectionDescriptor)
-				? new SubsectionDescriptor(source.getPath())
+		FieldDescriptor result = (source instanceof SubsectionDescriptor) ? new SubsectionDescriptor(source.getPath())
 				: new FieldDescriptor(source.getPath());
-		result.description(source.getDescription()).type(type)
-				.attributes(asArray(source.getAttributes()));
+		result.description(source.getDescription()).type(type).attributes(asArray(source.getAttributes()));
 		if (source.isIgnored()) {
 			result.ignored();
 		}
@@ -305,8 +292,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	private static Attribute[] asArray(Map<String, Object> attributeMap) {
 		List<Attributes.Attribute> attributes = new ArrayList<>();
 		for (Map.Entry<String, Object> attribute : attributeMap.entrySet()) {
-			attributes
-					.add(Attributes.key(attribute.getKey()).value(attribute.getValue()));
+			attributes.add(Attributes.key(attribute.getKey()).value(attribute.getValue()));
 		}
 		return attributes.toArray(new Attribute[attributes.size()]);
 	}

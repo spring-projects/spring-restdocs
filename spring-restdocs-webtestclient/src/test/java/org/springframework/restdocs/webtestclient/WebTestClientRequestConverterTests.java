@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,10 +52,9 @@ public class WebTestClientRequestConverterTests {
 
 	@Test
 	public void httpRequest() {
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
-				.exchange().expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
+				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").exchange().expectBody()
+				.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -63,10 +62,9 @@ public class WebTestClientRequestConverterTests {
 
 	@Test
 	public void httpRequestWithCustomPort() {
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("http://localhost:8080").build().get()
-				.uri("/foo").exchange().expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
+				.configureClient().baseUrl("http://localhost:8080").build().get().uri("/foo").exchange().expectBody()
+				.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -74,25 +72,21 @@ public class WebTestClientRequestConverterTests {
 
 	@Test
 	public void requestWithHeaders() {
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(GET("/"), (req) -> null))
-				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
-				.header("a", "alpha", "apple").header("b", "bravo").exchange()
-				.expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/"), (req) -> null))
+				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").header("a", "alpha", "apple")
+				.header("b", "bravo").exchange().expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
-		assertThat(request.getHeaders()).containsEntry("a",
-				Arrays.asList("alpha", "apple"));
+		assertThat(request.getHeaders()).containsEntry("a", Arrays.asList("alpha", "apple"));
 		assertThat(request.getHeaders()).containsEntry("b", Arrays.asList("bravo"));
 	}
 
 	@Test
 	public void httpsRequest() {
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("https://localhost").build().get().uri("/foo")
-				.exchange().expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
+				.configureClient().baseUrl("https://localhost").build().get().uri("/foo").exchange().expectBody()
+				.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("https://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -100,10 +94,9 @@ public class WebTestClientRequestConverterTests {
 
 	@Test
 	public void httpsRequestWithCustomPort() {
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("https://localhost:8443").build().get()
-				.uri("/foo").exchange().expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
+				.configureClient().baseUrl("https://localhost:8443").build().get().uri("/foo").exchange().expectBody()
+				.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("https://localhost:8443/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -111,13 +104,11 @@ public class WebTestClientRequestConverterTests {
 
 	@Test
 	public void getRequestWithQueryStringPopulatesParameters() throws Exception {
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("http://localhost").build().get()
-				.uri("/foo?a=alpha&b=bravo").exchange().expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
+				.configureClient().baseUrl("http://localhost").build().get().uri("/foo?a=alpha&b=bravo").exchange()
+				.expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
-		assertThat(request.getUri())
-				.isEqualTo(URI.create("http://localhost/foo?a=alpha&b=bravo"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&b=bravo"));
 		assertThat(request.getParameters()).hasSize(2);
 		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha"));
 		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("bravo"));
@@ -129,38 +120,32 @@ public class WebTestClientRequestConverterTests {
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 		parameters.addAll("a", Arrays.asList("alpha", "apple"));
 		parameters.addAll("b", Arrays.asList("br&vo"));
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
-					req.body(BodyExtractors.toFormData()).block();
-					return null;
-				})).configureClient().baseUrl("http://localhost").build().post()
-				.uri("/foo").body(BodyInserters.fromFormData(parameters)).exchange()
-				.expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
+			req.body(BodyExtractors.toFormData()).block();
+			return null;
+		})).configureClient().baseUrl("http://localhost").build().post().uri("/foo")
+				.body(BodyInserters.fromFormData(parameters)).exchange().expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getParameters()).hasSize(2);
-		assertThat(request.getParameters()).containsEntry("a",
-				Arrays.asList("alpha", "apple"));
+		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "apple"));
 		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("br&vo"));
 	}
 
 	@Test
 	public void postRequestWithQueryStringParameters() throws Exception {
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
-					req.body(BodyExtractors.toFormData()).block();
-					return null;
-				})).configureClient().baseUrl("http://localhost").build().post()
-				.uri(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo"))
-				.exchange().expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
+			req.body(BodyExtractors.toFormData()).block();
+			return null;
+		})).configureClient().baseUrl("http://localhost").build().post()
+				.uri(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo")).exchange().expectBody()
+				.returnResult();
 		OperationRequest request = this.converter.convert(result);
-		assertThat(request.getUri())
-				.isEqualTo(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getParameters()).hasSize(2);
-		assertThat(request.getParameters()).containsEntry("a",
-				Arrays.asList("alpha", "apple"));
+		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "apple"));
 		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("br&vo"));
 	}
 
@@ -168,31 +153,26 @@ public class WebTestClientRequestConverterTests {
 	public void postRequestWithQueryStringAndFormDataParameters() throws Exception {
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 		parameters.addAll("a", Arrays.asList("apple"));
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
-					req.body(BodyExtractors.toFormData()).block();
-					return null;
-				})).configureClient().baseUrl("http://localhost").build().post()
-				.uri(URI.create("http://localhost/foo?a=alpha&b=br%26vo"))
-				.body(BodyInserters.fromFormData(parameters)).exchange().expectBody()
-				.returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
+			req.body(BodyExtractors.toFormData()).block();
+			return null;
+		})).configureClient().baseUrl("http://localhost").build().post()
+				.uri(URI.create("http://localhost/foo?a=alpha&b=br%26vo")).body(BodyInserters.fromFormData(parameters))
+				.exchange().expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
-		assertThat(request.getUri())
-				.isEqualTo(URI.create("http://localhost/foo?a=alpha&b=br%26vo"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&b=br%26vo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getParameters()).hasSize(2);
-		assertThat(request.getParameters()).containsEntry("a",
-				Arrays.asList("alpha", "apple"));
+		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "apple"));
 		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("br&vo"));
 	}
 
 	@Test
 	public void postRequestWithNoContentType() throws Exception {
 		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(POST("/foo"),
-						(req) -> ServerResponse.ok().build()))
-				.configureClient().baseUrl("http://localhost").build().post().uri("/foo")
-				.exchange().expectBody().returnResult();
+				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> ServerResponse.ok().build()))
+				.configureClient().baseUrl("http://localhost").build().post().uri("/foo").exchange().expectBody()
+				.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
@@ -202,13 +182,11 @@ public class WebTestClientRequestConverterTests {
 	public void multipartUpload() throws Exception {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("file", new byte[] { 1, 2, 3, 4 });
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
-					req.body(BodyExtractors.toMultipartData()).block();
-					return null;
-				})).configureClient().baseUrl("http://localhost").build().post()
-				.uri("/foo").body(BodyInserters.fromMultipartData(multipartData))
-				.exchange().expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
+			req.body(BodyExtractors.toMultipartData()).block();
+			return null;
+		})).configureClient().baseUrl("http://localhost").build().post().uri("/foo")
+				.body(BodyInserters.fromMultipartData(multipartData)).exchange().expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
@@ -233,13 +211,11 @@ public class WebTestClientRequestConverterTests {
 			}
 
 		});
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
-					req.body(BodyExtractors.toMultipartData()).block();
-					return null;
-				})).configureClient().baseUrl("http://localhost").build().post()
-				.uri("/foo").body(BodyInserters.fromMultipartData(multipartData))
-				.exchange().expectBody().returnResult();
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
+			req.body(BodyExtractors.toMultipartData()).block();
+			return null;
+		})).configureClient().baseUrl("http://localhost").build().post().uri("/foo")
+				.body(BodyInserters.fromMultipartData(multipartData)).exchange().expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
@@ -258,21 +234,18 @@ public class WebTestClientRequestConverterTests {
 
 	@Test
 	public void requestWithCookies() throws Exception {
-		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
-				.cookie("cookieName1", "cookieVal1").cookie("cookieName2", "cookieVal2")
-				.exchange().expectBody().returnResult();
+				.cookie("cookieName1", "cookieVal1").cookie("cookieName2", "cookieVal2").exchange().expectBody()
+				.returnResult();
 		assertThat(result.getRequestHeaders().get(HttpHeaders.COOKIE)).isNotNull();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
 		assertThat(request.getCookies()).hasSize(2);
 		assertThat(request.getHeaders().get(HttpHeaders.COOKIE)).isNull();
-		assertThat(request.getCookies()).extracting("name").containsExactly("cookieName1",
-				"cookieName2");
-		assertThat(request.getCookies()).extracting("value").containsExactly("cookieVal1",
-				"cookieVal2");
+		assertThat(request.getCookies()).extracting("name").containsExactly("cookieName1", "cookieName2");
+		assertThat(request.getCookies()).extracting("value").containsExactly("cookieVal1", "cookieVal2");
 	}
 
 }

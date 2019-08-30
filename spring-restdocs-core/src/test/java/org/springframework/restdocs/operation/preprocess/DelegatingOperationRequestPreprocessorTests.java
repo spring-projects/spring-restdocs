@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,14 +44,11 @@ public class DelegatingOperationRequestPreprocessorTests {
 		OperationRequest preprocessedRequest3 = mock(OperationRequest.class);
 
 		given(preprocessor1.preprocess(originalRequest)).willReturn(preprocessedRequest1);
-		given(preprocessor2.preprocess(preprocessedRequest1))
-				.willReturn(preprocessedRequest2);
-		given(preprocessor3.preprocess(preprocessedRequest2))
-				.willReturn(preprocessedRequest3);
+		given(preprocessor2.preprocess(preprocessedRequest1)).willReturn(preprocessedRequest2);
+		given(preprocessor3.preprocess(preprocessedRequest2)).willReturn(preprocessedRequest3);
 
 		OperationRequest result = new DelegatingOperationRequestPreprocessor(
-				Arrays.asList(preprocessor1, preprocessor2, preprocessor3))
-						.preprocess(originalRequest);
+				Arrays.asList(preprocessor1, preprocessor2, preprocessor3)).preprocess(originalRequest);
 
 		assertThat(result).isSameAs(preprocessedRequest3);
 	}

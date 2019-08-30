@@ -32,8 +32,8 @@ final class DefaultAttributesAsciidoctorJ16Preprocessor extends Preprocessor {
 
 	@Override
 	public void process(Document document, PreprocessorReader reader) {
-		document.setAttribute("snippets", this.snippetsDirectoryResolver
-				.getSnippetsDirectory(document.getAttributes()), false);
+		document.setAttribute("snippets", this.snippetsDirectoryResolver.getSnippetsDirectory(document.getAttributes()),
+				false);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,33 +31,30 @@ public class JsonFieldTypesTests {
 
 	@Test
 	public void singleTypeCoalescesToThatType() {
-		assertThat(new JsonFieldTypes(JsonFieldType.NUMBER).coalesce(false))
-				.isEqualTo(JsonFieldType.NUMBER);
+		assertThat(new JsonFieldTypes(JsonFieldType.NUMBER).coalesce(false)).isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void singleTypeCoalescesToThatTypeWhenOptional() {
-		assertThat(new JsonFieldTypes(JsonFieldType.NUMBER).coalesce(true))
-				.isEqualTo(JsonFieldType.NUMBER);
+		assertThat(new JsonFieldTypes(JsonFieldType.NUMBER).coalesce(true)).isEqualTo(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void multipleTypesCoalescesToVaries() {
-		assertThat(
-				new JsonFieldTypes(EnumSet.of(JsonFieldType.ARRAY, JsonFieldType.NUMBER))
-						.coalesce(false)).isEqualTo(JsonFieldType.VARIES);
+		assertThat(new JsonFieldTypes(EnumSet.of(JsonFieldType.ARRAY, JsonFieldType.NUMBER)).coalesce(false))
+				.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void nullAndNonNullTypesCoalescesToVaries() {
-		assertThat(new JsonFieldTypes(EnumSet.of(JsonFieldType.ARRAY, JsonFieldType.NULL))
-				.coalesce(false)).isEqualTo(JsonFieldType.VARIES);
+		assertThat(new JsonFieldTypes(EnumSet.of(JsonFieldType.ARRAY, JsonFieldType.NULL)).coalesce(false))
+				.isEqualTo(JsonFieldType.VARIES);
 	}
 
 	@Test
 	public void nullAndNonNullTypesCoalescesToNonNullTypeWhenOptional() {
-		assertThat(new JsonFieldTypes(EnumSet.of(JsonFieldType.ARRAY, JsonFieldType.NULL))
-				.coalesce(true)).isEqualTo(JsonFieldType.ARRAY);
+		assertThat(new JsonFieldTypes(EnumSet.of(JsonFieldType.ARRAY, JsonFieldType.NULL)).coalesce(true))
+				.isEqualTo(JsonFieldType.ARRAY);
 	}
 
 }

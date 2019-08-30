@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.config;
+package org.springframework.restdocs.operation;
 
-import java.util.Map;
-
-import org.springframework.restdocs.RestDocumentationContext;
+import org.springframework.http.HttpHeaders;
 
 /**
- * Abstract configurer that declares methods that are internal to the documentation
- * configuration implementation.
+ * Base contract for operation requests, request parts, and responses.
  *
  * @author Andy Wilkinson
- * @since 1.1.0
  */
-public abstract class AbstractConfigurer {
+interface OperationMessage {
 
-	/**
-	 * Applies the configurer to the given {@code configuration}.
-	 * @param configuration the configuration to be configured
-	 * @param context the current documentation context
-	 */
-	public abstract void apply(Map<String, Object> configuration, RestDocumentationContext context);
+	byte[] getContent();
+
+	String getContentAsString();
+
+	HttpHeaders getHeaders();
 
 }

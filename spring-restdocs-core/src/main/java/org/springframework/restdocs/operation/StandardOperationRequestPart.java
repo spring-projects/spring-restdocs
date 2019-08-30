@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ import org.springframework.http.HttpHeaders;
  *
  * @author Andy Wilkinson
  */
-class StandardOperationRequestPart extends AbstractOperationMessage
-		implements OperationRequestPart {
+class StandardOperationRequestPart extends AbstractOperationMessage implements OperationRequestPart {
 
 	private final String name;
 
@@ -37,8 +36,7 @@ class StandardOperationRequestPart extends AbstractOperationMessage
 	 * @param content the contents of the part
 	 * @param headers the headers of the part
 	 */
-	StandardOperationRequestPart(String name, String submittedFileName, byte[] content,
-			HttpHeaders headers) {
+	StandardOperationRequestPart(String name, String submittedFileName, byte[] content, HttpHeaders headers) {
 		super(content, headers);
 		this.name = name;
 		this.submittedFileName = submittedFileName;

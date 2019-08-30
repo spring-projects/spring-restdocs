@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,7 @@ public class WebTestClientRestDocumentationConfigurer extends
 		RestDocumentationConfigurer<WebTestClientSnippetConfigurer, WebTestClientOperationPreprocessorsConfigurer, WebTestClientRestDocumentationConfigurer>
 		implements ExchangeFilterFunction {
 
-	private final WebTestClientSnippetConfigurer snippetConfigurer = new WebTestClientSnippetConfigurer(
-			this);
+	private final WebTestClientSnippetConfigurer snippetConfigurer = new WebTestClientSnippetConfigurer(this);
 
 	private static final Map<String, Map<String, Object>> configurations = new ConcurrentHashMap<>();
 
@@ -55,8 +54,7 @@ public class WebTestClientRestDocumentationConfigurer extends
 
 	private final RestDocumentationContextProvider contextProvider;
 
-	WebTestClientRestDocumentationConfigurer(
-			RestDocumentationContextProvider contextProvider) {
+	WebTestClientRestDocumentationConfigurer(RestDocumentationContextProvider contextProvider) {
 		this.contextProvider = contextProvider;
 	}
 
@@ -96,9 +94,8 @@ public class WebTestClientRestDocumentationConfigurer extends
 			return request;
 		}
 		try {
-			requestUri = new URI("http", requestUri.getUserInfo(), "localhost", 8080,
-					requestUri.getPath(), requestUri.getQuery(),
-					requestUri.getFragment());
+			requestUri = new URI("http", requestUri.getUserInfo(), "localhost", 8080, requestUri.getPath(),
+					requestUri.getQuery(), requestUri.getFragment());
 			return ClientRequest.from(request).url(requestUri).build();
 		}
 		catch (URISyntaxException ex) {

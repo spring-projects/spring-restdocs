@@ -28,8 +28,7 @@ public final class RestDocsAsciidoctorJ20ExtensionRegistry implements ExtensionR
 
 	@Override
 	public void register(Asciidoctor asciidoctor) {
-		asciidoctor.javaExtensionRegistry()
-				.preprocessor(new DefaultAttributesAsciidoctorJ20Preprocessor());
+		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesAsciidoctorJ20Preprocessor());
 		asciidoctor.rubyExtensionRegistry()
 				.loadClass(RestDocsAsciidoctorJ20ExtensionRegistry.class
 						.getResourceAsStream("/extensions/operation_block_macro.rb"))

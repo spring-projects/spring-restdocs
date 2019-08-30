@@ -31,8 +31,7 @@ public final class RestDocsAsciidoctorJ16ExtensionRegistry implements ExtensionR
 		if (!asciidoctorJ16()) {
 			return;
 		}
-		asciidoctor.javaExtensionRegistry()
-				.preprocessor(new DefaultAttributesAsciidoctorJ16Preprocessor());
+		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesAsciidoctorJ16Preprocessor());
 		asciidoctor.rubyExtensionRegistry()
 				.loadClass(RestDocsAsciidoctorJ16ExtensionRegistry.class
 						.getResourceAsStream("/extensions/operation_block_macro.rb"))
@@ -41,8 +40,7 @@ public final class RestDocsAsciidoctorJ16ExtensionRegistry implements ExtensionR
 
 	private boolean asciidoctorJ16() {
 		try {
-			return Class.forName("org.asciidoctor.extension.JavaExtensionRegistry")
-					.isInterface();
+			return Class.forName("org.asciidoctor.extension.JavaExtensionRegistry").isInterface();
 		}
 		catch (Throwable ex) {
 			return false;

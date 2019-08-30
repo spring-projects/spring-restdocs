@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,72 +47,56 @@ public class StandardTemplateResourceResolverTests {
 
 	@Test
 	public void formatSpecificCustomSnippetHasHighestPrecedence() throws Exception {
-		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/asciidoctor/test.snippet",
+		this.classLoader.addResource("org/springframework/restdocs/templates/asciidoctor/test.snippet",
 				getClass().getResource("test-format-specific-custom.snippet"));
-		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/test.snippet",
+		this.classLoader.addResource("org/springframework/restdocs/templates/test.snippet",
 				getClass().getResource("test-custom.snippet"));
-		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
+		this.classLoader.addResource("org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
 				getClass().getResource("test-default.snippet"));
-		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
-				new Callable<Resource>() {
+		Resource snippet = doWithThreadContextClassLoader(this.classLoader, new Callable<Resource>() {
 
-					@Override
-					public Resource call() {
-						return StandardTemplateResourceResolverTests.this.resolver
-								.resolveTemplateResource("test");
-					}
+			@Override
+			public Resource call() {
+				return StandardTemplateResourceResolverTests.this.resolver.resolveTemplateResource("test");
+			}
 
-				});
+		});
 
-		assertThat(snippet.getURL())
-				.isEqualTo(getClass().getResource("test-format-specific-custom.snippet"));
+		assertThat(snippet.getURL()).isEqualTo(getClass().getResource("test-format-specific-custom.snippet"));
 	}
 
 	@Test
-	public void generalCustomSnippetIsUsedInAbsenceOfFormatSpecificCustomSnippet()
-			throws Exception {
-		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/test.snippet",
+	public void generalCustomSnippetIsUsedInAbsenceOfFormatSpecificCustomSnippet() throws Exception {
+		this.classLoader.addResource("org/springframework/restdocs/templates/test.snippet",
 				getClass().getResource("test-custom.snippet"));
-		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
+		this.classLoader.addResource("org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
 				getClass().getResource("test-default.snippet"));
-		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
-				new Callable<Resource>() {
+		Resource snippet = doWithThreadContextClassLoader(this.classLoader, new Callable<Resource>() {
 
-					@Override
-					public Resource call() {
-						return StandardTemplateResourceResolverTests.this.resolver
-								.resolveTemplateResource("test");
-					}
+			@Override
+			public Resource call() {
+				return StandardTemplateResourceResolverTests.this.resolver.resolveTemplateResource("test");
+			}
 
-				});
+		});
 
-		assertThat(snippet.getURL())
-				.isEqualTo(getClass().getResource("test-custom.snippet"));
+		assertThat(snippet.getURL()).isEqualTo(getClass().getResource("test-custom.snippet"));
 	}
 
 	@Test
 	public void defaultSnippetIsUsedInAbsenceOfCustomSnippets() throws Exception {
-		this.classLoader.addResource(
-				"org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
+		this.classLoader.addResource("org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
 				getClass().getResource("test-default.snippet"));
-		Resource snippet = doWithThreadContextClassLoader(this.classLoader,
-				new Callable<Resource>() {
+		Resource snippet = doWithThreadContextClassLoader(this.classLoader, new Callable<Resource>() {
 
-					@Override
-					public Resource call() {
-						return StandardTemplateResourceResolverTests.this.resolver
-								.resolveTemplateResource("test");
-					}
+			@Override
+			public Resource call() {
+				return StandardTemplateResourceResolverTests.this.resolver.resolveTemplateResource("test");
+			}
 
-				});
+		});
 
-		assertThat(snippet.getURL())
-				.isEqualTo(getClass().getResource("test-default.snippet"));
+		assertThat(snippet.getURL()).isEqualTo(getClass().getResource("test-default.snippet"));
 	}
 
 	@Test
@@ -123,15 +107,13 @@ public class StandardTemplateResourceResolverTests {
 
 			@Override
 			public Resource call() {
-				return StandardTemplateResourceResolverTests.this.resolver
-						.resolveTemplateResource("test");
+				return StandardTemplateResourceResolverTests.this.resolver.resolveTemplateResource("test");
 			}
 
 		});
 	}
 
-	private <T> T doWithThreadContextClassLoader(ClassLoader classLoader,
-			Callable<T> action) throws Exception {
+	private <T> T doWithThreadContextClassLoader(ClassLoader classLoader, Callable<T> action) throws Exception {
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(classLoader);
 		try {

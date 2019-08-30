@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,39 +49,29 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithHeaders() throws IOException {
-		new ResponseHeadersSnippet(
-				Arrays.asList(headerWithName("X-Test").description("one"),
-						headerWithName("Content-Type").description("two"),
-						headerWithName("Etag").description("three"),
-						headerWithName("Cache-Control").description("five"),
-						headerWithName("Vary").description("six"))).document(
-								this.operationBuilder.response().header("X-Test", "test")
-										.header("Content-Type", "application/json")
-										.header("Etag", "lskjadldj3ii32l2ij23")
-										.header("Cache-Control", "max-age=0")
-										.header("Vary", "User-Agent").build());
+		new ResponseHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one"),
+				headerWithName("Content-Type").description("two"), headerWithName("Etag").description("three"),
+				headerWithName("Cache-Control").description("five"), headerWithName("Vary").description("six")))
+						.document(this.operationBuilder.response().header("X-Test", "test")
+								.header("Content-Type", "application/json").header("Etag", "lskjadldj3ii32l2ij23")
+								.header("Cache-Control", "max-age=0").header("Vary", "User-Agent").build());
 		assertThat(this.generatedSnippets.responseHeaders())
-				.is(tableWithHeader("Name", "Description").row("`X-Test`", "one")
-						.row("`Content-Type`", "two").row("`Etag`", "three")
-						.row("`Cache-Control`", "five").row("`Vary`", "six"));
+				.is(tableWithHeader("Name", "Description").row("`X-Test`", "one").row("`Content-Type`", "two")
+						.row("`Etag`", "three").row("`Cache-Control`", "five").row("`Vary`", "six"));
 	}
 
 	@Test
 	public void caseInsensitiveResponseHeaders() throws IOException {
-		new ResponseHeadersSnippet(
-				Arrays.asList(headerWithName("X-Test").description("one")))
-						.document(this.operationBuilder.response()
-								.header("X-test", "test").build());
+		new ResponseHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one")))
+				.document(this.operationBuilder.response().header("X-test", "test").build());
 		assertThat(this.generatedSnippets.responseHeaders())
 				.is(tableWithHeader("Name", "Description").row("`X-Test`", "one"));
 	}
 
 	@Test
 	public void undocumentedResponseHeader() throws IOException {
-		new ResponseHeadersSnippet(
-				Arrays.asList(headerWithName("X-Test").description("one"))).document(
-						this.operationBuilder.response().header("X-Test", "test")
-								.header("Content-Type", "*/*").build());
+		new ResponseHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one"))).document(
+				this.operationBuilder.response().header("X-Test", "test").header("Content-Type", "*/*").build());
 		assertThat(this.generatedSnippets.responseHeaders())
 				.is(tableWithHeader("Name", "Description").row("`X-Test`", "one"));
 	}
@@ -91,16 +81,11 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-headers"))
 				.willReturn(snippetResource("response-headers-with-title"));
-		new ResponseHeadersSnippet(
-				Arrays.asList(headerWithName("X-Test").description("one")), attributes(
-						key("title").value("Custom title")))
-								.document(
-										this.operationBuilder
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.response().header("X-Test", "test")
-												.build());
+		new ResponseHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one")),
+				attributes(key("title").value("Custom title")))
+						.document(this.operationBuilder
+								.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+								.response().header("X-Test", "test").build());
 		assertThat(this.generatedSnippets.responseHeaders()).contains("Custom title");
 	}
 
@@ -109,57 +94,38 @@ public class ResponseHeadersSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-headers"))
 				.willReturn(snippetResource("response-headers-with-extra-column"));
-		new ResponseHeadersSnippet(Arrays.asList(
-				headerWithName("X-Test").description("one")
-						.attributes(key("foo").value("alpha")),
-				headerWithName("Content-Type").description("two")
-						.attributes(key("foo").value("bravo")),
-				headerWithName("Etag").description("three")
-						.attributes(key("foo").value("charlie"))))
-								.document(
-										this.operationBuilder
-												.attribute(TemplateEngine.class.getName(),
-														new MustacheTemplateEngine(
-																resolver))
-												.response().header("X-Test", "test")
-												.header("Content-Type",
-														"application/json")
-												.header("Etag", "lskjadldj3ii32l2ij23")
-												.build());
-		assertThat(this.generatedSnippets.responseHeaders())
-				.is(tableWithHeader("Name", "Description", "Foo")
-						.row("X-Test", "one", "alpha").row("Content-Type", "two", "bravo")
-						.row("Etag", "three", "charlie"));
+		new ResponseHeadersSnippet(
+				Arrays.asList(headerWithName("X-Test").description("one").attributes(key("foo").value("alpha")),
+						headerWithName("Content-Type").description("two").attributes(key("foo").value("bravo")),
+						headerWithName("Etag").description("three").attributes(key("foo").value("charlie"))))
+								.document(this.operationBuilder
+										.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+										.response().header("X-Test", "test").header("Content-Type", "application/json")
+										.header("Etag", "lskjadldj3ii32l2ij23").build());
+		assertThat(this.generatedSnippets.responseHeaders()).is(tableWithHeader("Name", "Description", "Foo")
+				.row("X-Test", "one", "alpha").row("Content-Type", "two", "bravo").row("Etag", "three", "charlie"));
 	}
 
 	@Test
 	public void additionalDescriptors() throws IOException {
 		HeaderDocumentation
 				.responseHeaders(headerWithName("X-Test").description("one"),
-						headerWithName("Content-Type").description("two"),
-						headerWithName("Etag").description("three"))
-				.and(headerWithName("Cache-Control").description("five"),
-						headerWithName("Vary").description("six"))
+						headerWithName("Content-Type").description("two"), headerWithName("Etag").description("three"))
+				.and(headerWithName("Cache-Control").description("five"), headerWithName("Vary").description("six"))
 				.document(this.operationBuilder.response().header("X-Test", "test")
-						.header("Content-Type", "application/json")
-						.header("Etag", "lskjadldj3ii32l2ij23")
-						.header("Cache-Control", "max-age=0").header("Vary", "User-Agent")
-						.build());
+						.header("Content-Type", "application/json").header("Etag", "lskjadldj3ii32l2ij23")
+						.header("Cache-Control", "max-age=0").header("Vary", "User-Agent").build());
 		assertThat(this.generatedSnippets.responseHeaders())
-				.is(tableWithHeader("Name", "Description").row("`X-Test`", "one")
-						.row("`Content-Type`", "two").row("`Etag`", "three")
-						.row("`Cache-Control`", "five").row("`Vary`", "six"));
+				.is(tableWithHeader("Name", "Description").row("`X-Test`", "one").row("`Content-Type`", "two")
+						.row("`Etag`", "three").row("`Cache-Control`", "five").row("`Vary`", "six"));
 	}
 
 	@Test
 	public void tableCellContentIsEscapedWhenNecessary() throws IOException {
-		new ResponseHeadersSnippet(
-				Arrays.asList(headerWithName("Foo|Bar").description("one|two")))
-						.document(this.operationBuilder.response()
-								.header("Foo|Bar", "baz").build());
-		assertThat(this.generatedSnippets.responseHeaders()).is(
-				tableWithHeader("Name", "Description").row(escapeIfNecessary("`Foo|Bar`"),
-						escapeIfNecessary("one|two")));
+		new ResponseHeadersSnippet(Arrays.asList(headerWithName("Foo|Bar").description("one|two")))
+				.document(this.operationBuilder.response().header("Foo|Bar", "baz").build());
+		assertThat(this.generatedSnippets.responseHeaders()).is(tableWithHeader("Name", "Description")
+				.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
 	}
 
 	private String escapeIfNecessary(String input) {

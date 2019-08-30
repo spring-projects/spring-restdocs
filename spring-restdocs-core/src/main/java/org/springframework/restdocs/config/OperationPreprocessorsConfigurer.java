@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,7 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors;
  * @author Andy Wilkinson
  * @since 2.0.0
  */
-public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE>
-		extends AbstractNestedConfigurer<PARENT> {
+public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE> extends AbstractNestedConfigurer<PARENT> {
 
 	private OperationRequestPreprocessor defaultOperationRequestPreprocessor;
 
@@ -51,13 +50,10 @@ public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE>
 	}
 
 	@Override
-	public void apply(Map<String, Object> configuration,
-			RestDocumentationContext context) {
-		configuration.put(
-				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
+	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
+		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
 				this.defaultOperationRequestPreprocessor);
-		configuration.put(
-				RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
+		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
 				this.defaultOperationResponsePreprocessor);
 	}
 
@@ -68,8 +64,7 @@ public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE>
 	 */
 	@SuppressWarnings("unchecked")
 	public TYPE withRequestDefaults(OperationPreprocessor... preprocessors) {
-		this.defaultOperationRequestPreprocessor = Preprocessors
-				.preprocessRequest(preprocessors);
+		this.defaultOperationRequestPreprocessor = Preprocessors.preprocessRequest(preprocessors);
 		return (TYPE) this;
 	}
 
@@ -80,8 +75,7 @@ public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE>
 	 */
 	@SuppressWarnings("unchecked")
 	public TYPE withResponseDefaults(OperationPreprocessor... preprocessors) {
-		this.defaultOperationResponsePreprocessor = Preprocessors
-				.preprocessResponse(preprocessors);
+		this.defaultOperationResponsePreprocessor = Preprocessors.preprocessResponse(preprocessors);
 		return (TYPE) this;
 	}
 

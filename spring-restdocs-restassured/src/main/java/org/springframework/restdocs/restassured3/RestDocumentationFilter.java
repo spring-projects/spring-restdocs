@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,8 +42,7 @@ public class RestDocumentationFilter implements Filter {
 
 	private final RestDocumentationGenerator<FilterableRequestSpecification, Response> delegate;
 
-	RestDocumentationFilter(
-			RestDocumentationGenerator<FilterableRequestSpecification, Response> delegate) {
+	RestDocumentationFilter(RestDocumentationGenerator<FilterableRequestSpecification, Response> delegate) {
 		Assert.notNull(delegate, "delegate must be non-null");
 		this.delegate = delegate;
 	}
@@ -67,15 +66,12 @@ public class RestDocumentationFilter implements Filter {
 	 * @param context the filter context
 	 * @return the configuration
 	 */
-	protected Map<String, Object> getConfiguration(
-			FilterableRequestSpecification requestSpec, FilterContext context) {
+	protected Map<String, Object> getConfiguration(FilterableRequestSpecification requestSpec, FilterContext context) {
 		Map<String, Object> configuration = new HashMap<>(
 				context.<Map<String, Object>>getValue(CONTEXT_KEY_CONFIGURATION));
 		configuration.put(RestDocumentationContext.class.getName(),
-				context.<RestDocumentationContext>getValue(
-						RestDocumentationContext.class.getName()));
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-				requestSpec.getUserDefinedPath());
+				context.<RestDocumentationContext>getValue(RestDocumentationContext.class.getName()));
+		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, requestSpec.getUserDefinedPath());
 		return configuration;
 	}
 
@@ -89,16 +85,12 @@ public class RestDocumentationFilter implements Filter {
 		return new RestDocumentationFilter(this.delegate.withSnippets(snippets)) {
 
 			@Override
-			protected Map<String, Object> getConfiguration(
-					FilterableRequestSpecification requestSpec, FilterContext context) {
-				Map<String, Object> configuration = super.getConfiguration(requestSpec,
-						context);
-				configuration.remove(
-						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-				configuration.remove(
-						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
-				configuration.remove(
-						RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
+			protected Map<String, Object> getConfiguration(FilterableRequestSpecification requestSpec,
+					FilterContext context) {
+				Map<String, Object> configuration = super.getConfiguration(requestSpec, context);
+				configuration.remove(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+				configuration.remove(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
+				configuration.remove(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
 				return configuration;
 			}
 

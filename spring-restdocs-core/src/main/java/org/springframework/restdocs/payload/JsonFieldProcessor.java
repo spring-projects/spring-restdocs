@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,33 +58,30 @@ final class JsonFieldProcessor {
 		if (values.isEmpty()) {
 			values.add(ExtractedField.ABSENT);
 		}
-		return new ExtractedField(
-				(compiledPath.getType() != PathType.SINGLE) ? values : values.get(0),
+		return new ExtractedField((compiledPath.getType() != PathType.SINGLE) ? values : values.get(0),
 				compiledPath.getType());
 	}
 
 	void remove(String path, Object payload) {
-		traverse(new ProcessingContext(payload, JsonFieldPath.compile(path)),
-				new MatchCallback() {
+		traverse(new ProcessingContext(payload, JsonFieldPath.compile(path)), new MatchCallback() {
 
-					@Override
-					public void foundMatch(Match match) {
-						match.remove();
-					}
+			@Override
+			public void foundMatch(Match match) {
+				match.remove();
+			}
 
-				});
+		});
 	}
 
 	void removeSubsection(String path, Object payload) {
-		traverse(new ProcessingContext(payload, JsonFieldPath.compile(path)),
-				new MatchCallback() {
+		traverse(new ProcessingContext(payload, JsonFieldPath.compile(path)), new MatchCallback() {
 
-					@Override
-					public void foundMatch(Match match) {
-						match.removeSubsection();
-					}
+			@Override
+			public void foundMatch(Match match) {
+				match.removeSubsection();
+			}
 
-				});
+		});
 	}
 
 	private void traverse(ProcessingContext context, MatchCallback matchCallback) {
@@ -99,54 +96,48 @@ final class JsonFieldProcessor {
 		}
 	}
 
-	private void handleCollectionPayload(ProcessingContext context,
-			MatchCallback matchCallback) {
-		handleCollectionPayload((Collection<?>) context.getPayload(), matchCallback,
-				context);
+	private void handleCollectionPayload(ProcessingContext context, MatchCallback matchCallback) {
+		handleCollectionPayload((Collection<?>) context.getPayload(), matchCallback, context);
 	}
 
-	private void handleCollectionPayload(Collection<?> collection,
-			MatchCallback matchCallback, ProcessingContext context) {
+	private void handleCollectionPayload(Collection<?> collection, MatchCallback matchCallback,
+			ProcessingContext context) {
 		if (context.isLeaf()) {
-			matchCallback.foundMatch(
-					new LeafCollectionMatch(collection, context.getParentMatch()));
+			matchCallback.foundMatch(new LeafCollectionMatch(collection, context.getParentMatch()));
 		}
 		else {
 			Iterator<?> items = collection.iterator();
 			while (items.hasNext()) {
 				Object item = items.next();
-				traverse(context.descend(item, new CollectionMatch(items, collection,
-						item, context.getParentMatch())), matchCallback);
+				traverse(context.descend(item, new CollectionMatch(items, collection, item, context.getParentMatch())),
+						matchCallback);
 			}
 		}
 	}
 
-	private void handleWildcardPayload(Collection<?> collection,
-			MatchCallback matchCallback, ProcessingContext context) {
+	private void handleWildcardPayload(Collection<?> collection, MatchCallback matchCallback,
+			ProcessingContext context) {
 		Iterator<?> items = collection.iterator();
 		if (context.isLeaf()) {
 			while (items.hasNext()) {
 				Object item = items.next();
-				matchCallback.foundMatch(new CollectionMatch(items, collection, item,
-						context.getParentMatch()));
+				matchCallback.foundMatch(new CollectionMatch(items, collection, item, context.getParentMatch()));
 			}
 		}
 		else {
 			while (items.hasNext()) {
 				Object item = items.next();
-				traverse(context.descend(item, new CollectionMatch(items, collection,
-						item, context.getParentMatch())), matchCallback);
+				traverse(context.descend(item, new CollectionMatch(items, collection, item, context.getParentMatch())),
+						matchCallback);
 			}
 		}
 	}
 
-	private void handleMapPayload(ProcessingContext context,
-			MatchCallback matchCallback) {
+	private void handleMapPayload(ProcessingContext context, MatchCallback matchCallback) {
 		Map<?, ?> map = context.getPayload();
 		if (map.containsKey(context.getSegment())) {
 			Object item = map.get(context.getSegment());
-			MapMatch mapMatch = new MapMatch(item, map, context.getSegment(),
-					context.getParentMatch());
+			MapMatch mapMatch = new MapMatch(item, map, context.getSegment(), context.getParentMatch());
 			if (context.isLeaf()) {
 				matchCallback.foundMatch(mapMatch);
 			}
@@ -171,8 +162,8 @@ final class JsonFieldProcessor {
 
 		@Override
 		public void foundMatch(Match match) {
-			this.matchType = this.matchType.combinedWith(
-					(match.getValue() != null) ? MatchType.NON_NULL : MatchType.NULL);
+			this.matchType = this.matchType
+					.combinedWith((match.getValue() != null) ? MatchType.NON_NULL : MatchType.NULL);
 		}
 
 		@Override
@@ -181,8 +172,7 @@ final class JsonFieldProcessor {
 		}
 
 		boolean fieldFound() {
-			return this.matchType == MatchType.NON_NULL
-					|| this.matchType == MatchType.NULL;
+			return this.matchType == MatchType.NON_NULL || this.matchType == MatchType.NULL;
 		}
 
 		private enum MatchType {
@@ -225,8 +215,7 @@ final class JsonFieldProcessor {
 		@Override
 		public void remove() {
 			Object removalCandidate = this.map.get(this.segment);
-			if (isMapWithEntries(removalCandidate)
-					|| isCollectionWithNonScalarEntries(removalCandidate)) {
+			if (isMapWithEntries(removalCandidate) || isCollectionWithNonScalarEntries(removalCandidate)) {
 				return;
 			}
 			this.map.remove(this.segment);
@@ -271,8 +260,7 @@ final class JsonFieldProcessor {
 
 		private final Match parent;
 
-		private CollectionMatch(Iterator<?> items, Collection<?> collection, Object item,
-				Match parent) {
+		private CollectionMatch(Iterator<?> items, Collection<?> collection, Object item, Match parent) {
 			this.items = items;
 			this.collection = collection;
 			this.item = item;
@@ -395,8 +383,7 @@ final class JsonFieldProcessor {
 			this(payload, path, null, null);
 		}
 
-		private ProcessingContext(Object payload, JsonFieldPath path,
-				List<String> segments, Match parent) {
+		private ProcessingContext(Object payload, JsonFieldPath path, List<String> segments, Match parent) {
 			this.payload = payload;
 			this.path = path;
 			this.segments = (segments != null) ? segments : path.getSegments();
@@ -421,8 +408,7 @@ final class JsonFieldProcessor {
 		}
 
 		private ProcessingContext descend(Object payload, Match match) {
-			return new ProcessingContext(payload, this.path,
-					this.segments.subList(1, this.segments.size()), match);
+			return new ProcessingContext(payload, this.path, this.segments.subList(1, this.segments.size()), match);
 		}
 
 	}

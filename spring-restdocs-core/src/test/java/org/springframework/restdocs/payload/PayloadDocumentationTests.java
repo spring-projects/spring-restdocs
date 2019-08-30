@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,16 +43,14 @@ public class PayloadDocumentationTests {
 
 	@Test
 	public void applyPathPrefixCopiesIgnored() {
-		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.",
-				Arrays.asList(fieldWithPath("bravo").ignored()));
+		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.", Arrays.asList(fieldWithPath("bravo").ignored()));
 		assertThat(descriptors.size()).isEqualTo(1);
 		assertThat(descriptors.get(0).isIgnored()).isTrue();
 	}
 
 	@Test
 	public void applyPathPrefixCopiesOptional() {
-		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.",
-				Arrays.asList(fieldWithPath("bravo").optional()));
+		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.", Arrays.asList(fieldWithPath("bravo").optional()));
 		assertThat(descriptors.size()).isEqualTo(1);
 		assertThat(descriptors.get(0).isOptional()).isTrue();
 	}
@@ -76,8 +74,7 @@ public class PayloadDocumentationTests {
 	@Test
 	public void applyPathPrefixCopiesAttributes() {
 		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.",
-				Arrays.asList(fieldWithPath("bravo").attributes(key("a").value("alpha"),
-						key("b").value("bravo"))));
+				Arrays.asList(fieldWithPath("bravo").attributes(key("a").value("alpha"), key("b").value("bravo"))));
 		assertThat(descriptors.size()).isEqualTo(1);
 		assertThat(descriptors.get(0).getAttributes().size()).isEqualTo(2);
 		assertThat(descriptors.get(0).getAttributes().get("a")).isEqualTo("alpha");

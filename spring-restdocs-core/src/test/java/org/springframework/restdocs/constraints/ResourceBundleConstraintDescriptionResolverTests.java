@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,8 +78,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessageAssertFalse() {
-		assertThat(constraintDescriptionForField("assertFalse"))
-				.isEqualTo("Must be false");
+		assertThat(constraintDescriptionForField("assertFalse")).isEqualTo("Must be false");
 	}
 
 	@Test
@@ -101,14 +100,12 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessageDecimalMax() {
-		assertThat(constraintDescriptionForField("decimalMax"))
-				.isEqualTo("Must be at most 9.875");
+		assertThat(constraintDescriptionForField("decimalMax")).isEqualTo("Must be at most 9.875");
 	}
 
 	@Test
 	public void defaultMessageDecimalMin() {
-		assertThat(constraintDescriptionForField("decimalMin"))
-				.isEqualTo("Must be at least 1.5");
+		assertThat(constraintDescriptionForField("decimalMin")).isEqualTo("Must be at least 1.5");
 	}
 
 	@Test
@@ -119,14 +116,12 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessageFuture() {
-		assertThat(constraintDescriptionForField("future"))
-				.isEqualTo("Must be in the future");
+		assertThat(constraintDescriptionForField("future")).isEqualTo("Must be in the future");
 	}
 
 	@Test
 	public void defaultMessageFutureOrPresent() {
-		assertThat(constraintDescriptionForField("futureOrPresent"))
-				.isEqualTo("Must be in the future or the present");
+		assertThat(constraintDescriptionForField("futureOrPresent")).isEqualTo("Must be in the future or the present");
 	}
 
 	@Test
@@ -141,8 +136,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessageNotNull() {
-		assertThat(constraintDescriptionForField("notNull"))
-				.isEqualTo("Must not be null");
+		assertThat(constraintDescriptionForField("notNull")).isEqualTo("Must not be null");
 	}
 
 	@Test
@@ -152,14 +146,12 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessagePast() {
-		assertThat(constraintDescriptionForField("past"))
-				.isEqualTo("Must be in the past");
+		assertThat(constraintDescriptionForField("past")).isEqualTo("Must be in the past");
 	}
 
 	@Test
 	public void defaultMessagePastOrPresent() {
-		assertThat(constraintDescriptionForField("pastOrPresent"))
-				.isEqualTo("Must be in the past or the present");
+		assertThat(constraintDescriptionForField("pastOrPresent")).isEqualTo("Must be in the past or the present");
 	}
 
 	@Test
@@ -170,8 +162,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessageSize() {
-		assertThat(constraintDescriptionForField("size"))
-				.isEqualTo("Size must be between 2 and 10 inclusive");
+		assertThat(constraintDescriptionForField("size")).isEqualTo("Size must be between 2 and 10 inclusive");
 	}
 
 	@Test
@@ -182,14 +173,12 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessageEan() {
-		assertThat(constraintDescriptionForField("ean"))
-				.isEqualTo("Must be a well-formed EAN13 number");
+		assertThat(constraintDescriptionForField("ean")).isEqualTo("Must be a well-formed EAN13 number");
 	}
 
 	@Test
 	public void defaultMessageEmail() {
-		assertThat(constraintDescriptionForField("email"))
-				.isEqualTo("Must be a well-formed email address");
+		assertThat(constraintDescriptionForField("email")).isEqualTo("Must be a well-formed email address");
 	}
 
 	@Test
@@ -200,8 +189,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessageLength() {
-		assertThat(constraintDescriptionForField("length"))
-				.isEqualTo("Length must be between 2 and 10 inclusive");
+		assertThat(constraintDescriptionForField("length")).isEqualTo("Length must be between 2 and 10 inclusive");
 	}
 
 	@Test
@@ -212,80 +200,67 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 	@Test
 	public void defaultMessageMod10Check() {
-		assertThat(constraintDescriptionForField("mod10Check"))
-				.isEqualTo("Must pass the Mod10 checksum algorithm");
+		assertThat(constraintDescriptionForField("mod10Check")).isEqualTo("Must pass the Mod10 checksum algorithm");
 	}
 
 	@Test
 	public void defaultMessageMod11Check() {
-		assertThat(constraintDescriptionForField("mod11Check"))
-				.isEqualTo("Must pass the Mod11 checksum algorithm");
+		assertThat(constraintDescriptionForField("mod11Check")).isEqualTo("Must pass the Mod11 checksum algorithm");
 	}
 
 	@Test
 	public void defaultMessageNegative() {
-		assertThat(constraintDescriptionForField("negative"))
-				.isEqualTo("Must be negative");
+		assertThat(constraintDescriptionForField("negative")).isEqualTo("Must be negative");
 	}
 
 	@Test
 	public void defaultMessageNegativeOrZero() {
-		assertThat(constraintDescriptionForField("negativeOrZero"))
-				.isEqualTo("Must be negative or zero");
+		assertThat(constraintDescriptionForField("negativeOrZero")).isEqualTo("Must be negative or zero");
 	}
 
 	@Test
 	public void defaultMessageNotBlank() {
-		assertThat(constraintDescriptionForField("notBlank"))
-				.isEqualTo("Must not be blank");
+		assertThat(constraintDescriptionForField("notBlank")).isEqualTo("Must not be blank");
 	}
 
 	@Test
 	public void defaultMessageNotBlankHibernateValidator() {
-		assertThat(constraintDescriptionForField("notBlankHibernateValidator"))
-				.isEqualTo("Must not be blank");
+		assertThat(constraintDescriptionForField("notBlankHibernateValidator")).isEqualTo("Must not be blank");
 	}
 
 	@Test
 	public void defaultMessageNotEmpty() {
-		assertThat(constraintDescriptionForField("notEmpty"))
-				.isEqualTo("Must not be empty");
+		assertThat(constraintDescriptionForField("notEmpty")).isEqualTo("Must not be empty");
 	}
 
 	@Test
 	public void defaultMessageNotEmptyHibernateValidator() {
-		assertThat(constraintDescriptionForField("notEmpty"))
-				.isEqualTo("Must not be empty");
+		assertThat(constraintDescriptionForField("notEmpty")).isEqualTo("Must not be empty");
 	}
 
 	@Test
 	public void defaultMessagePositive() {
-		assertThat(constraintDescriptionForField("positive"))
-				.isEqualTo("Must be positive");
+		assertThat(constraintDescriptionForField("positive")).isEqualTo("Must be positive");
 	}
 
 	@Test
 	public void defaultMessagePositiveOrZero() {
-		assertThat(constraintDescriptionForField("positiveOrZero"))
-				.isEqualTo("Must be positive or zero");
+		assertThat(constraintDescriptionForField("positiveOrZero")).isEqualTo("Must be positive or zero");
 	}
 
 	@Test
 	public void defaultMessageRange() {
-		assertThat(constraintDescriptionForField("range"))
-				.isEqualTo("Must be at least 10 and at most 100");
+		assertThat(constraintDescriptionForField("range")).isEqualTo("Must be at least 10 and at most 100");
 	}
 
 	@Test
 	public void defaultMessageSafeHtml() {
-		assertThat(constraintDescriptionForField("safeHtml"))
-				.isEqualTo("Must be safe HTML");
+		assertThat(constraintDescriptionForField("safeHtml")).isEqualTo("Must be safe HTML");
 	}
 
 	@Test
 	public void defaultMessageUrl() {
-		assertThat(constraintDescriptionForField("url"))
-				.isEqualTo("Must be a well-formed URL");
+		assertThat(constraintDescriptionForField("url")).isEqualTo("Must be a well-formed URL");
 	}
 
 	@Test
@@ -294,8 +269,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 			@Override
 			public URL getResource(String name) {
-				if (name.startsWith(
-						"org/springframework/restdocs/constraints/ConstraintDescriptions")) {
+				if (name.startsWith("org/springframework/restdocs/constraints/ConstraintDescriptions")) {
 					return super.getResource(
 							"org/springframework/restdocs/constraints/TestConstraintDescriptions.properties");
 				}
@@ -305,9 +279,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		});
 
 		try {
-			String description = new ResourceBundleConstraintDescriptionResolver()
-					.resolveDescription(new Constraint(NotNull.class.getName(),
-							Collections.<String, Object>emptyMap()));
+			String description = new ResourceBundleConstraintDescriptionResolver().resolveDescription(
+					new Constraint(NotNull.class.getName(), Collections.<String, Object>emptyMap()));
 			assertThat(description).isEqualTo("Should not be null");
 
 		}
@@ -322,14 +295,12 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 			@Override
 			protected Object[][] getContents() {
-				return new String[][] {
-						{ NotNull.class.getName() + ".description", "Not null" } };
+				return new String[][] { { NotNull.class.getName() + ".description", "Not null" } };
 			}
 
 		};
 		String description = new ResourceBundleConstraintDescriptionResolver(bundle)
-				.resolveDescription(new Constraint(NotNull.class.getName(),
-						Collections.<String, Object>emptyMap()));
+				.resolveDescription(new Constraint(NotNull.class.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description).isEqualTo("Not null");
 	}
 
@@ -338,10 +309,9 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	private Constraint getConstraintFromField(String name) {
-		Annotation[] annotations = ReflectionUtils.findField(Constrained.class, name)
-				.getAnnotations();
-		Assert.isTrue(annotations.length == 1, "The field '" + name + "' must have "
-				+ "exactly one @Constrained annotation");
+		Annotation[] annotations = ReflectionUtils.findField(Constrained.class, name).getAnnotations();
+		Assert.isTrue(annotations.length == 1,
+				"The field '" + name + "' must have " + "exactly one @Constrained annotation");
 		return new Constraint(annotations[0].annotationType().getName(),
 				AnnotationUtils.getAnnotationAttributes(annotations[0]));
 	}

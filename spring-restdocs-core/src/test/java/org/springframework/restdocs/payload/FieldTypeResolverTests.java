@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,14 +36,14 @@ public class FieldTypeResolverTests {
 
 	@Test
 	public void returnJsonFieldTypeResolver() {
-		assertThat(FieldTypeResolver.forContent("{\"field\": \"value\"}".getBytes(),
-				MediaType.APPLICATION_JSON)).isInstanceOf(JsonContentHandler.class);
+		assertThat(FieldTypeResolver.forContent("{\"field\": \"value\"}".getBytes(), MediaType.APPLICATION_JSON))
+				.isInstanceOf(JsonContentHandler.class);
 	}
 
 	@Test
 	public void returnXmlContentHandler() {
-		assertThat(FieldTypeResolver.forContent("<a><b>5</b></a>".getBytes(),
-				MediaType.APPLICATION_XML)).isInstanceOf(XmlContentHandler.class);
+		assertThat(FieldTypeResolver.forContent("<a><b>5</b></a>".getBytes(), MediaType.APPLICATION_XML))
+				.isInstanceOf(XmlContentHandler.class);
 	}
 
 	@Test

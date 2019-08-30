@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ class FieldTypesDoNotMatchException extends RuntimeException {
 	 * @param actualType the actual type of the field
 	 */
 	FieldTypesDoNotMatchException(FieldDescriptor fieldDescriptor, Object actualType) {
-		super("The documented type of the field '" + fieldDescriptor.getPath() + "' is "
-				+ fieldDescriptor.getType() + " but the actual type is " + actualType);
+		super("The documented type of the field '" + fieldDescriptor.getPath() + "' is " + fieldDescriptor.getType()
+				+ " but the actual type is " + actualType);
 	}
 
 }

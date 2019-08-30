@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,8 +60,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	 * @param linkExtractor the link extractor
 	 * @param descriptors the link descriptors
 	 */
-	protected LinksSnippet(LinkExtractor linkExtractor,
-			List<LinkDescriptor> descriptors) {
+	protected LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors) {
 		this(linkExtractor, descriptors, null, false);
 	}
 
@@ -144,8 +143,7 @@ public class LinksSnippet extends TemplatedSnippet {
 		}
 
 		Set<String> requiredRels = new HashSet<>();
-		for (Entry<String, LinkDescriptor> relAndDescriptor : this.descriptorsByRel
-				.entrySet()) {
+		for (Entry<String, LinkDescriptor> relAndDescriptor : this.descriptorsByRel.entrySet()) {
 			if (!relAndDescriptor.getValue().isOptional()) {
 				requiredRels.add(relAndDescriptor.getKey());
 			}
@@ -157,15 +155,13 @@ public class LinksSnippet extends TemplatedSnippet {
 		if (!undocumentedRels.isEmpty() || !missingRels.isEmpty()) {
 			String message = "";
 			if (!undocumentedRels.isEmpty()) {
-				message += "Links with the following relations were not documented: "
-						+ undocumentedRels;
+				message += "Links with the following relations were not documented: " + undocumentedRels;
 			}
 			if (!missingRels.isEmpty()) {
 				if (message.length() > 0) {
 					message += ". ";
 				}
-				message += "Links with the following relations were not found in the "
-						+ "response: " + missingRels;
+				message += "Links with the following relations were not found in the " + "response: " + missingRels;
 			}
 			throw new SnippetException(message);
 		}
@@ -177,9 +173,7 @@ public class LinksSnippet extends TemplatedSnippet {
 			LinkDescriptor descriptor = entry.getValue();
 			if (!descriptor.isIgnored()) {
 				if (descriptor.getDescription() == null) {
-					descriptor = createDescriptor(
-							getDescriptionFromLinkTitle(links, descriptor.getRel()),
-							descriptor);
+					descriptor = createDescriptor(getDescriptionFromLinkTitle(links, descriptor.getRel()), descriptor);
 				}
 				model.add(createModelForDescriptor(descriptor));
 			}
@@ -187,8 +181,7 @@ public class LinksSnippet extends TemplatedSnippet {
 		return model;
 	}
 
-	private String getDescriptionFromLinkTitle(Map<String, List<Link>> links,
-			String rel) {
+	private String getDescriptionFromLinkTitle(Map<String, List<Link>> links, String rel) {
 		List<Link> linksForRel = links.get(rel);
 		if (linksForRel != null) {
 			for (Link link : linksForRel) {
@@ -197,13 +190,12 @@ public class LinksSnippet extends TemplatedSnippet {
 				}
 			}
 		}
-		throw new SnippetException("No description was provided for the link with rel '"
-				+ rel + "' and no title was available from the link in the payload");
+		throw new SnippetException("No description was provided for the link with rel '" + rel
+				+ "' and no title was available from the link in the payload");
 	}
 
 	private LinkDescriptor createDescriptor(String description, LinkDescriptor source) {
-		LinkDescriptor newDescriptor = new LinkDescriptor(source.getRel())
-				.description(description);
+		LinkDescriptor newDescriptor = new LinkDescriptor(source.getRel()).description(description);
 		if (source.isOptional()) {
 			newDescriptor.optional();
 		}
@@ -255,8 +247,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	 * @return the new snippet
 	 */
 	public final LinksSnippet and(List<LinkDescriptor> additionalDescriptors) {
-		List<LinkDescriptor> combinedDescriptors = new ArrayList<>(
-				this.descriptorsByRel.values());
+		List<LinkDescriptor> combinedDescriptors = new ArrayList<>(this.descriptorsByRel.values());
 		combinedDescriptors.addAll(additionalDescriptors);
 		return new LinksSnippet(this.linkExtractor, combinedDescriptors, getAttributes());
 	}

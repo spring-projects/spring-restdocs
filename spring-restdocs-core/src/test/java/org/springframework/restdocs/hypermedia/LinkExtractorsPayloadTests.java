@@ -66,11 +66,8 @@ public class LinkExtractorsPayloadTests {
 
 	@Test
 	public void singleLink() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("single-link"));
-		assertLinks(
-				Arrays.asList(new Link("alpha", "https://alpha.example.com", "Alpha")),
-				links);
+		Map<String, List<Link>> links = this.linkExtractor.extractLinks(createResponse("single-link"));
+		assertLinks(Arrays.asList(new Link("alpha", "https://alpha.example.com", "Alpha")), links);
 	}
 
 	@Test
@@ -83,29 +80,24 @@ public class LinkExtractorsPayloadTests {
 
 	@Test
 	public void multipleLinksWithSameRels() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("multiple-links-same-rels"));
-		assertLinks(Arrays.asList(
-				new Link("alpha", "https://alpha.example.com/one", "Alpha one"),
+		Map<String, List<Link>> links = this.linkExtractor.extractLinks(createResponse("multiple-links-same-rels"));
+		assertLinks(Arrays.asList(new Link("alpha", "https://alpha.example.com/one", "Alpha one"),
 				new Link("alpha", "https://alpha.example.com/two")), links);
 	}
 
 	@Test
 	public void noLinks() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("no-links"));
+		Map<String, List<Link>> links = this.linkExtractor.extractLinks(createResponse("no-links"));
 		assertLinks(Collections.<Link>emptyList(), links);
 	}
 
 	@Test
 	public void linksInTheWrongFormat() throws IOException {
-		Map<String, List<Link>> links = this.linkExtractor
-				.extractLinks(createResponse("wrong-format"));
+		Map<String, List<Link>> links = this.linkExtractor.extractLinks(createResponse("wrong-format"));
 		assertLinks(Collections.<Link>emptyList(), links);
 	}
 
-	private void assertLinks(List<Link> expectedLinks,
-			Map<String, List<Link>> actualLinks) {
+	private void assertLinks(List<Link> expectedLinks, Map<String, List<Link>> actualLinks) {
 		MultiValueMap<String, Link> expectedLinksByRel = new LinkedMultiValueMap<>();
 		for (Link expectedLink : expectedLinks) {
 			expectedLinksByRel.add(expectedLink.getRel(), expectedLink);
@@ -119,8 +111,7 @@ public class LinkExtractorsPayloadTests {
 	}
 
 	private File getPayloadFile(String name) {
-		return new File("src/test/resources/link-payloads/" + this.linkType + "/" + name
-				+ ".json");
+		return new File("src/test/resources/link-payloads/" + this.linkType + "/" + name + ".json");
 	}
 
 }

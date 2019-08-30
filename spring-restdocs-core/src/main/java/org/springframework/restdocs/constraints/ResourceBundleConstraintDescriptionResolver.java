@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,11 +115,9 @@ import org.springframework.util.StringUtils;
  *
  * @author Andy Wilkinson
  */
-public class ResourceBundleConstraintDescriptionResolver
-		implements ConstraintDescriptionResolver {
+public class ResourceBundleConstraintDescriptionResolver implements ConstraintDescriptionResolver {
 
-	private final PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper(
-			"${", "}");
+	private final PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper("${", "}");
 
 	private final ResourceBundle defaultDescriptions;
 
@@ -148,8 +146,7 @@ public class ResourceBundleConstraintDescriptionResolver
 	private static ResourceBundle getBundle(String name) {
 		try {
 			return ResourceBundle.getBundle(
-					ResourceBundleConstraintDescriptionResolver.class.getPackage()
-							.getName() + "." + name,
+					ResourceBundleConstraintDescriptionResolver.class.getPackage().getName() + "." + name,
 					Locale.getDefault(), Thread.currentThread().getContextClassLoader());
 		}
 		catch (MissingResourceException ex) {
@@ -176,8 +173,7 @@ public class ResourceBundleConstraintDescriptionResolver
 		return this.defaultDescriptions.getString(key);
 	}
 
-	private static final class ConstraintPlaceholderResolver
-			implements PlaceholderResolver {
+	private static final class ConstraintPlaceholderResolver implements PlaceholderResolver {
 
 		private final Constraint constraint;
 

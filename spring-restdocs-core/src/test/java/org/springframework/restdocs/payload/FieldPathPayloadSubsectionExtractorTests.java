@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,13 +44,10 @@ public class FieldPathPayloadSubsectionExtractorTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void extractMapSubsectionOfJsonMap()
-			throws JsonParseException, JsonMappingException, IOException {
+	public void extractMapSubsectionOfJsonMap() throws JsonParseException, JsonMappingException, IOException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.b")
-				.extractSubsection("{\"a\":{\"b\":{\"c\":5}}}".getBytes(),
-						MediaType.APPLICATION_JSON);
-		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload,
-				Map.class);
+				.extractSubsection("{\"a\":{\"b\":{\"c\":5}}}".getBytes(), MediaType.APPLICATION_JSON);
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
 		assertThat(extracted.size()).isEqualTo(1);
 		assertThat(extracted.get("c")).isEqualTo(5);
 	}
@@ -60,10 +57,8 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	public void extractSingleElementArraySubsectionOfJsonMap()
 			throws JsonParseException, JsonMappingException, IOException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[]")
-				.extractSubsection("{\"a\":[{\"b\":5}]}".getBytes(),
-						MediaType.APPLICATION_JSON);
-		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload,
-				Map.class);
+				.extractSubsection("{\"a\":[{\"b\":5}]}".getBytes(), MediaType.APPLICATION_JSON);
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
 		assertThat(extracted.size()).isEqualTo(1);
 		assertThat(extracted).containsOnlyKeys("b");
 	}
@@ -73,10 +68,8 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	public void extractMultiElementArraySubsectionOfJsonMap()
 			throws JsonParseException, JsonMappingException, IOException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a")
-				.extractSubsection("{\"a\":[{\"b\":5},{\"b\":4}]}".getBytes(),
-						MediaType.APPLICATION_JSON);
-		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload,
-				Map.class);
+				.extractSubsection("{\"a\":[{\"b\":5},{\"b\":4}]}".getBytes(), MediaType.APPLICATION_JSON);
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
 		assertThat(extracted.size()).isEqualTo(1);
 		assertThat(extracted).containsOnlyKeys("b");
 	}
@@ -86,10 +79,8 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	public void extractMapSubsectionFromSingleElementArrayInAJsonMap()
 			throws JsonParseException, JsonMappingException, IOException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b")
-				.extractSubsection("{\"a\":[{\"b\":{\"c\":5}}]}".getBytes(),
-						MediaType.APPLICATION_JSON);
-		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload,
-				Map.class);
+				.extractSubsection("{\"a\":[{\"b\":{\"c\":5}}]}".getBytes(), MediaType.APPLICATION_JSON);
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
 		assertThat(extracted.size()).isEqualTo(1);
 		assertThat(extracted.get("c")).isEqualTo(5);
 	}
@@ -98,12 +89,9 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	@SuppressWarnings("unchecked")
 	public void extractMapSubsectionWithCommonStructureFromMultiElementArrayInAJsonMap()
 			throws JsonParseException, JsonMappingException, IOException {
-		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b")
-				.extractSubsection(
-						"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6}}]}".getBytes(),
-						MediaType.APPLICATION_JSON);
-		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload,
-				Map.class);
+		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
+				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6}}]}".getBytes(), MediaType.APPLICATION_JSON);
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
 		assertThat(extracted.size()).isEqualTo(1);
 		assertThat(extracted).containsOnlyKeys("c");
 	}
@@ -114,37 +102,31 @@ public class FieldPathPayloadSubsectionExtractorTests {
 		this.thrown.expect(PayloadHandlingException.class);
 		this.thrown.expectMessage("The following uncommon paths were found: [a.[].b.d]");
 		new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
-				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(),
-				MediaType.APPLICATION_JSON);
+				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(), MediaType.APPLICATION_JSON);
 	}
 
 	@Test
 	public void extractedSubsectionIsPrettyPrintedWhenInputIsPrettyPrinted()
-			throws JsonParseException, JsonMappingException, JsonProcessingException,
-			IOException {
-		ObjectMapper objectMapper = new ObjectMapper()
-				.enable(SerializationFeature.INDENT_OUTPUT);
-		byte[] prettyPrintedPayload = objectMapper.writeValueAsBytes(
-				objectMapper.readValue("{\"a\": { \"b\": { \"c\": 1 }}}", Object.class));
+			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+		ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+		byte[] prettyPrintedPayload = objectMapper
+				.writeValueAsBytes(objectMapper.readValue("{\"a\": { \"b\": { \"c\": 1 }}}", Object.class));
 		byte[] extractedSubsection = new FieldPathPayloadSubsectionExtractor("a.b")
 				.extractSubsection(prettyPrintedPayload, MediaType.APPLICATION_JSON);
 		byte[] prettyPrintedSubsection = objectMapper
 				.writeValueAsBytes(objectMapper.readValue("{\"c\": 1 }", Object.class));
-		assertThat(new String(extractedSubsection))
-				.isEqualTo(new String(prettyPrintedSubsection));
+		assertThat(new String(extractedSubsection)).isEqualTo(new String(prettyPrintedSubsection));
 	}
 
 	@Test
 	public void extractedSubsectionIsNotPrettyPrintedWhenInputIsNotPrettyPrinted()
-			throws JsonParseException, JsonMappingException, JsonProcessingException,
-			IOException {
+			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		byte[] payload = objectMapper.writeValueAsBytes(
-				objectMapper.readValue("{\"a\": { \"b\": { \"c\": 1 }}}", Object.class));
-		byte[] extractedSubsection = new FieldPathPayloadSubsectionExtractor("a.b")
-				.extractSubsection(payload, MediaType.APPLICATION_JSON);
-		byte[] subsection = objectMapper
-				.writeValueAsBytes(objectMapper.readValue("{\"c\": 1 }", Object.class));
+		byte[] payload = objectMapper
+				.writeValueAsBytes(objectMapper.readValue("{\"a\": { \"b\": { \"c\": 1 }}}", Object.class));
+		byte[] extractedSubsection = new FieldPathPayloadSubsectionExtractor("a.b").extractSubsection(payload,
+				MediaType.APPLICATION_JSON);
+		byte[] subsection = objectMapper.writeValueAsBytes(objectMapper.readValue("{\"c\": 1 }", Object.class));
 		assertThat(new String(extractedSubsection)).isEqualTo(new String(subsection));
 	}
 

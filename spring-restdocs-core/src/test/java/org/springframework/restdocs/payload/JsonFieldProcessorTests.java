@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,7 @@ public class JsonFieldProcessorTests {
 	public void extractTopLevelMapEntry() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", "alpha");
-		assertThat(this.fieldProcessor.extract("a", payload).getValue())
-				.isEqualTo("alpha");
+		assertThat(this.fieldProcessor.extract("a", payload).getValue()).isEqualTo("alpha");
 	}
 
 	@Test
@@ -55,8 +54,7 @@ public class JsonFieldProcessorTests {
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
 		alpha.put("b", "bravo");
-		assertThat(this.fieldProcessor.extract("a.b", payload).getValue())
-				.isEqualTo("bravo");
+		assertThat(this.fieldProcessor.extract("a.b", payload).getValue()).isEqualTo("bravo");
 	}
 
 	@Test
@@ -66,8 +64,7 @@ public class JsonFieldProcessorTests {
 		bravo.put("b", "bravo");
 		payload.add(bravo);
 		payload.add(bravo);
-		assertThat(this.fieldProcessor.extract("[]", payload).getValue())
-				.isEqualTo(payload);
+		assertThat(this.fieldProcessor.extract("[]", payload).getValue()).isEqualTo(payload);
 	}
 
 	@Test
@@ -87,8 +84,7 @@ public class JsonFieldProcessorTests {
 		bravo.put("b", "bravo");
 		List<Map<String, Object>> alpha = Arrays.asList(bravo, bravo);
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract("a[]", payload).getValue())
-				.isEqualTo(alpha);
+		assertThat(this.fieldProcessor.extract("a[]", payload).getValue()).isEqualTo(alpha);
 	}
 
 	@Test
@@ -98,8 +94,7 @@ public class JsonFieldProcessorTests {
 		entry.put("b", "bravo");
 		List<Map<String, Object>> alpha = Arrays.asList(entry, entry);
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract("a[].b", payload).getValue())
-				.isEqualTo(Arrays.asList("bravo", "bravo"));
+		assertThat(this.fieldProcessor.extract("a[].b", payload).getValue()).isEqualTo(Arrays.asList("bravo", "bravo"));
 	}
 
 	@Test
@@ -107,8 +102,7 @@ public class JsonFieldProcessorTests {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> entry = new HashMap<>();
 		entry.put("b", "bravo");
-		List<Map<String, Object>> alpha = Arrays.asList(entry,
-				new HashMap<String, Object>());
+		List<Map<String, Object>> alpha = Arrays.asList(entry, new HashMap<String, Object>());
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract("a[].b", payload).getValue())
 				.isEqualTo(Arrays.asList("bravo", ExtractedField.ABSENT));
@@ -123,8 +117,7 @@ public class JsonFieldProcessorTests {
 		nullField.put("b", null);
 		List<Map<String, Object>> alpha = Arrays.asList(nonNullField, nullField);
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract("a[].b", payload).getValue())
-				.isEqualTo(Arrays.asList("bravo", null));
+		assertThat(this.fieldProcessor.extract("a[].b", payload).getValue()).isEqualTo(Arrays.asList("bravo", null));
 	}
 
 	@Test
@@ -133,11 +126,10 @@ public class JsonFieldProcessorTests {
 		Map<String, String> entry1 = createEntry("id:1");
 		Map<String, String> entry2 = createEntry("id:2");
 		Map<String, String> entry3 = createEntry("id:3");
-		List<List<Map<String, String>>> alpha = Arrays
-				.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
+		List<List<Map<String, String>>> alpha = Arrays.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract("a[][]", payload).getValue()).isEqualTo(
-				Arrays.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3)));
+		assertThat(this.fieldProcessor.extract("a[][]", payload).getValue())
+				.isEqualTo(Arrays.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3)));
 	}
 
 	@Test
@@ -146,11 +138,9 @@ public class JsonFieldProcessorTests {
 		Map<String, String> entry1 = createEntry("id:1");
 		Map<String, String> entry2 = createEntry("id:2");
 		Map<String, String> entry3 = createEntry("id:3");
-		List<List<Map<String, String>>> alpha = Arrays
-				.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
+		List<List<Map<String, String>>> alpha = Arrays.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract("a[][].id", payload).getValue())
-				.isEqualTo(Arrays.asList("1", "2", "3"));
+		assertThat(this.fieldProcessor.extract("a[][].id", payload).getValue()).isEqualTo(Arrays.asList("1", "2", "3"));
 	}
 
 	@Test
@@ -159,12 +149,10 @@ public class JsonFieldProcessorTests {
 		Map<String, Object> entry1 = createEntry("ids", Arrays.asList(1, 2));
 		Map<String, Object> entry2 = createEntry("ids", Arrays.asList(3));
 		Map<String, Object> entry3 = createEntry("ids", Arrays.asList(4));
-		List<List<Map<String, Object>>> alpha = Arrays
-				.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
+		List<List<Map<String, Object>>> alpha = Arrays.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract("a[][].ids", payload).getValue())
-				.isEqualTo(Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3),
-						Arrays.asList(4)));
+				.isEqualTo(Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3), Arrays.asList(4)));
 	}
 
 	@Test
@@ -177,16 +165,14 @@ public class JsonFieldProcessorTests {
 	public void nonExistentNestedField() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", new HashMap<String, Object>());
-		assertThat(this.fieldProcessor.extract("a.b", payload).getValue())
-				.isEqualTo(ExtractedField.ABSENT);
+		assertThat(this.fieldProcessor.extract("a.b", payload).getValue()).isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
 	public void nonExistentNestedFieldWhenParentIsNotAMap() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
-		assertThat(this.fieldProcessor.extract("a.b", payload).getValue())
-				.isEqualTo(ExtractedField.ABSENT);
+		assertThat(this.fieldProcessor.extract("a.b", payload).getValue()).isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
@@ -195,23 +181,20 @@ public class JsonFieldProcessorTests {
 		HashMap<String, Object> alpha = new HashMap<>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
-		assertThat(this.fieldProcessor.extract("a.b.c", payload).getValue())
-				.isEqualTo(ExtractedField.ABSENT);
+		assertThat(this.fieldProcessor.extract("a.b.c", payload).getValue()).isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
 	public void nonExistentArrayField() {
 		HashMap<String, Object> payload = new HashMap<>();
-		assertThat(this.fieldProcessor.extract("a[]", payload).getValue())
-				.isEqualTo(ExtractedField.ABSENT);
+		assertThat(this.fieldProcessor.extract("a[]", payload).getValue()).isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
 	public void nonExistentArrayFieldAsTypeDoesNotMatch() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
-		assertThat(this.fieldProcessor.extract("a[]", payload).getValue())
-				.isEqualTo(ExtractedField.ABSENT);
+		assertThat(this.fieldProcessor.extract("a[]", payload).getValue()).isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
@@ -265,8 +248,8 @@ public class JsonFieldProcessorTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void removeItemsInArray() throws IOException {
-		Map<String, Object> payload = new ObjectMapper()
-				.readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}", Map.class);
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}",
+				Map.class);
 		this.fieldProcessor.remove("a[].b", payload);
 		assertThat(payload.size()).isEqualTo(0);
 	}
@@ -274,8 +257,8 @@ public class JsonFieldProcessorTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void removeItemsInNestedArray() throws IOException {
-		Map<String, Object> payload = new ObjectMapper()
-				.readValue("{\"a\": [[{\"id\":1},{\"id\":2}], [{\"id\":3}]]}", Map.class);
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[{\"id\":1},{\"id\":2}], [{\"id\":3}]]}",
+				Map.class);
 		this.fieldProcessor.remove("a[][].id", payload);
 		assertThat(payload.size()).isEqualTo(0);
 	}
@@ -283,8 +266,8 @@ public class JsonFieldProcessorTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void removeDoesNotRemoveArrayWithMapEntries() throws IOException {
-		Map<String, Object> payload = new ObjectMapper()
-				.readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}", Map.class);
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}",
+				Map.class);
 		this.fieldProcessor.remove("a[]", payload);
 		assertThat(payload.size()).isEqualTo(1);
 	}
@@ -292,8 +275,7 @@ public class JsonFieldProcessorTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void removeDoesNotRemoveArrayWithListEntries() throws IOException {
-		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}",
-				Map.class);
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}", Map.class);
 		this.fieldProcessor.remove("a[]", payload);
 		assertThat(payload.size()).isEqualTo(1);
 	}
@@ -301,8 +283,7 @@ public class JsonFieldProcessorTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void removeRemovesArrayWithOnlyScalarEntries() throws IOException {
-		Map<String, Object> payload = new ObjectMapper()
-				.readValue("{\"a\": [\"bravo\", \"charlie\"]}", Map.class);
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [\"bravo\", \"charlie\"]}", Map.class);
 		this.fieldProcessor.remove("a", payload);
 		assertThat(payload.size()).isEqualTo(0);
 	}
@@ -310,8 +291,8 @@ public class JsonFieldProcessorTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void removeSubsectionRemovesArrayWithMapEntries() throws IOException {
-		Map<String, Object> payload = new ObjectMapper()
-				.readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}", Map.class);
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}",
+				Map.class);
 		this.fieldProcessor.removeSubsection("a[]", payload);
 		assertThat(payload.size()).isEqualTo(0);
 	}
@@ -319,8 +300,7 @@ public class JsonFieldProcessorTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void removeSubsectionRemovesArrayWithListEntries() throws IOException {
-		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}",
-				Map.class);
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}", Map.class);
 		this.fieldProcessor.removeSubsection("a[]", payload);
 		assertThat(payload.size()).isEqualTo(0);
 	}
@@ -331,8 +311,7 @@ public class JsonFieldProcessorTests {
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a.key", alpha);
 		alpha.put("b.key", "bravo");
-		assertThat(this.fieldProcessor.extract("['a.key']['b.key']", payload).getValue())
-				.isEqualTo("bravo");
+		assertThat(this.fieldProcessor.extract("['a.key']['b.key']", payload).getValue()).isEqualTo("bravo");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -345,8 +324,8 @@ public class JsonFieldProcessorTests {
 		Map<String, Object> charlie = new LinkedHashMap<>();
 		charlie.put("b", "bravo2");
 		payload.put("c", charlie);
-		assertThat((List<String>) this.fieldProcessor.extract("*.b", payload).getValue())
-				.containsExactly("bravo1", "bravo2");
+		assertThat((List<String>) this.fieldProcessor.extract("*.b", payload).getValue()).containsExactly("bravo1",
+				"bravo2");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -359,9 +338,8 @@ public class JsonFieldProcessorTests {
 		bravo.put("b", "bravo");
 		alpha.put("one", bravo);
 		alpha.put("two", bravo);
-		assertThat(
-				(List<String>) this.fieldProcessor.extract("a.*.b", payload).getValue())
-						.containsExactly("bravo", "bravo");
+		assertThat((List<String>) this.fieldProcessor.extract("a.*.b", payload).getValue()).containsExactly("bravo",
+				"bravo");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -374,8 +352,7 @@ public class JsonFieldProcessorTests {
 		Map<String, Object> charlie = new HashMap<>();
 		charlie.put("b", "bravo2");
 		payload.put("c", charlie);
-		assertThat((List<String>) this.fieldProcessor.extract("a.*", payload).getValue())
-				.containsExactly("bravo1");
+		assertThat((List<String>) this.fieldProcessor.extract("a.*", payload).getValue()).containsExactly("bravo1");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -386,8 +363,8 @@ public class JsonFieldProcessorTests {
 		payload.put("a", alpha);
 		alpha.put("b", "bravo1");
 		alpha.put("c", "charlie");
-		assertThat((List<String>) this.fieldProcessor.extract("a.*", payload).getValue())
-				.containsExactly("bravo1", "charlie");
+		assertThat((List<String>) this.fieldProcessor.extract("a.*", payload).getValue()).containsExactly("bravo1",
+				"charlie");
 	}
 
 	@Test

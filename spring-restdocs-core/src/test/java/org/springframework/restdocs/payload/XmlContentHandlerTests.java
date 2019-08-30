@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,41 +38,36 @@ public class XmlContentHandlerTests {
 
 	@Test
 	public void topLevelElementCanBeDocumented() {
-		String undocumentedContent = createHandler("<a>5</a>").getUndocumentedContent(
-				Arrays.asList(fieldWithPath("a").type("a").description("description")));
+		String undocumentedContent = createHandler("<a>5</a>")
+				.getUndocumentedContent(Arrays.asList(fieldWithPath("a").type("a").description("description")));
 		assertThat(undocumentedContent).isNull();
 	}
 
 	@Test
 	public void nestedElementCanBeDocumentedLeavingAncestors() {
 		String undocumentedContent = createHandler("<a><b>5</b></a>")
-				.getUndocumentedContent(Arrays.asList(
-						fieldWithPath("a/b").type("b").description("description")));
+				.getUndocumentedContent(Arrays.asList(fieldWithPath("a/b").type("b").description("description")));
 		assertThat(undocumentedContent).isEqualTo(String.format("<a/>%n"));
 	}
 
 	@Test
 	public void fieldDescriptorDoesNotDocumentEntireSubsection() {
 		String undocumentedContent = createHandler("<a><b>5</b></a>")
-				.getUndocumentedContent(Arrays
-						.asList(fieldWithPath("a").type("a").description("description")));
-		assertThat(undocumentedContent)
-				.isEqualTo(String.format("<a>%n    <b>5</b>%n</a>%n"));
+				.getUndocumentedContent(Arrays.asList(fieldWithPath("a").type("a").description("description")));
+		assertThat(undocumentedContent).isEqualTo(String.format("<a>%n    <b>5</b>%n</a>%n"));
 	}
 
 	@Test
 	public void subsectionDescriptorDocumentsEntireSubsection() {
 		String undocumentedContent = createHandler("<a><b>5</b></a>")
-				.getUndocumentedContent(Arrays.asList(
-						subsectionWithPath("a").type("a").description("description")));
+				.getUndocumentedContent(Arrays.asList(subsectionWithPath("a").type("a").description("description")));
 		assertThat(undocumentedContent).isNull();
 	}
 
 	@Test
 	public void multipleElementsCanBeInDescendingOrderDocumented() {
 		String undocumentedContent = createHandler("<a><b>5</b></a>")
-				.getUndocumentedContent(Arrays.asList(
-						fieldWithPath("a").type("a").description("description"),
+				.getUndocumentedContent(Arrays.asList(fieldWithPath("a").type("a").description("description"),
 						fieldWithPath("a/b").type("b").description("description")));
 		assertThat(undocumentedContent).isNull();
 	}
@@ -80,8 +75,7 @@ public class XmlContentHandlerTests {
 	@Test
 	public void multipleElementsCanBeInAscendingOrderDocumented() {
 		String undocumentedContent = createHandler("<a><b>5</b></a>")
-				.getUndocumentedContent(Arrays.asList(
-						fieldWithPath("a/b").type("b").description("description"),
+				.getUndocumentedContent(Arrays.asList(fieldWithPath("a/b").type("b").description("description"),
 						fieldWithPath("a").type("a").description("description")));
 		assertThat(undocumentedContent).isNull();
 	}

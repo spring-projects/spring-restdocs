@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,32 +70,27 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 			List<OperationRequestPart> parts = extractParts(mockRequest);
 			Collection<RequestCookie> cookies = extractCookies(mockRequest, headers);
 			String queryString = mockRequest.getQueryString();
-			if (!StringUtils.hasText(queryString)
-					&& "GET".equals(mockRequest.getMethod())) {
+			if (!StringUtils.hasText(queryString) && "GET".equals(mockRequest.getMethod())) {
 				queryString = parameters.toQueryString();
 			}
 			return new OperationRequestFactory().create(
 					URI.create(
-							getRequestUri(mockRequest) + (StringUtils.hasText(queryString)
-									? "?" + queryString : "")),
-					HttpMethod.valueOf(mockRequest.getMethod()),
-					mockRequest.getContentAsByteArray(), headers, parameters, parts,
-					cookies);
+							getRequestUri(mockRequest) + (StringUtils.hasText(queryString) ? "?" + queryString : "")),
+					HttpMethod.valueOf(mockRequest.getMethod()), mockRequest.getContentAsByteArray(), headers,
+					parameters, parts, cookies);
 		}
 		catch (Exception ex) {
 			throw new ConversionException(ex);
 		}
 	}
 
-	private Collection<RequestCookie> extractCookies(MockHttpServletRequest mockRequest,
-			HttpHeaders headers) {
+	private Collection<RequestCookie> extractCookies(MockHttpServletRequest mockRequest, HttpHeaders headers) {
 		if (mockRequest.getCookies() == null || mockRequest.getCookies().length == 0) {
 			return Collections.emptyList();
 		}
 		List<RequestCookie> cookies = new ArrayList<>();
 		for (javax.servlet.http.Cookie servletCookie : mockRequest.getCookies()) {
-			cookies.add(
-					new RequestCookie(servletCookie.getName(), servletCookie.getValue()));
+			cookies.add(new RequestCookie(servletCookie.getName(), servletCookie.getValue()));
 		}
 		headers.remove(HttpHeaders.COOKIE);
 		return cookies;
@@ -106,14 +101,13 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		List<OperationRequestPart> parts = new ArrayList<>();
 		parts.addAll(extractServletRequestParts(servletRequest));
 		if (servletRequest instanceof MockMultipartHttpServletRequest) {
-			parts.addAll(extractMultipartRequestParts(
-					(MockMultipartHttpServletRequest) servletRequest));
+			parts.addAll(extractMultipartRequestParts((MockMultipartHttpServletRequest) servletRequest));
 		}
 		return parts;
 	}
 
-	private List<OperationRequestPart> extractServletRequestParts(
-			MockHttpServletRequest servletRequest) throws IOException, ServletException {
+	private List<OperationRequestPart> extractServletRequestParts(MockHttpServletRequest servletRequest)
+			throws IOException, ServletException {
 		List<OperationRequestPart> parts = new ArrayList<>();
 		for (Part part : servletRequest.getParts()) {
 			parts.add(createOperationRequestPart(part));
@@ -121,24 +115,21 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		return parts;
 	}
 
-	private OperationRequestPart createOperationRequestPart(Part part)
-			throws IOException {
+	private OperationRequestPart createOperationRequestPart(Part part) throws IOException {
 		HttpHeaders partHeaders = extractHeaders(part);
 		List<String> contentTypeHeader = partHeaders.get(HttpHeaders.CONTENT_TYPE);
 		if (part.getContentType() != null && contentTypeHeader == null) {
 			partHeaders.setContentType(MediaType.parseMediaType(part.getContentType()));
 		}
 		return new OperationRequestPartFactory().create(part.getName(),
-				StringUtils.hasText(part.getSubmittedFileName())
-						? part.getSubmittedFileName() : null,
+				StringUtils.hasText(part.getSubmittedFileName()) ? part.getSubmittedFileName() : null,
 				FileCopyUtils.copyToByteArray(part.getInputStream()), partHeaders);
 	}
 
-	private List<OperationRequestPart> extractMultipartRequestParts(
-			MockMultipartHttpServletRequest multipartRequest) throws IOException {
+	private List<OperationRequestPart> extractMultipartRequestParts(MockMultipartHttpServletRequest multipartRequest)
+			throws IOException {
 		List<OperationRequestPart> parts = new ArrayList<>();
-		for (Entry<String, List<MultipartFile>> entry : multipartRequest.getMultiFileMap()
-				.entrySet()) {
+		for (Entry<String, List<MultipartFile>> entry : multipartRequest.getMultiFileMap().entrySet()) {
 			for (MultipartFile file : entry.getValue()) {
 				parts.add(createOperationRequestPart(file));
 			}
@@ -146,16 +137,14 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		return parts;
 	}
 
-	private OperationRequestPart createOperationRequestPart(MultipartFile file)
-			throws IOException {
+	private OperationRequestPart createOperationRequestPart(MultipartFile file) throws IOException {
 		HttpHeaders partHeaders = new HttpHeaders();
 		if (StringUtils.hasText(file.getContentType())) {
 			partHeaders.setContentType(MediaType.parseMediaType(file.getContentType()));
 		}
 		return new OperationRequestPartFactory().create(file.getName(),
-				StringUtils.hasText(file.getOriginalFilename())
-						? file.getOriginalFilename() : null,
-				file.getBytes(), partHeaders);
+				StringUtils.hasText(file.getOriginalFilename()) ? file.getOriginalFilename() : null, file.getBytes(),
+				partHeaders);
 	}
 
 	private HttpHeaders extractHeaders(Part part) {
@@ -180,10 +169,8 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 
 	private HttpHeaders extractHeaders(MockHttpServletRequest servletRequest) {
 		HttpHeaders headers = new HttpHeaders();
-		for (String headerName : IterableEnumeration
-				.of(servletRequest.getHeaderNames())) {
-			for (String value : IterableEnumeration
-					.of(servletRequest.getHeaders(headerName))) {
+		for (String headerName : IterableEnumeration.of(servletRequest.getHeaderNames())) {
+			for (String value : IterableEnumeration.of(servletRequest.getHeaders(headerName))) {
 				headers.add(headerName, value);
 			}
 		}
@@ -191,10 +178,8 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 	}
 
 	private boolean isNonStandardPort(MockHttpServletRequest request) {
-		return (SCHEME_HTTP.equals(request.getScheme())
-				&& request.getServerPort() != STANDARD_PORT_HTTP)
-				|| (SCHEME_HTTPS.equals(request.getScheme())
-						&& request.getServerPort() != STANDARD_PORT_HTTPS);
+		return (SCHEME_HTTP.equals(request.getScheme()) && request.getServerPort() != STANDARD_PORT_HTTP)
+				|| (SCHEME_HTTPS.equals(request.getScheme()) && request.getServerPort() != STANDARD_PORT_HTTPS);
 	}
 
 	private String getRequestUri(MockHttpServletRequest request) {

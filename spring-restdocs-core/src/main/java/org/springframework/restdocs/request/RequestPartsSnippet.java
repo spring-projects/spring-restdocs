@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,8 +66,7 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	 * @param descriptors the parameter descriptors
 	 * @param ignoreUndocumentedParts whether undocumented parts should be ignored
 	 */
-	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors,
-			boolean ignoreUndocumentedParts) {
+	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors, boolean ignoreUndocumentedParts) {
 		this(descriptors, null, ignoreUndocumentedParts);
 	}
 
@@ -78,8 +77,7 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors,
-			Map<String, Object> attributes) {
+	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors, Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -92,17 +90,14 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedParts whether undocumented parts should be ignored
 	 */
-	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedParts) {
+	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedParts) {
 		super("request-parts", attributes);
 		for (RequestPartDescriptor descriptor : descriptors) {
-			Assert.notNull(descriptor.getName(),
-					"Request part descriptors must have a name");
+			Assert.notNull(descriptor.getName(), "Request part descriptors must have a name");
 			if (!descriptor.isIgnored()) {
-				Assert.notNull(descriptor.getDescription(),
-						"The descriptor for request part '" + descriptor.getName()
-								+ "' must either have a description or be marked as "
-								+ "ignored");
+				Assert.notNull(descriptor.getDescription(), "The descriptor for request part '" + descriptor.getName()
+						+ "' must either have a description or be marked as " + "ignored");
 			}
 			this.descriptorsByName.put(descriptor.getName(), descriptor);
 		}
@@ -125,10 +120,8 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public final RequestPartsSnippet and(
-			List<RequestPartDescriptor> additionalDescriptors) {
-		List<RequestPartDescriptor> combinedDescriptors = new ArrayList<>(
-				this.descriptorsByName.values());
+	public final RequestPartsSnippet and(List<RequestPartDescriptor> additionalDescriptors) {
+		List<RequestPartDescriptor> combinedDescriptors = new ArrayList<>(this.descriptorsByName.values());
 		combinedDescriptors.addAll(additionalDescriptors);
 		return new RequestPartsSnippet(combinedDescriptors, this.getAttributes());
 	}
@@ -138,8 +131,7 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 		verifyRequestPartDescriptors(operation);
 		Map<String, Object> model = new HashMap<>();
 		List<Map<String, Object>> requestParts = new ArrayList<>();
-		for (Entry<String, RequestPartDescriptor> entry : this.descriptorsByName
-				.entrySet()) {
+		for (Entry<String, RequestPartDescriptor> entry : this.descriptorsByName.entrySet()) {
 			RequestPartDescriptor descriptor = entry.getValue();
 			if (!descriptor.isIgnored()) {
 				requestParts.add(createModelForDescriptor(descriptor));
@@ -152,8 +144,7 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	private void verifyRequestPartDescriptors(Operation operation) {
 		Set<String> actualRequestParts = extractActualRequestParts(operation);
 		Set<String> expectedRequestParts = new HashSet<>();
-		for (Entry<String, RequestPartDescriptor> entry : this.descriptorsByName
-				.entrySet()) {
+		for (Entry<String, RequestPartDescriptor> entry : this.descriptorsByName.entrySet()) {
 			if (!entry.getValue().isOptional()) {
 				expectedRequestParts.add(entry.getKey());
 			}
@@ -183,25 +174,22 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 		return actualRequestParts;
 	}
 
-	private void verificationFailed(Set<String> undocumentedRequestParts,
-			Set<String> missingRequestParts) {
+	private void verificationFailed(Set<String> undocumentedRequestParts, Set<String> missingRequestParts) {
 		String message = "";
 		if (!undocumentedRequestParts.isEmpty()) {
-			message += "Request parts with the following names were not documented: "
-					+ undocumentedRequestParts;
+			message += "Request parts with the following names were not documented: " + undocumentedRequestParts;
 		}
 		if (!missingRequestParts.isEmpty()) {
 			if (message.length() > 0) {
 				message += ". ";
 			}
-			message += "Request parts with the following names were not found in "
-					+ "the request: " + missingRequestParts;
+			message += "Request parts with the following names were not found in " + "the request: "
+					+ missingRequestParts;
 		}
 		throw new SnippetException(message);
 	}
 
-	private Map<String, Object> createModelForDescriptor(
-			RequestPartDescriptor descriptor) {
+	private Map<String, Object> createModelForDescriptor(RequestPartDescriptor descriptor) {
 		Map<String, Object> model = new HashMap<>();
 		model.put("name", descriptor.getName());
 		model.put("description", descriptor.getDescription());

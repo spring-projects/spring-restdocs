@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,8 +67,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 * @param commandFormatter the formatter for generating the snippet
 	 */
-	protected HttpieRequestSnippet(Map<String, Object> attributes,
-			CommandFormatter commandFormatter) {
+	protected HttpieRequestSnippet(Map<String, Object> attributes, CommandFormatter commandFormatter) {
 		super("httpie-request", attributes);
 		Assert.notNull(commandFormatter, "Command formatter must not be null");
 		this.commandFormatter = commandFormatter;
@@ -103,12 +102,10 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private String getUrl(OperationRequest request) {
-		Parameters uniqueParameters = request.getParameters()
-				.getUniqueParameters(request.getUri());
+		Parameters uniqueParameters = request.getParameters().getUniqueParameters(request.getUri());
 		if (!uniqueParameters.isEmpty() && includeParametersInUri(request)) {
 			return String.format("'%s%s%s'", request.getUri(),
-					StringUtils.hasText(request.getUri().getRawQuery()) ? "&" : "?",
-					uniqueParameters.toQueryString());
+					StringUtils.hasText(request.getUri().getRawQuery()) ? "&" : "?", uniqueParameters.toQueryString());
 		}
 		return String.format("'%s'", request.getUri());
 	}
@@ -125,28 +122,23 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeOptions(OperationRequest request, PrintWriter writer) {
-		if (!request.getParts().isEmpty()
-				|| (!request.getParameters().getUniqueParameters(request.getUri())
-						.isEmpty() && !includeParametersInUri(request)
-						&& includeParametersAsFormOptions(request))) {
+		if (!request.getParts().isEmpty() || (!request.getParameters().getUniqueParameters(request.getUri()).isEmpty()
+				&& !includeParametersInUri(request) && includeParametersAsFormOptions(request))) {
 			writer.print("--form ");
 		}
 	}
 
 	private boolean includeParametersInUri(OperationRequest request) {
 		return request.getMethod() == HttpMethod.GET || (request.getContent().length > 0
-				&& !MediaType.APPLICATION_FORM_URLENCODED
-						.isCompatibleWith(request.getHeaders().getContentType()));
+				&& !MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(request.getHeaders().getContentType()));
 	}
 
 	private boolean includeParametersAsFormOptions(OperationRequest request) {
 		return request.getMethod() != HttpMethod.GET && (request.getContent().length == 0
-				|| !MediaType.APPLICATION_FORM_URLENCODED
-						.isCompatibleWith(request.getHeaders().getContentType()));
+				|| !MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(request.getHeaders().getContentType()));
 	}
 
-	private void writeUserOptionIfNecessary(CliOperationRequest request,
-			PrintWriter writer) {
+	private void writeUserOptionIfNecessary(CliOperationRequest request, PrintWriter writer) {
 		String credentials = request.getBasicAuthCredentials();
 		if (credentials != null) {
 			writer.print(String.format("--auth '%s' ", credentials));
@@ -178,8 +170,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		for (Entry<String, List<String>> entry : headers.entrySet()) {
 			for (String header : entry.getValue()) {
 				// HTTPie adds Content-Type automatically with --form
-				if (!request.getParts().isEmpty()
-						&& entry.getKey().equals(HttpHeaders.CONTENT_TYPE)
+				if (!request.getParts().isEmpty() && entry.getKey().equals(HttpHeaders.CONTENT_TYPE)
 						&& header.startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)) {
 					continue;
 				}
@@ -190,13 +181,11 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 
 	private void writeCookies(OperationRequest request, List<String> lines) {
 		for (RequestCookie cookie : request.getCookies()) {
-			lines.add(
-					String.format("'Cookie:%s=%s'", cookie.getName(), cookie.getValue()));
+			lines.add(String.format("'Cookie:%s=%s'", cookie.getName(), cookie.getValue()));
 		}
 	}
 
-	private void writeParametersIfNecessary(CliOperationRequest request,
-			List<String> lines) {
+	private void writeParametersIfNecessary(CliOperationRequest request, List<String> lines) {
 		if (StringUtils.hasText(request.getContentAsString())) {
 			return;
 		}
@@ -204,8 +193,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 			writeContentUsingParameters(request.getParameters(), lines);
 		}
 		else if (request.isPutOrPost()) {
-			writeContentUsingParameters(
-					request.getParameters().getUniqueParameters(request.getUri()), lines);
+			writeContentUsingParameters(request.getParameters().getUniqueParameters(request.getUri()), lines);
 		}
 	}
 

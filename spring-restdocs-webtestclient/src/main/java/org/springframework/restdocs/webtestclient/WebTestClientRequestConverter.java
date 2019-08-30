@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,8 +59,8 @@ import org.springframework.util.MultiValueMap;
  */
 class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> {
 
-	private static final ResolvableType FORM_DATA_TYPE = ResolvableType
-			.forClassWithGenerics(MultiValueMap.class, String.class, String.class);
+	private static final ResolvableType FORM_DATA_TYPE = ResolvableType.forClassWithGenerics(MultiValueMap.class,
+			String.class, String.class);
 
 	private final QueryStringParser queryStringParser = new QueryStringParser();
 
@@ -69,9 +69,8 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 	@Override
 	public OperationRequest convert(ExchangeResult result) {
 		HttpHeaders headers = extractRequestHeaders(result);
-		return new OperationRequestFactory().create(result.getUrl(), result.getMethod(),
-				result.getRequestBodyContent(), headers, extractParameters(result),
-				extractRequestParts(result), extractCookies(headers));
+		return new OperationRequestFactory().create(result.getUrl(), result.getMethod(), result.getRequestBodyContent(),
+				headers, extractParameters(result), extractRequestParts(result), extractCookies(headers));
 	}
 
 	private HttpHeaders extractRequestHeaders(ExchangeResult result) {
@@ -84,36 +83,30 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 	private Parameters extractParameters(ExchangeResult result) {
 		Parameters parameters = new Parameters();
 		parameters.addAll(this.queryStringParser.parse(result.getUrl()));
-		if (MediaType.APPLICATION_FORM_URLENCODED
-				.isCompatibleWith(result.getRequestHeaders().getContentType())) {
+		if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(result.getRequestHeaders().getContentType())) {
 			parameters.addAll(this.formDataReader
-					.readMono(FORM_DATA_TYPE,
-							new ExchangeResultReactiveHttpInputMessage(result), null)
-					.block());
+					.readMono(FORM_DATA_TYPE, new ExchangeResultReactiveHttpInputMessage(result), null).block());
 		}
 		return parameters;
 	}
 
 	private List<OperationRequestPart> extractRequestParts(ExchangeResult result) {
-		if (!ClassUtils.isPresent(
-				"org.synchronoss.cloud.nio.multipart.NioMultipartParserListener",
+		if (!ClassUtils.isPresent("org.synchronoss.cloud.nio.multipart.NioMultipartParserListener",
 				getClass().getClassLoader())) {
 			return Collections.emptyList();
 		}
 		return new MultipartHttpMessageReader(new SynchronossPartHttpMessageReader())
-				.readMono(ResolvableType.forClass(Part.class),
-						new ExchangeResultReactiveHttpInputMessage(result),
+				.readMono(ResolvableType.forClass(Part.class), new ExchangeResultReactiveHttpInputMessage(result),
 						Collections.emptyMap())
 				.onErrorReturn(new LinkedMultiValueMap<>()).block().values().stream()
-				.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart))
-				.collect(Collectors.toList());
+				.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart)).collect(Collectors.toList());
 	}
 
 	private OperationRequestPart createOperationRequestPart(Part part) {
 		ByteArrayOutputStream content = readPartBodyContent(part);
 		return new OperationRequestPartFactory().create(part.name(),
-				(part instanceof FilePart) ? ((FilePart) part).filename() : null,
-				content.toByteArray(), part.headers());
+				(part instanceof FilePart) ? ((FilePart) part).filename() : null, content.toByteArray(),
+				part.headers());
 	}
 
 	private ByteArrayOutputStream readPartBodyContent(Part part) {
@@ -128,8 +121,7 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 			return Collections.emptyList();
 		}
 		headers.remove(HttpHeaders.COOKIE);
-		return cookieHeaders.stream().map(this::createRequestCookie)
-				.collect(Collectors.toList());
+		return cookieHeaders.stream().map(this::createRequestCookie).collect(Collectors.toList());
 	}
 
 	private RequestCookie createRequestCookie(String header) {
@@ -137,8 +129,7 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 		return new RequestCookie(components[0], components[1]);
 	}
 
-	private final class ExchangeResultReactiveHttpInputMessage
-			implements ReactiveHttpInputMessage {
+	private final class ExchangeResultReactiveHttpInputMessage implements ReactiveHttpInputMessage {
 
 		private final ExchangeResult result;
 

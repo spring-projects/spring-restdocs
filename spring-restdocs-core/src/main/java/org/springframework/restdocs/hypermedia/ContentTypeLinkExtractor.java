@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,16 +45,14 @@ class ContentTypeLinkExtractor implements LinkExtractor {
 	}
 
 	@Override
-	public Map<String, List<Link>> extractLinks(OperationResponse response)
-			throws IOException {
+	public Map<String, List<Link>> extractLinks(OperationResponse response) throws IOException {
 		MediaType contentType = response.getHeaders().getContentType();
 		LinkExtractor extractorForContentType = getExtractorForContentType(contentType);
 		if (extractorForContentType != null) {
 			return extractorForContentType.extractLinks(response);
 		}
 		throw new IllegalStateException(
-				"No LinkExtractor has been provided and one is not available for the "
-						+ "content type " + contentType);
+				"No LinkExtractor has been provided and one is not available for the " + "content type " + contentType);
 	}
 
 	private LinkExtractor getExtractorForContentType(MediaType contentType) {

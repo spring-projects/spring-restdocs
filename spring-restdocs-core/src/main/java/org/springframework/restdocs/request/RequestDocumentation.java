@@ -70,8 +70,7 @@ public abstract class RequestDocumentation {
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
-	public static PathParametersSnippet pathParameters(
-			ParameterDescriptor... descriptors) {
+	public static PathParametersSnippet pathParameters(ParameterDescriptor... descriptors) {
 		return pathParameters(Arrays.asList(descriptors));
 	}
 
@@ -91,8 +90,7 @@ public abstract class RequestDocumentation {
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
-	public static PathParametersSnippet pathParameters(
-			List<ParameterDescriptor> descriptors) {
+	public static PathParametersSnippet pathParameters(List<ParameterDescriptor> descriptors) {
 		return new PathParametersSnippet(descriptors);
 	}
 
@@ -106,8 +104,7 @@ public abstract class RequestDocumentation {
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
-	public static PathParametersSnippet relaxedPathParameters(
-			ParameterDescriptor... descriptors) {
+	public static PathParametersSnippet relaxedPathParameters(ParameterDescriptor... descriptors) {
 		return relaxedPathParameters(Arrays.asList(descriptors));
 	}
 
@@ -121,8 +118,7 @@ public abstract class RequestDocumentation {
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
-	public static PathParametersSnippet relaxedPathParameters(
-			List<ParameterDescriptor> descriptors) {
+	public static PathParametersSnippet relaxedPathParameters(List<ParameterDescriptor> descriptors) {
 		return new PathParametersSnippet(descriptors, true);
 	}
 
@@ -184,8 +180,8 @@ public abstract class RequestDocumentation {
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
-	public static PathParametersSnippet relaxedPathParameters(
-			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
+	public static PathParametersSnippet relaxedPathParameters(Map<String, Object> attributes,
+			ParameterDescriptor... descriptors) {
 		return relaxedPathParameters(attributes, Arrays.asList(descriptors));
 	}
 
@@ -201,8 +197,8 @@ public abstract class RequestDocumentation {
 	 * @param descriptors the descriptions of the parameters in the request's path
 	 * @return the snippet that will document the parameters
 	 */
-	public static PathParametersSnippet relaxedPathParameters(
-			Map<String, Object> attributes, List<ParameterDescriptor> descriptors) {
+	public static PathParametersSnippet relaxedPathParameters(Map<String, Object> attributes,
+			List<ParameterDescriptor> descriptors) {
 		return new PathParametersSnippet(descriptors, attributes, true);
 	}
 
@@ -223,8 +219,7 @@ public abstract class RequestDocumentation {
 	 * @return the snippet
 	 * @see OperationRequest#getParameters()
 	 */
-	public static RequestParametersSnippet requestParameters(
-			ParameterDescriptor... descriptors) {
+	public static RequestParametersSnippet requestParameters(ParameterDescriptor... descriptors) {
 		return requestParameters(Arrays.asList(descriptors));
 	}
 
@@ -245,8 +240,7 @@ public abstract class RequestDocumentation {
 	 * @return the snippet
 	 * @see OperationRequest#getParameters()
 	 */
-	public static RequestParametersSnippet requestParameters(
-			List<ParameterDescriptor> descriptors) {
+	public static RequestParametersSnippet requestParameters(List<ParameterDescriptor> descriptors) {
 		return new RequestParametersSnippet(descriptors);
 	}
 
@@ -261,8 +255,7 @@ public abstract class RequestDocumentation {
 	 * @return the snippet
 	 * @see OperationRequest#getParameters()
 	 */
-	public static RequestParametersSnippet relaxedRequestParameters(
-			ParameterDescriptor... descriptors) {
+	public static RequestParametersSnippet relaxedRequestParameters(ParameterDescriptor... descriptors) {
 		return relaxedRequestParameters(Arrays.asList(descriptors));
 	}
 
@@ -277,8 +270,7 @@ public abstract class RequestDocumentation {
 	 * @return the snippet
 	 * @see OperationRequest#getParameters()
 	 */
-	public static RequestParametersSnippet relaxedRequestParameters(
-			List<ParameterDescriptor> descriptors) {
+	public static RequestParametersSnippet relaxedRequestParameters(List<ParameterDescriptor> descriptors) {
 		return new RequestParametersSnippet(descriptors, true);
 	}
 
@@ -301,8 +293,8 @@ public abstract class RequestDocumentation {
 	 * @return the snippet that will document the parameters
 	 * @see OperationRequest#getParameters()
 	 */
-	public static RequestParametersSnippet requestParameters(
-			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
+	public static RequestParametersSnippet requestParameters(Map<String, Object> attributes,
+			ParameterDescriptor... descriptors) {
 		return requestParameters(attributes, Arrays.asList(descriptors));
 	}
 
@@ -325,8 +317,8 @@ public abstract class RequestDocumentation {
 	 * @return the snippet that will document the parameters
 	 * @see OperationRequest#getParameters()
 	 */
-	public static RequestParametersSnippet requestParameters(
-			Map<String, Object> attributes, List<ParameterDescriptor> descriptors) {
+	public static RequestParametersSnippet requestParameters(Map<String, Object> attributes,
+			List<ParameterDescriptor> descriptors) {
 		return new RequestParametersSnippet(descriptors, attributes);
 	}
 
@@ -343,8 +335,8 @@ public abstract class RequestDocumentation {
 	 * @return the snippet that will document the parameters
 	 * @see OperationRequest#getParameters()
 	 */
-	public static RequestParametersSnippet relaxedRequestParameters(
-			Map<String, Object> attributes, ParameterDescriptor... descriptors) {
+	public static RequestParametersSnippet relaxedRequestParameters(Map<String, Object> attributes,
+			ParameterDescriptor... descriptors) {
 		return relaxedRequestParameters(attributes, Arrays.asList(descriptors));
 	}
 
@@ -361,8 +353,8 @@ public abstract class RequestDocumentation {
 	 * @return the snippet that will document the parameters
 	 * @see OperationRequest#getParameters()
 	 */
-	public static RequestParametersSnippet relaxedRequestParameters(
-			Map<String, Object> attributes, List<ParameterDescriptor> descriptors) {
+	public static RequestParametersSnippet relaxedRequestParameters(Map<String, Object> attributes,
+			List<ParameterDescriptor> descriptors) {
 		return new RequestParametersSnippet(descriptors, attributes, true);
 	}
 
@@ -402,8 +394,7 @@ public abstract class RequestDocumentation {
 	 * @return the snippet
 	 * @see OperationRequest#getParts()
 	 */
-	public static RequestPartsSnippet requestParts(
-			List<RequestPartDescriptor> descriptors) {
+	public static RequestPartsSnippet requestParts(List<RequestPartDescriptor> descriptors) {
 		return new RequestPartsSnippet(descriptors);
 	}
 
@@ -417,8 +408,7 @@ public abstract class RequestDocumentation {
 	 * @return the snippet
 	 * @see OperationRequest#getParts()
 	 */
-	public static RequestPartsSnippet relaxedRequestParts(
-			RequestPartDescriptor... descriptors) {
+	public static RequestPartsSnippet relaxedRequestParts(RequestPartDescriptor... descriptors) {
 		return relaxedRequestParts(Arrays.asList(descriptors));
 	}
 
@@ -432,8 +422,7 @@ public abstract class RequestDocumentation {
 	 * @return the snippet
 	 * @see OperationRequest#getParts()
 	 */
-	public static RequestPartsSnippet relaxedRequestParts(
-			List<RequestPartDescriptor> descriptors) {
+	public static RequestPartsSnippet relaxedRequestParts(List<RequestPartDescriptor> descriptors) {
 		return new RequestPartsSnippet(descriptors, true);
 	}
 

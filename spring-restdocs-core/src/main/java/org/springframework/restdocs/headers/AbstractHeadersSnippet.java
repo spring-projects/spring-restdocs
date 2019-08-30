@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,14 +48,11 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	 * @param descriptors the header descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected AbstractHeadersSnippet(String type, List<HeaderDescriptor> descriptors,
-			Map<String, Object> attributes) {
+	protected AbstractHeadersSnippet(String type, List<HeaderDescriptor> descriptors, Map<String, Object> attributes) {
 		super(type + "-headers", attributes);
 		for (HeaderDescriptor descriptor : descriptors) {
-			Assert.notNull(descriptor.getName(),
-					"The name of the header must not be null");
-			Assert.notNull(descriptor.getDescription(),
-					"The description of the header must not be null");
+			Assert.notNull(descriptor.getName(), "The name of the header must not be null");
+			Assert.notNull(descriptor.getDescription(), "The description of the header must not be null");
 		}
 		this.headerDescriptors = descriptors;
 		this.type = type;
@@ -81,8 +78,8 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 			for (HeaderDescriptor headerDescriptor : missingHeaders) {
 				names.add(headerDescriptor.getName());
 			}
-			throw new SnippetException("Headers with the following names were not found"
-					+ " in the " + this.type + ": " + names);
+			throw new SnippetException(
+					"Headers with the following names were not found" + " in the " + this.type + ": " + names);
 		}
 	}
 
@@ -97,8 +94,7 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 		List<HeaderDescriptor> missingHeaders = new ArrayList<>();
 		Set<String> actualHeaders = extractActualHeaders(operation);
 		for (HeaderDescriptor headerDescriptor : this.headerDescriptors) {
-			if (!headerDescriptor.isOptional()
-					&& !actualHeaders.contains(headerDescriptor.getName())) {
+			if (!headerDescriptor.isOptional() && !actualHeaders.contains(headerDescriptor.getName())) {
 				missingHeaders.add(headerDescriptor);
 			}
 		}

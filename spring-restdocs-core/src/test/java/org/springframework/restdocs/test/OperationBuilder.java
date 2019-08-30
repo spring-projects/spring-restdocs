@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,25 +101,19 @@ public class OperationBuilder extends OperationTestRule {
 	public Operation build() {
 		if (this.attributes.get(TemplateEngine.class.getName()) == null) {
 			Map<String, Object> templateContext = new HashMap<>();
-			templateContext.put("tableCellContent",
-					new AsciidoctorTableCellContentLambda());
+			templateContext.put("tableCellContent", new AsciidoctorTableCellContentLambda());
 			this.attributes.put(TemplateEngine.class.getName(),
-					new MustacheTemplateEngine(
-							new StandardTemplateResourceResolver(this.templateFormat),
+					new MustacheTemplateEngine(new StandardTemplateResourceResolver(this.templateFormat),
 							Mustache.compiler().escapeHTML(false), templateContext));
 		}
 		RestDocumentationContext context = createContext();
 		this.attributes.put(RestDocumentationContext.class.getName(), context);
-		this.attributes.put(WriterResolver.class.getName(),
-				new StandardWriterResolver(
-						new RestDocumentationContextPlaceholderResolverFactory(), "UTF-8",
-						this.templateFormat));
+		this.attributes.put(WriterResolver.class.getName(), new StandardWriterResolver(
+				new RestDocumentationContextPlaceholderResolverFactory(), "UTF-8", this.templateFormat));
 		return new StandardOperation(this.name,
-				((this.requestBuilder == null)
-						? new OperationRequestBuilder("http://localhost/").buildRequest()
+				((this.requestBuilder == null) ? new OperationRequestBuilder("http://localhost/").buildRequest()
 						: this.requestBuilder.buildRequest()),
-				(this.responseBuilder == null)
-						? new OperationResponseBuilder().buildResponse()
+				(this.responseBuilder == null) ? new OperationResponseBuilder().buildResponse()
 						: this.responseBuilder.buildResponse(),
 				this.attributes);
 	}
@@ -166,8 +160,8 @@ public class OperationBuilder extends OperationTestRule {
 			for (OperationRequestPartBuilder builder : this.partBuilders) {
 				parts.add(builder.buildPart());
 			}
-			return new OperationRequestFactory().create(this.requestUri, this.method,
-					this.content, this.headers, this.parameters, parts, this.cookies);
+			return new OperationRequestFactory().create(this.requestUri, this.method, this.content, this.headers,
+					this.parameters, parts, this.cookies);
 		}
 
 		public Operation build() {
@@ -207,8 +201,7 @@ public class OperationBuilder extends OperationTestRule {
 		}
 
 		public OperationRequestPartBuilder part(String name, byte[] content) {
-			OperationRequestPartBuilder partBuilder = new OperationRequestPartBuilder(
-					name, content);
+			OperationRequestPartBuilder partBuilder = new OperationRequestPartBuilder(name, content);
 			this.partBuilders.add(partBuilder);
 			return partBuilder;
 		}
@@ -236,8 +229,7 @@ public class OperationBuilder extends OperationTestRule {
 				this.content = content;
 			}
 
-			public OperationRequestPartBuilder submittedFileName(
-					String submittedFileName) {
+			public OperationRequestPartBuilder submittedFileName(String submittedFileName) {
 				this.submittedFileName = submittedFileName;
 				return this;
 			}
@@ -251,8 +243,8 @@ public class OperationBuilder extends OperationTestRule {
 			}
 
 			private OperationRequestPart buildPart() {
-				return new OperationRequestPartFactory().create(this.name,
-						this.submittedFileName, this.content, this.headers);
+				return new OperationRequestPartFactory().create(this.name, this.submittedFileName, this.content,
+						this.headers);
 			}
 
 			public OperationRequestPartBuilder header(String name, String value) {
@@ -276,8 +268,7 @@ public class OperationBuilder extends OperationTestRule {
 		private byte[] content = new byte[0];
 
 		private OperationResponse buildResponse() {
-			return new OperationResponseFactory().create(this.status, this.headers,
-					this.content);
+			return new OperationResponseFactory().create(this.status, this.headers, this.content);
 		}
 
 		public OperationResponseBuilder status(int status) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
  * @since 1.1.0
  */
 public final class MockMvcSnippetConfigurer extends
-		SnippetConfigurer<MockMvcRestDocumentationConfigurer, MockMvcSnippetConfigurer>
-		implements MockMvcConfigurer {
+		SnippetConfigurer<MockMvcRestDocumentationConfigurer, MockMvcSnippetConfigurer> implements MockMvcConfigurer {
 
 	MockMvcSnippetConfigurer(MockMvcRestDocumentationConfigurer parent) {
 		super(parent);
@@ -42,8 +41,8 @@ public final class MockMvcSnippetConfigurer extends
 	}
 
 	@Override
-	public RequestPostProcessor beforeMockMvcCreated(
-			ConfigurableMockMvcBuilder<?> builder, WebApplicationContext context) {
+	public RequestPostProcessor beforeMockMvcCreated(ConfigurableMockMvcBuilder<?> builder,
+			WebApplicationContext context) {
 		return and().beforeMockMvcCreated(builder, context);
 	}
 

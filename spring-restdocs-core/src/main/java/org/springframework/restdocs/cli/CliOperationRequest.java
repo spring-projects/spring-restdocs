@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,19 +48,16 @@ final class CliOperationRequest implements OperationRequest {
 
 	CliOperationRequest(OperationRequest delegate) {
 		this.delegate = delegate;
-		this.headerFilters = new HashSet<>(Arrays.asList(
-				new NamedHeaderFilter(HttpHeaders.CONTENT_LENGTH),
+		this.headerFilters = new HashSet<>(Arrays.asList(new NamedHeaderFilter(HttpHeaders.CONTENT_LENGTH),
 				new BasicAuthHeaderFilter(), new HostHeaderFilter(delegate.getUri())));
 	}
 
 	boolean isPutOrPost() {
-		return HttpMethod.PUT.equals(this.delegate.getMethod())
-				|| HttpMethod.POST.equals(this.delegate.getMethod());
+		return HttpMethod.PUT.equals(this.delegate.getMethod()) || HttpMethod.POST.equals(this.delegate.getMethod());
 	}
 
 	String getBasicAuthCredentials() {
-		List<String> headerValue = this.delegate.getHeaders()
-				.get(HttpHeaders.AUTHORIZATION);
+		List<String> headerValue = this.delegate.getHeaders().get(HttpHeaders.AUTHORIZATION);
 		if (BasicAuthHeaderFilter.isBasicAuthHeader(headerValue)) {
 			return BasicAuthHeaderFilter.decodeBasicAuthHeader(headerValue);
 		}
@@ -94,11 +91,9 @@ final class CliOperationRequest implements OperationRequest {
 				return false;
 			}
 		}
-		if (HttpHeaders.HOST.equalsIgnoreCase(header.getKey())
-				&& (!header.getValue().isEmpty())) {
+		if (HttpHeaders.HOST.equalsIgnoreCase(header.getKey()) && (!header.getValue().isEmpty())) {
 			String value = header.getValue().get(0);
-			if (value.equals(this.delegate.getUri().getHost() + ":"
-					+ this.delegate.getUri().getPort())) {
+			if (value.equals(this.delegate.getUri().getHost() + ":" + this.delegate.getUri().getPort())) {
 				return false;
 			}
 		}
@@ -144,8 +139,7 @@ final class CliOperationRequest implements OperationRequest {
 		}
 
 		static boolean isBasicAuthHeader(List<String> value) {
-			return value != null && (!value.isEmpty())
-					&& value.get(0).startsWith("Basic ");
+			return value != null && (!value.isEmpty()) && value.get(0).startsWith("Basic ");
 		}
 
 		static String decodeBasicAuthHeader(List<String> value) {
@@ -179,13 +173,11 @@ final class CliOperationRequest implements OperationRequest {
 
 		@Override
 		public boolean allow(String name, List<String> value) {
-			return !(value.isEmpty()
-					|| this.getImplicitHostHeader().equals(value.get(0)));
+			return !(value.isEmpty() || this.getImplicitHostHeader().equals(value.get(0)));
 		}
 
 		private String getImplicitHostHeader() {
-			return this.uri.getHost()
-					+ ((this.uri.getPort() == -1) ? "" : ":" + this.uri.getPort());
+			return this.uri.getHost() + ((this.uri.getPort() == -1) ? "" : ":" + this.uri.getPort());
 		}
 
 	}

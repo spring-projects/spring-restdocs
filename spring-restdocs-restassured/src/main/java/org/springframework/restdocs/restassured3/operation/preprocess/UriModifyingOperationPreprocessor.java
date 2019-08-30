@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import org.springframework.restdocs.operation.preprocess.OperationPreprocessor;
  * {@link org.springframework.restdocs.operation.preprocess.UriModifyingOperationPreprocessor}
  */
 @Deprecated
-public class UriModifyingOperationPreprocessor extends
-		org.springframework.restdocs.operation.preprocess.UriModifyingOperationPreprocessor {
+public class UriModifyingOperationPreprocessor
+		extends org.springframework.restdocs.operation.preprocess.UriModifyingOperationPreprocessor {
 
 }

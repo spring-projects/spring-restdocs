@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,16 +32,15 @@ import org.springframework.restdocs.config.SnippetConfigurer;
  * @since 1.2.0
  */
 public final class RestAssuredSnippetConfigurer extends
-		SnippetConfigurer<RestAssuredRestDocumentationConfigurer, RestAssuredSnippetConfigurer>
-		implements Filter {
+		SnippetConfigurer<RestAssuredRestDocumentationConfigurer, RestAssuredSnippetConfigurer> implements Filter {
 
 	RestAssuredSnippetConfigurer(RestAssuredRestDocumentationConfigurer parent) {
 		super(parent);
 	}
 
 	@Override
-	public Response filter(FilterableRequestSpecification requestSpec,
-			FilterableResponseSpecification responseSpec, FilterContext context) {
+	public Response filter(FilterableRequestSpecification requestSpec, FilterableResponseSpecification responseSpec,
+			FilterContext context) {
 		return and().filter(requestSpec, responseSpec, context);
 	}
 

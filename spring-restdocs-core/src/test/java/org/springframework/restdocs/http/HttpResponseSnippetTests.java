@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,29 +55,25 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void nonOkResponse() throws IOException {
-		new HttpResponseSnippet().document(this.operationBuilder.response()
-				.status(HttpStatus.BAD_REQUEST.value()).build());
-		assertThat(this.generatedSnippets.httpResponse())
-				.is(httpResponse(HttpStatus.BAD_REQUEST));
+		new HttpResponseSnippet()
+				.document(this.operationBuilder.response().status(HttpStatus.BAD_REQUEST.value()).build());
+		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.BAD_REQUEST));
 	}
 
 	@Test
 	public void responseWithHeaders() throws IOException {
 		new HttpResponseSnippet().document(this.operationBuilder.response()
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.header("a", "alpha").build());
-		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.OK)
-				.header("Content-Type", "application/json").header("a", "alpha"));
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("a", "alpha").build());
+		assertThat(this.generatedSnippets.httpResponse())
+				.is(httpResponse(HttpStatus.OK).header("Content-Type", "application/json").header("a", "alpha"));
 	}
 
 	@Test
 	public void responseWithContent() throws IOException {
 		String content = "content";
-		new HttpResponseSnippet()
-				.document(this.operationBuilder.response().content(content).build());
-		assertThat(this.generatedSnippets.httpResponse())
-				.is(httpResponse(HttpStatus.OK).content(content)
-						.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+		new HttpResponseSnippet().document(this.operationBuilder.response().content(content).build());
+		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.OK).content(content)
+				.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 	}
 
 	@Test
@@ -85,12 +81,10 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
 		new HttpResponseSnippet().document(this.operationBuilder.response()
-				.header("Content-Type", "text/plain;charset=UTF-8").content(contentBytes)
-				.build());
-		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.OK)
-				.header("Content-Type", "text/plain;charset=UTF-8")
-				.content(japaneseContent)
-				.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length));
+				.header("Content-Type", "text/plain;charset=UTF-8").content(contentBytes).build());
+		assertThat(this.generatedSnippets.httpResponse())
+				.is(httpResponse(HttpStatus.OK).header("Content-Type", "text/plain;charset=UTF-8")
+						.content(japaneseContent).header(HttpHeaders.CONTENT_LENGTH, contentBytes.length));
 	}
 
 	@Test
@@ -98,11 +92,9 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("http-response"))
 				.willReturn(snippetResource("http-response-with-title"));
-		new HttpResponseSnippet(attributes(key("title").value("Title for the response")))
-				.document(this.operationBuilder.attribute(TemplateEngine.class.getName(),
-						new MustacheTemplateEngine(resolver)).build());
-		assertThat(this.generatedSnippets.httpResponse())
-				.contains("Title for the response");
+		new HttpResponseSnippet(attributes(key("title").value("Title for the response"))).document(this.operationBuilder
+				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver)).build());
+		assertThat(this.generatedSnippets.httpResponse()).contains("Title for the response");
 	}
 
 }

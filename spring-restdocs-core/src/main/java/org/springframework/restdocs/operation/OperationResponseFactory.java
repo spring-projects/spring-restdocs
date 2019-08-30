@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,8 @@ public class OperationResponseFactory {
 	 * @param content the content of the request
 	 * @return the {@code OperationResponse}
 	 */
-	public OperationResponse create(HttpStatus status, HttpHeaders headers,
-			byte[] content) {
-		return new StandardOperationResponse(status, augmentHeaders(headers, content),
-				content);
+	public OperationResponse create(HttpStatus status, HttpHeaders headers, byte[] content) {
+		return new StandardOperationResponse(status, augmentHeaders(headers, content), content);
 	}
 
 	/**
@@ -51,8 +49,8 @@ public class OperationResponseFactory {
 	 * @return the new response with the new content
 	 */
 	public OperationResponse createFrom(OperationResponse original, byte[] newContent) {
-		return new StandardOperationResponse(original.getStatus(),
-				getUpdatedHeaders(original.getHeaders(), newContent), newContent);
+		return new StandardOperationResponse(original.getStatus(), getUpdatedHeaders(original.getHeaders(), newContent),
+				newContent);
 	}
 
 	/**
@@ -62,21 +60,16 @@ public class OperationResponseFactory {
 	 * @param newHeaders the new headers
 	 * @return the new response with the new headers
 	 */
-	public OperationResponse createFrom(OperationResponse original,
-			HttpHeaders newHeaders) {
-		return new StandardOperationResponse(original.getStatus(), newHeaders,
-				original.getContent());
+	public OperationResponse createFrom(OperationResponse original, HttpHeaders newHeaders) {
+		return new StandardOperationResponse(original.getStatus(), newHeaders, original.getContent());
 	}
 
 	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, byte[] content) {
-		return new HttpHeadersHelper(originalHeaders).setContentLengthHeader(content)
-				.getHeaders();
+		return new HttpHeadersHelper(originalHeaders).setContentLengthHeader(content).getHeaders();
 	}
 
-	private HttpHeaders getUpdatedHeaders(HttpHeaders originalHeaders,
-			byte[] updatedContent) {
-		return new HttpHeadersHelper(originalHeaders)
-				.updateContentLengthHeaderIfPresent(updatedContent).getHeaders();
+	private HttpHeaders getUpdatedHeaders(HttpHeaders originalHeaders, byte[] updatedContent) {
+		return new HttpHeadersHelper(originalHeaders).updateContentLengthHeaderIfPresent(updatedContent).getHeaders();
 	}
 
 }

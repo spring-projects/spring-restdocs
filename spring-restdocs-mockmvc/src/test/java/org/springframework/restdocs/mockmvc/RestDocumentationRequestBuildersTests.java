@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,12 +139,10 @@ public class RestDocumentationRequestBuildersTests {
 		assertUri(fileUpload(URI.create("/uri")), HttpMethod.POST);
 	}
 
-	private void assertTemplate(MockHttpServletRequestBuilder builder,
-			HttpMethod httpMethod) {
+	private void assertTemplate(MockHttpServletRequestBuilder builder, HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
-		assertThat((String) request
-				.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE))
-						.isEqualTo("{template}");
+		assertThat((String) request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE))
+				.isEqualTo("{template}");
 		assertThat(request.getRequestURI()).isEqualTo("t");
 		assertThat(request.getMethod()).isEqualTo(httpMethod.name());
 	}

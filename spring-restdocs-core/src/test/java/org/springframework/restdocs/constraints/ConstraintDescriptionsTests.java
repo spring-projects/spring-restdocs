@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,32 +37,25 @@ public class ConstraintDescriptionsTests {
 	private final ConstraintDescriptionResolver constraintDescriptionResolver = mock(
 			ConstraintDescriptionResolver.class);
 
-	private final ConstraintDescriptions constraintDescriptions = new ConstraintDescriptions(
-			Constrained.class, this.constraintResolver,
-			this.constraintDescriptionResolver);
+	private final ConstraintDescriptions constraintDescriptions = new ConstraintDescriptions(Constrained.class,
+			this.constraintResolver, this.constraintDescriptionResolver);
 
 	@Test
 	public void descriptionsForConstraints() {
-		Constraint constraint1 = new Constraint("constraint1",
-				Collections.<String, Object>emptyMap());
-		Constraint constraint2 = new Constraint("constraint2",
-				Collections.<String, Object>emptyMap());
+		Constraint constraint1 = new Constraint("constraint1", Collections.<String, Object>emptyMap());
+		Constraint constraint2 = new Constraint("constraint2", Collections.<String, Object>emptyMap());
 		given(this.constraintResolver.resolveForProperty("foo", Constrained.class))
 				.willReturn(Arrays.asList(constraint1, constraint2));
-		given(this.constraintDescriptionResolver.resolveDescription(constraint1))
-				.willReturn("Bravo");
-		given(this.constraintDescriptionResolver.resolveDescription(constraint2))
-				.willReturn("Alpha");
-		assertThat(this.constraintDescriptions.descriptionsForProperty("foo"))
-				.containsExactly("Alpha", "Bravo");
+		given(this.constraintDescriptionResolver.resolveDescription(constraint1)).willReturn("Bravo");
+		given(this.constraintDescriptionResolver.resolveDescription(constraint2)).willReturn("Alpha");
+		assertThat(this.constraintDescriptions.descriptionsForProperty("foo")).containsExactly("Alpha", "Bravo");
 	}
 
 	@Test
 	public void emptyListOfDescriptionsWhenThereAreNoConstraints() {
 		given(this.constraintResolver.resolveForProperty("foo", Constrained.class))
 				.willReturn(Collections.<Constraint>emptyList());
-		assertThat(this.constraintDescriptions.descriptionsForProperty("foo").size())
-				.isEqualTo(0);
+		assertThat(this.constraintDescriptions.descriptionsForProperty("foo").size()).isEqualTo(0);
 	}
 
 	private static class Constrained {

@@ -44,8 +44,7 @@ public class GradleOperationBlockMacroTests extends AbstractOperationBlockMacroT
 
 	protected Attributes getAttributes() {
 		Attributes attributes = new Attributes();
-		attributes.setAttribute(this.attributeName,
-				new File(temp.getRoot(), "gradle-project").getAbsolutePath());
+		attributes.setAttribute(this.attributeName, new File(temp.getRoot(), "gradle-project").getAbsolutePath());
 		return attributes;
 	}
 
@@ -58,8 +57,7 @@ public class GradleOperationBlockMacroTests extends AbstractOperationBlockMacroT
 
 	@Override
 	protected File getSourceLocation() {
-		File sourceLocation = new File(temp.getRoot(),
-				"gradle-project/src/docs/asciidoc");
+		File sourceLocation = new File(temp.getRoot(), "gradle-project/src/docs/asciidoc");
 		if (!sourceLocation.exists()) {
 			sourceLocation.mkdirs();
 		}

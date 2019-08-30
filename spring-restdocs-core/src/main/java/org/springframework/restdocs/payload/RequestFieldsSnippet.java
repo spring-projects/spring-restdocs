@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,7 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors,
-			boolean ignoreUndocumentedFields) {
+	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors, boolean ignoreUndocumentedFields) {
 		this(descriptors, null, ignoreUndocumentedFields);
 	}
 
@@ -65,8 +64,7 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes) {
+	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -80,8 +78,8 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
 		this(null, descriptors, attributes, ignoreUndocumentedFields);
 	}
 
@@ -108,8 +106,8 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 * @since 1.2.0
 	 */
-	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
-			List<FieldDescriptor> descriptors, boolean ignoreUndocumentedFields) {
+	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor, List<FieldDescriptor> descriptors,
+			boolean ignoreUndocumentedFields) {
 		this(subsectionExtractor, descriptors, null, ignoreUndocumentedFields);
 	}
 
@@ -123,8 +121,8 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param attributes the additional attributes
 	 * @since 1.2.0
 	 */
-	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
-			List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
+	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor, List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes) {
 		this(subsectionExtractor, descriptors, attributes, false);
 	}
 
@@ -141,11 +139,9 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 * @since 1.2.0
 	 */
-	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
-			List<FieldDescriptor> descriptors, Map<String, Object> attributes,
-			boolean ignoreUndocumentedFields) {
-		super("request", descriptors, attributes, ignoreUndocumentedFields,
-				subsectionExtractor);
+	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor, List<FieldDescriptor> descriptors,
+			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+		super("request", descriptors, attributes, ignoreUndocumentedFields, subsectionExtractor);
 	}
 
 	@Override
@@ -189,14 +185,13 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public final RequestFieldsSnippet andWithPrefix(String pathPrefix,
-			FieldDescriptor... additionalDescriptors) {
+	public final RequestFieldsSnippet andWithPrefix(String pathPrefix, FieldDescriptor... additionalDescriptors) {
 		List<FieldDescriptor> combinedDescriptors = new ArrayList<>();
 		combinedDescriptors.addAll(getFieldDescriptors());
-		combinedDescriptors.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix,
-				Arrays.asList(additionalDescriptors)));
-		return new RequestFieldsSnippet(getSubsectionExtractor(), combinedDescriptors,
-				getAttributes(), isIgnoredUndocumentedFields());
+		combinedDescriptors
+				.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix, Arrays.asList(additionalDescriptors)));
+		return new RequestFieldsSnippet(getSubsectionExtractor(), combinedDescriptors, getAttributes(),
+				isIgnoredUndocumentedFields());
 	}
 
 	/**
@@ -208,14 +203,11 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param additionalDescriptors the additional descriptors
 	 * @return the new snippet
 	 */
-	public final RequestFieldsSnippet andWithPrefix(String pathPrefix,
-			List<FieldDescriptor> additionalDescriptors) {
-		List<FieldDescriptor> combinedDescriptors = new ArrayList<>(
-				getFieldDescriptors());
-		combinedDescriptors.addAll(
-				PayloadDocumentation.applyPathPrefix(pathPrefix, additionalDescriptors));
-		return new RequestFieldsSnippet(getSubsectionExtractor(), combinedDescriptors,
-				getAttributes(), isIgnoredUndocumentedFields());
+	public final RequestFieldsSnippet andWithPrefix(String pathPrefix, List<FieldDescriptor> additionalDescriptors) {
+		List<FieldDescriptor> combinedDescriptors = new ArrayList<>(getFieldDescriptors());
+		combinedDescriptors.addAll(PayloadDocumentation.applyPathPrefix(pathPrefix, additionalDescriptors));
+		return new RequestFieldsSnippet(getSubsectionExtractor(), combinedDescriptors, getAttributes(),
+				isIgnoredUndocumentedFields());
 	}
 
 }
