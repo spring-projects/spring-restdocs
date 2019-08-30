@@ -67,7 +67,7 @@ public class RestDocumentationFilter implements Filter {
 	 * @return the configuration
 	 */
 	protected Map<String, Object> getConfiguration(FilterableRequestSpecification requestSpec, FilterContext context) {
-		Map<String, Object> configuration = new HashMap<>(getRequiredConfiguration(context));
+		Map<String, Object> configuration = new HashMap<>(retrieveConfiguration(context));
 		configuration.put(RestDocumentationContext.class.getName(),
 				context.<RestDocumentationContext>getValue(RestDocumentationContext.class.getName()));
 		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, requestSpec.getUserDefinedPath());
@@ -96,13 +96,12 @@ public class RestDocumentationFilter implements Filter {
 		};
 	}
 
-	private static Map<String, Object> getRequiredConfiguration(FilterContext context) {
+	private static Map<String, Object> retrieveConfiguration(FilterContext context) {
 		Map<String, Object> configuration = context.getValue(CONTEXT_KEY_CONFIGURATION);
 		Assert.state(configuration != null,
-				() -> String.format(
-						"There is no REST Docs configuration. Looks like "
-								+ "'%s' was not invoked. Please check your configuration.",
-						RestDocumentationFilter.class.getName()));
+				() -> "REST Docs configuration not found. Did you forget to add a "
+						+ RestAssuredRestDocumentationConfigurer.class.getSimpleName()
+						+ " as a filter when building the RequestSpecification?");
 		return configuration;
 	}
 

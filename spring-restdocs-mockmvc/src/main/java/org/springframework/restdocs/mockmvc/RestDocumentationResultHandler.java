@@ -49,7 +49,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 	@Override
 	public void handle(MvcResult result) throws Exception {
-		this.delegate.handle(result.getRequest(), result.getResponse(), getRequiredConfiguration(result));
+		this.delegate.handle(result.getRequest(), result.getResponse(), retrieveConfiguration(result));
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 
 			@Override
 			public void handle(MvcResult result) throws Exception {
-				Map<String, Object> configuration = new HashMap<>(getRequiredConfiguration(result));
+				Map<String, Object> configuration = new HashMap<>(retrieveConfiguration(result));
 				configuration.remove(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 				getDelegate().handle(result.getRequest(), result.getResponse(), configuration);
 			}
@@ -88,15 +88,12 @@ public class RestDocumentationResultHandler implements ResultHandler {
 		return this.delegate;
 	}
 
-	private static Map<String, Object> getRequiredConfiguration(MvcResult result) {
+	private Map<String, Object> retrieveConfiguration(MvcResult result) {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> configuration = (Map<String, Object>) result.getRequest()
 				.getAttribute(ATTRIBUTE_NAME_CONFIGURATION);
-		Assert.state(configuration != null,
-				() -> String.format(
-						"There is no REST Docs configuration. Looks like "
-								+ "'%s' was not invoked. Please check your configuration.",
-						MockMvcRestDocumentationConfigurer.class.getName()));
+		Assert.state(configuration != null, () -> "REST Docs configuration not found. Did you forget to apply a "
+				+ MockMvcRestDocumentationConfigurer.class.getSimpleName() + " when building the MockMvc instance?");
 		return configuration;
 	}
 

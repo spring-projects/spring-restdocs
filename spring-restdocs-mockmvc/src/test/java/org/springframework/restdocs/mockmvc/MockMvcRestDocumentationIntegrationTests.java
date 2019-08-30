@@ -496,7 +496,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 	public void exceptionShouldBeThrownWhenCallDocumentMockMvcNotConfigured() {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 		assertThatThrownBy(() -> mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andDo(document("basic")))
-				.isInstanceOf(IllegalStateException.class).hasMessageContaining(missingConfigurationMessage());
+				.isInstanceOf(IllegalStateException.class).hasMessage("REST Docs configuration not found. Did you "
+						+ "forget to apply a MockMvcRestDocumentationConfigurer when building the MockMvc instance?");
 
 	}
 
@@ -506,13 +507,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 		assertThatThrownBy(() -> mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
 				.andDo(documentation.document(responseHeaders(headerWithName("a").description("one")))))
-						.isInstanceOf(IllegalStateException.class).hasMessageContaining(missingConfigurationMessage());
-	}
-
-	private String missingConfigurationMessage() {
-		return "There is no REST Docs configuration. Looks like "
-				+ "'org.springframework.restdocs.mockmvc.MockMvcRestDocumentationConfigurer' "
-				+ "was not invoked. Please check your configuration.";
+						.isInstanceOf(IllegalStateException.class)
+						.hasMessage("REST Docs configuration not found. Did you forget to apply a "
+								+ "MockMvcRestDocumentationConfigurer when building the MockMvc instance?");
 	}
 
 	@Test

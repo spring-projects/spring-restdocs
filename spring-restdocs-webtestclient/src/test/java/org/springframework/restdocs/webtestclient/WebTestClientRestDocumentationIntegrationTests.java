@@ -180,13 +180,9 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		assertThatThrownBy(() -> this.webTestClient
 				.mutateWith((builder, httpHandlerBuilder, connector) -> builder.filters(List::clear).build()).get()
 				.uri("/").exchange().expectBody().consumeWith(document("default-snippets")))
-						.isInstanceOf(IllegalStateException.class).hasMessageContaining(missingConfiguration());
-	}
-
-	private String missingConfiguration() {
-		return "There is no REST Docs configuration. Looks like "
-				+ "'org.springframework.restdocs.webtestclient.WebTestClientRestDocumentationConfigurer' "
-				+ "was not invoked or configuration has already been removed. Please check your configuration.";
+						.isInstanceOf(IllegalStateException.class)
+						.hasMessage("REST Docs configuration not found. Did you forget to register a "
+								+ "WebTestClientRestDocumentationConfigurer as a filter?");
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {

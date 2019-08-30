@@ -29,6 +29,7 @@ import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -51,7 +52,8 @@ public class WebTestClientRestDocumentationConfigurerTests {
 				.header(WebTestClient.WEBTESTCLIENT_REQUEST_ID, "1").build();
 		this.configurer.filter(request, mock(ExchangeFunction.class));
 		assertThat(WebTestClientRestDocumentationConfigurer.retrieveConfiguration(request.headers())).isNotNull();
-		assertThat(WebTestClientRestDocumentationConfigurer.retrieveConfiguration(request.headers())).isNull();
+		assertThatIllegalStateException()
+				.isThrownBy(() -> WebTestClientRestDocumentationConfigurer.retrieveConfiguration(request.headers()));
 	}
 
 	@Test

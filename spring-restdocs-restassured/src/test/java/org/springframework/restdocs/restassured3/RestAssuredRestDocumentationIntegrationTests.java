@@ -343,7 +343,9 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	@Test
 	public void exceptionShouldBeThrownWhenCallDocumentRequestSpecificationNotConfigured() {
 		assertThatThrownBy(() -> given().port(tomcat.getPort()).filter(document("default")).get("/"))
-				.isInstanceOf(IllegalStateException.class).hasMessageContaining(messingConfigurationMessage());
+				.isInstanceOf(IllegalStateException.class)
+				.hasMessage("REST Docs configuration not found. Did you forget to add a "
+						+ "RestAssuredRestDocumentationConfigurer as a filter when building the RequestSpecification?");
 	}
 
 	@Test
@@ -351,14 +353,10 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		RestDocumentationFilter documentation = document("{method-name}-{step}");
 		assertThatThrownBy(() -> given().port(tomcat.getPort())
 				.filter(documentation.document(responseHeaders(headerWithName("a").description("one")))).get("/"))
-						.isInstanceOf(IllegalStateException.class).hasMessageContaining(messingConfigurationMessage());
-	}
-
-	private String messingConfigurationMessage() {
-		return "There is no REST Docs configuration. Looks like 'org.springframework."
-				+ "restdocs.restassured3.RestDocumentationFilter' was not invoked."
-				+ " Please check your configuration.";
-
+						.isInstanceOf(IllegalStateException.class)
+						.hasMessage("REST Docs configuration not found. Did you forget to add a "
+								+ "RestAssuredRestDocumentationConfigurer as a filter when building the "
+								+ "RequestSpecification?");
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
