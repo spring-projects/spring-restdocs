@@ -180,10 +180,6 @@ samples {
 	dependOn 'spring-restdocs-webtestclient:install'
 	dependOn 'spring-restdocs-asciidoctor:install'
 
-	restNotesGrails {
-		workingDir "$projectDir/samples/rest-notes-grails"
-	}
-
 	restNotesSpringHateoas {
 		workingDir "$projectDir/samples/rest-notes-spring-hateoas"
 	}
