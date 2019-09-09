@@ -48,9 +48,15 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
   def add_blocks(content, doc, parent)
     options = { safe: doc.options[:safe], attributes: doc.attributes }
     fragment = Asciidoctor.load content, options
+    # use a template to get the correct sectname and level for blocks to append
+    template = create_section(parent, '', {})
     fragment.blocks.each do |b|
       b.parent = parent
-      b.level += parent.level
+      # might be a standard block and no section in case of 'No snippets were found for operation'
+      if b.respond_to?(:sectname)
+        b.sectname = template.sectname
+      end
+      b.level = template.level
       parent << b
     end
     parent.find_by.each do |b|
