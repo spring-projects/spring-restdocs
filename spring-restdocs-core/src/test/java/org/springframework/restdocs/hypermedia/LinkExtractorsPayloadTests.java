@@ -106,7 +106,7 @@ public class LinkExtractorsPayloadTests {
 	}
 
 	private OperationResponse createResponse(String contentName) throws IOException {
-		return this.responseFactory.create(HttpStatus.OK, null,
+		return this.responseFactory.create(HttpStatus.OK.value(), null,
 				FileCopyUtils.copyToByteArray(getPayloadFile(contentName)));
 	}
 

@@ -141,7 +141,7 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 
 	@Override
 	public OperationResponse preprocess(OperationResponse response) {
-		return this.contentModifyingDelegate.preprocess(new OperationResponseFactory().create(response.getStatus(),
+		return this.contentModifyingDelegate.preprocess(new OperationResponseFactory().create(response.getStatusCode(),
 				modify(response.getHeaders()), response.getContent()));
 	}
 

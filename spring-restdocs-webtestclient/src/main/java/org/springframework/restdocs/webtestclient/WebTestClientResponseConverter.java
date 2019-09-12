@@ -36,7 +36,7 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 
 	@Override
 	public OperationResponse convert(ExchangeResult result) {
-		return new OperationResponseFactory().create(result.getStatus(), extractHeaders(result),
+		return new OperationResponseFactory().create(result.getStatus().value(), extractHeaders(result),
 				result.getResponseBodyContent());
 	}
 

@@ -67,7 +67,7 @@ public class ContentModifyingOperationPreprocessorTests {
 
 	@Test
 	public void modifyResponseContent() {
-		OperationResponse response = this.responseFactory.create(HttpStatus.OK, new HttpHeaders(),
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK.value(), new HttpHeaders(),
 				"content".getBytes());
 		OperationResponse preprocessed = this.preprocessor.preprocess(response);
 		assertThat(preprocessed.getContent()).isEqualTo("modified".getBytes());

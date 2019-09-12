@@ -19,7 +19,6 @@ package org.springframework.restdocs.mockmvc;
 import javax.servlet.http.Cookie;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
@@ -36,8 +35,8 @@ class MockMvcResponseConverter implements ResponseConverter<MockHttpServletRespo
 
 	@Override
 	public OperationResponse convert(MockHttpServletResponse mockResponse) {
-		return new OperationResponseFactory().create(HttpStatus.valueOf(mockResponse.getStatus()),
-				extractHeaders(mockResponse), mockResponse.getContentAsByteArray());
+		return new OperationResponseFactory().create(mockResponse.getStatus(), extractHeaders(mockResponse),
+				mockResponse.getContentAsByteArray());
 	}
 
 	private HttpHeaders extractHeaders(MockHttpServletResponse response) {

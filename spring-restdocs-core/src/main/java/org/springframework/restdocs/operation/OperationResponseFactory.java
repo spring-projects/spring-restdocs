@@ -34,8 +34,14 @@ public class OperationResponseFactory {
 	 * @param headers the request's headers
 	 * @param content the content of the request
 	 * @return the {@code OperationResponse}
+	 * @deprecated since 2.0.4 in favor of {@link #create(int, HttpHeaders, byte[])}
 	 */
+	@Deprecated
 	public OperationResponse create(HttpStatus status, HttpHeaders headers, byte[] content) {
+		return this.create(status.value(), headers, content);
+	}
+
+	public OperationResponse create(int status, HttpHeaders headers, byte[] content) {
 		return new StandardOperationResponse(status, augmentHeaders(headers, content), content);
 	}
 
@@ -49,8 +55,8 @@ public class OperationResponseFactory {
 	 * @return the new response with the new content
 	 */
 	public OperationResponse createFrom(OperationResponse original, byte[] newContent) {
-		return new StandardOperationResponse(original.getStatus(), getUpdatedHeaders(original.getHeaders(), newContent),
-				newContent);
+		return new StandardOperationResponse(original.getStatusCode(),
+				getUpdatedHeaders(original.getHeaders(), newContent), newContent);
 	}
 
 	/**
@@ -61,7 +67,7 @@ public class OperationResponseFactory {
 	 * @return the new response with the new headers
 	 */
 	public OperationResponse createFrom(OperationResponse original, HttpHeaders newHeaders) {
-		return new StandardOperationResponse(original.getStatus(), newHeaders, original.getContent());
+		return new StandardOperationResponse(original.getStatusCode(), newHeaders, original.getContent());
 	}
 
 	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, byte[] content) {

@@ -49,7 +49,7 @@ public class ContentTypeLinkExtractorTests {
 	public void extractionFailsWithNullContentType() throws IOException {
 		this.thrown.expect(IllegalStateException.class);
 		new ContentTypeLinkExtractor()
-				.extractLinks(this.responseFactory.create(HttpStatus.OK, new HttpHeaders(), null));
+				.extractLinks(this.responseFactory.create(HttpStatus.OK.value(), new HttpHeaders(), null));
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class ContentTypeLinkExtractorTests {
 		extractors.put(MediaType.APPLICATION_JSON, extractor);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		OperationResponse response = this.responseFactory.create(HttpStatus.OK, httpHeaders, null);
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK.value(), httpHeaders, null);
 		new ContentTypeLinkExtractor(extractors).extractLinks(response);
 		verify(extractor).extractLinks(response);
 	}
@@ -71,7 +71,7 @@ public class ContentTypeLinkExtractorTests {
 		extractors.put(MediaType.APPLICATION_JSON, extractor);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.parseMediaType("application/json;foo=bar"));
-		OperationResponse response = this.responseFactory.create(HttpStatus.OK, httpHeaders, null);
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK.value(), httpHeaders, null);
 		new ContentTypeLinkExtractor(extractors).extractLinks(response);
 		verify(extractor).extractLinks(response);
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,15 @@ public class MockMvcResponseConverterTests {
 		assertThat(operationResponse.getHeaders()).hasSize(1);
 		assertThat(operationResponse.getHeaders()).containsEntry(HttpHeaders.SET_COOKIE,
 				Collections.singletonList("name=value; Domain=localhost; HttpOnly"));
+	}
+
+	@Test
+	public void responseWithCustomStatus() {
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		response.setStatus(600);
+		OperationResponse operationResponse = this.factory.convert(response);
+		assertThat(operationResponse.getStatus()).isNull();
+		assertThat(operationResponse.getStatusCode()).isEqualTo(600);
 	}
 
 }

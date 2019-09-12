@@ -87,7 +87,7 @@ public class HeaderRemovingOperationPreprocessorTests {
 	}
 
 	private OperationResponse createResponse(String... extraHeaders) {
-		return this.responseFactory.create(HttpStatus.OK, getHttpHeaders(extraHeaders), new byte[0]);
+		return this.responseFactory.create(HttpStatus.OK.value(), getHttpHeaders(extraHeaders), new byte[0]);
 	}
 
 	private HttpHeaders getHttpHeaders(String... extraHeaders) {

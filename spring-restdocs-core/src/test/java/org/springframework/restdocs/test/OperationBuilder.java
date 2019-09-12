@@ -261,7 +261,7 @@ public class OperationBuilder extends OperationTestRule {
 	 */
 	public final class OperationResponseBuilder {
 
-		private HttpStatus status = HttpStatus.OK;
+		private int status = HttpStatus.OK.value();
 
 		private HttpHeaders headers = new HttpHeaders();
 
@@ -272,7 +272,7 @@ public class OperationBuilder extends OperationTestRule {
 		}
 
 		public OperationResponseBuilder status(int status) {
-			this.status = HttpStatus.valueOf(status);
+			this.status = status;
 			return this;
 		}
 

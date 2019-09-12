@@ -20,7 +20,6 @@ import io.restassured.http.Header;
 import io.restassured.response.Response;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
@@ -35,8 +34,8 @@ class RestAssuredResponseConverter implements ResponseConverter<Response> {
 
 	@Override
 	public OperationResponse convert(Response response) {
-		return new OperationResponseFactory().create(HttpStatus.valueOf(response.getStatusCode()),
-				extractHeaders(response), extractContent(response));
+		return new OperationResponseFactory().create(response.getStatusCode(), extractHeaders(response),
+				extractContent(response));
 	}
 
 	private HttpHeaders extractHeaders(Response response) {

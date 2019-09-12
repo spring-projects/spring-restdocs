@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,17 @@ public interface OperationResponse {
 
 	/**
 	 * Returns the status of the response.
-	 * @return the status
+	 * @return the status or {@code null} if the status is unknown to {@link HttpStatus}
 	 */
 	HttpStatus getStatus();
+
+	/**
+	 * Returns the status code of the response.
+	 * @return the status code
+	 */
+	default int getStatusCode() {
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * Returns the headers in the response.

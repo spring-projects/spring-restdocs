@@ -69,7 +69,7 @@ public class RestDocumentationGeneratorTests {
 	private final OperationRequest operationRequest = new OperationRequestFactory()
 			.create(URI.create("http://localhost:8080"), null, null, new HttpHeaders(), null, null);
 
-	private final OperationResponse operationResponse = new OperationResponseFactory().create(null, null, null);
+	private final OperationResponse operationResponse = new OperationResponseFactory().create(0, null, null);
 
 	private final Snippet snippet = mock(Snippet.class);
 
@@ -197,7 +197,7 @@ public class RestDocumentationGeneratorTests {
 	}
 
 	private static OperationResponse createResponse() {
-		return new OperationResponseFactory().create(null, null, null);
+		return new OperationResponseFactory().create(0, null, null);
 	}
 
 }
