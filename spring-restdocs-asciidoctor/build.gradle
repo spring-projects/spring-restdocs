@@ -6,7 +6,7 @@ configurations {
 dependencies {
 	merge project(':spring-restdocs-asciidoctor-1.5')
 	merge project(':spring-restdocs-asciidoctor-1.6')
-	merge project(':spring-restdocs-asciidoctor-2.0')
+	merge project(':spring-restdocs-asciidoctor-2.x')
 	testCompile 'org.apache.pdfbox:pdfbox'
 	testCompile 'org.asciidoctor:asciidoctorj:1.5.8.1'
 	testCompile 'org.assertj:assertj-core'
@@ -18,7 +18,7 @@ dependencies {
 jar {
 	dependsOn ':spring-restdocs-asciidoctor-1.5:jar'
 	dependsOn ':spring-restdocs-asciidoctor-1.6:jar'
-	dependsOn ':spring-restdocs-asciidoctor-2.0:jar'
+	dependsOn ':spring-restdocs-asciidoctor-2.x:jar'
 	from configurations.merge.collect { file -> zipTree(file) }
 }
 
@@ -26,6 +26,6 @@ matrixTest {
 	asciidoctorj {
 		group = 'org.asciidoctor'
 		artifact = 'asciidoctorj'
-		versions = [ asciidoctorj16Version, asciidoctorj20Version ]
+		versions = [ asciidoctorj16Version, asciidoctorj20Version, asciidoctorj21Version ]
 	}
 }

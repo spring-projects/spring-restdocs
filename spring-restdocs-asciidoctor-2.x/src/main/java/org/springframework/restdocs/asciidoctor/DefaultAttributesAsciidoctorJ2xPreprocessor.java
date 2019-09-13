@@ -26,7 +26,7 @@ import org.asciidoctor.extension.PreprocessorReader;
  *
  * @author Andy Wilkinson
  */
-final class DefaultAttributesAsciidoctorJ20Preprocessor extends Preprocessor {
+final class DefaultAttributesAsciidoctorJ2xPreprocessor extends Preprocessor {
 
 	private final SnippetsDirectoryResolver snippetsDirectoryResolver = new SnippetsDirectoryResolver();
 

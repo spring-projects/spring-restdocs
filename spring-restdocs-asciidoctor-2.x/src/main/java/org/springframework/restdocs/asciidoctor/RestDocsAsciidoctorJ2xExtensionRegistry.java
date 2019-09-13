@@ -20,17 +20,17 @@ import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.jruby.extension.spi.ExtensionRegistry;
 
 /**
- * AsciidoctorJ 2.0 {@link ExtensionRegistry} for Spring REST Docs.
+ * AsciidoctorJ 2.x {@link ExtensionRegistry} for Spring REST Docs.
  *
  * @author Andy Wilkinson
  */
-public final class RestDocsAsciidoctorJ20ExtensionRegistry implements ExtensionRegistry {
+public final class RestDocsAsciidoctorJ2xExtensionRegistry implements ExtensionRegistry {
 
 	@Override
 	public void register(Asciidoctor asciidoctor) {
-		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesAsciidoctorJ20Preprocessor());
+		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesAsciidoctorJ2xPreprocessor());
 		asciidoctor.rubyExtensionRegistry()
-				.loadClass(RestDocsAsciidoctorJ20ExtensionRegistry.class
+				.loadClass(RestDocsAsciidoctorJ2xExtensionRegistry.class
 						.getResourceAsStream("/extensions/operation_block_macro.rb"))
 				.blockMacro("operation", "OperationBlockMacro");
 	}

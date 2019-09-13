@@ -1,4 +1,4 @@
-description = 'AsciidoctorJ 2.0 extensions for Spring REST Docs'
+description = 'AsciidoctorJ 2.x extensions for Spring REST Docs'
 
 dependencies {
 	compileOnly "org.asciidoctor:asciidoctorj:$asciidoctorj20Version"

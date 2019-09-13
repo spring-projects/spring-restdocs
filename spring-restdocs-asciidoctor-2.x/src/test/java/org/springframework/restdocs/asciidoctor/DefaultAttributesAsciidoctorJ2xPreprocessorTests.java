@@ -26,11 +26,11 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for {@link DefaultAttributesAsciidoctorJ20Preprocessor}.
+ * Tests for {@link DefaultAttributesAsciidoctorJ2xPreprocessor}.
  *
  * @author Andy Wilkinson
  */
-public class DefaultAttributesAsciidoctorJ20PreprocessorTests {
+public class DefaultAttributesAsciidoctorJ2xPreprocessorTests {
 
 	@Test
 	public void snippetsAttributeIsSet() {
@@ -60,7 +60,7 @@ public class DefaultAttributesAsciidoctorJ20PreprocessorTests {
 
 	private Asciidoctor createAsciidoctor() {
 		Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesAsciidoctorJ20Preprocessor());
+		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesAsciidoctorJ2xPreprocessor());
 		return asciidoctor;
 	}
 
