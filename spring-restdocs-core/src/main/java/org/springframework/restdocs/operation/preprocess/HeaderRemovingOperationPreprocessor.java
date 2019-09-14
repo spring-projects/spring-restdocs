@@ -16,7 +16,8 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -55,11 +56,9 @@ class HeaderRemovingOperationPreprocessor implements OperationPreprocessor {
 
 	private HttpHeaders removeHeaders(HttpHeaders originalHeaders) {
 		HttpHeaders processedHeaders = new HttpHeaders();
-		processedHeaders.putAll(originalHeaders);
-		Iterator<String> headers = processedHeaders.keySet().iterator();
-		while (headers.hasNext()) {
-			if (this.headerFilter.excludeHeader(headers.next())) {
-				headers.remove();
+		for (Entry<String, List<String>> header : originalHeaders.entrySet()) {
+			if (!this.headerFilter.excludeHeader(header.getKey())) {
+				processedHeaders.put(header.getKey(), header.getValue());
 			}
 		}
 		return processedHeaders;
