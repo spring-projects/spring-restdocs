@@ -19,6 +19,6 @@ test {
 matrixTest {
 	springFramework {
 		group = 'org.springframework'
-		versions = ['5.1.10.BUILD-SNAPSHOT']
+		versions = ['5.1.+', '5.2.+']
 	}
 }
