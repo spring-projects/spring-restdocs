@@ -30,41 +30,40 @@ interface ContentHandler extends FieldTypeResolver {
 
 	/**
 	 * Finds the fields that are missing from the handler's payload. A field is missing if
-	 * it is described by one of the {@code fieldDescriptors} but is not present in the
-	 * payload.
-	 * @param fieldDescriptors the descriptors
+	 * it is described but is not present in the payload.
 	 * @return descriptors for the fields that are missing from the payload
 	 * @throws PayloadHandlingException if a failure occurs
 	 */
-	List<FieldDescriptor> findMissingFields(List<FieldDescriptor> fieldDescriptors);
+	List<FieldDescriptor> findMissingFields();
 
 	/**
 	 * Returns modified content, formatted as a String, that only contains the fields that
 	 * are undocumented. A field is undocumented if it is present in the handler's content
-	 * but is not described by the given {@code fieldDescriptors}. If the content is
-	 * completely documented, {@code null} is returned
-	 * @param fieldDescriptors the descriptors
+	 * but is not described. If the content is completely documented, {@code null} is
+	 * returned
 	 * @return the undocumented content, or {@code null} if all of the content is
 	 * documented
 	 * @throws PayloadHandlingException if a failure occurs
 	 */
-	String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors);
+	String getUndocumentedContent();
 
 	/**
-	 * Create a {@link ContentHandler} for the given content type and payload.
+	 * Create a {@link ContentHandler} for the given content type and payload, described
+	 * by the given descriptors.
 	 * @param content the payload
 	 * @param contentType the content type
+	 * @param descriptors descriptors of the content
 	 * @return the ContentHandler
 	 * @throws PayloadHandlingException if no known ContentHandler can handle the content
 	 */
-	static ContentHandler forContent(byte[] content, MediaType contentType) {
-
+	static ContentHandler forContentWithDescriptors(byte[] content, MediaType contentType,
+			List<FieldDescriptor> descriptors) {
 		try {
-			return new JsonContentHandler(content);
+			return new JsonContentHandler(content, descriptors);
 		}
 		catch (Exception je) {
 			try {
-				return new XmlContentHandler(content);
+				return new XmlContentHandler(content, descriptors);
 			}
 			catch (Exception xe) {
 				throw new PayloadHandlingException(

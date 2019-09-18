@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 
 package org.springframework.restdocs.payload;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.http.MediaType;
 
@@ -33,9 +36,25 @@ public interface FieldTypeResolver {
 	 * @param content the payload that the {@code FieldTypeResolver} should handle
 	 * @param contentType the content type of the payload
 	 * @return the {@code FieldTypeResolver}
+	 * @deprecated since 2.0.4 in favor of
+	 * {@link #forContentWithDescriptors(byte[], MediaType, List)}
 	 */
+	@Deprecated
 	static FieldTypeResolver forContent(byte[] content, MediaType contentType) {
-		return ContentHandler.forContent(content, contentType);
+		return forContentWithDescriptors(content, contentType, Collections.emptyList());
+	}
+
+	/**
+	 * Create a {@code FieldTypeResolver} for the given {@code content} and
+	 * {@code contentType}, described by the given {@code descriptors}.
+	 * @param content the payload that the {@code FieldTypeResolver} should handle
+	 * @param contentType the content type of the payload
+	 * @param descriptors the descriptors of the content
+	 * @return the {@code FieldTypeResolver}
+	 */
+	static FieldTypeResolver forContentWithDescriptors(byte[] content, MediaType contentType,
+			List<FieldDescriptor> descriptors) {
+		return ContentHandler.forContentWithDescriptors(content, contentType, descriptors);
 	}
 
 	/**

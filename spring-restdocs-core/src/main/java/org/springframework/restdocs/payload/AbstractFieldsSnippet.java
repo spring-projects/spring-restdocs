@@ -153,7 +153,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		if (this.subsectionExtractor != null) {
 			content = verifyContent(this.subsectionExtractor.extractSubsection(content, contentType));
 		}
-		ContentHandler contentHandler = ContentHandler.forContent(content, contentType);
+		ContentHandler contentHandler = ContentHandler.forContentWithDescriptors(content, contentType,
+				this.fieldDescriptors);
 
 		validateFieldDocumentation(contentHandler);
 
@@ -193,10 +194,9 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	}
 
 	private void validateFieldDocumentation(ContentHandler payloadHandler) {
-		List<FieldDescriptor> missingFields = payloadHandler.findMissingFields(this.fieldDescriptors);
+		List<FieldDescriptor> missingFields = payloadHandler.findMissingFields();
 
-		String undocumentedPayload = this.ignoreUndocumentedFields ? null
-				: payloadHandler.getUndocumentedContent(this.fieldDescriptors);
+		String undocumentedPayload = this.ignoreUndocumentedFields ? null : payloadHandler.getUndocumentedContent();
 
 		if (!missingFields.isEmpty() || StringUtils.hasText(undocumentedPayload)) {
 			String message = "";

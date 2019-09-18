@@ -53,7 +53,9 @@ class XmlContentHandler implements ContentHandler {
 
 	private final byte[] rawContent;
 
-	XmlContentHandler(byte[] rawContent) {
+	private final List<FieldDescriptor> fieldDescriptors;
+
+	XmlContentHandler(byte[] rawContent, List<FieldDescriptor> fieldDescriptors) {
 		try {
 			this.documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		}
@@ -61,14 +63,15 @@ class XmlContentHandler implements ContentHandler {
 			throw new IllegalStateException("Failed to create document builder", ex);
 		}
 		this.rawContent = rawContent;
+		this.fieldDescriptors = fieldDescriptors;
 		readPayload();
 	}
 
 	@Override
-	public List<FieldDescriptor> findMissingFields(List<FieldDescriptor> fieldDescriptors) {
+	public List<FieldDescriptor> findMissingFields() {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
 		Document payload = readPayload();
-		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
+		for (FieldDescriptor fieldDescriptor : this.fieldDescriptors) {
 			if (!fieldDescriptor.isOptional()) {
 				NodeList matchingNodes = findMatchingNodes(fieldDescriptor, payload);
 				if (matchingNodes.getLength() == 0) {
@@ -103,10 +106,10 @@ class XmlContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors) {
+	public String getUndocumentedContent() {
 		Document payload = readPayload();
 		List<Node> matchedButNotRemoved = new ArrayList<>();
-		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
+		for (FieldDescriptor fieldDescriptor : this.fieldDescriptors) {
 			NodeList matchingNodes;
 			try {
 				matchingNodes = (NodeList) createXPath(fieldDescriptor.getPath()).evaluate(payload,

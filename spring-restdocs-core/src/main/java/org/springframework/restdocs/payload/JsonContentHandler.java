@@ -44,18 +44,21 @@ class JsonContentHandler implements ContentHandler {
 
 	private final byte[] rawContent;
 
-	JsonContentHandler(byte[] content) {
+	private final List<FieldDescriptor> fieldDescriptors;
+
+	JsonContentHandler(byte[] content, List<FieldDescriptor> fieldDescriptors) {
 		this.rawContent = content;
+		this.fieldDescriptors = fieldDescriptors;
 		readContent();
 	}
 
 	@Override
-	public List<FieldDescriptor> findMissingFields(List<FieldDescriptor> fieldDescriptors) {
+	public List<FieldDescriptor> findMissingFields() {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
 		Object payload = readContent();
-		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
+		for (FieldDescriptor fieldDescriptor : this.fieldDescriptors) {
 			if (!fieldDescriptor.isOptional() && !this.fieldProcessor.hasField(fieldDescriptor.getPath(), payload)
-					&& !isNestedBeneathMissingOptionalField(fieldDescriptor, fieldDescriptors, payload)) {
+					&& !isNestedBeneathMissingOptionalField(fieldDescriptor, payload)) {
 				missingFields.add(fieldDescriptor);
 			}
 		}
@@ -63,9 +66,8 @@ class JsonContentHandler implements ContentHandler {
 		return missingFields;
 	}
 
-	private boolean isNestedBeneathMissingOptionalField(FieldDescriptor missing, List<FieldDescriptor> fieldDescriptors,
-			Object payload) {
-		List<FieldDescriptor> candidates = new ArrayList<>(fieldDescriptors);
+	private boolean isNestedBeneathMissingOptionalField(FieldDescriptor missing, Object payload) {
+		List<FieldDescriptor> candidates = new ArrayList<>(this.fieldDescriptors);
 		candidates.remove(missing);
 		for (FieldDescriptor candidate : candidates) {
 			if (candidate.isOptional() && missing.getPath().startsWith(candidate.getPath())
@@ -98,9 +100,9 @@ class JsonContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public String getUndocumentedContent(List<FieldDescriptor> fieldDescriptors) {
+	public String getUndocumentedContent() {
 		Object content = readContent();
-		for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
+		for (FieldDescriptor fieldDescriptor : this.fieldDescriptors) {
 			if (describesSubsection(fieldDescriptor)) {
 				this.fieldProcessor.removeSubsection(fieldDescriptor.getPath(), content);
 			}
@@ -154,7 +156,9 @@ class JsonContentHandler implements ContentHandler {
 					.discoverFieldTypes(fieldDescriptor.getPath(), readContent())
 					.coalesce(fieldDescriptor.isOptional());
 			if (descriptorFieldType == JsonFieldType.VARIES || descriptorFieldType == actualFieldType
-					|| (fieldDescriptor.isOptional() && actualFieldType == JsonFieldType.NULL)) {
+					|| (fieldDescriptor.isOptional() && actualFieldType == JsonFieldType.NULL)
+					|| (isNestedBeneathMissingOptionalField(fieldDescriptor, readContent())
+							&& actualFieldType == JsonFieldType.VARIES)) {
 				return descriptorFieldType;
 			}
 			throw new FieldTypesDoNotMatchException(fieldDescriptor, actualFieldType);

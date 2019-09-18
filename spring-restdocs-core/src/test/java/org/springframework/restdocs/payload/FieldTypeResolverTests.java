@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.payload;
 
+import java.util.Collections;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -35,21 +37,43 @@ public class FieldTypeResolverTests {
 	public ExpectedException thrownException = ExpectedException.none();
 
 	@Test
-	public void returnJsonFieldTypeResolver() {
+	@Deprecated
+	public void whenForContentCalledWithJsonContentThenReturnsJsonFieldTypeResolver() {
 		assertThat(FieldTypeResolver.forContent("{\"field\": \"value\"}".getBytes(), MediaType.APPLICATION_JSON))
 				.isInstanceOf(JsonContentHandler.class);
 	}
 
 	@Test
-	public void returnXmlContentHandler() {
+	@Deprecated
+	public void whenForContentCalledWithXmlContentThenReturnsXmlContentHandler() {
 		assertThat(FieldTypeResolver.forContent("<a><b>5</b></a>".getBytes(), MediaType.APPLICATION_XML))
 				.isInstanceOf(XmlContentHandler.class);
 	}
 
 	@Test
-	public void throwOnInvalidContent() {
+	@Deprecated
+	public void whenForContentIsCalledWithInvalidContentThenExceptionIsThrown() {
 		this.thrownException.expect(PayloadHandlingException.class);
 		FieldTypeResolver.forContent("some".getBytes(), MediaType.APPLICATION_XML);
+	}
+
+	@Test
+	public void whenForContentWithDescriptorsCalledWithJsonContentThenReturnsJsonFieldTypeResolver() {
+		assertThat(FieldTypeResolver.forContentWithDescriptors("{\"field\": \"value\"}".getBytes(),
+				MediaType.APPLICATION_JSON, Collections.emptyList())).isInstanceOf(JsonContentHandler.class);
+	}
+
+	@Test
+	public void whenForContentWithDescriptorsCalledWithXmlContentThenReturnsXmlContentHandler() {
+		assertThat(FieldTypeResolver.forContentWithDescriptors("<a><b>5</b></a>".getBytes(), MediaType.APPLICATION_XML,
+				Collections.emptyList())).isInstanceOf(XmlContentHandler.class);
+	}
+
+	@Test
+	public void whenForContentWithDescriptorsIsCalledWithInvalidContentThenExceptionIsThrown() {
+		this.thrownException.expect(PayloadHandlingException.class);
+		FieldTypeResolver.forContentWithDescriptors("some".getBytes(), MediaType.APPLICATION_XML,
+				Collections.emptyList());
 	}
 
 }
