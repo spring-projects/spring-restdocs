@@ -56,6 +56,26 @@ final class JsonFieldPath {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		JsonFieldPath other = (JsonFieldPath) obj;
+		return this.segments.equals(other.segments);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.segments.hashCode();
+	}
+
+	@Override
 	public String toString() {
 		return this.rawPath;
 	}

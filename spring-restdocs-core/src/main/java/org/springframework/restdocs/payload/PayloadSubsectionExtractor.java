@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.payload;
 
+import java.util.List;
+
 import org.springframework.http.MediaType;
 
 /**
@@ -35,6 +37,19 @@ public interface PayloadSubsectionExtractor<T extends PayloadSubsectionExtractor
 	 * @return the subsection of the payload
 	 */
 	byte[] extractSubsection(byte[] payload, MediaType contentType);
+
+	/**
+	 * Extracts a subsection of the given {@code payload} that has the given
+	 * {@code contentType} and that is described by the given {@code descriptors}.
+	 * @param payload the payload
+	 * @param contentType the content type of the payload
+	 * @param descriptors descriptors that describe the payload
+	 * @return the subsection of the payload
+	 * @since 2.0.4
+	 */
+	default byte[] extractSubsection(byte[] payload, MediaType contentType, List<FieldDescriptor> descriptors) {
+		return extractSubsection(payload, contentType);
+	}
 
 	/**
 	 * Returns an identifier for the subsection that this extractor will extract.

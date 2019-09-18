@@ -151,7 +151,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		}
 		MediaType contentType = getContentType(operation);
 		if (this.subsectionExtractor != null) {
-			content = verifyContent(this.subsectionExtractor.extractSubsection(content, contentType));
+			content = verifyContent(
+					this.subsectionExtractor.extractSubsection(content, contentType, this.fieldDescriptors));
 		}
 		ContentHandler contentHandler = ContentHandler.forContentWithDescriptors(content, contentType,
 				this.fieldDescriptors);

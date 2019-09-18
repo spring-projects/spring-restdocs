@@ -44,9 +44,9 @@ class JsonContentHandler implements ContentHandler {
 
 	private final byte[] rawContent;
 
-	private final List<FieldDescriptor> fieldDescriptors;
+	private final Collection<FieldDescriptor> fieldDescriptors;
 
-	JsonContentHandler(byte[] content, List<FieldDescriptor> fieldDescriptors) {
+	JsonContentHandler(byte[] content, Collection<FieldDescriptor> fieldDescriptors) {
 		this.rawContent = content;
 		this.fieldDescriptors = fieldDescriptors;
 		readContent();
@@ -55,10 +55,8 @@ class JsonContentHandler implements ContentHandler {
 	@Override
 	public List<FieldDescriptor> findMissingFields() {
 		List<FieldDescriptor> missingFields = new ArrayList<>();
-		Object payload = readContent();
 		for (FieldDescriptor fieldDescriptor : this.fieldDescriptors) {
-			if (!fieldDescriptor.isOptional() && !this.fieldProcessor.hasField(fieldDescriptor.getPath(), payload)
-					&& !isNestedBeneathMissingOptionalField(fieldDescriptor, payload)) {
+			if (isMissing(fieldDescriptor)) {
 				missingFields.add(fieldDescriptor);
 			}
 		}
@@ -66,11 +64,17 @@ class JsonContentHandler implements ContentHandler {
 		return missingFields;
 	}
 
-	private boolean isNestedBeneathMissingOptionalField(FieldDescriptor missing, Object payload) {
+	boolean isMissing(FieldDescriptor descriptor) {
+		Object payload = readContent();
+		return !descriptor.isOptional() && !this.fieldProcessor.hasField(descriptor.getPath(), payload)
+				&& !isNestedBeneathMissingOptionalField(descriptor, payload);
+	}
+
+	private boolean isNestedBeneathMissingOptionalField(FieldDescriptor descriptor, Object payload) {
 		List<FieldDescriptor> candidates = new ArrayList<>(this.fieldDescriptors);
-		candidates.remove(missing);
+		candidates.remove(descriptor);
 		for (FieldDescriptor candidate : candidates) {
-			if (candidate.isOptional() && missing.getPath().startsWith(candidate.getPath())
+			if (candidate.isOptional() && descriptor.getPath().startsWith(candidate.getPath())
 					&& isMissing(candidate, payload)) {
 				return true;
 			}

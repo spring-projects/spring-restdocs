@@ -17,9 +17,11 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -71,6 +73,11 @@ public class FieldPathPayloadSubsectionExtractor
 
 	@Override
 	public byte[] extractSubsection(byte[] payload, MediaType contentType) {
+		return extractSubsection(payload, contentType, Collections.emptyList());
+	}
+
+	@Override
+	public byte[] extractSubsection(byte[] payload, MediaType contentType, List<FieldDescriptor> descriptors) {
 		try {
 			ExtractedField extractedField = new JsonFieldProcessor().extract(this.fieldPath,
 					objectMapper.readValue(payload, Object.class));
@@ -78,21 +85,27 @@ public class FieldPathPayloadSubsectionExtractor
 			if (value == ExtractedField.ABSENT) {
 				throw new PayloadHandlingException(this.fieldPath + " does not identify a section of the payload");
 			}
+			Map<JsonFieldPath, FieldDescriptor> descriptorsByPath = descriptors.stream()
+					.collect(Collectors.toMap(
+							(descriptor) -> JsonFieldPath.compile(this.fieldPath + "." + descriptor.getPath()),
+							this::prependFieldPath));
 			if (value instanceof List) {
 				List<?> extractedList = (List<?>) value;
-				Set<String> uncommonPaths = JsonFieldPaths.from(extractedList).getUncommon();
+				JsonContentHandler contentHandler = new JsonContentHandler(payload, descriptorsByPath.values());
+				Set<JsonFieldPath> uncommonPaths = JsonFieldPaths.from(extractedList).getUncommon().stream()
+						.map((path) -> JsonFieldPath.compile(this.fieldPath + "." + path)).filter((path) -> {
+							FieldDescriptor descriptorForPath = descriptorsByPath.getOrDefault(path,
+									new FieldDescriptor(path.toString()));
+							return contentHandler.isMissing(descriptorForPath);
+						}).collect(Collectors.toSet());
 				if (uncommonPaths.isEmpty()) {
 					value = extractedList.get(0);
 				}
 				else {
 					String message = this.fieldPath + " identifies multiple sections of "
 							+ "the payload and they do not have a common structure. The "
-							+ "following uncommon paths were found: ";
-					List<String> prefixedPaths = new ArrayList<>();
-					for (String uncommonPath : uncommonPaths) {
-						prefixedPaths.add(this.fieldPath + "." + uncommonPath);
-					}
-					message += prefixedPaths;
+							+ "following non-optional uncommon paths were found: ";
+					message += uncommonPaths;
 					throw new PayloadHandlingException(message);
 				}
 			}
@@ -101,6 +114,14 @@ public class FieldPathPayloadSubsectionExtractor
 		catch (IOException ex) {
 			throw new PayloadHandlingException(ex);
 		}
+	}
+
+	private FieldDescriptor prependFieldPath(FieldDescriptor original) {
+		FieldDescriptor prefixed = new FieldDescriptor(this.fieldPath + "." + original.getPath());
+		if (original.isOptional()) {
+			prefixed.optional();
+		}
+		return prefixed;
 	}
 
 	@Override

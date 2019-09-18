@@ -17,6 +17,7 @@
 package org.springframework.restdocs.payload;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -101,9 +102,33 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	public void extractMapSubsectionWithVaryingStructureFromMultiElementArrayInAJsonMap()
 			throws JsonParseException, JsonMappingException, IOException {
 		this.thrown.expect(PayloadHandlingException.class);
-		this.thrown.expectMessage("The following uncommon paths were found: [a.[].b.d]");
+		this.thrown.expectMessage("The following non-optional uncommon paths were found: [a.[].b.d]");
 		new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
 				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(), MediaType.APPLICATION_JSON);
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void extractMapSubsectionWithVaryingStructureDueToOptionalFieldsFromMultiElementArrayInAJsonMap()
+			throws JsonParseException, JsonMappingException, IOException {
+		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
+				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(), MediaType.APPLICATION_JSON,
+				Arrays.asList(new FieldDescriptor("d").optional()));
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
+		assertThat(extracted.size()).isEqualTo(1);
+		assertThat(extracted).containsOnlyKeys("c");
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void extractMapSubsectionWithVaryingStructureDueToOptionalParentFieldsFromMultiElementArrayInAJsonMap()
+			throws JsonParseException, JsonMappingException, IOException {
+		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
+				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": { \"e\": 7}}}]}".getBytes(),
+				MediaType.APPLICATION_JSON, Arrays.asList(new FieldDescriptor("d").optional()));
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
+		assertThat(extracted.size()).isEqualTo(1);
+		assertThat(extracted).containsOnlyKeys("c");
 	}
 
 	@Test
