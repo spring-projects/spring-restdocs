@@ -13,9 +13,6 @@ Andy Wilkinson;
 RESTful Notes is a RESTful web service for creating and storing notes. It uses hypermedia
 to describe the relationships between resources and to allow navigation between them.
 
-[[getting-started]]
-= Getting started
-
 
 
 [[getting-started-running-the-service]]

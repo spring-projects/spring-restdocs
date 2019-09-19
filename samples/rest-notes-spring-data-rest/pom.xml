@@ -83,6 +83,12 @@
 						<configuration>
 							<backend>html</backend>
 							<doctype>book</doctype>
+							<logHandler>
+								<outputToConsole>true</outputToConsole>
+								<failIf>
+									<severity>DEBUG</severity> (2)
+								</failIf>
+							</logHandler>
 						</configuration>
 					</execution>
 				</executions>
