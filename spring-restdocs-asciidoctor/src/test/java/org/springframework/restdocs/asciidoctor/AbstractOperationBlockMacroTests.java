@@ -117,9 +117,8 @@ public abstract class AbstractOperationBlockMacroTests {
 
 	@Test
 	public void includeSnippetInSection() throws Exception {
-		String result = this.asciidoctor.convert(
-				"= A\n\nAlpha\n\n== B\n\nBravo\n\n" + "operation::some-operation[snippets='curl-request']",
-				this.options);
+		String result = this.asciidoctor.convert("= A\n:doctype: book\n:sectnums:\n\nAlpha\n\n== B\n\nBravo\n\n"
+				+ "operation::some-operation[snippets='curl-request']\n\n== C\n", this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-in-section"));
 	}
 
