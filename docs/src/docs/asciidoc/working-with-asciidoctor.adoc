@@ -30,11 +30,6 @@ been generated for a specific operation. It is made available by including
 `spring-restdocs-asciidoctor` in your project's <<getting-started-build-configuration,
 build configuration>>.
 
-WARNING: If you use Gradle and its daemon or support for continuous builds, do not
-use version 1.5.6 of the `org.asciidoctor.convert` plugin. It contains a
-https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/222[regression] that
-prevents extensions from working reliably.
-
 The target of the macro is the name of the operation. In its simplest form, you can use
 the macro to include all of the snippets for an operation, as shown in the following
 example:
