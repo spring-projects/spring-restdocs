@@ -226,7 +226,7 @@ task api (type: Javadoc) {
 	options.links = javadocLinks
 	options.addStringOption '-quiet'
 
-	source publishedCodeProjects.findAll { !it.name == 'spring-restdocs-asciidoctor' }
+	source publishedCodeProjects.findAll { it.name != 'spring-restdocs-asciidoctor' }
 			.collect { it.sourceSets.main.allJava }
 
 	destinationDir = new File(buildDir, "api")
