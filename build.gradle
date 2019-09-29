@@ -47,7 +47,7 @@ nohttp {
 }
 
 ext {
-	springVersion = '5.0.9.RELEASE'
+	springVersion = '5.0.15.RELEASE'
 	javadocLinks = [
 		'https://docs.oracle.com/javase/8/docs/api/',
 		"https://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
