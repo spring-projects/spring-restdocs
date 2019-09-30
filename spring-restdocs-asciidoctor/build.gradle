@@ -1,3 +1,5 @@
+description = 'Spring REST Docs Asciidoctor Extension'
+
 configurations {
 	merge
 	testRuntime { extendsFrom merge }
