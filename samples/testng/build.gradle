@@ -31,7 +31,7 @@ ext {
 	snippetsDir = file('build/generated-snippets')
 }
 
-ext['spring-restdocs.version'] = '2.0.4.BUILD-SNAPSHOT'
+ext['spring-restdocs.version'] = '2.0.4.RELEASE'
 
 dependencies {
 	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
