@@ -81,4 +81,18 @@ public class QueryStringParserTests {
 		this.queryStringParser.parse(URI.create("http://localhost?a=apple=avocado"));
 	}
 
+	@Test
+	public void emptyParameter() {
+		Parameters parameters = this.queryStringParser.parse(URI.create("http://localhost?a="));
+		assertThat(parameters.size()).isEqualTo(1);
+		assertThat(parameters).containsEntry("a", Arrays.asList(""));
+	}
+
+	@Test
+	public void emptyAndNotEmptyParameter() {
+		Parameters parameters = this.queryStringParser.parse(URI.create("http://localhost?a=&a=alpha"));
+		assertThat(parameters.size()).isEqualTo(1);
+		assertThat(parameters).containsEntry("a", Arrays.asList("", "alpha"));
+	}
+
 }

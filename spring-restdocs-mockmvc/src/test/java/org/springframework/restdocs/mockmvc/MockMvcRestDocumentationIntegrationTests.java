@@ -186,6 +186,19 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void curlSnippetWithEmptyParameterQueryString() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+				.apply(documentationConfiguration(this.restDocumentation)).build();
+		mockMvc.perform(get("/").param("a", "").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andDo(document("curl-snippet-with-empty-parameter-query-string"));
+		assertThat(
+				new File("build/generated-snippets/curl-snippet-with-empty-parameter-query-string/curl-request.adoc"))
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String.format("$ curl 'http://localhost:8080/?a=' -i -X GET \\%n"
+										+ "    -H 'Accept: application/json'"))));
+	}
+
+	@Test
 	public void curlSnippetWithContentAndParametersOnPost() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();

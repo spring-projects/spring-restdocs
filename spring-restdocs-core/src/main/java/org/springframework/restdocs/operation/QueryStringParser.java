@@ -64,10 +64,8 @@ public class QueryStringParser {
 				parameters.add(decode(name), decode(value));
 			}
 			else {
-				List<String> values = parameters.get(components[0]);
-				if (values == null) {
-					parameters.put(components[0], new LinkedList<String>());
-				}
+				List<String> values = parameters.computeIfAbsent(components[0], (p) -> new LinkedList<String>());
+				values.add("");
 			}
 		}
 		else {

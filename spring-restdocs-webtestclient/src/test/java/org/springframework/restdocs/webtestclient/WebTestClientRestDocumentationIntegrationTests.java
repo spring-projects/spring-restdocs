@@ -166,6 +166,17 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void curlSnippetWithEmptyParameterQueryString() throws Exception {
+		this.webTestClient.get().uri("/?a=").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+				.expectBody().consumeWith(document("curl-snippet-with-empty-parameter-query-string"));
+		assertThat(
+				new File("build/generated-snippets/curl-snippet-with-empty-parameter-query-string/curl-request.adoc"))
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String.format("$ curl 'https://api.example.com/?a=' -i -X GET \\%n"
+										+ "    -H 'Accept: application/json'"))));
+	}
+
+	@Test
 	public void httpieSnippetWithCookies() throws Exception {
 		this.webTestClient.get().uri("/").cookie("cookieName", "cookieVal").accept(MediaType.APPLICATION_JSON)
 				.exchange().expectStatus().isOk().expectBody().consumeWith(document("httpie-snippet-with-cookies"));

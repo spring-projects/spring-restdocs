@@ -121,6 +121,18 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
+	public void curlSnippetWithEmptyParameterQueryString() throws Exception {
+		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
+				.filter(document("curl-snippet-with-empty-parameter-query-string")).accept("application/json")
+				.param("a", "").get("/").then().statusCode(200);
+		assertThat(
+				new File("build/generated-snippets/curl-snippet-with-empty-parameter-query-string/curl-request.adoc"))
+						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+								.withContent(String.format("$ curl 'http://localhost:" + tomcat.getPort()
+										+ "/?a=' -i -X GET \\%n    -H 'Accept: application/json'"))));
+	}
+
+	@Test
 	public void curlSnippetWithQueryStringOnPost() throws Exception {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("curl-snippet-with-query-string")).accept("application/json").param("foo", "bar")
