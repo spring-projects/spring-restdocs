@@ -86,7 +86,7 @@
 							<logHandler>
 								<outputToConsole>true</outputToConsole>
 								<failIf>
-									<severity>DEBUG</severity> (2)
+									<severity>DEBUG</severity>
 								</failIf>
 							</logHandler>
 						</configuration>
