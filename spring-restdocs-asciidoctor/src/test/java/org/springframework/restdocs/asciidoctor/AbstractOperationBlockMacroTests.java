@@ -123,6 +123,22 @@ public abstract class AbstractOperationBlockMacroTests {
 	}
 
 	@Test
+	public void includeSnippetInSectionWithAbsoluteLevelOffset() throws Exception {
+		String result = this.asciidoctor
+				.convert("= A\n:doctype: book\n:sectnums:\n:leveloffset: 1\n\nAlpha\n\n= B\n\nBravo\n\n"
+						+ "operation::some-operation[snippets='curl-request']\n\n= C\n", this.options);
+		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-in-section"));
+	}
+
+	@Test
+	public void includeSnippetInSectionWithRelativeLevelOffset() throws Exception {
+		String result = this.asciidoctor
+				.convert("= A\n:doctype: book\n:sectnums:\n:leveloffset: +1\n\nAlpha\n\n= B\n\nBravo\n\n"
+						+ "operation::some-operation[snippets='curl-request']\n\n= C\n", this.options);
+		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-in-section"));
+	}
+
+	@Test
 	public void includeSnippetInSectionWithPdfBackend() throws Exception {
 		File output = configurePdfOutput();
 		this.asciidoctor.convert("== Section\n" + "operation::some-operation[snippets='curl-request']", this.options);

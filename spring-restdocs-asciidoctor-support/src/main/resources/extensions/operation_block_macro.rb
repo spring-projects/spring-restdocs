@@ -46,7 +46,8 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
   end
 
   def add_blocks(content, doc, parent)
-    options = { safe: doc.options[:safe], attributes: doc.attributes }
+    options = { safe: doc.options[:safe], attributes: doc.attributes.clone }
+    options[:attributes].delete 'leveloffset'
     fragment = Asciidoctor.load content, options
     # use a template to get the correct sectname and level for blocks to append
     template = create_section(parent, '', {})
