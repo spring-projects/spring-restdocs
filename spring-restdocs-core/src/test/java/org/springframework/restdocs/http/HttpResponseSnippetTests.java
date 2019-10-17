@@ -97,4 +97,9 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 		assertThat(this.generatedSnippets.httpResponse()).contains("Title for the response");
 	}
 
+	@Test
+	public void responseWithCustomStatus() throws IOException {
+		new HttpResponseSnippet().document(this.operationBuilder.response().status(215).build());
+		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(215,"Http custom status."));
+	}
 }
