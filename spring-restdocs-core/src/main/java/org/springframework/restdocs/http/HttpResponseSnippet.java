@@ -59,9 +59,15 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 		HttpStatus status = response.getStatus();
 		Map<String, Object> model = new HashMap<>();
 		model.put("responseBody", responseBody(response));
-		model.put("statusCode", status.value());
-		model.put("statusReason", status.getReasonPhrase());
 		model.put("headers", headers(response));
+		if (status != null) {
+			model.put("statusCode", status.value());
+			model.put("statusReason", status.getReasonPhrase());
+		}
+		else {
+			model.put("statusCode", response.getStatusCode());
+			model.put("statusReason", "Http custom status.");
+		}
 		return model;
 	}
 
