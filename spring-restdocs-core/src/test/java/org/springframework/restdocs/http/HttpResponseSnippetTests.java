@@ -100,6 +100,7 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void responseWithCustomStatus() throws IOException {
 		new HttpResponseSnippet().document(this.operationBuilder.response().status(215).build());
-		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(215,"Http custom status."));
+		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(215));
 	}
+
 }

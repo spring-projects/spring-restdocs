@@ -89,8 +89,8 @@ public abstract class AbstractSnippetTests {
 		return SnippetConditions.httpResponse(this.templateFormat, responseStatus);
 	}
 
-	public HttpResponseCondition httpResponse(Integer responseStatusCode, String responseStatusReason) {
-		return SnippetConditions.httpResponse(this.templateFormat, responseStatusCode, responseStatusReason);
+	public HttpResponseCondition httpResponse(int responseStatusCode) {
+		return SnippetConditions.httpResponse(this.templateFormat, responseStatusCode, "");
 	}
 
 	protected FileSystemResource snippetResource(String name) {
