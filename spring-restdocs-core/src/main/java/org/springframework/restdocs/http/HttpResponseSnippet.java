@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,12 +56,18 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 	@Override
 	protected Map<String, Object> createModel(Operation operation) {
 		OperationResponse response = operation.getResponse();
-		HttpStatus status = response.getStatus();
 		Map<String, Object> model = new HashMap<>();
 		model.put("responseBody", responseBody(response));
-		model.put("statusCode", status.value());
-		model.put("statusReason", status.getReasonPhrase());
 		model.put("headers", headers(response));
+		HttpStatus status = response.getStatus();
+		if (status != null) {
+			model.put("statusCode", status.value());
+			model.put("statusReason", status.getReasonPhrase());
+		}
+		else {
+			model.put("statusCode", response.getStatusCode());
+			model.put("statusReason", "");
+		}
 		return model;
 	}
 

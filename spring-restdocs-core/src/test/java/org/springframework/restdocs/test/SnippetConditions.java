@@ -71,6 +71,16 @@ public final class SnippetConditions {
 		return new HttpResponseCondition(status, new MarkdownCodeBlockCondition<>("http"), 2);
 	}
 
+	public static HttpResponseCondition httpResponse(TemplateFormat format, Integer responseStatusCode,
+			String responseStatusReason) {
+		if ("adoc".equals(format.getFileExtension())) {
+			return new HttpResponseCondition(responseStatusCode, responseStatusReason,
+					new AsciidoctorCodeBlockCondition<>("http", "nowrap"), 3);
+		}
+		return new HttpResponseCondition(responseStatusCode, responseStatusReason,
+				new MarkdownCodeBlockCondition<>("http"), 2);
+	}
+
 	@SuppressWarnings({ "rawtypes" })
 	public static CodeBlockCondition<?> codeBlock(TemplateFormat format, String language) {
 		if ("adoc".equals(format.getFileExtension())) {
@@ -232,6 +242,13 @@ public final class SnippetConditions {
 		private HttpResponseCondition(HttpStatus status, CodeBlockCondition<?> delegate, int headerOffset) {
 			super(delegate, headerOffset);
 			this.content("HTTP/1.1 " + status.value() + " " + status.getReasonPhrase());
+			this.content("");
+		}
+
+		private HttpResponseCondition(int responseStatusCode, String responseStatusReason,
+				CodeBlockCondition<?> delegate, int headerOffset) {
+			super(delegate, headerOffset);
+			this.content("HTTP/1.1 " + responseStatusCode + " " + responseStatusReason);
 			this.content("");
 		}
 
