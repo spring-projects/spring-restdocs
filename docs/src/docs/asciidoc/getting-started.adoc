@@ -131,7 +131,7 @@ the configuration are described in the following listings:
 		</plugins>
 	</build>
 ----
-<1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope. If you want to use
+<1> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration. If you want to use
 	`WebTestClient` or REST Assured rather than MockMvc, add a dependency on
 	`spring-restdocs-webtestclient` or `spring-restdocs-restassured` respectively instead.
 <2> Add the Asciidoctor plugin.
@@ -172,7 +172,7 @@ the configuration are described in the following listings:
 	This will automatically configure the `snippets` attribute for use in your `.adoc`
 	files to point to `build/generated-snippets`. It will also allow you to use the
 	`operation` block macro.
-<3> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope. If you want to use
+<3> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration. If you want to use
 	`WebTestClient` or REST Assured rather than MockMvc, add a dependency on
 	`spring-restdocs-webtestclient` or `spring-restdocs-restassured` respectively instead.
 <4> Configure a property to define the output location for generated snippets.
