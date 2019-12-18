@@ -25,8 +25,10 @@ import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
@@ -385,11 +387,17 @@ public class MockMvcRestDocumentationIntegrationTests {
 								replacePattern(pattern, "\"<<beta>>\""))))
 				.andReturn();
 		HttpRequestCondition originalRequest = httpRequest(TemplateFormats.asciidoctor(), RequestMethod.GET, "/");
+		Set<String> mvcResultHeaderNames = new HashSet<>();
 		for (String headerName : IterableEnumeration.of(result.getRequest().getHeaderNames())) {
 			originalRequest.header(headerName, result.getRequest().getHeader(headerName));
+			mvcResultHeaderNames.add(headerName);
 		}
-		assertThat(new File("build/generated-snippets/original-request/http-request.adoc")).has(content(originalRequest
-				.header("Host", "localhost:8080").header("Content-Length", "13").content("{\"a\":\"alpha\"}")));
+		originalRequest.header("Host", "localhost:8080");
+		if (!mvcResultHeaderNames.contains("Content-Length")) {
+			originalRequest.header("Content-Length", "13");
+		}
+		assertThat(new File("build/generated-snippets/original-request/http-request.adoc"))
+				.has(content(originalRequest.content("{\"a\":\"alpha\"}")));
 		HttpRequestCondition preprocessedRequest = httpRequest(TemplateFormats.asciidoctor(), RequestMethod.GET, "/");
 		List<String> removedHeaders = Arrays.asList("a", HttpHeaders.HOST, HttpHeaders.CONTENT_LENGTH);
 		for (String headerName : IterableEnumeration.of(result.getRequest().getHeaderNames())) {
