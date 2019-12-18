@@ -18,7 +18,7 @@ package com.example.restassured;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -33,7 +33,7 @@ public class ExampleApplicationJUnit5Tests {
 	// tag::setup[]
 	private RequestSpecification spec;
 
-	@Before
+	@BeforeEach
 	public void setUp(RestDocumentationContextProvider restDocumentation) {
 		this.spec = new RequestSpecBuilder()
 				.addFilter(documentationConfiguration(restDocumentation)) // <1>
