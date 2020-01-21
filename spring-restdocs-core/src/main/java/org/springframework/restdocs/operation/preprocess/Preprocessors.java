@@ -19,6 +19,8 @@ package org.springframework.restdocs.operation.preprocess;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationResponse;
@@ -65,6 +67,16 @@ public final class Preprocessors {
 	 */
 	public static OperationPreprocessor prettyPrint() {
 		return new ContentModifyingOperationPreprocessor(new PrettyPrintingContentModifier());
+	}
+
+	/**
+	 * Returns an {@code OperationPreprocessor} that will custom print the JSON content of
+	 * the request or response.
+	 * @param objectMapper the object mapper
+	 * @return the preprocessor
+	 */
+	public static OperationPreprocessor customJsonPrint(ObjectMapper objectMapper) {
+		return new ContentModifyingOperationPreprocessor(new CustomPrintingJsonContentModifier(objectMapper));
 	}
 
 	/**
