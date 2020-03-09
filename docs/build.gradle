@@ -8,7 +8,8 @@ repositories {
 }
 
 dependencies {
-	asciidoctor 'io.spring.asciidoctor:spring-asciidoctor-extensions:0.1.2.RELEASE'
+	asciidoctor 'io.spring.asciidoctor:spring-asciidoctor-extensions:0.2.0.RELEASE'
+	asciidoctor "org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16"
 	testCompile project(':spring-restdocs-mockmvc')
 	testCompile project(':spring-restdocs-restassured')
 	testCompile project(':spring-restdocs-webtestclient')
@@ -19,13 +20,82 @@ dependencies {
 	testCompile 'org.junit.jupiter:junit-jupiter-api'
 }
 
+ext {
+	docResourcesVersion = '0.1.3.RELEASE'
+}
+
 tasks.findByPath("artifactoryPublish")?.enabled = false
 
-asciidoctor {
+configurations {
+	docs
+}
+
+dependencies {
+	docs "io.spring.docresources:spring-doc-resources:${docResourcesVersion}@zip"
+}
+
+task prepareAsciidocBuild(type: Sync) {
+	dependsOn configurations.docs
+	// copy doc resources
+	from {
+		configurations.docs.collect { zipTree(it) }
+	}
+	// and doc sources
+	from "../docs/src/docs/asciidoc/"
+	// to a build directory of your choice
+	into "$buildDir/asciidoc/assemble"
+}
+
+task copyExamples(type: Copy) {
+	dependsOn prepareAsciidocBuild
+	from "../docs/src/test/java"
+	into "$buildDir/asciidoc/assemble/examples/java"
+}
+
+task('makePDF', type: org.asciidoctor.gradle.AsciidoctorTask){
+	dependsOn copyExamples
+	backends 'pdf'
+	sourceDir "$buildDir/asciidoc/assemble"
 	sources {
 		include 'index.adoc'
 	}
-	attributes	'revnumber': project.version,
-				'branch-or-tag': project.version.endsWith('SNAPSHOT') ? 'master': "v${project.version}"
-	inputs.files(sourceSets.test.java)
+	options doctype: 'book', eruby: 'erubis'
+	logDocuments = true
+	attributes 'icons': 'font',
+		'examples-dir': 'examples/java',
+		'sectanchors': '',
+		'sectnums': '',
+		'toc': '',
+		'source-highlighter' : 'coderay',
+		revnumber: project.version
+}
+
+asciidoctor {
+	dependsOn makePDF
+	backends 'html5'
+	sourceDir "$buildDir/asciidoc/assemble"
+	resources {
+		from(sourceDir) {
+			include 'images/*', 'css/**', 'js/**'
+		}
+	}
+	options doctype: 'book', eruby: 'erubis'
+	logDocuments = true
+	attributes 'docinfo': 'shared',
+		'examples-dir': 'examples/java',
+		// use provided stylesheet
+		stylesdir: "css/",
+		stylesheet: 'spring.css',
+		'linkcss': true,
+		'icons': 'font',
+    'sectanchors': '',
+		// use provided highlighter
+		'source-highlighter=highlight.js',
+		'highlightjsdir=js/highlight',
+		'highlightjs-theme=atom-one-dark-reasonable',
+		'idprefix': '',
+		'idseparator': '-',
+		'spring-version': project.version,
+		'allow-uri-read': '',
+		revnumber: project.version
 }

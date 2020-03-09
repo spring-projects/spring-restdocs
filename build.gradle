@@ -244,6 +244,15 @@ task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':api', ':buildSamples'
 	destinationDir = file("${project.buildDir}/distributions")
 
 	from(project.tasks.findByPath(':docs:asciidoctor')) {
+		include "index.html"
+		include "css/**"
+		include "js/**"
+		include "images/**"
+		into 'reference'
+	}
+
+	from(project.tasks.findByPath(':docs:makePDF')) {
+		include "index.pdf"
 		into 'reference'
 	}
 
