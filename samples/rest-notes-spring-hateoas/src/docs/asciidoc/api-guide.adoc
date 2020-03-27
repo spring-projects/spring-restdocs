@@ -12,7 +12,7 @@ Andy Wilkinson;
 [[overview]]
 = Overview
 
-[[overview-http-verbs]]
+[[overview_http_verbs]]
 == HTTP verbs
 
 RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
@@ -34,7 +34,7 @@ use of HTTP verbs.
 | Used to delete an existing resource
 |===
 
-[[overview-http-status-codes]]
+[[overview_http_status_codes]]
 == HTTP status codes
 
 RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
@@ -60,14 +60,14 @@ use of HTTP status codes.
 | The requested resource did not exist
 |===
 
-[[overview-headers]]
+[[overview_headers]]
 == Headers
 
 Every response has the following header(s):
 
 include::{snippets}/headers-example/response-headers.adoc[]
 
-[[overview-errors]]
+[[overview_errors]]
 == Errors
 
 Whenever an error response (status code >= 400) is returned, the body will contain a JSON object
@@ -80,7 +80,7 @@ For example, a request that attempts to apply a non-existent tag to a note will 
 
 include::{snippets}/error-example/http-response.adoc[]
 
-[[overview-hypermedia]]
+[[overview_hypermedia]]
 == Hypermedia
 
 RESTful Notes uses hypermedia and resources include links to other resources in their
@@ -94,14 +94,14 @@ links to navigate from resource to resource.
 
 
 
-[[resources-index]]
+[[resources_index]]
 == Index
 
 The index provides the entry point into the service.
 
 
 
-[[resources-index-access]]
+[[resources_index_access]]
 === Accessing the index
 
 A `GET` request is used to access the index
@@ -110,14 +110,14 @@ operation::index-example[snippets='response-fields,http-response,links']
 
 
 
-[[resources-notes]]
+[[resources_notes]]
 == Notes
 
 The Notes resources is used to create and list notes
 
 
 
-[[resources-notes-list]]
+[[resources_notes_list]]
 === Listing notes
 
 A `GET` request will list all of the service's notes.
@@ -126,7 +126,7 @@ operation::notes-list-example[snippets='response-fields,curl-request,http-respon
 
 
 
-[[resources-notes-create]]
+[[resources_notes_create]]
 === Creating a note
 
 A `POST` request is used to create a note.
@@ -135,14 +135,14 @@ operation::notes-create-example[snippets='request-fields,curl-request,http-respo
 
 
 
-[[resources-tags]]
+[[resources_tags]]
 == Tags
 
 The Tags resource is used to create and list tags.
 
 
 
-[[resources-tags-list]]
+[[resources_tags_list]]
 === Listing tags
 
 A `GET` request will list all of the service's tags.
@@ -151,7 +151,7 @@ operation::tags-list-example[snippets='response-fields,curl-request,http-respons
 
 
 
-[[resources-tags-create]]
+[[resources_tags_create]]
 === Creating a tag
 
 A `POST` request is used to create a note
@@ -160,21 +160,21 @@ operation::tags-create-example[snippets='request-fields,curl-request,http-respon
 
 
 
-[[resources-note]]
+[[resources_note]]
 == Note
 
 The Note resource is used to retrieve, update, and delete individual notes
 
 
 
-[[resources-note-links]]
+[[resources_note_links]]
 === Links
 
 include::{snippets}/note-get-example/links.adoc[]
 
 
 
-[[resources-note-retrieve]]
+[[resources_note_retrieve]]
 === Retrieve a note
 
 A `GET` request will retrieve the details of a note
@@ -183,7 +183,7 @@ operation::note-get-example[snippets='response-fields,curl-request,http-response
 
 
 
-[[resources-note-update]]
+[[resources_note_update]]
 === Update a note
 
 A `PATCH` request is used to update a note
@@ -198,21 +198,21 @@ operation::note-update-example[snippets='curl-request,http-response']
 
 
 
-[[resources-tag]]
+[[resources_tag]]
 == Tag
 
 The Tag resource is used to retrieve, update, and delete individual tags
 
 
 
-[[resources-tag-links]]
+[[resources_tag_links]]
 === Links
 
 include::{snippets}/tag-get-example/links.adoc[]
 
 
 
-[[resources-tag-retrieve]]
+[[resources_tag_retrieve]]
 === Retrieve a tag
 
 A `GET` request will retrieve the details of a tag
@@ -221,7 +221,7 @@ operation::tag-get-example[snippets='response-fields,curl-request,http-response'
 
 
 
-[[resources-tag-update]]
+[[resources_tag_update]]
 === Update a tag
 
 A `PATCH` request is used to update a tag

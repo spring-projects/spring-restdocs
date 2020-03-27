@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -136,10 +136,10 @@ public class ApiDocumentation {
 			.andExpect(status().isOk())
 			.andDo(this.documentationHandler.document(
 				links(
-					linkWithRel("notes").description("The <<resources-notes,Notes resource>>"),
-					linkWithRel("tags").description("The <<resources-tags,Tags resource>>")),
+					linkWithRel("notes").description("The <<resources_notes,Notes resource>>"),
+					linkWithRel("tags").description("The <<resources_tags,Tags resource>>")),
 				responseFields(
-					subsectionWithPath("_links").description("<<resources-index-links,Links>> to other resources"))));
+					subsectionWithPath("_links").description("<<resources_index_links,Links>> to other resources"))));
 	}
 
 	@Test
@@ -155,7 +155,7 @@ public class ApiDocumentation {
 			.andExpect(status().isOk())
 			.andDo(this.documentationHandler.document(
 				responseFields(
-					subsectionWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"))));
+					subsectionWithPath("_embedded.notes").description("An array of <<resources_note, Note resources>>"))));
 	}
 
 	@Test
@@ -223,12 +223,12 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("_links.note-tags", is(notNullValue())))
 			.andDo(this.documentationHandler.document(
 				links(
-					linkWithRel("self").description("This <<resources-note,note>>"),
-					linkWithRel("note-tags").description("This note's <<resources-note-tags,tags>>")),
+					linkWithRel("self").description("This <<resources_note,note>>"),
+					linkWithRel("note-tags").description("This note's <<resources_note_tags,tags>>")),
 				responseFields(
 					fieldWithPath("title").description("The title of the note"),
 					fieldWithPath("body").description("The body of the note"),
-					subsectionWithPath("_links").description("<<resources-note-links,Links>> to other resources"))));
+					subsectionWithPath("_links").description("<<resources_note_links,Links>> to other resources"))));
 
 	}
 
@@ -246,7 +246,7 @@ public class ApiDocumentation {
 			.andExpect(status().isOk())
 			.andDo(this.documentationHandler.document(
 				responseFields(
-					subsectionWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"))));
+					subsectionWithPath("_embedded.tags").description("An array of <<resources_tag,Tag resources>>"))));
 	}
 
 	@Test
@@ -339,11 +339,11 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("name", is(tag.get("name"))))
 			.andDo(this.documentationHandler.document(
 				links(
-					linkWithRel("self").description("This <<resources-tag,tag>>"),
-					linkWithRel("tagged-notes").description("The <<resources-tagged-notes,notes>> that have this tag")),
+					linkWithRel("self").description("This <<resources_tag,tag>>"),
+					linkWithRel("tagged-notes").description("The <<resources_tagged_notes,notes>> that have this tag")),
 				responseFields(
 					fieldWithPath("name").description("The name of the tag"),
-					subsectionWithPath("_links").description("<<resources-tag-links,Links>> to other resources"))));
+					subsectionWithPath("_links").description("<<resources_tag_links,Links>> to other resources"))));
 	}
 
 	@Test

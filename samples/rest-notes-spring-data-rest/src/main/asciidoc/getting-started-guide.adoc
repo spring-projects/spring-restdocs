@@ -15,7 +15,7 @@ to describe the relationships between resources and to allow navigation between 
 
 
 
-[[getting-started-running-the-service]]
+[[getting_started_running_the_service]]
 == Running the service
 RESTful Notes is written using https://projects.spring.io/spring-boot[Spring Boot] which
 makes it easy to get it up and running so that you can start exploring the REST API.
@@ -51,7 +51,7 @@ Note the `_links` in the JSON response. They are key to navigating the API.
 
 
 
-[[getting-started-creating-a-note]]
+[[getting_started_creating_a_note]]
 == Creating a note
 Now that you've started the service and verified that it works, the next step is to use
 it to create a new note. As you saw above, the URI for working with notes is included as
@@ -82,7 +82,7 @@ Note the `tags` link which we'll make use of later.
 
 
 
-[[getting-started-creating-a-tag]]
+[[getting_started_creating_a_tag]]
 == Creating a tag
 To make a note easier to find, it can be associated with any number of tags. To be able
 to tag a note, you must first create the tag.
@@ -113,7 +113,7 @@ include::{snippets}/creating-a-note/4/http-response.adoc[]
 
 
 
-[[getting-started-tagging-a-note]]
+[[getting_started_tagging_a_note]]
 == Tagging a note
 A tag isn't particularly useful until it's been associated with one or more notes. There
 are two ways to tag a note: when the note is first created or by updating an existing
@@ -121,7 +121,7 @@ note. We'll look at both of these in turn.
 
 
 
-[[getting-started-tagging-a-note-creating]]
+[[getting_started_tagging_a_note_creating]]
 === Creating a tagged note
 The process is largely the same as we saw before, but this time, in addition to providing
 a title and body for the note, we'll also provide the tag that we want to be associated
@@ -152,7 +152,7 @@ include::{snippets}/creating-a-note/7/http-response.adoc[]
 
 
 
-[[getting-started-tagging-a-note-existing]]
+[[getting_started_tagging_a_note_existing]]
 === Tagging an existing note
 An existing note can be tagged by executing a `PATCH` request against the note's URI with
 a body that contains the array of tags to be associated with the note. We'll used the

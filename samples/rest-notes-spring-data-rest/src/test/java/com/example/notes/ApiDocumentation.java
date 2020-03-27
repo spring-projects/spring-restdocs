@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,11 +111,11 @@ public class ApiDocumentation {
 			.andExpect(status().isOk())
 			.andDo(document("index-example",
 					links(
-							linkWithRel("notes").description("The <<resources-notes,Notes resource>>"),
-							linkWithRel("tags").description("The <<resources-tags,Tags resource>>"),
+							linkWithRel("notes").description("The <<resources_notes,Notes resource>>"),
+							linkWithRel("tags").description("The <<resources_tags,Tags resource>>"),
 							linkWithRel("profile").description("The ALPS profile for the service")),
 					responseFields(
-							subsectionWithPath("_links").description("<<resources-index-links,Links>> to other resources"))));
+							subsectionWithPath("_links").description("<<resources_index_access_links,Links>> to other resources"))));
 
 	}
 
@@ -136,8 +136,8 @@ public class ApiDocumentation {
 							linkWithRel("self").description("Canonical link for this resource"),
 							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
-							subsectionWithPath("_embedded.notes").description("An array of <<resources-note, Note resources>>"),
-							subsectionWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
+							subsectionWithPath("_embedded.notes").description("An array of <<resources_note, Note resources>>"),
+							subsectionWithPath("_links").description("<<resources_tags_list_links, Links>> to other resources"))));
 	}
 
 	@Test
@@ -201,13 +201,13 @@ public class ApiDocumentation {
 			.andDo(print())
 			.andDo(document("note-get-example",
 					links(
-							linkWithRel("self").description("Canonical link for this <<resources-note,note>>"),
-							linkWithRel("note").description("This <<resources-note,note>>"),
+							linkWithRel("self").description("Canonical link for this <<resources_note,note>>"),
+							linkWithRel("note").description("This <<resources_note,note>>"),
 							linkWithRel("tags").description("This note's tags")),
 					responseFields(
 							fieldWithPath("title").description("The title of the note"),
 							fieldWithPath("body").description("The body of the note"),
-							subsectionWithPath("_links").description("<<resources-note-links,Links>> to other resources"))));
+							subsectionWithPath("_links").description("<<resources_note_links,Links>> to other resources"))));
 	}
 
 	@Test
@@ -226,8 +226,8 @@ public class ApiDocumentation {
 							linkWithRel("self").description("Canonical link for this resource"),
 							linkWithRel("profile").description("The ALPS profile for this resource")),
 					responseFields(
-							subsectionWithPath("_embedded.tags").description("An array of <<resources-tag,Tag resources>>"),
-							subsectionWithPath("_links").description("<<resources-tags-list-links, Links>> to other resources"))));
+							subsectionWithPath("_embedded.tags").description("An array of <<resources_tag,Tag resources>>"),
+							subsectionWithPath("_links").description("<<resources_tags_list_links, Links>> to other resources"))));
 	}
 
 	@Test
@@ -304,12 +304,12 @@ public class ApiDocumentation {
 			.andExpect(jsonPath("name", is(tag.get("name"))))
 			.andDo(document("tag-get-example",
 					links(
-							linkWithRel("self").description("Canonical link for this <<resources-tag,tag>>"),
-							linkWithRel("tag").description("This <<resources-tag,tag>>"),
-							linkWithRel("notes").description("The <<resources-tagged-notes,notes>> that have this tag")),
+							linkWithRel("self").description("Canonical link for this <<resources_tag,tag>>"),
+							linkWithRel("tag").description("This <<resources_tag,tag>>"),
+							linkWithRel("notes").description("The notes that have this tag")),
 					responseFields(
 							fieldWithPath("name").description("The name of the tag"),
-							subsectionWithPath("_links").description("<<resources-tag-links,Links>> to other resources"))));
+							subsectionWithPath("_links").description("<<resources_tag_links,Links>> to other resources"))));
 	}
 
 	@Test
