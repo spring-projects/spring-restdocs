@@ -135,9 +135,9 @@
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
-			<id>spring-snapshot</id>
-			<name>Spring Snapshot Repository</name>
-			<url>https://repo.spring.io/snapshot</url>
+			<id>spring-snapshots</id>
+			<name>Spring snapshots</name>
+			<url>https://repo.spring.io/libs-snapshot</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
