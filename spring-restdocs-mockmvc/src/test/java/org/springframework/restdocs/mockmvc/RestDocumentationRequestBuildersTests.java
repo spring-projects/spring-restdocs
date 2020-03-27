@@ -51,7 +51,7 @@ public class RestDocumentationRequestBuildersTests {
 
 	@Test
 	public void getTemplate() {
-		assertTemplate(get("{template}", "t"), HttpMethod.GET);
+		assertTemplate(get("/{template}", "t"), HttpMethod.GET);
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class RestDocumentationRequestBuildersTests {
 
 	@Test
 	public void postTemplate() {
-		assertTemplate(post("{template}", "t"), HttpMethod.POST);
+		assertTemplate(post("/{template}", "t"), HttpMethod.POST);
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class RestDocumentationRequestBuildersTests {
 
 	@Test
 	public void putTemplate() {
-		assertTemplate(put("{template}", "t"), HttpMethod.PUT);
+		assertTemplate(put("/{template}", "t"), HttpMethod.PUT);
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class RestDocumentationRequestBuildersTests {
 
 	@Test
 	public void patchTemplate() {
-		assertTemplate(patch("{template}", "t"), HttpMethod.PATCH);
+		assertTemplate(patch("/{template}", "t"), HttpMethod.PATCH);
 	}
 
 	@Test
@@ -91,7 +91,7 @@ public class RestDocumentationRequestBuildersTests {
 
 	@Test
 	public void deleteTemplate() {
-		assertTemplate(delete("{template}", "t"), HttpMethod.DELETE);
+		assertTemplate(delete("/{template}", "t"), HttpMethod.DELETE);
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class RestDocumentationRequestBuildersTests {
 
 	@Test
 	public void optionsTemplate() {
-		assertTemplate(options("{template}", "t"), HttpMethod.OPTIONS);
+		assertTemplate(options("/{template}", "t"), HttpMethod.OPTIONS);
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class RestDocumentationRequestBuildersTests {
 
 	@Test
 	public void headTemplate() {
-		assertTemplate(head("{template}", "t"), HttpMethod.HEAD);
+		assertTemplate(head("/{template}", "t"), HttpMethod.HEAD);
 	}
 
 	@Test
@@ -121,7 +121,7 @@ public class RestDocumentationRequestBuildersTests {
 
 	@Test
 	public void requestTemplate() {
-		assertTemplate(request(HttpMethod.GET, "{template}", "t"), HttpMethod.GET);
+		assertTemplate(request(HttpMethod.GET, "/{template}", "t"), HttpMethod.GET);
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public class RestDocumentationRequestBuildersTests {
 
 	@Test
 	public void fileUploadTemplate() {
-		assertTemplate(fileUpload("{template}", "t"), HttpMethod.POST);
+		assertTemplate(fileUpload("/{template}", "t"), HttpMethod.POST);
 	}
 
 	@Test
@@ -142,8 +142,8 @@ public class RestDocumentationRequestBuildersTests {
 	private void assertTemplate(MockHttpServletRequestBuilder builder, HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
 		assertThat((String) request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE))
-				.isEqualTo("{template}");
-		assertThat(request.getRequestURI()).isEqualTo("t");
+				.isEqualTo("/{template}");
+		assertThat(request.getRequestURI()).isEqualTo("/t");
 		assertThat(request.getMethod()).isEqualTo(httpMethod.name());
 	}
 

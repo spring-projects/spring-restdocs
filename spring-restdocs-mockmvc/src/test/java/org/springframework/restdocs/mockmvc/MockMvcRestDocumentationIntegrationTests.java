@@ -275,7 +275,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	public void pathParametersSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
-		mockMvc.perform(get("{foo}", "/").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mockMvc.perform(get("/{foo}", "").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andDo(document("links", pathParameters(parameterWithName("foo").description("The description"))));
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc", "path-parameters.adoc");
