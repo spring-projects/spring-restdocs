@@ -148,6 +148,10 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 		return this.descriptorsByName;
 	}
 
+	protected final boolean isIgnoreUndocumentedParameters() {
+		return ignoreUndocumentedParameters;
+	}
+
 	/**
 	 * Returns a model for the given {@code descriptor}.
 	 * @param descriptor the descriptor
