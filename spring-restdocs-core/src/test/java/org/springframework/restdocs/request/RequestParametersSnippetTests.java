@@ -154,6 +154,15 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void additionalDescriptorsWithRelaxedRequestParameters() throws IOException {
+		RequestDocumentation.relaxedRequestParameters(parameterWithName("a").description("one"))
+				.and(parameterWithName("b").description("two")).document(this.operationBuilder
+						.request("http://localhost").param("a", "bravo").param("b", "bravo").param("c", "undocumented").build());
+		assertThat(this.generatedSnippets.requestParameters())
+				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+	}
+
+	@Test
 	public void requestParametersWithEscapedContent() throws IOException {
 		RequestDocumentation.requestParameters(parameterWithName("Foo|Bar").description("one|two"))
 				.document(this.operationBuilder.request("http://localhost").param("Foo|Bar", "baz").build());

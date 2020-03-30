@@ -133,7 +133,7 @@ public class RequestParametersSnippet extends AbstractParametersSnippet {
 	public RequestParametersSnippet and(List<ParameterDescriptor> additionalDescriptors) {
 		List<ParameterDescriptor> combinedDescriptors = new ArrayList<>(getParameterDescriptors().values());
 		combinedDescriptors.addAll(additionalDescriptors);
-		return new RequestParametersSnippet(combinedDescriptors, this.getAttributes());
+		return new RequestParametersSnippet(combinedDescriptors, this.getAttributes(), this.isIgnoreUndocumentedParameters());
 	}
 
 }
