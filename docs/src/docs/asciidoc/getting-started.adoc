@@ -516,7 +516,7 @@ is required.
 <2> Assert that the service produced the expected response.
 <3> Document the call to the service, writing the snippets into a directory named `index`
 (which is located beneath the configured output directory). The snippets are written by
-a `RestDocumentationResultHandler`. You can obtain an instance of this clas from the
+a `RestDocumentationResultHandler`. You can obtain an instance of this class from the
 static `document` method on
 `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
 
