@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -324,6 +324,22 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.param("a", "alpha").method("POST").param("b", "bravo").content("Some content").build());
 		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash")
 				.withContent("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i " + "-X POST -d 'Some content'"));
+	}
+
+	@Test
+	public void deleteWithParameters() throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+				.method("DELETE").param("a", "alpha").param("b", "bravo").build());
+		assertThat(this.generatedSnippets.curlRequest())
+				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i " + "-X DELETE"));
+	}
+
+	@Test
+	public void deleteWithQueryString() throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(
+				this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("DELETE").build());
+		assertThat(this.generatedSnippets.curlRequest())
+				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i " + "-X DELETE"));
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -305,6 +305,22 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 				this.operationBuilder.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
 						.request("http://localhost/foo").build());
 		assertThat(this.generatedSnippets.httpRequest()).contains("Title for the request");
+	}
+
+	@Test
+	public void deleteWithParameters() throws IOException {
+		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/foo").method("DELETE")
+				.param("a", "alpha").param("b", "bravo").build());
+		assertThat(this.generatedSnippets.httpRequest())
+				.is(httpRequest(RequestMethod.DELETE, "/foo?a=alpha&b=bravo").header("Host", "localhost"));
+	}
+
+	@Test
+	public void deleteWithQueryString() throws IOException {
+		new HttpRequestSnippet().document(
+				this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("DELETE").build());
+		assertThat(this.generatedSnippets.httpRequest())
+				.is(httpRequest(RequestMethod.DELETE, "/foo?a=alpha&b=bravo").header("Host", "localhost"));
 	}
 
 	private String createPart(String content) {

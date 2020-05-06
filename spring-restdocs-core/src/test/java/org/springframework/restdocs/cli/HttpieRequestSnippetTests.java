@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -328,6 +328,22 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				.method("POST").param("a", "alpha").param("b", "bravo").content("Some content").build());
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash")
 				.withContent("$ echo 'Some content' | http POST " + "'http://localhost/foo?a=alpha&b=bravo'"));
+	}
+
+	@Test
+	public void deleteWithParameters() throws IOException {
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+				.method("DELETE").param("a", "alpha").param("b", "bravo").build());
+		assertThat(this.generatedSnippets.httpieRequest())
+				.is(codeBlock("bash").withContent("$ http DELETE 'http://localhost/foo?a=alpha&b=bravo'"));
+	}
+
+	@Test
+	public void deleteWithQueryString() throws IOException {
+		new HttpieRequestSnippet(this.commandFormatter).document(
+				this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("DELETE").build());
+		assertThat(this.generatedSnippets.httpieRequest())
+				.is(codeBlock("bash").withContent("$ http DELETE 'http://localhost/foo?a=alpha&b=bravo'"));
 	}
 
 }
