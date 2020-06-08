@@ -68,7 +68,8 @@ public abstract class PayloadDocumentation {
 	 *
 	 * The following paths are all present:
 	 *
-	 * <table summary="Paths and their values">
+	 * <table>
+	 * <caption>Paths that are present and their values</caption>
 	 * <tr>
 	 * <th>Path</th>
 	 * <th>Value</th>
@@ -132,7 +133,8 @@ public abstract class PayloadDocumentation {
 	 *
 	 * The following paths are all present:
 	 *
-	 * <table summary="Paths and their values">
+	 * <table>
+	 * <caption>Paths that are present and their values</caption>
 	 * <tr>
 	 * <th>Path</th>
 	 * <th>Value</th>

@@ -155,6 +155,7 @@ configure(publishedCodeProjects) { subproject ->
 		options.links = javadocLinks
 		options.addStringOption '-quiet'
 		options.encoding = 'UTF-8'
+		options.source = '1.8'
 	}
 
 	task sourcesJar(type: Jar) {
