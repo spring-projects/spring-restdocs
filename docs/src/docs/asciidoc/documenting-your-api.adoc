@@ -270,7 +270,7 @@ be compatible with `application/xml`.
 [[documenting-your-api-request-response-payloads-fields-json]]
 ===== Fields in JSON Payloads
 
-This section descries how to work with fields in JSON payloads.
+This section describes how to work with fields in JSON payloads.
 
 [[documenting-your-api-request-response-payloads-fields-json-field-paths]]
 ====== JSON Field Paths
