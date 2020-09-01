@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,6 +149,16 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 		RequestDocumentation.requestParameters(parameterWithName("a").description("one"))
 				.and(parameterWithName("b").description("two")).document(this.operationBuilder
 						.request("http://localhost").param("a", "bravo").param("b", "bravo").build());
+		assertThat(this.generatedSnippets.requestParameters())
+				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+	}
+
+	@Test
+	public void additionalDescriptorsWithRelaxedRequestParameters() throws IOException {
+		RequestDocumentation.relaxedRequestParameters(parameterWithName("a").description("one"))
+				.and(parameterWithName("b").description("two"))
+				.document(this.operationBuilder.request("http://localhost").param("a", "bravo").param("b", "bravo")
+						.param("c", "undocumented").build());
 		assertThat(this.generatedSnippets.requestParameters())
 				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}

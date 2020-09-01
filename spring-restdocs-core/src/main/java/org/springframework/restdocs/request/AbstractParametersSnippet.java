@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,6 +146,16 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 */
 	protected final Map<String, ParameterDescriptor> getParameterDescriptors() {
 		return this.descriptorsByName;
+	}
+
+	/**
+	 * Returns whether to ignore undocumented parameters.
+	 * @return {@code true} if undocumented parameters should be ignored, otherwise
+	 * {@code false}
+	 * @since 2.0.5
+	 */
+	protected final boolean isIgnoreUndocumentedParameters() {
+		return this.ignoreUndocumentedParameters;
 	}
 
 	/**
