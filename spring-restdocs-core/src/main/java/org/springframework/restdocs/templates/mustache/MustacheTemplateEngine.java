@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.springframework.restdocs.templates.mustache;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
@@ -40,13 +42,16 @@ public class MustacheTemplateEngine implements TemplateEngine {
 
 	private final TemplateResourceResolver templateResourceResolver;
 
+	private final Charset templateEncoding;
+
 	private final Compiler compiler;
 
 	private final Map<String, Object> context;
 
 	/**
 	 * Creates a new {@code MustacheTemplateEngine} that will use the given
-	 * {@code templateResourceResolver} to resolve template paths.
+	 * {@code templateResourceResolver} to resolve template paths. Templates will be read
+	 * as UTF-8.
 	 * @param templateResourceResolver the resolver to use
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver) {
@@ -55,8 +60,20 @@ public class MustacheTemplateEngine implements TemplateEngine {
 
 	/**
 	 * Creates a new {@code MustacheTemplateEngine} that will use the given
+	 * {@code templateResourceResolver} to resolve template paths, reading them using the
+	 * given {@code templateEncoding}.
+	 * @param templateResourceResolver the resolver to use
+	 * @param templateEncoding the charset to use when reading the templates
+	 * @since 2.0.5
+	 */
+	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver, Charset templateEncoding) {
+		this(templateResourceResolver, templateEncoding, Mustache.compiler().escapeHTML(false));
+	}
+
+	/**
+	 * Creates a new {@code MustacheTemplateEngine} that will use the given
 	 * {@code templateResourceResolver} to resolve templates and the given
-	 * {@code compiler} to compile them.
+	 * {@code compiler} to compile them. Templates will be read as UTF-8.
 	 * @param templateResourceResolver the resolver to use
 	 * @param compiler the compiler to use
 	 */
@@ -67,8 +84,23 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	/**
 	 * Creates a new {@code MustacheTemplateEngine} that will use the given
 	 * {@code templateResourceResolver} to resolve templates and the given
-	 * {@code compiler} to compile them. Compiled templates will be created with the given
-	 * {@code context}.
+	 * {@code compiler} to compile them. Templates will be read using the given
+	 * {@code templateEncoding}.
+	 * @param templateResourceResolver the resolver to use
+	 * @param templateEncoding the charset to use when reading the templates
+	 * @param compiler the compiler to use
+	 * @since 2.0.5
+	 */
+	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver, Charset templateEncoding,
+			Compiler compiler) {
+		this(templateResourceResolver, templateEncoding, compiler, Collections.<String, Object>emptyMap());
+	}
+
+	/**
+	 * Creates a new {@code MustacheTemplateEngine} that will use the given
+	 * {@code templateResourceResolver} to resolve templates. Templates will be read as
+	 * UTF-8. Once read, the given {@code compiler} will be used to compile them. Compiled
+	 * templates will be created with the given {@code context}.
 	 * @param templateResourceResolver the resolver to use
 	 * @param compiler the compiler to use
 	 * @param context the context to pass to compiled templates
@@ -77,7 +109,27 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver, Compiler compiler,
 			Map<String, Object> context) {
+		this(templateResourceResolver, StandardCharsets.UTF_8, compiler, context);
+	}
+
+	/**
+	 * Creates a new {@code MustacheTemplateEngine} that will use the given
+	 * {@code templateResourceResolver} to resolve templates. Template will be read using
+	 * the given {@code templateEncoding}. Once read, the given {@code compiler} will be
+	 * used to compile them. Compiled templates will be created with the given
+	 * {@code context}.
+	 * @param templateResourceResolver the resolver to use
+	 * @param templateEncoding the charset to use when reading the templates
+	 * @param compiler the compiler to use
+	 * @param context the context to pass to compiled templates
+	 * @since 2.0.5
+	 * @see MustacheTemplate#MustacheTemplate(org.springframework.restdocs.mustache.Template,
+	 * Map)
+	 */
+	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver, Charset templateEncoding,
+			Compiler compiler, Map<String, Object> context) {
 		this.templateResourceResolver = templateResourceResolver;
+		this.templateEncoding = templateEncoding;
 		this.compiler = compiler;
 		this.context = context;
 	}
@@ -85,7 +137,8 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	@Override
 	public Template compileTemplate(String name) throws IOException {
 		Resource templateResource = this.templateResourceResolver.resolveTemplateResource(name);
-		return new MustacheTemplate(this.compiler.compile(new InputStreamReader(templateResource.getInputStream())),
+		return new MustacheTemplate(
+				this.compiler.compile(new InputStreamReader(templateResource.getInputStream(), this.templateEncoding)),
 				this.context);
 	}
 

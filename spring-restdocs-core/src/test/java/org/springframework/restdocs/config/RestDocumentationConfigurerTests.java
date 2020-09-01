@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.restdocs.config;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +74,8 @@ public class RestDocumentationConfigurerTests {
 		this.configurer.apply(configuration, createContext());
 		assertThat(configuration).containsKey(TemplateEngine.class.getName());
 		assertThat(configuration.get(TemplateEngine.class.getName())).isInstanceOf(MustacheTemplateEngine.class);
+		assertThat(configuration.get(TemplateEngine.class.getName())).hasFieldOrPropertyWithValue("templateEncoding",
+				StandardCharsets.UTF_8);
 		assertThat(configuration).containsKey(WriterResolver.class.getName());
 		assertThat(configuration.get(WriterResolver.class.getName())).isInstanceOf(StandardWriterResolver.class);
 		assertThat(configuration).containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
@@ -147,12 +150,15 @@ public class RestDocumentationConfigurerTests {
 	@Test
 	public void customSnippetEncoding() {
 		Map<String, Object> configuration = new HashMap<>();
-		this.configurer.snippets().withEncoding("ISO 8859-1").apply(configuration, createContext());
+		this.configurer.snippets().withEncoding("ISO-8859-1");
+		this.configurer.apply(configuration, createContext());
 		assertThat(configuration).containsKey(SnippetConfiguration.class.getName());
 		assertThat(configuration.get(SnippetConfiguration.class.getName())).isInstanceOf(SnippetConfiguration.class);
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 				.get(SnippetConfiguration.class.getName());
-		assertThat(snippetConfiguration.getEncoding()).isEqualTo("ISO 8859-1");
+		assertThat(snippetConfiguration.getEncoding()).isEqualTo(StandardCharsets.ISO_8859_1.displayName());
+		assertThat(configuration.get(TemplateEngine.class.getName())).hasFieldOrPropertyWithValue("templateEncoding",
+				StandardCharsets.ISO_8859_1);
 	}
 
 	@Test
