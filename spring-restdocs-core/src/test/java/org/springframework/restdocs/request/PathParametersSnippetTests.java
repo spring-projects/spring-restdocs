@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,6 +157,16 @@ public class PathParametersSnippetTests extends AbstractSnippetTests {
 						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}").build());
 		assertThat(this.generatedSnippets.pathParameters()).is(
 				tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+	}
+
+	@Test
+	public void additionalDescriptorsWithRelaxedRequestParameters() throws IOException {
+		RequestDocumentation.relaxedPathParameters(parameterWithName("a").description("one"))
+				.and(parameterWithName("b").description("two")).document(this.operationBuilder
+						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}/{c}").build());
+		assertThat(this.generatedSnippets.pathParameters())
+				.is(tableWithTitleAndHeader(getTitle("/{a}/{b}/{c}"), "Parameter", "Description").row("`a`", "one")
+						.row("`b`", "two"));
 	}
 
 	@Test
