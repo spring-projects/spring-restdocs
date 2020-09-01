@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.restdocs.operation;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.springframework.http.HttpHeaders;
@@ -52,7 +53,10 @@ abstract class AbstractOperationMessage implements OperationMessage {
 	public String getContentAsString() {
 		if (this.content.length > 0) {
 			Charset charset = extractCharsetFromContentTypeHeader();
-			return (charset != null) ? new String(this.content, charset) : new String(this.content);
+			if (charset == null) {
+				charset = StandardCharsets.UTF_8;
+			}
+			return new String(this.content, charset);
 		}
 		return "";
 	}
