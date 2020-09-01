@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,53 +43,62 @@ public class ParametersModifyingOperationPreprocessorTests {
 	@Test
 	public void addNewParameter() {
 		Parameters parameters = new Parameters();
-		assertThat(this.preprocessor.add("a", "alpha").preprocess(createRequest(parameters)).getParameters())
-				.containsEntry("a", Arrays.asList("alpha"));
+		OperationRequest request = this.preprocessor.add("a", "alpha").preprocess(createGetRequest(parameters));
+		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080?a=alpha"));
 	}
 
 	@Test
 	public void addValueToExistingParameter() {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
-		assertThat(this.preprocessor.add("a", "alpha").preprocess(createRequest(parameters)).getParameters())
-				.containsEntry("a", Arrays.asList("apple", "alpha"));
+		OperationRequest request = this.preprocessor.add("a", "alpha").preprocess(createGetRequest(parameters));
+		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("apple", "alpha"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080?a=apple&a=alpha"));
 	}
 
 	@Test
 	public void setNewParameter() {
 		Parameters parameters = new Parameters();
-		assertThat(this.preprocessor.set("a", "alpha", "avocado").preprocess(createRequest(parameters)).getParameters())
-				.containsEntry("a", Arrays.asList("alpha", "avocado"));
+		OperationRequest request = this.preprocessor.set("a", "alpha", "avocado")
+				.preprocess(createGetRequest(parameters));
+		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "avocado"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080?a=alpha&a=avocado"));
 	}
 
 	@Test
 	public void setExistingParameter() {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
-		assertThat(this.preprocessor.set("a", "alpha", "avocado").preprocess(createRequest(parameters)).getParameters())
-				.containsEntry("a", Arrays.asList("alpha", "avocado"));
+		OperationRequest request = this.preprocessor.set("a", "alpha", "avocado")
+				.preprocess(createGetRequest(parameters));
+		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "avocado"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080?a=alpha&a=avocado"));
 	}
 
 	@Test
 	public void removeNonExistentParameter() {
 		Parameters parameters = new Parameters();
-		assertThat(this.preprocessor.remove("a").preprocess(createRequest(parameters)).getParameters().size())
-				.isEqualTo(0);
+		OperationRequest request = this.preprocessor.remove("a").preprocess(createGetRequest(parameters));
+		assertThat(request.getParameters().size()).isEqualTo(0);
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080"));
 	}
 
 	@Test
 	public void removeParameter() {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
-		assertThat(this.preprocessor.set("a", "alpha", "avocado").preprocess(createRequest(parameters)).getParameters())
-				.containsEntry("a", Arrays.asList("alpha", "avocado"));
+		OperationRequest request = this.preprocessor.remove("a").preprocess(createGetRequest(parameters));
+		assertThat(request.getParameters()).isEmpty();
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080"));
 	}
 
 	@Test
 	public void removeParameterValueForNonExistentParameter() {
 		Parameters parameters = new Parameters();
-		assertThat(this.preprocessor.remove("a", "apple").preprocess(createRequest(parameters)).getParameters().size())
-				.isEqualTo(0);
+		OperationRequest request = this.preprocessor.remove("a", "apple").preprocess(createGetRequest(parameters));
+		assertThat(request.getParameters()).isEmpty();
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080"));
 	}
 
 	@Test
@@ -97,20 +106,41 @@ public class ParametersModifyingOperationPreprocessorTests {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
 		parameters.add("a", "alpha");
-		assertThat(this.preprocessor.remove("a", "apple").preprocess(createRequest(parameters)).getParameters())
-				.containsEntry("a", Arrays.asList("alpha"));
+		parameters.add("b", "bravo");
+		OperationRequest request = this.preprocessor.remove("a", "apple").preprocess(createGetRequest(parameters));
+		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080?a=alpha&b=bravo"));
 	}
 
 	@Test
 	public void removeParameterValueWithSingleValueRemovesEntryEntirely() {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
-		assertThat(this.preprocessor.remove("a", "apple").preprocess(createRequest(parameters)).getParameters().size())
-				.isEqualTo(0);
+		parameters.add("b", "bravo");
+		OperationRequest request = this.preprocessor.remove("a", "apple").preprocess(createGetRequest(parameters));
+		assertThat(request.getParameters()).doesNotContainKey("a");
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080?b=bravo"));
 	}
 
-	private OperationRequest createRequest(Parameters parameters) {
-		return new OperationRequestFactory().create(URI.create("http://localhost:8080"), HttpMethod.GET, new byte[0],
+	@Test
+	public void whenParametersOfANonGetRequestAreModifiedThenTheQueryStringIsUnaffected() {
+		Parameters parameters = new Parameters();
+		parameters.add("a", "apple");
+		parameters.add("b", "bravo");
+		OperationRequest request = this.preprocessor.remove("a", "apple").preprocess(createPostRequest(parameters));
+		assertThat(request.getParameters()).doesNotContainKey("a");
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080"));
+	}
+
+	private OperationRequest createGetRequest(Parameters parameters) {
+		return new OperationRequestFactory().create(
+				URI.create("http://localhost:8080" + (parameters.isEmpty() ? "" : "?" + parameters.toQueryString())),
+				HttpMethod.GET, new byte[0], new HttpHeaders(), parameters,
+				Collections.<OperationRequestPart>emptyList());
+	}
+
+	private OperationRequest createPostRequest(Parameters parameters) {
+		return new OperationRequestFactory().create(URI.create("http://localhost:8080"), HttpMethod.POST, new byte[0],
 				new HttpHeaders(), parameters, Collections.<OperationRequestPart>emptyList());
 	}
 

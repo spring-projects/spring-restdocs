@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.restdocs.operation;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -94,14 +95,28 @@ public class OperationRequestFactory {
 
 	/**
 	 * Creates a new {@code OperationRequest} based on the given {@code original} but with
-	 * the given {@code newParameters}.
+	 * the given {@code newParameters} applied. The query string of a {@code GET} request
+	 * will be updated to reflect the new parameters.
 	 * @param original the original request
 	 * @param newParameters the new parameters
-	 * @return the new request with the new parameters
+	 * @return the new request with the parameters applied
 	 */
 	public OperationRequest createFrom(OperationRequest original, Parameters newParameters) {
-		return new StandardOperationRequest(original.getUri(), original.getMethod(), original.getContent(),
-				original.getHeaders(), newParameters, original.getParts(), original.getCookies());
+		URI uri = (original.getMethod() == HttpMethod.GET) ? updateQueryString(original.getUri(), newParameters)
+				: original.getUri();
+		return new StandardOperationRequest(uri, original.getMethod(), original.getContent(), original.getHeaders(),
+				newParameters, original.getParts(), original.getCookies());
+	}
+
+	private URI updateQueryString(URI originalUri, Parameters parameters) {
+		try {
+			return new URI(originalUri.getScheme(), originalUri.getUserInfo(), originalUri.getHost(),
+					originalUri.getPort(), originalUri.getPath(),
+					parameters.isEmpty() ? null : parameters.toQueryString(), originalUri.getFragment());
+		}
+		catch (URISyntaxException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, URI uri, byte[] content) {
