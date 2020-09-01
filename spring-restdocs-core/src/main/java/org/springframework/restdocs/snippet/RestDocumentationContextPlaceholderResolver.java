@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 
 package org.springframework.restdocs.snippet;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
@@ -50,8 +47,6 @@ import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
  * @author Andy Wilkinson
  */
 public class RestDocumentationContextPlaceholderResolver implements PlaceholderResolver {
-
-	private static final Pattern CAMEL_CASE_PATTERN = Pattern.compile("([A-Z])");
 
 	private final RestDocumentationContext context;
 
@@ -130,14 +125,18 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 	}
 
 	private String camelCaseToSeparator(String string, String separator) {
-		Matcher matcher = CAMEL_CASE_PATTERN.matcher(string);
 		StringBuffer result = new StringBuffer();
-		while (matcher.find()) {
-			String replacement = (matcher.start() > 0) ? separator + matcher.group(1).toLowerCase()
-					: matcher.group(1).toLowerCase();
-			matcher.appendReplacement(result, replacement);
+		char[] chars = string.toCharArray();
+		for (int i = 0; i < chars.length; i++) {
+			char current = chars[i];
+			if (Character.isUpperCase(current) && i > 0) {
+				if (Character.isLowerCase(chars[i - 1])
+						|| (i < chars.length - 1 && Character.isLowerCase(chars[i + 1]))) {
+					result.append(separator);
+				}
+			}
+			result.append(Character.toLowerCase(chars[i]));
 		}
-		matcher.appendTail(result);
 		return result.toString();
 	}
 

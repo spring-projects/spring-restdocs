@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,45 @@ public class RestDocumentationContextPlaceholderResolverTests {
 	}
 
 	@Test
+	public void kebabCaseMethodNameWithUpperCaseOpeningSection() throws Exception {
+		assertThat(createResolver("URIDashSeparatedMethodName").resolvePlaceholder("method-name"))
+				.isEqualTo("uri-dash-separated-method-name");
+	}
+
+	@Test
+	public void kebabCaseMethodNameWithUpperCaseMidSection() throws Exception {
+		assertThat(createResolver("dashSeparatedMethodNameWithURIInIt").resolvePlaceholder("method-name"))
+				.isEqualTo("dash-separated-method-name-with-uri-in-it");
+	}
+
+	@Test
+	public void kebabCaseMethodNameWithUpperCaseEndSection() throws Exception {
+		assertThat(createResolver("dashSeparatedMethodNameWithURI").resolvePlaceholder("method-name"))
+				.isEqualTo("dash-separated-method-name-with-uri");
+	}
+
+	@Test
 	public void snakeCaseMethodName() throws Exception {
 		assertThat(createResolver("underscoreSeparatedMethodName").resolvePlaceholder("method_name"))
 				.isEqualTo("underscore_separated_method_name");
+	}
+
+	@Test
+	public void snakeCaseMethodNameWithUpperCaseOpeningSection() throws Exception {
+		assertThat(createResolver("URIUnderscoreSeparatedMethodName").resolvePlaceholder("method_name"))
+				.isEqualTo("uri_underscore_separated_method_name");
+	}
+
+	@Test
+	public void snakeCaseMethodNameWithUpperCaseMidSection() throws Exception {
+		assertThat(createResolver("underscoreSeparatedMethodNameWithURIInIt").resolvePlaceholder("method_name"))
+				.isEqualTo("underscore_separated_method_name_with_uri_in_it");
+	}
+
+	@Test
+	public void snakeCaseMethodNameWithUpperCaseEndSection() throws Exception {
+		assertThat(createResolver("underscoreSeparatedMethodNameWithURI").resolvePlaceholder("method_name"))
+				.isEqualTo("underscore_separated_method_name_with_uri");
 	}
 
 	@Test
