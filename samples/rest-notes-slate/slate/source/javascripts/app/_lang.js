@@ -7,7 +7,7 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain
 a copy of the License at
 
-  https://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -15,13 +15,14 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations
 under the License.
 */
-(function (global) {
+;(function () {
   'use strict';
 
   var languages = [];
 
-  global.setupLanguages = setupLanguages;
-  global.activateLanguage = activateLanguage;
+  window.setupLanguages = setupLanguages;
+  window.activateLanguage = activateLanguage;
+  window.getLanguageFromQueryString = getLanguageFromQueryString;
 
   function activateLanguage(language) {
     if (!language) return;
@@ -36,7 +37,7 @@ under the License.
     $(".highlight.tab-" + language).show();
     $(".lang-specific." + language).show();
 
-    global.toc.calculateHeights();
+    window.recacheHeights();
 
     // scroll to the new location of the position
     if ($(window.location.hash).get(0)) {
@@ -65,7 +66,7 @@ under the License.
 
       key = decodeURIComponent(key);
       // missing `=` should be `null`:
-      // https://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+      // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
       val = val === undefined ? null : decodeURIComponent(val);
 
       if (!ret.hasOwnProperty(key)) {
@@ -97,7 +98,7 @@ under the License.
   // gets the language set in the query string
   function getLanguageFromQueryString() {
     if (location.search.length >= 1) {
-      var language = parseURL(location.search).language
+      var language = parseURL(location.search).language;
       if (language) {
         return language;
       } else if (jQuery.inArray(location.search.substr(1), languages) != -1) {
@@ -159,8 +160,5 @@ under the License.
       activateLanguage(language);
       return false;
     });
-    window.onpopstate = function() {
-      activateLanguage(getLanguageFromQueryString());
-    };
   });
-})(window);
+})();
