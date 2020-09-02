@@ -21,6 +21,6 @@ test {
 matrixTest {
 	springFramework {
 		group = 'org.springframework'
-		versions = ['5.1.+', '5.2.+']
+		versions = ['5.1.+', '5.2.+', '5.3.+']
 	}
 }
