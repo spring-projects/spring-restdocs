@@ -28,6 +28,12 @@ matrixTest {
 	asciidoctorj {
 		group = 'org.asciidoctor'
 		artifact = 'asciidoctorj'
-		versions = [ asciidoctorj16Version, asciidoctorj20Version, asciidoctorj21Version ]
+		versions = [ asciidoctorj16Version,
+			asciidoctorj20Version,
+			asciidoctorj21Version,
+			asciidoctorj22Version,
+			asciidoctorj23Version,
+			asciidoctorj24Version
+		]
 	}
 }
