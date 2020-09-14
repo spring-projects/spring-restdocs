@@ -37,6 +37,7 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
 
   def do_read_snippets(snippets, parent, operation, snippet_titles)
     content = StringIO.new
+    content.set_encoding "UTF-8"
     section_id = parent.id
     snippets.each do |snippet|
       append_snippet_block(content, snippet, section_id,
@@ -93,7 +94,7 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
 
   def write_content(content, snippet, operation)
     if File.file? snippet.path
-      content.puts File.readlines(snippet.path).join
+      content.puts File.readlines(snippet.path, :encoding => 'UTF-8').join
     else
       warn "Snippet #{snippet.name} not found at #{snippet.path} for"\
            " operation #{operation}"
