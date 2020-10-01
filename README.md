@@ -11,6 +11,9 @@ than the fully automated, dense API documentation produced by tools like [Swagge
 For a broader introduction see the Documenting RESTful APIs presentation. Both the
 [slides][7] and a [video recording][8] are available.
 
+## Purpose of this Tutorial
+This tutorial provides you very good knowledge of Spring boot rest API's.
+
 ## Learning more
 
 To learn more about Spring REST Docs, please consult the [reference documentation][9].
