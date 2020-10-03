@@ -170,6 +170,11 @@ public abstract class AbstractOperationBlockMacroTests {
 	public void includingMissingSnippetAddsWarning() throws Exception {
 		String result = this.asciidoctor.convert("operation::some-operation[snippets='missing-snippet']", this.options);
 		assertThat(result).startsWith(getExpectedContentFromFile("missing-snippet"));
+		assertThat(CapturingLogHandler.getLogRecords()).hasSize(1);
+		assertThat(CapturingLogHandler.getLogRecords().get(0).getMessage())
+				.contains("Snippet missing-snippet not found");
+		assertThat(CapturingLogHandler.getLogRecords().get(0).getCursor().getLineNumber()).isEqualTo(1);
+		CapturingLogHandler.getLogRecords().clear();
 	}
 
 	@Test
@@ -182,6 +187,11 @@ public abstract class AbstractOperationBlockMacroTests {
 	public void missingOperationIsHandledGracefully() throws Exception {
 		String result = this.asciidoctor.convert("operation::missing-operation[]", this.options);
 		assertThat(result).startsWith(getExpectedContentFromFile("missing-operation"));
+		assertThat(CapturingLogHandler.getLogRecords()).hasSize(1);
+		assertThat(CapturingLogHandler.getLogRecords().get(0).getMessage())
+				.contains("No snippets were found for operation missing-operation");
+		assertThat(CapturingLogHandler.getLogRecords().get(0).getCursor().getLineNumber()).isEqualTo(1);
+		CapturingLogHandler.getLogRecords().clear();
 	}
 
 	@Test
