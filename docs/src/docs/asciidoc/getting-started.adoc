@@ -136,7 +136,7 @@ the configuration are described in the following listings:
 	`spring-restdocs-webtestclient` or `spring-restdocs-restassured` respectively instead.
 <2> Add the Asciidoctor plugin.
 <3> Using `prepare-package` allows the documentation to be
-	<<getting-started-build-configuration-maven-packaging, included in the package>>.
+	<<getting-started-build-configuration-packaging-the-documentation, included in the package>>.
 <4> Add `spring-restdocs-asciidoctor` as a dependency of the Asciidoctor plugin. This
 	will automatically configure the `snippets` attribute for use in your `.adoc` files to
 	point to `target/generated-snippets`. It will also allow you to use the `operation`
