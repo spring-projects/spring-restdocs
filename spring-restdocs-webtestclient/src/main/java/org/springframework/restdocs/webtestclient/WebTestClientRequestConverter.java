@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ReactiveHttpInputMessage;
 import org.springframework.http.codec.FormHttpMessageReader;
+import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.MultipartHttpMessageReader;
 import org.springframework.http.codec.multipart.Part;
@@ -58,6 +59,8 @@ import org.springframework.util.MultiValueMap;
  * @author Andy Wilkinson
  */
 class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> {
+
+	private static final String DEFAULT_PART_HTTP_MESSAGE_READER = "org.springframework.http.codec.multipart.DefaultPartHttpMessageReader";
 
 	private static final ResolvableType FORM_DATA_TYPE = ResolvableType.forClassWithGenerics(MultiValueMap.class,
 			String.class, String.class);
@@ -91,15 +94,33 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 	}
 
 	private List<OperationRequestPart> extractRequestParts(ExchangeResult result) {
-		if (!ClassUtils.isPresent("org.synchronoss.cloud.nio.multipart.NioMultipartParserListener",
-				getClass().getClassLoader())) {
+		HttpMessageReader<Part> partHttpMessageReader = findPartHttpMessageReader();
+		if (partHttpMessageReader == null) {
 			return Collections.emptyList();
 		}
-		return new MultipartHttpMessageReader(new SynchronossPartHttpMessageReader())
+		return new MultipartHttpMessageReader(partHttpMessageReader)
 				.readMono(ResolvableType.forClass(Part.class), new ExchangeResultReactiveHttpInputMessage(result),
 						Collections.emptyMap())
 				.onErrorReturn(new LinkedMultiValueMap<>()).block().values().stream()
 				.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart)).collect(Collectors.toList());
+	}
+
+	@SuppressWarnings("unchecked")
+	private HttpMessageReader<Part> findPartHttpMessageReader() {
+		if (ClassUtils.isPresent(DEFAULT_PART_HTTP_MESSAGE_READER, getClass().getClassLoader())) {
+			try {
+				return (HttpMessageReader<Part>) Class
+						.forName(DEFAULT_PART_HTTP_MESSAGE_READER, true, getClass().getClassLoader()).newInstance();
+			}
+			catch (Exception ex) {
+				// Continue
+			}
+		}
+		if (ClassUtils.isPresent("org.synchronoss.cloud.nio.multipart.NioMultipartParserListener",
+				getClass().getClassLoader())) {
+			return new SynchronossPartHttpMessageReader();
+		}
+		return null;
 	}
 
 	private OperationRequestPart createOperationRequestPart(Part part) {

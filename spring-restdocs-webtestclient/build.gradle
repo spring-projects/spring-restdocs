@@ -22,3 +22,9 @@ matrixTest {
 		versions = ['5.1.+', '5.2.+', '5.3.+']
 	}
 }
+
+project.afterEvaluate {
+	configurations.getByName('testRuntimeClasspath_org.springframework_5.3.+') {
+		exclude group: 'org.synchronoss.cloud', module: 'nio-multipart-parser'
+	}	
+}
