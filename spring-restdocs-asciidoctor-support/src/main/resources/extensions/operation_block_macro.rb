@@ -1,5 +1,6 @@
 require 'asciidoctor/extensions'
 require 'stringio'
+require 'asciidoctor/logging'
 
 # Spring REST Docs block macro to import multiple snippet of an operation at
 # once
@@ -11,6 +12,7 @@ require 'stringio'
 class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
   use_dsl
   named :operation
+  include Asciidoctor::Logging
 
   def process(parent, operation, attributes)
     snippets_dir = parent.document.attributes['snippets'].to_s
@@ -27,8 +29,9 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
                     snippet_titles)
     snippets = snippets_to_include(snippet_names, snippets_dir, operation)
     if snippets.empty?
-      warn "No snippets were found for operation #{operation} in"\
-           "#{snippets_dir}"
+      location = parent.document.reader.cursor_at_mark
+      logger.warn message_with_context "No snippets were found for operation #{operation} in "\
+           "#{snippets_dir}", source_location: location
       "No snippets found for operation::#{operation}"
     else
       do_read_snippets(snippets, parent, operation, snippet_titles)
@@ -41,7 +44,7 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
     section_id = parent.id
     snippets.each do |snippet|
       append_snippet_block(content, snippet, section_id,
-                           operation, snippet_titles)
+                           operation, snippet_titles, parent)
     end
     content.string
   end
@@ -87,17 +90,18 @@ class OperationBlockMacro < Asciidoctor::Extensions::BlockMacroProcessor
   end
 
   def append_snippet_block(content, snippet, section_id,
-                           operation, snippet_titles)
+                           operation, snippet_titles, parent)
     write_title content, snippet, section_id, snippet_titles
-    write_content content, snippet, operation
+    write_content content, snippet, operation, parent
   end
 
-  def write_content(content, snippet, operation)
+  def write_content(content, snippet, operation, parent)
     if File.file? snippet.path
       content.puts File.readlines(snippet.path, :encoding => 'UTF-8').join
     else
-      warn "Snippet #{snippet.name} not found at #{snippet.path} for"\
-           " operation #{operation}"
+      location = parent.document.reader.cursor_at_mark
+      logger.warn message_with_context "Snippet #{snippet.name} not found at #{snippet.path} for"\
+           " operation #{operation}", source_location: location
       content.puts "Snippet #{snippet.name} not found for"\
                    " operation::#{operation}"
       content.puts ''
