@@ -77,6 +77,14 @@ public class LinkMaskingContentModifierTests {
 						.isEqualTo(formattedAtomPayloadWithLinks(new Link("a", "custom"), new Link("b", "custom")));
 	}
 
+	@Test
+	public void maskCanUseUtf8Characters() throws Exception {
+		String ellipsis = "\u2026";
+		assertThat(
+				new LinkMaskingContentModifier(ellipsis).modifyContent(formattedHalPayloadWithLinks(this.links), null))
+						.isEqualTo(formattedHalPayloadWithLinks(new Link("a", ellipsis), new Link("b", ellipsis)));
+	}
+
 	private byte[] atomPayloadWithLinks(Link... links) throws JsonProcessingException {
 		return new ObjectMapper().writeValueAsBytes(createAtomPayload(links));
 	}

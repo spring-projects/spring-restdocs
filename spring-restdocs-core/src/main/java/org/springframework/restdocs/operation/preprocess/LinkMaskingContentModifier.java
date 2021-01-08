@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 import org.springframework.http.MediaType;
@@ -38,7 +39,7 @@ class LinkMaskingContentModifier implements ContentModifier {
 	}
 
 	LinkMaskingContentModifier(String mask) {
-		this.contentModifier = new PatternReplacingContentModifier(LINK_HREF, mask);
+		this.contentModifier = new PatternReplacingContentModifier(LINK_HREF, mask, StandardCharsets.UTF_8);
 	}
 
 	@Override

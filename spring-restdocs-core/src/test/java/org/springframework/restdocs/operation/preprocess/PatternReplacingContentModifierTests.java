@@ -17,6 +17,7 @@
 package org.springframework.restdocs.operation.preprocess;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
@@ -52,13 +53,23 @@ public class PatternReplacingContentModifierTests {
 	}
 
 	@Test
-	public void encodingIsPreserved() {
+	public void encodingIsPreservedUsingCharsetFromContentType() {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		Pattern pattern = Pattern.compile("[0-9]+");
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(pattern, "<<number>>");
 		assertThat(contentModifier.modifyContent((japaneseContent + " 123").getBytes(),
 				new MediaType("text", "plain", Charset.forName("UTF-8"))))
 						.isEqualTo((japaneseContent + " <<number>>").getBytes());
+	}
+
+	@Test
+	public void encodingIsPreservedUsingFallbackCharset() {
+		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
+		Pattern pattern = Pattern.compile("[0-9]+");
+		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(pattern, "<<number>>",
+				StandardCharsets.UTF_8);
+		assertThat(contentModifier.modifyContent((japaneseContent + " 123").getBytes(), new MediaType("text", "plain")))
+				.isEqualTo((japaneseContent + " <<number>>").getBytes());
 	}
 
 }

@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,26 +35,40 @@ class PatternReplacingContentModifier implements ContentModifier {
 
 	private final String replacement;
 
+	private final Charset fallbackCharset;
+
 	/**
 	 * Creates a new {@link PatternReplacingContentModifier} that will replace occurrences
-	 * of the given {@code pattern} with the given {@code replacement}.
+	 * of the given {@code pattern} with the given {@code replacement}. The content is
+	 * handled using the charset from its content type. When no content type is specified
+	 * the JVM's {@link Charset#defaultCharset() default charset is used}.
 	 * @param pattern the pattern
 	 * @param replacement the replacement
 	 */
 	PatternReplacingContentModifier(Pattern pattern, String replacement) {
+		this(pattern, replacement, Charset.defaultCharset());
+	}
+
+	/**
+	 * Creates a new {@link PatternReplacingContentModifier} that will replace occurrences
+	 * of the given {@code pattern} with the given {@code replacement}. The content is
+	 * handled using the charset from its content type. When no content type is specified
+	 * the given {@code fallbackCharset} is used.
+	 * @param pattern the pattern
+	 * @param replacement the replacement
+	 * @param fallbackCharset the charset to use as a fallback
+	 */
+	PatternReplacingContentModifier(Pattern pattern, String replacement, Charset fallbackCharset) {
 		this.pattern = pattern;
 		this.replacement = replacement;
+		this.fallbackCharset = fallbackCharset;
 	}
 
 	@Override
 	public byte[] modifyContent(byte[] content, MediaType contentType) {
-		String original;
-		if (contentType != null && contentType.getCharset() != null) {
-			original = new String(content, contentType.getCharset());
-		}
-		else {
-			original = new String(content);
-		}
+		Charset charset = (contentType != null && contentType.getCharset() != null) ? contentType.getCharset()
+				: this.fallbackCharset;
+		String original = new String(content, charset);
 		Matcher matcher = this.pattern.matcher(original);
 		StringBuilder builder = new StringBuilder();
 		int previous = 0;
@@ -73,7 +88,7 @@ class PatternReplacingContentModifier implements ContentModifier {
 		if (previous < original.length()) {
 			builder.append(original.substring(previous));
 		}
-		return builder.toString().getBytes();
+		return builder.toString().getBytes(charset);
 	}
 
 }
