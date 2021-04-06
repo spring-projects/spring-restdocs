@@ -132,6 +132,17 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
+	public void extractSubSectionWithWildcardAndFieldDescriptors() throws IOException {
+		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("*.d")
+				.extractSubsection("{\"a\":{\"b\":1},\"c\":{\"d\":{\"e\":1,\"f\":2}}}".getBytes(),
+								   MediaType.APPLICATION_JSON,
+								   Arrays.asList(new FieldDescriptor("e"), new FieldDescriptor("f")));
+		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
+		assertThat(extracted.size()).isEqualTo(2);
+		assertThat(extracted).containsOnlyKeys("e", "f");
+	}
+
+	@Test
 	public void extractedSubsectionIsPrettyPrintedWhenInputIsPrettyPrinted()
 			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -163,5 +174,4 @@ public class FieldPathPayloadSubsectionExtractorTests {
 						.isInstanceOf(PayloadHandlingException.class)
 						.hasMessage("a.c does not identify a section of the payload");
 	}
-
 }

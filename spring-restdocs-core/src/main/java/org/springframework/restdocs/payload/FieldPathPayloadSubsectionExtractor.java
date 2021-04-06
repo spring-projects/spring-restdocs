@@ -90,7 +90,7 @@ public class FieldPathPayloadSubsectionExtractor
 							(descriptor) -> JsonFieldPath.compile(this.fieldPath + "." + descriptor.getPath()),
 							this::prependFieldPath));
 			if (value instanceof List) {
-				List<?> extractedList = (List<?>) value;
+				List<?> extractedList = getNotAbsentExtractedField(value);
 				JsonContentHandler contentHandler = new JsonContentHandler(payload, descriptorsByPath.values());
 				Set<JsonFieldPath> uncommonPaths = JsonFieldPaths.from(extractedList).getUncommon().stream()
 						.map((path) -> JsonFieldPath.compile(this.fieldPath + "." + path)).filter((path) -> {
@@ -114,6 +114,17 @@ public class FieldPathPayloadSubsectionExtractor
 		catch (IOException ex) {
 			throw new PayloadHandlingException(ex);
 		}
+	}
+
+	private List<?> getNotAbsentExtractedField(Object value) {
+		List<?> extractedList = ((List<?>) value)
+				.stream()
+				.filter(field -> !ExtractedField.ABSENT.equals(field))
+				.collect(Collectors.toList());
+		if (extractedList.isEmpty()) {
+			throw new PayloadHandlingException(this.fieldPath + " does not identify a section of the payload");
+		}
+		return extractedList;
 	}
 
 	private FieldDescriptor prependFieldPath(FieldDescriptor original) {
