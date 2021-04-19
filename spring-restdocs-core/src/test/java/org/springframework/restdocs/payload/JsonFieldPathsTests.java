@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+
+import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,6 +74,15 @@ public class JsonFieldPathsTests {
 						.from(Arrays.asList(json("{\"a\": 1, \"b\": {\"c\": 1}}"),
 								json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"d\": 2}}")))
 						.getUncommon()).containsExactly("b.c", "b.d");
+	}
+
+	@Test
+	public void absentItemFromFieldExtractionCausesAllPresentFieldsToBeIdentifiedAsUncommon() {
+		assertThat(
+				JsonFieldPaths
+						.from(Arrays.asList(ExtractedField.ABSENT, ("{\"a\": 1, \"b\": {\"c\": 1}}"),
+								json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"d\": 2}}")))
+						.getUncommon()).containsExactly("", "a", "b", "b.c", "b.d");
 	}
 
 	@Test

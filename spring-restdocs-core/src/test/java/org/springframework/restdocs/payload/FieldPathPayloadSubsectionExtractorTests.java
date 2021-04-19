@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,6 +105,25 @@ public class FieldPathPayloadSubsectionExtractorTests {
 		this.thrown.expectMessage("The following non-optional uncommon paths were found: [a.[].b.d]");
 		new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
 				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(), MediaType.APPLICATION_JSON);
+	}
+
+	@Test
+	public void extractMapSubsectionWithVaryingStructureFromInconsistentJsonMap()
+			throws JsonParseException, JsonMappingException, IOException {
+		this.thrown.expect(PayloadHandlingException.class);
+		this.thrown.expectMessage("The following non-optional uncommon paths were found: [*.d, *.d.e, *.d.f]");
+		new FieldPathPayloadSubsectionExtractor("*.d").extractSubsection(
+				"{\"a\":{\"b\":1},\"c\":{\"d\":{\"e\":1,\"f\":2}}}".getBytes(), MediaType.APPLICATION_JSON);
+	}
+
+	@Test
+	public void extractMapSubsectionWithVaryingStructureFromInconsistentJsonMapWhereAllSubsectionFieldsAreOptional()
+			throws IOException {
+		this.thrown.expect(PayloadHandlingException.class);
+		this.thrown.expectMessage("The following non-optional uncommon paths were found: [*.d]");
+		new FieldPathPayloadSubsectionExtractor("*.d").extractSubsection(
+				"{\"a\":{\"b\":1},\"c\":{\"d\":{\"e\":1,\"f\":2}}}".getBytes(), MediaType.APPLICATION_JSON,
+				Arrays.asList(new FieldDescriptor("e").optional(), new FieldDescriptor("f").optional()));
 	}
 
 	@Test

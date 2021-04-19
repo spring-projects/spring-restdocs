@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -93,7 +94,9 @@ public class FieldPathPayloadSubsectionExtractor
 				List<?> extractedList = (List<?>) value;
 				JsonContentHandler contentHandler = new JsonContentHandler(payload, descriptorsByPath.values());
 				Set<JsonFieldPath> uncommonPaths = JsonFieldPaths.from(extractedList).getUncommon().stream()
-						.map((path) -> JsonFieldPath.compile(this.fieldPath + "." + path)).filter((path) -> {
+						.map((path) -> JsonFieldPath
+								.compile((path.equals("")) ? this.fieldPath : this.fieldPath + "." + path))
+						.filter((path) -> {
 							FieldDescriptor descriptorForPath = descriptorsByPath.getOrDefault(path,
 									new FieldDescriptor(path.toString()));
 							return contentHandler.isMissing(descriptorForPath);
@@ -105,7 +108,8 @@ public class FieldPathPayloadSubsectionExtractor
 					String message = this.fieldPath + " identifies multiple sections of "
 							+ "the payload and they do not have a common structure. The "
 							+ "following non-optional uncommon paths were found: ";
-					message += uncommonPaths;
+					message += uncommonPaths.stream().map(JsonFieldPath::toString)
+							.collect(Collectors.toCollection(TreeSet::new));
 					throw new PayloadHandlingException(message);
 				}
 			}
