@@ -33,7 +33,7 @@ public class PathParameters {
 		this.webTestClient.get().uri("/locations/{latitude}/{longitude}", 51.5072, 0.1275) // <1>
 			.exchange().expectStatus().isOk().expectBody()
 			.consumeWith(document("locations",
-				pathParameters( // <2>
+				pathParameters(// <2>
 					parameterWithName("latitude").description("The location's latitude"), // <3>
 					parameterWithName("longitude").description("The location's longitude")))); // <4>
 		// end::path-parameters[]

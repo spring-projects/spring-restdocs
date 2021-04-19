@@ -37,7 +37,7 @@ public class RequestParts {
 		multipartData.add("file", "example".getBytes());
 		this.webTestClient.post().uri("/upload").body(BodyInserters.fromMultipartData(multipartData)) // <1>
 			.exchange().expectStatus().isOk().expectBody()
-			.consumeWith(document("upload", requestParts( // <2>
+			.consumeWith(document("upload", requestParts(// <2>
 				partWithName("file").description("The file to upload")) // <3>
 		));
 		// end::request-parts[]

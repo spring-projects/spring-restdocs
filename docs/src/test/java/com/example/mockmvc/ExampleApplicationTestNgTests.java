@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,31 +18,32 @@ package com.example.mockmvc;
 
 import java.lang.reflect.Method;
 
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 public class ExampleApplicationTestNgTests {
 
 	public final ManualRestDocumentation restDocumentation = new ManualRestDocumentation();
+
 	@SuppressWarnings("unused")
 	// tag::setup[]
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	private WebApplicationContext context;
 
 	@BeforeMethod
 	public void setUp(Method method) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(this.restDocumentation))
-				.build();
+				.apply(documentationConfiguration(this.restDocumentation)).build();
 		this.restDocumentation.beforeTest(getClass(), method.getName());
 	}
 

@@ -1,12 +1,38 @@
-rootProject.name = 'spring-restdocs'
+pluginManagement {
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/plugins-release" }
+		gradlePluginPortal()
+	}
+}
 
-include 'docs'
-include 'spring-restdocs-asciidoctor'
-include 'spring-restdocs-asciidoctor-1.5'
-include 'spring-restdocs-asciidoctor-1.6'
-include 'spring-restdocs-asciidoctor-2.x'
-include 'spring-restdocs-asciidoctor-support'
-include 'spring-restdocs-core'
-include 'spring-restdocs-mockmvc'
-include 'spring-restdocs-restassured'
-include 'spring-restdocs-webtestclient'
+plugins {
+	id "com.gradle.enterprise" version "3.6.1"
+	id "io.spring.ge.conventions" version "0.0.7"
+}
+
+rootProject.name = "spring-restdocs"
+
+settings.gradle.projectsLoaded {
+	gradleEnterprise {
+		buildScan {
+			settings.gradle.rootProject.getBuildDir().mkdirs()
+			new File(settings.gradle.rootProject.getBuildDir(), "build-scan-uri.txt").text = "build scan not generated"
+			buildScanPublished { scan ->
+				new File(settings.gradle.rootProject.getBuildDir(), "build-scan-uri.txt").text = "<${scan.buildScanUri}|build scan>\n"
+			}
+		}
+	}
+}
+
+include "docs"
+include "spring-restdocs-asciidoctor"
+include "spring-restdocs-asciidoctor-1.5"
+include "spring-restdocs-asciidoctor-1.6"
+include "spring-restdocs-asciidoctor-2.x"
+include "spring-restdocs-asciidoctor-support"
+include "spring-restdocs-core"
+include "spring-restdocs-mockmvc"
+include "spring-restdocs-platform"
+include "spring-restdocs-restassured"
+include "spring-restdocs-webtestclient"

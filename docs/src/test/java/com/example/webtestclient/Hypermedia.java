@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,21 +30,20 @@ public class Hypermedia {
 
 	public void defaultExtractor() throws Exception {
 		// tag::links[]
-		this.webTestClient.get().uri("/").accept(MediaType.APPLICATION_JSON).exchange()
-			.expectStatus().isOk().expectBody()
-			.consumeWith(document("index",links( // <1>
-					linkWithRel("alpha").description("Link to the alpha resource"), // <2>
-					linkWithRel("bravo").description("Link to the bravo resource")))); // <3>
+		this.webTestClient.get().uri("/").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+				.expectBody().consumeWith(document("index", links(// <1>
+						linkWithRel("alpha").description("Link to the alpha resource"), // <2>
+						linkWithRel("bravo").description("Link to the bravo resource")))); // <3>
 		// end::links[]
 	}
 
 	public void explicitExtractor() throws Exception {
-		this.webTestClient.get().uri("/").accept(MediaType.APPLICATION_JSON).exchange()
-		.expectStatus().isOk().expectBody()
-		// tag::explicit-extractor[]
-		.consumeWith(document("index",links(halLinks(), // <1>
-				linkWithRel("alpha").description("Link to the alpha resource"),
-				linkWithRel("bravo").description("Link to the bravo resource"))));
+		this.webTestClient.get().uri("/").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+				.expectBody()
+				// tag::explicit-extractor[]
+				.consumeWith(document("index", links(halLinks(), // <1>
+						linkWithRel("alpha").description("Link to the alpha resource"),
+						linkWithRel("bravo").description("Link to the bravo resource"))));
 		// end::explicit-extractor[]
 	}
 

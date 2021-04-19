@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,30 +33,24 @@ public class RequestPartPayload {
 
 	public void fields() throws Exception {
 		// tag::fields[]
-		MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png",
-				"<<png data>>".getBytes());
-		MockMultipartFile metadata = new MockMultipartFile("metadata", "",
-				"application/json", "{ \"version\": \"1.0\"}".getBytes());
+		MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png", "<<png data>>".getBytes());
+		MockMultipartFile metadata = new MockMultipartFile("metadata", "", "application/json",
+				"{ \"version\": \"1.0\"}".getBytes());
 
-		this.mockMvc.perform(fileUpload("/images").file(image).file(metadata)
-					.accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(document("image-upload", requestPartFields("metadata", // <1>
-					fieldWithPath("version").description("The version of the image")))); // <2>
+		this.mockMvc.perform(fileUpload("/images").file(image).file(metadata).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(document("image-upload", requestPartFields("metadata", // <1>
+						fieldWithPath("version").description("The version of the image")))); // <2>
 		// end::fields[]
 	}
 
 	public void body() throws Exception {
 		// tag::body[]
-		MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png",
-				"<<png data>>".getBytes());
-		MockMultipartFile metadata = new MockMultipartFile("metadata", "",
-				"application/json", "{ \"version\": \"1.0\"}".getBytes());
+		MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png", "<<png data>>".getBytes());
+		MockMultipartFile metadata = new MockMultipartFile("metadata", "", "application/json",
+				"{ \"version\": \"1.0\"}".getBytes());
 
-		this.mockMvc.perform(fileUpload("/images").file(image).file(metadata)
-					.accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(document("image-upload", requestPartBody("metadata"))); // <1>
+		this.mockMvc.perform(fileUpload("/images").file(image).file(metadata).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(document("image-upload", requestPartBody("metadata"))); // <1>
 		// end::body[]
 	}
 

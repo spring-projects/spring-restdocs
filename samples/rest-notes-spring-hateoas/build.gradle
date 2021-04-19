@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-	id "org.asciidoctor.convert" version "1.5.9.2"
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 apply plugin: 'java'
@@ -18,7 +18,8 @@ apply plugin: 'io.spring.dependency-management'
 
 repositories {
 	mavenLocal()
-	maven { url 'https://repo.spring.io/libs-snapshot' }
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
 	mavenCentral()
 }
 
@@ -33,16 +34,23 @@ ext {
 
 ext['spring-restdocs.version'] = '2.0.6.BUILD-SNAPSHOT'
 
+configurations {
+	asciidoctorExtensions
+}
+
 dependencies {
-	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-	compile 'org.springframework.boot:spring-boot-starter-hateoas'
-	runtime 'com.h2database:h2'
-	runtime 'org.atteo:evo-inflector:1.2.1'
-	testCompile 'com.jayway.jsonpath:json-path'
-	testCompile 'org.assertj:assertj-core'
-	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.atteo:evo-inflector:1.2.1'
+
+	testImplementation 'com.jayway.jsonpath:json-path'
+	testImplementation 'org.assertj:assertj-core'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 test {
@@ -50,6 +58,7 @@ test {
 }
 
 asciidoctor {
+	configurations "asciidoctorExtensions"
 	inputs.dir snippetsDir
 	dependsOn test
 }

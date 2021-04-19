@@ -1,33 +1,43 @@
-description = 'Spring REST Docs Asciidoctor Extension'
+plugins {
+	id "java-library"
+	id "maven-publish"
+	id "matrixtest"
+}
+
+description = "Spring REST Docs Asciidoctor Extension"
 
 configurations {
 	merge
-	testRuntime { extendsFrom merge }
+	testRuntimeOnly { extendsFrom merge }
 }
 
 dependencies {
-	merge project(':spring-restdocs-asciidoctor-1.5')
-	merge project(':spring-restdocs-asciidoctor-1.6')
-	merge project(':spring-restdocs-asciidoctor-2.x')
-	testCompile 'org.apache.pdfbox:pdfbox'
-	testCompile 'org.asciidoctor:asciidoctorj:1.5.8.1'
-	testCompile 'org.assertj:assertj-core'
-	testCompile 'junit:junit'
-	testCompile 'org.springframework:spring-core'
-	testRuntime 'org.asciidoctor:asciidoctorj-pdf'
+	internal(platform(project(":spring-restdocs-platform")))
+
+	merge project(":spring-restdocs-asciidoctor-1.5")
+	merge project(":spring-restdocs-asciidoctor-1.6")
+	merge project(":spring-restdocs-asciidoctor-2.x")
+
+	testImplementation("org.apache.pdfbox:pdfbox")
+	testImplementation("org.asciidoctor:asciidoctorj:1.5.8.1")
+	testImplementation("org.assertj:assertj-core")
+	testImplementation("junit:junit")
+	testImplementation("org.springframework:spring-core")
+
+	testRuntimeOnly("org.asciidoctor:asciidoctorj-pdf")
 }
 
 jar {
-	dependsOn ':spring-restdocs-asciidoctor-1.5:jar'
-	dependsOn ':spring-restdocs-asciidoctor-1.6:jar'
-	dependsOn ':spring-restdocs-asciidoctor-2.x:jar'
+	dependsOn(":spring-restdocs-asciidoctor-1.5:jar")
+	dependsOn(":spring-restdocs-asciidoctor-1.6:jar")
+	dependsOn(":spring-restdocs-asciidoctor-2.x:jar")
 	from configurations.merge.collect { file -> zipTree(file) }
 }
 
 matrixTest {
 	asciidoctorj {
-		group = 'org.asciidoctor'
-		artifact = 'asciidoctorj'
+		group = "org.asciidoctor"
+		artifact = "asciidoctorj"
 		versions = [ asciidoctorj16Version,
 			asciidoctorj20Version,
 			asciidoctorj21Version,

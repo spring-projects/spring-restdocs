@@ -1,185 +1,117 @@
-buildscript {
-	repositories {
-		mavenCentral()
-		maven { url 'https://repo.spring.io/plugins-snapshot' }
-		maven { url 'https://repo.spring.io/plugins-release' }
-		maven { url 'https://plugins.gradle.org/m2/' }
-		maven { url 'https://repo.spring.io/snapshot' }
-	}
-	dependencies {
-		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
-		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2'
-		classpath 'io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE'
-		classpath "io.spring.javaformat:spring-javaformat-gradle-plugin:$javaFormatVersion"
-		classpath 'io.spring.nohttp:nohttp-gradle:0.0.2.RELEASE'
-	}
+plugins {
+	id 'io.spring.javaformat' version "$javaFormatVersion" apply false
+	id 'io.spring.nohttp' version '0.0.6.RELEASE' apply false
 }
 
 allprojects {
-	group = 'org.springframework.restdocs'
+	group = "org.springframework.restdocs"
 	repositories {
 		mavenCentral()
-		maven { url 'https://repo.spring.io/libs-snapshot' }
+		maven { url "https://repo.spring.io/snapshot" }
 	}
 }
 
-apply plugin: 'samples'
-apply plugin: 'org.sonarqube'
-apply plugin: 'io.spring.nohttp'
-
-sonarqube {
-	properties {
-		property 'sonar.jacoco.reportPath', "${buildDir.name}/jacoco.exec"
-		property 'sonar.java.coveragePlugin', 'jacoco'
-		property 'sonar.links.ci', 'https://build.spring.io/browse/SRD'
-		property 'sonar.links.homepage', 'https://github.com/spring-projects/spring-restdocs'
-		property 'sonar.links.issue', 'https://github.com/spring-projects/spring-restdocs'
-		property 'sonar.links.scm', 'https://github.com/spring-projects/spring-restdocs'
-	}
-}
+apply plugin: "samples"
+apply plugin: "io.spring.nohttp"
 
 nohttp {
-	source.exclude 'samples/rest-notes-slate/slate/source/javascripts/lib/_jquery*.js'
-	source.exclude 'buildSrc/.gradle/**'
-	source.exclude '**/build/**'
-	source.exclude '**/target/**'
-	whitelistFile = project.file('config/nohttp/whitelist.lines')
+	source.exclude "samples/rest-notes-slate/slate/source/javascripts/lib/_jquery*.js"
+	source.exclude "buildSrc/.gradle/**"
+	source.exclude "**/build/**"
+	source.exclude "**/target/**"
 }
 
 ext {
-	springVersion = '5.0.15.RELEASE'
+	springVersion = "5.0.15.RELEASE"
 	javadocLinks = [
-		'https://docs.oracle.com/javase/8/docs/api/',
+		"https://docs.oracle.com/javase/8/docs/api/",
 		"https://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
-		'https://docs.jboss.org/hibernate/stable/beanvalidation/api/',
-		'https://docs.jboss.org/hibernate/stable/validator/api/'
+		"https://docs.jboss.org/hibernate/stable/beanvalidation/api/",
+		"https://docs.jboss.org/hibernate/stable/validator/api/"
 	] as String[]
 }
 
-subprojects {
-	apply plugin: 'io.spring.dependency-management'
-	apply plugin: 'java'
-	apply plugin: 'eclipse'
-	apply plugin: 'propdeps'
-	apply plugin: 'propdeps-eclipse'
-	apply plugin: 'propdeps-maven'
-	apply plugin: 'maven'
-	apply plugin: 'matrixtest'
+subprojects { subproject ->
+	plugins.withType(JavaPlugin) {
+		subproject.apply plugin: "io.spring.javaformat"
+		subproject.apply plugin: "checkstyle"
 
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
 
-	dependencyManagement {
-		imports {
-			mavenBom "org.springframework:spring-framework-bom:$springVersion"
+		configurations {
+			internal {
+				canBeConsumed = false
+				canBeResolved = false
+			}
+			compileClasspath.extendsFrom(internal)
+			runtimeClasspath.extendsFrom(internal)
+			testCompileClasspath.extendsFrom(internal)
+			testRuntimeClasspath.extendsFrom(internal)
 		}
+
+		test {
+			testLogging {
+				exceptionFormat "full"
+			}
+		}
+
+		compileJava {
+			options.compilerArgs = [ "-Xlint:deprecation", "-Xlint:-options", "-Werror" ]
+		}
+
+		tasks.withType(JavaCompile) {
+			options.encoding = "UTF-8"
+		}
+
+		tasks.withType(Test) {
+			maxHeapSize = "1024M"
+		}
+
+		checkstyle {
+			configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+			configProperties = [ "checkstyle.config.dir" : rootProject.file("config/checkstyle") ]
+			toolVersion = "8.22"
+		}
+
 		dependencies {
-			dependency 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
-			dependency 'com.samskivert:jmustache:1.12'
-			dependency 'commons-codec:commons-codec:1.10'
-			dependency 'javax.servlet:javax.servlet-api:3.1.0'
-			dependency 'javax.validation:validation-api:2.0.0.Final'
-			dependency 'junit:junit:4.12'
-			dependency 'io.rest-assured:rest-assured:3.0.7'
-			dependency 'org.apache.pdfbox:pdfbox:2.0.7'
-			dependency 'org.assertj:assertj-core:3.11.1'
-			dependency 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.18'
-			dependency 'org.hamcrest:hamcrest-core:1.3'
-			dependency 'org.hamcrest:hamcrest-library:1.3'
-			dependency 'org.hibernate.validator:hibernate-validator:6.0.9.Final'
-			dependency 'org.jacoco:org.jacoco.agent:0.7.9'
-			dependency 'org.javamoney:moneta:1.1'
-			dependency 'org.jruby:jruby-complete:9.1.13.0'
-			dependency 'org.junit.jupiter:junit-jupiter-api:5.0.0'
-			dependency 'org.mockito:mockito-core:1.10.19'
-			dependency 'org.springframework.hateoas:spring-hateoas:0.23.0.RELEASE'
-			dependency 'org.synchronoss.cloud:nio-multipart-parser:1.1.0'
+			checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:$javaFormatVersion")
 		}
-	}
 
-	test {
-		testLogging {
-			exceptionFormat "full"
-		}
-	}
+		plugins.withType(MavenPublishPlugin) {
+			subproject.apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
 
-	eclipseJdt {
-		inputFile = rootProject.file('config/eclipse/org.eclipse.jdt.core.prefs')
-		doLast {
-			project.file('.settings/org.eclipse.jdt.ui.prefs').withWriter { writer ->
-				writer << rootProject.file('config/eclipse/org.eclipse.jdt.ui.prefs').text
+			javadoc {
+				description = "Generates project-level javadoc for use in -javadoc jar"
+				options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+				options.author = true
+				options.header = "Spring REST Docs $version"
+				options.docTitle = "${options.header} API"
+				options.links = javadocLinks
+				options.addStringOption "-quiet"
+				options.encoding = "UTF-8"
+				options.source = "1.8"
+			}
+
+			java {
+				withJavadocJar()
+				withSourcesJar()
 			}
 		}
 	}
 
-	compileJava {
-		options.compilerArgs = [ '-Xlint:deprecation', '-Xlint:-options', '-Werror' ]
+	tasks.withType(GenerateModuleMetadata) {
+		enabled = false
 	}
 
-	tasks.withType(JavaCompile) {
-		options.encoding = 'UTF-8'
-	}
-
-}
-
-def codeProjects = subprojects - project(":docs")
-configure(codeProjects) {
-	apply plugin: 'io.spring.javaformat'
-	apply plugin: 'checkstyle'
-	apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
-
-	checkstyle {
-		configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-		configProperties = [ 'checkstyle.config.dir' : rootProject.file('config/checkstyle') ]
-		toolVersion = '8.22'
-	}
-
-	configurations {
-		jacoco
-	}
-
-	dependencies {
-		checkstyle "io.spring.javaformat:spring-javaformat-checkstyle:$javaFormatVersion"
-		jacoco 'org.jacoco:org.jacoco.agent::runtime'
-	}
-}
-
-def publishedCodeProjects = codeProjects.findAll { codeProject -> !codeProject.name.contains('spring-restdocs-asciidoctor-')}
-configure(publishedCodeProjects) { subproject ->
-	javadoc {
-		description = "Generates project-level javadoc for use in -javadoc jar"
-		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-		options.author = true
-		options.header = "Spring REST Docs $version"
-		options.docTitle = "${options.header} API"
-		options.links = javadocLinks
-		options.addStringOption '-quiet'
-		options.encoding = 'UTF-8'
-		options.source = '1.8'
-	}
-
-	task sourcesJar(type: Jar) {
-		classifier = 'sources'
-		from project.sourceSets.main.allSource
-	}
-
-	task javadocJar(type: Jar) {
-		classifier = "javadoc"
-		from javadoc
-	}
-
-	artifacts {
-		archives sourcesJar
-		archives javadocJar
-	}
 }
 
 samples {
-	dependOn 'spring-restdocs-core:install'
-	dependOn 'spring-restdocs-mockmvc:install'
-	dependOn 'spring-restdocs-restassured:install'
-	dependOn 'spring-restdocs-webtestclient:install'
-	dependOn 'spring-restdocs-asciidoctor:install'
+	dependOn "spring-restdocs-core:publishToMavenLocal"
+	dependOn "spring-restdocs-mockmvc:publishToMavenLocal"
+	dependOn "spring-restdocs-restassured:publishToMavenLocal"
+	dependOn "spring-restdocs-webtestclient:publishToMavenLocal"
+	dependOn "spring-restdocs-asciidoctor:publishToMavenLocal"
 
 	restNotesSpringHateoas {
 		workingDir "$projectDir/samples/rest-notes-spring-hateoas"
@@ -215,49 +147,52 @@ samples {
 task api (type: Javadoc) {
 	group = "Documentation"
 	description = "Generates aggregated Javadoc API documentation."
-	dependsOn {
-		subprojects.collect {
-			it.tasks.getByName("jar")
+	project.rootProject.gradle.projectsEvaluated {
+		Set<String> excludedProjects = ['spring-restdocs-asciidoctor']
+		Set<Project> publishedProjects = rootProject.subprojects.findAll { it != project}
+			.findAll { it.plugins.hasPlugin(JavaPlugin) && it.plugins.hasPlugin(MavenPublishPlugin) }
+			.findAll { !excludedProjects.contains(it.name) }
+			.findAll { !it.name.startsWith('spring-boot-starter') }
+		dependsOn publishedProjects.javadoc
+		source publishedProjects.javadoc.source
+		classpath = project.files(publishedProjects.javadoc.classpath)
+		destinationDir = project.file "${buildDir}/docs/javadoc"
+		options {
+			author = true
+			docTitle = "Spring REST Docs ${project.version} API"
+			encoding = "UTF-8"
+			memberLevel = "protected"
+			outputLevel = "quiet"
+			source = "1.8"
+			splitIndex = true
+			stylesheetFile = file("src/main/javadoc/spring-javadoc.css")
+			use = true
+			windowTitle = "Spring REST Docs ${project.version} API"
 		}
-	}
-	options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-	options.author = true
-	options.header = "Spring REST Docs $version"
-	options.splitIndex = true
-	options.links = javadocLinks
-	options.addStringOption '-quiet'
-
-	source publishedCodeProjects.findAll { it.name != 'spring-restdocs-asciidoctor' }
-			.collect { it.sourceSets.main.allJava }
-
-	destinationDir = new File(buildDir, "api")
-
-	doFirst {
-		classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
 	}
 }
 
-task docsZip(type: Zip, dependsOn: [':docs:asciidoctor', ':api', ':buildSamples']) {
-	group = 'Distribution'
-	baseName = 'spring-restdocs'
-	classifier = 'docs'
-	description = "Builds -${classifier} archive containing API and reference documentation"
-	destinationDir = file("${project.buildDir}/distributions")
+task docsZip(type: Zip, dependsOn: [":docs:asciidoctor", ":api", ":buildSamples"]) {
+	group = "Distribution"
+	archiveBaseName = "spring-restdocs"
+	archiveClassifier = "docs"
+	description = "Builds -${archiveClassifier} archive containing API and reference documentation"
+	destinationDirectory = file("${project.buildDir}/distributions")
 
-	from(project.tasks.findByPath(':docs:asciidoctor')) {
-		into 'reference'
+	from(project.tasks.findByPath(":docs:asciidoctor")) {
+		into "reference"
 	}
 
 	from(api) {
-		into 'api'
+		into "api"
 	}
 
-	from(file('samples/rest-notes-spring-hateoas/build/asciidoc/html5')) {
-		into 'samples/restful-notes'
+	from(file("samples/rest-notes-spring-hateoas/build/asciidoc/html5")) {
+		into "samples/restful-notes"
 	}
 
-	from(file('samples/rest-notes-slate/build/docs')) {
-		into 'samples/slate'
+	from(file("samples/rest-notes-slate/build/docs")) {
+		into "samples/slate"
 	}
 }
 

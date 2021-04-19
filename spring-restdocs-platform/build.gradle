@@ -1,0 +1,33 @@
+plugins {
+	id 'java-platform'
+}
+
+javaPlatform {
+	allowDependencies()
+}
+
+dependencies {
+	constraints {
+		api("com.fasterxml.jackson.core:jackson-databind:2.9.5")
+		api("com.samskivert:jmustache:$jmustacheVersion")
+		api("commons-codec:commons-codec:1.10")
+		api("javax.servlet:javax.servlet-api:3.1.0")
+		api("javax.validation:validation-api:2.0.0.Final")
+		api("junit:junit:4.12")
+		api("io.rest-assured:rest-assured:3.0.7")
+		api("org.apache.pdfbox:pdfbox:2.0.7")
+		api("org.assertj:assertj-core:3.11.1")
+		api("org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.18")
+		api("org.hamcrest:hamcrest-core:1.3")
+		api("org.hamcrest:hamcrest-library:1.3")
+		api("org.hibernate.validator:hibernate-validator:6.0.9.Final")
+		api("org.jacoco:org.jacoco.agent:0.7.9")
+		api("org.javamoney:moneta:1.1")
+		api("org.jruby:jruby-complete:9.1.13.0")
+		api("org.junit.jupiter:junit-jupiter-api:5.0.0")
+		api("org.mockito:mockito-core:1.10.19")
+		api("org.springframework.hateoas:spring-hateoas:0.23.0.RELEASE")
+		api("org.synchronoss.cloud:nio-multipart-parser:1.1.0")
+	}
+	api(enforcedPlatform("org.springframework:spring-framework-bom:$springVersion"))
+}

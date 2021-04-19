@@ -1,23 +1,30 @@
-description = 'Spring REST Docs REST Assured'
-
-dependencies {
-	compile project(':spring-restdocs-core')
-	compile 'io.rest-assured:rest-assured'
-
-	testCompile 'org.apache.tomcat.embed:tomcat-embed-core:8.5.13'
-	testCompile 'org.assertj:assertj-core'
-	testCompile 'org.hamcrest:hamcrest-library'
-	testCompile 'org.mockito:mockito-core'
-	testCompile project(path: ':spring-restdocs-core', configuration: 'testArtifacts')
+plugins {
+	id "java-library"
+	id "matrixtest"
+	id "maven-publish"
 }
 
-test {
-	jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*"
+description = "Spring REST Docs REST Assured"
+
+dependencies {
+	api(project(":spring-restdocs-core"))
+	api("io.rest-assured:rest-assured")
+
+	implementation("org.springframework:spring-web")
+
+	internal(platform(project(":spring-restdocs-platform")))
+
+	testImplementation(project(path: ":spring-restdocs-core", configuration: "testArtifacts"))
+	testImplementation("com.fasterxml.jackson.core:jackson-databind")
+	testImplementation("org.apache.tomcat.embed:tomcat-embed-core:8.5.13")
+	testImplementation("org.assertj:assertj-core")
+	testImplementation("org.hamcrest:hamcrest-library")
+	testImplementation("org.mockito:mockito-core")
 }
 
 matrixTest {
 	restAssured {
-		group = 'io.rest-assured'
-		versions = ['4.0.0', '4.1.2', '4.2.0', '4.3.1']
+		group = "io.rest-assured"
+		versions = ["4.0.0", "4.1.2", "4.2.0", "4.3.1"]
 	}
 }

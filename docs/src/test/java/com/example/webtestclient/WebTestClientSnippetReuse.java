@@ -34,7 +34,7 @@ public class WebTestClientSnippetReuse extends SnippetReuse {
 		// tag::use[]
 		this.webTestClient.get().uri("/").accept(MediaType.APPLICATION_JSON).exchange()
 			.expectStatus().isOk().expectBody()
-			.consumeWith(document("example", this.pagingLinks.and( // <1>
+			.consumeWith(document("example", this.pagingLinks.and(// <1>
 				linkWithRel("alpha").description("Link to the alpha resource"),
 				linkWithRel("bravo").description("Link to the bravo resource"))));
 		// end::use[]

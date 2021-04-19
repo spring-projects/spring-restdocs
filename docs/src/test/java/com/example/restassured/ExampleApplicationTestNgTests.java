@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,9 +37,7 @@ public class ExampleApplicationTestNgTests {
 
 	@BeforeMethod
 	public void setUp(Method method) {
-		this.spec = new RequestSpecBuilder().addFilter(
-				documentationConfiguration(this.restDocumentation))
-				.build();
+		this.spec = new RequestSpecBuilder().addFilter(documentationConfiguration(this.restDocumentation)).build();
 		this.restDocumentation.beforeTest(getClass(), method.getName());
 	}
 
@@ -51,4 +49,5 @@ public class ExampleApplicationTestNgTests {
 		this.restDocumentation.afterTest();
 	}
 	// end::teardown[]
+
 }

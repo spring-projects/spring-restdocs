@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-	id "org.asciidoctor.convert" version "1.5.9.2"
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 apply plugin: 'java'
@@ -18,7 +18,8 @@ apply plugin: 'io.spring.dependency-management'
 
 repositories {
 	mavenLocal()
-	maven { url 'https://repo.spring.io/libs-snapshot' }
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
 	mavenCentral()
 }
 
@@ -33,12 +34,18 @@ ext {
 
 ext['spring-restdocs.version'] = '2.0.6.BUILD-SNAPSHOT'
 
+configurations {
+	asciidoctorExtensions
+}
+
 dependencies {
-	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-	compile 'org.springframework.boot:spring-boot-starter-web'
-	testCompile 'io.rest-assured:rest-assured:3.0.2'
-	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	testCompile 'org.springframework.restdocs:spring-restdocs-restassured'
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	testImplementation 'io.rest-assured:rest-assured:3.0.2'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
 }
 
 test {
@@ -46,6 +53,7 @@ test {
 }
 
 asciidoctor {
+	configurations "asciidoctorExtensions"
 	inputs.dir snippetsDir
 	dependsOn test
 }

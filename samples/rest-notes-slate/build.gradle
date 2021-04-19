@@ -14,7 +14,8 @@ apply plugin: 'io.spring.dependency-management'
 
 repositories {
 	mavenLocal()
-	maven { url 'https://repo.spring.io/libs-snapshot' }
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
 	mavenCentral()
 }
 
@@ -30,15 +31,15 @@ ext {
 ext['spring-restdocs.version'] = '2.0.6.BUILD-SNAPSHOT'
 
 dependencies {
-	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-	compile 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 
-	runtime 'com.h2database:h2'
-	runtime 'org.atteo:evo-inflector:1.2.1'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.atteo:evo-inflector:1.2.1'
 
-	testCompile 'com.jayway.jsonpath:json-path'
-	testCompile 'org.springframework.boot:spring-boot-starter-test'
-	testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'com.jayway.jsonpath:json-path'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 test {

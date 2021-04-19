@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package com.example.mockmvc;
 
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 public class InvokeService {
 
@@ -30,8 +30,8 @@ public class InvokeService {
 	public void invokeService() throws Exception {
 		// tag::invoke-service[]
 		this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)) // <1>
-			.andExpect(status().isOk()) // <2>
-			.andDo(document("index")); // <3>
+				.andExpect(status().isOk()) // <2>
+				.andDo(document("index")); // <3>
 		// end::invoke-service[]
 	}
 

@@ -1,6 +1,12 @@
-description = 'Support code for AsciidoctorJ extensions for Spring REST Docs'
+plugins {
+	id "java"
+}
+
+description = "Support code for AsciidoctorJ extensions for Spring REST Docs"
 
 dependencies {
-	testCompile 'junit:junit'
-	testCompile 'org.assertj:assertj-core'
+	internal(platform(project(":spring-restdocs-platform")))
+
+	testImplementation("junit:junit")
+	testImplementation("org.assertj:assertj-core")
 }

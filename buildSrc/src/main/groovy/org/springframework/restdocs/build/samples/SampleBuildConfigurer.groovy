@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class SampleBuildConfigurer {
 			sampleBuild.dependsOn gradleVersionsUpdate
 			if (build) {
 				Task gradleBuild = createGradleBuild(project, sampleDir, dependencies)
-				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'build/asciidoc'))
+				Task verifyIncludesTask = createVerifyIncludes(project, new File(sampleDir, 'build/docs/asciidoc'))
 				verifyIncludesTask.dependsOn gradleBuild
 				sampleBuild.dependsOn verifyIncludesTask
 				gradleBuild.dependsOn gradleVersionsUpdate

@@ -1,30 +1,36 @@
-description = 'Spring REST Docs WebFlux'
-
-dependencies {
-	compile 'org.springframework:spring-test'
-	compile 'org.springframework:spring-webflux'
-	compile project(':spring-restdocs-core')
-
-	testCompile 'org.mockito:mockito-core'
-	testCompile 'org.hamcrest:hamcrest-library'
-	testCompile project(path: ':spring-restdocs-core', configuration: 'testArtifacts')
-	testRuntime 'org.springframework:spring-context'
-	testRuntime 'org.synchronoss.cloud:nio-multipart-parser'
+plugins {
+	id "java-library"
+	id "matrixtest"
+	id "maven-publish"
 }
 
-test {
-	jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*"
+description = "Spring REST Docs WebFlux"
+
+dependencies {
+	api(project(":spring-restdocs-core"))
+	api("org.springframework:spring-test")
+	api("org.springframework:spring-webflux")
+
+	internal(platform(project(":spring-restdocs-platform")))
+
+	testImplementation(project(path: ":spring-restdocs-core", configuration: "testArtifacts"))
+	testImplementation("org.assertj:assertj-core")
+	testImplementation("org.hamcrest:hamcrest-library")
+	testImplementation("org.mockito:mockito-core")
+
+	testRuntimeOnly("org.springframework:spring-context")
+	testRuntimeOnly("org.synchronoss.cloud:nio-multipart-parser")
 }
 
 matrixTest {
 	springFramework {
-		group = 'org.springframework'
-		versions = ['5.1.+', '5.2.+', '5.3.+']
+		group = "org.springframework"
+		versions = ["5.1.+", "5.2.+", "5.3.+"]
 	}
 }
 
 project.afterEvaluate {
-	configurations.getByName('testRuntimeClasspath_org.springframework_5.3.+') {
-		exclude group: 'org.synchronoss.cloud', module: 'nio-multipart-parser'
+	configurations.getByName("testRuntimeClasspath_org.springframework_5.3.+") {
+		exclude group: "org.synchronoss.cloud", module: "nio-multipart-parser"
 	}	
 }

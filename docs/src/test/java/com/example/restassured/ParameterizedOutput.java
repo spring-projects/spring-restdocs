@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@ public class ParameterizedOutput {
 	// tag::parameterized-output[]
 	@Before
 	public void setUp() {
-		this.spec = new RequestSpecBuilder()
-				.addFilter(documentationConfiguration(this.restDocumentation))
+		this.spec = new RequestSpecBuilder().addFilter(documentationConfiguration(this.restDocumentation))
 				.addFilter(document("{method-name}/{step}")).build();
 	}
 	// end::parameterized-output[]

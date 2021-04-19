@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,11 +38,10 @@ public class RequestPartPayload {
 		Map<String, String> metadata = new HashMap<>();
 		metadata.put("version", "1.0");
 		RestAssured.given(this.spec).accept("application/json")
-			.filter(document("image-upload", requestPartFields("metadata", // <1>
-					fieldWithPath("version").description("The version of the image")))) // <2>
-			.when().multiPart("image", new File("image.png"), "image/png")
-					.multiPart("metadata", metadata).post("images")
-			.then().assertThat().statusCode(is(200));
+				.filter(document("image-upload", requestPartFields("metadata", // <1>
+						fieldWithPath("version").description("The version of the image")))) // <2>
+				.when().multiPart("image", new File("image.png"), "image/png").multiPart("metadata", metadata)
+				.post("images").then().assertThat().statusCode(is(200));
 		// end::fields[]
 	}
 
@@ -51,10 +50,9 @@ public class RequestPartPayload {
 		Map<String, String> metadata = new HashMap<>();
 		metadata.put("version", "1.0");
 		RestAssured.given(this.spec).accept("application/json")
-			.filter(document("image-upload", requestPartBody("metadata"))) // <1>
-			.when().multiPart("image", new File("image.png"), "image/png")
-					.multiPart("metadata", metadata).post("images")
-			.then().assertThat().statusCode(is(200));
+				.filter(document("image-upload", requestPartBody("metadata"))) // <1>
+				.when().multiPart("image", new File("image.png"), "image/png").multiPart("metadata", metadata)
+				.post("images").then().assertThat().statusCode(is(200));
 		// end::body[]
 	}
 

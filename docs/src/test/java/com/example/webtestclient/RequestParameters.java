@@ -35,7 +35,7 @@ public class RequestParameters {
 		// tag::request-parameters-query-string[]
 		this.webTestClient.get().uri("/users?page=2&per_page=100") // <1>
 			.exchange().expectStatus().isOk().expectBody()
-			.consumeWith(document("users", requestParameters( // <2>
+			.consumeWith(document("users", requestParameters(// <2>
 					parameterWithName("page").description("The page to retrieve"), // <3>
 					parameterWithName("per_page").description("Entries per page") // <4>
 			)));

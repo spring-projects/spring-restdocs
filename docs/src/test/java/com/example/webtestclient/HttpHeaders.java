@@ -35,9 +35,9 @@ public class HttpHeaders {
 			.get().uri("/people").header("Authorization", "Basic dXNlcjpzZWNyZXQ=") // <1>
 			.exchange().expectStatus().isOk().expectBody()
 			.consumeWith(document("headers",
-				requestHeaders( // <2>
+				requestHeaders(// <2>
 					headerWithName("Authorization").description("Basic auth credentials")), // <3>
-				responseHeaders( // <4>
+				responseHeaders(// <4>
 					headerWithName("X-RateLimit-Limit")
 						.description("The total number of requests permitted per period"),
 					headerWithName("X-RateLimit-Remaining")

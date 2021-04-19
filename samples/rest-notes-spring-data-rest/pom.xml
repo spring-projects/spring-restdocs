@@ -125,9 +125,17 @@
 
 	<repositories>
 		<repository>
+			<id>spring-milestones</id>
+			<name>Spring milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
 			<id>spring-snapshots</id>
 			<name>Spring snapshots</name>
-			<url>https://repo.spring.io/libs-snapshot</url>
+			<url>https://repo.spring.io/snapshot</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -135,9 +143,17 @@
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
 			<id>spring-snapshots</id>
 			<name>Spring snapshots</name>
-			<url>https://repo.spring.io/libs-snapshot</url>
+			<url>https://repo.spring.io/snapshot</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>

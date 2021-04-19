@@ -1,44 +1,48 @@
-install {
-	repositories.mavenInstaller {
-		customizePom(pom, project)
-	}
-}
-
-def customizePom(pom, gradleProject) {
-	pom.whenConfigured { generatedPom ->
-		generatedPom.dependencies.removeAll { dep ->
-			dep.scope == "test"
-		}
-		generatedPom.project {
-			name = gradleProject.description
-			description = gradleProject.description
-			url = "https://github.com/spring-projects/spring-restdocs"
-			organization {
-				name = "Spring IO"
-				url = "https://projects.spring.io/spring-restdocs"
-			}
-			licenses {
-				license {
-					name "The Apache Software License, Version 2.0"
-					url "https://www.apache.org/licenses/LICENSE-2.0.txt"
-					distribution "repo"
+plugins.withType(MavenPublishPlugin) {
+	publishing {
+		publications {
+			maven(MavenPublication) { publication ->
+				from components.java
+				versionMapping {
+					usage("java-api") {
+						fromResolutionResult()
+					}
+					usage("java-runtime") {
+						fromResolutionResult()
+					}
 				}
-			}
-			scm {
-				url = "https://github.com/spring-projects/spring-restdocs"
-				connection = "scm:git:git://github.com/spring-projects/spring-restdocs"
-				developerConnection = "scm:git:git://github.com/spring-projects/spring-restdocs"
-			}
-			developers {
-				developer {
-					id = "awilkinson"
-					name = "Andy Wilkinson"
-					email = "awilkinson@pivotal.io"
+				pom {
+					name = project.provider { project.description }
+					description = project.provider { project.description }
+					url = "https://github.com/spring-projects/spring-restdocs"
+					organization {
+						name = "Spring IO"
+						url = "https://projects.spring.io/spring-restdocs"
+					}
+					licenses {
+						license {
+							name = "The Apache Software License, Version 2.0"
+							url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+							distribution = "repo"
+						}
+					}
+					scm {
+						url = "https://github.com/spring-projects/spring-restdocs"
+						connection = "scm:git:git://github.com/spring-projects/spring-restdocs"
+						developerConnection = "scm:git:git://github.com/spring-projects/spring-restdocs"
+					}
+					developers {
+						developer {
+							id = "awilkinson"
+							name = "Andy Wilkinson"
+							email = "awilkinson@pivotal.io"
+						}
+					}
+					issueManagement {
+						system = "GitHub"
+						url = "https://github.com/spring-projects/spring-restdocs/issues"
+					}
 				}
-			}
-			issueManagement {
-				system = "GitHub"
-				url = "https://github.com/spring-projects/spring-restdocs/issues"
 			}
 		}
 	}

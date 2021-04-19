@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,7 @@ public class ExampleApplicationJUnit5Tests {
 	private MockMvc mockMvc;
 
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext,
-			RestDocumentationContextProvider restDocumentation) {
+	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 				.apply(documentationConfiguration(restDocumentation)) // <1>
 				.build();

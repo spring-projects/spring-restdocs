@@ -1,4 +1,11 @@
-description = 'Spring REST Docs Core'
+plugins {
+	id "java-library"
+	id "matrixtest"
+	id "maven-publish"
+	id "optional-dependencies"
+}
+
+description = "Spring REST Docs Core"
 
 configurations {
 	jarjar
@@ -7,8 +14,8 @@ configurations {
 }
 
 task jmustacheRepackJar(type: Jar) { repackJar ->
-	repackJar.baseName = "restdocs-jmustache-repack"
-	repackJar.version = dependencyManagement.managedVersions['com.samskivert:jmustache']
+	repackJar.archiveBaseName = "restdocs-jmustache-repack"
+	repackJar.archiveVersion = jmustacheVersion
 
 	doLast() {
 		project.ant {
@@ -16,32 +23,41 @@ task jmustacheRepackJar(type: Jar) { repackJar ->
 				classpath: configurations.jarjar.asPath
 			jarjar(destfile: repackJar.archivePath) {
 				configurations.jmustache.each { originalJar ->
-					zipfileset(src: originalJar, includes: '**/*.class')
+					zipfileset(src: originalJar, includes: "**/*.class")
 				}
-				rule(pattern: 'com.samskivert.**', result: 'org.springframework.restdocs.@1')
+				rule(pattern: "com.samskivert.**", result: "org.springframework.restdocs.@1")
 			}
 		}
 	}
 }
 
 dependencies {
-	compile 'com.fasterxml.jackson.core:jackson-databind'
-	compile 'org.springframework:spring-web'
-	compile files(jmustacheRepackJar)
-	jarjar 'com.googlecode.jarjar:jarjar:1.3'
-	jmustache 'com.samskivert:jmustache@jar'
-	optional 'commons-codec:commons-codec'
-	optional 'javax.validation:validation-api'
-	optional 'junit:junit'
-	optional 'org.hibernate.validator:hibernate-validator'
-	optional 'org.junit.jupiter:junit-jupiter-api'
-	testCompile 'org.assertj:assertj-core'
-	testCompile 'org.javamoney:moneta'
-	testCompile 'org.mockito:mockito-core'
-	testCompile 'org.hamcrest:hamcrest-core'
-	testCompile 'org.hamcrest:hamcrest-library'
-	testCompile 'org.springframework:spring-test'
-	testRuntime 'org.glassfish:javax.el:3.0.0'
+	implementation("com.fasterxml.jackson.core:jackson-databind")
+	implementation("org.springframework:spring-web")
+	implementation(files(jmustacheRepackJar))
+
+	internal(platform(project(":spring-restdocs-platform")))
+
+	jarjar("com.googlecode.jarjar:jarjar:1.3")
+
+	jmustache(platform(project(":spring-restdocs-platform")))
+	jmustache("com.samskivert:jmustache@jar")
+
+	optional("commons-codec:commons-codec")
+	optional("javax.validation:validation-api")
+	optional("junit:junit")
+	optional("org.hibernate.validator:hibernate-validator")
+	optional("org.junit.jupiter:junit-jupiter-api")
+
+	testImplementation("junit:junit")
+	testImplementation("org.assertj:assertj-core")
+	testImplementation("org.javamoney:moneta")
+	testImplementation("org.mockito:mockito-core")
+	testImplementation("org.hamcrest:hamcrest-core")
+	testImplementation("org.hamcrest:hamcrest-library")
+	testImplementation("org.springframework:spring-test")
+
+	testRuntimeOnly("org.glassfish:javax.el:3.0.0")
 }
 
 jar {
@@ -60,13 +76,9 @@ artifacts {
 	testArtifacts testJar
 }
 
-test {
-	jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*,excludes=org.springframework.restdocs.mustache.*"
-}
-
 matrixTest {
 	springFramework {
-		group = 'org.springframework'
-		versions = ['5.1.+', '5.2.+']
+		group = "org.springframework"
+		versions = ["5.1.+", "5.2.+"]
 	}
 }

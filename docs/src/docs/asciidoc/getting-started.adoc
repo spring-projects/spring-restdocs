@@ -151,7 +151,7 @@ the configuration are described in the following listings:
 
 	dependencies {
 		asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}' <2>
-		testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <3>
+		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <3>
 	}
 
 	ext { <4>
@@ -172,7 +172,7 @@ the configuration are described in the following listings:
 	This will automatically configure the `snippets` attribute for use in your `.adoc`
 	files to point to `build/generated-snippets`. It will also allow you to use the
 	`operation` block macro.
-<3> Add a dependency on `spring-restdocs-mockmvc` in the `testCompile` configuration. If
+<3> Add a dependency on `spring-restdocs-mockmvc` in the `testImplementation` configuration. If
     you want to use `WebTestClient` or REST Assured rather than MockMvc, add a dependency
     on `spring-restdocs-webtestclient` or `spring-restdocs-restassured` respectively
     instead.

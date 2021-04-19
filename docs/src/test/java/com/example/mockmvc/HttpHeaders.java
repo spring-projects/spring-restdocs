@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,20 +31,17 @@ public class HttpHeaders {
 
 	public void headers() throws Exception {
 		// tag::headers[]
-		this.mockMvc
-			.perform(get("/people").header("Authorization", "Basic dXNlcjpzZWNyZXQ=")) // <1>
-			.andExpect(status().isOk())
-			.andDo(document("headers",
-					requestHeaders( // <2>
-							headerWithName("Authorization").description(
-									"Basic auth credentials")), // <3>
-					responseHeaders( // <4>
-							headerWithName("X-RateLimit-Limit").description(
-									"The total number of requests permitted per period"),
-							headerWithName("X-RateLimit-Remaining").description(
-									"Remaining requests permitted in current period"),
-							headerWithName("X-RateLimit-Reset").description(
-									"Time at which the rate limit period will reset"))));
+		this.mockMvc.perform(get("/people").header("Authorization", "Basic dXNlcjpzZWNyZXQ=")) // <1>
+				.andExpect(status().isOk()).andDo(document("headers", requestHeaders(// <2>
+						headerWithName("Authorization").description("Basic auth credentials")), // <3>
+						responseHeaders(// <4>
+								headerWithName("X-RateLimit-Limit")
+										.description("The total number of requests permitted per period"),
+								headerWithName("X-RateLimit-Remaining")
+										.description("Remaining requests permitted in current period"),
+								headerWithName("X-RateLimit-Reset")
+										.description("Time at which the rate limit period will reset"))));
 		// end::headers[]
 	}
+
 }

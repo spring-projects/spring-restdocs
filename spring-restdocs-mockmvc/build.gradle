@@ -1,26 +1,33 @@
-description = 'Spring REST Docs MockMvc'
-
-dependencies {
-	compile 'javax.servlet:javax.servlet-api'
-	compile 'org.springframework:spring-test'
-	compile project(':spring-restdocs-core')
-	optional 'junit:junit'
-	runtime 'org.springframework:spring-webmvc'
-
-	testCompile 'org.mockito:mockito-core'
-	testCompile 'org.hamcrest:hamcrest-library'
-	testCompile 'org.springframework.hateoas:spring-hateoas'
-	testCompile project(path: ':spring-restdocs-core', configuration: 'testArtifacts')
-	testRuntime 'commons-logging:commons-logging:1.2'
+plugins {
+	id "java-library"
+	id "matrixtest"
+	id "maven-publish"
+	id "optional-dependencies"
 }
 
-test {
-	jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.restdocs.*"
+description = "Spring REST Docs MockMvc"
+
+dependencies {
+	api(project(":spring-restdocs-core"))
+	api("org.springframework:spring-webmvc")
+	api("org.springframework:spring-test")
+
+	implementation("javax.servlet:javax.servlet-api")
+
+	internal(platform(project(":spring-restdocs-platform")))
+
+	testImplementation(project(path: ":spring-restdocs-core", configuration: "testArtifacts"))
+	testImplementation("org.assertj:assertj-core")
+	testImplementation("org.hamcrest:hamcrest-library")
+	testImplementation("org.mockito:mockito-core")
+	testImplementation("org.springframework.hateoas:spring-hateoas")
+
+	testRuntimeOnly("commons-logging:commons-logging:1.2")
 }
 
 matrixTest {
 	springFramework {
-		group = 'org.springframework'
-		versions = ['5.1.+', '5.2.+', '5.3.+']
+		group = "org.springframework"
+		versions = ["5.1.+", "5.2.+", "5.3.+"]
 	}
 }

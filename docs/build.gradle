@@ -1,31 +1,87 @@
 plugins {
-	id 'org.asciidoctor.convert' version '1.5.9.2'
+	id "org.asciidoctor.jvm.convert" version "3.2.0"
+	id "java-library"
 }
 
 repositories {
-	maven { url 'https://repo.spring.io/release' }
-	maven { url 'https://repo.spring.io/snapshot' }
+	maven { url "https://repo.spring.io/release" }
+	maven { url "https://repo.spring.io/snapshot" }
+}
+
+configurations {
+	asciidoctorExt
 }
 
 dependencies {
-	asciidoctor 'io.spring.asciidoctor:spring-asciidoctor-extensions:0.1.2.RELEASE'
-	testCompile project(':spring-restdocs-mockmvc')
-	testCompile project(':spring-restdocs-restassured')
-	testCompile project(':spring-restdocs-webtestclient')
-	testCompile 'io.rest-assured:rest-assured'
-	testCompile 'javax.validation:validation-api'
-	testCompile 'junit:junit'
-	testCompile 'org.testng:testng:6.9.10'
-	testCompile 'org.junit.jupiter:junit-jupiter-api'
+	asciidoctorExt("io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.5.0")
+
+	internal(platform(project(":spring-restdocs-platform")))
+
+	testImplementation(project(":spring-restdocs-mockmvc"))
+	testImplementation(project(":spring-restdocs-restassured"))
+	testImplementation(project(":spring-restdocs-webtestclient"))
+	testImplementation("io.rest-assured:rest-assured")
+	testImplementation("javax.validation:validation-api")
+	testImplementation("junit:junit")
+	testImplementation("org.testng:testng:6.9.10")
+	testImplementation("org.junit.jupiter:junit-jupiter-api")
 }
 
 tasks.findByPath("artifactoryPublish")?.enabled = false
 
+tasks.withType(org.asciidoctor.gradle.jvm.AbstractAsciidoctorTask) {
+	baseDirFollowsSourceDir()
+}
+
+jar {
+	enabled = false
+}
+
+javadoc {
+	enabled = false
+}
+
 asciidoctor {
+	configurations 'asciidoctorExt'
 	sources {
-		include 'index.adoc'
+		include "index.adoc"
 	}
-	attributes	'revnumber': project.version,
-				'branch-or-tag': project.version.endsWith('SNAPSHOT') ? 'main': "v${project.version}"
+	attributes	"revnumber": project.version,
+				"branch-or-tag": project.version.endsWith("SNAPSHOT") ? "main": "v${project.version}"
 	inputs.files(sourceSets.test.java)
 }
+
+task api (type: Javadoc) {
+	group = "Documentation"
+	description = "Generates aggregated Javadoc API documentation."
+	dependsOn {
+		subprojects.collect {
+			it.tasks.getByName("jar")
+		}
+	}
+	project.rootProject.gradle.projectsEvaluated {
+		Set<String> excludedProjects = ['spring-restdocs-asciidoctor']
+		Set<Project> publishedProjects = rootProject.subprojects.findAll { it != project}
+			.findAll { it.plugins.hasPlugin(JavaPlugin) && it.plugins.hasPlugin(MavenPublishPlugin) }
+			.findAll { !excludedProjects.contains(it.name) }
+		dependsOn publishedProjects.javadoc
+		source publishedProjects.javadoc.source
+		classpath = project.files(publishedProjects.javadoc.classpath)
+		destinationDir = project.file "${buildDir}/docs/javadoc"
+		options {
+			author = true
+			docTitle = "Spring REST Docs ${project.version} API"
+			encoding = "UTF-8"
+			memberLevel = "protected"
+			outputLevel = "quiet"
+			source = "1.8"
+			splitIndex = true
+			stylesheetFile = file("src/main/javadoc/spring-javadoc.css")
+			use = true
+			windowTitle = "Spring REST Docs ${project.version} API"
+		}
+	}
+
+	destinationDir = new File(buildDir, "api")
+}
+

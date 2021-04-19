@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,12 @@ public class PathParameters {
 
 	public void pathParametersSnippet() throws Exception {
 		// tag::path-parameters[]
-		RestAssured.given(this.spec)
-			.filter(document("locations", pathParameters( // <1>
-					parameterWithName("latitude").description("The location's latitude"), // <2>
-					parameterWithName("longitude").description("The location's longitude")))) // <3>
-			.when().get("/locations/{latitude}/{longitude}", 51.5072, 0.1275) // <4>
-			.then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec).filter(document("locations", pathParameters(// <1>
+				parameterWithName("latitude").description("The location's latitude"), // <2>
+				parameterWithName("longitude").description("The location's longitude")))) // <3>
+				.when().get("/locations/{latitude}/{longitude}", 51.5072, 0.1275) // <4>
+				.then().assertThat().statusCode(is(200));
 		// end::path-parameters[]
 	}
+
 }

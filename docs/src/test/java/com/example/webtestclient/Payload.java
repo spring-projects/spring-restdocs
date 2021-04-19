@@ -42,7 +42,7 @@ public class Payload {
 		this.webTestClient.get().uri("user/5").accept(MediaType.APPLICATION_JSON)
 			.exchange().expectStatus().isOk().expectBody()
 			.consumeWith(document("user",
-				responseFields( // <1>
+				responseFields(// <1>
 					fieldWithPath("contact.email").description("The user's email address"), // <2>
 					fieldWithPath("contact.name").description("The user's name")))); // <3>
 		// end::response[]

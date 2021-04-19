@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,20 +43,18 @@ public class EveryTestPreprocessing {
 	@Before
 	public void setup() {
 		this.spec = new RequestSpecBuilder()
-			.addFilter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
-				.withRequestDefaults(removeHeaders("Foo")) // <1>
-				.withResponseDefaults(prettyPrint())) // <2>
-			.build();
+				.addFilter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
+						.withRequestDefaults(removeHeaders("Foo")) // <1>
+						.withResponseDefaults(prettyPrint())) // <2>
+				.build();
 	}
 	// end::setup[]
 
 	public void use() throws Exception {
 		// tag::use[]
 		RestAssured.given(this.spec)
-			.filter(document("index",
-				links(linkWithRel("self").description("Canonical self link"))))
-			.when().get("/")
-			.then().assertThat().statusCode(is(200));
+				.filter(document("index", links(linkWithRel("self").description("Canonical self link")))).when()
+				.get("/").then().assertThat().statusCode(is(200));
 		// end::use[]
 	}
 

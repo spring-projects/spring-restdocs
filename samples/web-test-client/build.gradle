@@ -1,5 +1,5 @@
 plugins {
-	id "org.asciidoctor.convert" version "1.5.9.2"
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 apply plugin: 'java'
@@ -7,7 +7,8 @@ apply plugin: 'eclipse'
 
 repositories {
 	mavenLocal()
-	maven { url 'https://repo.spring.io/libs-snapshot' }
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
 	mavenCentral()
 }
 
@@ -22,14 +23,20 @@ ext {
 
 ext['spring-restdocs.version'] = '2.0.6.BUILD-SNAPSHOT'
 
+configurations {
+	asciidoctorExtensions
+}
+
 dependencies {
-	compile 'io.projectreactor.ipc:reactor-netty:0.7.1.RELEASE'
-	compile 'org.springframework:spring-context:5.0.1.RELEASE'
-	compile 'org.springframework:spring-webflux:5.0.1.RELEASE'
-	testCompile 'junit:junit:4.12'
-	testCompile 'org.springframework:spring-test:5.0.1.RELEASE'
-	testCompile "org.springframework.restdocs:spring-restdocs-webtestclient:${project.ext['spring-restdocs.version']}"
-	asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
+	asciidoctorExtensions "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
+
+	implementation 'io.projectreactor.ipc:reactor-netty:0.7.1.RELEASE'
+	implementation 'org.springframework:spring-context:5.0.1.RELEASE'
+	implementation 'org.springframework:spring-webflux:5.0.1.RELEASE'
+
+	testImplementation 'junit:junit:4.12'
+	testImplementation 'org.springframework:spring-test:5.0.1.RELEASE'
+	testImplementation "org.springframework.restdocs:spring-restdocs-webtestclient:${project.ext['spring-restdocs.version']}"
 }
 
 test {
@@ -37,6 +44,7 @@ test {
 }
 
 asciidoctor {
+	configurations "asciidoctorExtensions"
 	inputs.dir snippetsDir
 	dependsOn test
 }

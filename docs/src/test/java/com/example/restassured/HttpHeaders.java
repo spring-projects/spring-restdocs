@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,21 +31,18 @@ public class HttpHeaders {
 
 	public void headers() throws Exception {
 		// tag::headers[]
-		RestAssured.given(this.spec)
-			.filter(document("headers",
-					requestHeaders( // <1>
-							headerWithName("Authorization").description(
-									"Basic auth credentials")), // <2>
-					responseHeaders( // <3>
-							headerWithName("X-RateLimit-Limit").description(
-									"The total number of requests permitted per period"),
-							headerWithName("X-RateLimit-Remaining").description(
-									"Remaining requests permitted in current period"),
-							headerWithName("X-RateLimit-Reset").description(
-									"Time at which the rate limit period will reset"))))
-			.header("Authorization", "Basic dXNlcjpzZWNyZXQ=") // <4>
-			.when().get("/people")
-			.then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec).filter(document("headers", requestHeaders(// <1>
+				headerWithName("Authorization").description("Basic auth credentials")), // <2>
+				responseHeaders(// <3>
+						headerWithName("X-RateLimit-Limit")
+								.description("The total number of requests permitted per period"),
+						headerWithName("X-RateLimit-Remaining")
+								.description("Remaining requests permitted in current period"),
+						headerWithName("X-RateLimit-Reset")
+								.description("Time at which the rate limit period will reset"))))
+				.header("Authorization", "Basic dXNlcjpzZWNyZXQ=") // <4>
+				.when().get("/people").then().assertThat().statusCode(is(200));
 		// end::headers[]
 	}
+
 }
