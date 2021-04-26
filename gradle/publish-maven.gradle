@@ -1,14 +1,24 @@
 plugins.withType(MavenPublishPlugin) {
 	publishing {
+		if (project.hasProperty("deploymentRepository")) {
+			repositories {
+				maven {
+					url = project.property("deploymentRepository")
+					name = "deployment"
+				}
+			}
+		}
 		publications {
 			maven(MavenPublication) { publication ->
-				from components.java
-				versionMapping {
-					usage("java-api") {
-						fromResolutionResult()
-					}
-					usage("java-runtime") {
-						fromResolutionResult()
+				project.plugins.withType(JavaPlugin) {
+					from components.java
+					versionMapping {
+						usage("java-api") {
+							fromResolutionResult()
+						}
+						usage("java-runtime") {
+							fromResolutionResult()
+						}
 					}
 				}
 				pom {

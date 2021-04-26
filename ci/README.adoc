@@ -1,0 +1,17 @@
+== Concourse pipeline
+
+Ensure that you've setup the spring-restdocs target and can login
+
+[source]
+----
+$ fly -t spring-restdocs login -n spring-restdocs -c https://ci.spring.io
+----
+
+The pipeline can be deployed using the following command:
+
+[source]
+----
+$ fly -t spring-restdocs set-pipeline -p spring-restdocs-2.0.x -c ci/pipeline.yml -l ci/parameters.yml
+----
+
+NOTE: This assumes that you have Vault integration configured with the appropriate secrets.
