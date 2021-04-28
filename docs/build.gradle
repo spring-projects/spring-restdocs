@@ -26,6 +26,6 @@ asciidoctor {
 		include 'index.adoc'
 	}
 	attributes	'revnumber': project.version,
-				'branch-or-tag': project.version.endsWith('SNAPSHOT') ? 'master': "v${project.version}"
+				'branch-or-tag': project.version.endsWith('SNAPSHOT') ? 'main': "v${project.version}"
 	inputs.files(sourceSets.test.java)
 }
