@@ -80,7 +80,7 @@ public class JsonFieldPathsTests {
 	public void absentItemFromFieldExtractionCausesAllPresentFieldsToBeIdentifiedAsUncommon() {
 		assertThat(
 				JsonFieldPaths
-						.from(Arrays.asList(ExtractedField.ABSENT, ("{\"a\": 1, \"b\": {\"c\": 1}}"),
+						.from(Arrays.asList(ExtractedField.ABSENT, json("{\"a\": 1, \"b\": {\"c\": 1}}"),
 								json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"d\": 2}}")))
 						.getUncommon()).containsExactly("", "a", "b", "b.c", "b.d");
 	}
