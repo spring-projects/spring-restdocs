@@ -47,6 +47,12 @@ To build the source you will need Java 8 or later. The code is built with Gradle
 $ ./gradlew build
 ```
 
+To build the samples, run the following command:
+
+```
+$ ./gradlew buildSamples
+```
+
 ### Importing into Eclipse
 
 The project has Gradle's Eclipse plugin applied. Eclipse project and classpath metadata
