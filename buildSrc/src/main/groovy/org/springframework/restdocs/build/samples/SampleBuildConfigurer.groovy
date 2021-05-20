@@ -23,7 +23,7 @@ import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.GradleBuild
 
-public class SampleBuildConfigurer {
+class SampleBuildConfigurer {
 
 	private final String name
 

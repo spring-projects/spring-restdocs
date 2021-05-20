@@ -19,9 +19,9 @@ package org.springframework.restdocs.build.matrix
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-public class MatrixTestPlugin implements Plugin<Project> {
+class MatrixTestPlugin implements Plugin<Project> {
 
-	public void apply(Project project) {
+	void apply(Project project) {
 		project.extensions.create('matrixTest', MatrixTestExtension, project)
 	}
 
