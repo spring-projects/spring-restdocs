@@ -21,7 +21,7 @@ import org.gradle.api.Task
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.testing.Test
 
-public class MatrixTestExtension {
+class MatrixTestExtension {
 
 	private List<Entry> entries = []
 

@@ -19,9 +19,9 @@ package org.springframework.restdocs.build.samples
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-public class SamplesPlugin implements Plugin<Project> {
+class SamplesPlugin implements Plugin<Project> {
 
-	public void apply(Project project) {
+	void apply(Project project) {
 		def buildSamplesTask = project.tasks.create('buildSamples')
 		buildSamplesTask.description = 'Builds the configured samples'
 		buildSamplesTask.group = 'Build'
