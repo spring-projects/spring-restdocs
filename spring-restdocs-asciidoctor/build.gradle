@@ -1,7 +1,7 @@
 plugins {
+	id "io.spring.compatibility-test" version "0.0.1"
 	id "java-library"
 	id "maven-publish"
-	id "matrixtest"
 }
 
 description = "Spring REST Docs Asciidoctor Extension"
@@ -34,11 +34,11 @@ jar {
 	from configurations.merge.collect { file -> zipTree(file) }
 }
 
-matrixTest {
-	asciidoctorj {
-		group = "org.asciidoctor"
-		artifact = "asciidoctorj"
-		versions = [ asciidoctorj16Version,
+compatibilityTest {
+	dependency('AsciidoctorJ') { asciidoctorJ ->
+		asciidoctorJ.groupId = "org.asciidoctor"
+		asciidoctorJ.artifactId = "asciidoctorj"
+		asciidoctorJ.versions = [ asciidoctorj16Version,
 			asciidoctorj20Version,
 			asciidoctorj21Version,
 			asciidoctorj22Version,
