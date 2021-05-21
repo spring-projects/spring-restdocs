@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package org.springframework.restdocs.build.matrix
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-public class MatrixTestPlugin implements Plugin<Project> {
+class MatrixTestPlugin implements Plugin<Project> {
 
-	public void apply(Project project) {
+	void apply(Project project) {
 		project.extensions.create('matrixTest', MatrixTestExtension, project)
 	}
 
