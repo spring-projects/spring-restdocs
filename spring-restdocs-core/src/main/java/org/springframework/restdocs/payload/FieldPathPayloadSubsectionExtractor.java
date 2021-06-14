@@ -92,6 +92,9 @@ public class FieldPathPayloadSubsectionExtractor
 							this::prependFieldPath));
 			if (value instanceof List) {
 				List<?> extractedList = (List<?>) value;
+				if (extractedList.isEmpty()) {
+					throw new PayloadHandlingException(this.fieldPath + " identifies an empty section of the payload");
+				}
 				JsonContentHandler contentHandler = new JsonContentHandler(payload, descriptorsByPath.values());
 				Set<JsonFieldPath> uncommonPaths = JsonFieldPaths.from(extractedList).getUncommon().stream()
 						.map((path) -> JsonFieldPath
