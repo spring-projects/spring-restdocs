@@ -43,6 +43,7 @@ dependencies {
 	jmustache(platform(project(":spring-restdocs-platform")))
 	jmustache("com.samskivert:jmustache@jar")
 
+	optional(platform(project(":spring-restdocs-platform")))
 	optional("commons-codec:commons-codec")
 	optional("javax.validation:validation-api")
 	optional("junit:junit")

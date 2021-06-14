@@ -17,6 +17,7 @@ dependencies {
 	internal(platform(project(":spring-restdocs-platform")))
 
 	testImplementation(project(path: ":spring-restdocs-core", configuration: "testArtifacts"))
+	testImplementation("junit:junit")
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.hamcrest:hamcrest-library")
 	testImplementation("org.mockito:mockito-core")

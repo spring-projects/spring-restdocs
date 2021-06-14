@@ -18,10 +18,10 @@ dependencies {
 	merge project(":spring-restdocs-asciidoctor-1.6")
 	merge project(":spring-restdocs-asciidoctor-2.x")
 
+	testImplementation("junit:junit")
 	testImplementation("org.apache.pdfbox:pdfbox")
 	testImplementation("org.asciidoctor:asciidoctorj:1.5.8.1")
 	testImplementation("org.assertj:assertj-core")
-	testImplementation("junit:junit")
 	testImplementation("org.springframework:spring-core")
 
 	testRuntimeOnly("org.asciidoctor:asciidoctorj-pdf")
