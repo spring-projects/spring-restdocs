@@ -184,11 +184,11 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
-	public void extractEmptySubsection() throws JsonParseException, JsonMappingException, IOException {
+	public void extractEmptyArraySubsection() throws JsonParseException, JsonMappingException, IOException {
 		assertThatThrownBy(() -> new FieldPathPayloadSubsectionExtractor("a")
 				.extractSubsection("{\"a\":[]}}".getBytes(), MediaType.APPLICATION_JSON))
-				.isInstanceOf(PayloadHandlingException.class)
-				.hasMessage("a identifies a section of payload, but the section is empty");
+						.isInstanceOf(PayloadHandlingException.class)
+						.hasMessage("a identifies an empty section of the payload");
 	}
 
 }

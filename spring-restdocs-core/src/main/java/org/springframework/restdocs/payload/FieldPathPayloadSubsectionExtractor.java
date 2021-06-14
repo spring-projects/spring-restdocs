@@ -93,7 +93,7 @@ public class FieldPathPayloadSubsectionExtractor
 			if (value instanceof List) {
 				List<?> extractedList = (List<?>) value;
 				if (extractedList.isEmpty()) {
-					throw new PayloadHandlingException(this.fieldPath + " identifies a section of payload, but the section is empty");
+					throw new PayloadHandlingException(this.fieldPath + " identifies an empty section of the payload");
 				}
 				JsonContentHandler contentHandler = new JsonContentHandler(payload, descriptorsByPath.values());
 				Set<JsonFieldPath> uncommonPaths = JsonFieldPaths.from(extractedList).getUncommon().stream()
