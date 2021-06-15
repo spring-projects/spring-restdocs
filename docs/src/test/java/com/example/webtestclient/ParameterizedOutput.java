@@ -41,11 +41,9 @@ public class ParameterizedOutput {
 	// tag::parameterized-output[]
 	@Before
 	public void setUp() {
-		this.webTestClient = WebTestClient.bindToApplicationContext(this.context)
-				.configureClient()
+		this.webTestClient = WebTestClient.bindToApplicationContext(this.context).configureClient()
 				.filter(documentationConfiguration(this.restDocumentation))
-				.entityExchangeResultConsumer(document("{method-name}/{step}"))
-				.build();
+				.entityExchangeResultConsumer(document("{method-name}/{step}")).build();
 	}
 	// end::parameterized-output[]
 
