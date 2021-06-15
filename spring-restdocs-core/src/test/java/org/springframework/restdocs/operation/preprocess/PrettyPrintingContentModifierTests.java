@@ -64,7 +64,14 @@ public class PrettyPrintingContentModifierTests {
 		this.outputCapture.expect(isEmptyString());
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
 				.isEqualTo(content.getBytes());
+	}
 
+	@Test
+	public void nonJsonContentThatInitiallyLooksLikeJsonIsHandledGracefully() throws Exception {
+		String content = "\"abc\",\"def\"";
+		this.outputCapture.expect(isEmptyString());
+		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
+				.isEqualTo(content.getBytes());
 	}
 
 	@Test

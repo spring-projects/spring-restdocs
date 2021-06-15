@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.xml.sax.ErrorHandler;
@@ -140,8 +141,8 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 	private static final class JsonPrettyPrinter implements PrettyPrinter {
 
-		private final ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT,
-				true);
+		private final ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
+				.configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, true);
 
 		@Override
 		public byte[] prettyPrint(byte[] original) throws IOException {
