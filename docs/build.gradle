@@ -16,6 +16,7 @@ dependencies {
 	asciidoctorExt("io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.5.0")
 
 	internal(platform(project(":spring-restdocs-platform")))
+	internal(enforcedPlatform("org.springframework:spring-framework-bom:5.3.8"))
 
 	testImplementation(project(":spring-restdocs-mockmvc"))
 	testImplementation(project(":spring-restdocs-restassured"))

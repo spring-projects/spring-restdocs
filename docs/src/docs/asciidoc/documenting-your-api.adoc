@@ -1317,8 +1317,8 @@ You can configure which snippets are produced by default. See the
 [[documentating-your-api-parameterized-output-directories]]
 === Using Parameterized Output Directories
 
-When using MockMvc or REST Assured, you can parameterize the output directory used by
-`document`. You cannot parameterize the output directory when using `WebTestClient`.
+When using MockMvc, REST Assured, or `WebTestClient` you can parameterize the output directory used by
+`document`. Parameterizing output with `WebTestClient` requires Spring Framework 5.3.5 or later.
 
 The following parameters are supported:
 
@@ -1367,6 +1367,12 @@ include::{examples-dir}/com/example/mockmvc/ParameterizedOutput.java[tags=parame
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/ParameterizedOutput.java[tags=parameterized-output]
+----
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/ParameterizedOutput.java[tags=parameterized-output]
 ----
 ====
 
