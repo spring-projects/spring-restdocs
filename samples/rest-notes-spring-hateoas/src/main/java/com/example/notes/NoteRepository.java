@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,10 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface NoteRepository extends CrudRepository<Note, Long> {
+interface NoteRepository extends CrudRepository<Note, Long> {
 
 	Note findById(long id);
 
 	List<Note> findByTagsIn(Collection<Tag> tags);
+	
 }

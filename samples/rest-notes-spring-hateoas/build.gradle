@@ -1,19 +1,10 @@
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.9.RELEASE'
-	}
-}
-
 plugins {
+	id "eclipse"
+	id "java"
 	id "org.asciidoctor.jvm.convert" version "3.3.2"
+	id "org.springframework.boot" version "2.4.7"
 }
 
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'eclipse'
 apply plugin: 'io.spring.dependency-management'
 
 repositories {
@@ -43,12 +34,16 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.atteo:evo-inflector:1.2.1'
 
 	testImplementation 'com.jayway.jsonpath:json-path'
 	testImplementation 'org.assertj:assertj-core'
+	testImplementation('org.junit.vintage:junit-vintage-engine') {
+		exclude group: 'org.hamcrest', module: 'hamcrest-core'
+	}
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }

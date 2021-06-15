@@ -1,19 +1,10 @@
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.9.RELEASE'
-	}
-}
-
 plugins {
+	id "eclipse"
+	id "java"
 	id "org.asciidoctor.jvm.convert" version "3.3.2"
+	id "org.springframework.boot" version "2.4.7"
 }
 
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'eclipse'
 apply plugin: 'io.spring.dependency-management'
 
 repositories {

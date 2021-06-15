@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,20 @@
 
 package com.example.notes;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/")
-public class IndexController {
+class IndexController {
 
 	@RequestMapping(method=RequestMethod.GET)
-	public ResourceSupport index() {
-		ResourceSupport index = new ResourceSupport();
+	public RepresentationModel<?> index() {
+		RepresentationModel<?> index = new RepresentationModel<>();
 		index.add(linkTo(NotesController.class).withRel("notes"));
 		index.add(linkTo(TagsController.class).withRel("tags"));
 		return index;

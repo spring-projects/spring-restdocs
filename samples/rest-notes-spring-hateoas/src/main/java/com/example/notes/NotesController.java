@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,13 @@
 
 package com.example.notes;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,37 +33,34 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriTemplate;
 
-import com.example.notes.NoteResourceAssembler.NoteResource;
-import com.example.notes.TagResourceAssembler.TagResource;
+import com.example.notes.NoteRepresentationModelAssembler.NoteModel;
+import com.example.notes.TagRepresentationModelAssembler.TagModel;
 
 @RestController
 @RequestMapping("/notes")
-public class NotesController {
+class NotesController {
 
 	private static final UriTemplate TAG_URI_TEMPLATE = new UriTemplate("/tags/{id}");
 
 	private final NoteRepository noteRepository;
 
 	private final TagRepository tagRepository;
+	
+	private final NoteRepresentationModelAssembler noteAssembler;
+	
+	private final TagRepresentationModelAssembler tagAssembler;
 
-	private final NoteResourceAssembler noteResourceAssembler;
-
-	private final TagResourceAssembler tagResourceAssembler;
-
-	@Autowired
-	public NotesController(NoteRepository noteRepository, TagRepository tagRepository,
-			NoteResourceAssembler noteResourceAssembler,
-			TagResourceAssembler tagResourceAssembler) {
+	NotesController(NoteRepository noteRepository, TagRepository tagRepository,
+			NoteRepresentationModelAssembler noteAssembler, TagRepresentationModelAssembler tagAssembler) {
 		this.noteRepository = noteRepository;
 		this.tagRepository = tagRepository;
-		this.noteResourceAssembler = noteResourceAssembler;
-		this.tagResourceAssembler = tagResourceAssembler;
+		this.noteAssembler = noteAssembler;
+		this.tagAssembler = tagAssembler;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	NestedContentResource<NoteResource> all() {
-		return new NestedContentResource<NoteResource>(
-				this.noteResourceAssembler.toResources(this.noteRepository.findAll()));
+	CollectionModel<NoteModel> all() {
+		return noteAssembler.toCollectionModel(this.noteRepository.findAll());
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -91,14 +86,13 @@ public class NotesController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	Resource<Note> note(@PathVariable("id") long id) {
-		return this.noteResourceAssembler.toResource(findNoteById(id));
+	NoteModel note(@PathVariable("id") long id) {
+		return this.noteAssembler.toModel(findNoteById(id));
 	}
 
 	@RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
-	ResourceSupport noteTags(@PathVariable("id") long id) {
-		return new NestedContentResource<TagResource>(
-				this.tagResourceAssembler.toResources(findNoteById(id).getTags()));
+	CollectionModel<TagModel> noteTags(@PathVariable("id") long id) {
+		return this.tagAssembler.toCollectionModel(findNoteById(id).getTags());
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)

@@ -24,8 +24,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class Tag {
 
@@ -38,7 +36,6 @@ public class Tag {
 	@ManyToMany(mappedBy = "tags")
 	private List<Note> notes;
 
-	@JsonIgnore
 	public long getId() {
 		return id;
 	}
@@ -55,7 +52,6 @@ public class Tag {
 		this.name = name;
 	}
 
-	@JsonIgnore
 	public List<Note> getNotes() {
 		return notes;
 	}
@@ -63,4 +59,5 @@ public class Tag {
 	public void setNotes(List<Note> notes) {
 		this.notes = notes;
 	}
+
 }

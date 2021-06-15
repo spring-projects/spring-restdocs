@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class NoteInput {
+class NoteInput {
 
 	@NotBlank
 	private final String title;
@@ -35,23 +35,23 @@ public class NoteInput {
 	private final List<URI> tagUris;
 
 	@JsonCreator
-	public NoteInput(@JsonProperty("title") String title,
+	NoteInput(@JsonProperty("title") String title,
 			@JsonProperty("body") String body, @JsonProperty("tags") List<URI> tagUris) {
 		this.title = title;
 		this.body = body;
 		this.tagUris = tagUris == null ? Collections.<URI>emptyList() : tagUris;
 	}
 
-	public String getTitle() {
+	String getTitle() {
 		return title;
 	}
 
-	public String getBody() {
+	String getBody() {
 		return body;
 	}
 
 	@JsonProperty("tags")
-	public List<URI> getTagUris() {
+	List<URI> getTagUris() {
 		return this.tagUris;
 	}
 

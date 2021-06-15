@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,17 @@ package com.example.notes;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TagPatchInput {
+class TagPatchInput {
 	
 	@NullOrNotBlank
 	private final String name;
 
 	@JsonCreator
-	public TagPatchInput(@NullOrNotBlank @JsonProperty("name") String name) {
+	TagPatchInput(@NullOrNotBlank @JsonProperty("name") String name) {
 		this.name = name;
 	}
 
-	public String getName() {
+	String getName() {
 		return name;
 	}
 	
