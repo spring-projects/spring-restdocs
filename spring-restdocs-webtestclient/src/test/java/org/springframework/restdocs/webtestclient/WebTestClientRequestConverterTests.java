@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -182,10 +182,14 @@ public class WebTestClientRequestConverterTests {
 	public void multipartUpload() throws Exception {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("file", new byte[] { 1, 2, 3, 4 });
-		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
-			req.body(BodyExtractors.toMultipartData()).block();
-			return null;
-		})).configureClient().baseUrl("http://localhost").build().post().uri("/foo")
+		ExchangeResult result = WebTestClient
+				.bindToRouterFunction(
+						RouterFunctions
+								.route(POST("/foo"),
+										(req) -> ServerResponse.ok()
+												.body(req.body(BodyExtractors.toMultipartData())
+														.map((parts) -> parts.size()), Integer.class)))
+				.configureClient().baseUrl("http://localhost").build().post().uri("/foo")
 				.body(BodyInserters.fromMultipartData(multipartData)).exchange().expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
@@ -211,10 +215,14 @@ public class WebTestClientRequestConverterTests {
 			}
 
 		});
-		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
-			req.body(BodyExtractors.toMultipartData()).block();
-			return null;
-		})).configureClient().baseUrl("http://localhost").build().post().uri("/foo")
+		ExchangeResult result = WebTestClient
+				.bindToRouterFunction(
+						RouterFunctions
+								.route(POST("/foo"),
+										(req) -> ServerResponse.ok()
+												.body(req.body(BodyExtractors.toMultipartData())
+														.map((parts) -> parts.size()), Integer.class)))
+				.configureClient().baseUrl("http://localhost").build().post().uri("/foo")
 				.body(BodyInserters.fromMultipartData(multipartData)).exchange().expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
