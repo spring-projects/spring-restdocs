@@ -19,6 +19,7 @@ package org.springframework.restdocs.operation.preprocess;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -35,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests for {@link ParametersModifyingOperationPreprocessor}.
  *
  * @author Andy Wilkinson
+ * @author Jihun Cha
  */
 public class ParametersModifyingOperationPreprocessorTests {
 
@@ -91,6 +93,18 @@ public class ParametersModifyingOperationPreprocessorTests {
 		OperationRequest request = this.preprocessor.remove("a").preprocess(createGetRequest(parameters));
 		assertThat(request.getParameters()).isEmpty();
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080"));
+	}
+
+	@Test
+	public void removePatternParameter() {
+		Parameters parameters = new Parameters();
+		parameters.add("apple", "apple");
+		parameters.add("alpha", "alpha");
+		parameters.add("avocado", "avocado");
+		parameters.add("bravo", "bravo");
+		assertThat(this.preprocessor.remove(Pattern.compile("^a.*"))
+				.preprocess(createRequest(parameters)).getParameters().size())
+						.isEqualTo(1);
 	}
 
 	@Test

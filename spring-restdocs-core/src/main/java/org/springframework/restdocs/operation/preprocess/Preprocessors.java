@@ -31,6 +31,7 @@ import org.springframework.restdocs.operation.OperationResponse;
  *
  * @author Andy Wilkinson
  * @author Roland Huss
+ * @author Jihun Cha
  */
 public final class Preprocessors {
 
@@ -89,6 +90,15 @@ public final class Preprocessors {
 	 */
 	public static OperationPreprocessor removeMatchingHeaders(String... headerNamePatterns) {
 		return new HeaderRemovingOperationPreprocessor(new PatternMatchHeaderFilter(headerNamePatterns));
+	}
+
+	/**
+	 * Returns a {@code HeadersModifyingOperationPreprocessor} that can then be configured
+	 * to modify the headers of the request or response.
+	 * @return the preprocessor
+	 */
+	public static HeadersModifyingOperationPreprocessor modifyHeaders() {
+		return new HeadersModifyingOperationPreprocessor();
 	}
 
 	/**
