@@ -188,7 +188,7 @@ task docsZip(type: Zip, dependsOn: [":docs:asciidoctor", ":api", ":restNotesSpri
 		into "api"
 	}
 
-	from(file("samples/rest-notes-spring-hateoas/build/asciidoc/html5")) {
+	from(file("samples/rest-notes-spring-hateoas/build/docs/asciidoc")) {
 		into "samples/restful-notes"
 	}
 }
