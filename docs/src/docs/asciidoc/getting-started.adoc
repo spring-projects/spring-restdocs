@@ -149,12 +149,12 @@ the configuration are described in the following listings:
 		id "org.asciidoctor.jvm.convert" version "3.3.2"
 	}
 
-    configurations {
-        asciidoctorExt
-    }
+	configurations {
+    	asciidoctorExt
+	}
 
 	dependencies {
-        testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <2>
+    	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <2>
 		asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}' <3>
 	}
 
@@ -169,7 +169,7 @@ the configuration are described in the following listings:
 	asciidoctor { <6>
 		dependsOn test <7>
 		configurations 'asciidoctorExt'
-        baseDirFollowsSourceDir() <8>
+		baseDirFollowsSourceDir() <8>
 	}
 ----
 <1> Apply the Asciidoctor plugin.
