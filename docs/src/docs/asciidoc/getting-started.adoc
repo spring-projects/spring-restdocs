@@ -167,9 +167,9 @@ the configuration are described in the following listings:
 	}
 
 	asciidoctor { <6>
-		dependsOn test <7>
-		configurations 'asciidoctorExt' <8>
-		baseDirFollowsSourceDir() <9>
+        inputs.dir snippetsDir <7>
+        configurations 'asciidoctorExt' <8>
+		dependsOn test <9>
 	}
 ----
 <1> Apply the Asciidoctor plugin.
@@ -183,13 +183,11 @@ the configuration are described in the following listings:
 	instead.
 <4> Configure a property to define the output location for generated snippets.
 <5> Configure the `test` task to add the snippets directory as an output.
-<6> Configure the `asciidoctor` task
-<7> Make the task depend on the test task so that the tests are run before the
+<6> Configure the `asciidoctor` task.
+<7> Configure the snippets directory as an input.
+<8> Add the configuration for the Asciidoctor external library extensions.
+<9> Make the task depend on the test task so that the tests are run before the
     documentation is created.
-<8> The configuration used to add external library Asciidoctor extensions
-<9> The base directory will always be the same as the source directory.
-    If an intermediate working directory is being used,
-    the base directory will automatically point to that.
 ====
 
 [[getting-started-build-configuration-packaging-the-documentation]]
