@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,22 @@
 
 package org.springframework.restdocs.asciidoctor;
 
-import org.asciidoctor.ast.Document;
-import org.asciidoctor.extension.Preprocessor;
-import org.asciidoctor.extension.PreprocessorReader;
+import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.jruby.extension.spi.ExtensionRegistry;
 
 /**
- * {@link Preprocessor} that sets defaults for REST Docs-related {@link Document}
- * attributes.
+ * {@link ExtensionRegistry} for Spring REST Docs.
  *
  * @author Andy Wilkinson
  */
-final class DefaultAttributesAsciidoctorJ16Preprocessor extends Preprocessor {
-
-	private final SnippetsDirectoryResolver snippetsDirectoryResolver = new SnippetsDirectoryResolver();
+public final class RestDocsExtensionRegistry implements ExtensionRegistry {
 
 	@Override
-	public void process(Document document, PreprocessorReader reader) {
-		document.setAttribute("snippets", this.snippetsDirectoryResolver.getSnippetsDirectory(document.getAttributes()),
-				false);
+	public void register(Asciidoctor asciidoctor) {
+		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesPreprocessor());
+		asciidoctor.rubyExtensionRegistry()
+				.loadClass(RestDocsExtensionRegistry.class.getResourceAsStream("/extensions/operation_block_macro.rb"))
+				.blockMacro("operation", "OperationBlockMacro");
 	}
 
 }

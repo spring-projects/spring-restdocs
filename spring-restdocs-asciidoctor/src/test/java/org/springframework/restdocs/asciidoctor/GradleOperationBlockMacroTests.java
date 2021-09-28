@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,22 +42,24 @@ public class GradleOperationBlockMacroTests extends AbstractOperationBlockMacroT
 		return new Object[] { "projectdir", "gradle-projectdir" };
 	}
 
+	@Override
 	protected Attributes getAttributes() {
-		Attributes attributes = new Attributes();
-		attributes.setAttribute(this.attributeName, new File(temp.getRoot(), "gradle-project").getAbsolutePath());
+		Attributes attributes = Attributes.builder()
+				.attribute(this.attributeName, new File(this.temp.getRoot(), "gradle-project").getAbsolutePath())
+				.build();
 		return attributes;
 	}
 
 	@Override
 	protected File getBuildOutputLocation() {
-		File outputLocation = new File(temp.getRoot(), "gradle-project/build");
+		File outputLocation = new File(this.temp.getRoot(), "gradle-project/build");
 		outputLocation.mkdirs();
 		return outputLocation;
 	}
 
 	@Override
 	protected File getSourceLocation() {
-		File sourceLocation = new File(temp.getRoot(), "gradle-project/src/docs/asciidoc");
+		File sourceLocation = new File(this.temp.getRoot(), "gradle-project/src/docs/asciidoc");
 		if (!sourceLocation.exists()) {
 			sourceLocation.mkdirs();
 		}

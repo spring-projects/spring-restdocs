@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for {@link DefaultAttributesAsciidoctorJ15Preprocessor}.
+ * Tests for {@link DefaultAttributesPreprocessor}.
  *
  * @author Andy Wilkinson
  */
-public class DefaultAttributesAsciidoctorJ15PreprocessorTests {
+public class DefaultAttributesPreprocessorTests {
 
 	@Test
 	public void snippetsAttributeIsSet() {
@@ -53,14 +53,14 @@ public class DefaultAttributesAsciidoctorJ15PreprocessorTests {
 	}
 
 	private Options createOptions(String attributes) {
-		Options options = new Options();
-		options.setAttributes(new Attributes(attributes));
+		Options options = Options.builder().build();
+		options.setAttributes(Attributes.builder().arguments(attributes).build());
 		return options;
 	}
 
 	private Asciidoctor createAsciidoctor() {
 		Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesAsciidoctorJ15Preprocessor());
+		asciidoctor.javaExtensionRegistry().preprocessor(new DefaultAttributesPreprocessor());
 		return asciidoctor;
 	}
 

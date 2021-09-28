@@ -1,1 +1,1 @@
-org.springframework.restdocs.asciidoctor.RestDocsAsciidoctorJ2xExtensionRegistry
+org.springframework.restdocs.asciidoctor.RestDocsExtensionRegistry

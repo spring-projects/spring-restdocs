@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,12 +40,12 @@ public class MavenOperationBlockMacroTests extends AbstractOperationBlockMacroTe
 		System.clearProperty("maven.home");
 	}
 
+	@Override
 	protected Attributes getAttributes() {
 		try {
 			File sourceLocation = getSourceLocation();
 			new File(sourceLocation.getParentFile().getParentFile().getParentFile(), "pom.xml").createNewFile();
-			Attributes attributes = new Attributes();
-			attributes.setAttribute("docdir", sourceLocation.getAbsolutePath());
+			Attributes attributes = Attributes.builder().attribute("docdir", sourceLocation.getAbsolutePath()).build();
 			return attributes;
 		}
 		catch (IOException ex) {
@@ -55,14 +55,14 @@ public class MavenOperationBlockMacroTests extends AbstractOperationBlockMacroTe
 
 	@Override
 	protected File getBuildOutputLocation() {
-		File outputLocation = new File(temp.getRoot(), "maven-project/target");
+		File outputLocation = new File(this.temp.getRoot(), "maven-project/target");
 		outputLocation.mkdirs();
 		return outputLocation;
 	}
 
 	@Override
 	protected File getSourceLocation() {
-		File sourceLocation = new File(temp.getRoot(), "maven-project/src/main/asciidoc");
+		File sourceLocation = new File(this.temp.getRoot(), "maven-project/src/main/asciidoc");
 		if (!sourceLocation.exists()) {
 			sourceLocation.mkdirs();
 		}

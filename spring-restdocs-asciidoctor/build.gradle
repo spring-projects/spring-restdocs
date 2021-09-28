@@ -1,51 +1,19 @@
 plugins {
-	id "io.spring.compatibility-test" version "0.0.1"
 	id "java-library"
 	id "maven-publish"
 }
 
 description = "Spring REST Docs Asciidoctor Extension"
 
-configurations {
-	merge
-	testRuntimeOnly { extendsFrom merge }
-}
-
 dependencies {
-	internal(platform(project(":spring-restdocs-platform")))
+	implementation("org.asciidoctor:asciidoctorj")
 
-	merge project(":spring-restdocs-asciidoctor-1.5")
-	merge project(":spring-restdocs-asciidoctor-1.6")
-	merge project(":spring-restdocs-asciidoctor-2.x")
+	internal(platform(project(":spring-restdocs-platform")))
 
 	testImplementation("junit:junit")
 	testImplementation("org.apache.pdfbox:pdfbox")
-	testImplementation("org.asciidoctor:asciidoctorj:1.5.8.1")
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.springframework:spring-core")
 
 	testRuntimeOnly("org.asciidoctor:asciidoctorj-pdf")
-}
-
-jar {
-	dependsOn(":spring-restdocs-asciidoctor-1.5:jar")
-	dependsOn(":spring-restdocs-asciidoctor-1.6:jar")
-	dependsOn(":spring-restdocs-asciidoctor-2.x:jar")
-	from configurations.merge.collect { file -> zipTree(file) }
-}
-
-compatibilityTest {
-	dependency('AsciidoctorJ') { asciidoctorJ ->
-		asciidoctorJ.groupId = "org.asciidoctor"
-		asciidoctorJ.artifactId = "asciidoctorj"
-		asciidoctorJ.versions = [
-			asciidoctorj16Version,
-			asciidoctorj20Version,
-			asciidoctorj21Version,
-			asciidoctorj22Version,
-			asciidoctorj23Version,
-			asciidoctorj24Version,
-			asciidoctorj25Version,
-		]
-	}
 }

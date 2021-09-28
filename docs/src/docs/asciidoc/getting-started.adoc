@@ -106,7 +106,7 @@ the configuration are described in the following listings:
 			<plugin> <2>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.8</version>
+				<version>2.2.1</version>
 				<executions>
 					<execution>
 						<id>generate-docs</id>
