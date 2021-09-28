@@ -18,25 +18,23 @@ sourceCompatibility = 17
 targetCompatibility = 17
 
 ext {
+	restdocsVersion = '3.0.0-SNAPSHOT'
 	snippetsDir = file('build/generated-snippets')
 }
-
-ext['spring-restdocs.version'] = '3.0.0-SNAPSHOT'
 
 configurations {
 	asciidoctorExtensions
 }
 
 dependencies {
-	asciidoctorExtensions "org.springframework.restdocs:spring-restdocs-asciidoctor:${project.ext['spring-restdocs.version']}"
+	asciidoctorExtensions "org.springframework.restdocs:spring-restdocs-asciidoctor:$restdocsVersion"
 
-	implementation 'io.projectreactor.ipc:reactor-netty:0.7.1.RELEASE'
-	implementation 'org.springframework:spring-context:5.0.1.RELEASE'
-	implementation 'org.springframework:spring-webflux:5.0.1.RELEASE'
+	implementation 'org.springframework:spring-context:6.0.0-SNAPSHOT'
+	implementation 'org.springframework:spring-webflux:6.0.0-SNAPSHOT'
 
 	testImplementation 'junit:junit:4.12'
-	testImplementation 'org.springframework:spring-test:5.0.1.RELEASE'
-	testImplementation "org.springframework.restdocs:spring-restdocs-webtestclient:${project.ext['spring-restdocs.version']}"
+	testImplementation 'org.springframework:spring-test:6.0.0-SNAPSHOT'
+	testImplementation "org.springframework.restdocs:spring-restdocs-webtestclient:$restdocsVersion"
 }
 
 test {
@@ -55,6 +53,3 @@ jar {
 		into 'static/docs'
 	}
 }
-
-eclipseJdt.onlyIf { false }
-cleanEclipseJdt.onlyIf { false }

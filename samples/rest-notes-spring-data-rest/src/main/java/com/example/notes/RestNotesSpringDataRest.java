@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,58 @@
 
 package com.example.notes;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import javax.sql.DataSource;
 
-@SpringBootApplication
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.persistence.EntityManagerFactory;
+
+@EnableWebMvc
+@ComponentScan
+@Configuration
+@EnableJpaRepositories
+@Import(RepositoryRestMvcConfiguration.class)
 public class RestNotesSpringDataRest {
-
-	public static void main(String[] args) {
-		SpringApplication.run(RestNotesSpringDataRest.class, args);
+	
+	@Bean
+	ObjectMapper objectMapper() {
+		return Jackson2ObjectMapperBuilder.json().build();
 	}
-
+	
+	@Bean
+	LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+		factory.setPackagesToScan("com.example.notes");
+		HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+		jpaVendorAdapter.setShowSql(true);
+		jpaVendorAdapter.setGenerateDdl(true);
+		factory.setJpaVendorAdapter(jpaVendorAdapter);
+		factory.setDataSource(dataSource);
+		return factory;
+	}
+	
+	@Bean
+	DataSource dataSource() {
+		return new DriverManagerDataSource("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
+	}
+	
+	@Bean
+	PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+		return new JpaTransactionManager(entityManagerFactory);
+	}
+	
 }

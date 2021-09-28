@@ -2,10 +2,7 @@ plugins {
 	id "eclipse"
 	id "java"
 	id "org.asciidoctor.jvm.convert" version "3.3.2"
-	id "org.springframework.boot" version "2.4.7"
 }
-
-apply plugin: 'io.spring.dependency-management'
 
 repositories {
 	mavenLocal()
@@ -20,26 +17,23 @@ sourceCompatibility = 17
 targetCompatibility = 17
 
 ext {
+	restdocsVersion = '3.0.0-SNAPSHOT'
 	snippetsDir = file('build/generated-snippets')
 }
-
-ext['spring-restdocs.version'] = '3.0.0-SNAPSHOT'
 
 configurations {
 	asciidoctorExtensions
 }
 
 dependencies {
-	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	asciidoctorExtensions "org.springframework.restdocs:spring-restdocs-asciidoctor:$restdocsVersion"
 
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'junit', module: 'junit;'
-	}
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	implementation 'org.springframework:spring-webmvc:6.0.0-SNAPSHOT'
+	
+	testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:$restdocsVersion"
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
+	
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
 }
 
 test {
@@ -53,12 +47,9 @@ asciidoctor {
 	dependsOn test
 }
 
-bootJar {
+jar {
 	dependsOn asciidoctor
 	from ("${asciidoctor.outputDir}/html5") {
 		into 'static/docs'
 	}
 }
-
-eclipseJdt.onlyIf { false }
-cleanEclipseJdt.onlyIf { false }
