@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured3;
+package org.springframework.restdocs.restassured;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,8 +69,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
 /**
  * Integration tests for using Spring REST Docs with REST Assured.
@@ -265,15 +265,13 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertThat(new File("build/generated-snippets/original-request/http-request.adoc"))
 				.has(content(httpRequest(TemplateFormats.asciidoctor(), RequestMethod.GET, "/").header("a", "alpha")
 						.header("b", "bravo").header("Accept", MediaType.APPLICATION_JSON_VALUE)
-						.header("Content-Type", "application/json; charset=UTF-8")
-						.header("Host", "localhost:" + tomcat.getPort()).header("Content-Length", "13")
-						.content("{\"a\":\"alpha\"}")));
+						.header("Content-Type", "application/json").header("Host", "localhost:" + tomcat.getPort())
+						.header("Content-Length", "13").content("{\"a\":\"alpha\"}")));
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
 		assertThat(new File("build/generated-snippets/preprocessed-request/http-request.adoc"))
 				.has(content(httpRequest(TemplateFormats.asciidoctor(), RequestMethod.GET, "/").header("b", "bravo")
-						.header("Accept", MediaType.APPLICATION_JSON_VALUE)
-						.header("Content-Type", "application/json; charset=UTF-8").header("Host", "localhost")
-						.content(prettyPrinted)));
+						.header("Accept", MediaType.APPLICATION_JSON_VALUE).header("Content-Type", "application/json")
+						.header("Host", "localhost").content(prettyPrinted)));
 	}
 
 	@Test
@@ -289,9 +287,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		String prettyPrinted = String.format("{%n  \"a\" : \"<<beta>>\"%n}");
 		assertThat(new File("build/generated-snippets/default-preprocessed-request/http-request.adoc"))
 				.has(content(httpRequest(TemplateFormats.asciidoctor(), RequestMethod.GET, "/").header("b", "bravo")
-						.header("Accept", MediaType.APPLICATION_JSON_VALUE)
-						.header("Content-Type", "application/json; charset=UTF-8").header("Host", "localhost")
-						.content(prettyPrinted)));
+						.header("Accept", MediaType.APPLICATION_JSON_VALUE).header("Content-Type", "application/json")
+						.header("Host", "localhost").content(prettyPrinted)));
 	}
 
 	@Test

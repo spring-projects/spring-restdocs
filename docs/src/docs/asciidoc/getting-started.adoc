@@ -79,7 +79,7 @@ Spring REST Docs has the following minimum requirements:
 * Java 8
 * Spring Framework 5 (5.0.2 or later)
 
-Additionally, the `spring-restdocs-restassured` module requires REST Assured 3.0.
+Additionally, the `spring-restdocs-restassured` module requires REST Assured 4 (4.4 or later).
 
 [[getting-started-build-configuration]]
 === Build configuration
@@ -345,7 +345,7 @@ include::{examples-dir}/com/example/restassured/ExampleApplicationTests.java[tag
 <1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a
 `Filter`. You can obtain an instance of this class from the static
 `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the
-`org.springframework.restdocs.restassured3` package.
+`org.springframework.restdocs.restassured` package.
 ====
 
 The configurer applies sensible defaults and also provides an API for customizing the
@@ -438,7 +438,7 @@ include::{examples-dir}/com/example/restassured/ExampleApplicationJUnit5Tests.ja
 <1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a
 `Filter`. You can obtain an instance of this class from the static
 `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the
-`org.springframework.restdocs.restassured3` package.
+`org.springframework.restdocs.restassured` package.
 ====
 
 The configurer applies sensible defaults and also provides an API for customizing the
@@ -545,7 +545,7 @@ include::{examples-dir}/com/example/restassured/InvokeService.java[tags=invoke-s
 (which is located beneath the configured output directory). The snippets are written by
 a `RestDocumentationFilter`. You can obtain an instance of this class from the static
 `document` method on `RestAssuredRestDocumentation`  in the
-`org.springframework.restdocs.restassured3` package.
+`org.springframework.restdocs.restassured` package.
 <4> Invoke the root (`/`) of the service.
 <5> Assert that the service produce the expected response.
 ====

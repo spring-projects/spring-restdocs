@@ -20,7 +20,7 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class InvokeService {
 

@@ -1,8 +1,17 @@
 pluginManagement {
 	repositories {
+		mavenLocal()
 		mavenCentral()
 		maven { url "https://repo.spring.io/plugins-release-local" }
+		maven { url "https://repo.spring.io/snapshot" }
 		gradlePluginPortal()
+	}
+	resolutionStrategy {
+		eachPlugin {
+			if (requested.id.id == "io.spring.javaformat") {
+				useModule "io.spring.javaformat:spring-javaformat-gradle-plugin:${requested.version}"
+			}
+		}
 	}
 }
 

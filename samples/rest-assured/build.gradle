@@ -24,6 +24,8 @@ ext {
 }
 
 ext['spring-restdocs.version'] = '3.0.0-SNAPSHOT'
+ext['rest-assured.version'] = '4.4.0'
+ext['groovy.version'] = '3.0.8'
 
 configurations {
 	asciidoctorExtensions
@@ -34,7 +36,7 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	testImplementation 'io.rest-assured:rest-assured:3.0.2'
+	testImplementation 'io.rest-assured:rest-assured:4.4.0'
 	testImplementation('org.junit.vintage:junit-vintage-engine') {
 		exclude group: 'org.hamcrest', module: 'hamcrest-core'
 	}

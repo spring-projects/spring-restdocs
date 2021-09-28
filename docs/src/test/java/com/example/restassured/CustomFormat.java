@@ -24,7 +24,7 @@ import org.junit.Rule;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.restdocs.templates.TemplateFormats;
 
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
 public class CustomFormat {
 

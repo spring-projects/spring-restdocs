@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.restassured3;
+package org.springframework.restdocs.restassured;
 
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
@@ -22,20 +22,19 @@ import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 
-import org.springframework.restdocs.config.OperationPreprocessorsConfigurer;
+import org.springframework.restdocs.config.SnippetConfigurer;
 
 /**
- * A configurer that can be used to configure the operation preprocessors when using REST
- * Assured 3.
+ * A configurer that can be used to configure the generated documentation snippets when
+ * using REST Assured 3.
  *
- * @author Filip Hrisafov
- * @since 2.0.0
+ * @author Andy Wilkinson
+ * @since 1.2.0
  */
-public final class RestAssuredOperationPreprocessorsConfigurer extends
-		OperationPreprocessorsConfigurer<RestAssuredRestDocumentationConfigurer, RestAssuredOperationPreprocessorsConfigurer>
-		implements Filter {
+public final class RestAssuredSnippetConfigurer extends
+		SnippetConfigurer<RestAssuredRestDocumentationConfigurer, RestAssuredSnippetConfigurer> implements Filter {
 
-	RestAssuredOperationPreprocessorsConfigurer(RestAssuredRestDocumentationConfigurer parent) {
+	RestAssuredSnippetConfigurer(RestAssuredRestDocumentationConfigurer parent) {
 		super(parent);
 	}
 

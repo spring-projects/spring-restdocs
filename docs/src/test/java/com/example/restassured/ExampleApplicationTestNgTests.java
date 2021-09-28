@@ -25,7 +25,7 @@ import org.testng.annotations.BeforeMethod;
 
 import org.springframework.restdocs.ManualRestDocumentation;
 
-import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
 public class ExampleApplicationTestNgTests {
 
