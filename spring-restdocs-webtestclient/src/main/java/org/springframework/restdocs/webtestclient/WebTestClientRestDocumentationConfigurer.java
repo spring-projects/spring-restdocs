@@ -94,7 +94,7 @@ public class WebTestClientRestDocumentationConfigurer extends
 
 	private ClientRequest applyUriDefaults(ClientRequest request) {
 		URI requestUri = request.url();
-		if (!StringUtils.isEmpty(requestUri.getHost())) {
+		if (StringUtils.hasLength(requestUri.getHost())) {
 			return request;
 		}
 		try {

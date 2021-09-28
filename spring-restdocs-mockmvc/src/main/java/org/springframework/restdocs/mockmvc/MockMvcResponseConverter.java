@@ -16,7 +16,7 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletResponse;

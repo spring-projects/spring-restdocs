@@ -46,11 +46,11 @@ dependencies {
 
 	optional(platform(project(":spring-restdocs-platform")))
 	optional("commons-codec:commons-codec")
-	optional("javax.validation:validation-api")
+	optional("jakarta.validation:jakarta.validation-api")
 	optional("junit:junit")
 	optional("org.hibernate.validator:hibernate-validator")
 	optional("org.junit.jupiter:junit-jupiter-api")
-	
+
 	testFixturesApi(platform(project(":spring-restdocs-platform")))
 	testFixturesApi("junit:junit")
 	testFixturesApi("org.assertj:assertj-core")
@@ -68,7 +68,7 @@ dependencies {
 	testImplementation("org.hamcrest:hamcrest-library")
 	testImplementation("org.springframework:spring-test")
 
-	testRuntimeOnly("org.glassfish:javax.el:3.0.0")
+	testRuntimeOnly("org.glassfish:jakarta.el:4.0.2")
 }
 
 jar {
@@ -84,11 +84,4 @@ components.java.withVariantsFromConfiguration(configurations.testFixturesApiElem
 
 components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) {
 	skip()
-}
-
-compatibilityTest {
-	dependency("Spring Framework") { springFramework ->
-		springFramework.groupId = "org.springframework"
-		springFramework.versions = ["5.1.+", "5.2.+", "5.3.+"]
-	}
 }

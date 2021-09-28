@@ -18,9 +18,8 @@ package org.springframework.restdocs.mockmvc;
 
 import java.util.Collections;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.Test;
 
 import org.springframework.http.HttpHeaders;

@@ -19,19 +19,19 @@ package org.springframework.restdocs.constraints;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.constraints.NotNull;
-import javax.validation.metadata.BeanDescriptor;
-import javax.validation.metadata.ConstraintDescriptor;
-import javax.validation.metadata.PropertyDescriptor;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.metadata.BeanDescriptor;
+import jakarta.validation.metadata.ConstraintDescriptor;
+import jakarta.validation.metadata.PropertyDescriptor;
 
 /**
  * A {@link ConstraintResolver} that uses a Bean Validation {@link Validator} to resolve
  * constraints. The name of the constraint is the fully-qualified class name of the
  * constraint annotation. For example, a {@link NotNull} constraint will be named
- * {@code javax.validation.constraints.NotNull}.
+ * {@code jakarta.validation.constraints.NotNull}.
  *
  * @author Andy Wilkinson
  *

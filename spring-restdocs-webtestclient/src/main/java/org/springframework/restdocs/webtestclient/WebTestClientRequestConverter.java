@@ -34,10 +34,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ReactiveHttpInputMessage;
 import org.springframework.http.codec.FormHttpMessageReader;
 import org.springframework.http.codec.HttpMessageReader;
+import org.springframework.http.codec.multipart.DefaultPartHttpMessageReader;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.MultipartHttpMessageReader;
 import org.springframework.http.codec.multipart.Part;
-import org.springframework.http.codec.multipart.SynchronossPartHttpMessageReader;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
@@ -48,7 +48,6 @@ import org.springframework.restdocs.operation.RequestConverter;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -59,8 +58,6 @@ import org.springframework.util.MultiValueMap;
  * @author Andy Wilkinson
  */
 class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> {
-
-	private static final String DEFAULT_PART_HTTP_MESSAGE_READER = "org.springframework.http.codec.multipart.DefaultPartHttpMessageReader";
 
 	private static final ResolvableType FORM_DATA_TYPE = ResolvableType.forClassWithGenerics(MultiValueMap.class,
 			String.class, String.class);
@@ -94,34 +91,12 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 	}
 
 	private List<OperationRequestPart> extractRequestParts(ExchangeResult result) {
-		HttpMessageReader<Part> partHttpMessageReader = findPartHttpMessageReader();
-		if (partHttpMessageReader == null) {
-			return Collections.emptyList();
-		}
+		HttpMessageReader<Part> partHttpMessageReader = new DefaultPartHttpMessageReader();
 		return new MultipartHttpMessageReader(partHttpMessageReader)
 				.readMono(ResolvableType.forClass(Part.class), new ExchangeResultReactiveHttpInputMessage(result),
 						Collections.emptyMap())
 				.onErrorReturn(new LinkedMultiValueMap<>()).block().values().stream()
 				.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart)).collect(Collectors.toList());
-	}
-
-	@SuppressWarnings("unchecked")
-	private HttpMessageReader<Part> findPartHttpMessageReader() {
-		if (ClassUtils.isPresent(DEFAULT_PART_HTTP_MESSAGE_READER, getClass().getClassLoader())) {
-			try {
-				return (HttpMessageReader<Part>) Class
-						.forName(DEFAULT_PART_HTTP_MESSAGE_READER, true, getClass().getClassLoader())
-						.getDeclaredConstructor().newInstance();
-			}
-			catch (Exception ex) {
-				// Continue
-			}
-		}
-		if (ClassUtils.isPresent("org.synchronoss.cloud.nio.multipart.NioMultipartParserListener",
-				getClass().getClassLoader())) {
-			return new SynchronossPartHttpMessageReader();
-		}
-		return null;
 	}
 
 	private OperationRequestPart createOperationRequestPart(Part part) {

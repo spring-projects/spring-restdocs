@@ -21,8 +21,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import javax.servlet.http.Part;
-
+import jakarta.servlet.http.Part;
 import org.junit.Test;
 
 import org.springframework.http.HttpMethod;
@@ -85,8 +84,8 @@ public class MockMvcRequestConverterTests {
 	@Test
 	public void requestWithCookies() throws Exception {
 		OperationRequest request = createOperationRequest(
-				MockMvcRequestBuilders.get("/foo").cookie(new javax.servlet.http.Cookie("cookieName1", "cookieVal1"),
-						new javax.servlet.http.Cookie("cookieName2", "cookieVal2")));
+				MockMvcRequestBuilders.get("/foo").cookie(new jakarta.servlet.http.Cookie("cookieName1", "cookieVal1"),
+						new jakarta.servlet.http.Cookie("cookieName2", "cookieVal2")));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
 		assertThat(request.getCookies().size()).isEqualTo(2);

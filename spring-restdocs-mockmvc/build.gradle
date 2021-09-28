@@ -12,7 +12,7 @@ dependencies {
 	api("org.springframework:spring-webmvc")
 	api("org.springframework:spring-test")
 
-	implementation("javax.servlet:javax.servlet-api")
+	implementation("jakarta.servlet:jakarta.servlet-api")
 
 	internal(platform(project(":spring-restdocs-platform")))
 
@@ -24,11 +24,4 @@ dependencies {
 	testImplementation("org.springframework.hateoas:spring-hateoas")
 
 	testRuntimeOnly("commons-logging:commons-logging:1.2")
-}
-
-compatibilityTest {
-	dependency("Spring Framework") { springFramework ->
-		springFramework.groupId = "org.springframework"
-		springFramework.versions = ["5.1.+", "5.2.+", "5.3.+"]
-	}
 }

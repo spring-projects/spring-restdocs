@@ -1252,7 +1252,7 @@ example of such a resource bundle].
 
 Each key in the resource bundle is the fully-qualified name of a constraint plus a
 `.description`. For example, the key for the standard `@NotNull` constraint is
-`javax.validation.constraints.NotNull.description`.
+`jakarta.validation.constraints.NotNull.description`.
 
 You can use a property placeholder referring to a constraint's attributes in its
 description. For example, the default description of the `@Min` constraint,
@@ -1318,7 +1318,7 @@ You can configure which snippets are produced by default. See the
 === Using Parameterized Output Directories
 
 When using MockMvc, REST Assured, or `WebTestClient` you can parameterize the output directory used by
-`document`. Parameterizing output with `WebTestClient` requires Spring Framework 5.3.5 or later.
+`document`.
 
 The following parameters are supported:
 

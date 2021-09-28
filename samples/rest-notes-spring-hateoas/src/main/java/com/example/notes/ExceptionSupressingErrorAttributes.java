@@ -32,7 +32,7 @@ class ExceptionSupressingErrorAttributes extends DefaultErrorAttributes {
 			ErrorAttributeOptions options) {
 		Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, options);
 		errorAttributes.remove("exception");
-		Object message = webRequest.getAttribute("javax.servlet.error.message", RequestAttributes.SCOPE_REQUEST);
+		Object message = webRequest.getAttribute("jakarta.servlet.error.message", RequestAttributes.SCOPE_REQUEST);
 		if (message != null) {
 			errorAttributes.put("message", message);
 		}

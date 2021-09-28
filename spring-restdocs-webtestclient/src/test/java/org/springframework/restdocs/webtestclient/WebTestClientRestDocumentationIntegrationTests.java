@@ -68,7 +68,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 /**
  * Integration tests for using Spring REST Docs with Spring Framework's WebTestClient.
@@ -86,9 +86,9 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	public void setUp() {
 		RouterFunction<ServerResponse> route = RouterFunctions
 				.route(RequestPredicates.GET("/"),
-						(request) -> ServerResponse.status(HttpStatus.OK).body(fromObject(new Person("Jane", "Doe"))))
+						(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
 				.andRoute(RequestPredicates.GET("/{foo}/{bar}"),
-						(request) -> ServerResponse.status(HttpStatus.OK).body(fromObject(new Person("Jane", "Doe"))))
+						(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
 				.andRoute(RequestPredicates.POST("/upload"),
 						(request) -> request.body(BodyExtractors.toMultipartData())
 								.map((parts) -> ServerResponse.status(HttpStatus.OK).build().block()))

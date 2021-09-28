@@ -46,7 +46,7 @@ public class WebTestClientResponseConverterTests {
 	public void basicResponse() {
 		ExchangeResult result = WebTestClient
 				.bindToRouterFunction(
-						RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.ok().syncBody("Hello, World!")))
+						RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.ok().bodyValue("Hello, World!")))
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").exchange().expectBody()
 				.returnResult();
 		OperationResponse response = this.converter.convert(result);

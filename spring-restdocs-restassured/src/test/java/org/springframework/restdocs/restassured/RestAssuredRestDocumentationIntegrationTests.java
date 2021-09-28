@@ -248,8 +248,9 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/set-cookie"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc");
 		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"))
-				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK).header(HttpHeaders.SET_COOKIE,
-						"name=value; Domain=localhost; HttpOnly")));
+				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
+						.header(HttpHeaders.SET_COOKIE, "name=value; Domain=localhost; HttpOnly")
+						.header("Keep-Alive", "timeout=60").header("Connection", "keep-alive")));
 	}
 
 	@Test
@@ -307,7 +308,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertThat(new File("build/generated-snippets/preprocessed-response/http-response.adoc"))
 				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
 						.header("Foo", "https://api.example.com/foo/bar")
-						.header("Content-Type", "application/json;charset=UTF-8")
+						.header("Content-Type", "application/json;charset=UTF-8").header("Keep-Alive", "timeout=60")
+						.header("Connection", "keep-alive")
 						.header(HttpHeaders.CONTENT_LENGTH, prettyPrinted.getBytes().length).content(prettyPrinted)));
 	}
 
@@ -326,7 +328,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		assertThat(new File("build/generated-snippets/default-preprocessed-response/http-response.adoc"))
 				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK)
 						.header("Foo", "https://api.example.com/foo/bar")
-						.header("Content-Type", "application/json;charset=UTF-8")
+						.header("Content-Type", "application/json;charset=UTF-8").header("Keep-Alive", "timeout=60")
+						.header("Connection", "keep-alive")
 						.header(HttpHeaders.CONTENT_LENGTH, prettyPrinted.getBytes().length).content(prettyPrinted)));
 	}
 

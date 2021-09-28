@@ -20,29 +20,28 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import javax.validation.constraints.AssertFalse;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Negative;
-import javax.validation.constraints.NegativeOrZero;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
-
+import jakarta.validation.constraints.AssertFalse;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Negative;
+import jakarta.validation.constraints.NegativeOrZero;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.CodePointLength;
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Currency;
@@ -52,7 +51,6 @@ import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.Mod10Check;
 import org.hibernate.validator.constraints.Mod11Check;
 import org.hibernate.validator.constraints.Range;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.hibernate.validator.constraints.URL;
 
 import org.springframework.util.PropertyPlaceholderHelper;
@@ -63,8 +61,8 @@ import org.springframework.util.StringUtils;
  * A {@link ConstraintDescriptionResolver} that resolves constraint descriptions from a
  * {@link ResourceBundle}. The resource bundle's keys are the name of the constraint with
  * {@code .description} appended. For example, the key for the constraint named
- * {@code javax.validation.constraints.NotNull} is
- * {@code javax.validation.constraints.NotNull.description}.
+ * {@code jakarta.validation.constraints.NotNull} is
+ * {@code jakarta.validation.constraints.NotNull.description}.
  * <p>
  * Default descriptions are provided for Bean Validation 2.0's constraints:
  *
@@ -109,7 +107,6 @@ import org.springframework.util.StringUtils;
  * <li>{@link org.hibernate.validator.constraints.NotBlank}
  * <li>{@link org.hibernate.validator.constraints.NotEmpty}
  * <li>{@link Range}
- * <li>{@link SafeHtml}
  * <li>{@link URL}
  * </ul>
  *

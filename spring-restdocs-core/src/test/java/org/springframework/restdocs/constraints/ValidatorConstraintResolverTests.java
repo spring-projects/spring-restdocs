@@ -26,12 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.validation.Payload;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Size;
-
+import jakarta.validation.Payload;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Size;
 import org.assertj.core.api.Condition;
 import org.assertj.core.description.TextDescription;
 import org.hibernate.validator.constraints.CompositionType;
@@ -102,7 +101,7 @@ public class ValidatorConstraintResolverTests {
 	@NotBlank
 	@Target(ElementType.FIELD)
 	@Retention(RetentionPolicy.RUNTIME)
-	@javax.validation.Constraint(validatedBy = {})
+	@jakarta.validation.Constraint(validatedBy = {})
 	private @interface CompositeConstraint {
 
 		String message() default "Must be null or not blank";

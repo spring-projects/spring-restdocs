@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Part;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Part;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -89,7 +89,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 			return Collections.emptyList();
 		}
 		List<RequestCookie> cookies = new ArrayList<>();
-		for (javax.servlet.http.Cookie servletCookie : mockRequest.getCookies()) {
+		for (jakarta.servlet.http.Cookie servletCookie : mockRequest.getCookies()) {
 			cookies.add(new RequestCookie(servletCookie.getName(), servletCookie.getValue()));
 		}
 		headers.remove(HttpHeaders.COOKIE);

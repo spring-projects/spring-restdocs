@@ -25,10 +25,10 @@ nohttp {
 }
 
 ext {
-	springVersion = "5.0.15.RELEASE"
+	springFrameworkVersion = "6.0.0-SNAPSHOT"
 	javadocLinks = [
 		"https://docs.oracle.com/javase/8/docs/api/",
-		"https://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
+		"https://docs.spring.io/spring-framework/docs/$springFrameworkVersion/javadoc-api/",
 		"https://docs.jboss.org/hibernate/stable/beanvalidation/api/",
 		"https://docs.jboss.org/hibernate/stable/validator/api/"
 	] as String[]

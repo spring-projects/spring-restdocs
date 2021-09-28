@@ -20,18 +20,4 @@ dependencies {
 	testImplementation("org.mockito:mockito-core")
 
 	testRuntimeOnly("org.springframework:spring-context")
-	testRuntimeOnly("org.synchronoss.cloud:nio-multipart-parser")
-}
-
-compatibilityTest {
-	dependency("Spring Framework") { springFramework ->
-		springFramework.groupId = "org.springframework"
-		springFramework.versions = ["5.1.+", "5.2.+", "5.3.+"]
-	}
-}
-
-project.afterEvaluate {
-	configurations.getByName("testRuntimeClasspath_spring_framework_5.3.+") {
-		exclude group: "org.synchronoss.cloud", module: "nio-multipart-parser"
-	}	
 }
