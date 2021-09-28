@@ -2,8 +2,8 @@
 set -e
 
 case "$1" in
-	java8)
-		 echo "https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u292-b10/OpenJDK8U-jdk_x64_linux_hotspot_8u292b10.tar.gz"
+	java17)
+		 echo "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_linux_hotspot_17_35.tar.gz"
 	;;
   *)
 		echo $"Unknown java version"

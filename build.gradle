@@ -39,8 +39,8 @@ subprojects { subproject ->
 		subproject.apply plugin: "io.spring.javaformat"
 		subproject.apply plugin: "checkstyle"
 
-		sourceCompatibility = 1.8
-		targetCompatibility = 1.8
+		sourceCompatibility = 17
+		targetCompatibility = 17
 
 		configurations {
 			internal {

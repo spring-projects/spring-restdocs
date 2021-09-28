@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,8 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 		if (ClassUtils.isPresent(DEFAULT_PART_HTTP_MESSAGE_READER, getClass().getClassLoader())) {
 			try {
 				return (HttpMessageReader<Part>) Class
-						.forName(DEFAULT_PART_HTTP_MESSAGE_READER, true, getClass().getClassLoader()).newInstance();
+						.forName(DEFAULT_PART_HTTP_MESSAGE_READER, true, getClass().getClassLoader())
+						.getDeclaredConstructor().newInstance();
 			}
 			catch (Exception ex) {
 				// Continue
