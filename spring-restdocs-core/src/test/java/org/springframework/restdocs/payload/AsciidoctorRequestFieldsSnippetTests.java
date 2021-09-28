@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.restdocs.test.GeneratedSnippets;
-import org.springframework.restdocs.test.OperationBuilder;
-import org.springframework.restdocs.test.SnippetConditions;
+import org.springframework.restdocs.testfixtures.GeneratedSnippets;
+import org.springframework.restdocs.testfixtures.OperationBuilder;
+import org.springframework.restdocs.testfixtures.SnippetConditions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;

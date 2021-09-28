@@ -1,6 +1,7 @@
 plugins {
 	id "io.spring.compatibility-test" version "0.0.1"
 	id "java-library"
+	id "java-test-fixtures"
 	id "maven-publish"
 	id "optional-dependencies"
 }
@@ -49,6 +50,15 @@ dependencies {
 	optional("junit:junit")
 	optional("org.hibernate.validator:hibernate-validator")
 	optional("org.junit.jupiter:junit-jupiter-api")
+	
+	testFixturesApi(platform(project(":spring-restdocs-platform")))
+	testFixturesApi("junit:junit")
+	testFixturesApi("org.assertj:assertj-core")
+	testFixturesApi("org.hamcrest:hamcrest-core")
+	testFixturesImplementation(files(jmustacheRepackJar))
+	testFixturesImplementation("org.hamcrest:hamcrest-library")
+	testFixturesImplementation("org.springframework:spring-core")
+	testFixturesImplementation("org.springframework:spring-web")
 
 	testImplementation("junit:junit")
 	testImplementation("org.assertj:assertj-core")
@@ -68,13 +78,12 @@ jar {
 	}
 }
 
-task testJar(type: Jar) {
-	classifier "test"
-	from sourceSets.test.output
+components.java.withVariantsFromConfiguration(configurations.testFixturesApiElements) {
+	skip()
 }
 
-artifacts {
-	testArtifacts testJar
+components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) {
+	skip()
 }
 
 compatibilityTest {

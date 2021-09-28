@@ -14,7 +14,7 @@ dependencies {
 
 	internal(platform(project(":spring-restdocs-platform")))
 
-	testImplementation(project(path: ":spring-restdocs-core", configuration: "testArtifacts"))
+	testImplementation(testFixtures(project(":spring-restdocs-core")))
 	testImplementation("com.fasterxml.jackson.core:jackson-databind")
 	testImplementation("junit:junit")
 	testImplementation("org.apache.tomcat.embed:tomcat-embed-core:8.5.13")

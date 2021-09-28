@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Rule;
 import org.junit.Test;
 
-import org.springframework.restdocs.test.OutputCapture;
+import org.springframework.restdocs.testfixtures.OutputCapture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.isEmptyString;

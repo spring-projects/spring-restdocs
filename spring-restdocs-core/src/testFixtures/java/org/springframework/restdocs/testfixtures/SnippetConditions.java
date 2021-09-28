@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.test;
+package org.springframework.restdocs.testfixtures;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -149,7 +149,7 @@ public final class SnippetConditions {
 	/**
 	 * Base class for code block Conditions.
 	 *
-	 * @param <T> The type of the Condition
+	 * @param <T> the type of the Condition
 	 */
 	public static class CodeBlockCondition<T extends CodeBlockCondition<T>> extends AbstractSnippetContentCondition {
 
@@ -164,7 +164,7 @@ public final class SnippetConditions {
 	/**
 	 * A {@link Condition} for an Asciidoctor code block.
 	 *
-	 * @param <T> The type of the Condition
+	 * @param <T> the type of the Condition
 	 */
 	public static class AsciidoctorCodeBlockCondition<T extends AsciidoctorCodeBlockCondition<T>>
 			extends CodeBlockCondition<T> {
@@ -181,7 +181,7 @@ public final class SnippetConditions {
 	/**
 	 * A {@link Condition} for a Markdown code block.
 	 *
-	 * @param <T> The type of the Condition
+	 * @param <T> the type of the Condition
 	 */
 	public static class MarkdownCodeBlockCondition<T extends MarkdownCodeBlockCondition<T>>
 			extends CodeBlockCondition<T> {
@@ -196,7 +196,7 @@ public final class SnippetConditions {
 	/**
 	 * A {@link Condition} for an HTTP request or response.
 	 *
-	 * @param <T> The type of the Condition
+	 * @param <T> the type of the Condition
 	 */
 	public abstract static class HttpCondition<T extends HttpCondition<T>> extends Condition<String> {
 
@@ -271,7 +271,7 @@ public final class SnippetConditions {
 	/**
 	 * Base class for table Conditions.
 	 *
-	 * @param <T> The concrete type of the Condition
+	 * @param <T> the concrete type of the Condition
 	 */
 	public abstract static class TableCondition<T extends TableCondition<T>> extends AbstractSnippetContentCondition {
 
