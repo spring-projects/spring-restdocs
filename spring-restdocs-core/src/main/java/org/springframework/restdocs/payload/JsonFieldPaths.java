@@ -71,7 +71,7 @@ final class JsonFieldPaths {
 		else if (object instanceof Map) {
 			from(paths, parent, (Map<?, ?>) object);
 		}
-		else if (object.equals(ExtractedField.ABSENT)) {
+		else if (ExtractedField.ABSENT.equals(object)) {
 			paths.add(parent);
 		}
 	}

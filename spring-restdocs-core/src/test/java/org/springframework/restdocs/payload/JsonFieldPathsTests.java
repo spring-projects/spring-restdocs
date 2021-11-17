@@ -35,8 +35,9 @@ public class JsonFieldPathsTests {
 
 	@Test
 	public void noUncommonPathsForSingleItem() {
-		assertThat(JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": [ { \"c\": 2}, {\"c\": 3} ]}")))
-				.getUncommon()).isEmpty();
+		assertThat(
+				JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": [ { \"c\": 2}, {\"c\": 3}, {\"c\": null}]}")))
+						.getUncommon()).isEmpty();
 	}
 
 	@Test
