@@ -180,6 +180,9 @@ jobs:
       image: ci-image
     vars:
       ci-image-name: ci-image
+      registry-mirror-host: ((registry-mirror-host))
+      registry-mirror-username: ((registry-mirror-username))
+      registry-mirror-password: ((registry-mirror-password))
   - put: ci-image
     params:
       image: ci-image/image.tar
