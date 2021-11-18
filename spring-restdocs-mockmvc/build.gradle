@@ -22,8 +22,6 @@ dependencies {
 	testImplementation("org.hamcrest:hamcrest-library")
 	testImplementation("org.mockito:mockito-core")
 	testImplementation("org.springframework.hateoas:spring-hateoas")
-
-	testRuntimeOnly("commons-logging:commons-logging:1.2")
 }
 
 compatibilityTest {

@@ -19,7 +19,9 @@ dependencies {
 	merge project(":spring-restdocs-asciidoctor-2.x")
 
 	testImplementation("junit:junit")
-	testImplementation("org.apache.pdfbox:pdfbox")
+	testImplementation("org.apache.pdfbox:pdfbox") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
 	testImplementation("org.asciidoctor:asciidoctorj:1.5.8.1")
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.springframework:spring-core")

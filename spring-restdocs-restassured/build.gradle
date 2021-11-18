@@ -8,7 +8,9 @@ description = "Spring REST Docs REST Assured"
 
 dependencies {
 	api(project(":spring-restdocs-core"))
-	api("io.rest-assured:rest-assured")
+	api("io.rest-assured:rest-assured") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
 
 	implementation("org.springframework:spring-web")
 
