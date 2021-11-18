@@ -27,15 +27,6 @@ include::{examples-dir}/com/example/webtestclient/PerTestPreprocessing.java[tags
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/PerTestPreprocessing.java[tags=preprocessing]
-----
-<1> Apply a request preprocessor that removes the header named `Foo`.
-<2> Apply a response preprocessor that pretty prints its content.
-====
-
 Alternatively, you may want to apply the same preprocessors to every test. You can do so
 by using the `RestDocumentationConfigurer` API in your `@Before` method to configure the
 preprocessors. For example to remove the `Foo` header from all requests and pretty print
@@ -58,15 +49,6 @@ include::{examples-dir}/com/example/webtestclient/EveryTestPreprocessing.java[ta
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags=setup]
-----
-<1> Apply a request preprocessor that removes the header named `Foo`.
-<2> Apply a response preprocessor that pretty prints its content.
-====
-
 Then, in each test, you can perform any configuration specific to that test. The
 following examples show how to do so:
 
@@ -82,13 +64,6 @@ include::{examples-dir}/com/example/mockmvc/EveryTestPreprocessing.java[tags=use
 ----
 include::{examples-dir}/com/example/webtestclient/EveryTestPreprocessing.java[tags=use]
 ----
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags=use]
-----
-====
 
 Various built-in preprocessors, including those illustrated above, are available through
 the static methods on `Preprocessors`. See <<Preprocessors, below>> for further details.
@@ -154,9 +129,8 @@ TIP: If you use MockMvc or a WebTestClient that is not bound to a server,
 you should customize URIs by <<configuration-uris, changing the configuration>>.
 
 You can use `modifyUris` on `Preprocessors` to modify any URIs in a request
-or a response. When using REST Assured or WebTestClient bound to a server, this
-lets you customize the URIs that appear in the documentation while testing a
-local instance of the service.
+or a response. When using WebTestClient bound to a server, this lets you customize the
+URIs that appear in the documentation while testing a local instance of the service.
 
 
 

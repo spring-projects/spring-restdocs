@@ -37,19 +37,6 @@ include::{examples-dir}/com/example/webtestclient/Hypermedia.java[tag=links]
 	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <3> Expect a link whose `rel` is `bravo`.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Hypermedia.java[tag=links]
-----
-<1> Configure Spring REST docs to produce a snippet describing the response's links.
-	Uses the static `links` method on
-	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
-<2> Expect a link whose `rel` is `alpha`. Uses the static `linkWithRel` method on
-	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
-<3> Expect a link whose `rel` is `bravo`.
-====
-
 The result is a snippet named `links.adoc` that contains a table describing the resource's
 links.
 
@@ -101,19 +88,6 @@ include::{examples-dir}/com/example/webtestclient/Hypermedia.java[tag=explicit-e
 ----
 <1> Indicate that the links are in HAL format. Uses the static `halLinks` method on
 `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Hypermedia.java[tag=explicit-extractor]
-----
-<1> Indicate that the links are in HAL format. Uses the static `halLinks` method on
-`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
-====
-
-If your API represents its links in a format other than Atom or HAL, you can provide your
-own implementation of the `LinkExtractor` interface to extract the links from the
-response.
 
 
 
@@ -196,19 +170,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=response]
 	on `org.springframework.restdocs.payload.PayloadDocumentation`.
 <3> Expect a field with the path `contact.name`.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=response]
-----
-<1> Configure Spring REST docs to produce a snippet describing the fields in the response
-	payload. To document a request, you can use `requestFields`. Both are static methods
-	on `org.springframework.restdocs.payload.PayloadDocumentation`.
-<2> Expect a field with the path `contact.email`. Uses the static `fieldWithPath` method
-	on `org.springframework.restdocs.payload.PayloadDocumentation`.
-<3> Expect a field with the path `contact.name`.
-====
-
 The result is a snippet that contains a table describing the fields. For requests, this
 snippet is named `request-fields.adoc`. For responses, this snippet is named
 `response-fields.adoc`.
@@ -238,16 +199,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=subsection]
 <1> Document the subsection with the path `contact`. `contact.email` and `contact.name`
 	are now seen as having also been documented. Uses the static `subsectionWithPath`
 	method on `org.springframework.restdocs.payload.PayloadDocumentation`.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=subsection]
-----
-<1> Document the subsection with the path `contact`. `contact.email` and `contact.name`
-	are now seen as having also been documented. Uses the static `subsectionWithPath`
-	method on `org.springframework.restdocs.payload.PayloadDocumentation`.
-====
 
 `subsectionWithPath` can be useful for providing a high-level overview of a particular
 section of a payload. You can then produce separate, more detailed documentation for a
@@ -434,13 +385,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=explicit-typ
 ----
 <1> Set the field's type to `String`.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=explicit-type]
-----
-<1> Set the field's type to `String`.
-====
 
 
 [[documenting-your-api-request-response-payloads-fields-xml]]
@@ -532,14 +476,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=single-book]
 ----
 <1> Document `title` and `author` by using existing descriptors
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=single-book]
-----
-<1> Document `title` and `author` by using existing descriptors
-====
-
 You can also use the descriptors to document an array of books, as follows:
 
 ====
@@ -560,16 +496,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=book-array]
 <1> Document the array.
 <2> Document `[].title` and `[].author` by using the existing descriptors prefixed with
 	`[].`
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=book-array]
-----
-<1> Document the array.
-<2> Document `[].title` and `[].author` by using the existing descriptors prefixed with
-	`[].`
-====
 
 [[documenting-your-api-request-response-payloads-subsections]]
 ==== Documenting a Subsection of a Request or Response Payload
@@ -623,17 +549,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=body-subsect
 	`responseBody` and `beneathPath` methods on
 	`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet for
 	the request body, you can use `requestBody` in place of `responseBody`.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=body-subsection]
-----
-<1> Produce a snippet containing a subsection of the response body. Uses the static
-	`responseBody` and `beneathPath` methods on
-	`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet for
-	the request body, you can use `requestBody` in place of `responseBody`.
-====
 
 The result is a snippet with the following contents:
 
@@ -693,17 +608,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=fields-subse
 	`org.springframework.restdocs.payload.PayloadDocumentation`.
 <2> Document the `high` and `low` fields.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=fields-subsection]
-----
-<1> Produce a snippet describing the fields in the subsection of the response payload
-	beneath the path `weather.temperature`. Uses the static `beneathPath` method on
-	`org.springframework.restdocs.payload.PayloadDocumentation`.
-<2> Document the `high` and `low` fields.
-====
-
 The result is a snippet that contains a table describing the `high` and `low` fields of
 `weather.temperature`. To make the snippet's name distinct, an identifier for the
 subsection is included. By default, this identifier is `beneath-${path}`. For example,
@@ -748,21 +652,6 @@ include::{examples-dir}/com/example/webtestclient/RequestParameters.java[tags=re
 	`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the `per_page` parameter.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/RequestParameters.java[tags=request-parameters-query-string]
-----
-<1> Configure Spring REST Docs to  produce a snippet describing the request's parameters.
-	Uses the static `requestParameters` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
-<2> Document the `page` parameter. Uses the static `parameterWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
-<3> Document the `per_page` parameter.
-<4> Perform a `GET` request with two parameters, `page` and `per_page`, in the query
-	string.
-====
-
 You can also include request parameters as form data in the body of a POST request. The
 following examples show how to do so:
 
@@ -780,15 +669,6 @@ include::{examples-dir}/com/example/mockmvc/RequestParameters.java[tags=request-
 include::{examples-dir}/com/example/webtestclient/RequestParameters.java[tags=request-parameters-form-data]
 ----
 <1> Perform a `POST` request with a single parameter, `username`.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/RequestParameters.java[tags=request-parameters-form-data]
-----
-<1> Configure the `username` parameter.
-<2> Perform the `POST` request.
-====
 
 In all cases, the result is a snippet named `request-parameters.adoc` that contains a
 table describing the parameters that are supported by the resource.
@@ -841,20 +721,6 @@ include::{examples-dir}/com/example/webtestclient/PathParameters.java[tags=path-
 <3> Document the parameter named `latitude`. Uses the static `parameterWithName` method on
 	`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the parameter named `longitude`.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/PathParameters.java[tags=path-parameters]
-----
-<1> Configure Spring REST Docs to produce a snippet describing the request's path
-	parameters. Uses the static `pathParameters` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
-<2> Document the parameter named `latitude`. Uses the static `parameterWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
-<3> Document the parameter named `longitude`.
-<4> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
-====
 
 The result is a snippet named `path-parameters.adoc` that contains a table describing
 the path parameters that are supported by the resource.
@@ -910,20 +776,6 @@ include::{examples-dir}/com/example/webtestclient/RequestParts.java[tags=request
 <3> Document the part named `file`. Uses the static `partWithName` method on
 	`org.springframework.restdocs.request.RequestDocumentation`.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/RequestParts.java[tags=request-parts]
-----
-<1> Configure Spring REST Docs to produce a snippet describing the request's parts. Uses
-	the static `requestParts` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
-<2> Document the part named `file`. Uses the static `partWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
-<3> Configure the request with the part named `file`.
-<4> Perform the `POST` request to `/upload`.
-====
-
 The result is a snippet named `request-parts.adoc` that contains a table describing the
 request parts that are supported by the resource.
 
@@ -974,16 +826,6 @@ include::{examples-dir}/com/example/webtestclient/RequestPartPayload.java[tags=b
 	part named `metadata`. Uses the static `requestPartBody` method on
 	`PayloadDocumentation`.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/RequestPartPayload.java[tags=body]
-----
-<1> Configure Spring REST docs to produce a snippet containing the body of the request
-	part named `metadata`. Uses the static `requestPartBody` method on
-	`PayloadDocumentation`.
-====
-
 The result is a snippet named `request-part-${part-name}-body.adoc` that contains the
 part's body. For example, documenting a part named `metadata` produces a snippet named
 `request-part-metadata-body.adoc`.
@@ -1018,18 +860,6 @@ include::{examples-dir}/com/example/webtestclient/RequestPartPayload.java[tags=f
 	`PayloadDocumentation`.
 <2> Expect a field with the path `version`. Uses the static `fieldWithPath` method on
 	`org.springframework.restdocs.payload.PayloadDocumentation`.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/RequestPartPayload.java[tags=fields]
-----
-<1> Configure Spring REST docs to produce a snippet describing the fields in the payload
-	of the request part named `metadata`. Uses the static `requestPartFields` method on
-	`PayloadDocumentation`.
-<2> Expect a field with the path `version`. Uses the static `fieldWithPath` method on
-	`org.springframework.restdocs.payload.PayloadDocumentation`.
-====
 
 The result is a snippet that contains a table describing the part's fields. This snippet
 is named `request-part-${part-name}-fields.adoc`. For example, documenting a part named
@@ -1089,21 +919,6 @@ include::{examples-dir}/com/example/webtestclient/HttpHeaders.java[tags=headers]
 <4> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
 	method on `org.springframework.restdocs.headers.HeaderDocumentation`.
 
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/HttpHeaders.java[tags=headers]
-----
-<1> Configure Spring REST Docs to produce a snippet describing the request's headers.
-	Uses the static `requestHeaders` method on
-	`org.springframework.restdocs.headers.HeaderDocumentation`.
-<2> Document the `Authorization` header. Uses the static `headerWithName` method on
-	`org.springframework.restdocs.headers.HeaderDocumentation.
-<3> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
-	method on `org.springframework.restdocs.headers.HeaderDocumentation`.
-<4> Configure the request with an `Authorization` header that uses basic authentication.
-====
-
 The result is a snippet named `request-headers.adoc` and a snippet named
 `response-headers.adoc`. Each contains a table describing the headers.
 
@@ -1148,15 +963,6 @@ include::{examples-dir}/com/example/webtestclient/WebTestClientSnippetReuse.java
 ----
 <1> Reuse the `pagingLinks` `Snippet`, calling `and` to add descriptors that are specific
 	to the resource that is being documented.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/RestAssuredSnippetReuse.java[tags=use]
-----
-<1> Reuse the `pagingLinks` `Snippet`, calling `and` to add descriptors that are specific
-	to the resource that is being documented.
-====
 
 The result of the example is that links with `rel` values of `first`, `last`, `next`,
 `previous`, `alpha`, and `bravo` are all documented.
@@ -1317,10 +1123,8 @@ You can configure which snippets are produced by default. See the
 [[documentating-your-api-parameterized-output-directories]]
 === Using Parameterized Output Directories
 
-When using MockMvc, REST Assured, or `WebTestClient` you can parameterize the output directory used by
-`document`.
-
-The following parameters are supported:
+You can parameterize the output directory used by `document`. The following
+parameters are supported:
 
 [cols="1,3"]
 |===
@@ -1361,12 +1165,6 @@ in every test in the class. The following examples show how to do so:
 .MockMvc
 ----
 include::{examples-dir}/com/example/mockmvc/ParameterizedOutput.java[tags=parameterized-output]
-----
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/ParameterizedOutput.java[tags=parameterized-output]
 ----
 
 [source,java,indent=0,role="secondary"]
@@ -1443,16 +1241,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=constraints]
 <1> Configure the `title` attribute for the request fields snippet.
 <2> Set the `constraints` attribute for the `name` field.
 <3> Set the `constraints` attribute for the `email` field.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/Payload.java[tags=constraints]
-----
-<1> Configure the `title` attribute for the request fields snippet.
-<2> Set the `constraints` attribute for the `name` field.
-<3> Set the `constraints` attribute for the `email` field.
-====
 
 The second step is to provide a custom template named `request-fields.snippet` that
 includes the information about the fields' constraints in the generated snippet's table

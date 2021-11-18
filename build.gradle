@@ -112,7 +112,6 @@ subprojects { subproject ->
 samples {
 	dependOn "spring-restdocs-core:publishToMavenLocal"
 	dependOn "spring-restdocs-mockmvc:publishToMavenLocal"
-	dependOn "spring-restdocs-restassured:publishToMavenLocal"
 	dependOn "spring-restdocs-webtestclient:publishToMavenLocal"
 	dependOn "spring-restdocs-asciidoctor:publishToMavenLocal"
 
@@ -126,10 +125,6 @@ samples {
 
 	testNg {
 		workingDir "$projectDir/samples/testng"
-	}
-
-	restAssured {
-		workingDir "$projectDir/samples/rest-assured"
 	}
 
 	webTestClient {

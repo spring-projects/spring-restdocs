@@ -19,7 +19,6 @@ dependencies {
 	internal(enforcedPlatform("org.springframework:spring-framework-bom:$springFrameworkVersion"))
 
 	testImplementation(project(":spring-restdocs-mockmvc"))
-	testImplementation(project(":spring-restdocs-restassured"))
 	testImplementation(project(":spring-restdocs-webtestclient"))
 	testImplementation("jakarta.validation:jakarta.validation-api")
 	testImplementation("junit:junit")
