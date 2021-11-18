@@ -10,8 +10,9 @@ dependencies {
 	api(project(":spring-restdocs-core"))
 	api("io.rest-assured:rest-assured") {
 		exclude group: "commons-logging", module: "commons-logging"
+		exclude group: "javax.xml.bind", module: "jaxb-api"
 	}
-
+	implementation("jakarta.xml.bind:jakarta.xml.bind-api")
 	implementation("org.springframework:spring-web")
 
 	internal(platform(project(":spring-restdocs-platform")))
