@@ -31,8 +31,8 @@ public class OperationResponseFactory {
 	 * {@code headers} will be augmented to ensure that they include a
 	 * {@code Content-Length} header.
 	 * @param status the status of the response
-	 * @param headers the request's headers
-	 * @param content the content of the request
+	 * @param headers the response's headers
+	 * @param content the content of the response
 	 * @return the {@code OperationResponse}
 	 * @deprecated since 2.0.4 in favor of {@link #create(int, HttpHeaders, byte[])}
 	 */
@@ -46,8 +46,8 @@ public class OperationResponseFactory {
 	 * {@code headers} will be augmented to ensure that they include a
 	 * {@code Content-Length} header.
 	 * @param status the status of the response
-	 * @param headers the request's headers
-	 * @param content the content of the request
+	 * @param headers the response's headers
+	 * @param content the content of the response
 	 * @return the {@code OperationResponse}
 	 */
 	public OperationResponse create(int status, HttpHeaders headers, byte[] content) {
