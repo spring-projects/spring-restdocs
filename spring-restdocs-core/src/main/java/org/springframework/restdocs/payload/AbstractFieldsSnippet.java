@@ -32,6 +32,8 @@ import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 /**
  * Abstract {@link TemplatedSnippet} subclass that provides a base for snippets that
  * document a RESTful resource's request or response fields.
@@ -142,35 +144,38 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	@Override
 	protected Map<String, Object> createModel(Operation operation) {
-		byte[] content;
-		try {
-			content = verifyContent(getContent(operation));
-		}
-		catch (IOException ex) {
-			throw new ModelCreationException(ex);
-		}
-		MediaType contentType = getContentType(operation);
-		if (this.subsectionExtractor != null) {
-			content = verifyContent(
-					this.subsectionExtractor.extractSubsection(content, contentType, this.fieldDescriptors));
-		}
-		ContentHandler contentHandler = ContentHandler.forContentWithDescriptors(content, contentType,
-				this.fieldDescriptors);
-
-		validateFieldDocumentation(contentHandler);
-
 		List<FieldDescriptor> descriptorsToDocument = new ArrayList<>();
-		for (FieldDescriptor descriptor : this.fieldDescriptors) {
-			if (!descriptor.isIgnored()) {
-				try {
-					Object type = contentHandler.resolveFieldType(descriptor);
-					descriptorsToDocument.add(copyWithType(descriptor, type));
-				}
-				catch (FieldDoesNotExistException ex) {
-					String message = "Cannot determine the type of the field '" + descriptor.getPath()
-							+ "' as it is not present in the " + "payload. Please provide a type using "
-							+ "FieldDescriptor.type(Object type).";
-					throw new FieldTypeRequiredException(message);
+
+		if (operation.getResponse().getStatus() != NO_CONTENT) {
+			byte[] content;
+			try {
+				content = verifyContent(getContent(operation));
+			}
+			catch (IOException ex) {
+				throw new ModelCreationException(ex);
+			}
+			MediaType contentType = getContentType(operation);
+			if (this.subsectionExtractor != null) {
+				content = verifyContent(
+						this.subsectionExtractor.extractSubsection(content, contentType, this.fieldDescriptors));
+			}
+			ContentHandler contentHandler = ContentHandler.forContentWithDescriptors(content, contentType,
+					this.fieldDescriptors);
+
+			validateFieldDocumentation(contentHandler);
+
+			for (FieldDescriptor descriptor : this.fieldDescriptors) {
+				if (!descriptor.isIgnored()) {
+					try {
+						Object type = contentHandler.resolveFieldType(descriptor);
+						descriptorsToDocument.add(copyWithType(descriptor, type));
+					}
+					catch (FieldDoesNotExistException ex) {
+						String message = "Cannot determine the type of the field '" + descriptor.getPath()
+								+ "' as it is not present in the " + "payload. Please provide a type using "
+								+ "FieldDescriptor.type(Object type).";
+						throw new FieldTypeRequiredException(message);
+					}
 				}
 			}
 		}

@@ -16,11 +16,7 @@
 
 package org.springframework.restdocs.payload;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 import org.junit.Test;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
@@ -30,12 +26,14 @@ import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
+import java.io.IOException;
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -355,6 +353,23 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 		assertThat(descriptor.getType()).isNull();
 		assertThat(this.generatedSnippets.responseFields())
 				.is(tableWithHeader("Path", "Type", "Description").row("`id`", "`Number`", "one"));
+	}
+
+	@Test
+	public void responseWithNoResponseBodyForHttp204() throws IOException {
+		FieldDescriptor descriptor = fieldWithPath("id").description("one");
+		new ResponseFieldsSnippet(Arrays.asList(descriptor))
+				.document(this.operationBuilder.response().status(NO_CONTENT.value()).build());
+		assertThat(this.generatedSnippets.responseFields())
+				.is(tableWithHeader("Path", "Type", "Description"));
+	}
+
+	@Test
+	public void responseWithNoResponseBodyForHttp204WithSubsection() throws IOException {
+		responseFields(beneathPath("a")).andWithPrefix("b.", fieldWithPath("c").description("two"))
+				.document(this.operationBuilder.response().status(NO_CONTENT.value()).build());
+		assertThat(this.generatedSnippets.snippet("response-fields-beneath-a"))
+				.is(tableWithHeader("Path", "Type", "Description"));
 	}
 
 	private String escapeIfNecessary(String input) {
