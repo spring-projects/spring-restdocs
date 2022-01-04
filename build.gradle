@@ -29,8 +29,7 @@ ext {
 	javadocLinks = [
 		"https://docs.oracle.com/javase/8/docs/api/",
 		"https://docs.spring.io/spring-framework/docs/$springFrameworkVersion/javadoc-api/",
-		"https://docs.jboss.org/hibernate/stable/beanvalidation/api/",
-		"https://docs.jboss.org/hibernate/stable/validator/api/"
+		"https://jakarta.ee/specifications/bean-validation/3.0/apidocs/"
 	] as String[]
 }
 
