@@ -134,7 +134,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		}
 		else if (isPutOrPost(request)) {
 			if (request.getParts().isEmpty()) {
-				String queryString = request.getParameters().toQueryString();
+				String queryString = request.getParameters().getUniqueParameters(request.getUri()).toQueryString();
 				if (StringUtils.hasText(queryString)) {
 					writer.println();
 					writer.print(queryString);
@@ -206,7 +206,8 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private boolean requiresFormEncodingContentTypeHeader(OperationRequest request) {
 		return request.getHeaders().get(HttpHeaders.CONTENT_TYPE) == null && isPutOrPost(request)
-				&& (!request.getParameters().isEmpty() && !includeParametersInUri(request));
+				&& !request.getParameters().getUniqueParameters(request.getUri()).isEmpty()
+				&& !includeParametersInUri(request);
 	}
 
 	private Map<String, String> header(String name, String value) {
