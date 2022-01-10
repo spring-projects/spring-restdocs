@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartBody;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartFields;
@@ -37,7 +37,7 @@ public class RequestPartPayload {
 		MockMultipartFile metadata = new MockMultipartFile("metadata", "", "application/json",
 				"{ \"version\": \"1.0\"}".getBytes());
 
-		this.mockMvc.perform(fileUpload("/images").file(image).file(metadata).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(multipart("/images").file(image).file(metadata).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(document("image-upload", requestPartFields("metadata", // <1>
 						fieldWithPath("version").description("The version of the image")))); // <2>
 		// end::fields[]
@@ -49,7 +49,7 @@ public class RequestPartPayload {
 		MockMultipartFile metadata = new MockMultipartFile("metadata", "", "application/json",
 				"{ \"version\": \"1.0\"}".getBytes());
 
-		this.mockMvc.perform(fileUpload("/images").file(image).file(metadata).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(multipart("/images").file(image).file(metadata).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(document("image-upload", requestPartBody("metadata"))); // <1>
 		// end::body[]
 	}
