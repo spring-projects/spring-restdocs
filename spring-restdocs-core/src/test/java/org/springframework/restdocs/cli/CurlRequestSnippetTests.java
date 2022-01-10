@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -296,6 +296,17 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
 				+ "'Content-Type: multipart/form-data' -F "
 				+ "'image=@documents/images/example.png' -F 'a=apple' -F 'a=avocado' " + "-F 'b=banana'";
+		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(expectedContent));
+	}
+
+	@Test
+	public void multipartPostWithOverlappingPartsAndParameters() throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/upload")
+				.method("POST").header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+				.part("image", new byte[0]).submittedFileName("documents/images/example.png").and()
+				.part("a", "apple".getBytes()).and().param("a", "apple").build());
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F 'image=@documents/images/example.png' -F 'a=apple'";
 		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(expectedContent));
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -258,6 +258,19 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String param3Part = createPart(String.format("Content-Disposition: form-data; " + "name=b%n%nbanana"), false);
 		String filePart = createPart(String.format("Content-Disposition: form-data; " + "name=image%n%n<< data >>"));
 		String expectedContent = param1Part + param2Part + param3Part + filePart;
+		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.POST, "/upload")
+				.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
+				.header(HttpHeaders.HOST, "localhost").content(expectedContent));
+	}
+
+	@Test
+	public void multipartPostWithOverlappingPartsAndParameters() throws IOException {
+		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/upload").method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE).param("a", "apple")
+				.part("a", "apple".getBytes()).and().part("image", "<< data >>".getBytes()).build());
+		String paramPart = createPart(String.format("Content-Disposition: form-data; " + "name=a%n%napple"), false);
+		String filePart = createPart(String.format("Content-Disposition: form-data; " + "name=image%n%n<< data >>"));
+		String expectedContent = paramPart + filePart;
 		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.POST, "/upload")
 				.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
 				.header(HttpHeaders.HOST, "localhost").content(expectedContent));

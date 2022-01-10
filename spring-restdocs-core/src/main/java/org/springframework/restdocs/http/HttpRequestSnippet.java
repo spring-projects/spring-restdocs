@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -151,16 +153,20 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private void writeParts(OperationRequest request, PrintWriter writer) {
 		writer.println();
+		Set<String> partNames = request.getParts().stream().map(OperationRequestPart::getName)
+				.collect(Collectors.toSet());
 		for (Entry<String, List<String>> parameter : request.getParameters().entrySet()) {
-			if (parameter.getValue().isEmpty()) {
-				writePartBoundary(writer);
-				writePart(parameter.getKey(), "", null, null, writer);
-			}
-			else {
-				for (String value : parameter.getValue()) {
+			if (!partNames.contains(parameter.getKey())) {
+				if (parameter.getValue().isEmpty()) {
 					writePartBoundary(writer);
-					writePart(parameter.getKey(), value, null, null, writer);
-					writer.println();
+					writePart(parameter.getKey(), "", null, null, writer);
+				}
+				else {
+					for (String value : parameter.getValue()) {
+						writePartBoundary(writer);
+						writePart(parameter.getKey(), value, null, null, writer);
+						writer.println();
+					}
 				}
 			}
 		}
