@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,7 +177,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 			lines.add(String.format("-d '%s'", content));
 		}
 		else if (!request.getParts().isEmpty()) {
-			for (Entry<String, List<String>> entry : request.getParameters().entrySet()) {
+			for (Entry<String, List<String>> entry : request.getNonPartParameters().entrySet()) {
 				for (String value : entry.getValue()) {
 					lines.add(String.format("-F '%s=%s'", entry.getKey(), value));
 				}

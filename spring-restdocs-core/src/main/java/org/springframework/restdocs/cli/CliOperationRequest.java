@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -62,6 +63,15 @@ final class CliOperationRequest implements OperationRequest {
 			return BasicAuthHeaderFilter.decodeBasicAuthHeader(headerValue);
 		}
 		return null;
+	}
+
+	Parameters getNonPartParameters() {
+		Parameters parameters = getParameters();
+		Parameters nonPartParameters = new Parameters();
+		nonPartParameters.putAll(parameters);
+		Set<String> partNames = getParts().stream().map(OperationRequestPart::getName).collect(Collectors.toSet());
+		nonPartParameters.keySet().removeAll(partNames);
+		return nonPartParameters;
 	}
 
 	@Override
