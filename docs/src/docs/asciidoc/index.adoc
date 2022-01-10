@@ -18,8 +18,7 @@ Andy Wilkinson; Jay Bryant
 
 [[abstract]]
 
-Document RESTful services by combining hand-written documentation with auto-generated
-snippets produced with Spring MVC Test.
+Document RESTful services by combining hand-written documentation with auto-generated snippets produced with Spring MVC Test, WebTestClient, or REST Assured.
 
 include::introduction.adoc[]
 include::getting-started.adoc[]

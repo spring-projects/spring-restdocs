@@ -1,14 +1,12 @@
 [[customizing-requests-and-responses]]
 == Customizing requests and responses
 
-There may be situations where you do not want to document a request exactly as it was sent
-or a response exactly as it was received. Spring REST Docs provides a number of
-preprocessors that can be used to modify a request or response before it is documented.
+There may be situations where you do not want to document a request exactly as it was sent or a response exactly as it was received.
+Spring REST Docs provides a number of preprocessors that can be used to modify a request or response before it is documented.
 
-Preprocessing is configured by calling `document` with an `OperationRequestPreprocessor`
-or an `OperationResponsePreprocessor`. You can obtain instances by using the static
-`preprocessRequest` and `preprocessResponse` methods on `Preprocessors`. The following
-examples show how to do so:
+Preprocessing is configured by calling `document` with an `OperationRequestPreprocessor` or an `OperationResponsePreprocessor`.
+You can obtain instances by using the static `preprocessRequest` and `preprocessResponse` methods on `Preprocessors`.
+The following examples show how to do so:
 
 ====
 [source,java,indent=0,role="primary"]
@@ -36,10 +34,9 @@ include::{examples-dir}/com/example/restassured/PerTestPreprocessing.java[tags=p
 <2> Apply a response preprocessor that pretty prints its content.
 ====
 
-Alternatively, you may want to apply the same preprocessors to every test. You can do so
-by using the `RestDocumentationConfigurer` API in your `@Before` method to configure the
-preprocessors. For example to remove the `Foo` header from all requests and pretty print
-all responses, you could do one of the following (depending on your testing environment):
+Alternatively, you may want to apply the same preprocessors to every test.
+You can do so by using the `RestDocumentationConfigurer` API in your `@Before` method to configure the preprocessors.
+For example, to remove the `Foo` header from all requests and pretty print all responses, you could do one of the following (depending on your testing environment):
 
 ====
 [source,java,indent=0,role="primary"]
@@ -67,8 +64,8 @@ include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags
 <2> Apply a response preprocessor that pretty prints its content.
 ====
 
-Then, in each test, you can perform any configuration specific to that test. The
-following examples show how to do so:
+Then, in each test, you can perform any configuration specific to that test.
+The following examples show how to do so:
 
 ====
 [source,java,indent=0,role="primary"]
@@ -90,8 +87,8 @@ include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags
 ----
 ====
 
-Various built-in preprocessors, including those illustrated above, are available through
-the static methods on `Preprocessors`. See <<Preprocessors, below>> for further details.
+Various built-in preprocessors, including those illustrated above, are available through the static methods on `Preprocessors`.
+See <<Preprocessors, below>> for further details.
 
 
 
@@ -103,70 +100,58 @@ the static methods on `Preprocessors`. See <<Preprocessors, below>> for further 
 [[customizing-requests-and-responses-preprocessors-pretty-print]]
 ==== Pretty Printing
 
-`prettyPrint` on `Preprocessors` formats the content of the request or response
-to make it easier to read.
+`prettyPrint` on `Preprocessors` formats the content of the request or response to make it easier to read.
 
 
 
 [[customizing-requests-and-responses-preprocessors-mask-links]]
 ==== Masking Links
 
-If you are documenting a hypermedia-based API, you may want to encourage clients to
-navigate the API by using links rather than through the use of hard coded URIs. One way to
-do so is to limit the use of URIs in the documentation. `maskLinks` on
-`Preprocessors` replaces the `href` of any links in the response with `...`. You can also
-specify a different replacement if you wish.
+If you are documenting a hypermedia-based API, you may want to encourage clients to navigate the API by using links rather than through the use of hard coded URIs.
+One way to do so is to limit the use of URIs in the documentation.
+`maskLinks` on `Preprocessors` replaces the `href` of any links in the response with `...`.
+You can also specify a different replacement if you wish.
 
 
 
 [[customizing-requests-and-responses-preprocessors-remove-headers]]
 ==== Removing Headers
 
-`removeHeaders` on `Preprocessors` removes any headers from the request or response where
-the name is equal to any of the given header names.
+`removeHeaders` on `Preprocessors` removes any headers from the request or response where the name is equal to any of the given header names.
 
-`removeMatchingHeaders` on `Preprocessors` removes any headers from the request or
-response where the name matches any of the given regular expression patterns.
+`removeMatchingHeaders` on `Preprocessors` removes any headers from the request or response where the name matches any of the given regular expression patterns.
 
 
 
 [[customizing-requests-and-responses-preprocessors-replace-patterns]]
 ==== Replacing Patterns
 
-`replacePattern` on `Preprocessors` provides a general purpose mechanism for
-replacing content in a request or response. Any occurrences that match a regular
-expression are replaced.
+`replacePattern` on `Preprocessors` provides a general purpose mechanism for replacing content in a request or response.
+Any occurrences that match a regular expression are replaced.
 
 
 
 [[customizing-requests-and-responses-preprocessors-modify-request-parameters]]
 ==== Modifying Request Parameters
 
-You can use `modifyParameters` on `Preprocessors` to add, set, and remove request
-parameters.
+You can use `modifyParameters` on `Preprocessors` to add, set, and remove request parameters.
 
 
 
 [[customizing-requests-and-responses-preprocessors-modify-uris]]
 ==== Modifying URIs
 
-TIP: If you use MockMvc or a WebTestClient that is not bound to a server,
-you should customize URIs by <<configuration-uris, changing the configuration>>.
+TIP: If you use MockMvc or a WebTestClient that is not bound to a server, you should customize URIs by <<configuration-uris, changing the configuration>>.
 
-You can use `modifyUris` on `Preprocessors` to modify any URIs in a request
-or a response. When using REST Assured or WebTestClient bound to a server, this
-lets you customize the URIs that appear in the documentation while testing a
-local instance of the service.
+You can use `modifyUris` on `Preprocessors` to modify any URIs in a request or a response.
+When using REST Assured or WebTestClient bound to a server, this lets you customize the URIs that appear in the documentation while testing a local instance of the service.
 
 
 
 [[customizing-requests-and-responses-preprocessors-writing-your-own]]
 ==== Writing Your Own Preprocessor
 
-If one of the built-in preprocessors does not meet your needs, you can write your own by
-implementing the `OperationPreprocessor` interface. You can then use your custom
-preprocessor in exactly the same way as any of the built-in preprocessors.
+If one of the built-in preprocessors does not meet your needs, you can write your own by implementing the `OperationPreprocessor` interface.
+You can then use your custom preprocessor in exactly the same way as any of the built-in preprocessors.
 
-If you want to modify only the content (body) of a request or response, consider
-implementing the `ContentModifier` interface and using it with the built-in
-`ContentModifyingOperationPreprocessor`.
+If you want to modify only the content (body) of a request or response, consider implementing the `ContentModifier` interface and using it with the built-in `ContentModifyingOperationPreprocessor`.
