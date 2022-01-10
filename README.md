@@ -2,14 +2,11 @@
 
 ## Overview
 
-The primary goal of this project is to make it easy to document RESTful services by
-combining content that's been hand-written using [Asciidoctor][3] with auto-generated
-examples produced with the [Spring MVC Test][4] framework. The result is intended to be
-an easy-to-read user guide, akin to [GitHub's API documentation][5] for example, rather
-than the fully automated, dense API documentation produced by tools like [Swagger][6].
+The primary goal of this project is to make it easy to document RESTful services by combining content that's been hand-written using [Asciidoctor][3] with auto-generated examples produced with the [Spring MVC Test][4] framework.
+The result is intended to be an easy-to-read user guide, akin to [GitHub's API documentation][5] for example, rather than the fully automated, dense API documentation produced by tools like [Swagger][6].
 
-For a broader introduction see the Documenting RESTful APIs presentation. Both the
-[slides][7] and a [video recording][8] are available.
+For a broader introduction see the Documenting RESTful APIs presentation.
+Both the [slides][7] and a [video recording][8] are available.
 
 ## Learning more
 
@@ -17,7 +14,8 @@ To learn more about Spring REST Docs, please consult the [reference documentatio
 
 ## Building from source
 
-You will need Java 8 or later to build Spring REST Docs. It is built using [Gradle][10]:
+You will need Java 8 or later to build Spring REST Docs.
+It is built using [Gradle][10]:
 
 ```
 ./gradlew build
@@ -29,9 +27,9 @@ Contributors to this project agree to uphold its [code of conduct][11].
 
 There are several that you can contribute to Spring REST Docs:
 
- - Open a [pull request][12]. Please see the [contributor guidelines][13] for details.
- - Ask and answer questions on Stack Overflow using the [`spring-restdocs`][15] tag.
- - Chat with fellow users [on Gitter][16].
+ - Open a [pull request][12]. Please see the [contributor guidelines][13] for details
+ - Ask and answer questions on Stack Overflow using the [`spring-restdocs`][15] tag
+ - Chat with fellow users [on Gitter][16]
 
 ## Third-party extensions
 
