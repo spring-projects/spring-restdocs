@@ -122,8 +122,11 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeOptions(OperationRequest request, PrintWriter writer) {
-		if (!request.getParts().isEmpty() || (!request.getParameters().getUniqueParameters(request.getUri()).isEmpty()
-				&& !includeParametersInUri(request) && includeParametersAsFormOptions(request))) {
+		if (!request.getParts().isEmpty()) {
+			writer.print("--multipart ");
+		}
+		else if (!request.getParameters().getUniqueParameters(request.getUri()).isEmpty()
+				&& !includeParametersInUri(request) && includeParametersAsFormOptions(request)) {
 			writer.print("--form ");
 		}
 	}
@@ -156,8 +159,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 			StringBuilder oneLine = new StringBuilder();
 			oneLine.append(String.format("'%s'", part.getName()));
 			if (!StringUtils.hasText(part.getSubmittedFileName())) {
-				// https://github.com/jkbrzt/httpie/issues/342
-				oneLine.append(String.format("@<(echo '%s')", part.getContentAsString()));
+				oneLine.append(String.format("='%s'", part.getContentAsString()));
 			}
 			else {
 				oneLine.append(String.format("@'%s'", part.getSubmittedFileName()));

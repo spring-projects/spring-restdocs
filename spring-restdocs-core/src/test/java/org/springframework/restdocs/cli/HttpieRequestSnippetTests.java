@@ -262,8 +262,8 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				.document(this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 						.part("metadata", "{\"description\": \"foo\"}".getBytes()).build());
-		String expectedContent = "$ http --form POST 'http://localhost/upload'"
-				+ " 'metadata'@<(echo '{\"description\": \"foo\"}')";
+		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
+				+ " 'metadata'='{\"description\": \"foo\"}'";
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(expectedContent));
 	}
 
@@ -275,7 +275,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 						.part("image", new byte[0]).header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
 						.submittedFileName("documents/images/example.png").build());
 		// httpie does not yet support manually set content type by part
-		String expectedContent = "$ http --form POST 'http://localhost/upload'"
+		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
 				+ " 'image'@'documents/images/example.png'";
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(expectedContent));
 	}
@@ -286,7 +286,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 				.document(this.operationBuilder.request("http://localhost/upload").method("POST")
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 						.part("image", new byte[0]).submittedFileName("documents/images/example.png").build());
-		String expectedContent = "$ http --form POST 'http://localhost/upload'"
+		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
 				+ " 'image'@'documents/images/example.png'";
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(expectedContent));
 	}
@@ -298,7 +298,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 						.part("image", new byte[0]).submittedFileName("documents/images/example.png").and()
 						.param("a", "apple", "avocado").param("b", "banana").build());
-		String expectedContent = "$ http --form POST 'http://localhost/upload'"
+		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
 				+ " 'image'@'documents/images/example.png' 'a=apple' 'a=avocado'" + " 'b=banana'";
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(expectedContent));
 	}
@@ -310,8 +310,8 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 						.part("image", new byte[0]).submittedFileName("documents/images/example.png").and()
 						.part("a", "apple".getBytes()).and().param("a", "apple").build());
-		String expectedContent = "$ http --form POST 'http://localhost/upload'"
-				+ " 'image'@'documents/images/example.png' 'a'@<(echo 'apple')";
+		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
+				+ " 'image'@'documents/images/example.png' 'a'='apple'";
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(expectedContent));
 	}
 
