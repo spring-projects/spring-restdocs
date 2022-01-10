@@ -19,10 +19,10 @@ The following examples show how to use it:
 include::{examples-dir}/com/example/mockmvc/Hypermedia.java[tag=links]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the response's links.
-	Uses the static `links` method on
-	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+Uses the static `links` method on
+`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <2> Expect a link whose `rel` is `alpha`. Uses the static `linkWithRel` method on
-	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <3> Expect a link whose `rel` is `bravo`.
 
 [source,java,indent=0,role="secondary"]
@@ -31,10 +31,10 @@ include::{examples-dir}/com/example/mockmvc/Hypermedia.java[tag=links]
 include::{examples-dir}/com/example/webtestclient/Hypermedia.java[tag=links]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the response's links.
-	Uses the static `links` method on
-	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+Uses the static `links` method on
+`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <2> Expect a link whose `rel` is `alpha`. Uses the static `linkWithRel` method on
-	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <3> Expect a link whose `rel` is `bravo`.
 
 [source,java,indent=0,role="secondary"]
@@ -43,10 +43,10 @@ include::{examples-dir}/com/example/webtestclient/Hypermedia.java[tag=links]
 include::{examples-dir}/com/example/restassured/Hypermedia.java[tag=links]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the response's links.
-	Uses the static `links` method on
-	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+Uses the static `links` method on
+`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <2> Expect a link whose `rel` is `alpha`. Uses the static `linkWithRel` method on
-	`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+`org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <3> Expect a link whose `rel` is `bravo`.
 ====
 
@@ -178,10 +178,10 @@ You can document the previous example's fields as follows:
 include::{examples-dir}/com/example/mockmvc/Payload.java[tags=response]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the fields in the response
-	payload. To document a request, you can use `requestFields`. Both are static methods
-	on `org.springframework.restdocs.payload.PayloadDocumentation`.
+payload. To document a request, you can use `requestFields`. Both are static methods on
+`org.springframework.restdocs.payload.PayloadDocumentation`.
 <2> Expect a field with the path `contact.email`. Uses the static `fieldWithPath` method
-	on `org.springframework.restdocs.payload.PayloadDocumentation`.
+on `org.springframework.restdocs.payload.PayloadDocumentation`.
 <3> Expect a field with the path `contact.name`.
 
 [source,java,indent=0,role="secondary"]
@@ -190,10 +190,10 @@ include::{examples-dir}/com/example/mockmvc/Payload.java[tags=response]
 include::{examples-dir}/com/example/webtestclient/Payload.java[tags=response]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the fields in the response
-	payload. To document a request, you can use `requestFields`. Both are static methods
-	on `org.springframework.restdocs.payload.PayloadDocumentation`.
+payload. To document a request, you can use `requestFields`. Both are static methods on
+`org.springframework.restdocs.payload.PayloadDocumentation`.
 <2> Expect a field with the path `contact.email`. Uses the static `fieldWithPath` method
-	on `org.springframework.restdocs.payload.PayloadDocumentation`.
+on `org.springframework.restdocs.payload.PayloadDocumentation`.
 <3> Expect a field with the path `contact.name`.
 
 [source,java,indent=0,role="secondary"]
@@ -202,10 +202,10 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=response]
 include::{examples-dir}/com/example/restassured/Payload.java[tags=response]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the fields in the response
-	payload. To document a request, you can use `requestFields`. Both are static methods
-	on `org.springframework.restdocs.payload.PayloadDocumentation`.
-<2> Expect a field with the path `contact.email`. Uses the static `fieldWithPath` method
-	on `org.springframework.restdocs.payload.PayloadDocumentation`.
+payload. To document a request, you can use `requestFields`. Both are static methods on
+`org.springframework.restdocs.payload.PayloadDocumentation`.
+<2> Expect a field with the path `contact.email`. Uses the static `fieldWithPath` method 
+on `org.springframework.restdocs.payload.PayloadDocumentation`.
 <3> Expect a field with the path `contact.name`.
 ====
 
@@ -227,8 +227,8 @@ subsection of a payload can be documented. The following examples show how to do
 include::{examples-dir}/com/example/mockmvc/Payload.java[tags=subsection]
 ----
 <1> Document the subsection with the path `contact`. `contact.email` and `contact.name`
-	are now seen as having also been documented. Uses the static `subsectionWithPath`
-	method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+are now seen as having also been documented. Uses the static `subsectionWithPath` method
+on `org.springframework.restdocs.payload.PayloadDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
@@ -236,8 +236,8 @@ include::{examples-dir}/com/example/mockmvc/Payload.java[tags=subsection]
 include::{examples-dir}/com/example/webtestclient/Payload.java[tags=subsection]
 ----
 <1> Document the subsection with the path `contact`. `contact.email` and `contact.name`
-	are now seen as having also been documented. Uses the static `subsectionWithPath`
-	method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+are now seen as having also been documented. Uses the static `subsectionWithPath` method
+on `org.springframework.restdocs.payload.PayloadDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -245,8 +245,8 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=subsection]
 include::{examples-dir}/com/example/restassured/Payload.java[tags=subsection]
 ----
 <1> Document the subsection with the path `contact`. `contact.email` and `contact.name`
-	are now seen as having also been documented. Uses the static `subsectionWithPath`
-	method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+are now seen as having also been documented. Uses the static `subsectionWithPath` method
+on `org.springframework.restdocs.payload.PayloadDocumentation`.
 ====
 
 `subsectionWithPath` can be useful for providing a high-level overview of a particular
@@ -550,7 +550,7 @@ include::{examples-dir}/com/example/mockmvc/Payload.java[tags=book-array]
 ----
 <1> Document the array.
 <2> Document `[].title` and `[].author` by using the existing descriptors prefixed with
-	`[].`
+`[].`
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
@@ -559,7 +559,7 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=book-array]
 ----
 <1> Document the array.
 <2> Document `[].title` and `[].author` by using the existing descriptors prefixed with
-	`[].`
+`[].`
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -568,7 +568,7 @@ include::{examples-dir}/com/example/restassured/Payload.java[tags=book-array]
 ----
 <1> Document the array.
 <2> Document `[].title` and `[].author` by using the existing descriptors prefixed with
-	`[].`
+`[].`
 ====
 
 [[documenting-your-api-request-response-payloads-subsections]]
@@ -610,9 +610,9 @@ You can produce a snippet that documents the `temperature` object as follows:
 include::{examples-dir}/com/example/mockmvc/Payload.java[tags=body-subsection]
 ----
 <1> Produce a snippet containing a subsection of the response body. Uses the static
-	`responseBody` and `beneathPath` methods on
-	`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet for
-	the request body, you can use `requestBody` in place of `responseBody`.
+`responseBody` and `beneathPath` methods on
+`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet for the
+request body, you can use `requestBody` in place of `responseBody`.
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
@@ -620,9 +620,9 @@ include::{examples-dir}/com/example/mockmvc/Payload.java[tags=body-subsection]
 include::{examples-dir}/com/example/webtestclient/Payload.java[tags=body-subsection]
 ----
 <1> Produce a snippet containing a subsection of the response body. Uses the static
-	`responseBody` and `beneathPath` methods on
-	`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet for
-	the request body, you can use `requestBody` in place of `responseBody`.
+`responseBody` and `beneathPath` methods on
+`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet for the
+request body, you can use `requestBody` in place of `responseBody`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -630,9 +630,9 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=body-subsect
 include::{examples-dir}/com/example/restassured/Payload.java[tags=body-subsection]
 ----
 <1> Produce a snippet containing a subsection of the response body. Uses the static
-	`responseBody` and `beneathPath` methods on
-	`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet for
-	the request body, you can use `requestBody` in place of `responseBody`.
+`responseBody` and `beneathPath` methods on
+`org.springframework.restdocs.payload.PayloadDocumentation`. To produce a snippet for the
+request body, you can use `requestBody` in place of `responseBody`.
 ====
 
 The result is a snippet with the following contents:
@@ -699,8 +699,8 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=fields-subse
 include::{examples-dir}/com/example/restassured/Payload.java[tags=fields-subsection]
 ----
 <1> Produce a snippet describing the fields in the subsection of the response payload
-	beneath the path `weather.temperature`. Uses the static `beneathPath` method on
-	`org.springframework.restdocs.payload.PayloadDocumentation`.
+beneath the path `weather.temperature`. Uses the static `beneathPath` method on
+`org.springframework.restdocs.payload.PayloadDocumentation`.
 <2> Document the `high` and `low` fields.
 ====
 
@@ -726,12 +726,12 @@ do so:
 include::{examples-dir}/com/example/mockmvc/RequestParameters.java[tags=request-parameters-query-string]
 ----
 <1> Perform a `GET` request with two parameters, `page` and `per_page`, in the query
-	string.
+string.
 <2> Configure Spring REST Docs to produce a snippet describing the request's parameters.
-	Uses the static `requestParameters` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+Uses the static `requestParameters` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the `page` parameter. Uses the static `parameterWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the `per_page` parameter.
 
 [source,java,indent=0,role="secondary"]
@@ -740,12 +740,12 @@ include::{examples-dir}/com/example/mockmvc/RequestParameters.java[tags=request-
 include::{examples-dir}/com/example/webtestclient/RequestParameters.java[tags=request-parameters-query-string]
 ----
 <1> Perform a `GET` request with two parameters, `page` and `per_page`, in the query
-	string.
+string.
 <2> Configure Spring REST Docs to produce a snippet describing the request's parameters.
-	Uses the static `requestParameters` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+Uses the static `requestParameters` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the `page` parameter. Uses the static `parameterWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the `per_page` parameter.
 
 [source,java,indent=0,role="secondary"]
@@ -754,13 +754,13 @@ include::{examples-dir}/com/example/webtestclient/RequestParameters.java[tags=re
 include::{examples-dir}/com/example/restassured/RequestParameters.java[tags=request-parameters-query-string]
 ----
 <1> Configure Spring REST Docs to  produce a snippet describing the request's parameters.
-	Uses the static `requestParameters` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+Uses the static `requestParameters` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
 <2> Document the `page` parameter. Uses the static `parameterWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the `per_page` parameter.
 <4> Perform a `GET` request with two parameters, `page` and `per_page`, in the query
-	string.
+string.
 ====
 
 You can also include request parameters as form data in the body of a POST request. The
@@ -823,10 +823,10 @@ include::{examples-dir}/com/example/mockmvc/PathParameters.java[tags=path-parame
 ----
 <1> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
 <2> Configure Spring REST Docs to produce a snippet describing the request's path
-	parameters. Uses the static `pathParameters` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+parameters. Uses the static `pathParameters` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the parameter named `latitude`. Uses the static `parameterWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the parameter named `longitude`.
 
 [source,java,indent=0,role="secondary"]
@@ -836,10 +836,10 @@ include::{examples-dir}/com/example/webtestclient/PathParameters.java[tags=path-
 ----
 <1> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
 <2> Configure Spring REST Docs to produce a snippet describing the request's path
-	parameters. Uses the static `pathParameters` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+parameters. Uses the static `pathParameters` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the parameter named `latitude`. Uses the static `parameterWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+`org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the parameter named `longitude`.
 
 [source,java,indent=0,role="secondary"]
@@ -848,10 +848,10 @@ include::{examples-dir}/com/example/webtestclient/PathParameters.java[tags=path-
 include::{examples-dir}/com/example/restassured/PathParameters.java[tags=path-parameters]
 ----
 <1> Configure Spring REST Docs to produce a snippet describing the request's path
-	parameters. Uses the static `pathParameters` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+parameters. Uses the static `pathParameters` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
 <2> Document the parameter named `latitude`. Uses the static `parameterWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the parameter named `longitude`.
 <4> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
 ====
@@ -893,10 +893,10 @@ include::{examples-dir}/com/example/mockmvc/RequestParts.java[tags=request-parts
 ----
 <1> Perform a `POST` request with a single part named `file`.
 <2> Configure Spring REST Docs to produce a snippet describing the request's parts. Uses
-	the static `requestParts` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+the static `requestParts` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the part named `file`. Uses the static `partWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+`org.springframework.restdocs.request.RequestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
@@ -905,10 +905,10 @@ include::{examples-dir}/com/example/webtestclient/RequestParts.java[tags=request
 ----
 <1> Perform a `POST` request with a single part named `file`.
 <2> Configure Spring REST Docs to produce a snippet describing the request's parts. Uses
-	the static `requestParts` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+the static `requestParts` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the part named `file`. Uses the static `partWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+`org.springframework.restdocs.request.RequestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -916,10 +916,10 @@ include::{examples-dir}/com/example/webtestclient/RequestParts.java[tags=request
 include::{examples-dir}/com/example/restassured/RequestParts.java[tags=request-parts]
 ----
 <1> Configure Spring REST Docs to produce a snippet describing the request's parts. Uses
-	the static `requestParts` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+the static `requestParts` method on
+`org.springframework.restdocs.request.RequestDocumentation`.
 <2> Document the part named `file`. Uses the static `partWithName` method on
-	`org.springframework.restdocs.request.RequestDocumentation`.
+`org.springframework.restdocs.request.RequestDocumentation`.
 <3> Configure the request with the part named `file`.
 <4> Perform the `POST` request to `/upload`.
 ====
@@ -1003,10 +1003,10 @@ or response, as follows:
 include::{examples-dir}/com/example/mockmvc/RequestPartPayload.java[tags=fields]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the fields in the payload
-	of the request part named `metadata`. Uses the static `requestPartFields` method on
-	`PayloadDocumentation`.
+of the request part named `metadata`. Uses the static `requestPartFields` method on
+`PayloadDocumentation`.
 <2> Expect a field with the path `version`. Uses the static `fieldWithPath` method on
-	`org.springframework.restdocs.payload.PayloadDocumentation`.
+`org.springframework.restdocs.payload.PayloadDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
@@ -1014,10 +1014,10 @@ include::{examples-dir}/com/example/mockmvc/RequestPartPayload.java[tags=fields]
 include::{examples-dir}/com/example/webtestclient/RequestPartPayload.java[tags=fields]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the fields in the payload
-	of the request part named `metadata`. Uses the static `requestPartFields` method on
-	`PayloadDocumentation`.
+of the request part named `metadata`. Uses the static `requestPartFields` method on
+`PayloadDocumentation`.
 <2> Expect a field with the path `version`. Uses the static `fieldWithPath` method on
-	`org.springframework.restdocs.payload.PayloadDocumentation`.
+`org.springframework.restdocs.payload.PayloadDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -1025,10 +1025,10 @@ include::{examples-dir}/com/example/webtestclient/RequestPartPayload.java[tags=f
 include::{examples-dir}/com/example/restassured/RequestPartPayload.java[tags=fields]
 ----
 <1> Configure Spring REST docs to produce a snippet describing the fields in the payload
-	of the request part named `metadata`. Uses the static `requestPartFields` method on
-	`PayloadDocumentation`.
+of the request part named `metadata`. Uses the static `requestPartFields` method on
+`PayloadDocumentation`.
 <2> Expect a field with the path `version`. Uses the static `fieldWithPath` method on
-	`org.springframework.restdocs.payload.PayloadDocumentation`.
+`org.springframework.restdocs.payload.PayloadDocumentation`.
 ====
 
 The result is a snippet that contains a table describing the part's fields. This snippet
@@ -1066,28 +1066,30 @@ You can document the headers in a request or response by using `requestHeaders` 
 ----
 include::{examples-dir}/com/example/mockmvc/HttpHeaders.java[tags=headers]
 ----
-<1> Perform a `GET` request with an `Authorization` header that uses basic authentication.
+<1> Perform a `GET` request with an `Authorization` header that uses basic
+authentication.
 <2> Configure Spring REST Docs to produce a snippet describing the request's headers.
-	Uses the static `requestHeaders` method on
-	`org.springframework.restdocs.headers.HeaderDocumentation`.
+Uses the static `requestHeaders` method on
+`org.springframework.restdocs.headers.HeaderDocumentation`.
 <3> Document the `Authorization` header. Uses the static `headerWithName` method on
-	`org.springframework.restdocs.headers.HeaderDocumentation`.
-<4> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
-	method on `org.springframework.restdocs.headers.HeaderDocumentation`.
+`org.springframework.restdocs.headers.HeaderDocumentation`.
+<4> Produce a snippet describing the response's headers. Uses the static
+`responseHeaders` method on `org.springframework.restdocs.headers.HeaderDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
 ----
 include::{examples-dir}/com/example/webtestclient/HttpHeaders.java[tags=headers]
 ----
-<1> Perform a `GET` request with an `Authorization` header that uses basic authentication.
+<1> Perform a `GET` request with an `Authorization` header that uses basic
+authentication.
 <2> Configure Spring REST Docs to produce a snippet describing the request's headers.
-	Uses the static `requestHeaders` method on
-	`org.springframework.restdocs.headers.HeaderDocumentation`.
+Uses the static `requestHeaders` method on
+`org.springframework.restdocs.headers.HeaderDocumentation`.
 <3> Document the `Authorization` header. Uses the static `headerWithName` method on
-	`org.springframework.restdocs.headers.HeaderDocumentation`.
-<4> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
-	method on `org.springframework.restdocs.headers.HeaderDocumentation`.
+`org.springframework.restdocs.headers.HeaderDocumentation`.
+<4> Produce a snippet describing the response's headers. Uses the static
+`responseHeaders` method on `org.springframework.restdocs.headers.HeaderDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
@@ -1095,12 +1097,12 @@ include::{examples-dir}/com/example/webtestclient/HttpHeaders.java[tags=headers]
 include::{examples-dir}/com/example/restassured/HttpHeaders.java[tags=headers]
 ----
 <1> Configure Spring REST Docs to produce a snippet describing the request's headers.
-	Uses the static `requestHeaders` method on
-	`org.springframework.restdocs.headers.HeaderDocumentation`.
+Uses the static `requestHeaders` method on
+`org.springframework.restdocs.headers.HeaderDocumentation`.
 <2> Document the `Authorization` header. Uses the static `headerWithName` method on
-	`org.springframework.restdocs.headers.HeaderDocumentation.
+`org.springframework.restdocs.headers.HeaderDocumentation.
 <3> Produce a snippet describing the response's headers. Uses the static `responseHeaders`
-	method on `org.springframework.restdocs.headers.HeaderDocumentation`.
+method on `org.springframework.restdocs.headers.HeaderDocumentation`.
 <4> Configure the request with an `Authorization` header that uses basic authentication.
 ====
 
@@ -1139,7 +1141,7 @@ following examples show how to do so:
 include::{examples-dir}/com/example/mockmvc/MockMvcSnippetReuse.java[tags=use]
 ----
 <1> Reuse the `pagingLinks` `Snippet`, calling `and` to add descriptors that are specific
-	to the resource that is being documented.
+to the resource that is being documented.
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
@@ -1155,7 +1157,7 @@ include::{examples-dir}/com/example/webtestclient/WebTestClientSnippetReuse.java
 include::{examples-dir}/com/example/restassured/RestAssuredSnippetReuse.java[tags=use]
 ----
 <1> Reuse the `pagingLinks` `Snippet`, calling `and` to add descriptors that are specific
-	to the resource that is being documented.
+to the resource that is being documented.
 ====
 
 The result of the example is that links with `rel` values of `first`, `last`, `next`,
@@ -1177,7 +1179,7 @@ include::{examples-dir}/com/example/Constraints.java[tags=constraints]
 ----
 <1> Create an instance of `ConstraintDescriptions` for the `UserInput` class.
 <2> Get the descriptions of the `name` property's constraints. This list contains two
-	descriptions: one for the `NotNull` constraint and one for the `Size` constraint.
+descriptions: one for the `NotNull` constraint and one for the `Size` constraint.
 ====
 
 The {samples}/rest-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`]

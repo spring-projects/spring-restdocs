@@ -173,7 +173,7 @@ the following example shows, you can specify the widths of a table's columns by 
 \include::{snippets}/index/links.adoc[]
 ----
 <1> The table's width is split across its two columns, with the second column being three
-	times as wide as the first.
+times as wide as the first.
 ====
 
 
