@@ -146,42 +146,49 @@ macro.
 .Gradle
 ----
 	plugins { <1>
-		id "org.asciidoctor.convert" version "1.5.9.2"
+		id "org.asciidoctor.jvm.convert" version "3.3.2"
+	}
+
+	configurations {
+		asciidoctorExt <2>
 	}
 
 	dependencies {
-		asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}' <2>
-		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <3>
+		asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}' <3>
+		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <4>
 	}
 
-	ext { <4>
+	ext { <5>
 		snippetsDir = file('build/generated-snippets')
 	}
 
-	test { <5>
+	test { <6>
 		outputs.dir snippetsDir
 	}
 
-	asciidoctor { <6>
-		inputs.dir snippetsDir <7>
-		dependsOn test <8>
+	asciidoctor { <7>
+		inputs.dir snippetsDir <8>
+		configurations 'asciidoctorExt' <9>
+		dependsOn test <10>
 	}
 ----
 <1> Apply the Asciidoctor plugin.
-<2> Add a dependency on `spring-restdocs-asciidoctor` in the `asciidoctor` configuration.
-This will automatically configure the `snippets` attribute for use in your `.adoc` files
-to point to `build/generated-snippets`. It will also allow you to use the `operation`
-block macro.
-<3> Add a dependency on `spring-restdocs-mockmvc` in the `testImplementation`
+<2> Declare the `asciidoctorExt` configuration for dependencies that extend Asciidoctor.
+<3> Add a dependency on `spring-restdocs-asciidoctor` in the `asciidoctorExt`
+configuration. This will automatically configure the `snippets` attribute for use in your
+`.adoc` files to point to `build/generated-snippets`. It will also allow you to use the
+`operation` block macro.
+<4> Add a dependency on `spring-restdocs-mockmvc` in the `testImplementation`
 configuration. If you want to use `WebTestClient` or REST Assured rather than MockMvc,
 add a dependency on `spring-restdocs-webtestclient` or `spring-restdocs-restassured`
 respectively instead.
-<4> Configure a property to define the output location for generated snippets.
-<5> Configure the `test` task to add the snippets directory as an output.
-<6> Configure the `asciidoctor` task
-<7> Configure the snippets directory as an input.
-<8> Make the task depend on the test task so that the tests are run before the
-	documentation is created.
+<5> Configure a property to define the output location for generated snippets.
+<6> Configure the `test` task to add the snippets directory as an output.
+<7> Configure the `asciidoctor` task.
+<8> Configure the snippets directory as an input.
+<9> Configure the use of the `asciidoctorExt` configuration for extensions.
+<10> Make the task depend on the test task so that the tests are run before the
+documentation is created.
 ====
 
 [[getting-started-build-configuration-packaging-the-documentation]]
