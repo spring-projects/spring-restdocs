@@ -225,6 +225,14 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void putRequestWithTotallyOverlappingQueryStringAndParameters() throws IOException {
+		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo")
+				.method("PUT").param("a", "alpha").param("b", "bravo").build());
+		assertThat(this.generatedSnippets.httpRequest())
+				.is(httpRequest(RequestMethod.PUT, "/foo?a=alpha&b=bravo").header(HttpHeaders.HOST, "localhost"));
+	}
+
+	@Test
 	public void multipartPost() throws IOException {
 		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/upload").method("POST")
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
