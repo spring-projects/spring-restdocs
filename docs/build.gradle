@@ -13,7 +13,7 @@ configurations {
 }
 
 dependencies {
-	asciidoctorExt("io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.5.0")
+	asciidoctorExt("io.spring.asciidoctor.backends:spring-asciidoctor-backends:0.0.2")
 
 	internal(platform(project(":spring-restdocs-platform")))
 	internal(enforcedPlatform("org.springframework:spring-framework-bom:$springFrameworkVersion"))
@@ -48,6 +48,9 @@ asciidoctor {
 	attributes	"revnumber": project.version,
 				"branch-or-tag": project.version.endsWith("SNAPSHOT") ? "main": "v${project.version}"
 	inputs.files(sourceSets.test.java)
+	outputOptions {
+		backends "spring-html"
+	}
 }
 
 task api (type: Javadoc) {
