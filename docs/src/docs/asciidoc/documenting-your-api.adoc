@@ -11,7 +11,6 @@ This section provides more details about using Spring REST Docs to document your
 Spring REST Docs provides support for documenting the links in a https://en.wikipedia.org/wiki/HATEOAS[hypermedia-based] API.
 The following examples show how to use it:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -33,7 +32,6 @@ Uses the static `links` method on `org.springframework.restdocs.hypermedia.Hyper
 <2> Expect a link whose `rel` is `alpha`.
 Uses the static `linkWithRel` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <3> Expect a link whose `rel` is `bravo`.
-
 
 The result is a snippet named `links.adoc` that contains a table describing the resource's links.
 
@@ -65,7 +63,6 @@ Two link formats are understood by default:
 If you use Atom- or HAL-format links but with a different content type, you can provide one of the built-in `LinkExtractor` implementations to `links`.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -93,12 +90,10 @@ Rather than documenting links that are common to every response, such as `self` 
 To do so, you can build on the <<documenting-your-api-reusing-snippets,support for reusing snippets>> to add link descriptors to a snippet that is preconfigured to ignore certain links.
 The following example shows how to do so:
 
-====
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/Hypermedia.java[tags=ignore-links]
 ----
-====
 
 
 
@@ -119,7 +114,6 @@ To provide more detailed documentation of a request or response payload, support
 
 Consider the following payload:
 
-====
 [source,json,indent=0]
 ----
 	{
@@ -129,11 +123,9 @@ Consider the following payload:
 		}
 	}
 ----
-====
 
 You can document the previous example's fields as follows:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -168,7 +160,6 @@ Similarly, the test also fails if a documented field is not found in the payload
 If you do not want to provide detailed documentation for all of the fields, an entire subsection of a payload can be documented.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -201,10 +192,14 @@ This can be useful when documenting a particular scenario where you want to focu
 TIP: By default, Spring REST Docs assumes that the payload you are documenting is JSON.
 If you want to document an XML payload, the content type of the request or response must be compatible with `application/xml`.
 
+
+
 [[documenting-your-api-request-response-payloads-fields-json]]
 ===== Fields in JSON Payloads
 
 This section describes how to work with fields in JSON payloads.
+
+
 
 [[documenting-your-api-request-response-payloads-fields-json-field-paths]]
 ====== JSON Field Paths
@@ -218,7 +213,6 @@ The two different notations can be used in the same path (for example, `a['b']`)
 
 Consider the following JSON payload:
 
-====
 [source,json,indent=0]
 ----
 	{
@@ -238,7 +232,6 @@ Consider the following JSON payload:
 		}
 	}
 ----
-====
 
 In the preceding JSON payload, the following paths are all present:
 
@@ -275,7 +268,6 @@ In the preceding JSON payload, the following paths are all present:
 
 |`['a']['e.dot']`
 |The string `four`
-
 |===
 
 You can also document a payload that uses an array at its root.
@@ -283,7 +275,6 @@ The path `[]` refers to the entire array.
 You can then use bracket or dot notation to identify fields within the array's entries.
 For example, `[].id` corresponds to the `id` field of every object found in the following array:
 
-====
 [source,json,indent=0]
 ----
 	[
@@ -295,12 +286,10 @@ For example, `[].id` corresponds to the `id` field of every object found in the 
 		}
 	]
 ----
-====
 
 You can use `\*` as a wildcard to match fields with different names.
 For example, `users.*.role` could be used to document the role of every user in the following JSON:
 
-====
 [source,json,indent=0]
 ----
 	{
@@ -314,7 +303,8 @@ For example, `users.*.role` could be used to document the role of every user in 
 		}
 	}
 ----
-====
+
+
 
 [[documenting-your-api-request-response-payloads-fields-json-field-types]]
 ====== JSON Field Types
@@ -353,7 +343,6 @@ The result of the `toString` method of the supplied `Object` is used in the docu
 Typically, one of the values enumerated by `JsonFieldType` is used.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -374,6 +363,8 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=explicit-typ
 ===== XML payloads
 
 This section describes how to work with XML payloads.
+
+
 
 [[documenting-your-api-request-response-payloads-fields-xml-field-paths]]
 ====== XML Field Paths
@@ -399,7 +390,6 @@ This lets the descriptors for a repeated portion of a request or response payloa
 
 Consider an endpoint that returns a book:
 
-====
 [source,json,indent=0]
 ----
 	{
@@ -407,13 +397,11 @@ Consider an endpoint that returns a book:
 		"author": "Jane Austen"
 	}
 ----
-====
 
 The paths for `title` and `author` are `title` and `author`, respectively.
 
 Now consider an endpoint that returns an array of books:
 
-====
 [source,json,indent=0]
 ----
 	[{
@@ -425,23 +413,19 @@ Now consider an endpoint that returns an array of books:
 		"author": "Harper Lee"
 	}]
 ----
-====
 
 The paths for `title` and `author` are `[].title` and `[].author`, respectively.
 The only difference between the single book and the array of books is that the fields' paths now have a `[].` prefix.
 
 You can create the descriptors that document a book as follows:
 
-====
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/Payload.java[tags=book-descriptors]
 ----
-====
 
 You can then use them to document a single book, as follows:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -458,7 +442,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=single-book]
 
 You can also use the descriptors to document an array of books, as follows:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -483,12 +466,13 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=book-array]
 If a payload is large or structurally complex, it can be useful to document individual sections of the payload.
 REST Docs let you do so by extracting a subsection of the payload and then documenting it.
 
+
+
 [[documenting-your-api-request-response-payloads-subsections-body]]
 ===== Documenting a Subsection of a Request or Response Body
 
 Consider the following JSON response body:
 
-====
 [source,json,indent=0]
 ----
 	{
@@ -504,11 +488,9 @@ Consider the following JSON response body:
 		}
 	}
 ----
-====
 
 You can produce a snippet that documents the `temperature` object as follows:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -529,7 +511,6 @@ To produce a snippet for the request body, you can use `requestBody` in place of
 
 The result is a snippet with the following contents:
 
-====
 [source,json,indent=0]
 ----
 	{
@@ -539,19 +520,16 @@ The result is a snippet with the following contents:
 		}
 	}
 ----
-====
 
 To make the snippet's name distinct, an identifier for the subsection is included.
 By default, this identifier is `beneath-${path}`.
 For example, the preceding code results in a snippet named `response-body-beneath-weather.temperature.adoc`.
 You can customize the identifier by using the `withSubsectionId(String)` method, as follows:
 
-====
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/Payload.java[tags=custom-subsection-id]
 ----
-====
 
 The result is a snippet named `request-body-temp.adoc`.
 
@@ -563,7 +541,6 @@ The result is a snippet named `request-body-temp.adoc`.
 As well as documenting a subsection of a request or response body, you can also document the fields in a particular subsection.
 You can produce a snippet that documents the fields of the `temperature` object (`high` and `low`) as follows:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -596,7 +573,6 @@ You can document a request's parameters by using `requestParameters`.
 You can include request parameters in a `GET` request's query string.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -624,7 +600,6 @@ Uses the static `parameterWithName` method on `org.springframework.restdocs.requ
 You can also include request parameters as form data in the body of a POST request.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -659,7 +634,6 @@ This can be useful when documenting a particular scenario where you only want to
 You can document a request's path parameters by using `pathParameters`.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -706,7 +680,6 @@ Doing so prevents it from appearing in the generated snippet while avoiding the 
 You can use `requestParts` to document the parts of a multipart request.
 The following example shows how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -742,6 +715,7 @@ If you do not want to document a request part, you can mark it as ignored.
 This prevents it from appearing in the generated snippet while avoiding the failure described earlier.
 
 
+
 [[documenting-your-api-request-parts-payloads]]
 === Request Part Payloads
 
@@ -754,7 +728,6 @@ You can document the payload of a request part in much the same way as the <<doc
 
 You can generate a snippet containing the body of a request part as follows:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -781,7 +754,6 @@ For example, documenting a part named `metadata` produces a snippet named `reque
 
 You can document a request part's fields in much the same way as the fields of a request or response, as follows:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -819,13 +791,14 @@ This can be useful when documenting a particular scenario where you only want to
 
 For further information on describing fields, documenting payloads that use XML, and more, see the <<documenting-your-api-request-response-payloads,section on documenting request and response payloads>>.
 
+
+
 [[documenting-your-api-http-headers]]
 === HTTP Headers
 
 You can document the headers in a request or response by using `requestHeaders` and `responseHeaders`, respectively.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -868,17 +841,14 @@ To avoid repetition when documenting such resources, you can reuse a `Snippet` c
 First, create the `Snippet` that describes the common elements.
 The following example shows how to do so:
 
-====
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/SnippetReuse.java[tags=field]
 ----
-====
 
 Second, use this snippet and add further descriptors that are resource-specific.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -904,7 +874,6 @@ Spring REST Docs provides a number of classes that can help you to document cons
 You can use an instance of `ConstraintDescriptions` to access descriptions of a class's constraints.
 The following example shows how to do so:
 
-====
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/Constraints.java[tags=constraints]
@@ -912,7 +881,6 @@ include::{examples-dir}/com/example/Constraints.java[tags=constraints]
 <1> Create an instance of `ConstraintDescriptions` for the `UserInput` class.
 <2> Get the descriptions of the `name` property's constraints.
 This list contains two descriptions: one for the `NotNull` constraint and one for the `Size` constraint.
-====
 
 The {samples}/rest-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`] class in the Spring HATEOAS sample shows this functionality in action.
 
@@ -1026,7 +994,6 @@ call that is being documented.
 
 | `response-body.adoc`
 | Contains the body of the response that was returned.
-
 |===
 
 You can configure which snippets are produced by default.
@@ -1072,7 +1039,6 @@ A parameterized output directory is particularly useful in combination with a `@
 It lets documentation be configured once in a setup method and then reused in every test in the class.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -1084,7 +1050,6 @@ include::{examples-dir}/com/example/mockmvc/ParameterizedOutput.java[tags=parame
 ----
 include::{examples-dir}/com/example/webtestclient/ParameterizedOutput.java[tags=parameterized-output]
 ----
-====
 
 With this configuration in place, every call to the service you are testing produces the <<documenting-your-api-default-snippets,default snippets>> without any further configuration.
 Take a look at the `GettingStartedDocumentation` classes in each of the sample applications to see this functionality in action.
@@ -1095,6 +1060,8 @@ Take a look at the `GettingStartedDocumentation` classes in each of the sample a
 === Customizing the Output
 
 This section describes how to customize the output of Spring REST Docs.
+
+
 
 [[documenting-your-api-customizing-snippets]]
 ==== Customizing the Generated Snippets
@@ -1127,7 +1094,6 @@ A concrete example is the addition of a constraints column and a title when docu
 The first step is to provide a `constraints` attribute for each field that you document and to provide a `title` attribute.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -1149,7 +1115,6 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=constraints]
 The second step is to provide a custom template named `request-fields.snippet` that includes the information about the fields' constraints in the generated snippet's table and adds a title.
 The following example shows how to do so:
 
-====
 [source,indent=0]
 ----
 	.{{title}} <1>
@@ -1168,4 +1133,5 @@ The following example shows how to do so:
 <1> Add a title to the table.
 <2> Add a new column named "Constraints".
 <3> Include the descriptors' `constraints` attribute in each row of the table.
-====
+
+

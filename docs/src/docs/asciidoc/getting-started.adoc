@@ -22,7 +22,6 @@ If you want to jump straight in, a number of sample applications are available:
 | {samples}/rest-notes-spring-hateoas[Spring HATEOAS]
 | Gradle
 | Demonstrates the creation of a getting started guide and an API guide for a service implemented by using https://projects.spring.io/spring-hateoas/[Spring HATEOAS].
-
 |===
 
 [cols="3,2,10"]
@@ -33,7 +32,6 @@ If you want to jump straight in, a number of sample applications are available:
 | {samples}/web-test-client[WebTestClient]
 | Gradle
 | Demonstrates the use of Spring REST docs with Spring WebFlux's WebTestClient.
-
 |===
 
 [cols="3,2,10"]
@@ -53,8 +51,9 @@ If you want to jump straight in, a number of sample applications are available:
 | {samples}/junit5[JUnit 5]
 | Gradle
 | Demonstrates the use of Spring REST Docs with https://junit.org/junit5/[JUnit 5].
-
 |===
+
+
 
 [[getting-started-requirements]]
 === Requirements
@@ -64,6 +63,8 @@ Spring REST Docs has the following minimum requirements:
 * Java 17
 * Spring Framework 6
 
+
+
 [[getting-started-build-configuration]]
 === Build configuration
 
@@ -71,7 +72,6 @@ The first step in using Spring REST Docs is to configure your project's build.
 The {samples}/rest-notes-spring-hateoas[Spring HATEOAS] and {samples}/rest-notes-spring-data-rest[Spring Data REST] samples contain a `build.gradle` and `pom.xml`, respectively, that you may wish to use as a reference.
 The key parts of the configuration are described in the following listings:
 
-====
 [source,xml,indent=0,subs="verbatim,attributes",role="primary"]
 .Maven
 ----
@@ -163,7 +163,8 @@ If you want to use `WebTestClient`, add a dependency on `spring-restdocs-webtest
 <8> Configure the snippets directory as an input.
 <9> Configure the use of the `asciidoctorExt` configuration for extensions.
 <10> Make the task depend on the test task so that the tests are run before the documentation is created.
-====
+
+
 
 [[getting-started-build-configuration-packaging-the-documentation]]
 ==== Packaging the Documentation
@@ -176,7 +177,6 @@ To do so, configure your project's build so that:
 
 The following listings show how to do so in both Maven and Gradle:
 
-====
 [source,xml,indent=0,role="primary"]
 .Maven
 ----
@@ -227,7 +227,6 @@ The following listings show how to do so in both Maven and Gradle:
 ----
 <1> Ensure that the documentation has been generated before the jar is built.
 <2> Copy the generated documentation into the jar's `static/docs` directory.
-====
 
 
 
@@ -245,19 +244,19 @@ Exactly how you set up your tests depends on the test framework that you use.
 Spring REST Docs provides first-class support for JUnit 4 and JUnit 5.
 Other frameworks, such as TestNG, are also supported, although slightly more setup is required.
 
+
+
 [[getting-started-documentation-snippets-setup-junit]]
 ===== Setting up Your JUnit 4 Tests
 
 When using JUnit 4, the first step in generating documentation snippets is to declare a `public` `JUnitRestDocumentation` field that is annotated as a JUnit `@Rule`.
 The following example shows how to do so:
 
-====
 [source,java,indent=0]
 ----
 @Rule
 public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 ----
-====
 
 By default, the `JUnitRestDocumentation` rule is automatically configured with an output directory based on your project's build tool:
 
@@ -270,24 +269,20 @@ By default, the `JUnitRestDocumentation` rule is automatically configured with a
 
 | Gradle
 | `build/generated-snippets`
-
 |===
 
 You can override the default by providing an output directory when you create the `JUnitRestDocumentation` instance.
 The following example shows how to do so:
 
-====
 [source,java,indent=0]
 ----
 @Rule
 public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("custom");
 ----
-====
 
 Next, you must provide an `@Before` method to configure MockMvc or WebTestClient.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -315,23 +310,19 @@ See the <<configuration, configuration section>> for more information.
 When using JUnit 5, the first step in generating documentation snippets is to apply the `RestDocumentationExtension` to your test class.
 The following example shows how to do so:
 
-====
 [source,java,indent=0]
 ----
 @ExtendWith(RestDocumentationExtension.class)
 public class JUnit5ExampleTests {
 ----
-====
 
 When testing a typical Spring application, you should also apply the `SpringExtension`:
 
-====
 [source,java,indent=0]
 ----
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class JUnit5ExampleTests {
 ----
-====
 
 The `RestDocumentationExtension` is automatically configured with an output directory based on your project's build tool:
 
@@ -344,7 +335,6 @@ The `RestDocumentationExtension` is automatically configured with an output dire
 
 | Gradle
 | `build/generated-snippets`
-
 |===
 
 If you are using JUnit 5.1, you can override the default by registering the extension as a field in your test class and providing an output directory when creating it.
@@ -363,7 +353,6 @@ public class JUnit5ExampleTests {
 Next, you must provide a `@BeforeEach` method to configure MockMvc or WebTestClient.
 The following listings show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -385,8 +374,8 @@ See the <<configuration, configuration section>> for more information.
 
 
 
-===== Setting up your tests without JUnit
 [[getting-started-documentation-snippets-setup-manual]]
+===== Setting up your tests without JUnit
 
 The configuration when JUnit is not being used is largely similar to when it is being used.
 This section describes the key differences.
@@ -396,18 +385,15 @@ The first difference is that you should use `ManualRestDocumentation` in place o
 Also, you do not need the `@Rule` annotation.
 The following example shows how to use `ManualRestDocumentation`:
 
-====
 [source,java,indent=0]
 ----
 private ManualRestDocumentation restDocumentation = new ManualRestDocumentation();
 ----
-====
 
 Secondly, you must call `ManualRestDocumentation.beforeTest(Class, String)` before each test.
 You can do so as part of the method that configures MockMvc or WebTestClient.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -423,12 +409,12 @@ include::{examples-dir}/com/example/webtestclient/ExampleApplicationTestNgTests.
 Finally, you must call `ManualRestDocumentation.afterTest` after each test.
 The following example shows how to do so with TestNG:
 
-====
 [source,java,indent=0]
 ----
 include::{examples-dir}/com/example/mockmvc/ExampleApplicationTestNgTests.java[tags=teardown]
 ----
-====
+
+
 
 [[getting-started-documentation-snippets-invoking-the-service]]
 ==== Invoking the RESTful Service
@@ -436,7 +422,6 @@ include::{examples-dir}/com/example/mockmvc/ExampleApplicationTestNgTests.java[t
 Now that you have configured the testing framework, you can use it to invoke the RESTful service and document the request and response.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -491,16 +476,15 @@ The default location of the source files and the resulting HTML files depends on
 | Gradle
 | `src/docs/asciidoc/*.adoc`
 | `build/asciidoc/html5/*.html`
-
 |===
 
 You can then include the generated snippets in the manually created Asciidoc file (described earlier in this section) by using the https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
 You can use the `snippets` attribute that is automatically set by `spring-restdocs-asciidoctor` configured in the <<getting-started-build-configuration,build configuration>> to reference the snippets output directory.
 The following example shows how to do so:
 
-====
 [source,adoc,indent=0]
 ----
 \include::{snippets}/index/curl-request.adoc[]
 ----
-====
+
+

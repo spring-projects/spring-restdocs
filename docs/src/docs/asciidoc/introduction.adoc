@@ -18,3 +18,5 @@ Two key parts of each resource's description are the details of the HTTP request
 Spring REST Docs lets you work with these resources and the HTTP requests and responses, shielding your documentation from the inner-details of your service's implementation.
 This separation helps you document your service's API rather than its implementation.
 It also frees you to evolve the implementation without having to rework the documentation.
+
+
