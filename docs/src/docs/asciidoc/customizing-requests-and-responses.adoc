@@ -8,7 +8,6 @@ Preprocessing is configured by calling `document` with an `OperationRequestPrepr
 You can obtain instances by using the static `preprocessRequest` and `preprocessResponse` methods on `Preprocessors`.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -32,13 +31,11 @@ include::{examples-dir}/com/example/restassured/PerTestPreprocessing.java[tags=p
 ----
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
-====
 
 Alternatively, you may want to apply the same preprocessors to every test.
 You can do so by using the `RestDocumentationConfigurer` API in your `@Before` method to configure the preprocessors.
 For example, to remove the `Foo` header from all requests and pretty print all responses, you could do one of the following (depending on your testing environment):
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -62,12 +59,10 @@ include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags
 ----
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
-====
 
 Then, in each test, you can perform any configuration specific to that test.
 The following examples show how to do so:
 
-====
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
@@ -85,7 +80,6 @@ include::{examples-dir}/com/example/webtestclient/EveryTestPreprocessing.java[ta
 ----
 include::{examples-dir}/com/example/restassured/EveryTestPreprocessing.java[tags=use]
 ----
-====
 
 Various built-in preprocessors, including those illustrated above, are available through the static methods on `Preprocessors`.
 See <<Preprocessors, below>> for further details.
@@ -155,3 +149,5 @@ If one of the built-in preprocessors does not meet your needs, you can write you
 You can then use your custom preprocessor in exactly the same way as any of the built-in preprocessors.
 
 If you want to modify only the content (body) of a request or response, consider implementing the `ContentModifier` interface and using it with the built-in `ContentModifyingOperationPreprocessor`.
+
+

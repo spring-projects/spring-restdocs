@@ -22,3 +22,5 @@ Spring REST Docs' default Markdown snippet templates use https://michelf.ca/proj
 Markdown has no built-in support for including one Markdown file in another.
 To include the generated snippets of Markdown in your documentation, you should use an additional tool that supports this functionality.
 One example that is particularly well-suited to documenting APIs is https://github.com/tripit/slate[Slate].
+
+
