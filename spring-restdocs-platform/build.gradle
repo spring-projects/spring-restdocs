@@ -10,7 +10,6 @@ dependencies {
 	constraints {
 		api("com.fasterxml.jackson.core:jackson-databind:2.9.5")
 		api("com.samskivert:jmustache:$jmustacheVersion")
-		api("commons-codec:commons-codec:1.10")
 		api("jakarta.servlet:jakarta.servlet-api:5.0.0")
 		api("jakarta.validation:jakarta.validation-api:3.0.0")
 		api("junit:junit:4.12")
