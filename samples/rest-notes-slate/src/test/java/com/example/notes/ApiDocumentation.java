@@ -101,7 +101,6 @@ public class ApiDocumentation {
 				.andDo(document("error-example",
 						responseFields(
 								fieldWithPath("error").description("The HTTP error that occurred, e.g. `Bad Request`"),
-								fieldWithPath("message").description("A description of the cause of the error"),
 								fieldWithPath("path").description("The path to which the request was made"),
 								fieldWithPath("status").description("The HTTP status code, e.g. `400`"),
 								fieldWithPath("timestamp").description("The time, in milliseconds, at which the error occurred"))));

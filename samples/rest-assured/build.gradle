@@ -2,7 +2,7 @@ plugins {
 	id "eclipse"
 	id "java"
 	id "org.asciidoctor.jvm.convert" version "3.3.2"
-	id "org.springframework.boot" version "2.4.7"
+	id "org.springframework.boot" version "2.6.2"
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -34,7 +34,7 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	testImplementation 'io.rest-assured:rest-assured:3.0.2'
+	testImplementation 'io.rest-assured:rest-assured'
 	testImplementation('org.junit.vintage:junit-vintage-engine') {
 		exclude group: 'org.hamcrest', module: 'hamcrest-core'
 	}

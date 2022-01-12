@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import reactor.ipc.netty.http.server.HttpServer;
+import reactor.netty.http.server.HttpServer;
 
 @EnableWebFlux
 @Configuration
@@ -41,8 +41,8 @@ public class SampleWebTestClientApplication {
 	public static void main(String[] args) {
 		RouterFunction<?> routerFunction = new AnnotationConfigApplicationContext(SampleWebTestClientApplication.class).getBean(RouterFunction.class);
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(RouterFunctions.toHttpHandler(routerFunction));
-		HttpServer httpServer = HttpServer.create(8080);
-		httpServer.startAndAwait(adapter);
+		HttpServer httpServer = HttpServer.create().handle(adapter);
+		httpServer.bindNow();
 	}
 
 }

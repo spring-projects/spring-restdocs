@@ -1,7 +1,7 @@
 plugins {
 	id "eclipse"
 	id "java"
-	id "org.springframework.boot" version "2.4.7"
+	id "org.springframework.boot" version "2.6.2"
 }
 
 apply plugin: 'io.spring.dependency-management'

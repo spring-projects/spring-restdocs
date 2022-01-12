@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,7 +99,6 @@ public class ApiDocumentation {
 				.andDo(document("error-example",
 						responseFields(
 								fieldWithPath("error").description("The HTTP error that occurred, e.g. `Bad Request`"),
-								fieldWithPath("message").description("A description of the cause of the error"),
 								fieldWithPath("path").description("The path to which the request was made"),
 								fieldWithPath("status").description("The HTTP status code, e.g. `400`"),
 								fieldWithPath("timestamp").description("The time, in milliseconds, at which the error occurred"))));
