@@ -45,7 +45,6 @@ dependencies {
 	jmustache("com.samskivert:jmustache@jar")
 
 	optional(platform(project(":spring-restdocs-platform")))
-	optional("commons-codec:commons-codec")
 	optional("javax.validation:validation-api")
 	optional("junit:junit")
 	optional("org.hibernate.validator:hibernate-validator")
