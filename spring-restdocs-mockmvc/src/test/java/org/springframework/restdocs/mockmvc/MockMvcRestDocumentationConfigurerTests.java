@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,16 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import java.net.URI;
-
 import org.junit.Rule;
 import org.junit.Test;
 
-import org.springframework.hateoas.mvc.BasicLinkBuilder;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponents;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,10 +88,10 @@ public class MockMvcRestDocumentationConfigurerTests {
 		assertThat(port).isEqualTo(this.request.getServerPort());
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(this.request));
 		try {
-			URI uri = BasicLinkBuilder.linkToCurrentMapping().toUri();
-			assertThat(scheme).isEqualTo(uri.getScheme());
-			assertThat(host).isEqualTo(uri.getHost());
-			assertThat(port).isEqualTo(uri.getPort());
+			UriComponents uriComponents = ServletUriComponentsBuilder.fromCurrentServletMapping().build();
+			assertThat(scheme).isEqualTo(uriComponents.getScheme());
+			assertThat(host).isEqualTo(uriComponents.getHost());
+			assertThat(port).isEqualTo(uriComponents.getPort());
 		}
 		finally {
 			RequestContextHolder.resetRequestAttributes();

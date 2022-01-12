@@ -21,5 +21,4 @@ dependencies {
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.hamcrest:hamcrest-library")
 	testImplementation("org.mockito:mockito-core")
-	testImplementation("org.springframework.hateoas:spring-hateoas")
 }
