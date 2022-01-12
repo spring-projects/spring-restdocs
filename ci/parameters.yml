@@ -1,5 +1,5 @@
-github-repo: "https://github.com/spring-projects/spring-restdocs.git"
-github-repo-name: "spring-projects/spring-restdocs"
+github-organization: "spring-projects"
+github-repository: "spring-restdocs"
 docker-hub-organization: "springci"
 artifactory-server: "https://repo.spring.io"
 branch: "2.0.x"
