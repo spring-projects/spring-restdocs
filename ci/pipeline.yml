@@ -1,6 +1,6 @@
 anchors:
   git-repo-resource-source: &git-repo-resource-source
-    uri: ((github-repo))
+    uri: "https://github.com/((github-organization))/((github-repository)).git"
     username: ((github-username))
     password: ((github-password))
     branch: ((branch))
@@ -16,8 +16,8 @@ anchors:
     DOCKER_HUB_USERNAME: ((docker-hub-username))
     DOCKER_HUB_PASSWORD: ((docker-hub-password))
   github-task-params: &github-task-params
-    GITHUB_REPO: spring-restdocs
-    GITHUB_ORGANIZATION: spring-projects
+    GITHUB_REPO: ((github-repository))
+    GITHUB_ORGANIZATION: ((github-organization))
     GITHUB_PASSWORD: ((github-ci-release-token))
     GITHUB_USERNAME: ((github-username))
     MILESTONE: ((milestone))
@@ -74,7 +74,7 @@ resource_types:
   type: registry-image
   source:
     repository: springio/artifactory-resource
-    tag: 0.0.14
+    tag: 0.0.17
 - name: pull-request
   type: registry-image
   source:
@@ -109,15 +109,15 @@ resources:
   icon: source-pull
   source:
     access_token: ((github-ci-pull-request-token))
-    repository: ((github-repo-name))
+    repository: ((github-organization))/((github-repository))
     base_branch: ((branch))
     ignore_paths: ["ci/*"]
 - name: github-pre-release
   type: github-release
   icon: briefcase-download-outline
   source:
-    owner: spring-projects
-    repository: spring-restdocs
+    owner: ((github-organization))
+    repository: ((github-repository))
     access_token: ((github-ci-release-token))
     pre_release: true
     release: false
@@ -125,15 +125,15 @@ resources:
   type: github-release
   icon: briefcase-download
   source:
-    owner: spring-projects
-    repository: spring-restdocs
+    owner: ((github-organization))
+    repository: ((github-repository))
     access_token: ((github-ci-release-token))
     pre_release: false
 - name: ci-images-git-repo
   type: git
   icon: github
   source:
-    uri: ((github-repo))
+    uri: https://github.com/((github-organization))/((github-repository)).git
     branch: ((branch))
     paths: ["ci/images/*"]
 - name: ci-image
@@ -141,7 +141,7 @@ resources:
   icon: docker
   source:
     <<: *registry-image-resource-source
-    repository: ((docker-hub-organization))/spring-restdocs-ci
+    repository: ((docker-hub-organization))/((github-repository))-ci
 - name: artifactory-repo
   type: artifactory-resource
   icon: package-variant
@@ -154,7 +154,7 @@ resources:
   type: github-status-resource
   icon: eye-check-outline
   source:
-    repository: ((github-repo-name))
+    repository: ((github-organization))/((github-repository))
     access_token: ((github-ci-status-token))
     branch: ((branch))
     context: build
