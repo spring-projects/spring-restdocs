@@ -28,7 +28,7 @@ configurations {
 dependencies {
 	asciidoctorExtensions "org.springframework.restdocs:spring-restdocs-asciidoctor:$restdocsVersion"
 
-	implementation "org.springframework:spring-webmvc:6.0.0-SNAPSHOT"
+	implementation "org.springframework:spring-webmvc:6.0.0-M1"
 
 	testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:$restdocsVersion"
 	testImplementation "org.testng:testng:6.9.10"

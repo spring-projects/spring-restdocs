@@ -36,7 +36,6 @@ class ErrorController {
 		Map<String, Object> body = Map.of("status", httpStatus.value(),
 				"error", httpStatus.getReasonPhrase(),
 				"path", request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI),
-				"message", request.getAttribute(RequestDispatcher.ERROR_MESSAGE),
 				"timestamp", Instant.now().toEpochMilli());
 		ResponseEntity<Map<String, Object>> response = new ResponseEntity<>(body, httpStatus);
 		return response;
