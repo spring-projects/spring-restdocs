@@ -19,12 +19,10 @@ package org.springframework.restdocs.operation;
 import java.net.URI;
 import java.util.Arrays;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 /**
  * Tests for {@link QueryStringParser}.
@@ -32,9 +30,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
  * @author Andy Wilkinson
  */
 public class QueryStringParserTests {
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	private final QueryStringParser queryStringParser = new QueryStringParser();
 
@@ -76,9 +71,9 @@ public class QueryStringParserTests {
 
 	@Test
 	public void malformedParameter() {
-		this.thrown.expect(IllegalArgumentException.class);
-		this.thrown.expectMessage(equalTo("The parameter 'a=apple=avocado' is malformed"));
-		this.queryStringParser.parse(URI.create("http://localhost?a=apple=avocado"));
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> this.queryStringParser.parse(URI.create("http://localhost?a=apple=avocado")))
+				.withMessage("The parameter 'a=apple=avocado' is malformed");
 	}
 
 	@Test

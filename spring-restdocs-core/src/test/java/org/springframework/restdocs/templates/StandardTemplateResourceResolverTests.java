@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import org.springframework.core.io.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 /**
  * Tests for {@link TemplateResourceResolver}.
@@ -36,9 +34,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
  * @author Andy Wilkinson
  */
 public class StandardTemplateResourceResolverTests {
-
-	@Rule
-	public final ExpectedException thrown = ExpectedException.none();
 
 	private final TemplateResourceResolver resolver = new StandardTemplateResourceResolver(
 			TemplateFormats.asciidoctor());
@@ -101,16 +96,10 @@ public class StandardTemplateResourceResolverTests {
 
 	@Test
 	public void failsIfCustomAndDefaultSnippetsDoNotExist() throws Exception {
-		this.thrown.expect(IllegalStateException.class);
-		this.thrown.expectMessage(equalTo("Template named 'test' could not be resolved"));
-		doWithThreadContextClassLoader(this.classLoader, new Callable<Resource>() {
-
-			@Override
-			public Resource call() {
-				return StandardTemplateResourceResolverTests.this.resolver.resolveTemplateResource("test");
-			}
-
-		});
+		assertThatIllegalStateException()
+				.isThrownBy(() -> doWithThreadContextClassLoader(this.classLoader,
+						() -> StandardTemplateResourceResolverTests.this.resolver.resolveTemplateResource("test")))
+				.withMessage("Template named 'test' could not be resolved");
 	}
 
 	private <T> T doWithThreadContextClassLoader(ClassLoader classLoader, Callable<T> action) throws Exception {

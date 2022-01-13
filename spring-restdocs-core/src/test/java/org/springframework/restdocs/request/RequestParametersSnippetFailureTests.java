@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,12 @@ import java.util.Collections;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.testfixtures.OperationBuilder;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 
 /**
@@ -42,34 +41,29 @@ public class RequestParametersSnippetFailureTests {
 	@Rule
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
 	@Test
 	public void undocumentedParameter() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Request parameters with the following names were" + " not documented: [a]"));
-		new RequestParametersSnippet(Collections.<ParameterDescriptor>emptyList())
-				.document(this.operationBuilder.request("http://localhost").param("a", "alpha").build());
+		assertThatExceptionOfType(SnippetException.class)
+				.isThrownBy(() -> new RequestParametersSnippet(Collections.<ParameterDescriptor>emptyList())
+						.document(this.operationBuilder.request("http://localhost").param("a", "alpha").build()))
+				.withMessage("Request parameters with the following names were not documented: [a]");
 	}
 
 	@Test
 	public void missingParameter() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(
-				equalTo("Request parameters with the following names were" + " not found in the request: [a]"));
-		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-				.document(this.operationBuilder.request("http://localhost").build());
+		assertThatExceptionOfType(SnippetException.class)
+				.isThrownBy(() -> new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+						.document(this.operationBuilder.request("http://localhost").build()))
+				.withMessage("Request parameters with the following names were not found in the request: [a]");
 	}
 
 	@Test
 	public void undocumentedAndMissingParameters() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Request parameters with the following names were"
-				+ " not documented: [b]. Request parameters with the following"
-				+ " names were not found in the request: [a]"));
-		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-				.document(this.operationBuilder.request("http://localhost").param("b", "bravo").build());
+		assertThatExceptionOfType(SnippetException.class)
+				.isThrownBy(() -> new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+						.document(this.operationBuilder.request("http://localhost").param("b", "bravo").build()))
+				.withMessage("Request parameters with the following names were not documented: [b]. Request parameters"
+						+ " with the following names were not found in the request: [a]");
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,12 @@ import java.util.Arrays;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.testfixtures.OperationBuilder;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 
 /**
@@ -42,25 +40,21 @@ public class RequestHeadersSnippetFailureTests {
 	@Rule
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
 	@Test
 	public void missingRequestHeader() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(
-				equalTo("Headers with the following names were not found" + " in the request: [Accept]"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
-				.document(this.operationBuilder.request("http://localhost").build());
+		assertThatExceptionOfType(SnippetException.class)
+				.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
+						.document(this.operationBuilder.request("http://localhost").build()))
+				.withMessage("Headers with the following names were not found in the request: [Accept]");
 	}
 
 	@Test
 	public void undocumentedRequestHeaderAndMissingRequestHeader() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(
-				endsWith("Headers with the following names were not found" + " in the request: [Accept]"));
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
-				.document(this.operationBuilder.request("http://localhost").header("X-Test", "test").build());
+		assertThatExceptionOfType(SnippetException.class)
+				.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
+						.document(this.operationBuilder.request("http://localhost").header("X-Test", "test").build()))
+				.withMessageEndingWith("Headers with the following names were not found in the request: [Accept]");
+
 	}
 
 }

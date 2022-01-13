@@ -63,8 +63,6 @@ dependencies {
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.javamoney:moneta")
 	testImplementation("org.mockito:mockito-core")
-	testImplementation("org.hamcrest:hamcrest-core")
-	testImplementation("org.hamcrest:hamcrest-library")
 	testImplementation("org.springframework:spring-test")
 
 	testRuntimeOnly("org.glassfish:jakarta.el:4.0.2")
