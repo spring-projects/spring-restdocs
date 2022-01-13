@@ -28,7 +28,6 @@ nohttp {
 ext {
 	springFrameworkVersion = "6.0.0-M2"
 	javadocLinks = [
-		"https://docs.oracle.com/javase/8/docs/api/",
 		"https://docs.spring.io/spring-framework/docs/$springFrameworkVersion/javadoc-api/",
 		"https://docs.jboss.org/hibernate/validator/7.0/api/",
 		"https://jakarta.ee/specifications/bean-validation/3.0/apidocs/"
@@ -94,7 +93,7 @@ subprojects { subproject ->
 				options.links = javadocLinks
 				options.addStringOption "-quiet"
 				options.encoding = "UTF-8"
-				options.source = "1.8"
+				options.source = "17"
 			}
 
 			java {
@@ -162,7 +161,7 @@ task api (type: Javadoc) {
 			encoding = "UTF-8"
 			memberLevel = "protected"
 			outputLevel = "quiet"
-			source = "1.8"
+			source = "17"
 			splitIndex = true
 			use = true
 			windowTitle = "Spring REST Docs ${project.version} API"
