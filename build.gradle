@@ -29,7 +29,7 @@ ext {
 	springFrameworkVersion = "6.0.0-M2"
 	javadocLinks = [
 		"https://docs.oracle.com/javase/8/docs/api/",
-		"https://docs.spring.io/spring-framework/docs/$springVersion/javadoc-api/",
+		"https://docs.spring.io/spring-framework/docs/$springFrameworkVersion/javadoc-api/",
 		"https://docs.jboss.org/hibernate/validator/7.0/api/",
 		"https://jakarta.ee/specifications/bean-validation/3.0/apidocs/"
 	] as String[]
