@@ -22,7 +22,7 @@ dependencies {
 		api("org.javamoney:moneta:1.1")
 		api("org.jruby:jruby-complete:9.1.13.0")
 		api("org.junit.jupiter:junit-jupiter-api:5.0.0")
-		api("org.mockito:mockito-core:1.10.19")
+		api("org.mockito:mockito-core:4.2.0")
 	}
 	api(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.13.1"))
 	api(enforcedPlatform("org.springframework:spring-framework-bom:$springFrameworkVersion"))
