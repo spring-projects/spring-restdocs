@@ -23,10 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Rule;
 import org.junit.Test;
 
-import org.springframework.restdocs.testfixtures.OutputCapture;
+import org.springframework.restdocs.testfixtures.OutputCaptureRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.isEmptyString;
 
 /**
  * Tests for {@link PrettyPrintingContentModifier}.
@@ -37,7 +36,7 @@ import static org.hamcrest.Matchers.isEmptyString;
 public class PrettyPrintingContentModifierTests {
 
 	@Rule
-	public OutputCapture outputCapture = new OutputCapture();
+	public OutputCaptureRule outputCapture = new OutputCaptureRule();
 
 	@Test
 	public void prettyPrintJson() throws Exception {
@@ -61,17 +60,17 @@ public class PrettyPrintingContentModifierTests {
 	@Test
 	public void nonJsonAndNonXmlContentIsHandledGracefully() throws Exception {
 		String content = "abcdefg";
-		this.outputCapture.expect(isEmptyString());
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
 				.isEqualTo(content.getBytes());
+		assertThat(this.outputCapture).isEmpty();
 	}
 
 	@Test
 	public void nonJsonContentThatInitiallyLooksLikeJsonIsHandledGracefully() throws Exception {
 		String content = "\"abc\",\"def\"";
-		this.outputCapture.expect(isEmptyString());
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
 				.isEqualTo(content.getBytes());
+		assertThat(this.outputCapture).isEmpty();
 	}
 
 	@Test

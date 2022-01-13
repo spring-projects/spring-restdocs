@@ -22,14 +22,13 @@ import java.util.Collections;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.testfixtures.OperationBuilder;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 
 /**
@@ -43,35 +42,33 @@ public class PathParametersSnippetFailureTests {
 	@Rule
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
 	@Test
 	public void undocumentedPathParameter() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Path parameters with the following names were" + " not documented: [a]"));
-		new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList()).document(this.operationBuilder
-				.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/").build());
+		assertThatExceptionOfType(SnippetException.class)
+				.isThrownBy(() -> new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList())
+						.document(this.operationBuilder
+								.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/").build()))
+				.withMessage("Path parameters with the following names were not documented: [a]");
 	}
 
 	@Test
 	public void missingPathParameter() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(
-				equalTo("Path parameters with the following names were" + " not found in the request: [a]"));
-		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"))).document(
-				this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/").build());
+		assertThatExceptionOfType(SnippetException.class)
+				.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+						.document(this.operationBuilder
+								.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/").build()))
+				.withMessage("Path parameters with the following names were not found in the request: [a]");
 	}
 
 	@Test
 	public void undocumentedAndMissingPathParameters() throws IOException {
-		this.thrown.expect(SnippetException.class);
-		this.thrown.expectMessage(equalTo("Path parameters with the following names were"
-				+ " not documented: [b]. Path parameters with the following"
-				+ " names were not found in the request: [a]"));
-		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-				.document(this.operationBuilder
-						.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{b}").build());
+		assertThatExceptionOfType(SnippetException.class)
+				.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+						.document(this.operationBuilder
+								.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{b}").build()))
+				.withMessage(
+						"Path parameters with the following names were not documented: [b]. Path parameters with the"
+								+ " following names were not found in the request: [a]");
 	}
 
 }
