@@ -50,38 +50,3 @@ asciidoctor {
 				"branch-or-tag": project.version.endsWith("SNAPSHOT") ? "main": "v${project.version}"
 	inputs.files(sourceSets.test.java)
 }
-
-task api (type: Javadoc) {
-	group = "Documentation"
-	description = "Generates aggregated Javadoc API documentation."
-	dependsOn {
-		subprojects.collect {
-			it.tasks.getByName("jar")
-		}
-	}
-	project.rootProject.gradle.projectsEvaluated {
-		Set<String> excludedProjects = ['spring-restdocs-asciidoctor']
-		Set<Project> publishedProjects = rootProject.subprojects.findAll { it != project}
-			.findAll { it.plugins.hasPlugin(JavaPlugin) && it.plugins.hasPlugin(MavenPublishPlugin) }
-			.findAll { !excludedProjects.contains(it.name) }
-		dependsOn publishedProjects.javadoc
-		source publishedProjects.javadoc.source
-		classpath = project.files(publishedProjects.javadoc.classpath)
-		destinationDir = project.file "${buildDir}/docs/javadoc"
-		options {
-			author = true
-			docTitle = "Spring REST Docs ${project.version} API"
-			encoding = "UTF-8"
-			memberLevel = "protected"
-			outputLevel = "quiet"
-			source = "1.8"
-			splitIndex = true
-			stylesheetFile = file("src/main/javadoc/spring-javadoc.css")
-			use = true
-			windowTitle = "Spring REST Docs ${project.version} API"
-		}
-	}
-
-	destinationDir = new File(buildDir, "api")
-}
-
