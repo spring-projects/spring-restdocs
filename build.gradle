@@ -9,6 +9,7 @@ allprojects {
 	repositories {
 		mavenLocal()
 		mavenCentral()
+		maven { url "https://repo.spring.io/milestone" }
 		maven { url "https://repo.spring.io/snapshot" }
 	}
 }
@@ -25,7 +26,7 @@ nohttp {
 }
 
 ext {
-	springFrameworkVersion = "6.0.0-SNAPSHOT"
+	springFrameworkVersion = "6.0.0-M2"
 	javadocLinks = [
 		"https://docs.oracle.com/javase/8/docs/api/",
 		"https://docs.spring.io/spring-framework/docs/$springFrameworkVersion/javadoc-api/",
