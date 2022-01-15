@@ -22,8 +22,8 @@ anchors:
     GITHUB_USERNAME: ((github-username))
     MILESTONE: ((milestone))
   sontatype-task-params: &sonatype-task-params
-    SONATYPE_USER_TOKEN: ((sonatype-username))
-    SONATYPE_PASSWORD_TOKEN: ((sonatype-password))
+    SONATYPE_USERNAME: ((s01-user-token))
+    SONATYPE_PASSWORD: ((s01-user-token-password))
     SONATYPE_URL: ((sonatype-url))
     SONATYPE_STAGING_PROFILE_ID: ((sonatype-staging-profile-id))
   artifactory-task-params: &artifactory-task-params
@@ -69,6 +69,10 @@ anchors:
     silent: true
     icon_emoji: ":concourse:"
     username: concourse-ci
+  registry-mirror-vars: &registry-mirror-vars
+    registry-mirror-host: ((registry-mirror-host))
+    registry-mirror-username: ((registry-mirror-username))
+    registry-mirror-password: ((registry-mirror-password))
 resource_types:
 - name: artifactory-resource
   type: registry-image
@@ -180,9 +184,7 @@ jobs:
       image: ci-image
     vars:
       ci-image-name: ci-image
-      registry-mirror-host: ((registry-mirror-host))
-      registry-mirror-username: ((registry-mirror-username))
-      registry-mirror-password: ((registry-mirror-password))
+      <<: *registry-mirror-vars
   - put: ci-image
     params:
       image: ci-image/image.tar
@@ -428,6 +430,8 @@ jobs:
       RELEASE_TYPE: RELEASE
       GITHUB_USERNAME: ((github-username))
       GITHUB_TOKEN: ((github-ci-release-token))
+    vars:
+      <<: *registry-mirror-vars
   - put: github-release
     params:
       name: generated-changelog/tag
