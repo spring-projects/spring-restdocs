@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,27 +35,6 @@ public class FieldTypeResolverTests {
 
 	@Rule
 	public ExpectedException thrownException = ExpectedException.none();
-
-	@Test
-	@Deprecated
-	public void whenForContentCalledWithJsonContentThenReturnsJsonFieldTypeResolver() {
-		assertThat(FieldTypeResolver.forContent("{\"field\": \"value\"}".getBytes(), MediaType.APPLICATION_JSON))
-				.isInstanceOf(JsonContentHandler.class);
-	}
-
-	@Test
-	@Deprecated
-	public void whenForContentCalledWithXmlContentThenReturnsXmlContentHandler() {
-		assertThat(FieldTypeResolver.forContent("<a><b>5</b></a>".getBytes(), MediaType.APPLICATION_XML))
-				.isInstanceOf(XmlContentHandler.class);
-	}
-
-	@Test
-	@Deprecated
-	public void whenForContentIsCalledWithInvalidContentThenExceptionIsThrown() {
-		this.thrownException.expect(PayloadHandlingException.class);
-		FieldTypeResolver.forContent("some".getBytes(), MediaType.APPLICATION_XML);
-	}
 
 	@Test
 	public void whenForContentWithDescriptorsCalledWithJsonContentThenReturnsJsonFieldTypeResolver() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.head;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.options;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -130,13 +130,13 @@ public class RestDocumentationRequestBuildersTests {
 	}
 
 	@Test
-	public void fileUploadTemplate() {
-		assertTemplate(fileUpload("/{template}", "t"), HttpMethod.POST);
+	public void multipartTemplate() {
+		assertTemplate(multipart("/{template}", "t"), HttpMethod.POST);
 	}
 
 	@Test
-	public void fileUploadUri() {
-		assertUri(fileUpload(URI.create("/uri")), HttpMethod.POST);
+	public void multipartUri() {
+		assertUri(multipart(URI.create("/uri")), HttpMethod.POST);
 	}
 
 	private void assertTemplate(MockHttpServletRequestBuilder builder, HttpMethod httpMethod) {

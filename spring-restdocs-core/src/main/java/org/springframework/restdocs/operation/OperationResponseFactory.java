@@ -17,7 +17,6 @@
 package org.springframework.restdocs.operation;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 
 /**
  * A factory for creating {@link OperationResponse OperationResponses}.
@@ -25,21 +24,6 @@ import org.springframework.http.HttpStatus;
  * @author Andy Wilkinson
  */
 public class OperationResponseFactory {
-
-	/**
-	 * Creates a new {@link OperationResponse}. If the response has any content, the given
-	 * {@code headers} will be augmented to ensure that they include a
-	 * {@code Content-Length} header.
-	 * @param status the status of the response
-	 * @param headers the response's headers
-	 * @param content the content of the response
-	 * @return the {@code OperationResponse}
-	 * @deprecated since 2.0.4 in favor of {@link #create(int, HttpHeaders, byte[])}
-	 */
-	@Deprecated
-	public OperationResponse create(HttpStatus status, HttpHeaders headers, byte[] content) {
-		return this.create(status.value(), headers, content);
-	}
 
 	/**
 	 * Creates a new {@link OperationResponse}. If the response has any content, the given

@@ -217,30 +217,6 @@ public abstract class RestDocumentationRequestBuilders {
 
 	/**
 	 * Create a {@link MockMultipartHttpServletRequestBuilder} for a multipart request.
-	 * The url template will be captured and made available for documentation.
-	 * @param urlTemplate a URL template; the resulting URL will be encoded
-	 * @param urlVariables zero or more URL variables
-	 * @return the builder for the file upload request
-	 * @deprecated since 2.0.6 in favor of {@link #multipart(String, Object...)}
-	 */
-	@Deprecated
-	public static MockMultipartHttpServletRequestBuilder fileUpload(String urlTemplate, Object... urlVariables) {
-		return multipart(urlTemplate, urlVariables);
-	}
-
-	/**
-	 * Create a {@link MockMultipartHttpServletRequestBuilder} for a multipart request.
-	 * @param uri the URL
-	 * @return the builder for the file upload request
-	 * @deprecated since 2.0.6 in favor of {@link #multipart(URI)}
-	 */
-	@Deprecated
-	public static MockMultipartHttpServletRequestBuilder fileUpload(URI uri) {
-		return multipart(uri);
-	}
-
-	/**
-	 * Create a {@link MockMultipartHttpServletRequestBuilder} for a multipart request.
 	 * The URL template will be captured and made available for documentation.
 	 * @param urlTemplate a URL template; the resulting URL will be encoded
 	 * @param urlVariables zero or more URL variables

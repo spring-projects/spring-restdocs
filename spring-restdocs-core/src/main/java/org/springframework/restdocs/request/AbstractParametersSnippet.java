@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,18 +125,6 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * the operation
 	 */
 	protected abstract void verificationFailed(Set<String> undocumentedParameters, Set<String> missingParameters);
-
-	/**
-	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will
-	 * be used to generate the documentation key by their
-	 * {@link ParameterDescriptor#getName()}.
-	 * @return the map of path descriptors
-	 * @deprecated since 1.1.0 in favor of {@link #getParameterDescriptors()}
-	 */
-	@Deprecated
-	protected final Map<String, ParameterDescriptor> getFieldDescriptors() {
-		return this.descriptorsByName;
-	}
 
 	/**
 	 * Returns a {@code Map} of {@link ParameterDescriptor ParameterDescriptors} that will
