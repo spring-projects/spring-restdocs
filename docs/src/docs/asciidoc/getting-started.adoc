@@ -34,6 +34,19 @@ If you want to jump straight in, a number of sample applications are available:
 | Demonstrates the use of Spring REST docs with Spring WebFlux's WebTestClient.
 |===
 
+
+[cols="3,2,10"]
+.REST Assured
+|===
+| Sample | Build system | Description
+
+| {samples}/rest-assured[REST Assured]
+| Gradle
+| Demonstrates the use of Spring REST Docs with http://rest-assured.io[REST Assured].
+
+|===
+
+
 [cols="3,2,10"]
 .Advanced
 |===
@@ -63,7 +76,7 @@ Spring REST Docs has the following minimum requirements:
 * Java 17
 * Spring Framework 6
 
-
+Additionally, the `spring-restdocs-restassured` module requires REST Assured 4 (4.5 or later).
 
 [[getting-started-build-configuration]]
 === Build configuration
@@ -113,7 +126,7 @@ The key parts of the configuration are described in the following listings:
 	</build>
 ----
 <1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope.
-If you want to use `WebTestClient` add a dependency on `spring-restdocs-webtestclient` instead.
+If you want to use `WebTestClient` or REST Assured rather than MockMvc, add a dependency on `spring-restdocs-webtestclient` or `spring-restdocs-restassured` respectively instead.
 <2> Add the Asciidoctor plugin.
 <3> Using `prepare-package` allows the documentation to be <<getting-started-build-configuration-packaging-the-documentation, included in the package>>.
 <4> Add `spring-restdocs-asciidoctor` as a dependency of the Asciidoctor plugin.
@@ -156,7 +169,7 @@ It will also allow you to use the `operation` block macro.
 This will automatically configure the `snippets` attribute for use in your `.adoc` files to point to `build/generated-snippets`.
 It will also allow you to use the `operation` block macro.
 <4> Add a dependency on `spring-restdocs-mockmvc` in the `testImplementation` configuration.
-If you want to use `WebTestClient`, add a dependency on `spring-restdocs-webtestclient` instead.
+If you want to use `WebTestClient` or REST Assured rather than MockMvc, add a dependency on `spring-restdocs-webtestclient` or `spring-restdocs-restassured` respectively instead.
 <5> Configure a property to define the output location for generated snippets.
 <6> Configure the `test` task to add the snippets directory as an output.
 <7> Configure the `asciidoctor` task.
@@ -232,7 +245,7 @@ The following listings show how to do so in both Maven and Gradle:
 
 [[getting-started-documentation-snippets]]
 === Generating Documentation Snippets
-Spring REST Docs uses Spring MVC's {spring-framework-docs}/testing.html#spring-mvc-test-framework[test framework] or Spring WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`] to make requests to the service that you are documenting.
+Spring REST Docs uses Spring MVC's {spring-framework-docs}/testing.html#spring-mvc-test-framework[test framework] or Spring WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`], or https://rest-assured.io[REST Assured] to make requests to the service that you are documenting.
 It then produces documentation snippets for the request and the resulting response.
 
 
@@ -280,7 +293,7 @@ The following example shows how to do so:
 public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("custom");
 ----
 
-Next, you must provide an `@Before` method to configure MockMvc or WebTestClient.
+Next, you must provide an `@Before` method to configure MockMvc or WebTestClient, or REST Assured.
 The following examples show how to do so:
 
 [source,java,indent=0,role="primary"]
@@ -298,6 +311,14 @@ include::{examples-dir}/com/example/webtestclient/ExampleApplicationTests.java[t
 ----
 <1> The `WebTestClient` instance is configured by adding a `WebTestclientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.
 You can obtain an instance of this class from the static `documentationConfiguration()` method on `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationTests.java[tags=setup]
+----
+<1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a `Filter`.
+You can obtain an instance of this class from the static `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the `org.springframework.restdocs.restassured` package.
 
 The configurer applies sensible defaults and also provides an API for customizing the configuration.
 See the <<configuration, configuration section>> for more information.
@@ -350,7 +371,7 @@ public class JUnit5ExampleTests {
 }
 ----
 
-Next, you must provide a `@BeforeEach` method to configure MockMvc or WebTestClient.
+Next, you must provide a `@BeforeEach` method to configure MockMvc or WebTestClient, or REST Assured.
 The following listings show how to do so:
 
 [source,java,indent=0,role="primary"]
@@ -368,6 +389,14 @@ include::{examples-dir}/com/example/webtestclient/ExampleApplicationJUnit5Tests.
 ----
 <1> The `WebTestClient` instance is configured by adding a `WebTestClientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.
 You can obtain an instance of this class from the static `documentationConfiguration()` method on `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationJUnit5Tests.java[tags=setup]
+----
+<1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a `Filter`.
+You can obtain an instance of this class from the static `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the `org.springframework.restdocs.restassured` package.
 
 The configurer applies sensible defaults and also provides an API for customizing the configuration.
 See the <<configuration, configuration section>> for more information.
@@ -391,7 +420,7 @@ private ManualRestDocumentation restDocumentation = new ManualRestDocumentation(
 ----
 
 Secondly, you must call `ManualRestDocumentation.beforeTest(Class, String)` before each test.
-You can do so as part of the method that configures MockMvc or WebTestClient.
+You can do so as part of the method that configures MockMvc, WebTestClient, or REST Assured.
 The following examples show how to do so:
 
 [source,java,indent=0,role="primary"]
@@ -404,6 +433,12 @@ include::{examples-dir}/com/example/mockmvc/ExampleApplicationTestNgTests.java[t
 .WebTestClient
 ----
 include::{examples-dir}/com/example/webtestclient/ExampleApplicationTestNgTests.java[tags=setup]
+----
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationTestNgTests.java[tags=setup]
 ----
 
 Finally, you must call `ManualRestDocumentation.afterTest` after each test.
@@ -443,6 +478,19 @@ include::{examples-dir}/com/example/webtestclient/InvokeService.java[tags=invoke
 <3> Document the call to the service, writing the snippets into a directory named `index` (which is located beneath the configured output directory).
 The snippets are written by a `Consumer` of the `ExchangeResult`.
 You can obtain such a consumer from the static `document` method on `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/InvokeService.java[tags=invoke-service]
+----
+<1> Apply the specification that was initialized in the `@Before` method.
+<2> Indicate that an `application/json` response is required.
+<3> Document the call to the service, writing the snippets into a directory named `index` (which is located beneath the configured output directory).
+The snippets are written by a `RestDocumentationFilter`.
+You can obtain an instance of this class from the static `document` method on `RestAssuredRestDocumentation` in the `org.springframework.restdocs.restassured` package.
+<4> Invoke the root (`/`) of the service.
+<5> Assert that the service produce the expected response.
 
 By default, six snippets are written:
 

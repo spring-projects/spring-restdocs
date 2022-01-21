@@ -45,6 +45,17 @@ TIP: To configure a request's context path, use the `contextPath` method on `Moc
 
 
 
+[[configuration-uris-rest-assured]]
+==== REST Assured URI Customization
+
+REST Assured tests a service by making actual HTTP requests. As a result, URIs must be
+customized once the operation on the service has been performed but before it is
+documented. A
+<<customizing-requests-and-responses-preprocessors-modify-uris, REST-Assured-specific
+preprocessor>> is provided for this purpose.
+
+
+
 [[configuration-uris-webtestclient]]
 ==== WebTestClient URI Customization
 
@@ -79,6 +90,12 @@ include::{examples-dir}/com/example/mockmvc/CustomEncoding.java[tags=custom-enco
 include::{examples-dir}/com/example/webtestclient/CustomEncoding.java[tags=custom-encoding]
 ----
 
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/CustomEncoding.java[tags=custom-encoding]
+----
+
 TIP: When Spring REST Docs converts the content of a request or a response to a `String`, the `charset` specified in the `Content-Type` header is used if it is available.
 In its absence, the JVM's default `Charset` is used.
 You can configure the JVM's default `Charset` by using the `file.encoding` system property.
@@ -104,6 +121,13 @@ include::{examples-dir}/com/example/mockmvc/CustomFormat.java[tags=custom-format
 ----
 include::{examples-dir}/com/example/webtestclient/CustomFormat.java[tags=custom-format]
 ----
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/CustomFormat.java[tags=custom-format]
+----
+====
 
 
 
@@ -134,6 +158,12 @@ include::{examples-dir}/com/example/mockmvc/CustomDefaultSnippets.java[tags=cust
 include::{examples-dir}/com/example/webtestclient/CustomDefaultSnippets.java[tags=custom-default-snippets]
 ----
 
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/CustomDefaultSnippets.java[tags=custom-default-snippets]
+----
+
 
 
 [[configuration-default-preprocessors]]
@@ -158,4 +188,10 @@ include::{examples-dir}/com/example/webtestclient/CustomDefaultOperationPreproce
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
 
-
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/CustomDefaultOperationPreprocessors.java[tags=custom-default-operation-preprocessors]
+----
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.

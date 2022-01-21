@@ -1,0 +1,63 @@
+plugins {
+	id "java"
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
+}
+
+repositories {
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+	mavenCentral()
+	mavenLocal()
+}
+
+group = 'com.example'
+
+sourceCompatibility = 17
+targetCompatibility = 17
+
+ext {
+	restdocsVersion = '3.0.0-SNAPSHOT'
+	snippetsDir = file('build/generated-snippets')
+}
+
+configurations {
+	asciidoctorExtensions
+}
+
+dependencies {
+	asciidoctorExtensions "org.springframework.restdocs:spring-restdocs-asciidoctor:$restdocsVersion"
+
+	implementation platform("org.springframework:spring-framework-bom:6.0.0-M2")
+	implementation 'io.projectreactor.netty:reactor-netty-http:1.0.15'
+	implementation 'org.springframework:spring-context'
+	implementation 'org.springframework:spring-webflux'
+
+
+	testImplementation 'io.rest-assured:rest-assured:4.5.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
+	testImplementation "org.springframework.restdocs:spring-restdocs-restassured:$restdocsVersion"
+	testImplementation 'org.springframework:spring-test'
+	testImplementation('org.junit.vintage:junit-vintage-engine') {
+		exclude group: 'org.hamcrest', module: 'hamcrest-core'
+	}
+
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
+}
+
+test {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+asciidoctor {
+	configurations "asciidoctorExtensions"
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+jar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
+}

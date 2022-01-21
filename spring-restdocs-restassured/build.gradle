@@ -1,0 +1,24 @@
+plugins {
+	id "java-library"
+	id "maven-publish"
+}
+
+description = "Spring REST Docs REST Assured"
+
+dependencies {
+	api(project(":spring-restdocs-core"))
+	api("io.rest-assured:rest-assured") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
+	implementation("org.springframework:spring-web")
+
+	internal(platform(project(":spring-restdocs-platform")))
+
+	testImplementation(testFixtures(project(":spring-restdocs-core")))
+	testImplementation("com.fasterxml.jackson.core:jackson-databind")
+	testImplementation("junit:junit")
+	testImplementation("org.apache.tomcat.embed:tomcat-embed-core:10.0.11")
+	testImplementation("org.assertj:assertj-core")
+	testImplementation("org.hamcrest:hamcrest-library")
+	testImplementation("org.mockito:mockito-core")
+}
