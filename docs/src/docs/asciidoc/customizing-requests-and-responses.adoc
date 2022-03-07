@@ -125,6 +125,13 @@ Any occurrences that match a regular expression are replaced.
 
 
 
+[[customizing-requests-and-responses-preprocessors-modify-headers]]
+==== Modifying Headers
+
+You can use `modifyHeaders` on `Preprocessors` to add, set, and remove request or response headers.
+
+
+
 [[customizing-requests-and-responses-preprocessors-modify-request-parameters]]
 ==== Modifying Request Parameters
 
