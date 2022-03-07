@@ -31,6 +31,7 @@ import org.springframework.restdocs.operation.OperationResponse;
  *
  * @author Andy Wilkinson
  * @author Roland Huss
+ * @author Jihoon Cha
  */
 public final class Preprocessors {
 
@@ -73,8 +74,10 @@ public final class Preprocessors {
 	 * {@code headersToRemove}.
 	 * @param headerNames the header names
 	 * @return the preprocessor
+	 * @deprecated Use {@link #modifyHeaders()} instead
 	 * @see String#equals(Object)
 	 */
+	@Deprecated
 	public static OperationPreprocessor removeHeaders(String... headerNames) {
 		return new HeaderRemovingOperationPreprocessor(new ExactMatchHeaderFilter(headerNames));
 	}
@@ -85,8 +88,10 @@ public final class Preprocessors {
 	 * {@code headerNamePatterns} regular expressions.
 	 * @param headerNamePatterns the header name patterns
 	 * @return the preprocessor
+	 * @deprecated Use {@link #modifyHeaders()} instead
 	 * @see java.util.regex.Matcher#matches()
 	 */
+	@Deprecated
 	public static OperationPreprocessor removeMatchingHeaders(String... headerNamePatterns) {
 		return new HeaderRemovingOperationPreprocessor(new PatternMatchHeaderFilter(headerNamePatterns));
 	}
@@ -130,6 +135,15 @@ public final class Preprocessors {
 	 */
 	public static ParametersModifyingOperationPreprocessor modifyParameters() {
 		return new ParametersModifyingOperationPreprocessor();
+	}
+
+	/**
+	 * Returns a {@code HeadersModifyingOperationPreprocessor} that can then be configured
+	 * to modify the headers of the request.
+	 * @return the preprocessor
+	 */
+	public static HeadersModifyingOperationPreprocessor modifyHeaders() {
+		return new HeadersModifyingOperationPreprocessor();
 	}
 
 	/**

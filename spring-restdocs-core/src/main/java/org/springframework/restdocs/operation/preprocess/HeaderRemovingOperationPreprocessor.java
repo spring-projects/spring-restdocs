@@ -31,7 +31,9 @@ import org.springframework.restdocs.operation.OperationResponseFactory;
  * against the headers found
  *
  * @author Andy Wilkinson
+ * @deprecated Use {@link HeadersModifyingOperationPreprocessor} instead
  */
+@Deprecated
 class HeaderRemovingOperationPreprocessor implements OperationPreprocessor {
 
 	private final OperationRequestFactory requestFactory = new OperationRequestFactory();
