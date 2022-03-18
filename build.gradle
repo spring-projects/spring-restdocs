@@ -27,7 +27,7 @@ nohttp {
 }
 
 ext {
-	springFrameworkVersion = "6.0.0-M2"
+	springFrameworkVersion = "6.0.0-M3"
 	javadocLinks = [
 		"https://docs.spring.io/spring-framework/docs/$springFrameworkVersion/javadoc-api/",
 		"https://docs.jboss.org/hibernate/validator/7.0/api/",
