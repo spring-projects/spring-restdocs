@@ -29,7 +29,7 @@ configurations {
 dependencies {
 	asciidoctorExtensions "org.springframework.restdocs:spring-restdocs-asciidoctor:$restdocsVersion"
 
-	implementation platform("org.springframework:spring-framework-bom:6.0.0-M2")
+	implementation platform("org.springframework:spring-framework-bom:6.0.0-M3")
 	implementation 'org.springframework:spring-context'
 	implementation 'org.springframework:spring-webflux'
 
