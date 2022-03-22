@@ -37,7 +37,7 @@ dependencies {
 	implementation "org.springframework.data:spring-data-jpa"
 	implementation "org.springframework.hateoas:spring-hateoas:2.0.0-M2"
 
-	runtimeOnly 'com.h2database:h2:1.4.200'
+	runtimeOnly 'com.h2database:h2:2.0.206'
 	runtimeOnly 'org.atteo:evo-inflector:1.2.1'
 
 	testImplementation 'com.jayway.jsonpath:json-path:2.6.0'
