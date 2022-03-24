@@ -186,7 +186,7 @@ task docsZip(type: Zip, dependsOn: [":docs:asciidoctor", ":api", ":restNotesSpri
 	destinationDirectory = file("${project.buildDir}/distributions")
 
 	from(project.tasks.findByPath(":docs:asciidoctor")) {
-		into "reference"
+		into "reference/html5"
 	}
 
 	from(api) {
