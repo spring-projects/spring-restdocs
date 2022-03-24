@@ -26,6 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.ResponseCookie;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,6 +59,9 @@ public class MockMvcResponseConverterTests {
 		assertThat(operationResponse.getHeaders()).hasSize(1);
 		assertThat(operationResponse.getHeaders()).containsEntry(HttpHeaders.SET_COOKIE,
 				Collections.singletonList("name=value; Domain=localhost; HttpOnly"));
+		assertThat(operationResponse.getCookies()).hasSize(1);
+		assertThat(operationResponse.getCookies()).first().extracting(ResponseCookie::getName).isEqualTo("name");
+		assertThat(operationResponse.getCookies()).first().extracting(ResponseCookie::getValue).isEqualTo("value");
 	}
 
 	@Test

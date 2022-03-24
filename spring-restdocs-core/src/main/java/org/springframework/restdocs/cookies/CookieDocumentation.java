@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,9 @@ import org.springframework.restdocs.snippet.Snippet;
 /**
  * Static factory methods for documenting a RESTful API's request and response cookies.
  *
- * @author Andreas Evers
- * @author Andy Wilkinson
- * @author Marcel Overdijk
  * @author Clyde Stubbs
- * @since 2.1
+ * @author Andy Wilkinson
+ * @since 3.0
  */
 public abstract class CookieDocumentation {
 
@@ -51,8 +49,10 @@ public abstract class CookieDocumentation {
 	 * Returns a new {@link Snippet} that will document the cookies of the API operation's
 	 * request. The cookies will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a cookie is documented, is not marked as optional, and is not present in the
-	 * request, a failure will occur.
+	 * If a cookie is present in the request, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * cookie is documented, is not marked as optional, and is not present in the request,
+	 * a failure will also occur.
 	 * @param descriptors the descriptions of the request's cookies
 	 * @return the snippet that will document the request cookies
 	 * @see #cookieWithName(String)
@@ -65,8 +65,10 @@ public abstract class CookieDocumentation {
 	 * Returns a new {@link Snippet} that will document the cookies of the API operation's
 	 * request. The cookies will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a cookie is documented, is not marked as optional, and is not present in the
-	 * request, a failure will occur.
+	 * If a cookie is present in the request, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * cookie is documented, is not marked as optional, and is not present in the request,
+	 * a failure will also occur.
 	 * @param descriptors the descriptions of the request's cookies
 	 * @return the snippet that will document the request cookies
 	 * @see #cookieWithName(String)
@@ -76,12 +78,42 @@ public abstract class CookieDocumentation {
 	}
 
 	/**
+	 * Returns a new {@link Snippet} that will document the cookies of the API operation's
+	 * request. The cookies will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a cookie is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented cookies will be ignored.
+	 * @param descriptors the descriptions of the request's cookies
+	 * @return the snippet that will document the request cookies
+	 * @see #cookieWithName(String)
+	 */
+	public static RequestCookiesSnippet relaxedRequestCookies(CookieDescriptor... descriptors) {
+		return relaxedRequestCookies(Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a new {@link Snippet} that will document the cookies of the API operation's
+	 * request. The cookies will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a cookie is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented cookies will be ignored.
+	 * @param descriptors the descriptions of the request's cookies
+	 * @return the snippet that will document the request cookies
+	 * @see #cookieWithName(String)
+	 */
+	public static RequestCookiesSnippet relaxedRequestCookies(List<CookieDescriptor> descriptors) {
+		return new RequestCookiesSnippet(descriptors, true);
+	}
+
+	/**
 	 * Returns a new {@link Snippet} that will document the cookies of the API
 	 * operations's request. The given {@code attributes} will be available during snippet
 	 * generation and the cookies will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a cookie is documented, is not marked as optional, and is not present in the
-	 * request, a failure will occur.
+	 * If a cookie is present in the request, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * cookie is documented, is not marked as optional, and is not present in the request,
+	 * a failure will also occur.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's cookies
 	 * @return the snippet that will document the request cookies
@@ -97,9 +129,10 @@ public abstract class CookieDocumentation {
 	 * operations's request. The given {@code attributes} will be available during snippet
 	 * generation and the cookies will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a cookie is documented, is not marked as optional, and is not present in the
-	 * request, a failure will occur. Any cookies present in the request that are not
-	 * documented will result in an error.
+	 * If a cookie is present in the request, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * cookie is documented, is not marked as optional, and is not present in the request,
+	 * a failure will also occur.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's cookies
 	 * @return the snippet that will document the request cookies
@@ -107,7 +140,7 @@ public abstract class CookieDocumentation {
 	 */
 	public static RequestCookiesSnippet requestCookies(Map<String, Object> attributes,
 			List<CookieDescriptor> descriptors) {
-		return new RequestCookiesSnippet(descriptors, attributes, false);
+		return new RequestCookiesSnippet(descriptors, attributes);
 	}
 
 	/**
@@ -116,8 +149,24 @@ public abstract class CookieDocumentation {
 	 * generation and the cookies will be documented using the given {@code descriptors}.
 	 * <p>
 	 * If a cookie is documented, is not marked as optional, and is not present in the
-	 * request, a failure will occur. An undocumented cookie in the request will not
-	 * generate an error.
+	 * request, a failure will occur. Any undocumented cookies will be ignored.
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the request's cookies
+	 * @return the snippet that will document the request cookies
+	 * @see #cookieWithName(String)
+	 */
+	public static RequestCookiesSnippet relaxedRequestCookies(Map<String, Object> attributes,
+			CookieDescriptor... descriptors) {
+		return relaxedRequestCookies(attributes, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a new {@link Snippet} that will document the cookies of the API
+	 * operations's request. The given {@code attributes} will be available during snippet
+	 * generation and the cookies will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a cookie is documented, is not marked as optional, and is not present in the
+	 * request, a failure will occur. Any undocumented cookies will be ignored.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the request's cookies
 	 * @return the snippet that will document the request cookies
@@ -132,8 +181,10 @@ public abstract class CookieDocumentation {
 	 * Returns a new {@link Snippet} that will document the cookies of the API operation's
 	 * response. The cookies will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a cookie is documented, is not marked as optional or ignored, and is not present
-	 * in the request, a failure will occur.
+	 * If a cookie is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * cookie is documented, is not marked as optional, and is not present in the
+	 * response, a failure will also occur.
 	 * @param descriptors the descriptions of the response's cookies
 	 * @return the snippet that will document the response cookies
 	 * @see #cookieWithName(String)
@@ -146,9 +197,10 @@ public abstract class CookieDocumentation {
 	 * Returns a new {@link Snippet} that will document the cookies of the API operation's
 	 * response. The cookies will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a cookie is documented, is not marked as optional or ignored, and is not present
-	 * in the request, a failure will occur. If a cookie is present in the response but is
-	 * undocumented a failure will occur.
+	 * If a cookie is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * cookie is documented, is not marked as optional, and is not present in the
+	 * response, a failure will also occur.
 	 * @param descriptors the descriptions of the response's cookies
 	 * @return the snippet that will document the response cookies
 	 * @see #cookieWithName(String)
@@ -161,15 +213,28 @@ public abstract class CookieDocumentation {
 	 * Returns a new {@link Snippet} that will document the cookies of the API operation's
 	 * response. The cookies will be documented using the given {@code descriptors}.
 	 * <p>
-	 * If a cookie is documented, is not marked as optional or ignored, and is not present
-	 * in the request, a failure will occur. No failure will occur if a cookie is present
-	 * but undocumented.
+	 * If a cookie is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented cookies will be ignored.
+	 * @param descriptors the descriptions of the response's cookies
+	 * @return the snippet that will document the response cookies
+	 * @see #cookieWithName(String)
+	 */
+	public static ResponseCookiesSnippet relaxedResponseCookies(CookieDescriptor... descriptors) {
+		return relaxedResponseCookies(Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a new {@link Snippet} that will document the cookies of the API operation's
+	 * response. The cookies will be documented using the given {@code descriptors}.
+	 * <p>
+	 * If a cookie is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented cookies will be ignored.
 	 * @param descriptors the descriptions of the response's cookies
 	 * @return the snippet that will document the response cookies
 	 * @see #cookieWithName(String)
 	 */
 	public static ResponseCookiesSnippet relaxedResponseCookies(List<CookieDescriptor> descriptors) {
-		return new ResponseCookiesSnippet(descriptors, null, true);
+		return new ResponseCookiesSnippet(descriptors, true);
 	}
 
 	/**
@@ -178,9 +243,10 @@ public abstract class CookieDocumentation {
 	 * snippet generation and the cookies will be documented using the given
 	 * {@code descriptors}.
 	 * <p>
-	 * If a cookie is documented, is not marked as optional, and is not present in the
-	 * response, a failure will occur. If a cookie is present in the response but is
-	 * undocumented a failure will occur.
+	 * If a cookie is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * cookie is documented, is not marked as optional, and is not present in the
+	 * response, a failure will also occur.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's cookies
 	 * @return the snippet that will document the response cookies
@@ -197,9 +263,10 @@ public abstract class CookieDocumentation {
 	 * snippet generation and the cookies will be documented using the given
 	 * {@code descriptors}.
 	 * <p>
-	 * If a cookie is documented, is not marked as optional, and is not present in the
-	 * response, a failure will occur. If a cookie is present in the response but is
-	 * undocumented a failure will occur.
+	 * If a cookie is present in the response, but is not documented by one of the
+	 * descriptors, a failure will occur when the snippet is invoked. Similarly, if a
+	 * cookie is documented, is not marked as optional, and is not present in the
+	 * response, a failure will also occur.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's cookies
 	 * @return the snippet that will document the response cookies
@@ -207,7 +274,7 @@ public abstract class CookieDocumentation {
 	 */
 	public static ResponseCookiesSnippet responseCookies(Map<String, Object> attributes,
 			List<CookieDescriptor> descriptors) {
-		return new ResponseCookiesSnippet(descriptors, attributes, false);
+		return new ResponseCookiesSnippet(descriptors, attributes);
 	}
 
 	/**
@@ -217,8 +284,25 @@ public abstract class CookieDocumentation {
 	 * {@code descriptors}.
 	 * <p>
 	 * If a cookie is documented, is not marked as optional, and is not present in the
-	 * response, a failure will occur. No failure will occur if a cookie is present but
-	 * undocumented.
+	 * response, a failure will occur. Any undocumented cookies will be ignored.
+	 * @param attributes the attributes
+	 * @param descriptors the descriptions of the response's cookies
+	 * @return the snippet that will document the response cookies
+	 * @see #cookieWithName(String)
+	 */
+	public static ResponseCookiesSnippet relaxedResponseCookies(Map<String, Object> attributes,
+			CookieDescriptor... descriptors) {
+		return relaxedResponseCookies(attributes, Arrays.asList(descriptors));
+	}
+
+	/**
+	 * Returns a new {@link Snippet} that will document the cookies of the API
+	 * operations's response. The given {@code attributes} will be available during
+	 * snippet generation and the cookies will be documented using the given
+	 * {@code descriptors}.
+	 * <p>
+	 * If a cookie is documented, is not marked as optional, and is not present in the
+	 * response, a failure will occur. Any undocumented cookies will be ignored.
 	 * @param attributes the attributes
 	 * @param descriptors the descriptions of the response's cookies
 	 * @return the snippet that will document the response cookies

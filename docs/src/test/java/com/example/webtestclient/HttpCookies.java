@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,23 +25,17 @@ import static org.springframework.restdocs.webtestclient.WebTestClientRestDocume
 
 public class HttpCookies {
 
-	// @formatter:off
-
 	private WebTestClient webTestClient;
 
-	public void cookies() throws Exception {
+	public void cookies() {
 		// tag::cookies[]
-		this.webTestClient
-			.get().uri("/people").cookie("JSESSIONID", "ACBCDFD0FF93D5BB=") // <1>
-			.exchange().expectStatus().isOk().expectBody()
-			.consumeWith(document("cookies",
-				requestCookies(// <2>
-					cookieWithName("JSESSIONID").description("Session token")), // <3>
-				responseCookies(// <4>
-					cookieWithName("JSESSIONID")
-						.description("Updated session token"),
-					cookieWithName("logged_in")
-						.description("User is logged in"))));
+		this.webTestClient.get().uri("/people").cookie("JSESSIONID", "ACBCDFD0FF93D5BB=") // <1>
+				.exchange().expectStatus().isOk().expectBody().consumeWith(document("cookies", requestCookies(// <2>
+						cookieWithName("JSESSIONID").description("Session token")), // <3>
+						responseCookies(// <4>
+								cookieWithName("JSESSIONID").description("Updated session token"),
+								cookieWithName("logged_in").description("User is logged in"))));
 		// end::cookies[]
 	}
+
 }

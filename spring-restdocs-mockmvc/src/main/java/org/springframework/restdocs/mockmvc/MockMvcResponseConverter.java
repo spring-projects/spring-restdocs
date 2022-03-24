@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,20 +43,19 @@ class MockMvcResponseConverter implements ResponseConverter<MockHttpServletRespo
 	@Override
 	public OperationResponse convert(MockHttpServletResponse mockResponse) {
 		HttpHeaders headers = extractHeaders(mockResponse);
-		Collection<ResponseCookie> cookies = extractCookies(mockResponse, headers);
+		Collection<ResponseCookie> cookies = extractCookies(mockResponse);
 		return new OperationResponseFactory().create(mockResponse.getStatus(), headers,
 				mockResponse.getContentAsByteArray(), cookies);
 	}
 
-	private Collection<ResponseCookie> extractCookies(MockHttpServletResponse mockRequest, HttpHeaders headers) {
-		if (mockRequest.getCookies() == null || mockRequest.getCookies().length == 0) {
+	private Collection<ResponseCookie> extractCookies(MockHttpServletResponse mockResponse) {
+		if (mockResponse.getCookies() == null || mockResponse.getCookies().length == 0) {
 			return Collections.emptyList();
 		}
 		List<ResponseCookie> cookies = new ArrayList<>();
-		for (Cookie servletCookie : mockRequest.getCookies()) {
-			cookies.add(new ResponseCookie(servletCookie.getName(), servletCookie.getValue()));
+		for (Cookie cookie : mockResponse.getCookies()) {
+			cookies.add(new ResponseCookie(cookie.getName(), cookie.getValue()));
 		}
-		headers.remove(HttpHeaders.COOKIE);
 		return cookies;
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,16 @@
 package org.springframework.restdocs.cookies;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.restdocs.operation.Operation;
-import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.Assert;
 
@@ -31,17 +34,15 @@ import org.springframework.util.Assert;
  * Abstract {@link TemplatedSnippet} subclass that provides a base for snippets that
  * document a RESTful resource's request or response cookies.
  *
- * @author Andreas Evers
  * @author Clyde Stubbs
- * @since 2.1
+ * @author Andy Wilkinson
+ * @since 3.0
  */
 public abstract class AbstractCookiesSnippet extends TemplatedSnippet {
 
-	private List<CookieDescriptor> cookieDescriptors;
+	private final Map<String, CookieDescriptor> descriptorsByName = new LinkedHashMap<>();
 
-	protected final boolean ignoreUndocumentedCookies;
-
-	private String type;
+	private final boolean ignoreUndocumentedCookies;
 
 	/**
 	 * Creates a new {@code AbstractCookiesSnippet} that will produce a snippet named
@@ -57,58 +58,53 @@ public abstract class AbstractCookiesSnippet extends TemplatedSnippet {
 			boolean ignoreUndocumentedCookies) {
 		super(type + "-cookies", attributes);
 		for (CookieDescriptor descriptor : descriptors) {
-			Assert.notNull(descriptor.getName(), "The name of the cookie must not be null");
+			Assert.notNull(descriptor.getName(), "Cookie descriptors must have a name");
 			if (!descriptor.isIgnored()) {
-				Assert.notNull(descriptor.getDescription(), "The description of the cookie must not be null");
+				Assert.notNull(descriptor.getDescription(), "The descriptor for cookie '" + descriptor.getName()
+						+ "' must either have a description or be marked as ignored");
 			}
+			this.descriptorsByName.put(descriptor.getName(), descriptor);
 		}
-		this.cookieDescriptors = descriptors;
-		this.type = type;
 		this.ignoreUndocumentedCookies = ignoreUndocumentedCookies;
 	}
 
 	@Override
 	protected Map<String, Object> createModel(Operation operation) {
-		validateCookieDocumentation(operation);
+		verifyCookieDescriptors(operation);
 
 		Map<String, Object> model = new HashMap<>();
 		List<Map<String, Object>> cookies = new ArrayList<>();
-		model.put("cookies", cookies);
-		for (CookieDescriptor descriptor : this.cookieDescriptors) {
-			cookies.add(createModelForDescriptor(descriptor));
+		for (CookieDescriptor descriptor : this.descriptorsByName.values()) {
+			if (!descriptor.isIgnored()) {
+				cookies.add(createModelForDescriptor(descriptor));
+			}
 		}
+		model.put("cookies", cookies);
 		return model;
 	}
 
-	private void validateCookieDocumentation(Operation operation) {
-		List<CookieDescriptor> missingCookies = findMissingCookies(operation);
-		if (!missingCookies.isEmpty()) {
-			List<String> names = new ArrayList<>();
-			for (CookieDescriptor cookieDescriptor : missingCookies) {
-				names.add(cookieDescriptor.getName());
-			}
-			throw new SnippetException(
-					"Cookies with the following names were not found" + " in the " + this.type + ": " + names);
-		}
-	}
-
-	/**
-	 * Finds the cookies that are missing from the operation. A cookie is missing if it is
-	 * described by one of the {@code cookieDescriptors} but is not present in the
-	 * operation.
-	 * @param operation the operation
-	 * @return descriptors for the cookies that are missing from the operation
-	 */
-	protected List<CookieDescriptor> findMissingCookies(Operation operation) {
-		List<CookieDescriptor> missingCookies = new ArrayList<>();
+	private void verifyCookieDescriptors(Operation operation) {
 		Set<String> actualCookies = extractActualCookies(operation);
-		for (CookieDescriptor cookieDescriptor : this.cookieDescriptors) {
-			if (!cookieDescriptor.isOptional() && !actualCookies.contains(cookieDescriptor.getName())) {
-				missingCookies.add(cookieDescriptor);
+		Set<String> expectedCookies = new HashSet<>();
+		for (Entry<String, CookieDescriptor> entry : this.descriptorsByName.entrySet()) {
+			if (!entry.getValue().isOptional()) {
+				expectedCookies.add(entry.getKey());
 			}
 		}
+		Set<String> undocumentedCookies;
+		if (this.ignoreUndocumentedCookies) {
+			undocumentedCookies = Collections.emptySet();
+		}
+		else {
+			undocumentedCookies = new HashSet<>(actualCookies);
+			undocumentedCookies.removeAll(this.descriptorsByName.keySet());
+		}
+		Set<String> missingCookies = new HashSet<>(expectedCookies);
+		missingCookies.removeAll(actualCookies);
 
-		return missingCookies;
+		if (!undocumentedCookies.isEmpty() || !missingCookies.isEmpty()) {
+			verificationFailed(undocumentedCookies, missingCookies);
+		}
 	}
 
 	/**
@@ -120,12 +116,29 @@ public abstract class AbstractCookiesSnippet extends TemplatedSnippet {
 	protected abstract Set<String> extractActualCookies(Operation operation);
 
 	/**
+	 * Called when the documented cookies do not match the actual cookies.
+	 * @param undocumentedCookies the cookies that were found in the operation but were
+	 * not documented
+	 * @param missingCookies the cookies that were documented but were not found in the
+	 * operation
+	 */
+	protected abstract void verificationFailed(Set<String> undocumentedCookies, Set<String> missingCookies);
+
+	/**
 	 * Returns the list of {@link CookieDescriptor CookieDescriptors} that will be used to
 	 * generate the documentation.
 	 * @return the cookie descriptors
 	 */
-	protected final List<CookieDescriptor> getCookieDescriptors() {
-		return this.cookieDescriptors;
+	protected final Map<String, CookieDescriptor> getCookieDescriptors() {
+		return this.descriptorsByName;
+	}
+
+	/**
+	 * Returns whether or not this snippet ignores undocumented cookies.
+	 * @return {@code true} if undocumented cookies are ignored, otherwise {@code false}
+	 */
+	protected final boolean isIgnoreUndocumentedCookies() {
+		return this.ignoreUndocumentedCookies;
 	}
 
 	/**

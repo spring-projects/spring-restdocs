@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.cookies;
 
-import java.io.IOException;
 import java.util.Collections;
 
 import org.junit.Rule;
@@ -27,13 +26,14 @@ import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.testfixtures.OperationBuilder;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 
 /**
  * Tests for failures when rendering {@link ResponseCookiesSnippet} due to missing or
  * undocumented cookies.
  *
- * @author Andy Wilkinson
  * @author Clyde Stubbs
+ * @author Andy Wilkinson
  */
 public class ResponseCookiesSnippetFailureTests {
 
@@ -41,22 +41,20 @@ public class ResponseCookiesSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void missingResponseCookie() throws IOException {
+	public void missingResponseCookie() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new ResponseCookiesSnippet(Collections
-						.singletonList(CookieDocumentation.cookieWithName("Content-Type").description("one")))
+				.isThrownBy(() -> new ResponseCookiesSnippet(
+						Collections.singletonList(cookieWithName("JSESSIONID").description("one")))
 								.document(this.operationBuilder.response().build()))
-				.withMessage("Cookies with the following names were not found" + " in the response: [Content-Type]");
+				.withMessage("Cookies with the following names were not found in the response: [JSESSIONID]");
 	}
 
 	@Test
-	public void undocumentedResponseCookieAndMissingResponseHeader() throws IOException {
+	public void undocumentedResponseCookie() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new ResponseCookiesSnippet(Collections
-						.singletonList(CookieDocumentation.cookieWithName("Content-Type").description("one")))
-								.document(this.operationBuilder.response().cookie("X-Test", "test").build()))
-				.withMessageEndingWith(
-						"Cookies with the following names were not found" + " in the response: [Content-Type]");
+				.isThrownBy(() -> new ResponseCookiesSnippet(Collections.emptyList())
+						.document(this.operationBuilder.response().cookie("JSESSIONID", "1234abcd5678efgh").build()))
+				.withMessageEndingWith("Cookies with the following names were not documented: [JSESSIONID]");
 	}
 
 }

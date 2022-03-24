@@ -53,10 +53,9 @@ class RestAssuredResponseConverter implements ResponseConverter<Response> {
 			return Collections.emptyList();
 		}
 		List<ResponseCookie> cookies = new ArrayList<>();
-		for (Map.Entry<String, String> servletCookie : response.getCookies().entrySet()) {
-			cookies.add(new ResponseCookie(servletCookie.getKey(), servletCookie.getValue()));
+		for (Map.Entry<String, String> cookie : response.getCookies().entrySet()) {
+			cookies.add(new ResponseCookie(cookie.getKey(), cookie.getValue()));
 		}
-		headers.remove(HttpHeaders.COOKIE);
 		return cookies;
 	}
 

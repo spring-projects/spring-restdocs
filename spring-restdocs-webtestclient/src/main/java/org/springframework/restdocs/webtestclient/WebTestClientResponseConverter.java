@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,13 @@ import org.springframework.util.StringUtils;
  * {@link ExchangeResult}.
  *
  * @author Andy Wilkinson
+ * @author Clyde Stubbs
  */
 class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult> {
 
 	@Override
 	public OperationResponse convert(ExchangeResult result) {
-		Collection<ResponseCookie> cookies = extractCookies(result, result.getResponseHeaders());
+		Collection<ResponseCookie> cookies = extractCookies(result);
 		return new OperationResponseFactory().create(result.getStatus().value(), extractHeaders(result),
 				result.getResponseBodyContent(), cookies);
 	}
@@ -74,14 +75,9 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 		return header.toString();
 	}
 
-	private Collection<ResponseCookie> extractCookies(ExchangeResult result, HttpHeaders headers) {
-		List<String> cookieHeaders = headers.get(HttpHeaders.COOKIE);
-		if (cookieHeaders == null) {
-			return result.getResponseCookies().values().stream().flatMap(List::stream).map(this::createResponseCookie)
-					.collect(Collectors.toSet());
-		}
-		headers.remove(HttpHeaders.COOKIE);
-		return cookieHeaders.stream().map(this::createResponseCookie).collect(Collectors.toList());
+	private Collection<ResponseCookie> extractCookies(ExchangeResult result) {
+		return result.getResponseCookies().values().stream().flatMap(List::stream).map(this::createResponseCookie)
+				.collect(Collectors.toSet());
 	}
 
 	private void appendIfAvailable(StringBuilder header, String value) {
@@ -99,11 +95,6 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 			header.append(name);
 			header.append(value);
 		}
-	}
-
-	private ResponseCookie createResponseCookie(String header) {
-		String[] components = header.split("=");
-		return new ResponseCookie(components[0], components[1]);
 	}
 
 }

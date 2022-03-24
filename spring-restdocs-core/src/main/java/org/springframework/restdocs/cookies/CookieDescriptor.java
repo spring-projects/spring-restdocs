@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import org.springframework.restdocs.snippet.IgnorableDescriptor;
 /**
  * A description of a cookie found in a request or response.
  *
- * @author Andreas Evers
  * @author Clyde Stubbs
- * @since 2.1
+ * @author Andy Wilkinson
+ * @since 3.0
  * @see CookieDocumentation#cookieWithName(String)
  */
 public class CookieDescriptor extends IgnorableDescriptor<CookieDescriptor> {

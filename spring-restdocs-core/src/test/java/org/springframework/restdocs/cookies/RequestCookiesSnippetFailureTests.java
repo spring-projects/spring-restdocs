@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.cookies;
 
-import java.io.IOException;
 import java.util.Collections;
 
 import org.junit.Rule;
@@ -32,8 +31,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Tests for failures when rendering {@link RequestCookiesSnippet} due to missing or
  * undocumented cookies.
  *
- * @author Andy Wilkinson
  * @author Clyde Stubbs
+ * @author Andy Wilkinson
  */
 public class RequestCookiesSnippetFailureTests {
 
@@ -41,20 +40,20 @@ public class RequestCookiesSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void missingRequestCookie() throws IOException {
+	public void missingRequestCookie() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestCookiesSnippet(
-						Collections.singletonList(CookieDocumentation.cookieWithName("Accept").description("one")))
+						Collections.singletonList(CookieDocumentation.cookieWithName("JSESSIONID").description("one")))
 								.document(this.operationBuilder.request("http://localhost").build()))
-				.withMessage("Cookies with the following names were not found" + " in the request: [Accept]");
+				.withMessage("Cookies with the following names were not found in the request: [JSESSIONID]");
 	}
 
 	@Test
-	public void undocumentedRequestCookieAndMissingRequestHeader() throws IOException {
-		assertThatExceptionOfType(SnippetException.class).isThrownBy(() -> new RequestCookiesSnippet(
-				Collections.singletonList(CookieDocumentation.cookieWithName("Accept").description("one")))
-						.document(this.operationBuilder.request("http://localhost").cookie("X-Test", "test").build()))
-				.withMessageEndingWith("Cookies with the following names were not found" + " in the request: [Accept]");
+	public void undocumentedRequestCookie() {
+		assertThatExceptionOfType(SnippetException.class)
+				.isThrownBy(() -> new RequestCookiesSnippet(Collections.emptyList()).document(this.operationBuilder
+						.request("http://localhost").cookie("JSESSIONID", "1234abcd5678efgh").build()))
+				.withMessageEndingWith("Cookies with the following names were not documented: [JSESSIONID]");
 	}
 
 }
