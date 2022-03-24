@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,34 +110,55 @@ public class UriModifyingOperationPreprocessorTests {
 	@Test
 	public void requestContentUriSchemeCanBeModified() {
 		this.preprocessor.scheme("https");
-		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithContent("The uri 'http://localhost:12345' should be used"));
-		assertThat(new String(processed.getContent())).isEqualTo("The uri 'https://localhost:12345' should be used");
+		OperationRequest processed = this.preprocessor.preprocess(createRequestWithContent(
+				"The uri 'https://localhost:12345' should be used. foo:bar will be unaffected"));
+		assertThat(new String(processed.getContent()))
+				.isEqualTo("The uri 'https://localhost:12345' should be used. foo:bar will be unaffected");
 	}
 
 	@Test
 	public void requestContentUriHostCanBeModified() {
 		this.preprocessor.host("api.example.com");
-		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithContent("The uri 'https://localhost:12345' should be used"));
+		OperationRequest processed = this.preprocessor.preprocess(createRequestWithContent(
+				"The uri 'https://localhost:12345' should be used. foo:bar will be unaffected"));
 		assertThat(new String(processed.getContent()))
-				.isEqualTo("The uri 'https://api.example.com:12345' should be used");
+				.isEqualTo("The uri 'https://api.example.com:12345' should be used. foo:bar will be unaffected");
+	}
+
+	@Test
+	public void requestContentHostOfUriWithoutPortCanBeModified() {
+		this.preprocessor.host("api.example.com");
+		OperationRequest processed = this.preprocessor.preprocess(
+				createRequestWithContent("The uri 'https://localhost' should be used. foo:bar will be unaffected"));
+		assertThat(new String(processed.getContent()))
+				.isEqualTo("The uri 'https://api.example.com' should be used. foo:bar will be unaffected");
+	}
+
+	@Test
+	public void requestContentUriPortCanBeAdded() {
+		this.preprocessor.port(23456);
+		OperationRequest processed = this.preprocessor.preprocess(
+				createRequestWithContent("The uri 'http://localhost' should be used. foo:bar will be unaffected"));
+		assertThat(new String(processed.getContent()))
+				.isEqualTo("The uri 'http://localhost:23456' should be used. foo:bar will be unaffected");
 	}
 
 	@Test
 	public void requestContentUriPortCanBeModified() {
 		this.preprocessor.port(23456);
-		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithContent("The uri 'http://localhost:12345' should be used"));
-		assertThat(new String(processed.getContent())).isEqualTo("The uri 'http://localhost:23456' should be used");
+		OperationRequest processed = this.preprocessor.preprocess(createRequestWithContent(
+				"The uri 'http://localhost:12345' should be used. foo:bar will be unaffected"));
+		assertThat(new String(processed.getContent()))
+				.isEqualTo("The uri 'http://localhost:23456' should be used. foo:bar will be unaffected");
 	}
 
 	@Test
 	public void requestContentUriPortCanBeRemoved() {
 		this.preprocessor.removePort();
-		OperationRequest processed = this.preprocessor
-				.preprocess(createRequestWithContent("The uri 'http://localhost:12345' should be used"));
-		assertThat(new String(processed.getContent())).isEqualTo("The uri 'http://localhost' should be used");
+		OperationRequest processed = this.preprocessor.preprocess(createRequestWithContent(
+				"The uri 'http://localhost:12345' should be used. foo:bar will be unaffected"));
+		assertThat(new String(processed.getContent()))
+				.isEqualTo("The uri 'http://localhost' should be used. foo:bar will be unaffected");
 	}
 
 	@Test
