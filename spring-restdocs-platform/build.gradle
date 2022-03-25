@@ -12,7 +12,7 @@ dependencies {
 		api("jakarta.servlet:jakarta.servlet-api:5.0.0")
 		api("jakarta.validation:jakarta.validation-api:3.0.0")
 		api("junit:junit:4.12")
-		api("io.rest-assured:rest-assured:4.5.0")
+		api("io.rest-assured:rest-assured:5.0.0")
 		api("org.apache.pdfbox:pdfbox:2.0.7")
 		api("org.asciidoctor:asciidoctorj:2.5.2")
 		api("org.asciidoctor:asciidoctorj-pdf:1.6.0")

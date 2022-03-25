@@ -33,7 +33,7 @@ dependencies {
 	implementation 'org.springframework:spring-webflux'
 
 
-	testImplementation 'io.rest-assured:rest-assured:4.5.0'
+	testImplementation 'io.rest-assured:rest-assured:5.0.0'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
 	testImplementation "org.springframework.restdocs:spring-restdocs-restassured:$restdocsVersion"
 	testImplementation 'org.springframework:spring-test'
