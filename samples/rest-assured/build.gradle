@@ -4,10 +4,14 @@ plugins {
 }
 
 repositories {
+	mavenLocal {
+		content {
+			includeGroup("org.springframework.restdocs")
+		}
+	}
 	maven { url 'https://repo.spring.io/milestone' }
 	maven { url 'https://repo.spring.io/snapshot' }
 	mavenCentral()
-	mavenLocal()
 }
 
 group = 'com.example'
