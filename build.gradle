@@ -8,10 +8,13 @@ plugins {
 allprojects {
 	group = "org.springframework.restdocs"
 	repositories {
-		mavenLocal()
 		mavenCentral()
-		maven { url "https://repo.spring.io/milestone" }
-		maven { url "https://repo.spring.io/snapshot" }
+		if (version.contains('-')) {
+			maven { url "https://repo.spring.io/milestone" }
+		}
+		if (version.endsWith('-SNAPSHOT')) {
+			maven { url "https://repo.spring.io/snapshot" }
+		}
 	}
 }
 
