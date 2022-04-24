@@ -73,6 +73,11 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 	protected Map<String, Object> createModel(Operation operation) {
 		try {
 			MediaType contentType = getContentType(operation);
+			String language = null;
+			if (contentType != null) {
+				language = (contentType.getSubtypeSuffix() != null) ? contentType.getSubtypeSuffix()
+						: contentType.getSubtype();
+			}
 			byte[] content = getContent(operation);
 			if (this.subsectionExtractor != null) {
 				content = this.subsectionExtractor.extractSubsection(content, contentType);
@@ -80,6 +85,7 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 			Charset charset = extractCharset(contentType);
 			String body = (charset != null) ? new String(content, charset) : new String(content);
 			Map<String, Object> model = new HashMap<>();
+			model.put("language", language);
 			model.put("body", body);
 			return model;
 		}

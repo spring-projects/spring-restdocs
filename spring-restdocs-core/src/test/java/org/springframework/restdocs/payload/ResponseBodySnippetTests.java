@@ -20,6 +20,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
@@ -56,6 +58,20 @@ public class ResponseBodySnippetTests extends AbstractSnippetTests {
 	public void responseWithNoBody() throws IOException {
 		new ResponseBodySnippet().document(this.operationBuilder.response().build());
 		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock(null, "nowrap").withContent(""));
+	}
+
+	@Test
+	public void responseWithMediaTypeJson() throws IOException {
+		new ResponseBodySnippet().document(this.operationBuilder.response()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("json", "nowrap").withContent(""));
+	}
+
+	@Test
+	public void responseWithMediaTypeXml() throws IOException {
+		new ResponseBodySnippet().document(this.operationBuilder.response()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("xml", "nowrap").withContent(""));
 	}
 
 	@Test
