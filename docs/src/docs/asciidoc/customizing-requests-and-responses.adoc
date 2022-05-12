@@ -108,12 +108,10 @@ You can also specify a different replacement if you wish.
 
 
 
-[[customizing-requests-and-responses-preprocessors-remove-headers]]
-==== Removing Headers
+[[customizing-requests-and-responses-preprocessors-modify-headers]]
+==== Modifying Headers
 
-`removeHeaders` on `Preprocessors` removes any headers from the request or response where the name is equal to any of the given header names.
-
-`removeMatchingHeaders` on `Preprocessors` removes any headers from the request or response where the name matches any of the given regular expression patterns.
+You can use `modifyHeaders` on `Preprocessors` to add, set, and remove request or response headers.
 
 
 
