@@ -30,10 +30,12 @@ import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.util.Assert;
 
 /**
- * An {@link OperationPreprocessor} that can be used to modify a request's
- * {@link OperationRequest#getHeaders()} by adding, setting, and removing headers.
+ * An {@link OperationPreprocessor} that modifies a request or response by adding,
+ * setting, or removing headers.
  *
  * @author Jihoon Cha
+ * @author Andy Wilkinson
+ * @since 3.0.0
  */
 public class HeadersModifyingOperationPreprocessor implements OperationPreprocessor {
 
@@ -45,32 +47,21 @@ public class HeadersModifyingOperationPreprocessor implements OperationPreproces
 
 	@Override
 	public OperationRequest preprocess(OperationRequest request) {
-		HttpHeaders headers = copyHttpHeaders(request.getHeaders());
-		for (Modification modification : this.modifications) {
-			modification.applyTo(headers);
-		}
-		return this.requestFactory.createFrom(request, headers);
+		return this.requestFactory.createFrom(request, preprocess(request.getHeaders()));
 	}
 
 	@Override
 	public OperationResponse preprocess(OperationResponse response) {
-		HttpHeaders headers = copyHttpHeaders(response.getHeaders());
-		for (Modification modification : this.modifications) {
-			modification.applyTo(headers);
-		}
-		return this.responseFactory.createFrom(response, headers);
+		return this.responseFactory.createFrom(response, preprocess(response.getHeaders()));
 	}
 
-	private HttpHeaders copyHttpHeaders(HttpHeaders headers) {
-		HttpHeaders copy = new HttpHeaders();
-		for (String name : headers.keySet()) {
-			List<String> values = headers.get(name);
-			if (values == null) {
-				continue;
-			}
-			copy.put(name, new ArrayList<>(values));
+	private HttpHeaders preprocess(HttpHeaders headers) {
+		HttpHeaders modifiedHeaders = new HttpHeaders();
+		modifiedHeaders.putAll(headers);
+		for (Modification modification : this.modifications) {
+			modification.applyTo(modifiedHeaders);
 		}
-		return copy;
+		return modifiedHeaders;
 	}
 
 	/**
@@ -123,8 +114,8 @@ public class HeadersModifyingOperationPreprocessor implements OperationPreproces
 	 * @return {@code this}
 	 * @see Matcher#matches()
 	 */
-	public HeadersModifyingOperationPreprocessor remove(Pattern namePattern) {
-		this.modifications.add(new RemoveHeadersByNamePatternModification(namePattern));
+	public HeadersModifyingOperationPreprocessor removeMatching(String namePattern) {
+		this.modifications.add(new RemoveHeadersByNamePatternModification(Pattern.compile(namePattern)));
 		return this;
 	}
 
