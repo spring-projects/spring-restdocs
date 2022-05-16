@@ -36,7 +36,7 @@ dependencies {
 	implementation "org.springframework.data:spring-data-jpa"
 	implementation "org.springframework.data:spring-data-rest-webmvc"
 
-	runtimeOnly 'com.h2database:h2:2.0.206'
+	runtimeOnly 'com.h2database:h2:2.1.210'
 	runtimeOnly 'org.atteo:evo-inflector:1.2.1'
 
 	testImplementation 'com.jayway.jsonpath:json-path:2.6.0'
