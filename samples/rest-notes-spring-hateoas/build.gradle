@@ -39,7 +39,7 @@ dependencies {
 	implementation "org.hibernate:hibernate-core-jakarta:5.5.7.Final"
 	implementation "org.springframework:spring-webmvc"
 	implementation "org.springframework.data:spring-data-jpa"
-	implementation "org.springframework.hateoas:spring-hateoas:2.0.0-SNAPSHOT"
+	implementation "org.springframework.hateoas:spring-hateoas:2.0.0-M3"
 
 	runtimeOnly 'com.h2database:h2:2.0.206'
 	runtimeOnly 'org.atteo:evo-inflector:1.2.1'
