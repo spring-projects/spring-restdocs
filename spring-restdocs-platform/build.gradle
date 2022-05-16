@@ -25,6 +25,6 @@ dependencies {
 		api("org.junit.jupiter:junit-jupiter-api:5.0.0")
 		api("org.mockito:mockito-core:4.2.0")
 	}
-	api(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.13.1"))
+	api(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.13.3"))
 	api(enforcedPlatform("org.springframework:spring-framework-bom:$springFrameworkVersion"))
 }
