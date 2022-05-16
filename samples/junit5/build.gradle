@@ -32,7 +32,7 @@ configurations {
 dependencies {
 	asciidoctorExtensions "org.springframework.restdocs:spring-restdocs-asciidoctor:$restdocsVersion"
 
-	implementation platform("org.springframework:spring-framework-bom:6.0.0-SNAPSHOT")
+	implementation platform("org.springframework:spring-framework-bom:6.0.0-M4")
 	implementation 'org.springframework:spring-webmvc'
 	
 	testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:$restdocsVersion"
