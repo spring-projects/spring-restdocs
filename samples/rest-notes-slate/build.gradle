@@ -30,7 +30,7 @@ dependencies {
 	implementation platform("org.springframework.data:spring-data-bom:2022.0.0-M4")
 	implementation "com.fasterxml.jackson.core:jackson-databind:2.13.3"
 	implementation "jakarta.servlet:jakarta.servlet-api:5.0.0"
-	implementation "org.hibernate.validator:hibernate-validator:7.0.0.Final"
+	implementation "org.hibernate.validator:hibernate-validator:7.0.4.Final"
 	implementation "org.hibernate:hibernate-core-jakarta:5.5.7.Final"
 	implementation "org.springframework:spring-webmvc"
 	implementation "org.springframework.data:spring-data-jpa"
