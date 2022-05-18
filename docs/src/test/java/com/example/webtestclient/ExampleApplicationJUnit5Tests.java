@@ -27,14 +27,14 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 
 @ExtendWith(RestDocumentationExtension.class)
-public class ExampleApplicationJUnit5Tests {
+class ExampleApplicationJUnit5Tests {
 
 	@SuppressWarnings("unused")
 	// tag::setup[]
 	private WebTestClient webTestClient;
 
 	@BeforeEach
-	public void setUp(ApplicationContext applicationContext, RestDocumentationContextProvider restDocumentation) {
+	void setUp(ApplicationContext applicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.webTestClient = WebTestClient.bindToApplicationContext(applicationContext).configureClient()
 				.filter(documentationConfiguration(restDocumentation)) // <1>
 				.build();

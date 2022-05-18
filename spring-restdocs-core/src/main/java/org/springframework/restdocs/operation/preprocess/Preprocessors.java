@@ -149,7 +149,7 @@ public final class Preprocessors {
 
 	/**
 	 * Returns a {@code HeadersModifyingOperationPreprocessor} that can then be configured
-	 * to modify the headers of the request.
+	 * to modify the headers of the request or response.
 	 * @return the preprocessor
 	 * @since 3.0.0
 	 */

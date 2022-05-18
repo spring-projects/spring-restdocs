@@ -28,14 +28,14 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 @ExtendWith(RestDocumentationExtension.class)
-public class ExampleApplicationJUnit5Tests {
+class ExampleApplicationJUnit5Tests {
 
 	@SuppressWarnings("unused")
 	// tag::setup[]
 	private MockMvc mockMvc;
 
 	@BeforeEach
-	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+	void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 				.apply(documentationConfiguration(restDocumentation)) // <1>
 				.build();

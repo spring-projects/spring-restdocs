@@ -27,14 +27,14 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
 @ExtendWith(RestDocumentationExtension.class)
-public class ExampleApplicationJUnit5Tests {
+class ExampleApplicationJUnit5Tests {
 
 	@SuppressWarnings("unused")
 	// tag::setup[]
 	private RequestSpecification spec;
 
 	@BeforeEach
-	public void setUp(RestDocumentationContextProvider restDocumentation) {
+	void setUp(RestDocumentationContextProvider restDocumentation) {
 		this.spec = new RequestSpecBuilder().addFilter(documentationConfiguration(restDocumentation)) // <1>
 				.build();
 	}
