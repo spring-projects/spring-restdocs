@@ -3,7 +3,7 @@ set -e
 
 case "$1" in
 	java8)
-		 echo "https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u292-b10/OpenJDK8U-jdk_x64_linux_hotspot_8u292b10.tar.gz"
+		 echo "https://github.com/bell-sw/Liberica/releases/download/8u333+2/bellsoft-jdk8u333+2-linux-amd64.tar.gz"
 	;;
   *)
 		echo $"Unknown java version"
