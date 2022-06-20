@@ -19,7 +19,6 @@ package org.springframework.restdocs.mockmvc;
 import java.net.URI;
 
 import jakarta.servlet.ServletContext;
-
 import org.junit.Test;
 
 import org.springframework.http.HttpMethod;

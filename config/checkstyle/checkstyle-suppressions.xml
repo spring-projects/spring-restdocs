@@ -4,4 +4,5 @@
 		"https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
 	<suppress files="com[\\/]example[\\/]restassured" checks="IllegalImport" />
+	<suppress files="src[\\/]testFixtures" checks="JavadocPackage" />
 </suppressions>
