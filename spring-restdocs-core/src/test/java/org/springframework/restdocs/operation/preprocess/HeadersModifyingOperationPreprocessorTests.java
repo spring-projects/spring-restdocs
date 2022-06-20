@@ -90,10 +90,10 @@ public class HeadersModifyingOperationPreprocessorTests {
 
 	@Test
 	public void removeHeader() {
-		OperationPreprocessor preprocessor = this.preprocessor.remove("a");
-		assertThat(preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple"))).getHeaders())
+		this.preprocessor.remove("a");
+		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple"))).getHeaders())
 				.doesNotContainKey("a");
-		assertThat(preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple"))).getHeaders())
+		assertThat(this.preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple"))).getHeaders())
 				.doesNotContainKey("a");
 	}
 

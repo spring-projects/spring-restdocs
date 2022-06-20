@@ -231,7 +231,7 @@ public abstract class RestDocumentationRequestBuilders {
 	/**
 	 * Create a {@link MockMultipartHttpServletRequestBuilder} for a multipart request.
 	 * @param uri the URL
-	 * @return the builder for the file upload request
+	 * @return the builder for the multipart request
 	 * @since 2.0.6
 	 */
 	public static MockMultipartHttpServletRequestBuilder multipart(URI uri) {
