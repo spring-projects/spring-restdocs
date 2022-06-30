@@ -129,11 +129,13 @@ public class RestDocumentationRequestBuildersTests {
 		assertUri(request(HttpMethod.GET, URI.create("/uri")), HttpMethod.GET);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void fileUploadTemplate() {
 		assertTemplate(fileUpload("/{template}", "t"), HttpMethod.POST);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void fileUploadUri() {
 		assertUri(fileUpload(URI.create("/uri")), HttpMethod.POST);
