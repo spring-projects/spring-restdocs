@@ -42,7 +42,7 @@ If you want to jump straight in, a number of sample applications are available:
 
 | {samples}/rest-assured[REST Assured]
 | Gradle
-| Demonstrates the use of Spring REST Docs with http://rest-assured.io[REST Assured].
+| Demonstrates the use of Spring REST Docs with https://rest-assured.io/[REST Assured].
 |===
 
 
@@ -247,7 +247,7 @@ The following listings show how to do so in both Maven and Gradle:
 [[getting-started-documentation-snippets]]
 === Generating Documentation Snippets
 
-Spring REST Docs uses Spring MVC's {spring-framework-docs}/testing.html#spring-mvc-test-framework[test framework], Spring WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`], or http://rest-assured.io/[REST Assured] to make requests to the service that you are documenting.
+Spring REST Docs uses Spring MVC's {spring-framework-docs}/testing.html#spring-mvc-test-framework[test framework], Spring WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`], or https://rest-assured.io/[REST Assured] to make requests to the service that you are documenting.
 It then produces documentation snippets for the request and the resulting response.
 
 
