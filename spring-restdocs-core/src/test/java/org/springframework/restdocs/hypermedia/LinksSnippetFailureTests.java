@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.hypermedia;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -41,7 +40,7 @@ public class LinksSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void undocumentedLink() throws IOException {
+	public void undocumentedLink() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
 						Collections.<LinkDescriptor>emptyList()).document(this.operationBuilder.build()))
@@ -49,7 +48,7 @@ public class LinksSnippetFailureTests {
 	}
 
 	@Test
-	public void missingLink() throws IOException {
+	public void missingLink() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor(),
 						Arrays.asList(new LinkDescriptor("foo").description("bar")))
@@ -58,7 +57,7 @@ public class LinksSnippetFailureTests {
 	}
 
 	@Test
-	public void undocumentedLinkAndMissingLink() throws IOException {
+	public void undocumentedLinkAndMissingLink() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha")),
 						Arrays.asList(new LinkDescriptor("foo").description("bar")))
@@ -68,7 +67,7 @@ public class LinksSnippetFailureTests {
 	}
 
 	@Test
-	public void linkWithNoDescription() throws IOException {
+	public void linkWithNoDescription() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
 						Arrays.asList(new LinkDescriptor("foo"))).document(this.operationBuilder.build()))

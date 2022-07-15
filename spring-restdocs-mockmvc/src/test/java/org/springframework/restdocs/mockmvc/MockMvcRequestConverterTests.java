@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.restdocs.mockmvc;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -50,14 +51,14 @@ public class MockMvcRequestConverterTests {
 	private final MockMvcRequestConverter factory = new MockMvcRequestConverter();
 
 	@Test
-	public void httpRequest() throws Exception {
+	public void httpRequest() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.get("/foo"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
 	}
 
 	@Test
-	public void httpRequestWithCustomPort() throws Exception {
+	public void httpRequestWithCustomPort() {
 		MockHttpServletRequest mockRequest = MockMvcRequestBuilders.get("/foo").buildRequest(new MockServletContext());
 		mockRequest.setServerPort(8080);
 		OperationRequest request = this.factory.convert(mockRequest);
@@ -66,14 +67,14 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void requestWithContextPath() throws Exception {
+	public void requestWithContextPath() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.get("/foo/bar").contextPath("/foo"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo/bar"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
 	}
 
 	@Test
-	public void requestWithHeaders() throws Exception {
+	public void requestWithHeaders() {
 		OperationRequest request = createOperationRequest(
 				MockMvcRequestBuilders.get("/foo").header("a", "alpha", "apple").header("b", "bravo"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
@@ -83,7 +84,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void requestWithCookies() throws Exception {
+	public void requestWithCookies() {
 		OperationRequest request = createOperationRequest(
 				MockMvcRequestBuilders.get("/foo").cookie(new javax.servlet.http.Cookie("cookieName1", "cookieVal1"),
 						new javax.servlet.http.Cookie("cookieName2", "cookieVal2")));
@@ -103,7 +104,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void httpsRequest() throws Exception {
+	public void httpsRequest() {
 		MockHttpServletRequest mockRequest = MockMvcRequestBuilders.get("/foo").buildRequest(new MockServletContext());
 		mockRequest.setScheme("https");
 		mockRequest.setServerPort(443);
@@ -113,7 +114,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void httpsRequestWithCustomPort() throws Exception {
+	public void httpsRequestWithCustomPort() {
 		MockHttpServletRequest mockRequest = MockMvcRequestBuilders.get("/foo").buildRequest(new MockServletContext());
 		mockRequest.setScheme("https");
 		mockRequest.setServerPort(8443);
@@ -123,7 +124,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void getRequestWithParametersProducesUriWithQueryString() throws Exception {
+	public void getRequestWithParametersProducesUriWithQueryString() {
 		OperationRequest request = createOperationRequest(
 				MockMvcRequestBuilders.get("/foo").param("a", "alpha", "apple").param("b", "br&vo"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo"));
@@ -134,7 +135,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void getRequestWithQueryStringPopulatesParameters() throws Exception {
+	public void getRequestWithQueryStringPopulatesParameters() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.get("/foo?a=alpha&b=bravo"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&b=bravo"));
 		assertThat(request.getParameters().size()).isEqualTo(2);
@@ -144,7 +145,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithParameters() throws Exception {
+	public void postRequestWithParameters() {
 		OperationRequest request = createOperationRequest(
 				MockMvcRequestBuilders.post("/foo").param("a", "alpha", "apple").param("b", "br&vo"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
@@ -155,7 +156,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void mockMultipartFileUpload() throws Exception {
+	public void mockMultipartFileUpload() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.multipart("/foo")
 				.file(new MockMultipartFile("file", new byte[] { 1, 2, 3, 4 })));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
@@ -170,7 +171,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void mockMultipartFileUploadWithContentType() throws Exception {
+	public void mockMultipartFileUploadWithContentType() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.multipart("/foo")
 				.file(new MockMultipartFile("file", "original", "image/png", new byte[] { 1, 2, 3, 4 })));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
@@ -184,7 +185,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void requestWithPart() throws Exception {
+	public void requestWithPart() throws IOException {
 		MockHttpServletRequest mockRequest = MockMvcRequestBuilders.get("/foo").buildRequest(new MockServletContext());
 		Part mockPart = mock(Part.class);
 		given(mockPart.getHeaderNames()).willReturn(Arrays.asList("a", "b"));
@@ -206,7 +207,7 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void requestWithPartWithContentType() throws Exception {
+	public void requestWithPartWithContentType() throws IOException {
 		MockHttpServletRequest mockRequest = MockMvcRequestBuilders.get("/foo").buildRequest(new MockServletContext());
 		Part mockPart = mock(Part.class);
 		given(mockPart.getHeaderNames()).willReturn(Arrays.asList("a", "b"));
@@ -228,7 +229,7 @@ public class MockMvcRequestConverterTests {
 		assertThat(part.getContent()).isEqualTo(new byte[] { 1, 2, 3, 4 });
 	}
 
-	private OperationRequest createOperationRequest(MockHttpServletRequestBuilder builder) throws Exception {
+	private OperationRequest createOperationRequest(MockHttpServletRequestBuilder builder) {
 		return this.factory.convert(builder.buildRequest(new MockServletContext()));
 	}
 

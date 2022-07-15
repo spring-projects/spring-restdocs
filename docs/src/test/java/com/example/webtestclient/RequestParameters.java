@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class RequestParameters {
 
 	private WebTestClient webTestClient;
 
-	public void getQueryStringSnippet() throws Exception {
+	public void getQueryStringSnippet() {
 		// tag::request-parameters-query-string[]
 		this.webTestClient.get().uri("/users?page=2&per_page=100") // <1>
 			.exchange().expectStatus().isOk().expectBody()
@@ -42,7 +42,7 @@ public class RequestParameters {
 		// end::request-parameters-query-string[]
 	}
 
-	public void postFormDataSnippet() throws Exception {
+	public void postFormDataSnippet() {
 		// tag::request-parameters-form-data[]
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 		formData.add("username", "Tester");

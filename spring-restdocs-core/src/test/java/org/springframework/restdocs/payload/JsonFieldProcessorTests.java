@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -306,7 +306,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractNestedEntryWithDotInKeys() throws IOException {
+	public void extractNestedEntryWithDotInKeys() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a.key", alpha);
@@ -316,7 +316,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void extractNestedEntriesUsingTopLevelWildcard() throws IOException {
+	public void extractNestedEntriesUsingTopLevelWildcard() {
 		Map<String, Object> payload = new LinkedHashMap<>();
 		Map<String, Object> alpha = new LinkedHashMap<>();
 		payload.put("a", alpha);
@@ -330,7 +330,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void extractNestedEntriesUsingMidLevelWildcard() throws IOException {
+	public void extractNestedEntriesUsingMidLevelWildcard() {
 		Map<String, Object> payload = new LinkedHashMap<>();
 		Map<String, Object> alpha = new LinkedHashMap<>();
 		payload.put("a", alpha);
@@ -344,7 +344,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void extractUsingLeafWildcardMatchingSingleItem() throws IOException {
+	public void extractUsingLeafWildcardMatchingSingleItem() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -357,7 +357,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void extractUsingLeafWildcardMatchingMultipleItems() throws IOException {
+	public void extractUsingLeafWildcardMatchingMultipleItems() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -368,7 +368,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void removeUsingLeafWildcard() throws IOException {
+	public void removeUsingLeafWildcard() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -379,7 +379,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void removeUsingTopLevelWildcard() throws IOException {
+	public void removeUsingTopLevelWildcard() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -390,7 +390,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void removeUsingMidLevelWildcard() throws IOException {
+	public void removeUsingMidLevelWildcard() {
 		Map<String, Object> payload = new LinkedHashMap<>();
 		Map<String, Object> alpha = new LinkedHashMap<>();
 		payload.put("a", alpha);
@@ -407,28 +407,28 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsTrueForNonNullFieldInMap() throws Exception {
+	public void hasFieldIsTrueForNonNullFieldInMap() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", "alpha");
 		assertThat(this.fieldProcessor.hasField("a", payload)).isTrue();
 	}
 
 	@Test
-	public void hasFieldIsTrueForNullFieldInMap() throws Exception {
+	public void hasFieldIsTrueForNullFieldInMap() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", null);
 		assertThat(this.fieldProcessor.hasField("a", payload)).isTrue();
 	}
 
 	@Test
-	public void hasFieldIsFalseForAbsentFieldInMap() throws Exception {
+	public void hasFieldIsFalseForAbsentFieldInMap() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", null);
 		assertThat(this.fieldProcessor.hasField("b", payload)).isFalse();
 	}
 
 	@Test
-	public void hasFieldIsTrueForNeverNullFieldBeneathArray() throws Exception {
+	public void hasFieldIsTrueForNeverNullFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> nested = new HashMap<>();
 		nested.put("b", "bravo");
@@ -437,7 +437,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsTrueForAlwaysNullFieldBeneathArray() throws Exception {
+	public void hasFieldIsTrueForAlwaysNullFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> nested = new HashMap<>();
 		nested.put("b", null);
@@ -446,7 +446,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsFalseForAlwaysAbsentFieldBeneathArray() throws Exception {
+	public void hasFieldIsFalseForAlwaysAbsentFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> nested = new HashMap<>();
 		nested.put("b", "bravo");
@@ -455,7 +455,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsFalseForOccasionallyAbsentFieldBeneathArray() throws Exception {
+	public void hasFieldIsFalseForOccasionallyAbsentFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> nested = new HashMap<>();
 		nested.put("b", "bravo");
@@ -464,7 +464,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsFalseForOccasionallyNullFieldBeneathArray() throws Exception {
+	public void hasFieldIsFalseForOccasionallyNullFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> fieldPresent = new HashMap<>();
 		fieldPresent.put("b", "bravo");

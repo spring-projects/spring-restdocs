@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class Payload {
 
 	private RequestSpecification spec;
 
-	public void response() throws Exception {
+	public void response() {
 		// tag::response[]
 		RestAssured.given(this.spec).accept("application/json").filter(document("user", responseFields(// <1>
 				fieldWithPath("contact.name").description("The user's name"), // <2>
@@ -46,7 +46,7 @@ public class Payload {
 		// end::response[]
 	}
 
-	public void subsection() throws Exception {
+	public void subsection() {
 		// tag::subsection[]
 		RestAssured.given(this.spec).accept("application/json")
 				.filter(document("user",
@@ -55,7 +55,7 @@ public class Payload {
 		// end::subsection[]
 	}
 
-	public void explicitType() throws Exception {
+	public void explicitType() {
 		RestAssured.given(this.spec).accept("application/json")
 				// tag::explicit-type[]
 				.filter(document("user", responseFields(fieldWithPath("contact.email").type(JsonFieldType.STRING) // <1>
@@ -64,7 +64,7 @@ public class Payload {
 				.when().get("/user/5").then().assertThat().statusCode(is(200));
 	}
 
-	public void constraints() throws Exception {
+	public void constraints() {
 		RestAssured.given(this.spec).accept("application/json")
 				// tag::constraints[]
 				.filter(document("create-user",
@@ -77,7 +77,7 @@ public class Payload {
 				.when().post("/users").then().assertThat().statusCode(is(200));
 	}
 
-	public void descriptorReuse() throws Exception {
+	public void descriptorReuse() {
 		FieldDescriptor[] book = new FieldDescriptor[] { fieldWithPath("title").description("Title of the book"),
 				fieldWithPath("author").description("Author of the book") };
 
@@ -94,7 +94,7 @@ public class Payload {
 		// end::book-array[]
 	}
 
-	public void fieldsSubsection() throws Exception {
+	public void fieldsSubsection() {
 		// tag::fields-subsection[]
 		RestAssured.given(this.spec).accept("application/json")
 				.filter(document("location", responseFields(beneathPath("weather.temperature"), // <1>
@@ -104,7 +104,7 @@ public class Payload {
 		// end::fields-subsection[]
 	}
 
-	public void bodySubsection() throws Exception {
+	public void bodySubsection() {
 		// tag::body-subsection[]
 		RestAssured.given(this.spec).accept("application/json")
 				.filter(document("location", responseBody(beneathPath("weather.temperature")))) // <1>

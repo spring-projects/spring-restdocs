@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,8 +99,7 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
-	public void extractMapSubsectionWithVaryingStructureFromMultiElementArrayInAJsonMap()
-			throws JsonParseException, JsonMappingException, IOException {
+	public void extractMapSubsectionWithVaryingStructureFromMultiElementArrayInAJsonMap() {
 		this.thrown.expect(PayloadHandlingException.class);
 		this.thrown.expectMessage("The following non-optional uncommon paths were found: [a.[].b.d]");
 		new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
@@ -108,8 +107,7 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
-	public void extractMapSubsectionWithVaryingStructureFromInconsistentJsonMap()
-			throws JsonParseException, JsonMappingException, IOException {
+	public void extractMapSubsectionWithVaryingStructureFromInconsistentJsonMap() {
 		this.thrown.expect(PayloadHandlingException.class);
 		this.thrown.expectMessage("The following non-optional uncommon paths were found: [*.d, *.d.e, *.d.f]");
 		new FieldPathPayloadSubsectionExtractor("*.d").extractSubsection(
@@ -117,8 +115,7 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
-	public void extractMapSubsectionWithVaryingStructureFromInconsistentJsonMapWhereAllSubsectionFieldsAreOptional()
-			throws IOException {
+	public void extractMapSubsectionWithVaryingStructureFromInconsistentJsonMapWhereAllSubsectionFieldsAreOptional() {
 		this.thrown.expect(PayloadHandlingException.class);
 		this.thrown.expectMessage("The following non-optional uncommon paths were found: [*.d]");
 		new FieldPathPayloadSubsectionExtractor("*.d").extractSubsection(
@@ -176,7 +173,7 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
-	public void extractNonExistentSubsection() throws JsonParseException, JsonMappingException, IOException {
+	public void extractNonExistentSubsection() {
 		assertThatThrownBy(() -> new FieldPathPayloadSubsectionExtractor("a.c")
 				.extractSubsection("{\"a\":{\"b\":{\"c\":5}}}".getBytes(), MediaType.APPLICATION_JSON))
 						.isInstanceOf(PayloadHandlingException.class)
@@ -184,7 +181,7 @@ public class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
-	public void extractEmptyArraySubsection() throws JsonParseException, JsonMappingException, IOException {
+	public void extractEmptyArraySubsection() {
 		assertThatThrownBy(() -> new FieldPathPayloadSubsectionExtractor("a")
 				.extractSubsection("{\"a\":[]}}".getBytes(), MediaType.APPLICATION_JSON))
 						.isInstanceOf(PayloadHandlingException.class)

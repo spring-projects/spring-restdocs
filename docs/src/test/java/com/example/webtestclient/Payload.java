@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class Payload {
 
 	private WebTestClient webTestClient;
 
-	public void response() throws Exception {
+	public void response() {
 		// tag::response[]
 		this.webTestClient.get().uri("user/5").accept(MediaType.APPLICATION_JSON)
 			.exchange().expectStatus().isOk().expectBody()
@@ -48,7 +48,7 @@ public class Payload {
 		// end::response[]
 	}
 
-	public void subsection() throws Exception {
+	public void subsection() {
 		// tag::subsection[]
 		this.webTestClient.get().uri("user/5").accept(MediaType.APPLICATION_JSON)
 			.exchange().expectStatus().isOk().expectBody()
@@ -58,7 +58,7 @@ public class Payload {
 		// end::subsection[]
 	}
 
-	public void explicitType() throws Exception {
+	public void explicitType() {
 		this.webTestClient.get().uri("user/5").accept(MediaType.APPLICATION_JSON)
 			.exchange().expectStatus().isOk().expectBody()
 			// tag::explicit-type[]
@@ -70,7 +70,7 @@ public class Payload {
 		// end::explicit-type[]
 	}
 
-	public void constraints() throws Exception {
+	public void constraints() {
 		this.webTestClient.get().uri("user/5").accept(MediaType.APPLICATION_JSON)
 			.exchange().expectStatus().isOk().expectBody()
 			// tag::constraints[]
@@ -86,7 +86,7 @@ public class Payload {
 			// end::constraints[]
 	}
 
-	public void descriptorReuse() throws Exception {
+	public void descriptorReuse() {
 		FieldDescriptor[] book = new FieldDescriptor[] {
 				fieldWithPath("title").description("Title of the book"),
 				fieldWithPath("author").description("Author of the book") };
@@ -109,7 +109,7 @@ public class Payload {
 		// end::book-array[]
 	}
 
-	public void fieldsSubsection() throws Exception {
+	public void fieldsSubsection() {
 		// tag::fields-subsection[]
 		this.webTestClient.get().uri("/locations/1").accept(MediaType.APPLICATION_JSON)
 			.exchange().expectStatus().isOk().expectBody()
@@ -120,7 +120,7 @@ public class Payload {
 		// end::fields-subsection[]
 	}
 
-	public void bodySubsection() throws Exception {
+	public void bodySubsection() {
 		// tag::body-subsection[]
 		this.webTestClient.get().uri("/locations/1").accept(MediaType.APPLICATION_JSON)
 			.exchange().expectStatus().isOk().expectBody()

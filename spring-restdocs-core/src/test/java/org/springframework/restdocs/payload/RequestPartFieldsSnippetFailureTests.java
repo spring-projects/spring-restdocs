@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -43,7 +42,7 @@ public class RequestPartFieldsSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void undocumentedRequestPartField() throws IOException {
+	public void undocumentedRequestPartField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestPartFieldsSnippet("part", Collections.<FieldDescriptor>emptyList())
 						.document(this.operationBuilder.request("http://localhost")
@@ -52,7 +51,7 @@ public class RequestPartFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void missingRequestPartField() throws IOException {
+	public void missingRequestPartField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(
 						() -> new RequestPartFieldsSnippet("part", Arrays.asList(fieldWithPath("b").description("one")))
@@ -62,7 +61,7 @@ public class RequestPartFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void missingRequestPart() throws IOException {
+	public void missingRequestPart() {
 		assertThatExceptionOfType(SnippetException.class).isThrownBy(
 				() -> new RequestPartFieldsSnippet("another", Arrays.asList(fieldWithPath("a.b").description("one")))
 						.document(this.operationBuilder.request("http://localhost")

@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.request;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -42,7 +41,7 @@ public class RequestParametersSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void undocumentedParameter() throws IOException {
+	public void undocumentedParameter() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestParametersSnippet(Collections.<ParameterDescriptor>emptyList())
 						.document(this.operationBuilder.request("http://localhost").param("a", "alpha").build()))
@@ -50,7 +49,7 @@ public class RequestParametersSnippetFailureTests {
 	}
 
 	@Test
-	public void missingParameter() throws IOException {
+	public void missingParameter() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
 						.document(this.operationBuilder.request("http://localhost").build()))
@@ -58,7 +57,7 @@ public class RequestParametersSnippetFailureTests {
 	}
 
 	@Test
-	public void undocumentedAndMissingParameters() throws IOException {
+	public void undocumentedAndMissingParameters() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
 						.document(this.operationBuilder.request("http://localhost").param("b", "bravo").build()))

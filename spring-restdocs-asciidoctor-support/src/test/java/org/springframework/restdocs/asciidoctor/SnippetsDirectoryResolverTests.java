@@ -49,7 +49,7 @@ public class SnippetsDirectoryResolverTests {
 	}
 
 	@Test
-	public void illegalStateExceptionWhenMavenPomCannotBeFound() throws IOException {
+	public void illegalStateExceptionWhenMavenPomCannotBeFound() {
 		Map<String, Object> attributes = new HashMap<>();
 		String docdir = new File(this.temporaryFolder.getRoot(), "src/main/asciidoc").getAbsolutePath();
 		attributes.put("docdir", docdir);
@@ -58,14 +58,14 @@ public class SnippetsDirectoryResolverTests {
 	}
 
 	@Test
-	public void illegalStateWhenDocdirAttributeIsNotSetInMavenProject() throws IOException {
+	public void illegalStateWhenDocdirAttributeIsNotSetInMavenProject() {
 		Map<String, Object> attributes = new HashMap<>();
 		assertThatIllegalStateException().isThrownBy(() -> getMavenSnippetsDirectory(attributes))
 				.withMessage("docdir attribute not found");
 	}
 
 	@Test
-	public void gradleProjectsUseBuildGeneratedSnippetsBeneathGradleProjectdir() throws IOException {
+	public void gradleProjectsUseBuildGeneratedSnippetsBeneathGradleProjectdir() {
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("gradle-projectdir", "project/dir");
 		File snippetsDirectory = new SnippetsDirectoryResolver().getSnippetsDirectory(attributes);
@@ -73,8 +73,7 @@ public class SnippetsDirectoryResolverTests {
 	}
 
 	@Test
-	public void gradleProjectsUseBuildGeneratedSnippetsBeneathGradleProjectdirWhenBothItAndProjectdirAreSet()
-			throws IOException {
+	public void gradleProjectsUseBuildGeneratedSnippetsBeneathGradleProjectdirWhenBothItAndProjectdirAreSet() {
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("gradle-projectdir", "project/dir");
 		attributes.put("projectdir", "fallback/dir");
@@ -83,8 +82,7 @@ public class SnippetsDirectoryResolverTests {
 	}
 
 	@Test
-	public void gradleProjectsUseBuildGeneratedSnippetsBeneathProjectdirWhenGradleProjectdirIsNotSet()
-			throws IOException {
+	public void gradleProjectsUseBuildGeneratedSnippetsBeneathProjectdirWhenGradleProjectdirIsNotSet() {
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("projectdir", "project/dir");
 		File snippetsDirectory = new SnippetsDirectoryResolver().getSnippetsDirectory(attributes);
@@ -92,7 +90,7 @@ public class SnippetsDirectoryResolverTests {
 	}
 
 	@Test
-	public void illegalStateWhenGradleProjectdirAndProjectdirAttributesAreNotSetInGradleProject() throws IOException {
+	public void illegalStateWhenGradleProjectdirAndProjectdirAttributesAreNotSetInGradleProject() {
 		Map<String, Object> attributes = new HashMap<>();
 		assertThatIllegalStateException()
 				.isThrownBy(() -> new SnippetsDirectoryResolver().getSnippetsDirectory(attributes))

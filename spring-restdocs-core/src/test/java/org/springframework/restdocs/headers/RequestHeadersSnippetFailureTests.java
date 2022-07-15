@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.headers;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Rule;
@@ -41,7 +40,7 @@ public class RequestHeadersSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void missingRequestHeader() throws IOException {
+	public void missingRequestHeader() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
 						.document(this.operationBuilder.request("http://localhost").build()))
@@ -49,7 +48,7 @@ public class RequestHeadersSnippetFailureTests {
 	}
 
 	@Test
-	public void undocumentedRequestHeaderAndMissingRequestHeader() throws IOException {
+	public void undocumentedRequestHeaderAndMissingRequestHeader() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
 						.document(this.operationBuilder.request("http://localhost").header("X-Test", "test").build()))
