@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
@@ -59,6 +61,38 @@ public class RequestBodyPartSnippetTests extends AbstractSnippetTests {
 				.document(this.operationBuilder.request("http://localhost").part("one", new byte[0]).build());
 		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
 				.is(codeBlock(null, "nowrap").withContent(""));
+	}
+
+	@Test
+	public void requestPartWithJsonMediaType() throws IOException {
+		requestPartBody("one").document(this.operationBuilder.request("http://localhost").part("one", "".getBytes())
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
+				.is(codeBlock("json", "nowrap").withContent(""));
+	}
+
+	@Test
+	public void requestPartWithJsonSubtypeMediaType() throws IOException {
+		requestPartBody("one").document(this.operationBuilder.request("http://localhost").part("one", "".getBytes())
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PROBLEM_JSON_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
+				.is(codeBlock("json", "nowrap").withContent(""));
+	}
+
+	@Test
+	public void requestPartWithXmlMediaType() throws IOException {
+		requestPartBody("one").document(this.operationBuilder.request("http://localhost").part("one", "".getBytes())
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
+				.is(codeBlock("xml", "nowrap").withContent(""));
+	}
+
+	@Test
+	public void requestPartWithXmlSubtypeMediaType() throws IOException {
+		requestPartBody("one").document(this.operationBuilder.request("http://localhost").part("one", "".getBytes())
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
+				.is(codeBlock("xml", "nowrap").withContent(""));
 	}
 
 	@Test

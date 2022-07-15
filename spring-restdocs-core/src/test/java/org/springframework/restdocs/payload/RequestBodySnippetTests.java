@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,14 +61,28 @@ public class RequestBodySnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void requestWithMediaTypeJson() throws IOException {
+	public void requestWithJsonMediaType() throws IOException {
 		requestBody().document(this.operationBuilder.request("http://localhost")
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build());
 		assertThat(this.generatedSnippets.snippet("request-body")).is(codeBlock("json", "nowrap").withContent(""));
 	}
 
 	@Test
-	public void requestWithMediaTypeXml() throws IOException {
+	public void requestWithJsonSubtypeMediaType() throws IOException {
+		requestBody().document(this.operationBuilder.request("http://localhost")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PROBLEM_JSON_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("request-body")).is(codeBlock("json", "nowrap").withContent(""));
+	}
+
+	@Test
+	public void requestWithXmlMediaType() throws IOException {
+		requestBody().document(this.operationBuilder.request("http://localhost")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("request-body")).is(codeBlock("xml", "nowrap").withContent(""));
+	}
+
+	@Test
+	public void requestWithXmlSubtypeMediaType() throws IOException {
 		requestBody().document(this.operationBuilder.request("http://localhost")
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML_VALUE).build());
 		assertThat(this.generatedSnippets.snippet("request-body")).is(codeBlock("xml", "nowrap").withContent(""));
