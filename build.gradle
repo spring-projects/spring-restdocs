@@ -87,8 +87,6 @@ subprojects { subproject ->
 		}
 
 		plugins.withType(MavenPublishPlugin) {
-			subproject.apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
-
 			javadoc {
 				description = "Generates project-level javadoc for use in -javadoc jar"
 				options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
@@ -107,7 +105,9 @@ subprojects { subproject ->
 			}
 		}
 	}
-
+	plugins.withType(MavenPublishPlugin) {
+			subproject.apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
+	}
 	tasks.withType(GenerateModuleMetadata) {
 		enabled = false
 	}

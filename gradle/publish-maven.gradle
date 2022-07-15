@@ -21,6 +21,9 @@ plugins.withType(MavenPublishPlugin) {
 						}
 					}
 				}
+				project.plugins.withType(JavaPlatformPlugin) {
+					from components.javaPlatform
+				}
 				pom {
 					name = project.provider { project.description }
 					description = project.provider { project.description }

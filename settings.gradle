@@ -35,6 +35,7 @@ settings.gradle.projectsLoaded {
 
 include "docs"
 include "spring-restdocs-asciidoctor"
+include "spring-restdocs-bom"
 include "spring-restdocs-core"
 include "spring-restdocs-mockmvc"
 include "spring-restdocs-platform"
