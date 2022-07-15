@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,79 +33,79 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RestDocumentationContextPlaceholderResolverTests {
 
 	@Test
-	public void kebabCaseMethodName() throws Exception {
+	public void kebabCaseMethodName() {
 		assertThat(createResolver("dashSeparatedMethodName").resolvePlaceholder("method-name"))
 				.isEqualTo("dash-separated-method-name");
 	}
 
 	@Test
-	public void kebabCaseMethodNameWithUpperCaseOpeningSection() throws Exception {
+	public void kebabCaseMethodNameWithUpperCaseOpeningSection() {
 		assertThat(createResolver("URIDashSeparatedMethodName").resolvePlaceholder("method-name"))
 				.isEqualTo("uri-dash-separated-method-name");
 	}
 
 	@Test
-	public void kebabCaseMethodNameWithUpperCaseMidSection() throws Exception {
+	public void kebabCaseMethodNameWithUpperCaseMidSection() {
 		assertThat(createResolver("dashSeparatedMethodNameWithURIInIt").resolvePlaceholder("method-name"))
 				.isEqualTo("dash-separated-method-name-with-uri-in-it");
 	}
 
 	@Test
-	public void kebabCaseMethodNameWithUpperCaseEndSection() throws Exception {
+	public void kebabCaseMethodNameWithUpperCaseEndSection() {
 		assertThat(createResolver("dashSeparatedMethodNameWithURI").resolvePlaceholder("method-name"))
 				.isEqualTo("dash-separated-method-name-with-uri");
 	}
 
 	@Test
-	public void snakeCaseMethodName() throws Exception {
+	public void snakeCaseMethodName() {
 		assertThat(createResolver("underscoreSeparatedMethodName").resolvePlaceholder("method_name"))
 				.isEqualTo("underscore_separated_method_name");
 	}
 
 	@Test
-	public void snakeCaseMethodNameWithUpperCaseOpeningSection() throws Exception {
+	public void snakeCaseMethodNameWithUpperCaseOpeningSection() {
 		assertThat(createResolver("URIUnderscoreSeparatedMethodName").resolvePlaceholder("method_name"))
 				.isEqualTo("uri_underscore_separated_method_name");
 	}
 
 	@Test
-	public void snakeCaseMethodNameWithUpperCaseMidSection() throws Exception {
+	public void snakeCaseMethodNameWithUpperCaseMidSection() {
 		assertThat(createResolver("underscoreSeparatedMethodNameWithURIInIt").resolvePlaceholder("method_name"))
 				.isEqualTo("underscore_separated_method_name_with_uri_in_it");
 	}
 
 	@Test
-	public void snakeCaseMethodNameWithUpperCaseEndSection() throws Exception {
+	public void snakeCaseMethodNameWithUpperCaseEndSection() {
 		assertThat(createResolver("underscoreSeparatedMethodNameWithURI").resolvePlaceholder("method_name"))
 				.isEqualTo("underscore_separated_method_name_with_uri");
 	}
 
 	@Test
-	public void camelCaseMethodName() throws Exception {
+	public void camelCaseMethodName() {
 		assertThat(createResolver("camelCaseMethodName").resolvePlaceholder("methodName"))
 				.isEqualTo("camelCaseMethodName");
 	}
 
 	@Test
-	public void kebabCaseClassName() throws Exception {
+	public void kebabCaseClassName() {
 		assertThat(createResolver().resolvePlaceholder("class-name"))
 				.isEqualTo("rest-documentation-context-placeholder-resolver-tests");
 	}
 
 	@Test
-	public void snakeCaseClassName() throws Exception {
+	public void snakeCaseClassName() {
 		assertThat(createResolver().resolvePlaceholder("class_name"))
 				.isEqualTo("rest_documentation_context_placeholder_resolver_tests");
 	}
 
 	@Test
-	public void camelCaseClassName() throws Exception {
+	public void camelCaseClassName() {
 		assertThat(createResolver().resolvePlaceholder("ClassName"))
 				.isEqualTo("RestDocumentationContextPlaceholderResolverTests");
 	}
 
 	@Test
-	public void stepCount() throws Exception {
+	public void stepCount() {
 		assertThat(createResolver("stepCount").resolvePlaceholder("step")).isEqualTo("1");
 	}
 

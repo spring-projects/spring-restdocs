@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class Hypermedia {
 
 	private RequestSpecification spec;
 
-	public void defaultExtractor() throws Exception {
+	public void defaultExtractor() {
 		// tag::links[]
 		RestAssured.given(this.spec).accept("application/json").filter(document("index", links(// <1>
 				linkWithRel("alpha").description("Link to the alpha resource"), // <2>
@@ -38,7 +38,7 @@ public class Hypermedia {
 		// end::links[]
 	}
 
-	public void explicitExtractor() throws Exception {
+	public void explicitExtractor() {
 		RestAssured.given(this.spec).accept("application/json")
 				// tag::explicit-extractor[]
 				.filter(document("index", links(halLinks(), // <1>

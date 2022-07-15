@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.templates;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class StandardTemplateResourceResolverTests {
 	private final TestClassLoader classLoader = new TestClassLoader();
 
 	@Test
-	public void formatSpecificCustomSnippetHasHighestPrecedence() throws Exception {
+	public void formatSpecificCustomSnippetHasHighestPrecedence() throws IOException {
 		this.classLoader.addResource("org/springframework/restdocs/templates/asciidoctor/test.snippet",
 				getClass().getResource("test-format-specific-custom.snippet"));
 		this.classLoader.addResource("org/springframework/restdocs/templates/test.snippet",
@@ -61,7 +62,7 @@ public class StandardTemplateResourceResolverTests {
 	}
 
 	@Test
-	public void generalCustomSnippetIsUsedInAbsenceOfFormatSpecificCustomSnippet() throws Exception {
+	public void generalCustomSnippetIsUsedInAbsenceOfFormatSpecificCustomSnippet() throws IOException {
 		this.classLoader.addResource("org/springframework/restdocs/templates/test.snippet",
 				getClass().getResource("test-custom.snippet"));
 		this.classLoader.addResource("org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
@@ -95,18 +96,21 @@ public class StandardTemplateResourceResolverTests {
 	}
 
 	@Test
-	public void failsIfCustomAndDefaultSnippetsDoNotExist() throws Exception {
+	public void failsIfCustomAndDefaultSnippetsDoNotExist() {
 		assertThatIllegalStateException()
 				.isThrownBy(() -> doWithThreadContextClassLoader(this.classLoader,
 						() -> StandardTemplateResourceResolverTests.this.resolver.resolveTemplateResource("test")))
 				.withMessage("Template named 'test' could not be resolved");
 	}
 
-	private <T> T doWithThreadContextClassLoader(ClassLoader classLoader, Callable<T> action) throws Exception {
+	private <T> T doWithThreadContextClassLoader(ClassLoader classLoader, Callable<T> action) {
 		ClassLoader previous = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(classLoader);
 		try {
 			return action.call();
+		}
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 		finally {
 			Thread.currentThread().setContextClassLoader(previous);

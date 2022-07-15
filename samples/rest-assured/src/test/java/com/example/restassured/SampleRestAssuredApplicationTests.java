@@ -59,7 +59,7 @@ public class SampleRestAssuredApplicationTests {
 	}
 
 	@Test
-	public void sample() throws Exception {
+	public void sample() {
 		given(this.documentationSpec)
 				.accept("text/plain")
 				.filter(document("sample",

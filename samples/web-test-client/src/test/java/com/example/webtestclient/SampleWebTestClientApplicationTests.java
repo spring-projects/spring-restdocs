@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class SampleWebTestClientApplicationTests {
 	}
 
 	@Test
-	public void sample() throws Exception {
+	public void sample() {
 		this.webTestClient.get().uri("/").exchange()
 			.expectStatus().isOk().expectBody()
 			.consumeWith(document("sample"));

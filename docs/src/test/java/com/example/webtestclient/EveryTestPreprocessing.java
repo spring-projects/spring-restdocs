@@ -54,7 +54,7 @@ public class EveryTestPreprocessing {
 	}
 	// end::setup[]
 
-	public void use() throws Exception {
+	public void use() {
 		// tag::use[]
 		this.webTestClient.get().uri("/").exchange().expectStatus().isOk()
 			.expectBody().consumeWith(document("index",

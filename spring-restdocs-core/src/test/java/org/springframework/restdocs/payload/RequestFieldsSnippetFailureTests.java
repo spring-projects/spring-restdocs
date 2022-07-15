@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -44,7 +43,7 @@ public class RequestFieldsSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void undocumentedRequestField() throws IOException {
+	public void undocumentedRequestField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(Collections.<FieldDescriptor>emptyList())
 						.document(this.operationBuilder.request("http://localhost").content("{\"a\": 5}").build()))
@@ -52,7 +51,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void missingRequestField() throws IOException {
+	public void missingRequestField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one")))
 						.document(this.operationBuilder.request("http://localhost").content("{}").build()))
@@ -60,14 +59,14 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void missingOptionalRequestFieldWithNoTypeProvided() throws IOException {
+	public void missingOptionalRequestFieldWithNoTypeProvided() {
 		assertThatExceptionOfType(FieldTypeRequiredException.class).isThrownBy(
 				() -> new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one").optional()))
 						.document(this.operationBuilder.request("http://localhost").content("{ }").build()));
 	}
 
 	@Test
-	public void undocumentedRequestFieldAndMissingRequestField() throws IOException {
+	public void undocumentedRequestFieldAndMissingRequestField() {
 		assertThatExceptionOfType(SnippetException.class).isThrownBy(
 				() -> new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a.b").description("one"))).document(
 						this.operationBuilder.request("http://localhost").content("{ \"a\": { \"c\": 5 }}").build()))
@@ -76,7 +75,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void attemptToDocumentFieldsWithNoRequestBody() throws IOException {
+	public void attemptToDocumentFieldsWithNoRequestBody() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
 						.document(this.operationBuilder.request("http://localhost").build()))
@@ -84,7 +83,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void fieldWithExplicitTypeThatDoesNotMatchThePayload() throws IOException {
+	public void fieldWithExplicitTypeThatDoesNotMatchThePayload() {
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(
 						Arrays.asList(fieldWithPath("a").description("one").type(JsonFieldType.OBJECT))).document(
@@ -93,7 +92,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void fieldWithExplicitSpecificTypeThatActuallyVaries() throws IOException {
+	public void fieldWithExplicitSpecificTypeThatActuallyVaries() {
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(
 						Arrays.asList(fieldWithPath("[].a").description("one").type(JsonFieldType.OBJECT)))
@@ -103,7 +102,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void undocumentedXmlRequestField() throws IOException {
+	public void undocumentedXmlRequestField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(Collections.<FieldDescriptor>emptyList())
 						.document(this.operationBuilder.request("http://localhost").content("<a><b>5</b></a>")
@@ -112,7 +111,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void xmlDescendentsAreNotDocumentedByFieldDescriptor() throws IOException {
+	public void xmlDescendentsAreNotDocumentedByFieldDescriptor() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(
 						() -> new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").type("a").description("one")))
@@ -122,7 +121,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void xmlRequestFieldWithNoType() throws IOException {
+	public void xmlRequestFieldWithNoType() {
 		assertThatExceptionOfType(FieldTypeRequiredException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
 						.document(this.operationBuilder.request("http://localhost").content("<a>5</a>")
@@ -130,7 +129,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void missingXmlRequestField() throws IOException {
+	public void missingXmlRequestField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(
 						Arrays.asList(fieldWithPath("a/b").description("one"), fieldWithPath("a").description("one")))
@@ -140,7 +139,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void undocumentedXmlRequestFieldAndMissingXmlRequestField() throws IOException {
+	public void undocumentedXmlRequestFieldAndMissingXmlRequestField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
 						.document(this.operationBuilder.request("http://localhost").content("<a><c>5</c></a>")
@@ -150,7 +149,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void unsupportedContent() throws IOException {
+	public void unsupportedContent() {
 		assertThatExceptionOfType(PayloadHandlingException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(Collections.<FieldDescriptor>emptyList())
 						.document(this.operationBuilder.request("http://localhost").content("Some plain text")
@@ -159,7 +158,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void nonOptionalFieldBeneathArrayThatIsSometimesNull() throws IOException {
+	public void nonOptionalFieldBeneathArrayThatIsSometimesNull() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(
 						Arrays.asList(fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
@@ -172,7 +171,7 @@ public class RequestFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void nonOptionalFieldBeneathArrayThatIsSometimesAbsent() throws IOException {
+	public void nonOptionalFieldBeneathArrayThatIsSometimesAbsent() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestFieldsSnippet(
 						Arrays.asList(fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),

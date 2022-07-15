@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.request;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -42,7 +41,7 @@ public class RequestPartsSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void undocumentedPart() throws IOException {
+	public void undocumentedPart() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestPartsSnippet(Collections.<RequestPartDescriptor>emptyList()).document(
 						this.operationBuilder.request("http://localhost").part("a", "alpha".getBytes()).build()))
@@ -50,7 +49,7 @@ public class RequestPartsSnippetFailureTests {
 	}
 
 	@Test
-	public void missingPart() throws IOException {
+	public void missingPart() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
 						.document(this.operationBuilder.request("http://localhost").build()))
@@ -58,7 +57,7 @@ public class RequestPartsSnippetFailureTests {
 	}
 
 	@Test
-	public void undocumentedAndMissingParts() throws IOException {
+	public void undocumentedAndMissingParts() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one"))).document(
 						this.operationBuilder.request("http://localhost").part("b", "bravo".getBytes()).build()))

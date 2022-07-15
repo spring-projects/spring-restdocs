@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
@@ -96,7 +97,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithContent() throws Exception {
+	public void curlSnippetWithContent() {
 		String contentType = "text/plain; charset=UTF-8";
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("curl-snippet-with-content")).accept("application/json").body("content")
@@ -109,7 +110,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithCookies() throws Exception {
+	public void curlSnippetWithCookies() {
 		String contentType = "text/plain; charset=UTF-8";
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("curl-snippet-with-cookies")).accept("application/json").contentType(contentType)
@@ -121,7 +122,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithEmptyParameterQueryString() throws Exception {
+	public void curlSnippetWithEmptyParameterQueryString() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("curl-snippet-with-empty-parameter-query-string")).accept("application/json")
 				.param("a", "").get("/").then().statusCode(200);
@@ -133,7 +134,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithQueryStringOnPost() throws Exception {
+	public void curlSnippetWithQueryStringOnPost() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("curl-snippet-with-query-string")).accept("application/json").param("foo", "bar")
 				.param("a", "alpha").post("/?foo=bar").then().statusCode(200);
@@ -146,7 +147,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void linksSnippet() throws Exception {
+	public void linksSnippet() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("links", links(linkWithRel("rel").description("The description"))))
 				.accept("application/json").get("/").then().statusCode(200);
@@ -155,7 +156,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void pathParametersSnippet() throws Exception {
+	public void pathParametersSnippet() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("path-parameters",
 						pathParameters(parameterWithName("foo").description("The description"))))
@@ -165,7 +166,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void requestParametersSnippet() throws Exception {
+	public void requestParametersSnippet() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("request-parameters",
 						requestParameters(parameterWithName("foo").description("The description"))))
@@ -175,7 +176,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void requestFieldsSnippet() throws Exception {
+	public void requestFieldsSnippet() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("request-fields", requestFields(fieldWithPath("a").description("The description"))))
 				.accept("application/json").body("{\"a\":\"alpha\"}").post("/").then().statusCode(200);
@@ -184,7 +185,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void requestPartsSnippet() throws Exception {
+	public void requestPartsSnippet() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("request-parts", requestParts(partWithName("a").description("The description"))))
 				.multiPart("a", "foo").post("/upload").then().statusCode(200);
@@ -193,7 +194,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void responseFieldsSnippet() throws Exception {
+	public void responseFieldsSnippet() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("response-fields",
 						responseFields(fieldWithPath("a").description("The description"),
@@ -204,7 +205,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void parameterizedOutputDirectory() throws Exception {
+	public void parameterizedOutputDirectory() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("{method-name}")).get("/").then().statusCode(200);
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/parameterized-output-directory"),
@@ -212,7 +213,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void multiStep() throws Exception {
+	public void multiStep() {
 		RequestSpecification spec = new RequestSpecBuilder().setPort(tomcat.getPort())
 				.addFilter(documentationConfiguration(this.restDocumentation))
 				.addFilter(document("{method-name}-{step}")).build();
@@ -228,7 +229,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void additionalSnippets() throws Exception {
+	public void additionalSnippets() {
 		RestDocumentationFilter documentation = document("{method-name}-{step}");
 		RequestSpecification spec = new RequestSpecBuilder().setPort(tomcat.getPort())
 				.addFilter(documentationConfiguration(this.restDocumentation)).addFilter(documentation).build();
@@ -254,7 +255,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void preprocessedRequest() throws Exception {
+	public void preprocessedRequest() {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation)).header("a", "alpha")
 				.header("b", "bravo").contentType("application/json").accept("application/json")
@@ -277,7 +278,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void defaultPreprocessedRequest() throws Exception {
+	public void defaultPreprocessedRequest() {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		given().port(tomcat.getPort())
 				.filter(documentationConfiguration(this.restDocumentation).operationPreprocessors().withRequestDefaults(
@@ -294,7 +295,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void preprocessedResponse() throws Exception {
+	public void preprocessedResponse() {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("original-response"))
@@ -315,7 +316,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void defaultPreprocessedResponse() throws Exception {
+	public void defaultPreprocessedResponse() {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		given().port(tomcat.getPort())
 				.filter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
@@ -335,7 +336,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void customSnippetTemplate() throws Exception {
+	public void customSnippetTemplate() throws MalformedURLException {
 		ClassLoader classLoader = new URLClassLoader(
 				new URL[] { new File("src/test/resources/custom-snippet-templates").toURI().toURL() },
 				getClass().getClassLoader());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class Hypermedia {
 
 	private WebTestClient webTestClient;
 
-	public void defaultExtractor() throws Exception {
+	public void defaultExtractor() {
 		// tag::links[]
 		this.webTestClient.get().uri("/").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectBody().consumeWith(document("index", links(// <1>
@@ -37,7 +37,7 @@ public class Hypermedia {
 		// end::links[]
 	}
 
-	public void explicitExtractor() throws Exception {
+	public void explicitExtractor() {
 		this.webTestClient.get().uri("/").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectBody()
 				// tag::explicit-extractor[]

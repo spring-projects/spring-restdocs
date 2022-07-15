@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class RequestParameters {
 
 	private RequestSpecification spec;
 
-	public void getQueryStringSnippet() throws Exception {
+	public void getQueryStringSnippet() {
 		// tag::request-parameters-query-string[]
 		RestAssured.given(this.spec).filter(document("users", requestParameters(// <1>
 				parameterWithName("page").description("The page to retrieve"), // <2>
@@ -38,7 +38,7 @@ public class RequestParameters {
 		// end::request-parameters-query-string[]
 	}
 
-	public void postFormDataSnippet() throws Exception {
+	public void postFormDataSnippet() {
 		// tag::request-parameters-form-data[]
 		RestAssured.given(this.spec)
 				.filter(document("create-user",

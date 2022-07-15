@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class RequestPartPayload {
 
 	private WebTestClient webTestClient;
 
-	public void fields() throws Exception {
+	public void fields() {
 		// tag::fields[]
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		Resource imageResource = new ByteArrayResource("<<png data>>".getBytes()) {
@@ -59,7 +59,7 @@ public class RequestPartPayload {
 		// end::fields[]
 	}
 
-	public void body() throws Exception {
+	public void body() {
 		// tag::body[]
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		Resource imageResource = new ByteArrayResource("<<png data>>".getBytes()) {

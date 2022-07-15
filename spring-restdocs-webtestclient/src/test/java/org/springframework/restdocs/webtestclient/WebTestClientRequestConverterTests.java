@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void getRequestWithQueryStringPopulatesParameters() throws Exception {
+	public void getRequestWithQueryStringPopulatesParameters() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo?a=alpha&b=bravo").exchange()
 				.expectBody().returnResult();
@@ -116,7 +116,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithFormDataParameters() throws Exception {
+	public void postRequestWithFormDataParameters() {
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 		parameters.addAll("a", Arrays.asList("alpha", "apple"));
 		parameters.addAll("b", Arrays.asList("br&vo"));
@@ -134,7 +134,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithQueryStringParameters() throws Exception {
+	public void postRequestWithQueryStringParameters() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
 			req.body(BodyExtractors.toFormData()).block();
 			return null;
@@ -150,7 +150,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithQueryStringAndFormDataParameters() throws Exception {
+	public void postRequestWithQueryStringAndFormDataParameters() {
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 		parameters.addAll("a", Arrays.asList("apple"));
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
@@ -168,7 +168,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithNoContentType() throws Exception {
+	public void postRequestWithNoContentType() {
 		ExchangeResult result = WebTestClient
 				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> ServerResponse.ok().build()))
 				.configureClient().baseUrl("http://localhost").build().post().uri("/foo").exchange().expectBody()
@@ -179,7 +179,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void multipartUpload() throws Exception {
+	public void multipartUpload() {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("file", new byte[] { 1, 2, 3, 4 });
 		ExchangeResult result = WebTestClient
@@ -205,7 +205,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void multipartUploadFromResource() throws Exception {
+	public void multipartUploadFromResource() {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("file", new ByteArrayResource(new byte[] { 1, 2, 3, 4 }) {
 
@@ -241,7 +241,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void requestWithCookies() throws Exception {
+	public void requestWithCookies() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
 				.cookie("cookieName1", "cookieVal1").cookie("cookieName2", "cookieVal2").exchange().expectBody()

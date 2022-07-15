@@ -50,7 +50,7 @@ public class EveryTestPreprocessing {
 	}
 	// end::setup[]
 
-	public void use() throws Exception {
+	public void use() {
 		// tag::use[]
 		RestAssured.given(this.spec)
 				.filter(document("index", links(linkWithRel("self").description("Canonical self link")))).when()

@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -44,7 +43,7 @@ public class ResponseFieldsSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void attemptToDocumentFieldsWithNoResponseBody() throws IOException {
+	public void attemptToDocumentFieldsWithNoResponseBody() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
 						.document(this.operationBuilder.build()))
@@ -52,7 +51,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void fieldWithExplicitTypeThatDoesNotMatchThePayload() throws IOException {
+	public void fieldWithExplicitTypeThatDoesNotMatchThePayload() {
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(
 						Arrays.asList(fieldWithPath("a").description("one").type(JsonFieldType.OBJECT)))
@@ -61,7 +60,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void fieldWithExplicitSpecificTypeThatActuallyVaries() throws IOException {
+	public void fieldWithExplicitSpecificTypeThatActuallyVaries() {
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(
 						Arrays.asList(fieldWithPath("[].a").description("one").type(JsonFieldType.OBJECT))).document(
@@ -70,7 +69,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void undocumentedXmlResponseField() throws IOException {
+	public void undocumentedXmlResponseField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(Collections.<FieldDescriptor>emptyList())
 						.document(this.operationBuilder.response().content("<a><b>5</b></a>")
@@ -79,7 +78,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void missingXmlAttribute() throws IOException {
+	public void missingXmlAttribute() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(
 						() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one").type("b"),
@@ -93,7 +92,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void documentedXmlAttributesAreRemoved() throws IOException {
+	public void documentedXmlAttributesAreRemoved() {
 		assertThatExceptionOfType(SnippetException.class).isThrownBy(
 				() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/@id").description("one").type("a")))
 						.document(this.operationBuilder.response().content("<a id=\"foo\">bar</a>")
@@ -102,7 +101,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void xmlResponseFieldWithNoType() throws IOException {
+	public void xmlResponseFieldWithNoType() {
 		assertThatExceptionOfType(FieldTypeRequiredException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
 						.document(this.operationBuilder.response().content("<a>5</a>")
@@ -110,7 +109,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void missingXmlResponseField() throws IOException {
+	public void missingXmlResponseField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(
 						Arrays.asList(fieldWithPath("a/b").description("one"), fieldWithPath("a").description("one")))
@@ -120,7 +119,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void undocumentedXmlResponseFieldAndMissingXmlResponseField() throws IOException {
+	public void undocumentedXmlResponseFieldAndMissingXmlResponseField() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
 						.document(this.operationBuilder.response().content("<a><c>5</c></a>")
@@ -130,7 +129,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void unsupportedContent() throws IOException {
+	public void unsupportedContent() {
 		assertThatExceptionOfType(PayloadHandlingException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(Collections.<FieldDescriptor>emptyList())
 						.document(this.operationBuilder.response().content("Some plain text")
@@ -139,7 +138,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void nonOptionalFieldBeneathArrayThatIsSometimesNull() throws IOException {
+	public void nonOptionalFieldBeneathArrayThatIsSometimesNull() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(
 						Arrays.asList(fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
@@ -152,7 +151,7 @@ public class ResponseFieldsSnippetFailureTests {
 	}
 
 	@Test
-	public void nonOptionalFieldBeneathArrayThatIsSometimesAbsent() throws IOException {
+	public void nonOptionalFieldBeneathArrayThatIsSometimesAbsent() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new ResponseFieldsSnippet(
 						Arrays.asList(fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),

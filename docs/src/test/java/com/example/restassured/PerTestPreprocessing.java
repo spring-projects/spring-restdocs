@@ -30,7 +30,7 @@ public class PerTestPreprocessing {
 
 	private RequestSpecification spec;
 
-	public void general() throws Exception {
+	public void general() {
 		// tag::preprocessing[]
 		RestAssured.given(this.spec).filter(document("index", preprocessRequest(modifyHeaders().remove("Foo")), // <1>
 				preprocessResponse(prettyPrint()))) // <2>

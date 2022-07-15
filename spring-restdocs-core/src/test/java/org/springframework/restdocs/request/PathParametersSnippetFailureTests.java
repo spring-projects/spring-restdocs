@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.request;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -43,7 +42,7 @@ public class PathParametersSnippetFailureTests {
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
 
 	@Test
-	public void undocumentedPathParameter() throws IOException {
+	public void undocumentedPathParameter() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList())
 						.document(this.operationBuilder
@@ -52,7 +51,7 @@ public class PathParametersSnippetFailureTests {
 	}
 
 	@Test
-	public void missingPathParameter() throws IOException {
+	public void missingPathParameter() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
 						.document(this.operationBuilder
@@ -61,7 +60,7 @@ public class PathParametersSnippetFailureTests {
 	}
 
 	@Test
-	public void undocumentedAndMissingPathParameters() throws IOException {
+	public void undocumentedAndMissingPathParameters() {
 		assertThatExceptionOfType(SnippetException.class)
 				.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
 						.document(this.operationBuilder

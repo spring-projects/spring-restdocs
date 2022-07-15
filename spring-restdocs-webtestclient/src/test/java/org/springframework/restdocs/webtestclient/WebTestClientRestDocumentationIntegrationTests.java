@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,7 +133,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void multipart() throws Exception {
+	public void multipart() {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("a", "alpha");
 		multipartData.add("b", "bravo");
@@ -147,7 +147,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void responseWithSetCookie() throws Exception {
+	public void responseWithSetCookie() {
 		this.webTestClient.get().uri("/set-cookie").exchange().expectStatus().isOk().expectBody()
 				.consumeWith(document("set-cookie"));
 		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"))
@@ -156,7 +156,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithCookies() throws Exception {
+	public void curlSnippetWithCookies() {
 		this.webTestClient.get().uri("/").cookie("cookieName", "cookieVal").accept(MediaType.APPLICATION_JSON)
 				.exchange().expectStatus().isOk().expectBody().consumeWith(document("curl-snippet-with-cookies"));
 		assertThat(new File("build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"))
@@ -166,7 +166,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithEmptyParameterQueryString() throws Exception {
+	public void curlSnippetWithEmptyParameterQueryString() {
 		this.webTestClient.get().uri("/?a=").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectBody().consumeWith(document("curl-snippet-with-empty-parameter-query-string"));
 		assertThat(
@@ -177,7 +177,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void httpieSnippetWithCookies() throws Exception {
+	public void httpieSnippetWithCookies() {
 		this.webTestClient.get().uri("/").cookie("cookieName", "cookieVal").accept(MediaType.APPLICATION_JSON)
 				.exchange().expectStatus().isOk().expectBody().consumeWith(document("httpie-snippet-with-cookies"));
 		assertThat(new File("build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"))

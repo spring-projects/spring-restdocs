@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class RequestPartPayload {
 
 	private RequestSpecification spec;
 
-	public void fields() throws Exception {
+	public void fields() {
 		// tag::fields[]
 		Map<String, String> metadata = new HashMap<>();
 		metadata.put("version", "1.0");
@@ -45,7 +45,7 @@ public class RequestPartPayload {
 		// end::fields[]
 	}
 
-	public void body() throws Exception {
+	public void body() {
 		// tag::body[]
 		Map<String, String> metadata = new HashMap<>();
 		metadata.put("version", "1.0");
