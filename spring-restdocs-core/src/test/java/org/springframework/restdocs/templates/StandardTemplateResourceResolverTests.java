@@ -110,6 +110,9 @@ public class StandardTemplateResourceResolverTests {
 			return action.call();
 		}
 		catch (Exception ex) {
+			if (ex instanceof RuntimeException) {
+				throw (RuntimeException) ex;
+			}
 			throw new RuntimeException(ex);
 		}
 		finally {
