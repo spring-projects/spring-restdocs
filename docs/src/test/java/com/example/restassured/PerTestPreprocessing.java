@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class PerTestPreprocessing {
@@ -32,7 +32,7 @@ public class PerTestPreprocessing {
 
 	public void general() throws Exception {
 		// tag::preprocessing[]
-		RestAssured.given(this.spec).filter(document("index", preprocessRequest(removeHeaders("Foo")), // <1>
+		RestAssured.given(this.spec).filter(document("index", preprocessRequest(modifyHeaders().remove("Foo")), // <1>
 				preprocessResponse(prettyPrint()))) // <2>
 				.when().get("/").then().assertThat().statusCode(is(200));
 		// end::preprocessing[]

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
 
 public class CustomDefaultOperationPreprocessors {
 
@@ -43,7 +43,7 @@ public class CustomDefaultOperationPreprocessors {
 		// tag::custom-default-operation-preprocessors[]
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors()
-						.withRequestDefaults(removeHeaders("Foo")) // <1>
+						.withRequestDefaults(modifyHeaders().remove("Foo")) // <1>
 						.withResponseDefaults(prettyPrint())) // <2>
 				.build();
 		// end::custom-default-operation-preprocessors[]

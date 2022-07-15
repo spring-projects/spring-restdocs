@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package com.example.webtestclient;
 
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
 
 public class PerTestPreprocessing {
@@ -34,7 +34,7 @@ public class PerTestPreprocessing {
 		// tag::preprocessing[]
 		this.webTestClient.get().uri("/").exchange().expectStatus().isOk().expectBody()
 			.consumeWith(document("index",
-				preprocessRequest(removeHeaders("Foo")), // <1>
+				preprocessRequest(modifyHeaders().remove("Foo")), // <1>
 				preprocessResponse(prettyPrint()))); // <2>
 		// end::preprocessing[]
 	}

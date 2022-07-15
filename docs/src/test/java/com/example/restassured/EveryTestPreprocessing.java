@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import org.springframework.restdocs.JUnitRestDocumentation;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
@@ -44,7 +44,7 @@ public class EveryTestPreprocessing {
 	public void setup() {
 		this.spec = new RequestSpecBuilder()
 				.addFilter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
-						.withRequestDefaults(removeHeaders("Foo")) // <1>
+						.withRequestDefaults(modifyHeaders().remove("Foo")) // <1>
 						.withResponseDefaults(prettyPrint())) // <2>
 				.build();
 	}

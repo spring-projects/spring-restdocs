@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PerTestPreprocessing {
@@ -33,7 +33,7 @@ public class PerTestPreprocessing {
 	public void general() throws Exception {
 		// tag::preprocessing[]
 		this.mockMvc.perform(get("/")).andExpect(status().isOk())
-				.andDo(document("index", preprocessRequest(removeHeaders("Foo")), // <1>
+				.andDo(document("index", preprocessRequest(modifyHeaders().remove("Foo")), // <1>
 						preprocessResponse(prettyPrint()))); // <2>
 		// end::preprocessing[]
 	}
