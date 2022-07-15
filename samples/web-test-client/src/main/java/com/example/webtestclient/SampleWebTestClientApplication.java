@@ -16,6 +16,7 @@
 
 package com.example.webtestclient;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,11 +36,13 @@ public class SampleWebTestClientApplication {
 
 	@Bean
 	public RouterFunction<ServerResponse> routerFunction() {
-		return RouterFunctions.route(RequestPredicates.GET("/"), (request) -> ServerResponse.status(HttpStatus.OK).syncBody("Hello, World"));
+		return RouterFunctions.route(RequestPredicates.GET("/"), (request) -> ServerResponse.status(HttpStatus.OK).bodyValue("Hello, World"));
 	}
 
 	public static void main(String[] args) {
-		RouterFunction<?> routerFunction = new AnnotationConfigApplicationContext(SampleWebTestClientApplication.class).getBean(RouterFunction.class);
+		@SuppressWarnings("resource")
+		ApplicationContext context = new AnnotationConfigApplicationContext(SampleWebTestClientApplication.class);
+		RouterFunction<?> routerFunction = context.getBean(RouterFunction.class);
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(RouterFunctions.toHttpHandler(routerFunction));
 		HttpServer httpServer = HttpServer.create().handle(adapter);
 		httpServer.bindNow();
