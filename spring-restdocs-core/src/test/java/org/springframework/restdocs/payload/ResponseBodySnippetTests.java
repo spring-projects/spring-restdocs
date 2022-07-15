@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormat;
@@ -56,6 +58,34 @@ public class ResponseBodySnippetTests extends AbstractSnippetTests {
 	public void responseWithNoBody() throws IOException {
 		new ResponseBodySnippet().document(this.operationBuilder.response().build());
 		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock(null, "nowrap").withContent(""));
+	}
+
+	@Test
+	public void responseWithJsonMediaType() throws IOException {
+		new ResponseBodySnippet().document(this.operationBuilder.response()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("json", "nowrap").withContent(""));
+	}
+
+	@Test
+	public void responseWithJsonSubtypeMediaType() throws IOException {
+		new ResponseBodySnippet().document(this.operationBuilder.response()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PROBLEM_JSON_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("json", "nowrap").withContent(""));
+	}
+
+	@Test
+	public void responseWithXmlMediaType() throws IOException {
+		new ResponseBodySnippet().document(this.operationBuilder.response()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("xml", "nowrap").withContent(""));
+	}
+
+	@Test
+	public void responseWithXmlSubtypeMediaType() throws IOException {
+		new ResponseBodySnippet().document(this.operationBuilder.response()
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML_VALUE).build());
+		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("xml", "nowrap").withContent(""));
 	}
 
 	@Test

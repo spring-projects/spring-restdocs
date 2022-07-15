@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.springframework.restdocs.snippet.TemplatedSnippet;
  * document a RESTful resource's request or response body.
  *
  * @author Andy Wilkinson
+ * @author Achim Grimm
  */
 public abstract class AbstractBodySnippet extends TemplatedSnippet {
 
@@ -73,6 +74,7 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 	protected Map<String, Object> createModel(Operation operation) {
 		try {
 			MediaType contentType = getContentType(operation);
+			String language = determineLanguage(contentType);
 			byte[] content = getContent(operation);
 			if (this.subsectionExtractor != null) {
 				content = this.subsectionExtractor.extractSubsection(content, contentType);
@@ -80,12 +82,20 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 			Charset charset = extractCharset(contentType);
 			String body = (charset != null) ? new String(content, charset) : new String(content);
 			Map<String, Object> model = new HashMap<>();
+			model.put("language", language);
 			model.put("body", body);
 			return model;
 		}
 		catch (IOException ex) {
 			throw new ModelCreationException(ex);
 		}
+	}
+
+	private String determineLanguage(MediaType contentType) {
+		if (contentType == null) {
+			return null;
+		}
+		return (contentType.getSubtypeSuffix() != null) ? contentType.getSubtypeSuffix() : contentType.getSubtype();
 	}
 
 	private Charset extractCharset(MediaType contentType) {
