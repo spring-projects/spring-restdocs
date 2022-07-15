@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -202,7 +202,7 @@ public class RestDocumentationConfigurerTests {
 	public void customDefaultOperationRequestPreprocessor() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.operationPreprocessors()
-				.withRequestDefaults(Preprocessors.prettyPrint(), Preprocessors.removeHeaders("Foo"))
+				.withRequestDefaults(Preprocessors.prettyPrint(), Preprocessors.modifyHeaders().remove("Foo"))
 				.apply(configuration, createContext());
 		OperationRequestPreprocessor preprocessor = (OperationRequestPreprocessor) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
@@ -217,7 +217,7 @@ public class RestDocumentationConfigurerTests {
 	public void customDefaultOperationResponsePreprocessor() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.operationPreprocessors()
-				.withResponseDefaults(Preprocessors.prettyPrint(), Preprocessors.removeHeaders("Foo"))
+				.withResponseDefaults(Preprocessors.prettyPrint(), Preprocessors.modifyHeaders().remove("Foo"))
 				.apply(configuration, createContext());
 		OperationResponsePreprocessor preprocessor = (OperationResponsePreprocessor) configuration
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);

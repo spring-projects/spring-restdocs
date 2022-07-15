@@ -54,11 +54,11 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.responseH
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.maskLinks;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.replacePattern;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -243,7 +243,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	public void responseWithCookie() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
 				.filter(document("set-cookie",
-						preprocessResponse(removeHeaders(HttpHeaders.DATE, HttpHeaders.CONTENT_TYPE))))
+						preprocessResponse(modifyHeaders().remove(HttpHeaders.DATE).remove(HttpHeaders.CONTENT_TYPE))))
 				.get("/set-cookie").then().statusCode(200);
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/set-cookie"), "http-request.adoc",
 				"http-response.adoc", "curl-request.adoc");
@@ -261,7 +261,8 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.body("{\"a\":\"alpha\"}").filter(document("original-request"))
 				.filter(document("preprocessed-request",
 						preprocessRequest(prettyPrint(), replacePattern(pattern, "\"<<beta>>\""),
-								modifyUris().removePort(), removeHeaders("a", HttpHeaders.CONTENT_LENGTH))))
+								modifyUris().removePort(),
+								modifyHeaders().remove("a").remove(HttpHeaders.CONTENT_LENGTH))))
 				.get("/").then().statusCode(200);
 		assertThat(new File("build/generated-snippets/original-request/http-request.adoc"))
 				.has(content(httpRequest(TemplateFormats.asciidoctor(), RequestMethod.GET, "/").header("a", "alpha")
@@ -281,7 +282,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		given().port(tomcat.getPort())
 				.filter(documentationConfiguration(this.restDocumentation).operationPreprocessors().withRequestDefaults(
 						prettyPrint(), replacePattern(pattern, "\"<<beta>>\""), modifyUris().removePort(),
-						removeHeaders("a", HttpHeaders.CONTENT_LENGTH)))
+						modifyHeaders().remove("a").remove(HttpHeaders.CONTENT_LENGTH)))
 				.header("a", "alpha").header("b", "bravo").contentType("application/json").accept("application/json")
 				.body("{\"a\":\"alpha\"}").filter(document("default-preprocessed-request")).get("/").then()
 				.statusCode(200);
@@ -299,7 +300,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.filter(document("original-response"))
 				.filter(document("preprocessed-response",
 						preprocessResponse(prettyPrint(), maskLinks(),
-								removeHeaders("a", "Transfer-Encoding", "Date", "Server"),
+								modifyHeaders().remove("a").remove("Transfer-Encoding").remove("Date").remove("Server"),
 								replacePattern(pattern, "\"<<beta>>\""),
 								modifyUris().scheme("https").host("api.example.com").removePort())))
 				.get("/").then().statusCode(200);
@@ -319,7 +320,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 		given().port(tomcat.getPort())
 				.filter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
 						.withResponseDefaults(prettyPrint(), maskLinks(),
-								removeHeaders("a", "Transfer-Encoding", "Date", "Server"),
+								modifyHeaders().remove("a").remove("Transfer-Encoding").remove("Date").remove("Server"),
 								replacePattern(pattern, "\"<<beta>>\""),
 								modifyUris().scheme("https").host("api.example.com").removePort()))
 				.filter(document("default-preprocessed-response")).get("/").then().statusCode(200);
@@ -378,7 +379,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	private Condition<File> content(final Condition<String> delegate) {
-		return new Condition<File>() {
+		return new Condition<>() {
 
 			@Override
 			public boolean matches(File value) {

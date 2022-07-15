@@ -80,10 +80,10 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.maskLinks;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.removeHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.replacePattern;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -382,7 +382,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 				.andExpect(status().isOk()).andDo(document("original-request"))
 				.andDo(document("preprocessed-request",
 						preprocessRequest(prettyPrint(),
-								removeHeaders("a", HttpHeaders.HOST, HttpHeaders.CONTENT_LENGTH),
+								modifyHeaders().remove("a").remove(HttpHeaders.HOST).remove(HttpHeaders.CONTENT_LENGTH),
 								replacePattern(pattern, "\"<<beta>>\""))))
 				.andReturn();
 		HttpRequestCondition originalRequest = httpRequest(TemplateFormats.asciidoctor(), RequestMethod.GET, "/");
@@ -414,7 +414,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors().withRequestDefaults(
-						prettyPrint(), removeHeaders("a", HttpHeaders.HOST, HttpHeaders.CONTENT_LENGTH),
+						prettyPrint(),
+						modifyHeaders().remove("a").remove(HttpHeaders.HOST).remove(HttpHeaders.CONTENT_LENGTH),
 						replacePattern(pattern, "\"<<beta>>\"")))
 				.build();
 
@@ -445,7 +446,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andDo(document("original-response"))
 				.andDo(document("preprocessed-response", preprocessResponse(prettyPrint(), maskLinks(),
-						removeHeaders("a"), replacePattern(pattern, "\"<<beta>>\""))));
+						modifyHeaders().remove("a"), replacePattern(pattern, "\"<<beta>>\""))));
 
 		String original = "{\"a\":\"alpha\",\"links\":[{\"rel\":\"rel\"," + "\"href\":\"href\"}]}";
 		assertThat(new File("build/generated-snippets/original-response/http-response.adoc"))
@@ -465,7 +466,8 @@ public class MockMvcRestDocumentationIntegrationTests {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors().withResponseDefaults(
-						prettyPrint(), maskLinks(), removeHeaders("a"), replacePattern(pattern, "\"<<beta>>\"")))
+						prettyPrint(), maskLinks(), modifyHeaders().remove("a"),
+						replacePattern(pattern, "\"<<beta>>\"")))
 				.build();
 
 		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
@@ -547,7 +549,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	private Condition<File> content(final Condition<String> delegate) {
-		return new Condition<File>() {
+		return new Condition<>() {
 
 			@Override
 			public boolean matches(File value) {
