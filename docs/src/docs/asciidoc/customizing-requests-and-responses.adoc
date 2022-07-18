@@ -24,13 +24,13 @@ include::{examples-dir}/com/example/webtestclient/PerTestPreprocessing.java[tags
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
 
+[source,java,indent=0,role="secondary"]
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/PerTestPreprocessing.java[tags=preprocessing]
 ----
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
-====
 
 Alternatively, you may want to apply the same preprocessors to every test.
 You can do so by using the `RestDocumentationConfigurer` API in your `@Before` method to configure the preprocessors.

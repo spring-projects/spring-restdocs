@@ -127,7 +127,6 @@ include::{examples-dir}/com/example/webtestclient/CustomFormat.java[tags=custom-
 ----
 include::{examples-dir}/com/example/restassured/CustomFormat.java[tags=custom-format]
 ----
-====
 
 
 
@@ -195,3 +194,5 @@ include::{examples-dir}/com/example/restassured/CustomDefaultOperationPreprocess
 ----
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
+
+
