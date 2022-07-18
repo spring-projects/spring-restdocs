@@ -16,26 +16,47 @@
 
 package org.springframework.restdocs.operation;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.springframework.http.HttpHeaders;
 
 /**
  * A factory for creating {@link OperationResponse OperationResponses}.
  *
  * @author Andy Wilkinson
+ * @author Clyde Stubbs
  */
 public class OperationResponseFactory {
+
+	/**
+	 * Creates a new {@link OperationResponse} without cookies. If the response has any
+	 * content, the given {@code headers} will be augmented to ensure that they include a
+	 * {@code Content-Length} header.
+	 * @param status the status of the response
+	 * @param headers the request's headers
+	 * @param content the content of the request
+	 * @return the {@code OperationResponse}
+	 */
+	public OperationResponse create(int status, HttpHeaders headers, byte[] content) {
+		return new StandardOperationResponse(status, augmentHeaders(headers, content), content,
+				Collections.emptyList());
+	}
 
 	/**
 	 * Creates a new {@link OperationResponse}. If the response has any content, the given
 	 * {@code headers} will be augmented to ensure that they include a
 	 * {@code Content-Length} header.
 	 * @param status the status of the response
-	 * @param headers the response's headers
-	 * @param content the content of the response
+	 * @param headers the request's headers
+	 * @param content the content of the request
+	 * @param cookies the cookies
 	 * @return the {@code OperationResponse}
+	 * @since 3.0
 	 */
-	public OperationResponse create(int status, HttpHeaders headers, byte[] content) {
-		return new StandardOperationResponse(status, augmentHeaders(headers, content), content);
+	public OperationResponse create(int status, HttpHeaders headers, byte[] content,
+			Collection<ResponseCookie> cookies) {
+		return new StandardOperationResponse(status, augmentHeaders(headers, content), content, cookies);
 	}
 
 	/**
@@ -49,7 +70,7 @@ public class OperationResponseFactory {
 	 */
 	public OperationResponse createFrom(OperationResponse original, byte[] newContent) {
 		return new StandardOperationResponse(original.getStatusCode(),
-				getUpdatedHeaders(original.getHeaders(), newContent), newContent);
+				getUpdatedHeaders(original.getHeaders(), newContent), newContent, original.getCookies());
 	}
 
 	/**
@@ -60,7 +81,8 @@ public class OperationResponseFactory {
 	 * @return the new response with the new headers
 	 */
 	public OperationResponse createFrom(OperationResponse original, HttpHeaders newHeaders) {
-		return new StandardOperationResponse(original.getStatusCode(), newHeaders, original.getContent());
+		return new StandardOperationResponse(original.getStatusCode(), newHeaders, original.getContent(),
+				original.getCookies());
 	}
 
 	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, byte[] content) {

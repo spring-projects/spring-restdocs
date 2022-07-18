@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@
 package org.springframework.restdocs.webtestclient;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
+import org.springframework.restdocs.operation.ResponseCookie;
 import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.util.StringUtils;
 
@@ -31,13 +33,15 @@ import org.springframework.util.StringUtils;
  * {@link ExchangeResult}.
  *
  * @author Andy Wilkinson
+ * @author Clyde Stubbs
  */
 class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult> {
 
 	@Override
 	public OperationResponse convert(ExchangeResult result) {
+		Collection<ResponseCookie> cookies = extractCookies(result);
 		return new OperationResponseFactory().create(result.getStatus().value(), extractHeaders(result),
-				result.getResponseBodyContent());
+				result.getResponseBodyContent(), cookies);
 	}
 
 	private HttpHeaders extractHeaders(ExchangeResult result) {
@@ -50,7 +54,7 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 		return headers;
 	}
 
-	private String generateSetCookieHeader(ResponseCookie cookie) {
+	private String generateSetCookieHeader(org.springframework.http.ResponseCookie cookie) {
 		StringBuilder header = new StringBuilder();
 		header.append(cookie.getName());
 		header.append('=');
@@ -71,10 +75,19 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 		return header.toString();
 	}
 
+	private Collection<ResponseCookie> extractCookies(ExchangeResult result) {
+		return result.getResponseCookies().values().stream().flatMap(List::stream).map(this::createResponseCookie)
+				.collect(Collectors.toSet());
+	}
+
 	private void appendIfAvailable(StringBuilder header, String value) {
 		if (StringUtils.hasText(value)) {
 			header.append(value);
 		}
+	}
+
+	private ResponseCookie createResponseCookie(org.springframework.http.ResponseCookie original) {
+		return new ResponseCookie(original.getName(), original.getValue());
 	}
 
 	private void appendIfAvailable(StringBuilder header, String name, String value) {

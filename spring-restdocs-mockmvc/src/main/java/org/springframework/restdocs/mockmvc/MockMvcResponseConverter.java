@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,11 @@
 
 package org.springframework.restdocs.mockmvc;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import jakarta.servlet.http.Cookie;
 
 import org.springframework.http.HttpHeaders;
@@ -23,6 +28,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
+import org.springframework.restdocs.operation.ResponseCookie;
 import org.springframework.util.StringUtils;
 
 /**
@@ -30,13 +36,27 @@ import org.springframework.util.StringUtils;
  * {@link MockHttpServletResponse}.
  *
  * @author Andy Wilkinson
+ * @author Clyde Stubbs
  */
 class MockMvcResponseConverter implements ResponseConverter<MockHttpServletResponse> {
 
 	@Override
 	public OperationResponse convert(MockHttpServletResponse mockResponse) {
-		return new OperationResponseFactory().create(mockResponse.getStatus(), extractHeaders(mockResponse),
-				mockResponse.getContentAsByteArray());
+		HttpHeaders headers = extractHeaders(mockResponse);
+		Collection<ResponseCookie> cookies = extractCookies(mockResponse);
+		return new OperationResponseFactory().create(mockResponse.getStatus(), headers,
+				mockResponse.getContentAsByteArray(), cookies);
+	}
+
+	private Collection<ResponseCookie> extractCookies(MockHttpServletResponse mockResponse) {
+		if (mockResponse.getCookies() == null || mockResponse.getCookies().length == 0) {
+			return Collections.emptyList();
+		}
+		List<ResponseCookie> cookies = new ArrayList<>();
+		for (Cookie cookie : mockResponse.getCookies()) {
+			cookies.add(new ResponseCookie(cookie.getName(), cookie.getValue()));
+		}
+		return cookies;
 	}
 
 	private HttpHeaders extractHeaders(MockHttpServletResponse response) {

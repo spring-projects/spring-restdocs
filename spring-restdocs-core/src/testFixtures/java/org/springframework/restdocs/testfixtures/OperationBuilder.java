@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.runners.model.Statement;
 
@@ -42,6 +44,7 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestCookie;
+import org.springframework.restdocs.operation.ResponseCookie;
 import org.springframework.restdocs.operation.StandardOperation;
 import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolverFactory;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
@@ -93,7 +96,6 @@ public class OperationBuilder extends OperationTestRule {
 	private void prepare(String operationName, File outputDirectory) {
 		this.name = operationName;
 		this.outputDirectory = outputDirectory;
-		this.requestBuilder = null;
 		this.requestBuilder = null;
 		this.attributes.clear();
 	}
@@ -265,10 +267,12 @@ public class OperationBuilder extends OperationTestRule {
 
 		private HttpHeaders headers = new HttpHeaders();
 
+		private Set<ResponseCookie> cookies = new HashSet<>();
+
 		private byte[] content = new byte[0];
 
 		private OperationResponse buildResponse() {
-			return new OperationResponseFactory().create(this.status, this.headers, this.content);
+			return new OperationResponseFactory().create(this.status, this.headers, this.content, this.cookies);
 		}
 
 		public OperationResponseBuilder status(int status) {
@@ -278,6 +282,11 @@ public class OperationBuilder extends OperationTestRule {
 
 		public OperationResponseBuilder header(String name, String value) {
 			this.headers.add(name, value);
+			return this;
+		}
+
+		public OperationResponseBuilder cookie(String name, String value) {
+			this.cookies.add(new ResponseCookie(name, value));
 			return this;
 		}
 

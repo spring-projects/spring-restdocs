@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
 import org.springframework.restdocs.operation.OperationResponse;
+import org.springframework.restdocs.operation.ResponseCookie;
 import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.server.RouterFunctions;
@@ -62,7 +62,8 @@ public class WebTestClientResponseConverterTests {
 		ExchangeResult result = WebTestClient
 				.bindToRouterFunction(RouterFunctions.route(GET("/foo"),
 						(req) -> ServerResponse.ok()
-								.cookie(ResponseCookie.from("name", "value").domain("localhost").httpOnly(true).build())
+								.cookie(org.springframework.http.ResponseCookie.from("name", "value")
+										.domain("localhost").httpOnly(true).build())
 								.build()))
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").exchange().expectBody()
 				.returnResult();
@@ -70,6 +71,9 @@ public class WebTestClientResponseConverterTests {
 		assertThat(response.getHeaders()).hasSize(1);
 		assertThat(response.getHeaders()).containsEntry(HttpHeaders.SET_COOKIE,
 				Collections.singletonList("name=value; Domain=localhost; HttpOnly"));
+		assertThat(response.getCookies()).hasSize(1);
+		assertThat(response.getCookies()).first().extracting(ResponseCookie::getName).isEqualTo("name");
+		assertThat(response.getCookies()).first().extracting(ResponseCookie::getValue).isEqualTo("value");
 	}
 
 }

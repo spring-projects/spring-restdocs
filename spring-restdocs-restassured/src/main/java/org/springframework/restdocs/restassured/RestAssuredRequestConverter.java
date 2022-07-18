@@ -48,6 +48,7 @@ import org.springframework.util.StreamUtils;
  * {@link FilterableRequestSpecification}.
  *
  * @author Andy Wilkinson
+ * @author Clyde Stubbs
  */
 class RestAssuredRequestConverter implements RequestConverter<FilterableRequestSpecification> {
 

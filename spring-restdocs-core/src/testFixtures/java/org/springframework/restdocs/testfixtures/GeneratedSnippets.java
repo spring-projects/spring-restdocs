@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,6 +68,14 @@ public class GeneratedSnippets extends OperationTestRule {
 
 	public String responseHeaders() {
 		return snippet("response-headers");
+	}
+
+	public String requestCookies() {
+		return snippet("request-cookies");
+	}
+
+	public String responseCookies() {
+		return snippet("response-cookies");
 	}
 
 	public String httpRequest() {
