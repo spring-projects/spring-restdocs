@@ -27,7 +27,7 @@ ext['spring-restdocs.version'] = '3.0.0-SNAPSHOT'
 
 dependencies {
 	implementation platform("org.springframework:spring-framework-bom:6.0.0-M5")
-	implementation platform("org.springframework.data:spring-data-bom:2022.0.0-M4")
+	implementation platform("org.springframework.data:spring-data-bom:2022.0.0-M5")
 	implementation "com.fasterxml.jackson.core:jackson-databind:2.13.3"
 	implementation "jakarta.servlet:jakarta.servlet-api:5.0.0"
 	implementation "org.hibernate.validator:hibernate-validator:7.0.4.Final"
