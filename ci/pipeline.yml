@@ -344,7 +344,6 @@ jobs:
 - name: promote-milestone
   serial: true
   plan:
-  - get: ci-image
   - get: git-repo
     trigger: false
   - get: artifactory-repo
@@ -354,7 +353,6 @@ jobs:
       download_artifacts: false
       save_build_info: true
   - task: promote
-    image: ci-image
     file: git-repo/ci/tasks/promote.yml
     params:
       RELEASE_TYPE: M
@@ -375,7 +373,6 @@ jobs:
 - name: promote-rc
   serial: true
   plan:
-  - get: ci-image
   - get: git-repo
     trigger: false
   - get: artifactory-repo
@@ -385,7 +382,6 @@ jobs:
       download_artifacts: false
       save_build_info: true
   - task: promote
-    image: ci-image
     file: git-repo/ci/tasks/promote.yml
     params:
       RELEASE_TYPE: RC
@@ -406,7 +402,6 @@ jobs:
 - name: promote-release
   serial: true
   plan:
-  - get: ci-image
   - get: git-repo
     trigger: false
   - get: artifactory-repo
@@ -416,7 +411,6 @@ jobs:
       download_artifacts: true
       save_build_info: true
   - task: promote
-    image: ci-image
     file: git-repo/ci/tasks/promote.yml
     params:
       RELEASE_TYPE: RELEASE
