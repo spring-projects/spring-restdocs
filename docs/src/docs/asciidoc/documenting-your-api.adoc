@@ -1037,7 +1037,13 @@ include::{examples-dir}/com/example/restassured/HttpCookies.java[tags=cookies]
 The result is a snippet named `request-cookies.adoc` and a snippet named `response-cookies.adoc`.
 Each contains a table describing the cookies.
 
-When documenting HTTP Cookies, the test fails if a documented cookie is not found in the request or response.
+When documenting HTTP cookies, the test fails if an undocumented cookie is found in the request or response.
+Similarly, the test also fails if a documented cookie is not found and the cookie has not been marked as optional.
+You can also document cookies in a relaxed mode, where any undocumented cookies do not cause a test failure.
+To do so, use the `relaxedRequestCookies` and `relaxedResponseCookies` methods on `org.springframework.restdocs.cookies.CookieDocumentation`.
+This can be useful when documenting a particular scenario where you only want to focus on a subset of the cookies.
+If you do not want to document a cookie, you can mark it as ignored.
+Doing so prevents it from appearing in the generated snippet while avoiding the failure described earlier.
 
 
 
