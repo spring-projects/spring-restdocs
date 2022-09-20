@@ -35,8 +35,7 @@ class NoteInput {
 	private final List<URI> tagUris;
 
 	@JsonCreator
-	NoteInput(@JsonProperty("title") String title,
-			@JsonProperty("body") String body, @JsonProperty("tags") List<URI> tagUris) {
+	NoteInput(@JsonProperty("title") String title, @JsonProperty("body") String body, @JsonProperty("tags") List<URI> tagUris) {
 		this.title = title;
 		this.body = body;
 		this.tagUris = tagUris == null ? Collections.<URI>emptyList() : tagUris;
