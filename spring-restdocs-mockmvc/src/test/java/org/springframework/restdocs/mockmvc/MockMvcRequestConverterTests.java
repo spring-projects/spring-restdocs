@@ -127,31 +127,35 @@ public class MockMvcRequestConverterTests {
 		OperationRequest request = createOperationRequest(
 				MockMvcRequestBuilders.get("/foo").param("a", "alpha", "apple").param("b", "br&vo"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo"));
-		assertThat(request.getParameters().size()).isEqualTo(2);
-		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "apple"));
-		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("br&vo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
 	}
 
 	@Test
-	public void getRequestWithQueryStringPopulatesParameters() {
-		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.get("/foo?a=alpha&b=bravo"));
+	public void getRequestWithQueryString() {
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/foo?a=alpha&b=bravo");
+		OperationRequest request = createOperationRequest(builder);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&b=bravo"));
-		assertThat(request.getParameters().size()).isEqualTo(2);
-		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha"));
-		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("bravo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
 	}
 
 	@Test
-	public void postRequestWithParameters() {
+	public void postRequestWithParametersCreatesFormUrlEncodedContent() {
 		OperationRequest request = createOperationRequest(
 				MockMvcRequestBuilders.post("/foo").param("a", "alpha", "apple").param("b", "br&vo"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
-		assertThat(request.getParameters().size()).isEqualTo(2);
-		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "apple"));
-		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("br&vo"));
+		assertThat(request.getContentAsString()).isEqualTo("a=alpha&a=apple&b=br%26vo");
+		assertThat(request.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_FORM_URLENCODED);
+	}
+
+	@Test
+	public void postRequestWithParametersAndQueryStringCreatesFormUrlEncodedContentWithoutDuplication() {
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.post("/foo?a=alpha").param("a", "apple").param("b", "br&vo"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha"));
+		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+		assertThat(request.getContentAsString()).isEqualTo("a=apple&b=br%26vo");
+		assertThat(request.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_FORM_URLENCODED);
 	}
 
 	@Test

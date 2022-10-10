@@ -30,12 +30,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 
 /**
- * Tests for failures when rendering {@link RequestParametersSnippet} due to missing or
- * undocumented request parameters.
+ * Tests for failures when rendering {@link QueryParametersSnippet} due to missing or
+ * undocumented query parameters.
  *
  * @author Andy Wilkinson
  */
-public class RequestParametersSnippetFailureTests {
+public class QueryParametersSnippetFailureTests {
 
 	@Rule
 	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
@@ -43,25 +43,25 @@ public class RequestParametersSnippetFailureTests {
 	@Test
 	public void undocumentedParameter() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestParametersSnippet(Collections.<ParameterDescriptor>emptyList())
-						.document(this.operationBuilder.request("http://localhost").param("a", "alpha").build()))
-				.withMessage("Request parameters with the following names were not documented: [a]");
+				.isThrownBy(() -> new QueryParametersSnippet(Collections.<ParameterDescriptor>emptyList())
+						.document(this.operationBuilder.request("http://localhost?a=alpha").build()))
+				.withMessage("Query parameters with the following names were not documented: [a]");
 	}
 
 	@Test
 	public void missingParameter() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.isThrownBy(() -> new QueryParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
 						.document(this.operationBuilder.request("http://localhost").build()))
-				.withMessage("Request parameters with the following names were not found in the request: [a]");
+				.withMessage("Query parameters with the following names were not found in the request: [a]");
 	}
 
 	@Test
 	public void undocumentedAndMissingParameters() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-						.document(this.operationBuilder.request("http://localhost").param("b", "bravo").build()))
-				.withMessage("Request parameters with the following names were not documented: [b]. Request parameters"
+				.isThrownBy(() -> new QueryParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+						.document(this.operationBuilder.request("http://localhost?b=bravo").build()))
+				.withMessage("Query parameters with the following names were not documented: [b]. Query parameters"
 						+ " with the following names were not found in the request: [a]");
 	}
 

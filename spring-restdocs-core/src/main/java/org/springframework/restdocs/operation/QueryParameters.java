@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,46 @@
 
 package org.springframework.restdocs.operation;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.util.LinkedMultiValueMap;
+
 /**
- * A parser for the query string of a URI.
+ * A request's query parameters, derived from its URI's query string.
  *
  * @author Andy Wilkinson
+ * @since 3.0.0
  */
-public class QueryStringParser {
+public final class QueryParameters extends LinkedMultiValueMap<String, String> {
 
-	/**
-	 * Parses the query string of the given {@code uri} and returns the resulting
-	 * {@link Parameters}.
-	 * @param uri the uri to parse
-	 * @return the parameters parsed from the query string
-	 */
-	public Parameters parse(URI uri) {
-		String query = uri.getRawQuery();
-		if (query != null) {
-			return parse(query);
-		}
-		return new Parameters();
+	private QueryParameters() {
+
 	}
 
-	private Parameters parse(String query) {
-		Parameters parameters = new Parameters();
+	/**
+	 * Extracts the query parameters from the query string of the given {@code request}.
+	 * If the request has no query string, an empty {@code QueryParameters} is returned,
+	 * rather than {@code null}.
+	 * @param request the request
+	 * @return the query parameters extracted from the request's query string
+	 */
+	public static QueryParameters from(OperationRequest request) {
+		return from(request.getUri().getRawQuery());
+	}
+
+	private static QueryParameters from(String queryString) {
+		if (queryString == null || queryString.length() == 0) {
+			return new QueryParameters();
+		}
+		return parse(queryString);
+	}
+
+	private static QueryParameters parse(String query) {
+		QueryParameters parameters = new QueryParameters();
 		try (Scanner scanner = new Scanner(query)) {
 			scanner.useDelimiter("&");
 			while (scanner.hasNext()) {
@@ -55,7 +65,7 @@ public class QueryStringParser {
 		return parameters;
 	}
 
-	private void processParameter(String parameter, Parameters parameters) {
+	private static void processParameter(String parameter, QueryParameters parameters) {
 		String[] components = parameter.split("=");
 		if (components.length > 0 && components.length < 3) {
 			if (components.length == 2) {
@@ -64,7 +74,7 @@ public class QueryStringParser {
 				parameters.add(decode(name), decode(value));
 			}
 			else {
-				List<String> values = parameters.computeIfAbsent(components[0], (p) -> new LinkedList<String>());
+				List<String> values = parameters.computeIfAbsent(components[0], (p) -> new LinkedList<>());
 				values.add("");
 			}
 		}
@@ -73,14 +83,8 @@ public class QueryStringParser {
 		}
 	}
 
-	private String decode(String encoded) {
-		try {
-			return URLDecoder.decode(encoded, "UTF-8");
-		}
-		catch (UnsupportedEncodingException ex) {
-			throw new IllegalStateException("Unable to URL encode " + encoded + " using UTF-8", ex);
-		}
-
+	private static String decode(String encoded) {
+		return URLDecoder.decode(encoded, StandardCharsets.UTF_8);
 	}
 
 }

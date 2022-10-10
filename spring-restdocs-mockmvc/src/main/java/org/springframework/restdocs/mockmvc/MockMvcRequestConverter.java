@@ -17,14 +17,18 @@
 package org.springframework.restdocs.mockmvc;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Part;
@@ -39,10 +43,11 @@ import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
-import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestConverter;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,34 +60,86 @@ import org.springframework.web.multipart.MultipartFile;
  */
 class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest> {
 
-	private static final String SCHEME_HTTP = "http";
-
-	private static final String SCHEME_HTTPS = "https";
-
-	private static final int STANDARD_PORT_HTTP = 80;
-
-	private static final int STANDARD_PORT_HTTPS = 443;
-
 	@Override
 	public OperationRequest convert(MockHttpServletRequest mockRequest) {
 		try {
 			HttpHeaders headers = extractHeaders(mockRequest);
-			Parameters parameters = extractParameters(mockRequest);
 			List<OperationRequestPart> parts = extractParts(mockRequest);
 			Collection<RequestCookie> cookies = extractCookies(mockRequest, headers);
-			String queryString = mockRequest.getQueryString();
-			if (!StringUtils.hasText(queryString) && "GET".equals(mockRequest.getMethod())) {
-				queryString = parameters.toQueryString();
-			}
-			return new OperationRequestFactory().create(
-					URI.create(
-							getRequestUri(mockRequest) + (StringUtils.hasText(queryString) ? "?" + queryString : "")),
-					HttpMethod.valueOf(mockRequest.getMethod()), mockRequest.getContentAsByteArray(), headers,
-					parameters, parts, cookies);
+			return new OperationRequestFactory().create(getRequestUri(mockRequest),
+					HttpMethod.valueOf(mockRequest.getMethod()), getRequestContent(mockRequest, headers), headers,
+					parts, cookies);
 		}
 		catch (Exception ex) {
 			throw new ConversionException(ex);
 		}
+	}
+
+	private URI getRequestUri(MockHttpServletRequest mockRequest) {
+		String queryString = "";
+		if (mockRequest.getQueryString() != null) {
+			queryString = mockRequest.getQueryString();
+		}
+		else if ("GET".equals(mockRequest.getMethod()) || mockRequest.getContentLengthLong() > 0) {
+			queryString = urlEncodedParameters(mockRequest);
+		}
+		StringBuffer requestUrlBuffer = mockRequest.getRequestURL();
+		if (queryString.length() > 0) {
+			requestUrlBuffer.append("?").append(queryString.toString());
+		}
+		return URI.create(requestUrlBuffer.toString());
+	}
+
+	private String urlEncodedParameters(MockHttpServletRequest mockRequest) {
+		StringBuilder parameters = new StringBuilder();
+		MultiValueMap<String, String> queryParameters = parse(mockRequest.getQueryString());
+		for (String name : IterableEnumeration.of(mockRequest.getParameterNames())) {
+			if (!queryParameters.containsKey(name)) {
+				String[] values = mockRequest.getParameterValues(name);
+				if (values.length == 0) {
+					append(parameters, name);
+				}
+				else {
+					for (String value : values) {
+						append(parameters, name, value);
+					}
+				}
+			}
+		}
+		return parameters.toString();
+	}
+
+	private byte[] getRequestContent(MockHttpServletRequest mockRequest, HttpHeaders headers) {
+		byte[] content = mockRequest.getContentAsByteArray();
+		if ("GET".equals(mockRequest.getMethod())) {
+			return content;
+		}
+		MediaType contentType = headers.getContentType();
+		if (contentType == null || MediaType.APPLICATION_FORM_URLENCODED.includes(contentType)) {
+			Map<String, String[]> parameters = mockRequest.getParameterMap();
+			if (!parameters.isEmpty() && (content == null || content.length == 0)) {
+				StringBuilder contentBuilder = new StringBuilder();
+				headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+				MultiValueMap<String, String> queryParameters = parse(mockRequest.getQueryString());
+				mockRequest.getParameterMap().forEach((name, values) -> {
+					List<String> queryParameterValues = queryParameters.get(name);
+					if (values.length == 0) {
+						if (queryParameterValues == null) {
+							append(contentBuilder, name);
+						}
+					}
+					else {
+						for (String value : values) {
+							if (queryParameterValues == null || !queryParameterValues.contains(value)) {
+								append(contentBuilder, name, value);
+							}
+						}
+					}
+				});
+				return contentBuilder.toString().getBytes(StandardCharsets.UTF_8);
+			}
+		}
+		return content;
 	}
 
 	private Collection<RequestCookie> extractCookies(MockHttpServletRequest mockRequest, HttpHeaders headers) {
@@ -158,16 +215,6 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		return partHeaders;
 	}
 
-	private Parameters extractParameters(MockHttpServletRequest servletRequest) {
-		Parameters parameters = new Parameters();
-		for (String name : IterableEnumeration.of(servletRequest.getParameterNames())) {
-			for (String value : servletRequest.getParameterValues(name)) {
-				parameters.add(name, value);
-			}
-		}
-		return parameters;
-	}
-
 	private HttpHeaders extractHeaders(MockHttpServletRequest servletRequest) {
 		HttpHeaders headers = new HttpHeaders();
 		for (String headerName : IterableEnumeration.of(servletRequest.getHeaderNames())) {
@@ -178,21 +225,62 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		return headers;
 	}
 
-	private boolean isNonStandardPort(MockHttpServletRequest request) {
-		return (SCHEME_HTTP.equals(request.getScheme()) && request.getServerPort() != STANDARD_PORT_HTTP)
-				|| (SCHEME_HTTPS.equals(request.getScheme()) && request.getServerPort() != STANDARD_PORT_HTTPS);
+	private static void append(StringBuilder sb, String key) {
+		append(sb, key, "");
 	}
 
-	private String getRequestUri(MockHttpServletRequest request) {
-		StringWriter uriWriter = new StringWriter();
-		PrintWriter printer = new PrintWriter(uriWriter);
+	private static void append(StringBuilder sb, String key, String value) {
+		doAppend(sb, urlEncode(key) + "=" + urlEncode(value));
+	}
 
-		printer.printf("%s://%s", request.getScheme(), request.getServerName());
-		if (isNonStandardPort(request)) {
-			printer.printf(":%d", request.getServerPort());
+	private static void doAppend(StringBuilder sb, String toAppend) {
+		if (sb.length() > 0) {
+			sb.append("&");
 		}
-		printer.print(request.getRequestURI());
-		return uriWriter.toString();
+		sb.append(toAppend);
+	}
+
+	private static String urlEncode(String s) {
+		if (!StringUtils.hasLength(s)) {
+			return "";
+		}
+		return URLEncoder.encode(s, StandardCharsets.UTF_8);
+	}
+
+	private static MultiValueMap<String, String> parse(String query) {
+		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+		if (!StringUtils.hasLength(query)) {
+			return parameters;
+		}
+		try (Scanner scanner = new Scanner(query)) {
+			scanner.useDelimiter("&");
+			while (scanner.hasNext()) {
+				processParameter(scanner.next(), parameters);
+			}
+		}
+		return parameters;
+	}
+
+	private static void processParameter(String parameter, MultiValueMap<String, String> parameters) {
+		String[] components = parameter.split("=");
+		if (components.length > 0 && components.length < 3) {
+			if (components.length == 2) {
+				String name = components[0];
+				String value = components[1];
+				parameters.add(decode(name), decode(value));
+			}
+			else {
+				List<String> values = parameters.computeIfAbsent(components[0], (p) -> new LinkedList<>());
+				values.add("");
+			}
+		}
+		else {
+			throw new IllegalArgumentException("The parameter '" + parameter + "' is malformed");
+		}
+	}
+
+	private static String decode(String encoded) {
+		return URLDecoder.decode(encoded, StandardCharsets.US_ASCII);
 	}
 
 }

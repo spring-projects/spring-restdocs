@@ -22,12 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
-import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
@@ -82,19 +81,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 	private String getUrl(Operation operation) {
 		OperationRequest request = operation.getRequest();
-		Parameters uniqueParameters = request.getParameters().getUniqueParameters(operation.getRequest().getUri());
-		if (!uniqueParameters.isEmpty() && includeParametersInUri(request)) {
-			return String.format("'%s%s%s'", request.getUri(),
-					StringUtils.hasText(request.getUri().getRawQuery()) ? "&" : "?", uniqueParameters.toQueryString());
-		}
 		return String.format("'%s'", request.getUri());
-	}
-
-	private boolean includeParametersInUri(OperationRequest request) {
-		HttpMethod method = request.getMethod();
-		return (method != HttpMethod.PUT && method != HttpMethod.POST && method != HttpMethod.PATCH)
-				|| (request.getContent().length > 0 && !MediaType.APPLICATION_FORM_URLENCODED
-						.isCompatibleWith(request.getHeaders().getContentType()));
 	}
 
 	private String getOptions(Operation operation) {
@@ -147,6 +134,10 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	private void writeHeaders(CliOperationRequest request, List<String> lines) {
 		for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
 			for (String header : entry.getValue()) {
+				if (StringUtils.hasText(request.getContentAsString()) && HttpHeaders.CONTENT_TYPE.equals(entry.getKey())
+						&& MediaType.APPLICATION_FORM_URLENCODED.equals(request.getHeaders().getContentType())) {
+					continue;
+				}
 				lines.add(String.format("-H '%s: %s'", entry.getKey(), header));
 			}
 		}
@@ -175,24 +166,6 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		String content = request.getContentAsString();
 		if (StringUtils.hasText(content)) {
 			lines.add(String.format("-d '%s'", content));
-		}
-		else if (!request.getParts().isEmpty()) {
-			for (Entry<String, List<String>> entry : request.getNonPartParameters().entrySet()) {
-				for (String value : entry.getValue()) {
-					lines.add(String.format("-F '%s=%s'", entry.getKey(), value));
-				}
-			}
-		}
-		else if (request.isPutOrPost()) {
-			writeContentUsingParameters(request, lines);
-		}
-	}
-
-	private void writeContentUsingParameters(OperationRequest request, List<String> lines) {
-		Parameters uniqueParameters = request.getParameters().getUniqueParameters(request.getUri());
-		String queryString = uniqueParameters.toQueryString();
-		if (StringUtils.hasText(queryString)) {
-			lines.add(String.format("-d '%s'", queryString));
 		}
 	}
 

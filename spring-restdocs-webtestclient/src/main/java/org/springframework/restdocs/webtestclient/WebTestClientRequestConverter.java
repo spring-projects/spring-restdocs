@@ -30,9 +30,7 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ReactiveHttpInputMessage;
-import org.springframework.http.codec.FormHttpMessageReader;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.multipart.DefaultPartHttpMessageReader;
 import org.springframework.http.codec.multipart.FilePart;
@@ -42,14 +40,11 @@ import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
-import org.springframework.restdocs.operation.Parameters;
-import org.springframework.restdocs.operation.QueryStringParser;
 import org.springframework.restdocs.operation.RequestConverter;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 /**
  * A {@link RequestConverter} for creating an {@link OperationRequest} derived from an
@@ -59,18 +54,11 @@ import org.springframework.util.MultiValueMap;
  */
 class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> {
 
-	private static final ResolvableType FORM_DATA_TYPE = ResolvableType.forClassWithGenerics(MultiValueMap.class,
-			String.class, String.class);
-
-	private final QueryStringParser queryStringParser = new QueryStringParser();
-
-	private final FormHttpMessageReader formDataReader = new FormHttpMessageReader();
-
 	@Override
 	public OperationRequest convert(ExchangeResult result) {
 		HttpHeaders headers = extractRequestHeaders(result);
 		return new OperationRequestFactory().create(result.getUrl(), result.getMethod(), result.getRequestBodyContent(),
-				headers, extractParameters(result), extractRequestParts(result), extractCookies(headers));
+				headers, extractRequestParts(result), extractCookies(headers));
 	}
 
 	private HttpHeaders extractRequestHeaders(ExchangeResult result) {
@@ -78,16 +66,6 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 		extracted.putAll(result.getRequestHeaders());
 		extracted.remove(WebTestClient.WEBTESTCLIENT_REQUEST_ID);
 		return extracted;
-	}
-
-	private Parameters extractParameters(ExchangeResult result) {
-		Parameters parameters = new Parameters();
-		parameters.addAll(this.queryStringParser.parse(result.getUrl()));
-		if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(result.getRequestHeaders().getContentType())) {
-			parameters.addAll(this.formDataReader
-					.readMono(FORM_DATA_TYPE, new ExchangeResultReactiveHttpInputMessage(result), null).block());
-		}
-		return parameters;
 	}
 
 	private List<OperationRequestPart> extractRequestParts(ExchangeResult result) {

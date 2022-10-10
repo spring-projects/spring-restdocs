@@ -649,21 +649,20 @@ For example, the preceding code results in a snippet named `response-fields-bene
 
 
 
-[[documenting-your-api-request-parameters]]
-=== Request Parameters
+[[documenting-your-api-query-parameters]]
+=== Query Parameters
 
-You can document a request's parameters by using `requestParameters`.
-You can include request parameters in a `GET` request's query string.
+You can document a request's query parameters by using `queryParameters`.
 The following examples show how to do so:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
-include::{examples-dir}/com/example/mockmvc/RequestParameters.java[tags=request-parameters-query-string]
+include::{examples-dir}/com/example/mockmvc/QueryParameters.java[tags=query-parameters]
 ----
 <1> Perform a `GET` request with two parameters, `page` and `per_page`, in the query string.
-<2> Configure Spring REST Docs to produce a snippet describing the request's parameters.
-Uses the static `requestParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's query parameters.
+Uses the static `queryParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the `page` parameter.
 Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the `per_page` parameter.
@@ -671,11 +670,11 @@ Uses the static `parameterWithName` method on `org.springframework.restdocs.requ
 [source,java,indent=0,role="secondary"]
 .WebTestClient
 ----
-include::{examples-dir}/com/example/webtestclient/RequestParameters.java[tags=request-parameters-query-string]
+include::{examples-dir}/com/example/webtestclient/QueryParameters.java[tags=query-parameters]
 ----
 <1> Perform a `GET` request with two parameters, `page` and `per_page`, in the query string.
-<2> Configure Spring REST Docs to produce a snippet describing the request's parameters.
-Uses the static `requestParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's query parameters.
+Uses the static `queryParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the `page` parameter.
 Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the `per_page` parameter.
@@ -683,51 +682,77 @@ Uses the static `parameterWithName` method on `org.springframework.restdocs.requ
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
-include::{examples-dir}/com/example/restassured/RequestParameters.java[tags=request-parameters-query-string]
+include::{examples-dir}/com/example/restassured/QueryParameters.java[tags=query-parameters]
 ----
-<1> Configure Spring REST Docs to  produce a snippet describing the request's parameters.
-Uses the static `requestParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<1> Configure Spring REST Docs to produce a snippet describing the request's query parameters.
+Uses the static `queryParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
 <2> Document the `page` parameter.
 Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
 <3> Document the `per_page` parameter.
 <4> Perform a `GET` request with two parameters, `page` and `per_page`, in the query string.
 
-You can also include request parameters as form data in the body of a POST request.
+When documenting query parameters, the test fails if an undocumented query parameter is used in the request's query string.
+Similarly, the test also fails if a documented query parameter is not found in the request's query string and the parameter has not been marked as optional.
+
+If you do not want to document a query parameter, you can mark it as ignored.
+This prevents it from appearing in the generated snippet while avoiding the failure described above.
+
+You can also document query parameters in a relaxed mode where any undocumented parameters do not cause a test failure.
+To do so, use the `relaxedQueryParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+This can be useful when documenting a particular scenario where you only want to focus on a subset of the query parameters.
+
+
+
+[[documenting-your-api-form-parameters]]
+=== Form Parameters
+
+You can document a request's form parameters by using `formParameters`.
 The following examples show how to do so:
 
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
-include::{examples-dir}/com/example/mockmvc/RequestParameters.java[tags=request-parameters-form-data]
+include::{examples-dir}/com/example/mockmvc/FormParameters.java[tags=form-parameters]
 ----
-<1> Perform a `POST` request with a single parameter, `username`.
+<1> Perform a `POST` request with a single form parameter, `username`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's form parameters.
+Uses the static `formParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the `username` parameter.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
 ----
-include::{examples-dir}/com/example/webtestclient/RequestParameters.java[tags=request-parameters-form-data]
+include::{examples-dir}/com/example/webtestclient/FormParameters.java[tags=form-parameters]
 ----
-<1> Perform a `POST` request with a single parameter, `username`.
+<1> Perform a `POST` request with a single form parameter, `username`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's form parameters.
+Uses the static `formParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the `username` parameter.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
 .REST Assured
 ----
-include::{examples-dir}/com/example/restassured/RequestParameters.java[tags=request-parameters-form-data]
+include::{examples-dir}/com/example/restassured/FormParameters.java[tags=form-parameters]
 ----
-<1> Configure the `username` parameter.
-<2> Perform the `POST` request.
+<1> Configure Spring REST Docs to produce a snippet describing the request's form parameters.
+Uses the static `formParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<2> Document the `username` parameter.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Perform a `POST` request with a single form parameter, `username`.
 
-In all cases, the result is a snippet named `request-parameters.adoc` that contains a table describing the parameters that are supported by the resource.
+In all cases, the result is a snippet named `form-parameters.adoc` that contains a table describing the form parameters that are supported by the resource.
 
-When documenting request parameters, the test fails if an undocumented request parameter is used in the request.
-Similarly, the test also fails if a documented request parameter is not found in the request and the request parameter has not been marked as optional.
+When documenting form parameters, the test fails if an undocumented form parameter is used in the request body.
+Similarly, the test also fails if a documented form parameter is not found in the request body and the form parameter has not been marked as optional.
 
-If you do not want to document a request parameter, you can mark it as ignored.
+If you do not want to document a form parameter, you can mark it as ignored.
 This prevents it from appearing in the generated snippet while avoiding the failure described above.
 
-You can also document request parameters in a relaxed mode where any undocumented parameters do not cause a test failure.
-To do so, use the `relaxedRequestParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
-This can be useful when documenting a particular scenario where you only want to focus on a subset of the request parameters.
+You can also document form parameters in a relaxed mode where any undocumented parameters do not cause a test failure.
+To do so, use the `relaxedFormParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+This can be useful when documenting a particular scenario where you only want to focus on a subset of the form parameters.
 
 
 

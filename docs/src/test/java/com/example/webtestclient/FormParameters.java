@@ -21,37 +21,26 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 
+import static org.springframework.restdocs.request.RequestDocumentation.formParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
 
-public class RequestParameters {
+public class FormParameters {
 
 	// @formatter:off
 
 	private WebTestClient webTestClient;
 
-	public void getQueryStringSnippet() {
-		// tag::request-parameters-query-string[]
-		this.webTestClient.get().uri("/users?page=2&per_page=100") // <1>
-			.exchange().expectStatus().isOk().expectBody()
-			.consumeWith(document("users", requestParameters(// <2>
-					parameterWithName("page").description("The page to retrieve"), // <3>
-					parameterWithName("per_page").description("Entries per page") // <4>
-			)));
-		// end::request-parameters-query-string[]
-	}
-
 	public void postFormDataSnippet() {
-		// tag::request-parameters-form-data[]
+		// tag::form-parameters[]
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 		formData.add("username", "Tester");
 		this.webTestClient.post().uri("/users").body(BodyInserters.fromFormData(formData)) // <1>
-			.exchange().expectStatus().isCreated().expectBody()
-			.consumeWith(document("create-user", requestParameters(
-				parameterWithName("username").description("The user's username")
-		)));
-		// end::request-parameters-form-data[]
+				.exchange().expectStatus().isCreated().expectBody()
+				.consumeWith(document("create-user", formParameters(// <2>
+						parameterWithName("username").description("The user's username") // <3>
+				)));
+		// end::form-parameters[]
 	}
 
 }

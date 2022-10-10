@@ -17,6 +17,7 @@
 package org.springframework.restdocs.restassured;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,9 @@ import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 import org.junit.rules.ExternalResource;
+
+import org.springframework.http.MediaType;
+import org.springframework.util.FileCopyUtils;
 
 /**
  * {@link ExternalResource} that starts and stops a Tomcat server.
@@ -53,6 +57,10 @@ class TomcatServer extends ExternalResource {
 		context.addServletMappingDecoded("/", "test");
 		this.tomcat.addServlet("/", "set-cookie", new CookiesServlet());
 		context.addServletMappingDecoded("/set-cookie", "set-cookie");
+		this.tomcat.addServlet("/", "query-parameter", new QueryParameterServlet());
+		context.addServletMappingDecoded("/query-parameter", "query-parameter");
+		this.tomcat.addServlet("/", "form-url-encoded", new FormUrlEncodedServlet());
+		context.addServletMappingDecoded("/form-url-encoded", "form-url-encoded");
 		this.tomcat.start();
 		this.port = this.tomcat.getConnector().getLocalPort();
 	}
@@ -117,6 +125,35 @@ class TomcatServer extends ExternalResource {
 			cookie.setHttpOnly(true);
 
 			resp.addCookie(cookie);
+		}
+
+	}
+
+	private static final class QueryParameterServlet extends HttpServlet {
+
+		@Override
+		protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			if (!req.getQueryString().equals("a=alpha&a=apple&b=bravo")) {
+				throw new ServletException("Incorrect query string");
+			}
+			resp.setStatus(200);
+		}
+
+	}
+
+	private static final class FormUrlEncodedServlet extends HttpServlet {
+
+		@Override
+		protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			if (!MediaType.APPLICATION_FORM_URLENCODED
+					.isCompatibleWith(MediaType.parseMediaType(req.getContentType()))) {
+				throw new ServletException("Incorrect Content-Type");
+			}
+			String content = FileCopyUtils.copyToString(new InputStreamReader(req.getInputStream()));
+			if (!"a=alpha&a=apple&b=bravo".equals(content)) {
+				throw new ServletException("Incorrect body content");
+			}
+			resp.setStatus(200);
 		}
 
 	}

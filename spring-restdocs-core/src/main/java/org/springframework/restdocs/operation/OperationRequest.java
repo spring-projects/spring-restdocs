@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,14 +57,6 @@ public interface OperationRequest {
 	 * @return the HTTP method
 	 */
 	HttpMethod getMethod();
-
-	/**
-	 * Returns the request's parameters. For a {@code GET} request, the parameters are
-	 * derived from the query string. For a {@code POST} request, the parameters are
-	 * derived form the request's body.
-	 * @return the parameters
-	 */
-	Parameters getParameters();
 
 	/**
 	 * Returns the request's parts, provided that it is a multipart request. If not, then

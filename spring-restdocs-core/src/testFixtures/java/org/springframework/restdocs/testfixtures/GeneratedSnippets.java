@@ -110,8 +110,12 @@ public class GeneratedSnippets extends OperationTestRule {
 		return snippet("path-parameters");
 	}
 
-	public String requestParameters() {
-		return snippet("request-parameters");
+	public String queryParameters() {
+		return snippet("query-parameters");
+	}
+
+	public String formParameters() {
+		return snippet("form-parameters");
 	}
 
 	public String snippet(String name) {

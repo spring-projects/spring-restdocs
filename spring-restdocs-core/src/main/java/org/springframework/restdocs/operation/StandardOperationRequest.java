@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,6 @@ class StandardOperationRequest extends AbstractOperationMessage implements Opera
 
 	private HttpMethod method;
 
-	private Parameters parameters;
-
 	private Collection<OperationRequestPart> parts;
 
 	private URI uri;
@@ -48,16 +46,14 @@ class StandardOperationRequest extends AbstractOperationMessage implements Opera
 	 * @param method the method
 	 * @param content the content
 	 * @param headers the headers
-	 * @param parameters the parameters
 	 * @param parts the parts
 	 * @param cookies the cookies
 	 */
-	StandardOperationRequest(URI uri, HttpMethod method, byte[] content, HttpHeaders headers, Parameters parameters,
+	StandardOperationRequest(URI uri, HttpMethod method, byte[] content, HttpHeaders headers,
 			Collection<OperationRequestPart> parts, Collection<RequestCookie> cookies) {
 		super(content, headers);
 		this.uri = uri;
 		this.method = method;
-		this.parameters = parameters;
 		this.parts = parts;
 		this.cookies = cookies;
 	}
@@ -65,11 +61,6 @@ class StandardOperationRequest extends AbstractOperationMessage implements Opera
 	@Override
 	public HttpMethod getMethod() {
 		return this.method;
-	}
-
-	@Override
-	public Parameters getParameters() {
-		return this.parameters;
 	}
 
 	@Override

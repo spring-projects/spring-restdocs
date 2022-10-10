@@ -24,13 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
-import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.util.Base64Utils;
 
@@ -63,15 +61,6 @@ final class CliOperationRequest implements OperationRequest {
 			return BasicAuthHeaderFilter.decodeBasicAuthHeader(headerValue);
 		}
 		return null;
-	}
-
-	Parameters getNonPartParameters() {
-		Parameters parameters = getParameters();
-		Parameters nonPartParameters = new Parameters();
-		nonPartParameters.putAll(parameters);
-		Set<String> partNames = getParts().stream().map(OperationRequestPart::getName).collect(Collectors.toSet());
-		nonPartParameters.keySet().removeAll(partNames);
-		return nonPartParameters;
 	}
 
 	@Override
@@ -113,11 +102,6 @@ final class CliOperationRequest implements OperationRequest {
 	@Override
 	public HttpMethod getMethod() {
 		return this.delegate.getMethod();
-	}
-
-	@Override
-	public Parameters getParameters() {
-		return this.delegate.getParameters();
 	}
 
 	@Override

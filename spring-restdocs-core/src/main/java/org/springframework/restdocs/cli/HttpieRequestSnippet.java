@@ -25,12 +25,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.operation.FormParameters;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
-import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
@@ -85,6 +84,9 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private Object getContentStandardIn(CliOperationRequest request) {
+		if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(request.getHeaders().getContentType())) {
+			return "";
+		}
 		String content = request.getContentAsString();
 		if (StringUtils.hasText(content)) {
 			return String.format("echo '%s' | ", content);
@@ -102,21 +104,15 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private String getUrl(OperationRequest request) {
-		Parameters uniqueParameters = request.getParameters().getUniqueParameters(request.getUri());
-		if (!uniqueParameters.isEmpty() && includeParametersInUri(request)) {
-			return String.format("'%s%s%s'", request.getUri(),
-					StringUtils.hasText(request.getUri().getRawQuery()) ? "&" : "?", uniqueParameters.toQueryString());
-		}
 		return String.format("'%s'", request.getUri());
 	}
 
 	private String getRequestItems(CliOperationRequest request) {
 		List<String> lines = new ArrayList<>();
 
-		writeFormDataIfNecessary(request, lines);
 		writeHeaders(request, lines);
 		writeCookies(request, lines);
-		writeParametersIfNecessary(request, lines);
+		writeFormDataIfNecessary(request, lines);
 
 		return this.commandFormatter.format(lines);
 	}
@@ -125,22 +121,9 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		if (!request.getParts().isEmpty()) {
 			writer.print("--multipart ");
 		}
-		else if (!request.getParameters().getUniqueParameters(request.getUri()).isEmpty()
-				&& !includeParametersInUri(request) && includeParametersAsFormOptions(request)) {
+		else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(request.getHeaders().getContentType())) {
 			writer.print("--form ");
 		}
-	}
-
-	private boolean includeParametersInUri(OperationRequest request) {
-		HttpMethod method = request.getMethod();
-		return (method != HttpMethod.PUT && method != HttpMethod.POST && method != HttpMethod.PATCH)
-				|| (request.getContent().length > 0 && !MediaType.APPLICATION_FORM_URLENCODED
-						.isCompatibleWith(request.getHeaders().getContentType()));
-	}
-
-	private boolean includeParametersAsFormOptions(OperationRequest request) {
-		return request.getMethod() != HttpMethod.GET && (request.getContent().length == 0
-				|| !MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(request.getHeaders().getContentType()));
 	}
 
 	private void writeUserOptionIfNecessary(CliOperationRequest request, PrintWriter writer) {
@@ -155,23 +138,33 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeFormDataIfNecessary(OperationRequest request, List<String> lines) {
-		for (OperationRequestPart part : request.getParts()) {
-			StringBuilder oneLine = new StringBuilder();
-			oneLine.append(String.format("'%s'", part.getName()));
-			if (!StringUtils.hasText(part.getSubmittedFileName())) {
-				oneLine.append(String.format("='%s'", part.getContentAsString()));
-			}
-			else {
-				oneLine.append(String.format("@'%s'", part.getSubmittedFileName()));
-			}
+		if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(request.getHeaders().getContentType())) {
+			FormParameters.from(request).forEach(
+					(key, values) -> values.forEach((value) -> lines.add(String.format("'%s=%s'", key, value))));
+		}
+		else {
+			for (OperationRequestPart part : request.getParts()) {
+				StringBuilder oneLine = new StringBuilder();
+				oneLine.append(String.format("'%s'", part.getName()));
+				if (!StringUtils.hasText(part.getSubmittedFileName())) {
+					oneLine.append(String.format("='%s'", part.getContentAsString()));
+				}
+				else {
+					oneLine.append(String.format("@'%s'", part.getSubmittedFileName()));
+				}
 
-			lines.add(oneLine.toString());
+				lines.add(oneLine.toString());
+			}
 		}
 	}
 
 	private void writeHeaders(OperationRequest request, List<String> lines) {
 		HttpHeaders headers = request.getHeaders();
 		for (Entry<String, List<String>> entry : headers.entrySet()) {
+			if (entry.getKey().equals(HttpHeaders.CONTENT_TYPE)
+					&& headers.getContentType().isCompatibleWith(MediaType.APPLICATION_FORM_URLENCODED)) {
+				continue;
+			}
 			for (String header : entry.getValue()) {
 				// HTTPie adds Content-Type automatically with --form
 				if (!request.getParts().isEmpty() && entry.getKey().equals(HttpHeaders.CONTENT_TYPE)
@@ -186,31 +179,6 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	private void writeCookies(OperationRequest request, List<String> lines) {
 		for (RequestCookie cookie : request.getCookies()) {
 			lines.add(String.format("'Cookie:%s=%s'", cookie.getName(), cookie.getValue()));
-		}
-	}
-
-	private void writeParametersIfNecessary(CliOperationRequest request, List<String> lines) {
-		if (StringUtils.hasText(request.getContentAsString())) {
-			return;
-		}
-		if (!request.getParts().isEmpty()) {
-			writeContentUsingParameters(request.getNonPartParameters(), lines);
-		}
-		else if (request.isPutOrPost()) {
-			writeContentUsingParameters(request.getParameters().getUniqueParameters(request.getUri()), lines);
-		}
-	}
-
-	private void writeContentUsingParameters(Parameters parameters, List<String> lines) {
-		for (Map.Entry<String, List<String>> entry : parameters.entrySet()) {
-			if (entry.getValue().isEmpty()) {
-				lines.add(String.format("'%s='", entry.getKey()));
-			}
-			else {
-				for (String value : entry.getValue()) {
-					lines.add(String.format("'%s=%s'", entry.getKey(), value));
-				}
-			}
 		}
 	}
 

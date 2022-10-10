@@ -68,7 +68,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
@@ -143,7 +143,7 @@ public class RestAssuredRestDocumentationIntegrationTests {
 				.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
 						.withContent(String.format("$ curl " + "'http://localhost:" + tomcat.getPort()
 								+ "/?foo=bar' -i -X POST \\%n" + "    -H 'Accept: application/json' \\%n"
-								+ "    -H 'Content-Type: " + contentType + "' \\%n" + "    -d 'a=alpha'"))));
+								+ "    -H 'Content-Type: " + contentType + "' \\%n" + "    -d 'foo=bar&a=alpha'"))));
 	}
 
 	@Test
@@ -166,13 +166,13 @@ public class RestAssuredRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void requestParametersSnippet() {
+	public void queryParametersSnippet() {
 		given().port(tomcat.getPort()).filter(documentationConfiguration(this.restDocumentation))
-				.filter(document("request-parameters",
-						requestParameters(parameterWithName("foo").description("The description"))))
+				.filter(document("query-parameters",
+						queryParameters(parameterWithName("foo").description("The description"))))
 				.accept("application/json").param("foo", "bar").get("/").then().statusCode(200);
-		assertExpectedSnippetFilesExist(new File("build/generated-snippets/request-parameters"), "http-request.adoc",
-				"http-response.adoc", "curl-request.adoc", "request-parameters.adoc");
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/query-parameters"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc", "query-parameters.adoc");
 	}
 
 	@Test
@@ -385,8 +385,10 @@ public class RestAssuredRestDocumentationIntegrationTests {
 			@Override
 			public boolean matches(File value) {
 				try {
-					return delegate.matches(FileCopyUtils
-							.copyToString(new InputStreamReader(new FileInputStream(value), StandardCharsets.UTF_8)));
+					String copyToString = FileCopyUtils
+							.copyToString(new InputStreamReader(new FileInputStream(value), StandardCharsets.UTF_8));
+					System.out.println(copyToString);
+					return delegate.matches(copyToString);
 				}
 				catch (IOException ex) {
 					fail("Failed to read '" + value + "'", ex);

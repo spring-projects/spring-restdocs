@@ -20,9 +20,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import io.restassured.http.Cookie;
@@ -37,11 +40,11 @@ import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
-import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestConverter;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * A converter for creating an {@link OperationRequest} from a REST Assured
@@ -56,7 +59,7 @@ class RestAssuredRequestConverter implements RequestConverter<FilterableRequestS
 	public OperationRequest convert(FilterableRequestSpecification requestSpec) {
 		return new OperationRequestFactory().create(URI.create(requestSpec.getURI()),
 				HttpMethod.valueOf(requestSpec.getMethod()), extractContent(requestSpec), extractHeaders(requestSpec),
-				extractParameters(requestSpec), extractParts(requestSpec), extractCookies(requestSpec));
+				extractParts(requestSpec), extractCookies(requestSpec));
 	}
 
 	private Collection<RequestCookie> extractCookies(FilterableRequestSpecification requestSpec) {
@@ -68,7 +71,36 @@ class RestAssuredRequestConverter implements RequestConverter<FilterableRequestS
 	}
 
 	private byte[] extractContent(FilterableRequestSpecification requestSpec) {
-		return convertContent(requestSpec.getBody());
+		Object body = requestSpec.getBody();
+		if (body != null) {
+			return convertContent(body);
+		}
+		StringBuilder parameters = new StringBuilder();
+		if ("POST".equals(requestSpec.getMethod())) {
+			appendParameters(parameters, requestSpec.getRequestParams());
+		}
+		if (!"GET".equals(requestSpec.getMethod())) {
+			appendParameters(parameters, requestSpec.getFormParams());
+		}
+		return parameters.toString().getBytes(StandardCharsets.ISO_8859_1);
+	}
+
+	private void appendParameters(StringBuilder content, Map<String, ?> parameters) {
+		for (Entry<String, ?> entry : parameters.entrySet()) {
+			String name = entry.getKey();
+			Object value = entry.getValue();
+			if (value instanceof Iterable) {
+				for (Object v : (Iterable<?>) value) {
+					append(content, name, v.toString());
+				}
+			}
+			else if (value != null) {
+				append(content, name, value.toString());
+			}
+			else {
+				append(content, name);
+			}
+		}
 	}
 
 	private byte[] convertContent(Object content) {
@@ -131,28 +163,6 @@ class RestAssuredRequestConverter implements RequestConverter<FilterableRequestS
 		return HttpHeaders.ACCEPT.equals(header.getName()) && "*/*".equals(header.getValue());
 	}
 
-	private Parameters extractParameters(FilterableRequestSpecification requestSpec) {
-		Parameters parameters = new Parameters();
-		for (Entry<String, ?> entry : requestSpec.getQueryParams().entrySet()) {
-			if (entry.getValue() instanceof Collection) {
-				Collection<?> queryParams = ((Collection<?>) entry.getValue());
-				for (Object queryParam : queryParams) {
-					parameters.add(entry.getKey(), queryParam.toString());
-				}
-			}
-			else {
-				parameters.add(entry.getKey(), entry.getValue().toString());
-			}
-		}
-		for (Entry<String, ?> entry : requestSpec.getRequestParams().entrySet()) {
-			parameters.add(entry.getKey(), entry.getValue().toString());
-		}
-		for (Entry<String, ?> entry : requestSpec.getFormParams().entrySet()) {
-			parameters.add(entry.getKey(), entry.getValue().toString());
-		}
-		return parameters;
-	}
-
 	private Collection<OperationRequestPart> extractParts(FilterableRequestSpecification requestSpec) {
 		List<OperationRequestPart> parts = new ArrayList<>();
 		for (MultiPartSpecification multiPartSpec : requestSpec.getMultiPartParams()) {
@@ -163,6 +173,28 @@ class RestAssuredRequestConverter implements RequestConverter<FilterableRequestS
 					multiPartSpec.getFileName(), convertContent(multiPartSpec.getContent()), headers));
 		}
 		return parts;
+	}
+
+	private static void append(StringBuilder sb, String key) {
+		append(sb, key, "");
+	}
+
+	private static void append(StringBuilder sb, String key, String value) {
+		doAppend(sb, urlEncode(key) + "=" + urlEncode(value));
+	}
+
+	private static void doAppend(StringBuilder sb, String toAppend) {
+		if (sb.length() > 0) {
+			sb.append("&");
+		}
+		sb.append(toAppend);
+	}
+
+	private static String urlEncode(String s) {
+		if (!StringUtils.hasLength(s)) {
+			return "";
+		}
+		return URLEncoder.encode(s, StandardCharsets.UTF_8);
 	}
 
 }

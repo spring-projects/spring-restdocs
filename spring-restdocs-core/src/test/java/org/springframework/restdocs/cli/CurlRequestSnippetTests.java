@@ -58,14 +58,6 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void getRequestWithParameter() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo").param("a", "alpha").build());
-		assertThat(this.generatedSnippets.curlRequest())
-				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha' -i -X GET"));
-	}
-
-	@Test
 	public void nonGetRequest() throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
 				.document(this.operationBuilder.request("http://localhost/foo").method("POST").build());
@@ -87,30 +79,6 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 				.document(this.operationBuilder.request("http://localhost/foo?param=value").build());
 		assertThat(this.generatedSnippets.curlRequest())
 				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?param=value' -i -X GET"));
-	}
-
-	@Test
-	public void getRequestWithTotallyOverlappingQueryStringAndParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo?param=value").param("param", "value").build());
-		assertThat(this.generatedSnippets.curlRequest())
-				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?param=value' -i -X GET"));
-	}
-
-	@Test
-	public void getRequestWithPartiallyOverlappingQueryStringAndParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
-				.request("http://localhost/foo?a=alpha").param("a", "alpha").param("b", "bravo").build());
-		assertThat(this.generatedSnippets.curlRequest())
-				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i -X GET"));
-	}
-
-	@Test
-	public void getRequestWithDisjointQueryStringAndParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?a=alpha").param("b", "bravo").build());
-		assertThat(this.generatedSnippets.curlRequest())
-				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i -X GET"));
 	}
 
 	@Test
@@ -140,7 +108,16 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void postRequestWithOneParameter() throws IOException {
 		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("POST").param("k1", "v1").build());
+				this.operationBuilder.request("http://localhost/foo").method("POST").content("k1=v1").build());
+		assertThat(this.generatedSnippets.curlRequest())
+				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
+	}
+
+	@Test
+	public void postRequestWithOneParameterAndExplicitContentType() throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE).method("POST")
+				.content("k1=v1").build());
 		assertThat(this.generatedSnippets.curlRequest())
 				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
 	}
@@ -148,7 +125,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void postRequestWithOneParameterWithNoValue() throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo").method("POST").param("k1").build());
+				.document(this.operationBuilder.request("http://localhost/foo").method("POST").content("k1=").build());
 		assertThat(this.generatedSnippets.curlRequest())
 				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST -d 'k1='"));
 	}
@@ -156,7 +133,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void postRequestWithMultipleParameters() throws IOException {
 		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.method("POST").param("k1", "v1", "v1-bis").param("k2", "v2").build());
+				.method("POST").content("k1=v1&k1=v1-bis&k2=v2").build());
 		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash")
 				.withContent("$ curl 'http://localhost/foo' -i -X POST" + " -d 'k1=v1&k1=v1-bis&k2=v2'"));
 	}
@@ -164,52 +141,24 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void postRequestWithUrlEncodedParameter() throws IOException {
 		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("POST").param("k1", "a&b").build());
+				this.operationBuilder.request("http://localhost/foo").method("POST").content("k1=a%26b").build());
 		assertThat(this.generatedSnippets.curlRequest())
 				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
 	}
 
 	@Test
-	public void postRequestWithDisjointQueryStringAndParameter() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder
-				.request("http://localhost/foo?a=alpha").method("POST").param("b", "bravo").build());
-		assertThat(this.generatedSnippets.curlRequest())
-				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha' -i -X POST -d 'b=bravo'"));
-	}
-
-	@Test
-	public void postRequestWithTotallyOverlappingQueryStringAndParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("POST")
-						.param("a", "alpha").param("b", "bravo").build());
-		assertThat(this.generatedSnippets.curlRequest())
-				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i -X POST"));
-	}
-
-	@Test
-	public void postRequestWithPartiallyOverlappingQueryStringAndParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?a=alpha").method("POST")
-						.param("a", "alpha").param("b", "bravo").build());
-		assertThat(this.generatedSnippets.curlRequest())
-				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha' -i -X POST -d 'b=bravo'"));
-	}
-
-	@Test
-	public void postRequestWithOverlappingParametersAndFormUrlEncodedBody() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("POST").content("a=alpha&b=bravo")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-						.param("a", "alpha").param("b", "bravo").build());
-		assertThat(this.generatedSnippets.curlRequest())
-				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST "
-						+ "-H 'Content-Type: application/x-www-form-urlencoded' " + "-d 'a=alpha&b=bravo'"));
+	public void postRequestWithJsonData() throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+				.method("POST").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.content("{\"a\":\"alpha\"}").build());
+		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(
+				"$ curl 'http://localhost/foo' -i -X POST -H 'Content-Type: application/json' -d '{\"a\":\"alpha\"}'"));
 	}
 
 	@Test
 	public void putRequestWithOneParameter() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("PUT").param("k1", "v1").build());
+		new CurlRequestSnippet(this.commandFormatter)
+				.document(this.operationBuilder.request("http://localhost/foo").method("PUT").content("k1=v1").build());
 		assertThat(this.generatedSnippets.curlRequest())
 				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=v1'"));
 	}
@@ -217,7 +166,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void putRequestWithMultipleParameters() throws IOException {
 		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.method("PUT").param("k1", "v1").param("k1", "v1-bis").param("k2", "v2").build());
+				.method("PUT").content("k1=v1&k1=v1-bis&k2=v2").build());
 		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash")
 				.withContent("$ curl 'http://localhost/foo' -i -X PUT" + " -d 'k1=v1&k1=v1-bis&k2=v2'"));
 	}
@@ -225,7 +174,7 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void putRequestWithUrlEncodedParameter() throws IOException {
 		new CurlRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("PUT").param("k1", "a&b").build());
+				this.operationBuilder.request("http://localhost/foo").method("PUT").content("k1=a%26b").build());
 		assertThat(this.generatedSnippets.curlRequest())
 				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=a%26b'"));
 	}
@@ -288,29 +237,6 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void multipartPostWithParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/upload")
-				.method("POST").header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", new byte[0]).submittedFileName("documents/images/example.png").and()
-				.param("a", "apple", "avocado").param("b", "banana").build());
-		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
-				+ "'Content-Type: multipart/form-data' -F "
-				+ "'image=@documents/images/example.png' -F 'a=apple' -F 'a=avocado' " + "-F 'b=banana'";
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(expectedContent));
-	}
-
-	@Test
-	public void multipartPostWithOverlappingPartsAndParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/upload")
-				.method("POST").header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-				.part("image", new byte[0]).submittedFileName("documents/images/example.png").and()
-				.part("a", "apple".getBytes()).and().param("a", "apple").build());
-		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
-				+ "'Content-Type: multipart/form-data' -F 'image=@documents/images/example.png' -F 'a=apple'";
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(expectedContent));
-	}
-
-	@Test
 	public void basicAuthCredentialsAreSuppliedUsingUserOption() throws IOException {
 		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
 				.header(HttpHeaders.AUTHORIZATION, "Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
@@ -327,22 +253,6 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 		assertThat(this.generatedSnippets.curlRequest())
 				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X GET -H 'Host: api.example.com'"
 						+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
-	}
-
-	@Test
-	public void postWithContentAndParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.param("a", "alpha").method("POST").param("b", "bravo").content("Some content").build());
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash")
-				.withContent("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i " + "-X POST -d 'Some content'"));
-	}
-
-	@Test
-	public void deleteWithParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.method("DELETE").param("a", "alpha").param("b", "bravo").build());
-		assertThat(this.generatedSnippets.curlRequest())
-				.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i " + "-X DELETE"));
 	}
 
 	@Test

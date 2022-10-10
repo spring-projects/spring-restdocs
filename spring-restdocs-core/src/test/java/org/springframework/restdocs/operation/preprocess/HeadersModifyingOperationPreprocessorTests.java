@@ -31,7 +31,6 @@ import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
-import org.springframework.restdocs.operation.Parameters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -149,7 +148,7 @@ public class HeadersModifyingOperationPreprocessorTests {
 			headersCustomizer.accept(headers);
 		}
 		return new OperationRequestFactory().create(URI.create("http://localhost:8080"), HttpMethod.GET, new byte[0],
-				headers, new Parameters(), Collections.emptyList());
+				headers, Collections.emptyList());
 	}
 
 	private OperationResponse createResponse() {

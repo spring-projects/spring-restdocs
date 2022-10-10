@@ -64,7 +64,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
@@ -122,12 +122,11 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void requestParametersSnippet() {
-		this.webTestClient.get().uri("/?a=alpha&b=bravo").exchange().expectStatus().isOk().expectBody()
-				.consumeWith(document("request-parameters",
-						requestParameters(parameterWithName("a").description("Alpha description"),
-								parameterWithName("b").description("Bravo description"))));
-		assertThat(new File("build/generated-snippets/request-parameters/request-parameters.adoc"))
+	public void queryParametersSnippet() {
+		this.webTestClient.get().uri("/?a=alpha&b=bravo").exchange().expectStatus().isOk().expectBody().consumeWith(
+				document("query-parameters", queryParameters(parameterWithName("a").description("Alpha description"),
+						parameterWithName("b").description("Bravo description"))));
+		assertThat(new File("build/generated-snippets/query-parameters/query-parameters.adoc"))
 				.has(content(tableWithHeader(TemplateFormats.asciidoctor(), "Parameter", "Description")
 						.row("`a`", "Alpha description").row("`b`", "Bravo description")));
 	}
@@ -204,7 +203,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	private Condition<File> content(final Condition<String> delegate) {
-		return new Condition<File>() {
+		return new Condition<>() {
 
 			@Override
 			public boolean matches(File value) {

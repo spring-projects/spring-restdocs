@@ -20,7 +20,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +41,6 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
-import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.operation.ResponseCookie;
 import org.springframework.restdocs.operation.StandardOperation;
@@ -147,8 +145,6 @@ public class OperationBuilder extends OperationTestRule {
 
 		private HttpHeaders headers = new HttpHeaders();
 
-		private Parameters parameters = new Parameters();
-
 		private List<OperationRequestPartBuilder> partBuilders = new ArrayList<>();
 
 		private Collection<RequestCookie> cookies = new ArrayList<>();
@@ -162,8 +158,8 @@ public class OperationBuilder extends OperationTestRule {
 			for (OperationRequestPartBuilder builder : this.partBuilders) {
 				parts.add(builder.buildPart());
 			}
-			return new OperationRequestFactory().create(this.requestUri, this.method, this.content, this.headers,
-					this.parameters, parts, this.cookies);
+			return new OperationRequestFactory().create(this.requestUri, this.method, this.content, this.headers, parts,
+					this.cookies);
 		}
 
 		public Operation build() {
@@ -182,18 +178,6 @@ public class OperationBuilder extends OperationTestRule {
 
 		public OperationRequestBuilder content(byte[] content) {
 			this.content = content;
-			return this;
-		}
-
-		public OperationRequestBuilder param(String name, String... values) {
-			if (values.length > 0) {
-				for (String value : values) {
-					this.parameters.add(name, value);
-				}
-			}
-			else {
-				this.parameters.put(name, Collections.<String>emptyList());
-			}
 			return this;
 		}
 

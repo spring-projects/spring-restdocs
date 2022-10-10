@@ -21,32 +21,21 @@ import io.restassured.specification.RequestSpecification;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
-public class RequestParameters {
+public class QueryParameters {
 
 	private RequestSpecification spec;
 
 	public void getQueryStringSnippet() {
-		// tag::request-parameters-query-string[]
-		RestAssured.given(this.spec).filter(document("users", requestParameters(// <1>
+		// tag::query-parameters[]
+		RestAssured.given(this.spec).filter(document("users", queryParameters(// <1>
 				parameterWithName("page").description("The page to retrieve"), // <2>
 				parameterWithName("per_page").description("Entries per page")))) // <3>
 				.when().get("/users?page=2&per_page=100") // <4>
 				.then().assertThat().statusCode(is(200));
-		// end::request-parameters-query-string[]
-	}
-
-	public void postFormDataSnippet() {
-		// tag::request-parameters-form-data[]
-		RestAssured.given(this.spec)
-				.filter(document("create-user",
-						requestParameters(parameterWithName("username").description("The user's username"))))
-				.formParam("username", "Tester") // <1>
-				.when().post("/users") // <2>
-				.then().assertThat().statusCode(is(200));
-		// end::request-parameters-form-data[]
+		// end::query-parameters[]
 	}
 
 }

@@ -92,7 +92,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -178,7 +178,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	public void curlSnippetWithQueryStringOnPost() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
-		mockMvc.perform(post("/?foo=bar").param("foo", "bar").param("a", "alpha").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/?foo=bar").param("a", "alpha").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(document("curl-snippet-with-query-string"));
 		assertThat(new File("build/generated-snippets/curl-snippet-with-query-string/curl-request.adoc"))
 				.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
@@ -238,11 +238,11 @@ public class MockMvcRestDocumentationIntegrationTests {
 	public void httpieSnippetWithQueryStringOnPost() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
-		mockMvc.perform(post("/?foo=bar").param("foo", "bar").param("a", "alpha").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/?foo=bar").param("a", "alpha").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(document("httpie-snippet-with-query-string"));
 		assertThat(new File("build/generated-snippets/httpie-snippet-with-query-string/httpie-request.adoc"))
 				.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
-						.withContent(String.format("$ http " + "--form POST 'http://localhost:8080/?foo=bar' \\%n"
+						.withContent(String.format("$ http --form POST 'http://localhost:8080/?foo=bar' \\%n"
 								+ "    'Accept:application/json' \\%n    'a=alpha'"))));
 	}
 
@@ -281,13 +281,13 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void requestParametersSnippet() throws Exception {
+	public void queryParametersSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 				.apply(documentationConfiguration(this.restDocumentation)).build();
 		mockMvc.perform(get("/").param("foo", "bar").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andDo(document("links", requestParameters(parameterWithName("foo").description("The description"))));
+				.andDo(document("links", queryParameters(parameterWithName("foo").description("The description"))));
 		assertExpectedSnippetFilesExist(new File("build/generated-snippets/links"), "http-request.adoc",
-				"http-response.adoc", "curl-request.adoc", "request-parameters.adoc");
+				"http-response.adoc", "curl-request.adoc", "query-parameters.adoc");
 	}
 
 	@Test

@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,7 +30,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
-import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
@@ -78,15 +75,6 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	private String getPath(OperationRequest request) {
 		String path = request.getUri().getRawPath();
 		String queryString = request.getUri().getRawQuery();
-		Parameters uniqueParameters = request.getParameters().getUniqueParameters(request.getUri());
-		if (!uniqueParameters.isEmpty() && includeParametersInUri(request)) {
-			if (StringUtils.hasText(queryString)) {
-				queryString = queryString + "&" + uniqueParameters.toQueryString();
-			}
-			else {
-				queryString = uniqueParameters.toQueryString();
-			}
-		}
 		if (StringUtils.hasText(queryString)) {
 			path = path + "?" + queryString;
 		}
@@ -133,14 +121,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 			writer.printf("%n%s", content);
 		}
 		else if (isPutOrPost(request)) {
-			if (request.getParts().isEmpty()) {
-				String queryString = request.getParameters().getUniqueParameters(request.getUri()).toQueryString();
-				if (StringUtils.hasText(queryString)) {
-					writer.println();
-					writer.print(queryString);
-				}
-			}
-			else {
+			if (!request.getParts().isEmpty()) {
 				writeParts(request, writer);
 			}
 		}
@@ -153,23 +134,6 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private void writeParts(OperationRequest request, PrintWriter writer) {
 		writer.println();
-		Set<String> partNames = request.getParts().stream().map(OperationRequestPart::getName)
-				.collect(Collectors.toSet());
-		for (Entry<String, List<String>> parameter : request.getParameters().entrySet()) {
-			if (!partNames.contains(parameter.getKey())) {
-				if (parameter.getValue().isEmpty()) {
-					writePartBoundary(writer);
-					writePart(parameter.getKey(), "", null, null, writer);
-				}
-				else {
-					for (String value : parameter.getValue()) {
-						writePartBoundary(writer);
-						writePart(parameter.getKey(), value, null, null, writer);
-						writer.println();
-					}
-				}
-			}
-		}
 		for (OperationRequestPart part : request.getParts()) {
 			writePartBoundary(writer);
 			writePart(part, writer);
@@ -206,7 +170,6 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private boolean requiresFormEncodingContentTypeHeader(OperationRequest request) {
 		return request.getHeaders().get(HttpHeaders.CONTENT_TYPE) == null && isPutOrPost(request)
-				&& !request.getParameters().getUniqueParameters(request.getUri()).isEmpty()
 				&& !includeParametersInUri(request);
 	}
 

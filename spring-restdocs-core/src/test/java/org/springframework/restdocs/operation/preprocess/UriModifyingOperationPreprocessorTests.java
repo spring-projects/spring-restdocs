@@ -32,7 +32,6 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.OperationRequestPartFactory;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
-import org.springframework.restdocs.operation.Parameters;
 import org.springframework.restdocs.operation.RequestCookie;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -304,41 +303,40 @@ public class UriModifyingOperationPreprocessorTests {
 	public void resultingRequestHasCookiesFromOriginalRequst() {
 		List<RequestCookie> cookies = Arrays.asList(new RequestCookie("a", "alpha"));
 		OperationRequest request = this.requestFactory.create(URI.create("http://localhost:12345"), HttpMethod.GET,
-				new byte[0], new HttpHeaders(), new Parameters(), Collections.<OperationRequestPart>emptyList(),
-				cookies);
+				new byte[0], new HttpHeaders(), Collections.<OperationRequestPart>emptyList(), cookies);
 		OperationRequest processed = this.preprocessor.preprocess(request);
 		assertThat(processed.getCookies().size()).isEqualTo(1);
 	}
 
 	private OperationRequest createRequestWithUri(String uri) {
 		return this.requestFactory.create(URI.create(uri), HttpMethod.GET, new byte[0], new HttpHeaders(),
-				new Parameters(), Collections.<OperationRequestPart>emptyList());
+				Collections.<OperationRequestPart>emptyList());
 	}
 
 	private OperationRequest createRequestWithContent(String content) {
 		return this.requestFactory.create(URI.create("http://localhost"), HttpMethod.GET, content.getBytes(),
-				new HttpHeaders(), new Parameters(), Collections.<OperationRequestPart>emptyList());
+				new HttpHeaders(), Collections.<OperationRequestPart>emptyList());
 	}
 
 	private OperationRequest createRequestWithHeader(String name, String value) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(name, value);
 		return this.requestFactory.create(URI.create("http://localhost"), HttpMethod.GET, new byte[0], headers,
-				new Parameters(), Collections.<OperationRequestPart>emptyList());
+				Collections.<OperationRequestPart>emptyList());
 	}
 
 	private OperationRequest createRequestWithPartWithHeader(String name, String value) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(name, value);
 		return this.requestFactory.create(URI.create("http://localhost"), HttpMethod.GET, new byte[0],
-				new HttpHeaders(), new Parameters(),
+				new HttpHeaders(),
 				Arrays.asList(new OperationRequestPartFactory().create("part", "fileName", new byte[0], headers)));
 	}
 
 	private OperationRequest createRequestWithPartWithContent(String content) {
 		return this.requestFactory.create(URI.create("http://localhost"), HttpMethod.GET, new byte[0],
-				new HttpHeaders(), new Parameters(), Arrays.asList(new OperationRequestPartFactory().create("part",
-						"fileName", content.getBytes(), new HttpHeaders())));
+				new HttpHeaders(), Arrays.asList(new OperationRequestPartFactory().create("part", "fileName",
+						content.getBytes(), new HttpHeaders())));
 	}
 
 	private OperationResponse createResponseWithContent(String content) {

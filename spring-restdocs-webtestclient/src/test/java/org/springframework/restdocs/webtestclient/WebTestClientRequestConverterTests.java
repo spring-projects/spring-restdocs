@@ -17,6 +17,7 @@
 package org.springframework.restdocs.webtestclient;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -103,15 +104,12 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void getRequestWithQueryStringPopulatesParameters() {
+	public void getRequestWithQueryString() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo?a=alpha&b=bravo").exchange()
 				.expectBody().returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&b=bravo"));
-		assertThat(request.getParameters()).hasSize(2);
-		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha"));
-		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("bravo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
 	}
 
@@ -128,9 +126,9 @@ public class WebTestClientRequestConverterTests {
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
-		assertThat(request.getParameters()).hasSize(2);
-		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "apple"));
-		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("br&vo"));
+		assertThat(request.getContentAsString()).isEqualTo("a=alpha&a=apple&b=br%26vo");
+		assertThat(request.getHeaders().getContentType())
+				.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8));
 	}
 
 	@Test
@@ -144,9 +142,6 @@ public class WebTestClientRequestConverterTests {
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
-		assertThat(request.getParameters()).hasSize(2);
-		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "apple"));
-		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("br&vo"));
 	}
 
 	@Test
@@ -162,9 +157,9 @@ public class WebTestClientRequestConverterTests {
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&b=br%26vo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
-		assertThat(request.getParameters()).hasSize(2);
-		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "apple"));
-		assertThat(request.getParameters()).containsEntry("b", Arrays.asList("br&vo"));
+		assertThat(request.getContentAsString()).isEqualTo("a=apple");
+		assertThat(request.getHeaders().getContentType())
+				.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8));
 	}
 
 	@Test

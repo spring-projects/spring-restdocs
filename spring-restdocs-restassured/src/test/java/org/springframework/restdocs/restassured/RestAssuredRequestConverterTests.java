@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -79,8 +78,7 @@ public class RestAssuredRequestConverterTests {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).queryParam("foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParameters()).hasSize(1);
-		assertThat(request.getParameters()).containsEntry("foo", Collections.singletonList("bar"));
+		assertThat(request.getUri().getRawQuery()).isEqualTo("foo=bar");
 	}
 
 	@Test
@@ -88,26 +86,15 @@ public class RestAssuredRequestConverterTests {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort());
 		requestSpec.get("/?foo=bar&foo=qix");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParameters()).hasSize(1);
-		assertThat(request.getParameters()).containsEntry("foo", Arrays.asList("bar", "qix"));
+		assertThat(request.getUri().getRawQuery()).isEqualTo("foo=bar&foo=qix");
 	}
 
 	@Test
-	public void formParameters() {
-		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).formParam("foo", "bar");
-		requestSpec.get("/");
-		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParameters()).hasSize(1);
-		assertThat(request.getParameters()).containsEntry("foo", Collections.singletonList("bar"));
-	}
-
-	@Test
-	public void requestParameters() {
+	public void paramOnGetRequestIsMappedToQueryString() {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).param("foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getParameters()).hasSize(1);
-		assertThat(request.getParameters()).containsEntry("foo", Collections.singletonList("bar"));
+		assertThat(request.getUri().getRawQuery()).isEqualTo("foo=bar");
 	}
 
 	@Test
