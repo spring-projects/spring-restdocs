@@ -123,13 +123,6 @@ Any occurrences that match a regular expression are replaced.
 
 
 
-[[customizing-requests-and-responses-preprocessors-modify-request-parameters]]
-==== Modifying Request Parameters
-
-You can use `modifyParameters` on `Preprocessors` to add, set, and remove request parameters.
-
-
-
 [[customizing-requests-and-responses-preprocessors-modify-uris]]
 ==== Modifying URIs
 

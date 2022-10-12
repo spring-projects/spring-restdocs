@@ -138,16 +138,6 @@ public final class Preprocessors {
 	}
 
 	/**
-	 * Returns a {@code ParametersModifyingOperationPreprocessor} that can then be
-	 * configured to modify the parameters of the request.
-	 * @return the preprocessor
-	 * @since 1.1.0
-	 */
-	public static ParametersModifyingOperationPreprocessor modifyParameters() {
-		return new ParametersModifyingOperationPreprocessor();
-	}
-
-	/**
 	 * Returns a {@code HeadersModifyingOperationPreprocessor} that can then be configured
 	 * to modify the headers of the request or response.
 	 * @return the preprocessor
