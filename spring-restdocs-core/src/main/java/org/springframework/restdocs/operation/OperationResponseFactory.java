@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 
 /**
  * A factory for creating {@link OperationResponse OperationResponses}.
@@ -37,8 +38,9 @@ public class OperationResponseFactory {
 	 * @param headers the request's headers
 	 * @param content the content of the request
 	 * @return the {@code OperationResponse}
+	 * @since 3.0.0
 	 */
-	public OperationResponse create(int status, HttpHeaders headers, byte[] content) {
+	public OperationResponse create(HttpStatusCode status, HttpHeaders headers, byte[] content) {
 		return new StandardOperationResponse(status, augmentHeaders(headers, content), content,
 				Collections.emptyList());
 	}
@@ -52,9 +54,9 @@ public class OperationResponseFactory {
 	 * @param content the content of the request
 	 * @param cookies the cookies
 	 * @return the {@code OperationResponse}
-	 * @since 3.0
+	 * @since 3.0.0
 	 */
-	public OperationResponse create(int status, HttpHeaders headers, byte[] content,
+	public OperationResponse create(HttpStatusCode status, HttpHeaders headers, byte[] content,
 			Collection<ResponseCookie> cookies) {
 		return new StandardOperationResponse(status, augmentHeaders(headers, content), content, cookies);
 	}
@@ -69,8 +71,8 @@ public class OperationResponseFactory {
 	 * @return the new response with the new content
 	 */
 	public OperationResponse createFrom(OperationResponse original, byte[] newContent) {
-		return new StandardOperationResponse(original.getStatusCode(),
-				getUpdatedHeaders(original.getHeaders(), newContent), newContent, original.getCookies());
+		return new StandardOperationResponse(original.getStatus(), getUpdatedHeaders(original.getHeaders(), newContent),
+				newContent, original.getCookies());
 	}
 
 	/**
@@ -81,7 +83,7 @@ public class OperationResponseFactory {
 	 * @return the new response with the new headers
 	 */
 	public OperationResponse createFrom(OperationResponse original, HttpHeaders newHeaders) {
-		return new StandardOperationResponse(original.getStatusCode(), newHeaders, original.getContent(),
+		return new StandardOperationResponse(original.getStatus(), newHeaders, original.getContent(),
 				original.getCookies());
 	}
 

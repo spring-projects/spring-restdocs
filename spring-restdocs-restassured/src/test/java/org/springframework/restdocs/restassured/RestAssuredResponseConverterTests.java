@@ -21,6 +21,7 @@ import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
 import org.junit.Test;
 
+import org.springframework.http.HttpStatusCode;
 import org.springframework.restdocs.operation.OperationResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,8 +46,7 @@ public class RestAssuredResponseConverterTests {
 		given(response.getBody()).willReturn(body);
 		given(body.asByteArray()).willReturn(new byte[0]);
 		OperationResponse operationResponse = this.converter.convert(response);
-		assertThat(operationResponse.getStatus()).isNull();
-		assertThat(operationResponse.getStatusCode()).isEqualTo(600);
+		assertThat(operationResponse.getStatus()).isEqualTo(HttpStatusCode.valueOf(600));
 	}
 
 }

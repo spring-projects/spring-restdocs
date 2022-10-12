@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.ResponseCookie;
@@ -83,7 +84,7 @@ public class WebTestClientResponseConverterTests {
 				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").exchange().expectBody()
 				.returnResult();
 		OperationResponse response = this.converter.convert(result);
-		assertThat(response.getStatusCode()).isEqualTo(210);
+		assertThat(response.getStatus()).isEqualTo(HttpStatusCode.valueOf(210));
 	}
 
 }

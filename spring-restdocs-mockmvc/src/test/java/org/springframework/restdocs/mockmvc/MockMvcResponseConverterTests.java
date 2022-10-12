@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.ResponseCookie;
@@ -69,8 +70,7 @@ public class MockMvcResponseConverterTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setStatus(600);
 		OperationResponse operationResponse = this.factory.convert(response);
-		assertThat(operationResponse.getStatus()).isNull();
-		assertThat(operationResponse.getStatusCode()).isEqualTo(600);
+		assertThat(operationResponse.getStatus()).isEqualTo(HttpStatusCode.valueOf(600));
 	}
 
 }

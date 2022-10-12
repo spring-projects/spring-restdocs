@@ -160,7 +160,7 @@ public class HeadersModifyingOperationPreprocessorTests {
 		if (headersCustomizer != null) {
 			headersCustomizer.accept(headers);
 		}
-		return new OperationResponseFactory().create(HttpStatus.OK.value(), headers, new byte[0]);
+		return new OperationResponseFactory().create(HttpStatus.OK, headers, new byte[0]);
 	}
 
 }

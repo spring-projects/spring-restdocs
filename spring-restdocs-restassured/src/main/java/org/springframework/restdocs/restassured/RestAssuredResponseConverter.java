@@ -26,6 +26,7 @@ import io.restassured.http.Header;
 import io.restassured.response.Response;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 import org.springframework.restdocs.operation.ResponseConverter;
@@ -44,8 +45,8 @@ class RestAssuredResponseConverter implements ResponseConverter<Response> {
 	public OperationResponse convert(Response response) {
 		HttpHeaders headers = extractHeaders(response);
 		Collection<ResponseCookie> cookies = extractCookies(response, headers);
-		return new OperationResponseFactory().create(response.getStatusCode(), extractHeaders(response),
-				extractContent(response), cookies);
+		return new OperationResponseFactory().create(HttpStatusCode.valueOf(response.getStatusCode()),
+				extractHeaders(response), extractContent(response), cookies);
 	}
 
 	private Collection<ResponseCookie> extractCookies(Response response, HttpHeaders headers) {

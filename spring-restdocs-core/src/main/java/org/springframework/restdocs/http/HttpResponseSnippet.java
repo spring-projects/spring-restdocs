@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.snippet.Snippet;
@@ -59,15 +60,9 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 		Map<String, Object> model = new HashMap<>();
 		model.put("responseBody", responseBody(response));
 		model.put("headers", headers(response));
-		HttpStatus status = response.getStatus();
-		if (status != null) {
-			model.put("statusCode", status.value());
-			model.put("statusReason", status.getReasonPhrase());
-		}
-		else {
-			model.put("statusCode", response.getStatusCode());
-			model.put("statusReason", "");
-		}
+		HttpStatusCode status = response.getStatus();
+		model.put("statusCode", status.value());
+		model.put("statusReason", (status instanceof HttpStatus) ? ((HttpStatus) status).getReasonPhrase() : "");
 		return model;
 	}
 

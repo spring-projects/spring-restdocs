@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateEngine;
@@ -55,8 +56,7 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void nonOkResponse() throws IOException {
-		new HttpResponseSnippet()
-				.document(this.operationBuilder.response().status(HttpStatus.BAD_REQUEST.value()).build());
+		new HttpResponseSnippet().document(this.operationBuilder.response().status(HttpStatus.BAD_REQUEST).build());
 		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.BAD_REQUEST));
 	}
 
@@ -99,7 +99,8 @@ public class HttpResponseSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void responseWithCustomStatus() throws IOException {
-		new HttpResponseSnippet().document(this.operationBuilder.response().status(215).build());
+		new HttpResponseSnippet()
+				.document(this.operationBuilder.response().status(HttpStatusCode.valueOf(215)).build());
 		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(215));
 	}
 

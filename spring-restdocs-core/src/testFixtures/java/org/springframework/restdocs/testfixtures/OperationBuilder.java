@@ -31,6 +31,7 @@ import org.junit.runners.model.Statement;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.mustache.Mustache;
@@ -247,7 +248,7 @@ public class OperationBuilder extends OperationTestRule {
 	 */
 	public final class OperationResponseBuilder {
 
-		private int status = HttpStatus.OK.value();
+		private HttpStatusCode status = HttpStatus.OK;
 
 		private HttpHeaders headers = new HttpHeaders();
 
@@ -259,7 +260,7 @@ public class OperationBuilder extends OperationTestRule {
 			return new OperationResponseFactory().create(this.status, this.headers, this.content, this.cookies);
 		}
 
-		public OperationResponseBuilder status(int status) {
+		public OperationResponseBuilder status(HttpStatusCode status) {
 			this.status = status;
 			return this;
 		}

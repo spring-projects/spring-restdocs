@@ -24,6 +24,7 @@ import java.util.List;
 import jakarta.servlet.http.Cookie;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
@@ -44,7 +45,7 @@ class MockMvcResponseConverter implements ResponseConverter<MockHttpServletRespo
 	public OperationResponse convert(MockHttpServletResponse mockResponse) {
 		HttpHeaders headers = extractHeaders(mockResponse);
 		Collection<ResponseCookie> cookies = extractCookies(mockResponse);
-		return new OperationResponseFactory().create(mockResponse.getStatus(), headers,
+		return new OperationResponseFactory().create(HttpStatusCode.valueOf(mockResponse.getStatus()), headers,
 				mockResponse.getContentAsByteArray(), cookies);
 	}
 

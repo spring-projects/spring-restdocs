@@ -19,7 +19,7 @@ package org.springframework.restdocs.operation;
 import java.util.Collection;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 /**
  * Standard implementation of {@link OperationResponse}.
@@ -29,7 +29,7 @@ import org.springframework.http.HttpStatus;
  */
 class StandardOperationResponse extends AbstractOperationMessage implements OperationResponse {
 
-	private final int status;
+	private final HttpStatusCode status;
 
 	private Collection<ResponseCookie> cookies;
 
@@ -41,19 +41,15 @@ class StandardOperationResponse extends AbstractOperationMessage implements Oper
 	 * @param content the content of the response
 	 * @param cookies any cookies included in the response
 	 */
-	StandardOperationResponse(int status, HttpHeaders headers, byte[] content, Collection<ResponseCookie> cookies) {
+	StandardOperationResponse(HttpStatusCode status, HttpHeaders headers, byte[] content,
+			Collection<ResponseCookie> cookies) {
 		super(content, headers);
 		this.status = status;
 		this.cookies = cookies;
 	}
 
 	@Override
-	public HttpStatus getStatus() {
-		return HttpStatus.resolve(this.status);
-	}
-
-	@Override
-	public int getStatusCode() {
+	public HttpStatusCode getStatus() {
 		return this.status;
 	}
 

@@ -19,7 +19,7 @@ package org.springframework.restdocs.operation;
 import java.util.Collection;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 /**
  * The response that was received as part of performing an operation on a RESTful service.
@@ -33,17 +33,9 @@ public interface OperationResponse {
 
 	/**
 	 * Returns the status of the response.
-	 * @return the status or {@code null} if the status is unknown to {@link HttpStatus}
+	 * @return the status, never {@code null}
 	 */
-	HttpStatus getStatus();
-
-	/**
-	 * Returns the status code of the response.
-	 * @return the status code
-	 */
-	default int getStatusCode() {
-		throw new UnsupportedOperationException();
-	}
+	HttpStatusCode getStatus();
 
 	/**
 	 * Returns the headers in the response.

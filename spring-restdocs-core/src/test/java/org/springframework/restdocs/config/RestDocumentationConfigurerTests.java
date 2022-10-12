@@ -223,7 +223,7 @@ public class RestDocumentationConfigurerTests {
 				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Foo", "value");
-		OperationResponse response = new OperationResponseFactory().create(HttpStatus.OK.value(), headers, null);
+		OperationResponse response = new OperationResponseFactory().create(HttpStatus.OK, headers, null);
 		assertThat(preprocessor.preprocess(response).getHeaders()).doesNotContainKey("Foo");
 	}
 

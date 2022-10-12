@@ -340,13 +340,13 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	private OperationResponse createResponseWithContent(String content) {
-		return this.responseFactory.create(HttpStatus.OK.value(), new HttpHeaders(), content.getBytes());
+		return this.responseFactory.create(HttpStatus.OK, new HttpHeaders(), content.getBytes());
 	}
 
 	private OperationResponse createResponseWithHeader(String name, String value) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(name, value);
-		return this.responseFactory.create(HttpStatus.OK.value(), headers, new byte[0]);
+		return this.responseFactory.create(HttpStatus.OK, headers, new byte[0]);
 	}
 
 }

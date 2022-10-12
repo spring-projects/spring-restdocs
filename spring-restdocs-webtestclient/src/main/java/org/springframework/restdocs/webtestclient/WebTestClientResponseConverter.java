@@ -40,7 +40,7 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 	@Override
 	public OperationResponse convert(ExchangeResult result) {
 		Collection<ResponseCookie> cookies = extractCookies(result);
-		return new OperationResponseFactory().create(result.getStatus().value(), extractHeaders(result),
+		return new OperationResponseFactory().create(result.getStatus(), extractHeaders(result),
 				result.getResponseBodyContent(), cookies);
 	}
 
