@@ -5,4 +5,5 @@
 <suppressions>
 	<suppress files="com[\\/]example[\\/]restassured" checks="IllegalImport" />
 	<suppress files="src[\\/]testFixtures" checks="JavadocPackage" />
+	<suppress files="WebTestClientResponseConverterTests\.java" checks="IllegalImport" />
 </suppressions>

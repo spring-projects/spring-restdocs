@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,17 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 
 	@Override
 	public OperationResponse convert(ExchangeResult result) {
-		return new OperationResponseFactory().create(result.getStatus().value(), extractHeaders(result),
+		return new OperationResponseFactory().create(extractStatus(result), extractHeaders(result),
 				result.getResponseBodyContent());
+	}
+
+	private int extractStatus(ExchangeResult result) {
+		try {
+			return (int) result.getClass().getMethod("getRawStatusCode").invoke(result);
+		}
+		catch (Throwable ex) {
+			return result.getStatus().value();
+		}
 	}
 
 	private HttpHeaders extractHeaders(ExchangeResult result) {
