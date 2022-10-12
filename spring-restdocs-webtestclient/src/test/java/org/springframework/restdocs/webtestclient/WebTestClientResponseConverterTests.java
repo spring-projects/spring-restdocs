@@ -76,4 +76,14 @@ public class WebTestClientResponseConverterTests {
 		assertThat(response.getCookies()).first().extracting(ResponseCookie::getValue).isEqualTo("value");
 	}
 
+	@Test
+	public void responseWithNonStandardStatusCode() {
+		ExchangeResult result = WebTestClient
+				.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.status(210).build()))
+				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").exchange().expectBody()
+				.returnResult();
+		OperationResponse response = this.converter.convert(result);
+		assertThat(response.getStatusCode()).isEqualTo(210);
+	}
+
 }
