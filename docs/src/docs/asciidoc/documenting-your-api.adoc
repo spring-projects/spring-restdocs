@@ -1129,7 +1129,7 @@ include::{examples-dir}/com/example/Constraints.java[tags=constraints]
 <2> Get the descriptions of the `name` property's constraints.
 This list contains two descriptions: one for the `NotNull` constraint and one for the `Size` constraint.
 
-The {samples}/rest-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`] class in the Spring HATEOAS sample shows this functionality in action.
+The {samples}/restful-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`] class in the Spring HATEOAS sample shows this functionality in action.
 
 
 
@@ -1191,7 +1191,7 @@ Validator:
 * `URL`
 
 To override the default descriptions or to provide a new description, you can create a resource bundle with a base name of `org.springframework.restdocs.constraints.ConstraintDescriptions`.
-The Spring HATEOAS-based sample contains {samples}/rest-notes-spring-hateoas/src/test/resources/org/springframework/restdocs/constraints/ConstraintDescriptions.properties[an example of such a resource bundle].
+The Spring HATEOAS-based sample contains {samples}/restful-notes-spring-hateoas/src/test/resources/org/springframework/restdocs/constraints/ConstraintDescriptions.properties[an example of such a resource bundle].
 
 Each key in the resource bundle is the fully-qualified name of a constraint plus a `.description`.
 For example, the key for the standard `@NotNull` constraint is `jakarta.validation.constraints.NotNull.description`.
@@ -1209,7 +1209,7 @@ To take complete control, you can create `ConstraintDescriptions` with a custom 
 Once you have a constraint's descriptions, you are free to use them however you like in the generated snippets.
 For example, you may want to include the constraint descriptions as part of a field's description.
 Alternatively, you could include the constraints as <<documenting-your-api-customizing-including-extra-information, extra information>> in the request fields snippet.
-The {samples}/rest-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`] class in the Spring HATEOAS-based sample illustrates the latter approach.
+The {samples}/restful-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`] class in the Spring HATEOAS-based sample illustrates the latter approach.
 
 
 

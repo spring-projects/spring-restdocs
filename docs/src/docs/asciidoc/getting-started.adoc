@@ -8,63 +8,7 @@ This section describes how to get started with Spring REST Docs.
 [[getting-started-sample-applications]]
 === Sample Applications
 
-If you want to jump straight in, a number of sample applications are available:
-
-[cols="3,2,10"]
-.MockMvc
-|===
-| Sample | Build system | Description
-
-| {samples}/rest-notes-spring-data-rest[Spring Data REST]
-| Maven
-| Demonstrates the creation of a getting started guide and an API guide for a service implemented by using https://projects.spring.io/spring-data-rest/[Spring Data REST].
-
-| {samples}/rest-notes-spring-hateoas[Spring HATEOAS]
-| Gradle
-| Demonstrates the creation of a getting started guide and an API guide for a service implemented by using https://projects.spring.io/spring-hateoas/[Spring HATEOAS].
-|===
-
-[cols="3,2,10"]
-.WebTestClient
-|===
-| Sample | Build system | Description
-
-| {samples}/web-test-client[WebTestClient]
-| Gradle
-| Demonstrates the use of Spring REST docs with Spring WebFlux's WebTestClient.
-|===
-
-
-[cols="3,2,10"]
-.REST Assured
-|===
-| Sample | Build system | Description
-
-| {samples}/rest-assured[REST Assured]
-| Gradle
-| Demonstrates the use of Spring REST Docs with https://rest-assured.io/[REST Assured].
-
-|===
-
-
-[cols="3,2,10"]
-.Advanced
-|===
-| Sample | Build system | Description
-
-| {samples}/rest-notes-slate[Slate]
-| Gradle
-| Demonstrates the use of Spring REST Docs with Markdown and
-  https://github.com/tripit/slate[Slate].
-
-| {samples}/testng[TestNG]
-| Gradle
-| Demonstrates the use of Spring REST Docs with http://testng.org[TestNG].
-
-| {samples}/junit5[JUnit 5]
-| Gradle
-| Demonstrates the use of Spring REST Docs with https://junit.org/junit5/[JUnit 5].
-|===
+If you want to jump straight in, a number of https://github.com/spring-projects/spring-restdocs-samples[sample applications are available].
 
 
 
@@ -82,7 +26,7 @@ Additionally, the `spring-restdocs-restassured` module requires REST Assured 5.1
 === Build configuration
 
 The first step in using Spring REST Docs is to configure your project's build.
-The {samples}/rest-notes-spring-hateoas[Spring HATEOAS] and {samples}/rest-notes-spring-data-rest[Spring Data REST] samples contain a `build.gradle` and `pom.xml`, respectively, that you may wish to use as a reference.
+The {samples}/restful-notes-spring-hateoas[Spring HATEOAS] and {samples}/restful-notes-spring-data-rest[Spring Data REST] samples contain a `build.gradle` and `pom.xml`, respectively, that you may wish to use as a reference.
 The key parts of the configuration are described in the following listings:
 
 [source,xml,indent=0,subs="verbatim,attributes",role="primary"]

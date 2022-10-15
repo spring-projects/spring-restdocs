@@ -18,12 +18,10 @@ allprojects {
 	}
 }
 
-apply plugin: "samples"
 apply plugin: "io.spring.nohttp"
 apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
 
 nohttp {
-	source.exclude "samples/rest-notes-slate/slate/**"
 	source.exclude "buildSrc/.gradle/**"
 	source.exclude "**/build/**"
 	source.exclude "**/target/**"
@@ -114,44 +112,6 @@ subprojects { subproject ->
 
 }
 
-samples {
-	dependOn "spring-restdocs-core:publishToMavenLocal"
-	dependOn "spring-restdocs-mockmvc:publishToMavenLocal"
-	dependOn "spring-restdocs-restassured:publishToMavenLocal"
-	dependOn "spring-restdocs-webtestclient:publishToMavenLocal"
-	dependOn "spring-restdocs-asciidoctor:publishToMavenLocal"
-
-	restNotesSpringHateoas {
-		workingDir "$projectDir/samples/rest-notes-spring-hateoas"
-	}
-
-	restNotesSpringDataRest {
-		workingDir "$projectDir/samples/rest-notes-spring-data-rest"
-	}
-
-	testNg {
-		workingDir "$projectDir/samples/testng"
-	}
-
-	restAssured {
-		workingDir "$projectDir/samples/rest-assured"
-	}
-
-	webTestClient {
-		workingDir "$projectDir/samples/web-test-client"
-	}
-
-	slate {
-		workingDir "$projectDir/samples/rest-notes-slate"
-		build false
-	}
-
-	junit5 {
-		workingDir "$projectDir/samples/junit5"
-	}
-
-}
-
 task api (type: Javadoc) {
 	group = "Documentation"
 	description = "Generates aggregated Javadoc API documentation."
@@ -179,7 +139,7 @@ task api (type: Javadoc) {
 	}
 }
 
-task docsZip(type: Zip, dependsOn: [":docs:asciidoctor", ":api", ":restNotesSpringHateoasGradle"]) {
+task docsZip(type: Zip, dependsOn: [":docs:asciidoctor", ":api"]) {
 	group = "Distribution"
 	archiveBaseName = "spring-restdocs"
 	archiveClassifier = "docs"
@@ -192,10 +152,6 @@ task docsZip(type: Zip, dependsOn: [":docs:asciidoctor", ":api", ":restNotesSpri
 
 	from(api) {
 		into "api"
-	}
-
-	from(file("samples/rest-notes-spring-hateoas/build/docs/asciidoc")) {
-		into "samples/restful-notes"
 	}
 }
 
