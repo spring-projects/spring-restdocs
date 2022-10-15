@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,8 +119,9 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 
 		@Override
 		public Flux<DataBuffer> getBody() {
-			DefaultDataBuffer buffer = new DefaultDataBufferFactory().allocateBuffer();
-			buffer.write(this.result.getRequestBodyContent());
+			byte[] requestBodyContent = this.result.getRequestBodyContent();
+			DefaultDataBuffer buffer = new DefaultDataBufferFactory().allocateBuffer(requestBodyContent.length);
+			buffer.write(requestBodyContent);
 			return Flux.fromArray(new DataBuffer[] { buffer });
 		}
 
