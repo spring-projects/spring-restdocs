@@ -48,6 +48,7 @@ asciidoctor {
 		include "index.adoc"
 	}
 	attributes	"revnumber": project.version,
+				"spring-Framework-version": springFrameworkVersion,
 				"branch-or-tag": project.version.endsWith("SNAPSHOT") ? "main": "v${project.version}"
 	inputs.files(sourceSets.test.java)
 	outputOptions {
