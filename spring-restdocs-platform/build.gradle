@@ -12,7 +12,6 @@ dependencies {
 		api("jakarta.servlet:jakarta.servlet-api:5.0.0")
 		api("jakarta.validation:jakarta.validation-api:3.0.0")
 		api("junit:junit:4.12")
-		api("io.rest-assured:rest-assured:5.1.1")
 		api("org.apache.pdfbox:pdfbox:2.0.7")
 		api("org.asciidoctor:asciidoctorj:2.5.4")
 		api("org.asciidoctor:asciidoctorj-pdf:2.1.4")
@@ -26,5 +25,6 @@ dependencies {
 		api("org.mockito:mockito-core:4.6.1")
 	}
 	api(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.13.3"))
+	api(enforcedPlatform("io.rest-assured:rest-assured-bom:5.2.0"))
 	api(enforcedPlatform("org.springframework:spring-framework-bom:$springFrameworkVersion"))
 }
