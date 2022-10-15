@@ -29,9 +29,7 @@ import io.restassured.RestAssured;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -41,6 +39,7 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.RequestCookie;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 /**
  * Tests for {@link RestAssuredRequestConverter}.
@@ -51,9 +50,6 @@ public class RestAssuredRequestConverterTests {
 
 	@ClassRule
 	public static TomcatServer tomcat = new TomcatServer();
-
-	@Rule
-	public final ExpectedException thrown = ExpectedException.none();
 
 	private final RestAssuredRequestConverter factory = new RestAssuredRequestConverter();
 
@@ -202,9 +198,9 @@ public class RestAssuredRequestConverterTests {
 		FileInputStream inputStream = new FileInputStream("src/test/resources/body.txt");
 		RequestSpecification requestSpec = RestAssured.given().body(inputStream).port(tomcat.getPort());
 		requestSpec.post();
-		this.thrown.expect(IllegalStateException.class);
-		this.thrown.expectMessage("Cannot read content from input stream " + inputStream + " due to reset() failure");
-		this.factory.convert((FilterableRequestSpecification) requestSpec);
+		assertThatIllegalStateException()
+				.isThrownBy(() -> this.factory.convert((FilterableRequestSpecification) requestSpec))
+				.withMessage("Cannot read content from input stream " + inputStream + " due to reset() failure");
 	}
 
 	@Test
@@ -248,9 +244,9 @@ public class RestAssuredRequestConverterTests {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).multiPart("foo", "foo.txt",
 				inputStream);
 		requestSpec.post();
-		this.thrown.expect(IllegalStateException.class);
-		this.thrown.expectMessage("Cannot read content from input stream " + inputStream + " due to reset() failure");
-		this.factory.convert((FilterableRequestSpecification) requestSpec);
+		assertThatIllegalStateException()
+				.isThrownBy(() -> this.factory.convert((FilterableRequestSpecification) requestSpec))
+				.withMessage("Cannot read content from input stream " + inputStream + " due to reset() failure");
 	}
 
 	@Test

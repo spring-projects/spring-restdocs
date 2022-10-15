@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,10 @@ package org.springframework.restdocs.payload;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Tests for {@link JsonFieldTypesDiscoverer}.
@@ -33,9 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JsonFieldTypesDiscovererTests {
 
 	private final JsonFieldTypesDiscoverer fieldTypeDiscoverer = new JsonFieldTypesDiscoverer();
-
-	@Rule
-	public ExpectedException thrownException = ExpectedException.none();
 
 	@Test
 	public void arrayField() throws IOException {
@@ -142,17 +138,17 @@ public class JsonFieldTypesDiscovererTests {
 	}
 
 	@Test
-	public void nonExistentSingleFieldProducesFieldDoesNotExistException() throws IOException {
-		this.thrownException.expect(FieldDoesNotExistException.class);
-		this.thrownException.expectMessage("The payload does not contain a field with the path 'a.b'");
-		discoverFieldTypes("a.b", "{\"a\":{}}");
+	public void nonExistentSingleFieldProducesFieldDoesNotExistException() {
+		assertThatExceptionOfType(FieldDoesNotExistException.class)
+				.isThrownBy(() -> discoverFieldTypes("a.b", "{\"a\":{}}"))
+				.withMessage("The payload does not contain a field with the path 'a.b'");
 	}
 
 	@Test
-	public void nonExistentMultipleFieldsProducesFieldDoesNotExistException() throws IOException {
-		this.thrownException.expect(FieldDoesNotExistException.class);
-		this.thrownException.expectMessage("The payload does not contain a field with the path 'a[].b'");
-		discoverFieldTypes("a[].b", "{\"a\":[{\"c\":1},{\"c\":2}]}");
+	public void nonExistentMultipleFieldsProducesFieldDoesNotExistException() {
+		assertThatExceptionOfType(FieldDoesNotExistException.class)
+				.isThrownBy(() -> discoverFieldTypes("a[].b", "{\"a\":[{\"c\":1},{\"c\":2}]}"))
+				.withMessage("The payload does not contain a field with the path 'a[].b'");
 	}
 
 	@Test

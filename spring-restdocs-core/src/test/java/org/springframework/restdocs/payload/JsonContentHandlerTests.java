@@ -20,11 +20,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Tests for {@link JsonContentHandler}.
@@ -34,30 +33,28 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class JsonContentHandlerTests {
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
 	@Test
 	public void typeForFieldWithNullValueMustMatch() {
-		this.thrown.expect(FieldTypesDoNotMatchException.class);
 		FieldDescriptor descriptor = new FieldDescriptor("a").type(JsonFieldType.STRING);
-		new JsonContentHandler("{\"a\": null}".getBytes(), Arrays.asList(descriptor)).resolveFieldType(descriptor);
+		assertThatExceptionOfType(FieldTypesDoNotMatchException.class)
+				.isThrownBy(() -> new JsonContentHandler("{\"a\": null}".getBytes(), Arrays.asList(descriptor))
+						.resolveFieldType(descriptor));
 	}
 
 	@Test
 	public void typeForFieldWithNotNullAndThenNullValueMustMatch() {
-		this.thrown.expect(FieldTypesDoNotMatchException.class);
 		FieldDescriptor descriptor = new FieldDescriptor("a[].id").type(JsonFieldType.STRING);
-		new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}".getBytes(), Arrays.asList(descriptor))
-				.resolveFieldType(descriptor);
+		assertThatExceptionOfType(FieldTypesDoNotMatchException.class).isThrownBy(
+				() -> new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}".getBytes(), Arrays.asList(descriptor))
+						.resolveFieldType(descriptor));
 	}
 
 	@Test
 	public void typeForFieldWithNullAndThenNotNullValueMustMatch() {
-		this.thrown.expect(FieldTypesDoNotMatchException.class);
 		FieldDescriptor descriptor = new FieldDescriptor("a.[].id").type(JsonFieldType.STRING);
-		new JsonContentHandler("{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes(), Arrays.asList(descriptor))
-				.resolveFieldType(descriptor);
+		assertThatExceptionOfType(FieldTypesDoNotMatchException.class).isThrownBy(
+				() -> new JsonContentHandler("{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes(), Arrays.asList(descriptor))
+						.resolveFieldType(descriptor));
 	}
 
 	@Test
@@ -111,8 +108,8 @@ public class JsonContentHandlerTests {
 
 	@Test
 	public void failsFastWithNonJsonContent() {
-		this.thrown.expect(PayloadHandlingException.class);
-		new JsonContentHandler("Non-JSON content".getBytes(), Collections.emptyList());
+		assertThatExceptionOfType(PayloadHandlingException.class)
+				.isThrownBy(() -> new JsonContentHandler("Non-JSON content".getBytes(), Collections.emptyList()));
 	}
 
 	@Test

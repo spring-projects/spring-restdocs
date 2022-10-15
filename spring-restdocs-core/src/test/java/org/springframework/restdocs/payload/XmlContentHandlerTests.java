@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 
@@ -34,9 +33,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
  * @author Andy Wilkinson
  */
 public class XmlContentHandlerTests {
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void topLevelElementCanBeDocumented() {
@@ -84,8 +80,8 @@ public class XmlContentHandlerTests {
 
 	@Test
 	public void failsFastWithNonXmlContent() {
-		this.thrown.expect(PayloadHandlingException.class);
-		createHandler("non-XML content", Collections.emptyList());
+		assertThatExceptionOfType(PayloadHandlingException.class)
+				.isThrownBy(() -> createHandler("non-XML content", Collections.emptyList()));
 	}
 
 	private XmlContentHandler createHandler(String xml, List<FieldDescriptor> descriptors) {

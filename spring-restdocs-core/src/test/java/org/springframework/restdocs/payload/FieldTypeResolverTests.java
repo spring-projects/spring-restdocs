@@ -18,13 +18,12 @@ package org.springframework.restdocs.payload;
 
 import java.util.Collections;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Tests for {@link FieldTypeResolver}.
@@ -32,9 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Mathias Düsterhöft
  */
 public class FieldTypeResolverTests {
-
-	@Rule
-	public ExpectedException thrownException = ExpectedException.none();
 
 	@Test
 	public void whenForContentWithDescriptorsCalledWithJsonContentThenReturnsJsonFieldTypeResolver() {
@@ -50,9 +46,8 @@ public class FieldTypeResolverTests {
 
 	@Test
 	public void whenForContentWithDescriptorsIsCalledWithInvalidContentThenExceptionIsThrown() {
-		this.thrownException.expect(PayloadHandlingException.class);
-		FieldTypeResolver.forContentWithDescriptors("some".getBytes(), MediaType.APPLICATION_XML,
-				Collections.emptyList());
+		assertThatExceptionOfType(PayloadHandlingException.class).isThrownBy(() -> FieldTypeResolver
+				.forContentWithDescriptors("some".getBytes(), MediaType.APPLICATION_XML, Collections.emptyList()));
 	}
 
 }

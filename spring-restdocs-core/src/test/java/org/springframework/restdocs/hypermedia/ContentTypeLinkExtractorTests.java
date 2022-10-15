@@ -20,9 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -42,14 +41,10 @@ public class ContentTypeLinkExtractorTests {
 
 	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
 	@Test
-	public void extractionFailsWithNullContentType() throws IOException {
-		this.thrown.expect(IllegalStateException.class);
-		new ContentTypeLinkExtractor()
-				.extractLinks(this.responseFactory.create(HttpStatus.OK, new HttpHeaders(), null));
+	public void extractionFailsWithNullContentType() {
+		assertThatIllegalStateException().isThrownBy(() -> new ContentTypeLinkExtractor()
+				.extractLinks(this.responseFactory.create(HttpStatus.OK, new HttpHeaders(), null)));
 	}
 
 	@Test

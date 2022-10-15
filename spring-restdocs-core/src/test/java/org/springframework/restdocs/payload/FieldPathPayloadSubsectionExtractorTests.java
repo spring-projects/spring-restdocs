@@ -25,13 +25,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
@@ -40,9 +39,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author Andy Wilkinson
  */
 public class FieldPathPayloadSubsectionExtractorTests {
-
-	@Rule
-	public final ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -100,27 +96,28 @@ public class FieldPathPayloadSubsectionExtractorTests {
 
 	@Test
 	public void extractMapSubsectionWithVaryingStructureFromMultiElementArrayInAJsonMap() {
-		this.thrown.expect(PayloadHandlingException.class);
-		this.thrown.expectMessage("The following non-optional uncommon paths were found: [a.[].b.d]");
-		new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
-				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(), MediaType.APPLICATION_JSON);
+		assertThatExceptionOfType(PayloadHandlingException.class)
+				.isThrownBy(() -> new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
+						"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(),
+						MediaType.APPLICATION_JSON))
+				.withMessageContaining("The following non-optional uncommon paths were found: [a.[].b.d]");
 	}
 
 	@Test
 	public void extractMapSubsectionWithVaryingStructureFromInconsistentJsonMap() {
-		this.thrown.expect(PayloadHandlingException.class);
-		this.thrown.expectMessage("The following non-optional uncommon paths were found: [*.d, *.d.e, *.d.f]");
-		new FieldPathPayloadSubsectionExtractor("*.d").extractSubsection(
-				"{\"a\":{\"b\":1},\"c\":{\"d\":{\"e\":1,\"f\":2}}}".getBytes(), MediaType.APPLICATION_JSON);
+		assertThatExceptionOfType(PayloadHandlingException.class)
+				.isThrownBy(() -> new FieldPathPayloadSubsectionExtractor("*.d").extractSubsection(
+						"{\"a\":{\"b\":1},\"c\":{\"d\":{\"e\":1,\"f\":2}}}".getBytes(), MediaType.APPLICATION_JSON))
+				.withMessageContaining("The following non-optional uncommon paths were found: [*.d, *.d.e, *.d.f]");
 	}
 
 	@Test
 	public void extractMapSubsectionWithVaryingStructureFromInconsistentJsonMapWhereAllSubsectionFieldsAreOptional() {
-		this.thrown.expect(PayloadHandlingException.class);
-		this.thrown.expectMessage("The following non-optional uncommon paths were found: [*.d]");
-		new FieldPathPayloadSubsectionExtractor("*.d").extractSubsection(
-				"{\"a\":{\"b\":1},\"c\":{\"d\":{\"e\":1,\"f\":2}}}".getBytes(), MediaType.APPLICATION_JSON,
-				Arrays.asList(new FieldDescriptor("e").optional(), new FieldDescriptor("f").optional()));
+		assertThatExceptionOfType(PayloadHandlingException.class)
+				.isThrownBy(() -> new FieldPathPayloadSubsectionExtractor("*.d").extractSubsection(
+						"{\"a\":{\"b\":1},\"c\":{\"d\":{\"e\":1,\"f\":2}}}".getBytes(), MediaType.APPLICATION_JSON,
+						Arrays.asList(new FieldDescriptor("e").optional(), new FieldDescriptor("f").optional())))
+				.withMessageContaining("The following non-optional uncommon paths were found: [*.d]");
 	}
 
 	@Test
