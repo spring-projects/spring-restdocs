@@ -35,7 +35,7 @@ git add gradle.properties > /dev/null
 git commit -m"Release v$stageVersion" > /dev/null
 git tag -a "v$stageVersion" -m"Release v$stageVersion" > /dev/null
 
-./gradlew --no-daemon --max-workers=4 -PdeploymentRepository=${repository} build buildSamples publishAllPublicationsToDeploymentRepository
+./gradlew --no-daemon --max-workers=4 -PdeploymentRepository=${repository} build publishAllPublicationsToDeploymentRepository
 
 git reset --hard HEAD^ > /dev/null
 if [[ $nextVersion != $snapshotVersion ]]; then
