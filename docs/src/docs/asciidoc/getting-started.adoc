@@ -201,74 +201,9 @@ It then produces documentation snippets for the request and the resulting respon
 ==== Setting up Your Tests
 
 Exactly how you set up your tests depends on the test framework that you use.
-Spring REST Docs provides first-class support for JUnit 4 and JUnit 5.
+Spring REST Docs provides first-class support for JUnit 5 and JUnit 4.
+JUnit 5 is recommended.
 Other frameworks, such as TestNG, are also supported, although slightly more setup is required.
-
-
-
-[[getting-started-documentation-snippets-setup-junit]]
-===== Setting up Your JUnit 4 Tests
-
-When using JUnit 4, the first step in generating documentation snippets is to declare a `public` `JUnitRestDocumentation` field that is annotated as a JUnit `@Rule`.
-The following example shows how to do so:
-
-[source,java,indent=0]
-----
-@Rule
-public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-----
-
-By default, the `JUnitRestDocumentation` rule is automatically configured with an output directory based on your project's build tool:
-
-[cols="2,5"]
-|===
-| Build tool | Output directory
-
-| Maven
-| `target/generated-snippets`
-
-| Gradle
-| `build/generated-snippets`
-|===
-
-You can override the default by providing an output directory when you create the `JUnitRestDocumentation` instance.
-The following example shows how to do so:
-
-[source,java,indent=0]
-----
-@Rule
-public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("custom");
-----
-
-Next, you must provide an `@Before` method to configure MockMvc or WebTestClient, or REST Assured.
-The following examples show how to do so:
-
-[source,java,indent=0,role="primary"]
-.MockMvc
-----
-include::{examples-dir}/com/example/mockmvc/ExampleApplicationTests.java[tags=setup]
-----
-<1> The `MockMvc` instance is configured by using a `MockMvcRestDocumentationConfigurer`.
-You can obtain an instance of this class from the static `documentationConfiguration()` method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
-
-[source,java,indent=0,role="secondary"]
-.WebTestClient
-----
-include::{examples-dir}/com/example/webtestclient/ExampleApplicationTests.java[tags=setup]
-----
-<1> The `WebTestClient` instance is configured by adding a `WebTestclientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.
-You can obtain an instance of this class from the static `documentationConfiguration()` method on `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/ExampleApplicationTests.java[tags=setup]
-----
-<1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a `Filter`.
-You can obtain an instance of this class from the static `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the `org.springframework.restdocs.restassured` package.
-
-The configurer applies sensible defaults and also provides an API for customizing the configuration.
-See the <<configuration, configuration section>> for more information.
 
 
 
@@ -341,6 +276,72 @@ You can obtain an instance of this class from the static `documentationConfigura
 .REST Assured
 ----
 include::{examples-dir}/com/example/restassured/ExampleApplicationJUnit5Tests.java[tags=setup]
+----
+<1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a `Filter`.
+You can obtain an instance of this class from the static `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the `org.springframework.restdocs.restassured` package.
+
+The configurer applies sensible defaults and also provides an API for customizing the configuration.
+See the <<configuration, configuration section>> for more information.
+
+
+
+[[getting-started-documentation-snippets-setup-junit]]
+===== Setting up Your JUnit 4 Tests
+
+When using JUnit 4, the first step in generating documentation snippets is to declare a `public` `JUnitRestDocumentation` field that is annotated as a JUnit `@Rule`.
+The following example shows how to do so:
+
+[source,java,indent=0]
+----
+@Rule
+public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+----
+
+By default, the `JUnitRestDocumentation` rule is automatically configured with an output directory based on your project's build tool:
+
+[cols="2,5"]
+|===
+| Build tool | Output directory
+
+| Maven
+| `target/generated-snippets`
+
+| Gradle
+| `build/generated-snippets`
+|===
+
+You can override the default by providing an output directory when you create the `JUnitRestDocumentation` instance.
+The following example shows how to do so:
+
+[source,java,indent=0]
+----
+@Rule
+public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("custom");
+----
+
+Next, you must provide an `@Before` method to configure MockMvc or WebTestClient, or REST Assured.
+The following examples show how to do so:
+
+[source,java,indent=0,role="primary"]
+.MockMvc
+----
+include::{examples-dir}/com/example/mockmvc/ExampleApplicationTests.java[tags=setup]
+----
+<1> The `MockMvc` instance is configured by using a `MockMvcRestDocumentationConfigurer`.
+You can obtain an instance of this class from the static `documentationConfiguration()` method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.WebTestClient
+----
+include::{examples-dir}/com/example/webtestclient/ExampleApplicationTests.java[tags=setup]
+----
+<1> The `WebTestClient` instance is configured by adding a `WebTestclientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.
+You can obtain an instance of this class from the static `documentationConfiguration()` method on `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
+
+[source,java,indent=0,role="secondary"]
+.REST Assured
+----
+include::{examples-dir}/com/example/restassured/ExampleApplicationTests.java[tags=setup]
 ----
 <1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a `Filter`.
 You can obtain an instance of this class from the static `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the `org.springframework.restdocs.restassured` package.
