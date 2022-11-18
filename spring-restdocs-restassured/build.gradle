@@ -17,7 +17,7 @@ dependencies {
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
 	testImplementation("com.fasterxml.jackson.core:jackson-databind")
 	testImplementation("junit:junit")
-	testImplementation("org.apache.tomcat.embed:tomcat-embed-core:10.0.11")
+	testImplementation("org.apache.tomcat.embed:tomcat-embed-core")
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.hamcrest:hamcrest-library")
 	testImplementation("org.mockito:mockito-core")
