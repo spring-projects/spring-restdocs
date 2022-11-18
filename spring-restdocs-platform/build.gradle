@@ -9,7 +9,7 @@ javaPlatform {
 dependencies {
 	constraints {
 		api("com.samskivert:jmustache:$jmustacheVersion")
-		api("jakarta.servlet:jakarta.servlet-api:5.0.0")
+		api("jakarta.servlet:jakarta.servlet-api:6.0.0")
 		api("jakarta.validation:jakarta.validation-api:3.0.0")
 		api("junit:junit:4.13.1")
 		api("org.apache.pdfbox:pdfbox:2.0.27")
