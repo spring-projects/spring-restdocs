@@ -1146,7 +1146,7 @@ To take complete control of constraint resolution, you can use your own implemen
 [[documenting-your-api-constraints-describing]]
 ==== Describing Constraints
 
-Default descriptions are provided for all of Bean Validation 2.0's constraints:
+Default descriptions are provided for all of Bean Validation 3.0's constraints:
 
 * `AssertFalse`
 * `AssertTrue`
