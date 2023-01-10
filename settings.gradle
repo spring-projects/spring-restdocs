@@ -1,8 +1,6 @@
 pluginManagement {
 	repositories {
 		mavenCentral()
-		maven { url "https://repo.spring.io/plugins-release-local" }
-		maven { url "https://repo.spring.io/release" }
 		gradlePluginPortal()
 	}
 	resolutionStrategy {
@@ -15,8 +13,8 @@ pluginManagement {
 }
 
 plugins {
-	id "com.gradle.enterprise" version "3.11.2"
-	id "io.spring.ge.conventions" version "0.0.10"
+	id "com.gradle.enterprise" version "3.12.2"
+	id "io.spring.ge.conventions" version "0.0.13"
 }
 
 rootProject.name = "spring-restdocs"

@@ -3,17 +3,12 @@ plugins {
 	id "java-library"
 }
 
-repositories {
-	maven { url "https://repo.spring.io/release" }
-	maven { url "https://repo.spring.io/snapshot" }
-}
-
 configurations {
 	asciidoctorExt
 }
 
 dependencies {
-	asciidoctorExt("io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.5.0")
+	asciidoctorExt("io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.6.1")
 
 	internal(platform(project(":spring-restdocs-platform")))
 	internal(enforcedPlatform("org.springframework:spring-framework-bom:5.3.8"))
