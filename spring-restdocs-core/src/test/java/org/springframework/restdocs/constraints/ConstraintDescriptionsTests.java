@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class ConstraintDescriptionsTests {
 		Constraint constraint1 = new Constraint("constraint1", Collections.<String, Object>emptyMap());
 		Constraint constraint2 = new Constraint("constraint2", Collections.<String, Object>emptyMap());
 		given(this.constraintResolver.resolveForProperty("foo", Constrained.class))
-				.willReturn(Arrays.asList(constraint1, constraint2));
+			.willReturn(Arrays.asList(constraint1, constraint2));
 		given(this.constraintDescriptionResolver.resolveDescription(constraint1)).willReturn("Bravo");
 		given(this.constraintDescriptionResolver.resolveDescription(constraint2)).willReturn("Alpha");
 		assertThat(this.constraintDescriptions.descriptionsForProperty("foo")).containsExactly("Alpha", "Bravo");
@@ -54,7 +54,7 @@ public class ConstraintDescriptionsTests {
 	@Test
 	public void emptyListOfDescriptionsWhenThereAreNoConstraints() {
 		given(this.constraintResolver.resolveForProperty("foo", Constrained.class))
-				.willReturn(Collections.<Constraint>emptyList());
+			.willReturn(Collections.<Constraint>emptyList());
 		assertThat(this.constraintDescriptions.descriptionsForProperty("foo").size()).isEqualTo(0);
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,8 @@ public class DelegatingOperationResponsePreprocessorTests {
 		given(preprocessor3.preprocess(preprocessedResponse2)).willReturn(preprocessedResponse3);
 
 		OperationResponse result = new DelegatingOperationResponsePreprocessor(
-				Arrays.asList(preprocessor1, preprocessor2, preprocessor3)).preprocess(originalResponse);
+				Arrays.asList(preprocessor1, preprocessor2, preprocessor3))
+			.preprocess(originalResponse);
 
 		assertThat(result).isSameAs(preprocessedResponse3);
 	}

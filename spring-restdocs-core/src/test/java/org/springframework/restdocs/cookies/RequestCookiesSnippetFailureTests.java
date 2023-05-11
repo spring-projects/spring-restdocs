@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,18 +42,18 @@ public class RequestCookiesSnippetFailureTests {
 	@Test
 	public void missingRequestCookie() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestCookiesSnippet(
-						Collections.singletonList(CookieDocumentation.cookieWithName("JSESSIONID").description("one")))
-								.document(this.operationBuilder.request("http://localhost").build()))
-				.withMessage("Cookies with the following names were not found in the request: [JSESSIONID]");
+			.isThrownBy(() -> new RequestCookiesSnippet(
+					Collections.singletonList(CookieDocumentation.cookieWithName("JSESSIONID").description("one")))
+				.document(this.operationBuilder.request("http://localhost").build()))
+			.withMessage("Cookies with the following names were not found in the request: [JSESSIONID]");
 	}
 
 	@Test
 	public void undocumentedRequestCookie() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestCookiesSnippet(Collections.emptyList()).document(this.operationBuilder
-						.request("http://localhost").cookie("JSESSIONID", "1234abcd5678efgh").build()))
-				.withMessageEndingWith("Cookies with the following names were not documented: [JSESSIONID]");
+			.isThrownBy(() -> new RequestCookiesSnippet(Collections.emptyList()).document(
+					this.operationBuilder.request("http://localhost").cookie("JSESSIONID", "1234abcd5678efgh").build()))
+			.withMessageEndingWith("Cookies with the following names were not documented: [JSESSIONID]");
 	}
 
 }

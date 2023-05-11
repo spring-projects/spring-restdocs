@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,11 @@ public class QueryParameters {
 	public void getQueryStringSnippet() throws Exception {
 		// tag::query-parameters[]
 		this.mockMvc.perform(get("/users?page=2&per_page=100")) // <1>
-				.andExpect(status().isOk()).andDo(document("users", queryParameters(// <2>
-						parameterWithName("page").description("The page to retrieve"), // <3>
-						parameterWithName("per_page").description("Entries per page") // <4>
-				)));
+			.andExpect(status().isOk())
+			.andDo(document("users", queryParameters(// <2>
+					parameterWithName("page").description("The page to retrieve"), // <3>
+					parameterWithName("per_page").description("Entries per page") // <4>
+			)));
 		// end::query-parameters[]
 	}
 

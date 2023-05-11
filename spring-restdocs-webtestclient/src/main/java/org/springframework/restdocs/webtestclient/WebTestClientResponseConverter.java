@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,11 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 		if (result.getResponseCookies().isEmpty() || headers.containsKey(HttpHeaders.SET_COOKIE)) {
 			return headers;
 		}
-		result.getResponseCookies().values().stream().flatMap(Collection::stream)
-				.forEach((cookie) -> headers.add(HttpHeaders.SET_COOKIE, generateSetCookieHeader(cookie)));
+		result.getResponseCookies()
+			.values()
+			.stream()
+			.flatMap(Collection::stream)
+			.forEach((cookie) -> headers.add(HttpHeaders.SET_COOKIE, generateSetCookieHeader(cookie)));
 		return headers;
 	}
 
@@ -76,8 +79,12 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 	}
 
 	private Collection<ResponseCookie> extractCookies(ExchangeResult result) {
-		return result.getResponseCookies().values().stream().flatMap(List::stream).map(this::createResponseCookie)
-				.collect(Collectors.toSet());
+		return result.getResponseCookies()
+			.values()
+			.stream()
+			.flatMap(List::stream)
+			.map(this::createResponseCookie)
+			.collect(Collectors.toSet());
 	}
 
 	private void appendIfAvailable(StringBuilder header, String value) {

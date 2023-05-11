@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,12 +34,13 @@ public class HttpCookies {
 	public void cookies() throws Exception {
 		// tag::cookies[]
 		this.mockMvc.perform(get("/").cookie(new Cookie("JSESSIONID", "ACBCDFD0FF93D5BB"))) // <1>
-				.andExpect(status().isOk()).andDo(document("cookies", requestCookies(// <2>
-						cookieWithName("JSESSIONID").description("Session token")), // <3>
-						responseCookies(// <4>
-								cookieWithName("JSESSIONID").description("Updated session token"),
-								cookieWithName("logged_in")
-										.description("Set to true if the user is currently logged in"))));
+			.andExpect(status().isOk())
+			.andDo(document("cookies", requestCookies(// <2>
+					cookieWithName("JSESSIONID").description("Session token")), // <3>
+					responseCookies(// <4>
+							cookieWithName("JSESSIONID").description("Updated session token"),
+							cookieWithName("logged_in")
+								.description("Set to true if the user is currently logged in"))));
 		// end::cookies[]
 	}
 

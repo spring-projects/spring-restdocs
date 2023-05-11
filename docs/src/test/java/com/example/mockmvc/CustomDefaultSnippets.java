@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,8 @@ public class CustomDefaultSnippets {
 	public void setUp() {
 		// tag::custom-default-snippets[]
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(this.restDocumentation).snippets().withDefaults(curlRequest()))
-				.build();
+			.apply(documentationConfiguration(this.restDocumentation).snippets().withDefaults(curlRequest()))
+			.build();
 		// end::custom-default-snippets[]
 	}
 

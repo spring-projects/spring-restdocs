@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RestAssuredParameterBehaviorTests {
 
 	private static final MediaType APPLICATION_FORM_URLENCODED_ISO_8859_1 = MediaType
-			.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=ISO-8859-1");
+		.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=ISO-8859-1");
 
 	@ClassRule
 	public static TomcatServer tomcat = new TomcatServer();
@@ -46,58 +46,80 @@ public class RestAssuredParameterBehaviorTests {
 
 	private OperationRequest request;
 
-	private RequestSpecification spec = RestAssured.given().port(tomcat.getPort())
-			.filter((request, response, context) -> {
-				this.request = this.factory.convert(request);
-				return context.next(request, response);
-			});
+	private RequestSpecification spec = RestAssured.given()
+		.port(tomcat.getPort())
+		.filter((request, response, context) -> {
+			this.request = this.factory.convert(request);
+			return context.next(request, response);
+		});
 
 	@Test
 	public void queryParameterOnGet() {
-		this.spec.queryParam("a", "alpha", "apple").queryParam("b", "bravo").get("/query-parameter").then()
-				.statusCode(200);
+		this.spec.queryParam("a", "alpha", "apple")
+			.queryParam("b", "bravo")
+			.get("/query-parameter")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.GET);
 	}
 
 	@Test
 	public void queryParameterOnHead() {
-		this.spec.queryParam("a", "alpha", "apple").queryParam("b", "bravo").head("/query-parameter").then()
-				.statusCode(200);
+		this.spec.queryParam("a", "alpha", "apple")
+			.queryParam("b", "bravo")
+			.head("/query-parameter")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.HEAD);
 	}
 
 	@Test
 	public void queryParameterOnPost() {
-		this.spec.queryParam("a", "alpha", "apple").queryParam("b", "bravo").post("/query-parameter").then()
-				.statusCode(200);
+		this.spec.queryParam("a", "alpha", "apple")
+			.queryParam("b", "bravo")
+			.post("/query-parameter")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.POST);
 	}
 
 	@Test
 	public void queryParameterOnPut() {
-		this.spec.queryParam("a", "alpha", "apple").queryParam("b", "bravo").put("/query-parameter").then()
-				.statusCode(200);
+		this.spec.queryParam("a", "alpha", "apple")
+			.queryParam("b", "bravo")
+			.put("/query-parameter")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.PUT);
 	}
 
 	@Test
 	public void queryParameterOnPatch() {
-		this.spec.queryParam("a", "alpha", "apple").queryParam("b", "bravo").patch("/query-parameter").then()
-				.statusCode(200);
+		this.spec.queryParam("a", "alpha", "apple")
+			.queryParam("b", "bravo")
+			.patch("/query-parameter")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.PATCH);
 	}
 
 	@Test
 	public void queryParameterOnDelete() {
-		this.spec.queryParam("a", "alpha", "apple").queryParam("b", "bravo").delete("/query-parameter").then()
-				.statusCode(200);
+		this.spec.queryParam("a", "alpha", "apple")
+			.queryParam("b", "bravo")
+			.delete("/query-parameter")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.DELETE);
 	}
 
 	@Test
 	public void queryParameterOnOptions() {
-		this.spec.queryParam("a", "alpha", "apple").queryParam("b", "bravo").options("/query-parameter").then()
-				.statusCode(200);
+		this.spec.queryParam("a", "alpha", "apple")
+			.queryParam("b", "bravo")
+			.options("/query-parameter")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.OPTIONS);
 	}
 
@@ -145,50 +167,71 @@ public class RestAssuredParameterBehaviorTests {
 
 	@Test
 	public void formParamOnGet() {
-		this.spec.formParam("a", "alpha", "apple").formParam("b", "bravo").get("/query-parameter").then()
-				.statusCode(200);
+		this.spec.formParam("a", "alpha", "apple")
+			.formParam("b", "bravo")
+			.get("/query-parameter")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.GET);
 	}
 
 	@Test
 	public void formParamOnHead() {
-		this.spec.formParam("a", "alpha", "apple").formParam("b", "bravo").head("/form-url-encoded").then()
-				.statusCode(200);
+		this.spec.formParam("a", "alpha", "apple")
+			.formParam("b", "bravo")
+			.head("/form-url-encoded")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).isFormUrlEncodedWithMethod(HttpMethod.HEAD);
 	}
 
 	@Test
 	public void formParamOnPost() {
-		this.spec.formParam("a", "alpha", "apple").formParam("b", "bravo").post("/form-url-encoded").then()
-				.statusCode(200);
+		this.spec.formParam("a", "alpha", "apple")
+			.formParam("b", "bravo")
+			.post("/form-url-encoded")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).isFormUrlEncodedWithMethod(HttpMethod.POST);
 	}
 
 	@Test
 	public void formParamOnPut() {
-		this.spec.formParam("a", "alpha", "apple").formParam("b", "bravo").put("/form-url-encoded").then()
-				.statusCode(200);
+		this.spec.formParam("a", "alpha", "apple")
+			.formParam("b", "bravo")
+			.put("/form-url-encoded")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).isFormUrlEncodedWithMethod(HttpMethod.PUT);
 	}
 
 	@Test
 	public void formParamOnPatch() {
-		this.spec.formParam("a", "alpha", "apple").formParam("b", "bravo").patch("/form-url-encoded").then()
-				.statusCode(200);
+		this.spec.formParam("a", "alpha", "apple")
+			.formParam("b", "bravo")
+			.patch("/form-url-encoded")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).isFormUrlEncodedWithMethod(HttpMethod.PATCH);
 	}
 
 	@Test
 	public void formParamOnDelete() {
-		this.spec.formParam("a", "alpha", "apple").formParam("b", "bravo").delete("/form-url-encoded").then()
-				.statusCode(200);
+		this.spec.formParam("a", "alpha", "apple")
+			.formParam("b", "bravo")
+			.delete("/form-url-encoded")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).isFormUrlEncodedWithMethod(HttpMethod.DELETE);
 	}
 
 	@Test
 	public void formParamOnOptions() {
-		this.spec.formParam("a", "alpha", "apple").formParam("b", "bravo").options("/form-url-encoded").then()
-				.statusCode(200);
+		this.spec.formParam("a", "alpha", "apple")
+			.formParam("b", "bravo")
+			.options("/form-url-encoded")
+			.then()
+			.statusCode(200);
 		assertThatRequest(this.request).isFormUrlEncodedWithMethod(HttpMethod.OPTIONS);
 	}
 

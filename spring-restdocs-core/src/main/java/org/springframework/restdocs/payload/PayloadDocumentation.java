@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1507,8 +1507,9 @@ public abstract class PayloadDocumentation {
 			String prefixedPath = pathPrefix + descriptor.getPath();
 			FieldDescriptor prefixedDescriptor = (descriptor instanceof SubsectionDescriptor)
 					? new SubsectionDescriptor(prefixedPath) : new FieldDescriptor(prefixedPath);
-			prefixedDescriptor.description(descriptor.getDescription()).type(descriptor.getType())
-					.attributes(asArray(descriptor.getAttributes()));
+			prefixedDescriptor.description(descriptor.getDescription())
+				.type(descriptor.getType())
+				.attributes(asArray(descriptor.getAttributes()));
 			if (descriptor.isIgnored()) {
 				prefixedDescriptor.ignored();
 			}

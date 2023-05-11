@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 			TemplateEngine engineToUse = this.templateEngine;
 			if (engineToUse == null) {
 				SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
-						.get(SnippetConfiguration.class.getName());
+					.get(SnippetConfiguration.class.getName());
 				Map<String, Object> templateContext = new HashMap<>();
 				if (snippetConfiguration.getTemplateFormat().getId().equals(TemplateFormats.asciidoctor().getId())) {
 					templateContext.put("tableCellContent", new AsciidoctorTableCellContentLambda());
@@ -138,7 +138,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 			WriterResolver resolverToUse = this.writerResolver;
 			if (resolverToUse == null) {
 				SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
-						.get(SnippetConfiguration.class.getName());
+					.get(SnippetConfiguration.class.getName());
 				resolverToUse = new StandardWriterResolver(new RestDocumentationContextPlaceholderResolverFactory(),
 						snippetConfiguration.getEncoding(), snippetConfiguration.getTemplateFormat());
 			}

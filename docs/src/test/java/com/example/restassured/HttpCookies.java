@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,13 +31,18 @@ public class HttpCookies {
 
 	public void cookies() {
 		// tag::cookies[]
-		RestAssured.given(this.spec).filter(document("cookies", requestCookies(// <1>
-				cookieWithName("JSESSIONID").description("Saved session token")), // <2>
-				responseCookies(// <3>
-						cookieWithName("logged_in").description("If user is logged in"),
-						cookieWithName("JSESSIONID").description("Updated session token"))))
-				.cookie("JSESSIONID", "ACBCDFD0FF93D5BB") // <4>
-				.when().get("/people").then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.filter(document("cookies", requestCookies(// <1>
+					cookieWithName("JSESSIONID").description("Saved session token")), // <2>
+					responseCookies(// <3>
+							cookieWithName("logged_in").description("If user is logged in"),
+							cookieWithName("JSESSIONID").description("Updated session token"))))
+			.cookie("JSESSIONID", "ACBCDFD0FF93D5BB") // <4>
+			.when()
+			.get("/people")
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::cookies[]
 	}
 

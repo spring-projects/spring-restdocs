@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,7 +146,7 @@ class TomcatServer extends ExternalResource {
 		@Override
 		protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			if (!MediaType.APPLICATION_FORM_URLENCODED
-					.isCompatibleWith(MediaType.parseMediaType(req.getContentType()))) {
+				.isCompatibleWith(MediaType.parseMediaType(req.getContentType()))) {
 				throw new ServletException("Incorrect Content-Type");
 			}
 			String content = FileCopyUtils.copyToString(new InputStreamReader(req.getInputStream()));

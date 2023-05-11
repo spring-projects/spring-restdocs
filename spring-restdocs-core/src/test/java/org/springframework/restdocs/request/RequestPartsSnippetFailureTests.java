@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,26 +43,26 @@ public class RequestPartsSnippetFailureTests {
 	@Test
 	public void undocumentedPart() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestPartsSnippet(Collections.<RequestPartDescriptor>emptyList()).document(
-						this.operationBuilder.request("http://localhost").part("a", "alpha".getBytes()).build()))
-				.withMessage("Request parts with the following names were not documented: [a]");
+			.isThrownBy(() -> new RequestPartsSnippet(Collections.<RequestPartDescriptor>emptyList())
+				.document(this.operationBuilder.request("http://localhost").part("a", "alpha".getBytes()).build()))
+			.withMessage("Request parts with the following names were not documented: [a]");
 	}
 
 	@Test
 	public void missingPart() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
-						.document(this.operationBuilder.request("http://localhost").build()))
-				.withMessage("Request parts with the following names were not found in the request: [a]");
+			.isThrownBy(() -> new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
+				.document(this.operationBuilder.request("http://localhost").build()))
+			.withMessage("Request parts with the following names were not found in the request: [a]");
 	}
 
 	@Test
 	public void undocumentedAndMissingParts() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one"))).document(
-						this.operationBuilder.request("http://localhost").part("b", "bravo".getBytes()).build()))
-				.withMessage("Request parts with the following names were not documented: [b]. Request parts with the"
-						+ " following names were not found in the request: [a]");
+			.isThrownBy(() -> new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
+				.document(this.operationBuilder.request("http://localhost").part("b", "bravo".getBytes()).build()))
+			.withMessage("Request parts with the following names were not documented: [b]. Request parts with the"
+					+ " following names were not found in the request: [a]");
 	}
 
 }

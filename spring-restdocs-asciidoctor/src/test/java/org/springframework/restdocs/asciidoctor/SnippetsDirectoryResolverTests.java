@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,14 +54,14 @@ public class SnippetsDirectoryResolverTests {
 		String docdir = new File(this.temporaryFolder.getRoot(), "src/main/asciidoc").getAbsolutePath();
 		attributes.put("docdir", docdir);
 		assertThatIllegalStateException().isThrownBy(() -> getMavenSnippetsDirectory(attributes))
-				.withMessage("pom.xml not found in '" + docdir + "' or above");
+			.withMessage("pom.xml not found in '" + docdir + "' or above");
 	}
 
 	@Test
 	public void illegalStateWhenDocdirAttributeIsNotSetInMavenProject() {
 		Map<String, Object> attributes = new HashMap<>();
 		assertThatIllegalStateException().isThrownBy(() -> getMavenSnippetsDirectory(attributes))
-				.withMessage("docdir attribute not found");
+			.withMessage("docdir attribute not found");
 	}
 
 	@Test
@@ -93,8 +93,8 @@ public class SnippetsDirectoryResolverTests {
 	public void illegalStateWhenGradleProjectdirAndProjectdirAttributesAreNotSetInGradleProject() {
 		Map<String, Object> attributes = new HashMap<>();
 		assertThatIllegalStateException()
-				.isThrownBy(() -> new SnippetsDirectoryResolver().getSnippetsDirectory(attributes))
-				.withMessage("projectdir attribute not found");
+			.isThrownBy(() -> new SnippetsDirectoryResolver().getSnippetsDirectory(attributes))
+			.withMessage("projectdir attribute not found");
 	}
 
 	private File getMavenSnippetsDirectory(Map<String, Object> attributes) {

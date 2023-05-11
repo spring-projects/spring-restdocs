@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class FieldPathPayloadSubsectionExtractor
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	private static final ObjectMapper prettyPrintingOjectMapper = new ObjectMapper()
-			.enable(SerializationFeature.INDENT_OUTPUT);
+		.enable(SerializationFeature.INDENT_OUTPUT);
 
 	private final String fieldPath;
 
@@ -87,23 +87,26 @@ public class FieldPathPayloadSubsectionExtractor
 				throw new PayloadHandlingException(this.fieldPath + " does not identify a section of the payload");
 			}
 			Map<JsonFieldPath, FieldDescriptor> descriptorsByPath = descriptors.stream()
-					.collect(Collectors.toMap(
-							(descriptor) -> JsonFieldPath.compile(this.fieldPath + "." + descriptor.getPath()),
-							this::prependFieldPath));
+				.collect(Collectors.toMap(
+						(descriptor) -> JsonFieldPath.compile(this.fieldPath + "." + descriptor.getPath()),
+						this::prependFieldPath));
 			if (value instanceof List) {
 				List<?> extractedList = (List<?>) value;
 				if (extractedList.isEmpty()) {
 					throw new PayloadHandlingException(this.fieldPath + " identifies an empty section of the payload");
 				}
 				JsonContentHandler contentHandler = new JsonContentHandler(payload, descriptorsByPath.values());
-				Set<JsonFieldPath> uncommonPaths = JsonFieldPaths.from(extractedList).getUncommon().stream()
-						.map((path) -> JsonFieldPath
-								.compile((path.equals("")) ? this.fieldPath : this.fieldPath + "." + path))
-						.filter((path) -> {
-							FieldDescriptor descriptorForPath = descriptorsByPath.getOrDefault(path,
-									new FieldDescriptor(path.toString()));
-							return contentHandler.isMissing(descriptorForPath);
-						}).collect(Collectors.toSet());
+				Set<JsonFieldPath> uncommonPaths = JsonFieldPaths.from(extractedList)
+					.getUncommon()
+					.stream()
+					.map((path) -> JsonFieldPath
+						.compile((path.equals("")) ? this.fieldPath : this.fieldPath + "." + path))
+					.filter((path) -> {
+						FieldDescriptor descriptorForPath = descriptorsByPath.getOrDefault(path,
+								new FieldDescriptor(path.toString()));
+						return contentHandler.isMissing(descriptorForPath);
+					})
+					.collect(Collectors.toSet());
 				if (uncommonPaths.isEmpty()) {
 					value = extractedList.get(0);
 				}
@@ -111,8 +114,9 @@ public class FieldPathPayloadSubsectionExtractor
 					String message = this.fieldPath + " identifies multiple sections of "
 							+ "the payload and they do not have a common structure. The "
 							+ "following non-optional uncommon paths were found: ";
-					message += uncommonPaths.stream().map(JsonFieldPath::toString)
-							.collect(Collectors.toCollection(TreeSet::new));
+					message += uncommonPaths.stream()
+						.map(JsonFieldPath::toString)
+						.collect(Collectors.toCollection(TreeSet::new));
 					throw new PayloadHandlingException(message);
 				}
 			}

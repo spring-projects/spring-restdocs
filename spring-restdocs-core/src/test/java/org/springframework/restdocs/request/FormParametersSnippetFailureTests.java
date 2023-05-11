@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,26 +43,26 @@ public class FormParametersSnippetFailureTests {
 	@Test
 	public void undocumentedParameter() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new FormParametersSnippet(Collections.<ParameterDescriptor>emptyList())
-						.document(this.operationBuilder.request("http://localhost").content("a=alpha").build()))
-				.withMessage("Form parameters with the following names were not documented: [a]");
+			.isThrownBy(() -> new FormParametersSnippet(Collections.<ParameterDescriptor>emptyList())
+				.document(this.operationBuilder.request("http://localhost").content("a=alpha").build()))
+			.withMessage("Form parameters with the following names were not documented: [a]");
 	}
 
 	@Test
 	public void missingParameter() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new FormParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-						.document(this.operationBuilder.request("http://localhost").build()))
-				.withMessage("Form parameters with the following names were not found in the request: [a]");
+			.isThrownBy(() -> new FormParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.document(this.operationBuilder.request("http://localhost").build()))
+			.withMessage("Form parameters with the following names were not found in the request: [a]");
 	}
 
 	@Test
 	public void undocumentedAndMissingParameters() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new FormParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-						.document(this.operationBuilder.request("http://localhost").content("b=bravo").build()))
-				.withMessage("Form parameters with the following names were not documented: [b]. Form parameters"
-						+ " with the following names were not found in the request: [a]");
+			.isThrownBy(() -> new FormParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.document(this.operationBuilder.request("http://localhost").content("b=bravo").build()))
+			.withMessage("Form parameters with the following names were not documented: [b]. Form parameters"
+					+ " with the following names were not found in the request: [a]");
 	}
 
 }

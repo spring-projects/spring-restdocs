@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,10 +71,14 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 	private List<OperationRequestPart> extractRequestParts(ExchangeResult result) {
 		HttpMessageReader<Part> partHttpMessageReader = new DefaultPartHttpMessageReader();
 		return new MultipartHttpMessageReader(partHttpMessageReader)
-				.readMono(ResolvableType.forClass(Part.class), new ExchangeResultReactiveHttpInputMessage(result),
-						Collections.emptyMap())
-				.onErrorReturn(new LinkedMultiValueMap<>()).block().values().stream()
-				.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart)).collect(Collectors.toList());
+			.readMono(ResolvableType.forClass(Part.class), new ExchangeResultReactiveHttpInputMessage(result),
+					Collections.emptyMap())
+			.onErrorReturn(new LinkedMultiValueMap<>())
+			.block()
+			.values()
+			.stream()
+			.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart))
+			.collect(Collectors.toList());
 	}
 
 	private OperationRequestPart createOperationRequestPart(Part part) {

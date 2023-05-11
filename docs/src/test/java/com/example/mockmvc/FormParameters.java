@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,10 @@ public class FormParameters {
 	public void postFormDataSnippet() throws Exception {
 		// tag::form-parameters[]
 		this.mockMvc.perform(post("/users").param("username", "Tester")) // <1>
-				.andExpect(status().isCreated()).andDo(document("create-user", formParameters(// <2>
-						parameterWithName("username").description("The user's username") // <3>
-				)));
+			.andExpect(status().isCreated())
+			.andDo(document("create-user", formParameters(// <2>
+					parameterWithName("username").description("The user's username") // <3>
+			)));
 		// end::form-parameters[]
 	}
 

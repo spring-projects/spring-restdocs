@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,8 +54,14 @@ public class WebTestClientRequestConverterTests {
 	@Test
 	public void httpRequest() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").exchange().expectBody()
-				.returnResult();
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -64,8 +70,14 @@ public class WebTestClientRequestConverterTests {
 	@Test
 	public void httpRequestWithCustomPort() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("http://localhost:8080").build().get().uri("/foo").exchange().expectBody()
-				.returnResult();
+			.configureClient()
+			.baseUrl("http://localhost:8080")
+			.build()
+			.get()
+			.uri("/foo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -74,8 +86,16 @@ public class WebTestClientRequestConverterTests {
 	@Test
 	public void requestWithHeaders() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/"), (req) -> null))
-				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").header("a", "alpha", "apple")
-				.header("b", "bravo").exchange().expectBody().returnResult();
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.header("a", "alpha", "apple")
+			.header("b", "bravo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -86,8 +106,14 @@ public class WebTestClientRequestConverterTests {
 	@Test
 	public void httpsRequest() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("https://localhost").build().get().uri("/foo").exchange().expectBody()
-				.returnResult();
+			.configureClient()
+			.baseUrl("https://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("https://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -96,8 +122,14 @@ public class WebTestClientRequestConverterTests {
 	@Test
 	public void httpsRequestWithCustomPort() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("https://localhost:8443").build().get().uri("/foo").exchange().expectBody()
-				.returnResult();
+			.configureClient()
+			.baseUrl("https://localhost:8443")
+			.build()
+			.get()
+			.uri("/foo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("https://localhost:8443/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -106,8 +138,14 @@ public class WebTestClientRequestConverterTests {
 	@Test
 	public void getRequestWithQueryString() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("http://localhost").build().get().uri("/foo?a=alpha&b=bravo").exchange()
-				.expectBody().returnResult();
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo?a=alpha&b=bravo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&b=bravo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
@@ -121,14 +159,22 @@ public class WebTestClientRequestConverterTests {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
 			req.body(BodyExtractors.toFormData()).block();
 			return null;
-		})).configureClient().baseUrl("http://localhost").build().post().uri("/foo")
-				.body(BodyInserters.fromFormData(parameters)).exchange().expectBody().returnResult();
+		}))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.post()
+			.uri("/foo")
+			.body(BodyInserters.fromFormData(parameters))
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getContentAsString()).isEqualTo("a=alpha&a=apple&b=br%26vo");
 		assertThat(request.getHeaders().getContentType())
-				.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8));
+			.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8));
 	}
 
 	@Test
@@ -136,9 +182,15 @@ public class WebTestClientRequestConverterTests {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
 			req.body(BodyExtractors.toFormData()).block();
 			return null;
-		})).configureClient().baseUrl("http://localhost").build().post()
-				.uri(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo")).exchange().expectBody()
-				.returnResult();
+		}))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.post()
+			.uri(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo"))
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&a=apple&b=br%26vo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
@@ -151,23 +203,36 @@ public class WebTestClientRequestConverterTests {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
 			req.body(BodyExtractors.toFormData()).block();
 			return null;
-		})).configureClient().baseUrl("http://localhost").build().post()
-				.uri(URI.create("http://localhost/foo?a=alpha&b=br%26vo")).body(BodyInserters.fromFormData(parameters))
-				.exchange().expectBody().returnResult();
+		}))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.post()
+			.uri(URI.create("http://localhost/foo?a=alpha&b=br%26vo"))
+			.body(BodyInserters.fromFormData(parameters))
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&b=br%26vo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getContentAsString()).isEqualTo("a=apple");
 		assertThat(request.getHeaders().getContentType())
-				.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8));
+			.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8));
 	}
 
 	@Test
 	public void postRequestWithNoContentType() {
 		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> ServerResponse.ok().build()))
-				.configureClient().baseUrl("http://localhost").build().post().uri("/foo").exchange().expectBody()
-				.returnResult();
+			.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> ServerResponse.ok().build()))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.post()
+			.uri("/foo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
@@ -178,14 +243,18 @@ public class WebTestClientRequestConverterTests {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("file", new byte[] { 1, 2, 3, 4 });
 		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(
-						RouterFunctions
-								.route(POST("/foo"),
-										(req) -> ServerResponse.ok()
-												.body(req.body(BodyExtractors.toMultipartData())
-														.map((parts) -> parts.size()), Integer.class)))
-				.configureClient().baseUrl("http://localhost").build().post().uri("/foo")
-				.body(BodyInserters.fromMultipartData(multipartData)).exchange().expectBody().returnResult();
+			.bindToRouterFunction(RouterFunctions.route(POST("/foo"),
+					(req) -> ServerResponse.ok()
+						.body(req.body(BodyExtractors.toMultipartData()).map((parts) -> parts.size()), Integer.class)))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.post()
+			.uri("/foo")
+			.body(BodyInserters.fromMultipartData(multipartData))
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
@@ -211,14 +280,18 @@ public class WebTestClientRequestConverterTests {
 
 		});
 		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(
-						RouterFunctions
-								.route(POST("/foo"),
-										(req) -> ServerResponse.ok()
-												.body(req.body(BodyExtractors.toMultipartData())
-														.map((parts) -> parts.size()), Integer.class)))
-				.configureClient().baseUrl("http://localhost").build().post().uri("/foo")
-				.body(BodyInserters.fromMultipartData(multipartData)).exchange().expectBody().returnResult();
+			.bindToRouterFunction(RouterFunctions.route(POST("/foo"),
+					(req) -> ServerResponse.ok()
+						.body(req.body(BodyExtractors.toMultipartData()).map((parts) -> parts.size()), Integer.class)))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.post()
+			.uri("/foo")
+			.body(BodyInserters.fromMultipartData(multipartData))
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
@@ -238,9 +311,16 @@ public class WebTestClientRequestConverterTests {
 	@Test
 	public void requestWithCookies() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
-				.configureClient().baseUrl("http://localhost").build().get().uri("/foo")
-				.cookie("cookieName1", "cookieVal1").cookie("cookieName2", "cookieVal2").exchange().expectBody()
-				.returnResult();
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.cookie("cookieName1", "cookieVal1")
+			.cookie("cookieName2", "cookieVal2")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		assertThat(result.getRequestHeaders().get(HttpHeaders.COOKIE)).isNotNull();
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));

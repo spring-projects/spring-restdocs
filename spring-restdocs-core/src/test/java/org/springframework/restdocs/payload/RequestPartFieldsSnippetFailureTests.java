@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,29 +44,27 @@ public class RequestPartFieldsSnippetFailureTests {
 	@Test
 	public void undocumentedRequestPartField() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestPartFieldsSnippet("part", Collections.<FieldDescriptor>emptyList())
-						.document(this.operationBuilder.request("http://localhost")
-								.part("part", "{\"a\": 5}".getBytes()).build()))
-				.withMessageStartingWith("The following parts of the payload were not documented:");
+			.isThrownBy(() -> new RequestPartFieldsSnippet("part", Collections.<FieldDescriptor>emptyList()).document(
+					this.operationBuilder.request("http://localhost").part("part", "{\"a\": 5}".getBytes()).build()))
+			.withMessageStartingWith("The following parts of the payload were not documented:");
 	}
 
 	@Test
 	public void missingRequestPartField() {
-		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(
-						() -> new RequestPartFieldsSnippet("part", Arrays.asList(fieldWithPath("b").description("one")))
-								.document(this.operationBuilder.request("http://localhost")
-										.part("part", "{\"a\": 5}".getBytes()).build()))
-				.withMessageStartingWith("The following parts of the payload were not documented:");
+		assertThatExceptionOfType(SnippetException.class).isThrownBy(() -> new RequestPartFieldsSnippet("part",
+				Arrays.asList(fieldWithPath("b").description("one")))
+			.document(this.operationBuilder.request("http://localhost").part("part", "{\"a\": 5}".getBytes()).build()))
+			.withMessageStartingWith("The following parts of the payload were not documented:");
 	}
 
 	@Test
 	public void missingRequestPart() {
 		assertThatExceptionOfType(SnippetException.class).isThrownBy(
 				() -> new RequestPartFieldsSnippet("another", Arrays.asList(fieldWithPath("a.b").description("one")))
-						.document(this.operationBuilder.request("http://localhost")
-								.part("part", "{\"a\": {\"b\": 5}}".getBytes()).build()))
-				.withMessage("A request part named 'another' was not found in the request");
+					.document(this.operationBuilder.request("http://localhost")
+						.part("part", "{\"a\": {\"b\": 5}}".getBytes())
+						.build()))
+			.withMessage("A request part named 'another' was not found in the request");
 	}
 
 }

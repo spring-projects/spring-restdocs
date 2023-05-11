@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,50 +85,71 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	@Before
 	public void setUp() {
 		RouterFunction<ServerResponse> route = RouterFunctions
-				.route(RequestPredicates.GET("/"),
-						(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
-				.andRoute(RequestPredicates.GET("/{foo}/{bar}"),
-						(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
-				.andRoute(RequestPredicates.POST("/upload"),
-						(request) -> request.body(BodyExtractors.toMultipartData())
-								.map((parts) -> ServerResponse.status(HttpStatus.OK).build().block()))
-				.andRoute(RequestPredicates.GET("/set-cookie"),
-						(request) -> ServerResponse.ok()
-								.cookie(ResponseCookie.from("name", "value").domain("localhost").httpOnly(true).build())
-								.build());
-		this.webTestClient = WebTestClient.bindToRouterFunction(route).configureClient()
-				.baseUrl("https://api.example.com").filter(documentationConfiguration(this.restDocumentation)).build();
+			.route(RequestPredicates.GET("/"),
+					(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
+			.andRoute(RequestPredicates.GET("/{foo}/{bar}"),
+					(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
+			.andRoute(RequestPredicates.POST("/upload"),
+					(request) -> request.body(BodyExtractors.toMultipartData())
+						.map((parts) -> ServerResponse.status(HttpStatus.OK).build().block()))
+			.andRoute(RequestPredicates.GET("/set-cookie"),
+					(request) -> ServerResponse.ok()
+						.cookie(ResponseCookie.from("name", "value").domain("localhost").httpOnly(true).build())
+						.build());
+		this.webTestClient = WebTestClient.bindToRouterFunction(route)
+			.configureClient()
+			.baseUrl("https://api.example.com")
+			.filter(documentationConfiguration(this.restDocumentation))
+			.build();
 	}
 
 	@Test
 	public void defaultSnippetGeneration() {
 		File outputDir = new File("build/generated-snippets/default-snippets");
 		FileSystemUtils.deleteRecursively(outputDir);
-		this.webTestClient.get().uri("/").exchange().expectStatus().isOk().expectBody()
-				.consumeWith(document("default-snippets"));
+		this.webTestClient.get()
+			.uri("/")
+			.exchange()
+			.expectStatus()
+			.isOk()
+			.expectBody()
+			.consumeWith(document("default-snippets"));
 		assertExpectedSnippetFilesExist(outputDir, "http-request.adoc", "http-response.adoc", "curl-request.adoc",
 				"httpie-request.adoc", "request-body.adoc", "response-body.adoc");
 	}
 
 	@Test
 	public void pathParametersSnippet() {
-		this.webTestClient.get().uri("/{foo}/{bar}", "1", "2").exchange().expectStatus().isOk().expectBody()
-				.consumeWith(document("path-parameters",
-						pathParameters(parameterWithName("foo").description("Foo description"),
-								parameterWithName("bar").description("Bar description"))));
+		this.webTestClient.get()
+			.uri("/{foo}/{bar}", "1", "2")
+			.exchange()
+			.expectStatus()
+			.isOk()
+			.expectBody()
+			.consumeWith(
+					document("path-parameters", pathParameters(parameterWithName("foo").description("Foo description"),
+							parameterWithName("bar").description("Bar description"))));
 		assertThat(new File("build/generated-snippets/path-parameters/path-parameters.adoc")).has(content(
 				tableWithTitleAndHeader(TemplateFormats.asciidoctor(), "+/{foo}/{bar}+", "Parameter", "Description")
-						.row("`foo`", "Foo description").row("`bar`", "Bar description")));
+					.row("`foo`", "Foo description")
+					.row("`bar`", "Bar description")));
 	}
 
 	@Test
 	public void queryParametersSnippet() {
-		this.webTestClient.get().uri("/?a=alpha&b=bravo").exchange().expectStatus().isOk().expectBody().consumeWith(
-				document("query-parameters", queryParameters(parameterWithName("a").description("Alpha description"),
-						parameterWithName("b").description("Bravo description"))));
+		this.webTestClient.get()
+			.uri("/?a=alpha&b=bravo")
+			.exchange()
+			.expectStatus()
+			.isOk()
+			.expectBody()
+			.consumeWith(document("query-parameters",
+					queryParameters(parameterWithName("a").description("Alpha description"),
+							parameterWithName("b").description("Bravo description"))));
 		assertThat(new File("build/generated-snippets/query-parameters/query-parameters.adoc"))
-				.has(content(tableWithHeader(TemplateFormats.asciidoctor(), "Parameter", "Description")
-						.row("`a`", "Alpha description").row("`b`", "Bravo description")));
+			.has(content(tableWithHeader(TemplateFormats.asciidoctor(), "Parameter", "Description")
+				.row("`a`", "Alpha description")
+				.row("`b`", "Bravo description")));
 	}
 
 	@Test
@@ -138,67 +159,101 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		multipartData.add("b", "bravo");
 		Consumer<EntityExchangeResult<byte[]>> documentation = document("multipart",
 				requestParts(partWithName("a").description("Part a"), partWithName("b").description("Part b")));
-		this.webTestClient.post().uri("/upload").body(BodyInserters.fromMultipartData(multipartData)).exchange()
-				.expectStatus().isOk().expectBody().consumeWith(documentation);
+		this.webTestClient.post()
+			.uri("/upload")
+			.body(BodyInserters.fromMultipartData(multipartData))
+			.exchange()
+			.expectStatus()
+			.isOk()
+			.expectBody()
+			.consumeWith(documentation);
 		assertThat(new File("build/generated-snippets/multipart/request-parts.adoc"))
-				.has(content(tableWithHeader(TemplateFormats.asciidoctor(), "Part", "Description").row("`a`", "Part a")
-						.row("`b`", "Part b")));
+			.has(content(tableWithHeader(TemplateFormats.asciidoctor(), "Part", "Description").row("`a`", "Part a")
+				.row("`b`", "Part b")));
 	}
 
 	@Test
 	public void responseWithSetCookie() {
-		this.webTestClient.get().uri("/set-cookie").exchange().expectStatus().isOk().expectBody()
-				.consumeWith(document("set-cookie"));
+		this.webTestClient.get()
+			.uri("/set-cookie")
+			.exchange()
+			.expectStatus()
+			.isOk()
+			.expectBody()
+			.consumeWith(document("set-cookie"));
 		assertThat(new File("build/generated-snippets/set-cookie/http-response.adoc"))
-				.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK).header(HttpHeaders.SET_COOKIE,
-						"name=value; Domain=localhost; HttpOnly")));
+			.has(content(httpResponse(TemplateFormats.asciidoctor(), HttpStatus.OK).header(HttpHeaders.SET_COOKIE,
+					"name=value; Domain=localhost; HttpOnly")));
 	}
 
 	@Test
 	public void curlSnippetWithCookies() {
-		this.webTestClient.get().uri("/").cookie("cookieName", "cookieVal").accept(MediaType.APPLICATION_JSON)
-				.exchange().expectStatus().isOk().expectBody().consumeWith(document("curl-snippet-with-cookies"));
+		this.webTestClient.get()
+			.uri("/")
+			.cookie("cookieName", "cookieVal")
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectStatus()
+			.isOk()
+			.expectBody()
+			.consumeWith(document("curl-snippet-with-cookies"));
 		assertThat(new File("build/generated-snippets/curl-snippet-with-cookies/curl-request.adoc"))
-				.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
-						.withContent(String.format("$ curl 'https://api.example.com/' -i -X GET \\%n"
-								+ "    -H 'Accept: application/json' \\%n" + "    --cookie 'cookieName=cookieVal'"))));
+			.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+				.withContent(String.format("$ curl 'https://api.example.com/' -i -X GET \\%n"
+						+ "    -H 'Accept: application/json' \\%n" + "    --cookie 'cookieName=cookieVal'"))));
 	}
 
 	@Test
 	public void curlSnippetWithEmptyParameterQueryString() {
-		this.webTestClient.get().uri("/?a=").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-				.expectBody().consumeWith(document("curl-snippet-with-empty-parameter-query-string"));
+		this.webTestClient.get()
+			.uri("/?a=")
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectStatus()
+			.isOk()
+			.expectBody()
+			.consumeWith(document("curl-snippet-with-empty-parameter-query-string"));
 		assertThat(
 				new File("build/generated-snippets/curl-snippet-with-empty-parameter-query-string/curl-request.adoc"))
-						.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
-								.withContent(String.format("$ curl 'https://api.example.com/?a=' -i -X GET \\%n"
-										+ "    -H 'Accept: application/json'"))));
+			.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash").withContent(String
+				.format("$ curl 'https://api.example.com/?a=' -i -X GET \\%n" + "    -H 'Accept: application/json'"))));
 	}
 
 	@Test
 	public void httpieSnippetWithCookies() {
-		this.webTestClient.get().uri("/").cookie("cookieName", "cookieVal").accept(MediaType.APPLICATION_JSON)
-				.exchange().expectStatus().isOk().expectBody().consumeWith(document("httpie-snippet-with-cookies"));
+		this.webTestClient.get()
+			.uri("/")
+			.cookie("cookieName", "cookieVal")
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectStatus()
+			.isOk()
+			.expectBody()
+			.consumeWith(document("httpie-snippet-with-cookies"));
 		assertThat(new File("build/generated-snippets/httpie-snippet-with-cookies/httpie-request.adoc"))
-				.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
-						.withContent(String.format("$ http GET 'https://api.example.com/' \\%n"
-								+ "    'Accept:application/json' \\%n" + "    'Cookie:cookieName=cookieVal'"))));
+			.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+				.withContent(String.format("$ http GET 'https://api.example.com/' \\%n"
+						+ "    'Accept:application/json' \\%n" + "    'Cookie:cookieName=cookieVal'"))));
 	}
 
 	@Test
 	public void illegalStateExceptionShouldBeThrownWhenCallDocumentWebClientNotConfigured() {
 		assertThatThrownBy(() -> this.webTestClient
-				.mutateWith((builder, httpHandlerBuilder, connector) -> builder.filters(List::clear).build()).get()
-				.uri("/").exchange().expectBody().consumeWith(document("default-snippets")))
-						.isInstanceOf(IllegalStateException.class)
-						.hasMessage("REST Docs configuration not found. Did you forget to register a "
-								+ "WebTestClientRestDocumentationConfigurer as a filter?");
+			.mutateWith((builder, httpHandlerBuilder, connector) -> builder.filters(List::clear).build())
+			.get()
+			.uri("/")
+			.exchange()
+			.expectBody()
+			.consumeWith(document("default-snippets"))).isInstanceOf(IllegalStateException.class)
+			.hasMessage("REST Docs configuration not found. Did you forget to register a "
+					+ "WebTestClientRestDocumentationConfigurer as a filter?");
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
 		Set<File> actual = new HashSet<>(Arrays.asList(directory.listFiles()));
-		Set<File> expected = Stream.of(snippets).map((snippet) -> new File(directory, snippet))
-				.collect(Collectors.toSet());
+		Set<File> expected = Stream.of(snippets)
+			.map((snippet) -> new File(directory, snippet))
+			.collect(Collectors.toSet());
 		assertThat(actual).isEqualTo(expected);
 	}
 
@@ -209,7 +264,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 			public boolean matches(File value) {
 				try {
 					return delegate.matches(FileCopyUtils
-							.copyToString(new InputStreamReader(new FileInputStream(value), StandardCharsets.UTF_8)));
+						.copyToString(new InputStreamReader(new FileInputStream(value), StandardCharsets.UTF_8)));
 				}
 				catch (IOException ex) {
 					fail("Failed to read '" + value + "'", ex);

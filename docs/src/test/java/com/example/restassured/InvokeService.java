@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,13 @@ public class InvokeService {
 	public void invokeService() {
 		// tag::invoke-service[]
 		RestAssured.given(this.spec) // <1>
-				.accept("application/json") // <2>
-				.filter(document("index")) // <3>
-				.when().get("/") // <4>
-				.then().assertThat().statusCode(is(200)); // <5>
+			.accept("application/json") // <2>
+			.filter(document("index")) // <3>
+			.when()
+			.get("/") // <4>
+			.then()
+			.assertThat()
+			.statusCode(is(200)); // <5>
 		// end::invoke-service[]
 	}
 

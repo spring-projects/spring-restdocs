@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,15 @@ public class FormParameters {
 
 	public void postFormDataSnippet() {
 		// tag::form-parameters[]
-		RestAssured.given(this.spec).filter(document("create-user", formParameters(// <1>
-				parameterWithName("username").description("The user's username")))) // <2>
-				.formParam("username", "Tester").when().post("/users") // <3>
-				.then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.filter(document("create-user", formParameters(// <1>
+					parameterWithName("username").description("The user's username")))) // <2>
+			.formParam("username", "Tester")
+			.when()
+			.post("/users") // <3>
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::form-parameters[]
 	}
 

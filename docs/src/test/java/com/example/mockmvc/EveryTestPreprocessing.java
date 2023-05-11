@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,17 +46,18 @@ public class EveryTestPreprocessing {
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors()
-						.withRequestDefaults(modifyHeaders().remove("Foo")) // <1>
-						.withResponseDefaults(prettyPrint())) // <2>
-				.build();
+			.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors()
+				.withRequestDefaults(modifyHeaders().remove("Foo")) // <1>
+				.withResponseDefaults(prettyPrint())) // <2>
+			.build();
 	}
 	// end::setup[]
 
 	public void use() throws Exception {
 		// tag::use[]
-		this.mockMvc.perform(get("/")).andExpect(status().isOk())
-				.andDo(document("index", links(linkWithRel("self").description("Canonical self link"))));
+		this.mockMvc.perform(get("/"))
+			.andExpect(status().isOk())
+			.andDo(document("index", links(linkWithRel("self").description("Canonical self link"))));
 		// end::use[]
 	}
 

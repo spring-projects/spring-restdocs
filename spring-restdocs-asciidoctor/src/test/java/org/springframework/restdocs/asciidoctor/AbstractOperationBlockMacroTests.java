@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,16 +125,16 @@ public abstract class AbstractOperationBlockMacroTests {
 	@Test
 	public void includeSnippetInSectionWithAbsoluteLevelOffset() throws Exception {
 		String result = this.asciidoctor
-				.convert("= A\n:doctype: book\n:sectnums:\n:leveloffset: 1\n\nAlpha\n\n= B\n\nBravo\n\n"
-						+ "operation::some-operation[snippets='curl-request']\n\n= C\n", this.options);
+			.convert("= A\n:doctype: book\n:sectnums:\n:leveloffset: 1\n\nAlpha\n\n= B\n\nBravo\n\n"
+					+ "operation::some-operation[snippets='curl-request']\n\n= C\n", this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-in-section"));
 	}
 
 	@Test
 	public void includeSnippetInSectionWithRelativeLevelOffset() throws Exception {
 		String result = this.asciidoctor
-				.convert("= A\n:doctype: book\n:sectnums:\n:leveloffset: +1\n\nAlpha\n\n= B\n\nBravo\n\n"
-						+ "operation::some-operation[snippets='curl-request']\n\n= C\n", this.options);
+			.convert("= A\n:doctype: book\n:sectnums:\n:leveloffset: +1\n\nAlpha\n\n= B\n\nBravo\n\n"
+					+ "operation::some-operation[snippets='curl-request']\n\n= C\n", this.options);
 		assertThat(result).isEqualTo(getExpectedContentFromFile("snippet-in-section"));
 	}
 
@@ -171,7 +171,7 @@ public abstract class AbstractOperationBlockMacroTests {
 		assertThat(result).startsWith(getExpectedContentFromFile("missing-snippet"));
 		assertThat(CapturingLogHandler.getLogRecords()).hasSize(1);
 		assertThat(CapturingLogHandler.getLogRecords().get(0).getMessage())
-				.contains("Snippet missing-snippet not found");
+			.contains("Snippet missing-snippet not found");
 		assertThat(CapturingLogHandler.getLogRecords().get(0).getCursor().getLineNumber()).isEqualTo(1);
 		CapturingLogHandler.getLogRecords().clear();
 	}
@@ -188,7 +188,7 @@ public abstract class AbstractOperationBlockMacroTests {
 		assertThat(result).startsWith(getExpectedContentFromFile("missing-operation"));
 		assertThat(CapturingLogHandler.getLogRecords()).hasSize(1);
 		assertThat(CapturingLogHandler.getLogRecords().get(0).getMessage())
-				.contains("No snippets were found for operation missing-operation");
+			.contains("No snippets were found for operation missing-operation");
 		assertThat(CapturingLogHandler.getLogRecords().get(0).getCursor().getLineNumber()).isEqualTo(1);
 		CapturingLogHandler.getLogRecords().clear();
 	}

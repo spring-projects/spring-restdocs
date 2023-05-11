@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class ResponseBodySnippetTests extends AbstractSnippetTests {
 	public void responseWithBody() throws IOException {
 		new ResponseBodySnippet().document(this.operationBuilder.response().content("some content").build());
 		assertThat(this.generatedSnippets.snippet("response-body"))
-				.is(codeBlock(null, "nowrap").withContent("some content"));
+			.is(codeBlock(null, "nowrap").withContent("some content"));
 	}
 
 	@Test
@@ -63,49 +63,55 @@ public class ResponseBodySnippetTests extends AbstractSnippetTests {
 	@Test
 	public void responseWithJsonMediaType() throws IOException {
 		new ResponseBodySnippet().document(this.operationBuilder.response()
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build());
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+			.build());
 		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("json", "nowrap").withContent(""));
 	}
 
 	@Test
 	public void responseWithJsonSubtypeMediaType() throws IOException {
 		new ResponseBodySnippet().document(this.operationBuilder.response()
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PROBLEM_JSON_VALUE).build());
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+			.build());
 		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("json", "nowrap").withContent(""));
 	}
 
 	@Test
 	public void responseWithXmlMediaType() throws IOException {
 		new ResponseBodySnippet().document(this.operationBuilder.response()
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE).build());
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+			.build());
 		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("xml", "nowrap").withContent(""));
 	}
 
 	@Test
 	public void responseWithXmlSubtypeMediaType() throws IOException {
 		new ResponseBodySnippet().document(this.operationBuilder.response()
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML_VALUE).build());
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML_VALUE)
+			.build());
 		assertThat(this.generatedSnippets.snippet("response-body")).is(codeBlock("xml", "nowrap").withContent(""));
 	}
 
 	@Test
 	public void subsectionOfResponseBody() throws IOException {
 		responseBody(beneathPath("a.b"))
-				.document(this.operationBuilder.response().content("{\"a\":{\"b\":{\"c\":5}}}").build());
+			.document(this.operationBuilder.response().content("{\"a\":{\"b\":{\"c\":5}}}").build());
 		assertThat(this.generatedSnippets.snippet("response-body-beneath-a.b"))
-				.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
+			.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
 	}
 
 	@Test
 	public void customSnippetAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("response-body"))
-				.willReturn(snippetResource("response-body-with-language"));
+			.willReturn(snippetResource("response-body-with-language"));
 		new ResponseBodySnippet(attributes(key("language").value("json"))).document(
 				this.operationBuilder.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-						.response().content("{\"a\":\"alpha\"}").build());
+					.response()
+					.content("{\"a\":\"alpha\"}")
+					.build());
 		assertThat(this.generatedSnippets.snippet("response-body"))
-				.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
+			.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,8 @@ public class OperationRequestFactory {
 
 	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, URI uri, byte[] content) {
 		return new HttpHeadersHelper(originalHeaders).addIfAbsent(HttpHeaders.HOST, createHostHeader(uri))
-				.setContentLengthHeader(content).getHeaders();
+			.setContentLengthHeader(content)
+			.getHeaders();
 	}
 
 	private String createHostHeader(URI uri) {

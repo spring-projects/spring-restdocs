@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,9 +67,10 @@ public class RestAssuredRestDocumentationConfigurerTests {
 
 	@Test
 	public void configurationIsAddedToTheContext() {
-		this.configurer.operationPreprocessors().withRequestDefaults(Preprocessors.prettyPrint())
-				.withResponseDefaults(Preprocessors.modifyHeaders().remove("Foo"))
-				.filter(this.requestSpec, this.responseSpec, this.filterContext);
+		this.configurer.operationPreprocessors()
+			.withRequestDefaults(Preprocessors.prettyPrint())
+			.withResponseDefaults(Preprocessors.modifyHeaders().remove("Foo"))
+			.filter(this.requestSpec, this.responseSpec, this.filterContext);
 		@SuppressWarnings("rawtypes")
 		ArgumentCaptor<Map> configurationCaptor = ArgumentCaptor.forClass(Map.class);
 		verify(this.filterContext).setValue(eq(RestDocumentationFilter.CONTEXT_KEY_CONFIGURATION),
@@ -79,11 +80,11 @@ public class RestAssuredRestDocumentationConfigurerTests {
 		assertThat(configuration.get(TemplateEngine.class.getName())).isInstanceOf(TemplateEngine.class);
 		assertThat(configuration.get(WriterResolver.class.getName())).isInstanceOf(WriterResolver.class);
 		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
-				.isInstanceOf(List.class);
+			.isInstanceOf(List.class);
 		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR))
-				.isInstanceOf(OperationRequestPreprocessor.class);
+			.isInstanceOf(OperationRequestPreprocessor.class);
 		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR))
-				.isInstanceOf(OperationResponsePreprocessor.class);
+			.isInstanceOf(OperationResponsePreprocessor.class);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,65 +50,67 @@ public class FormParametersSnippetTests extends AbstractSnippetTests {
 	public void formParameters() throws IOException {
 		new FormParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one"), parameterWithName("b").description("two")))
-						.document(this.operationBuilder.request("http://localhost").content("a=alpha&b=bravo").build());
+			.document(this.operationBuilder.request("http://localhost").content("a=alpha&b=bravo").build());
 		assertThat(this.generatedSnippets.formParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
 	public void formParameterWithNoValue() throws IOException {
 		new FormParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-				.document(this.operationBuilder.request("http://localhost").content("a=").build());
+			.document(this.operationBuilder.request("http://localhost").content("a=").build());
 		assertThat(this.generatedSnippets.formParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
 	}
 
 	@Test
 	public void ignoredFormParameter() throws IOException {
 		new FormParametersSnippet(
 				Arrays.asList(parameterWithName("a").ignored(), parameterWithName("b").description("two")))
-						.document(this.operationBuilder.request("http://localhost").content("a=alpha&b=bravo").build());
+			.document(this.operationBuilder.request("http://localhost").content("a=alpha&b=bravo").build());
 		assertThat(this.generatedSnippets.formParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
 	}
 
 	@Test
 	public void allUndocumentedFormParametersCanBeIgnored() throws IOException {
 		new FormParametersSnippet(Arrays.asList(parameterWithName("b").description("two")), true)
-				.document(this.operationBuilder.request("http://localhost").content("a=alpha&b=bravo").build());
+			.document(this.operationBuilder.request("http://localhost").content("a=alpha&b=bravo").build());
 		assertThat(this.generatedSnippets.formParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
 	}
 
 	@Test
 	public void missingOptionalFormParameter() throws IOException {
 		new FormParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional(),
 				parameterWithName("b").description("two")))
-						.document(this.operationBuilder.request("http://localhost").content("b=bravo").build());
+			.document(this.operationBuilder.request("http://localhost").content("b=bravo").build());
 		assertThat(this.generatedSnippets.formParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
 	public void presentOptionalFormParameter() throws IOException {
 		new FormParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional()))
-				.document(this.operationBuilder.request("http://localhost").content("a=alpha").build());
+			.document(this.operationBuilder.request("http://localhost").content("a=alpha").build());
 		assertThat(this.generatedSnippets.formParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
 	}
 
 	@Test
 	public void formParametersWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("form-parameters"))
-				.willReturn(snippetResource("form-parameters-with-title"));
+			.willReturn(snippetResource("form-parameters-with-title"));
 		new FormParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").attributes(key("foo").value("alpha")),
 						parameterWithName("b").description("two").attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title")))
-						.document(this.operationBuilder
-								.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-								.request("http://localhost").content("a=alpha&b=bravo").build());
+			.document(this.operationBuilder
+				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+				.request("http://localhost")
+				.content("a=alpha&b=bravo")
+				.build());
 		assertThat(this.generatedSnippets.formParameters()).contains("The title");
 	}
 
@@ -116,55 +118,62 @@ public class FormParametersSnippetTests extends AbstractSnippetTests {
 	public void formParametersWithCustomDescriptorAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("form-parameters"))
-				.willReturn(snippetResource("form-parameters-with-extra-column"));
+			.willReturn(snippetResource("form-parameters-with-extra-column"));
 		new FormParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").attributes(key("foo").value("alpha")),
 						parameterWithName("b").description("two").attributes(key("foo").value("bravo"))))
-								.document(this.operationBuilder
-										.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-										.request("http://localhost").content("a=alpha&b=bravo").build());
-		assertThat(this.generatedSnippets.formParameters()).is(
-				tableWithHeader("Parameter", "Description", "Foo").row("a", "one", "alpha").row("b", "two", "bravo"));
+			.document(this.operationBuilder
+				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+				.request("http://localhost")
+				.content("a=alpha&b=bravo")
+				.build());
+		assertThat(this.generatedSnippets.formParameters())
+			.is(tableWithHeader("Parameter", "Description", "Foo").row("a", "one", "alpha").row("b", "two", "bravo"));
 	}
 
 	@Test
 	public void formParametersWithOptionalColumn() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("form-parameters"))
-				.willReturn(snippetResource("form-parameters-with-optional-column"));
+			.willReturn(snippetResource("form-parameters-with-optional-column"));
 		new FormParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional(),
 				parameterWithName("b").description("two")))
-						.document(this.operationBuilder
-								.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-								.request("http://localhost").content("a=alpha&b=bravo").build());
-		assertThat(this.generatedSnippets.formParameters()).is(tableWithHeader("Parameter", "Optional", "Description")
-				.row("a", "true", "one").row("b", "false", "two"));
+			.document(this.operationBuilder
+				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+				.request("http://localhost")
+				.content("a=alpha&b=bravo")
+				.build());
+		assertThat(this.generatedSnippets.formParameters())
+			.is(tableWithHeader("Parameter", "Optional", "Description").row("a", "true", "one")
+				.row("b", "false", "two"));
 	}
 
 	@Test
 	public void additionalDescriptors() throws IOException {
 		RequestDocumentation.formParameters(parameterWithName("a").description("one"))
-				.and(parameterWithName("b").description("two"))
-				.document(this.operationBuilder.request("http://localhost").content("a=alpha&b=bravo").build());
+			.and(parameterWithName("b").description("two"))
+			.document(this.operationBuilder.request("http://localhost").content("a=alpha&b=bravo").build());
 		assertThat(this.generatedSnippets.formParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
 	public void additionalDescriptorsWithRelaxedFormParameters() throws IOException {
 		RequestDocumentation.relaxedFormParameters(parameterWithName("a").description("one"))
-				.and(parameterWithName("b").description("two")).document(this.operationBuilder
-						.request("http://localhost").content("a=alpha&b=bravo&c=undocumented").build());
+			.and(parameterWithName("b").description("two"))
+			.document(this.operationBuilder.request("http://localhost")
+				.content("a=alpha&b=bravo&c=undocumented")
+				.build());
 		assertThat(this.generatedSnippets.formParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
 	public void formParametersWithEscapedContent() throws IOException {
 		RequestDocumentation.formParameters(parameterWithName("Foo|Bar").description("one|two"))
-				.document(this.operationBuilder.request("http://localhost").content("Foo%7CBar=baz").build());
+			.document(this.operationBuilder.request("http://localhost").content("Foo%7CBar=baz").build());
 		assertThat(this.generatedSnippets.formParameters()).is(tableWithHeader("Parameter", "Description")
-				.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+			.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
 	}
 
 	private String escapeIfNecessary(String input) {

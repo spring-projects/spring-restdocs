@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,7 +149,7 @@ class JsonContentHandler implements ContentHandler {
 	public Object resolveFieldType(FieldDescriptor fieldDescriptor) {
 		if (fieldDescriptor.getType() == null) {
 			return this.fieldTypesDiscoverer.discoverFieldTypes(fieldDescriptor.getPath(), readContent())
-					.coalesce(fieldDescriptor.isOptional());
+				.coalesce(fieldDescriptor.isOptional());
 		}
 		if (!(fieldDescriptor.getType() instanceof JsonFieldType)) {
 			return fieldDescriptor.getType();
@@ -157,8 +157,8 @@ class JsonContentHandler implements ContentHandler {
 		JsonFieldType descriptorFieldType = (JsonFieldType) fieldDescriptor.getType();
 		try {
 			JsonFieldType actualFieldType = this.fieldTypesDiscoverer
-					.discoverFieldTypes(fieldDescriptor.getPath(), readContent())
-					.coalesce(fieldDescriptor.isOptional());
+				.discoverFieldTypes(fieldDescriptor.getPath(), readContent())
+				.coalesce(fieldDescriptor.isOptional());
 			if (descriptorFieldType == JsonFieldType.VARIES || descriptorFieldType == actualFieldType
 					|| (fieldDescriptor.isOptional() && actualFieldType == JsonFieldType.NULL)
 					|| (isNestedBeneathMissingOptionalField(fieldDescriptor, readContent())

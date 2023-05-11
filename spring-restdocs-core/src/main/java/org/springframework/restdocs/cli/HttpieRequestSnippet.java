@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,8 +139,8 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 
 	private void writeFormDataIfNecessary(OperationRequest request, List<String> lines) {
 		if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(request.getHeaders().getContentType())) {
-			FormParameters.from(request).forEach(
-					(key, values) -> values.forEach((value) -> lines.add(String.format("'%s=%s'", key, value))));
+			FormParameters.from(request)
+				.forEach((key, values) -> values.forEach((value) -> lines.add(String.format("'%s=%s'", key, value))));
 		}
 		else {
 			for (OperationRequestPart part : request.getParts()) {

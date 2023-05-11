@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,9 +84,9 @@ public class MockMvcRequestConverterTests {
 
 	@Test
 	public void requestWithCookies() {
-		OperationRequest request = createOperationRequest(
-				MockMvcRequestBuilders.get("/foo").cookie(new jakarta.servlet.http.Cookie("cookieName1", "cookieVal1"),
-						new jakarta.servlet.http.Cookie("cookieName2", "cookieVal2")));
+		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.get("/foo")
+			.cookie(new jakarta.servlet.http.Cookie("cookieName1", "cookieVal1"),
+					new jakarta.servlet.http.Cookie("cookieName2", "cookieVal2")));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
 		assertThat(request.getCookies().size()).isEqualTo(2);
@@ -161,7 +161,7 @@ public class MockMvcRequestConverterTests {
 	@Test
 	public void mockMultipartFileUpload() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.multipart("/foo")
-				.file(new MockMultipartFile("file", new byte[] { 1, 2, 3, 4 })));
+			.file(new MockMultipartFile("file", new byte[] { 1, 2, 3, 4 })));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getParts().size()).isEqualTo(1);
@@ -176,7 +176,7 @@ public class MockMvcRequestConverterTests {
 	@Test
 	public void mockMultipartFileUploadWithContentType() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.multipart("/foo")
-				.file(new MockMultipartFile("file", "original", "image/png", new byte[] { 1, 2, 3, 4 })));
+			.file(new MockMultipartFile("file", "original", "image/png", new byte[] { 1, 2, 3, 4 })));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getParts().size()).isEqualTo(1);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,9 @@ public class RequestPartPayload {
 				"{ \"version\": \"1.0\"}".getBytes());
 
 		this.mockMvc.perform(multipart("/images").file(image).file(metadata).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk()).andDo(document("image-upload", requestPartFields("metadata", // <1>
-						fieldWithPath("version").description("The version of the image")))); // <2>
+			.andExpect(status().isOk())
+			.andDo(document("image-upload", requestPartFields("metadata", // <1>
+					fieldWithPath("version").description("The version of the image")))); // <2>
 		// end::fields[]
 	}
 
@@ -50,7 +51,8 @@ public class RequestPartPayload {
 				"{ \"version\": \"1.0\"}".getBytes());
 
 		this.mockMvc.perform(multipart("/images").file(image).file(metadata).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk()).andDo(document("image-upload", requestPartBody("metadata"))); // <1>
+			.andExpect(status().isOk())
+			.andDo(document("image-upload", requestPartBody("metadata"))); // <1>
 		// end::body[]
 	}
 
