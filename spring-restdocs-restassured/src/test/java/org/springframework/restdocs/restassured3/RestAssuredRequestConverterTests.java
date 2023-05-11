@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,8 +123,10 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void headersWithCustomAccept() {
-		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).header("Foo", "bar")
-				.accept("application/json");
+		RequestSpecification requestSpec = RestAssured.given()
+			.port(tomcat.getPort())
+			.header("Foo", "bar")
+			.accept("application/json");
 		requestSpec.get("/");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getHeaders()).hasSize(3);
@@ -136,8 +138,10 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void cookies() {
-		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).cookie("cookie1", "cookieVal1")
-				.cookie("cookie2", "cookieVal2");
+		RequestSpecification requestSpec = RestAssured.given()
+			.port(tomcat.getPort())
+			.cookie("cookie1", "cookieVal1")
+			.cookie("cookie2", "cookieVal2");
 		requestSpec.get("/");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getCookies().size()).isEqualTo(2);
@@ -155,8 +159,10 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void multipart() {
-		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort())
-				.multiPart("a", "a.txt", "alpha", null).multiPart("b", new ObjectBody("bar"), "application/json");
+		RequestSpecification requestSpec = RestAssured.given()
+			.port(tomcat.getPort())
+			.multiPart("a", "a.txt", "alpha", null)
+			.multiPart("b", new ObjectBody("bar"), "application/json");
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
 		Collection<OperationRequestPart> parts = request.getParts();
@@ -164,9 +170,10 @@ public class RestAssuredRequestConverterTests {
 		assertThat(parts).extracting("name").containsExactly("a", "b");
 		assertThat(parts).extracting("submittedFileName").containsExactly("a.txt", "file");
 		assertThat(parts).extracting("contentAsString").containsExactly("alpha", "{\"foo\":\"bar\"}");
-		assertThat(parts).extracting("headers").extracting(HttpHeaders.CONTENT_TYPE).containsExactly(
-				Collections.singletonList(MediaType.TEXT_PLAIN_VALUE),
-				Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
+		assertThat(parts).extracting("headers")
+			.extracting(HttpHeaders.CONTENT_TYPE)
+			.containsExactly(Collections.singletonList(MediaType.TEXT_PLAIN_VALUE),
+					Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
 	}
 
 	@Test
@@ -194,8 +201,9 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void byteArrayInputStreamBody() {
-		RequestSpecification requestSpec = RestAssured.given().body(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }))
-				.port(tomcat.getPort());
+		RequestSpecification requestSpec = RestAssured.given()
+			.body(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }))
+			.port(tomcat.getPort());
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getContent()).isEqualTo(new byte[] { 1, 2, 3, 4 });
@@ -203,8 +211,9 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void fileBody() {
-		RequestSpecification requestSpec = RestAssured.given().body(new File("src/test/resources/body.txt"))
-				.port(tomcat.getPort());
+		RequestSpecification requestSpec = RestAssured.given()
+			.body(new File("src/test/resources/body.txt"))
+			.port(tomcat.getPort());
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getContentAsString()).isEqualTo("file");
@@ -222,8 +231,9 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void multipartWithByteArrayInputStreamBody() {
-		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).multiPart("foo", "foo.txt",
-				new ByteArrayInputStream("foo".getBytes()));
+		RequestSpecification requestSpec = RestAssured.given()
+			.port(tomcat.getPort())
+			.multiPart("foo", "foo.txt", new ByteArrayInputStream("foo".getBytes()));
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getParts().iterator().next().getContentAsString()).isEqualTo("foo");
@@ -239,8 +249,9 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void multipartWithByteArrayBody() {
-		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).multiPart("control", "file",
-				"foo".getBytes());
+		RequestSpecification requestSpec = RestAssured.given()
+			.port(tomcat.getPort())
+			.multiPart("control", "file", "foo".getBytes());
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getParts().iterator().next().getContentAsString()).isEqualTo("foo");
@@ -248,8 +259,9 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void multipartWithFileBody() {
-		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort())
-				.multiPart(new File("src/test/resources/body.txt"));
+		RequestSpecification requestSpec = RestAssured.given()
+			.port(tomcat.getPort())
+			.multiPart(new File("src/test/resources/body.txt"));
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getParts().iterator().next().getContentAsString()).isEqualTo("file");
@@ -258,8 +270,9 @@ public class RestAssuredRequestConverterTests {
 	@Test
 	public void multipartWithFileInputStreamBody() throws FileNotFoundException {
 		FileInputStream inputStream = new FileInputStream("src/test/resources/body.txt");
-		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).multiPart("foo", "foo.txt",
-				inputStream);
+		RequestSpecification requestSpec = RestAssured.given()
+			.port(tomcat.getPort())
+			.multiPart("foo", "foo.txt", inputStream);
 		requestSpec.post();
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage("Cannot read content from input stream " + inputStream + " due to reset() failure");
@@ -268,8 +281,9 @@ public class RestAssuredRequestConverterTests {
 
 	@Test
 	public void multipartWithObjectBody() {
-		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).multiPart("control",
-				new ObjectBody("bar"));
+		RequestSpecification requestSpec = RestAssured.given()
+			.port(tomcat.getPort())
+			.multiPart("control", new ObjectBody("bar"));
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
 		assertThat(request.getParts().iterator().next().getContentAsString()).isEqualTo("{\"foo\":\"bar\"}");

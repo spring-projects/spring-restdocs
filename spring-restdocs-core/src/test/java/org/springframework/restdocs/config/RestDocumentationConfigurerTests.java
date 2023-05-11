@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,24 +80,24 @@ public class RestDocumentationConfigurerTests {
 		assertThat(configuration.get(WriterResolver.class.getName())).isInstanceOf(StandardWriterResolver.class);
 		assertThat(configuration).containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
-				.isInstanceOf(List.class);
+			.isInstanceOf(List.class);
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-		assertThat(defaultSnippets).extracting("class").containsExactlyInAnyOrder(CurlRequestSnippet.class,
-				HttpieRequestSnippet.class, HttpRequestSnippet.class, HttpResponseSnippet.class,
-				RequestBodySnippet.class, ResponseBodySnippet.class);
+			.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+		assertThat(defaultSnippets).extracting("class")
+			.containsExactlyInAnyOrder(CurlRequestSnippet.class, HttpieRequestSnippet.class, HttpRequestSnippet.class,
+					HttpResponseSnippet.class, RequestBodySnippet.class, ResponseBodySnippet.class);
 		assertThat(configuration).containsKey(SnippetConfiguration.class.getName());
 		assertThat(configuration.get(SnippetConfiguration.class.getName())).isInstanceOf(SnippetConfiguration.class);
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
-				.get(SnippetConfiguration.class.getName());
+			.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getEncoding()).isEqualTo("UTF-8");
 		assertThat(snippetConfiguration.getTemplateFormat().getId()).isEqualTo(TemplateFormats.asciidoctor().getId());
 		OperationRequestPreprocessor defaultOperationRequestPreprocessor = (OperationRequestPreprocessor) configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
+			.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
 		assertThat(defaultOperationRequestPreprocessor).isNull();
 
 		OperationResponsePreprocessor defaultOperationResponsePreprocessor = (OperationResponsePreprocessor) configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
+			.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
 		assertThat(defaultOperationResponsePreprocessor).isNull();
 	}
 
@@ -123,10 +123,10 @@ public class RestDocumentationConfigurerTests {
 		this.configurer.snippets().withDefaults(CliDocumentation.curlRequest()).apply(configuration, createContext());
 		assertThat(configuration).containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
-				.isInstanceOf(List.class);
+			.isInstanceOf(List.class);
 		@SuppressWarnings("unchecked")
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+			.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		assertThat(defaultSnippets).hasSize(1);
 		assertThat(defaultSnippets).hasOnlyElementsOfType(CurlRequestSnippet.class);
 	}
@@ -139,12 +139,12 @@ public class RestDocumentationConfigurerTests {
 		this.configurer.snippets().withAdditionalDefaults(snippet).apply(configuration, createContext());
 		assertThat(configuration).containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
 		assertThat(configuration.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS))
-				.isInstanceOf(List.class);
+			.isInstanceOf(List.class);
 		List<Snippet> defaultSnippets = (List<Snippet>) configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
-		assertThat(defaultSnippets).extracting("class").containsExactlyInAnyOrder(CurlRequestSnippet.class,
-				HttpieRequestSnippet.class, HttpRequestSnippet.class, HttpResponseSnippet.class,
-				RequestBodySnippet.class, ResponseBodySnippet.class, snippet.getClass());
+			.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
+		assertThat(defaultSnippets).extracting("class")
+			.containsExactlyInAnyOrder(CurlRequestSnippet.class, HttpieRequestSnippet.class, HttpRequestSnippet.class,
+					HttpResponseSnippet.class, RequestBodySnippet.class, ResponseBodySnippet.class, snippet.getClass());
 	}
 
 	@Test
@@ -155,7 +155,7 @@ public class RestDocumentationConfigurerTests {
 		assertThat(configuration).containsKey(SnippetConfiguration.class.getName());
 		assertThat(configuration.get(SnippetConfiguration.class.getName())).isInstanceOf(SnippetConfiguration.class);
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
-				.get(SnippetConfiguration.class.getName());
+			.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getEncoding()).isEqualTo(StandardCharsets.ISO_8859_1.displayName());
 		assertThat(configuration.get(TemplateEngine.class.getName())).hasFieldOrPropertyWithValue("templateEncoding",
 				StandardCharsets.ISO_8859_1);
@@ -168,7 +168,7 @@ public class RestDocumentationConfigurerTests {
 		assertThat(configuration).containsKey(SnippetConfiguration.class.getName());
 		assertThat(configuration.get(SnippetConfiguration.class.getName())).isInstanceOf(SnippetConfiguration.class);
 		SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
-				.get(SnippetConfiguration.class.getName());
+			.get(SnippetConfiguration.class.getName());
 		assertThat(snippetConfiguration.getTemplateFormat().getId()).isEqualTo(TemplateFormats.markdown().getId());
 	}
 
@@ -202,10 +202,10 @@ public class RestDocumentationConfigurerTests {
 	public void customDefaultOperationRequestPreprocessor() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.operationPreprocessors()
-				.withRequestDefaults(Preprocessors.prettyPrint(), Preprocessors.removeHeaders("Foo"))
-				.apply(configuration, createContext());
+			.withRequestDefaults(Preprocessors.prettyPrint(), Preprocessors.removeHeaders("Foo"))
+			.apply(configuration, createContext());
 		OperationRequestPreprocessor preprocessor = (OperationRequestPreprocessor) configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
+			.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Foo", "value");
 		OperationRequest request = new OperationRequestFactory().create(URI.create("http://localhost:8080"),
@@ -217,10 +217,10 @@ public class RestDocumentationConfigurerTests {
 	public void customDefaultOperationResponsePreprocessor() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.operationPreprocessors()
-				.withResponseDefaults(Preprocessors.prettyPrint(), Preprocessors.removeHeaders("Foo"))
-				.apply(configuration, createContext());
+			.withResponseDefaults(Preprocessors.prettyPrint(), Preprocessors.removeHeaders("Foo"))
+			.apply(configuration, createContext());
 		OperationResponsePreprocessor preprocessor = (OperationResponsePreprocessor) configuration
-				.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
+			.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Foo", "value");
 		OperationResponse response = new OperationResponseFactory().create(HttpStatus.OK.value(), headers, null);

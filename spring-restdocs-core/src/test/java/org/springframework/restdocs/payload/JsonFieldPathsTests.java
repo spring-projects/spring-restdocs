@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,8 @@ public class JsonFieldPathsTests {
 	public void noUncommonPathsForSingleItem() {
 		assertThat(
 				JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": [ { \"c\": 2}, {\"c\": 3}, {\"c\": null}]}")))
-						.getUncommon()).isEmpty();
+					.getUncommon())
+			.isEmpty();
 	}
 
 	@Test
@@ -49,54 +50,52 @@ public class JsonFieldPathsTests {
 	@Test
 	public void noUncommonPathsForMultipleMatchingItemsWithDifferentScalarValues() {
 		assertThat(JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": [ { \"c\": 2}, {\"c\": 3} ]}"),
-				json("{\"a\": 4, \"b\": [ { \"c\": 5}, {\"c\": 6} ]}"))).getUncommon()).isEmpty();
+				json("{\"a\": 4, \"b\": [ { \"c\": 5}, {\"c\": 6} ]}")))
+			.getUncommon()).isEmpty();
 	}
 
 	@Test
 	public void missingEntryInMapIsIdentifiedAsUncommon() {
 		assertThat(
 				JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1}"), json("{\"a\": 1}"), json("{\"a\": 1, \"b\": 2}")))
-						.getUncommon()).containsExactly("b");
+					.getUncommon())
+			.containsExactly("b");
 	}
 
 	@Test
 	public void missingEntryInNestedMapIsIdentifiedAsUncommon() {
-		assertThat(
-				JsonFieldPaths
-						.from(Arrays.asList(json("{\"a\": 1, \"b\": {\"c\": 1}}"),
-								json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"c\": 1, \"d\": 2}}")))
-						.getUncommon()).containsExactly("b.d");
+		assertThat(JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": {\"c\": 1}}"),
+				json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"c\": 1, \"d\": 2}}")))
+			.getUncommon()).containsExactly("b.d");
 	}
 
 	@Test
 	public void missingEntriesInNestedMapAreIdentifiedAsUncommon() {
-		assertThat(
-				JsonFieldPaths
-						.from(Arrays.asList(json("{\"a\": 1, \"b\": {\"c\": 1}}"),
-								json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"d\": 2}}")))
-						.getUncommon()).containsExactly("b.c", "b.d");
+		assertThat(JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": {\"c\": 1}}"),
+				json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"d\": 2}}")))
+			.getUncommon()).containsExactly("b.c", "b.d");
 	}
 
 	@Test
 	public void absentItemFromFieldExtractionCausesAllPresentFieldsToBeIdentifiedAsUncommon() {
-		assertThat(
-				JsonFieldPaths
-						.from(Arrays.asList(ExtractedField.ABSENT, json("{\"a\": 1, \"b\": {\"c\": 1}}"),
-								json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"d\": 2}}")))
-						.getUncommon()).containsExactly("", "a", "b", "b.c", "b.d");
+		assertThat(JsonFieldPaths
+			.from(Arrays.asList(ExtractedField.ABSENT, json("{\"a\": 1, \"b\": {\"c\": 1}}"),
+					json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"d\": 2}}")))
+			.getUncommon()).containsExactly("", "a", "b", "b.c", "b.d");
 	}
 
 	@Test
 	public void missingEntryBeneathArrayIsIdentifiedAsUncommon() {
 		assertThat(JsonFieldPaths
-				.from(Arrays.asList(json("[{\"b\": 1}]"), json("[{\"b\": 1}]"), json("[{\"b\": 1, \"c\": 2}]")))
-				.getUncommon()).containsExactly("[].c");
+			.from(Arrays.asList(json("[{\"b\": 1}]"), json("[{\"b\": 1}]"), json("[{\"b\": 1, \"c\": 2}]")))
+			.getUncommon()).containsExactly("[].c");
 	}
 
 	@Test
 	public void missingEntryBeneathNestedArrayIsIdentifiedAsUncommon() {
 		assertThat(JsonFieldPaths.from(Arrays.asList(json("{\"a\": [{\"b\": 1}]}"), json("{\"a\": [{\"b\": 1}]}"),
-				json("{\"a\": [{\"b\": 1, \"c\": 2}]}"))).getUncommon()).containsExactly("a.[].c");
+				json("{\"a\": [{\"b\": 1, \"c\": 2}]}")))
+			.getUncommon()).containsExactly("a.[].c");
 	}
 
 	private Object json(String json) {

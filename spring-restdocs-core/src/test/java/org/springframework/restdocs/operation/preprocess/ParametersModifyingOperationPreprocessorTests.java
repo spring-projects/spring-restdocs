@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class ParametersModifyingOperationPreprocessorTests {
 	public void setNewParameter() {
 		Parameters parameters = new Parameters();
 		OperationRequest request = this.preprocessor.set("a", "alpha", "avocado")
-				.preprocess(createGetRequest(parameters));
+			.preprocess(createGetRequest(parameters));
 		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "avocado"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080?a=alpha&a=avocado"));
 	}
@@ -71,7 +71,7 @@ public class ParametersModifyingOperationPreprocessorTests {
 		Parameters parameters = new Parameters();
 		parameters.add("a", "apple");
 		OperationRequest request = this.preprocessor.set("a", "alpha", "avocado")
-				.preprocess(createGetRequest(parameters));
+			.preprocess(createGetRequest(parameters));
 		assertThat(request.getParameters()).containsEntry("a", Arrays.asList("alpha", "avocado"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost:8080?a=alpha&a=avocado"));
 	}

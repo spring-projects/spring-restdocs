@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,13 +72,13 @@ public abstract class TemplatedSnippet implements Snippet {
 	@Override
 	public void document(Operation operation) throws IOException {
 		RestDocumentationContext context = (RestDocumentationContext) operation.getAttributes()
-				.get(RestDocumentationContext.class.getName());
+			.get(RestDocumentationContext.class.getName());
 		WriterResolver writerResolver = (WriterResolver) operation.getAttributes().get(WriterResolver.class.getName());
 		try (Writer writer = writerResolver.resolve(operation.getName(), this.snippetName, context)) {
 			Map<String, Object> model = createModel(operation);
 			model.putAll(this.attributes);
 			TemplateEngine templateEngine = (TemplateEngine) operation.getAttributes()
-					.get(TemplateEngine.class.getName());
+				.get(TemplateEngine.class.getName());
 			writer.append(templateEngine.compileTemplate(this.templateName).render(model));
 		}
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,14 +54,14 @@ public class StandardWriterResolverTests {
 	public void absoluteInput() {
 		String absolutePath = new File("foo").getAbsolutePath();
 		assertThat(this.resolver.resolveFile(absolutePath, "bar.txt", createContext(absolutePath)))
-				.isEqualTo(new File(absolutePath, "bar.txt"));
+			.isEqualTo(new File(absolutePath, "bar.txt"));
 	}
 
 	@Test
 	public void configuredOutputAndRelativeInput() {
 		File outputDir = new File("foo").getAbsoluteFile();
 		assertThat(this.resolver.resolveFile("bar", "baz.txt", createContext(outputDir.getAbsolutePath())))
-				.isEqualTo(new File(outputDir, "bar/baz.txt"));
+			.isEqualTo(new File(outputDir, "bar/baz.txt"));
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class StandardWriterResolverTests {
 		File outputDir = new File("foo").getAbsoluteFile();
 		String absolutePath = new File("bar").getAbsolutePath();
 		assertThat(this.resolver.resolveFile(absolutePath, "baz.txt", createContext(outputDir.getAbsolutePath())))
-				.isEqualTo(new File(absolutePath, "baz.txt"));
+			.isEqualTo(new File(absolutePath, "baz.txt"));
 	}
 
 	@Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,13 +89,13 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessageCodePointLength() {
 		assertThat(constraintDescriptionForField("codePointLength"))
-				.isEqualTo("Code point length must be between 2 and 5 inclusive");
+			.isEqualTo("Code point length must be between 2 and 5 inclusive");
 	}
 
 	@Test
 	public void defaultMessageCurrency() {
 		assertThat(constraintDescriptionForField("currency"))
-				.isEqualTo("Must be in an accepted currency unit (GBP, USD)");
+			.isEqualTo("Must be in an accepted currency unit (GBP, USD)");
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessageDigits() {
 		assertThat(constraintDescriptionForField("digits"))
-				.isEqualTo("Must have at most 2 integral digits and 5 fractional digits");
+			.isEqualTo("Must have at most 2 integral digits and 5 fractional digits");
 	}
 
 	@Test
@@ -157,7 +157,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessagePattern() {
 		assertThat(constraintDescriptionForField("pattern"))
-				.isEqualTo("Must match the regular expression `[A-Z][a-z]+`");
+			.isEqualTo("Must match the regular expression `[A-Z][a-z]+`");
 	}
 
 	@Test
@@ -168,7 +168,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessageCreditCardNumber() {
 		assertThat(constraintDescriptionForField("creditCardNumber"))
-				.isEqualTo("Must be a well-formed credit card number");
+			.isEqualTo("Must be a well-formed credit card number");
 	}
 
 	@Test
@@ -184,7 +184,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessageEmailHibernateValidator() {
 		assertThat(constraintDescriptionForField("emailHibernateValidator"))
-				.isEqualTo("Must be a well-formed email address");
+			.isEqualTo("Must be a well-formed email address");
 	}
 
 	@Test
@@ -195,7 +195,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessageLuhnCheck() {
 		assertThat(constraintDescriptionForField("luhnCheck"))
-				.isEqualTo("Must pass the Luhn Modulo 10 checksum algorithm");
+			.isEqualTo("Must pass the Luhn Modulo 10 checksum algorithm");
 	}
 
 	@Test
@@ -279,8 +279,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		});
 
 		try {
-			String description = new ResourceBundleConstraintDescriptionResolver().resolveDescription(
-					new Constraint(NotNull.class.getName(), Collections.<String, Object>emptyMap()));
+			String description = new ResourceBundleConstraintDescriptionResolver()
+				.resolveDescription(new Constraint(NotNull.class.getName(), Collections.<String, Object>emptyMap()));
 			assertThat(description).isEqualTo("Should not be null");
 
 		}
@@ -300,7 +300,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 
 		};
 		String description = new ResourceBundleConstraintDescriptionResolver(bundle)
-				.resolveDescription(new Constraint(NotNull.class.getName(), Collections.<String, Object>emptyMap()));
+			.resolveDescription(new Constraint(NotNull.class.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description).isEqualTo("Not null");
 	}
 

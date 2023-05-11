@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,38 +47,41 @@ public class RequestBodyPartSnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void requestPartWithBody() throws IOException {
-		requestPartBody("one").document(
-				this.operationBuilder.request("http://localhost").part("one", "some content".getBytes()).build());
+		requestPartBody("one")
+			.document(this.operationBuilder.request("http://localhost").part("one", "some content".getBytes()).build());
 		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
-				.is(codeBlock(null, "nowrap").withContent("some content"));
+			.is(codeBlock(null, "nowrap").withContent("some content"));
 	}
 
 	@Test
 	public void requestPartWithNoBody() throws IOException {
 		requestPartBody("one")
-				.document(this.operationBuilder.request("http://localhost").part("one", new byte[0]).build());
+			.document(this.operationBuilder.request("http://localhost").part("one", new byte[0]).build());
 		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
-				.is(codeBlock(null, "nowrap").withContent(""));
+			.is(codeBlock(null, "nowrap").withContent(""));
 	}
 
 	@Test
 	public void subsectionOfRequestPartBody() throws IOException {
 		requestPartBody("one", beneathPath("a.b")).document(this.operationBuilder.request("http://localhost")
-				.part("one", "{\"a\":{\"b\":{\"c\":5}}}".getBytes()).build());
+			.part("one", "{\"a\":{\"b\":{\"c\":5}}}".getBytes())
+			.build());
 		assertThat(this.generatedSnippets.snippet("request-part-one-body-beneath-a.b"))
-				.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
+			.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
 	}
 
 	@Test
 	public void customSnippetAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-part-body"))
-				.willReturn(snippetResource("request-part-body-with-language"));
+			.willReturn(snippetResource("request-part-body-with-language"));
 		requestPartBody("one", attributes(key("language").value("json"))).document(
 				this.operationBuilder.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-						.request("http://localhost").part("one", "{\"a\":\"alpha\"}".getBytes()).build());
+					.request("http://localhost")
+					.part("one", "{\"a\":\"alpha\"}".getBytes())
+					.build());
 		assertThat(this.generatedSnippets.snippet("request-part-one-body"))
-				.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
+			.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
 	}
 
 }

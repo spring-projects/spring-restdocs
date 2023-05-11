@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,19 +41,20 @@ public class ResponseHeadersSnippetFailureTests {
 
 	@Test
 	public void missingResponseHeader() {
-		assertThatExceptionOfType(SnippetException.class).isThrownBy(
-				() -> new ResponseHeadersSnippet(Arrays.asList(headerWithName("Content-Type").description("one")))
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(
+					() -> new ResponseHeadersSnippet(Arrays.asList(headerWithName("Content-Type").description("one")))
 						.document(this.operationBuilder.response().build()))
-				.withMessage("Headers with the following names were not found" + " in the response: [Content-Type]");
+			.withMessage("Headers with the following names were not found" + " in the response: [Content-Type]");
 	}
 
 	@Test
 	public void undocumentedResponseHeaderAndMissingResponseHeader() {
-		assertThatExceptionOfType(SnippetException.class).isThrownBy(
-				() -> new ResponseHeadersSnippet(Arrays.asList(headerWithName("Content-Type").description("one")))
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(
+					() -> new ResponseHeadersSnippet(Arrays.asList(headerWithName("Content-Type").description("one")))
 						.document(this.operationBuilder.response().header("X-Test", "test").build()))
-				.withMessageEndingWith(
-						"Headers with the following names were not found in the response: [Content-Type]");
+			.withMessageEndingWith("Headers with the following names were not found in the response: [Content-Type]");
 	}
 
 }

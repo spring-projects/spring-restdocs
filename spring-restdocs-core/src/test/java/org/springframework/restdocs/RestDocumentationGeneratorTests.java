@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class RestDocumentationGeneratorTests {
 	private final Object response = new Object();
 
 	private final OperationRequest operationRequest = new OperationRequestFactory()
-			.create(URI.create("http://localhost:8080"), null, null, new HttpHeaders(), null, null);
+		.create(URI.create("http://localhost:8080"), null, null, new HttpHeaders(), null, null);
 
 	private final OperationResponse operationResponse = new OperationResponseFactory().create(0, null, null);
 
@@ -83,7 +83,7 @@ public class RestDocumentationGeneratorTests {
 		given(this.responseConverter.convert(this.response)).willReturn(this.operationResponse);
 		HashMap<String, Object> configuration = new HashMap<>();
 		new RestDocumentationGenerator<>("id", this.requestConverter, this.responseConverter, this.snippet)
-				.handle(this.request, this.response, configuration);
+			.handle(this.request, this.response, configuration);
 		verifySnippetInvocation(this.snippet, configuration);
 	}
 
@@ -97,7 +97,7 @@ public class RestDocumentationGeneratorTests {
 		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS,
 				Arrays.asList(defaultSnippet1, defaultSnippet2));
 		new RestDocumentationGenerator<>("id", this.requestConverter, this.responseConverter, this.snippet)
-				.handle(this.request, this.response, configuration);
+			.handle(this.request, this.response, configuration);
 		InOrder inOrder = Mockito.inOrder(defaultSnippet1, defaultSnippet2, this.snippet);
 		verifySnippetInvocation(inOrder, defaultSnippet1, configuration);
 		verifySnippetInvocation(inOrder, defaultSnippet2, configuration);
@@ -120,8 +120,8 @@ public class RestDocumentationGeneratorTests {
 		given(defaultPreprocessor1.preprocess(first)).willReturn(second);
 		given(defaultPreprocessor2.preprocess(second)).willReturn(third);
 		new RestDocumentationGenerator<>("id", this.requestConverter, this.responseConverter,
-				Preprocessors.preprocessRequest(this.requestPreprocessor), this.snippet).handle(this.request,
-						this.response, configuration);
+				Preprocessors.preprocessRequest(this.requestPreprocessor), this.snippet)
+			.handle(this.request, this.response, configuration);
 		verifySnippetInvocation(this.snippet, third, this.operationResponse, configuration, 1);
 	}
 
@@ -141,8 +141,8 @@ public class RestDocumentationGeneratorTests {
 		given(defaultPreprocessor1.preprocess(first)).willReturn(second);
 		given(defaultPreprocessor2.preprocess(second)).willReturn(third);
 		new RestDocumentationGenerator<>("id", this.requestConverter, this.responseConverter,
-				Preprocessors.preprocessResponse(this.responsePreprocessor), this.snippet).handle(this.request,
-						this.response, configuration);
+				Preprocessors.preprocessResponse(this.responsePreprocessor), this.snippet)
+			.handle(this.request, this.response, configuration);
 		verifySnippetInvocation(this.snippet, this.operationRequest, third, configuration, 1);
 	}
 
@@ -159,8 +159,8 @@ public class RestDocumentationGeneratorTests {
 		RestDocumentationGenerator<Object, Object> generator = new RestDocumentationGenerator<>("id",
 				this.requestConverter, this.responseConverter, requestPreprocessor, responsePreprocessor, this.snippet);
 		HashMap<String, Object> configuration = new HashMap<>();
-		generator.withSnippets(additionalSnippet1, additionalSnippet2).handle(this.request, this.response,
-				configuration);
+		generator.withSnippets(additionalSnippet1, additionalSnippet2)
+			.handle(this.request, this.response, configuration);
 		verifyNoMoreInteractions(this.snippet);
 		verifySnippetInvocation(additionalSnippet1, configuration);
 		verifySnippetInvocation(additionalSnippet2, configuration);

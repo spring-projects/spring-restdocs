@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class JsonFieldTypesDiscovererTests {
 	@Test
 	public void specificFieldOfObjectInArrayNestedBeneathAnArray() throws IOException {
 		assertThat(discoverFieldTypes("a[].b[].c", "{\"a\": [{\"b\": [ {\"c\": 5}, {\"c\": 5}]}]}"))
-				.containsExactly(JsonFieldType.NUMBER);
+			.containsExactly(JsonFieldType.NUMBER);
 	}
 
 	@Test
@@ -96,49 +96,49 @@ public class JsonFieldTypesDiscovererTests {
 	@Test
 	public void multipleFieldsWithSameType() throws IOException {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":2}]}"))
-				.containsExactly(JsonFieldType.NUMBER);
+			.containsExactly(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void multipleFieldsWithDifferentTypes() throws IOException {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":true}]}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.BOOLEAN);
+			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.BOOLEAN);
 	}
 
 	@Test
 	public void multipleFieldsWithDifferentTypesAndSometimesAbsent() throws IOException {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":true}, {}]}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.BOOLEAN, JsonFieldType.NULL);
+			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.BOOLEAN, JsonFieldType.NULL);
 	}
 
 	@Test
 	public void multipleFieldsWhenSometimesAbsent() throws IOException {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":2}, {}]}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.NULL);
+			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.NULL);
 	}
 
 	@Test
 	public void multipleFieldsWhenSometimesNull() throws IOException {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":2}, {\"id\":null}]}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.NULL);
+			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.NULL);
 	}
 
 	@Test
 	public void multipleFieldsWithDifferentTypesAndSometimesNull() throws IOException {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":true}, {\"id\":null}]}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.BOOLEAN, JsonFieldType.NULL);
+			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.BOOLEAN, JsonFieldType.NULL);
 	}
 
 	@Test
 	public void multipleFieldsWhenEitherNullOrAbsent() throws IOException {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{},{\"id\":null}]}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NULL);
+			.containsExactlyInAnyOrder(JsonFieldType.NULL);
 	}
 
 	@Test
 	public void multipleFieldsThatAreAllNull() throws IOException {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":null},{\"id\":null}]}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NULL);
+			.containsExactlyInAnyOrder(JsonFieldType.NULL);
 	}
 
 	@Test
@@ -158,25 +158,25 @@ public class JsonFieldTypesDiscovererTests {
 	@Test
 	public void leafWildcardWithCommonType() throws IOException {
 		assertThat(discoverFieldTypes("a.*", "{\"a\": {\"b\": 5, \"c\": 6}}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NUMBER);
+			.containsExactlyInAnyOrder(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void leafWildcardWithVaryingType() throws IOException {
 		assertThat(discoverFieldTypes("a.*", "{\"a\": {\"b\": 5, \"c\": \"six\"}}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.STRING);
+			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.STRING);
 	}
 
 	@Test
 	public void intermediateWildcardWithCommonType() throws IOException {
 		assertThat(discoverFieldTypes("a.*.d", "{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": 5}}}}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NUMBER);
+			.containsExactlyInAnyOrder(JsonFieldType.NUMBER);
 	}
 
 	@Test
 	public void intermediateWildcardWithVaryingType() throws IOException {
 		assertThat(discoverFieldTypes("a.*.d", "{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": \"four\"}}}}"))
-				.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.STRING);
+			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.STRING);
 	}
 
 	private JsonFieldTypes discoverFieldTypes(String value) throws IOException {

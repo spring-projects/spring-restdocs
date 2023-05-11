@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,41 +53,41 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void getRequest() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo").build());
+			.document(this.operationBuilder.request("http://localhost/foo").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo'"));
+			.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo'"));
 	}
 
 	@Test
 	public void getRequestWithParameter() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo").param("a", "alpha").build());
+			.document(this.operationBuilder.request("http://localhost/foo").param("a", "alpha").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?a=alpha'"));
+			.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?a=alpha'"));
 	}
 
 	@Test
 	public void nonGetRequest() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo").method("POST").build());
+			.document(this.operationBuilder.request("http://localhost/foo").method("POST").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http POST 'http://localhost/foo'"));
+			.is(codeBlock("bash").withContent("$ http POST 'http://localhost/foo'"));
 	}
 
 	@Test
 	public void requestWithContent() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo").content("content").build());
+			.document(this.operationBuilder.request("http://localhost/foo").content("content").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ echo 'content' | http GET 'http://localhost/foo'"));
+			.is(codeBlock("bash").withContent("$ echo 'content' | http GET 'http://localhost/foo'"));
 	}
 
 	@Test
 	public void getRequestWithQueryString() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?param=value").build());
+			.document(this.operationBuilder.request("http://localhost/foo?param=value").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?param=value'"));
+			.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?param=value'"));
 	}
 
 	@Test
@@ -95,155 +95,181 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 		new HttpieRequestSnippet(this.commandFormatter).document(
 				this.operationBuilder.request("http://localhost/foo?param=value").param("param", "value").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?param=value'"));
+			.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?param=value'"));
 	}
 
 	@Test
 	public void getRequestWithPartiallyOverlappingQueryStringAndParameters() throws IOException {
-		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
-				.request("http://localhost/foo?a=alpha").param("a", "alpha").param("b", "bravo").build());
+		new HttpieRequestSnippet(this.commandFormatter)
+			.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
+				.param("a", "alpha")
+				.param("b", "bravo")
+				.build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?a=alpha&b=bravo'"));
+			.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?a=alpha&b=bravo'"));
 	}
 
 	@Test
 	public void getRequestWithDisjointQueryStringAndParameters() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?a=alpha").param("b", "bravo").build());
+			.document(this.operationBuilder.request("http://localhost/foo?a=alpha").param("b", "bravo").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?a=alpha&b=bravo'"));
+			.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?a=alpha&b=bravo'"));
 	}
 
 	@Test
 	public void getRequestWithQueryStringWithNoValue() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?param").build());
+			.document(this.operationBuilder.request("http://localhost/foo?param").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?param'"));
+			.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo?param'"));
 	}
 
 	@Test
 	public void postRequestWithQueryString() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?param=value").method("POST").build());
+			.document(this.operationBuilder.request("http://localhost/foo?param=value").method("POST").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http POST 'http://localhost/foo?param=value'"));
+			.is(codeBlock("bash").withContent("$ http POST 'http://localhost/foo?param=value'"));
 	}
 
 	@Test
 	public void postRequestWithQueryStringWithNoValue() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?param").method("POST").build());
+			.document(this.operationBuilder.request("http://localhost/foo?param").method("POST").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http POST 'http://localhost/foo?param'"));
+			.is(codeBlock("bash").withContent("$ http POST 'http://localhost/foo?param'"));
 	}
 
 	@Test
 	public void postRequestWithOneParameter() throws IOException {
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("POST").param("k1", "v1").build());
+		new HttpieRequestSnippet(this.commandFormatter)
+			.document(this.operationBuilder.request("http://localhost/foo").method("POST").param("k1", "v1").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo' 'k1=v1'"));
+			.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo' 'k1=v1'"));
 	}
 
 	@Test
 	public void postRequestWithOneParameterWithNoValue() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo").method("POST").param("k1").build());
+			.document(this.operationBuilder.request("http://localhost/foo").method("POST").param("k1").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo' 'k1='"));
+			.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo' 'k1='"));
 	}
 
 	@Test
 	public void postRequestWithMultipleParameters() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.method("POST").param("k1", "v1", "v1-bis").param("k2", "v2").build());
+			.method("POST")
+			.param("k1", "v1", "v1-bis")
+			.param("k2", "v2")
+			.build());
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash")
-				.withContent("$ http --form POST 'http://localhost/foo'" + " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
+			.withContent("$ http --form POST 'http://localhost/foo'" + " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
 	}
 
 	@Test
 	public void postRequestWithUrlEncodedParameter() throws IOException {
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("POST").param("k1", "a&b").build());
+		new HttpieRequestSnippet(this.commandFormatter)
+			.document(this.operationBuilder.request("http://localhost/foo").method("POST").param("k1", "a&b").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo' 'k1=a&b'"));
+			.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo' 'k1=a&b'"));
 	}
 
 	@Test
 	public void postRequestWithDisjointQueryStringAndParameter() throws IOException {
-		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder
-				.request("http://localhost/foo?a=alpha").method("POST").param("b", "bravo").build());
+		new HttpieRequestSnippet(this.commandFormatter)
+			.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
+				.method("POST")
+				.param("b", "bravo")
+				.build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo?a=alpha' 'b=bravo'"));
+			.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo?a=alpha' 'b=bravo'"));
 	}
 
 	@Test
 	public void postRequestWithTotallyOverlappingQueryStringAndParameters() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("POST")
-						.param("a", "alpha").param("b", "bravo").build());
+			.document(this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo")
+				.method("POST")
+				.param("a", "alpha")
+				.param("b", "bravo")
+				.build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http POST 'http://localhost/foo?a=alpha&b=bravo'"));
+			.is(codeBlock("bash").withContent("$ http POST 'http://localhost/foo?a=alpha&b=bravo'"));
 	}
 
 	@Test
 	public void postRequestWithPartiallyOverlappingQueryStringAndParameters() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/foo?a=alpha").method("POST")
-						.param("a", "alpha").param("b", "bravo").build());
+			.document(this.operationBuilder.request("http://localhost/foo?a=alpha")
+				.method("POST")
+				.param("a", "alpha")
+				.param("b", "bravo")
+				.build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo?a=alpha' 'b=bravo'"));
+			.is(codeBlock("bash").withContent("$ http --form POST 'http://localhost/foo?a=alpha' 'b=bravo'"));
 	}
 
 	@Test
 	public void postRequestWithOverlappingParametersAndFormUrlEncodedBody() throws IOException {
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("POST").content("a=alpha&b=bravo")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-						.param("a", "alpha").param("b", "bravo").build());
+		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+			.method("POST")
+			.content("a=alpha&b=bravo")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+			.param("a", "alpha")
+			.param("b", "bravo")
+			.build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ echo 'a=alpha&b=bravo' | http POST 'http://localhost/foo' "
-						+ "'Content-Type:application/x-www-form-urlencoded'"));
+			.is(codeBlock("bash").withContent("$ echo 'a=alpha&b=bravo' | http POST 'http://localhost/foo' "
+					+ "'Content-Type:application/x-www-form-urlencoded'"));
 	}
 
 	@Test
 	public void putRequestWithOneParameter() throws IOException {
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("PUT").param("k1", "v1").build());
+		new HttpieRequestSnippet(this.commandFormatter)
+			.document(this.operationBuilder.request("http://localhost/foo").method("PUT").param("k1", "v1").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http --form PUT 'http://localhost/foo' 'k1=v1'"));
+			.is(codeBlock("bash").withContent("$ http --form PUT 'http://localhost/foo' 'k1=v1'"));
 	}
 
 	@Test
 	public void putRequestWithMultipleParameters() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.method("PUT").param("k1", "v1").param("k1", "v1-bis").param("k2", "v2").build());
+			.method("PUT")
+			.param("k1", "v1")
+			.param("k1", "v1-bis")
+			.param("k2", "v2")
+			.build());
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash")
-				.withContent("$ http --form PUT 'http://localhost/foo'" + " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
+			.withContent("$ http --form PUT 'http://localhost/foo'" + " 'k1=v1' 'k1=v1-bis' 'k2=v2'"));
 	}
 
 	@Test
 	public void putRequestWithUrlEncodedParameter() throws IOException {
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo").method("PUT").param("k1", "a&b").build());
+		new HttpieRequestSnippet(this.commandFormatter)
+			.document(this.operationBuilder.request("http://localhost/foo").method("PUT").param("k1", "a&b").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http --form PUT 'http://localhost/foo' 'k1=a&b'"));
+			.is(codeBlock("bash").withContent("$ http --form PUT 'http://localhost/foo' 'k1=a&b'"));
 	}
 
 	@Test
 	public void requestWithHeaders() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("a", "alpha").build());
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+			.header("a", "alpha")
+			.build());
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash")
-				.withContent("$ http GET 'http://localhost/foo'" + " 'Content-Type:application/json' 'a:alpha'"));
+			.withContent("$ http GET 'http://localhost/foo'" + " 'Content-Type:application/json' 'a:alpha'"));
 	}
 
 	@Test
 	public void requestWithHeadersMultiline() throws IOException {
-		new HttpieRequestSnippet(CliDocumentation.multiLineFormat()).document(this.operationBuilder
-				.request("http://localhost/foo").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.header("a", "alpha").build());
+		new HttpieRequestSnippet(CliDocumentation.multiLineFormat())
+			.document(this.operationBuilder.request("http://localhost/foo")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.header("a", "alpha")
+				.build());
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(String.format(
 				"$ http GET 'http://localhost/foo' \\%n" + "    'Content-Type:application/json' \\%n    'a:alpha'")));
 	}
@@ -251,17 +277,21 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void requestWithCookies() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.cookie("name1", "value1").cookie("name2", "value2").build());
+			.cookie("name1", "value1")
+			.cookie("name2", "value2")
+			.build());
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash")
-				.withContent("$ http GET 'http://localhost/foo'" + " 'Cookie:name1=value1' 'Cookie:name2=value2'"));
+			.withContent("$ http GET 'http://localhost/foo'" + " 'Cookie:name1=value1' 'Cookie:name2=value2'"));
 	}
 
 	@Test
 	public void multipartPostWithNoSubmittedFileName() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("metadata", "{\"description\": \"foo\"}".getBytes()).build());
+			.document(this.operationBuilder.request("http://localhost/upload")
+				.method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+				.part("metadata", "{\"description\": \"foo\"}".getBytes())
+				.build());
 		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
 				+ " 'metadata'='{\"description\": \"foo\"}'";
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(expectedContent));
@@ -270,10 +300,13 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void multipartPostWithContentType() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", new byte[0]).header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
-						.submittedFileName("documents/images/example.png").build());
+			.document(this.operationBuilder.request("http://localhost/upload")
+				.method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+				.part("image", new byte[0])
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
+				.submittedFileName("documents/images/example.png")
+				.build());
 		// httpie does not yet support manually set content type by part
 		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
 				+ " 'image'@'documents/images/example.png'";
@@ -283,9 +316,12 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void multipartPost() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", new byte[0]).submittedFileName("documents/images/example.png").build());
+			.document(this.operationBuilder.request("http://localhost/upload")
+				.method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+				.part("image", new byte[0])
+				.submittedFileName("documents/images/example.png")
+				.build());
 		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
 				+ " 'image'@'documents/images/example.png'";
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(expectedContent));
@@ -294,10 +330,15 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void multipartPostWithParameters() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", new byte[0]).submittedFileName("documents/images/example.png").and()
-						.param("a", "apple", "avocado").param("b", "banana").build());
+			.document(this.operationBuilder.request("http://localhost/upload")
+				.method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+				.part("image", new byte[0])
+				.submittedFileName("documents/images/example.png")
+				.and()
+				.param("a", "apple", "avocado")
+				.param("b", "banana")
+				.build());
 		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
 				+ " 'image'@'documents/images/example.png' 'a=apple' 'a=avocado'" + " 'b=banana'";
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(expectedContent));
@@ -306,10 +347,16 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void multipartPostWithOverlappingPartsAndParameters() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
-				.document(this.operationBuilder.request("http://localhost/upload").method("POST")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-						.part("image", new byte[0]).submittedFileName("documents/images/example.png").and()
-						.part("a", "apple".getBytes()).and().param("a", "apple").build());
+			.document(this.operationBuilder.request("http://localhost/upload")
+				.method("POST")
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+				.part("image", new byte[0])
+				.submittedFileName("documents/images/example.png")
+				.and()
+				.part("a", "apple".getBytes())
+				.and()
+				.param("a", "apple")
+				.build());
 		String expectedContent = "$ http --multipart POST 'http://localhost/upload'"
 				+ " 'image'@'documents/images/example.png' 'a'='apple'";
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash").withContent(expectedContent));
@@ -318,44 +365,53 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void basicAuthCredentialsAreSuppliedUsingAuthOption() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.header(HttpHeaders.AUTHORIZATION, "Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
-				.build());
+			.header(HttpHeaders.AUTHORIZATION, "Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
+			.build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http --auth 'user:secret' GET 'http://localhost/foo'"));
+			.is(codeBlock("bash").withContent("$ http --auth 'user:secret' GET 'http://localhost/foo'"));
 	}
 
 	@Test
 	public void customAttributes() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.header(HttpHeaders.HOST, "api.example.com")
-				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("a", "alpha").build());
+			.header(HttpHeaders.HOST, "api.example.com")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+			.header("a", "alpha")
+			.build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo' 'Host:api.example.com'"
-						+ " 'Content-Type:application/json' 'a:alpha'"));
+			.is(codeBlock("bash").withContent("$ http GET 'http://localhost/foo' 'Host:api.example.com'"
+					+ " 'Content-Type:application/json' 'a:alpha'"));
 	}
 
 	@Test
 	public void postWithContentAndParameters() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.method("POST").param("a", "alpha").param("b", "bravo").content("Some content").build());
+			.method("POST")
+			.param("a", "alpha")
+			.param("b", "bravo")
+			.content("Some content")
+			.build());
 		assertThat(this.generatedSnippets.httpieRequest()).is(codeBlock("bash")
-				.withContent("$ echo 'Some content' | http POST " + "'http://localhost/foo?a=alpha&b=bravo'"));
+			.withContent("$ echo 'Some content' | http POST " + "'http://localhost/foo?a=alpha&b=bravo'"));
 	}
 
 	@Test
 	public void deleteWithParameters() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-				.method("DELETE").param("a", "alpha").param("b", "bravo").build());
+			.method("DELETE")
+			.param("a", "alpha")
+			.param("b", "bravo")
+			.build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http DELETE 'http://localhost/foo?a=alpha&b=bravo'"));
+			.is(codeBlock("bash").withContent("$ http DELETE 'http://localhost/foo?a=alpha&b=bravo'"));
 	}
 
 	@Test
 	public void deleteWithQueryString() throws IOException {
-		new HttpieRequestSnippet(this.commandFormatter).document(
-				this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("DELETE").build());
+		new HttpieRequestSnippet(this.commandFormatter)
+			.document(this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("DELETE").build());
 		assertThat(this.generatedSnippets.httpieRequest())
-				.is(codeBlock("bash").withContent("$ http DELETE 'http://localhost/foo?a=alpha&b=bravo'"));
+			.is(codeBlock("bash").withContent("$ http DELETE 'http://localhost/foo?a=alpha&b=bravo'"));
 	}
 
 }

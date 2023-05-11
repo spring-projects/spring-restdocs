@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,22 +30,29 @@ public class RequestParameters {
 
 	public void getQueryStringSnippet() {
 		// tag::request-parameters-query-string[]
-		RestAssured.given(this.spec).filter(document("users", requestParameters(// <1>
-				parameterWithName("page").description("The page to retrieve"), // <2>
-				parameterWithName("per_page").description("Entries per page")))) // <3>
-				.when().get("/users?page=2&per_page=100") // <4>
-				.then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.filter(document("users", requestParameters(// <1>
+					parameterWithName("page").description("The page to retrieve"), // <2>
+					parameterWithName("per_page").description("Entries per page")))) // <3>
+			.when()
+			.get("/users?page=2&per_page=100") // <4>
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::request-parameters-query-string[]
 	}
 
 	public void postFormDataSnippet() {
 		// tag::request-parameters-form-data[]
 		RestAssured.given(this.spec)
-				.filter(document("create-user",
-						requestParameters(parameterWithName("username").description("The user's username"))))
-				.formParam("username", "Tester") // <1>
-				.when().post("/users") // <2>
-				.then().assertThat().statusCode(is(200));
+			.filter(document("create-user",
+					requestParameters(parameterWithName("username").description("The user's username"))))
+			.formParam("username", "Tester") // <1>
+			.when()
+			.post("/users") // <2>
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::request-parameters-form-data[]
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,28 +50,28 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	public void requestParameters() throws IOException {
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one"), parameterWithName("b").description("two")))
-						.document(this.operationBuilder.request("http://localhost").param("a", "bravo")
-								.param("b", "bravo").build());
+			.document(
+					this.operationBuilder.request("http://localhost").param("a", "bravo").param("b", "bravo").build());
 		assertThat(this.generatedSnippets.requestParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
 	public void requestParameterWithNoValue() throws IOException {
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-				.document(this.operationBuilder.request("http://localhost").param("a").build());
+			.document(this.operationBuilder.request("http://localhost").param("a").build());
 		assertThat(this.generatedSnippets.requestParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
 	}
 
 	@Test
 	public void ignoredRequestParameter() throws IOException {
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").ignored(), parameterWithName("b").description("two")))
-						.document(this.operationBuilder.request("http://localhost").param("a", "bravo")
-								.param("b", "bravo").build());
+			.document(
+					this.operationBuilder.request("http://localhost").param("a", "bravo").param("b", "bravo").build());
 		assertThat(this.generatedSnippets.requestParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
 	}
 
 	@Test
@@ -79,38 +79,41 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("b").description("two")), true).document(
 				this.operationBuilder.request("http://localhost").param("a", "bravo").param("b", "bravo").build());
 		assertThat(this.generatedSnippets.requestParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
 	}
 
 	@Test
 	public void missingOptionalRequestParameter() throws IOException {
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional(),
 				parameterWithName("b").description("two")))
-						.document(this.operationBuilder.request("http://localhost").param("b", "bravo").build());
+			.document(this.operationBuilder.request("http://localhost").param("b", "bravo").build());
 		assertThat(this.generatedSnippets.requestParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
 	public void presentOptionalRequestParameter() throws IOException {
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional()))
-				.document(this.operationBuilder.request("http://localhost").param("a", "one").build());
+			.document(this.operationBuilder.request("http://localhost").param("a", "one").build());
 		assertThat(this.generatedSnippets.requestParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
 	}
 
 	@Test
 	public void requestParametersWithCustomAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))
-				.willReturn(snippetResource("request-parameters-with-title"));
+			.willReturn(snippetResource("request-parameters-with-title"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").attributes(key("foo").value("alpha")),
 						parameterWithName("b").description("two").attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title")))
-						.document(this.operationBuilder
-								.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-								.request("http://localhost").param("a", "alpha").param("b", "bravo").build());
+			.document(this.operationBuilder
+				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+				.request("http://localhost")
+				.param("a", "alpha")
+				.param("b", "bravo")
+				.build());
 		assertThat(this.generatedSnippets.requestParameters()).contains("The title");
 	}
 
@@ -118,57 +121,67 @@ public class RequestParametersSnippetTests extends AbstractSnippetTests {
 	public void requestParametersWithCustomDescriptorAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))
-				.willReturn(snippetResource("request-parameters-with-extra-column"));
+			.willReturn(snippetResource("request-parameters-with-extra-column"));
 		new RequestParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").attributes(key("foo").value("alpha")),
 						parameterWithName("b").description("two").attributes(key("foo").value("bravo"))))
-								.document(this.operationBuilder
-										.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-										.request("http://localhost").param("a", "alpha").param("b", "bravo").build());
-		assertThat(this.generatedSnippets.requestParameters()).is(
-				tableWithHeader("Parameter", "Description", "Foo").row("a", "one", "alpha").row("b", "two", "bravo"));
+			.document(this.operationBuilder
+				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+				.request("http://localhost")
+				.param("a", "alpha")
+				.param("b", "bravo")
+				.build());
+		assertThat(this.generatedSnippets.requestParameters())
+			.is(tableWithHeader("Parameter", "Description", "Foo").row("a", "one", "alpha").row("b", "two", "bravo"));
 	}
 
 	@Test
 	public void requestParametersWithOptionalColumn() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-parameters"))
-				.willReturn(snippetResource("request-parameters-with-optional-column"));
+			.willReturn(snippetResource("request-parameters-with-optional-column"));
 		new RequestParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional(),
 				parameterWithName("b").description("two")))
-						.document(this.operationBuilder
-								.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-								.request("http://localhost").param("a", "alpha").param("b", "bravo").build());
+			.document(this.operationBuilder
+				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
+				.request("http://localhost")
+				.param("a", "alpha")
+				.param("b", "bravo")
+				.build());
 		assertThat(this.generatedSnippets.requestParameters())
-				.is(tableWithHeader("Parameter", "Optional", "Description").row("a", "true", "one").row("b", "false",
-						"two"));
+			.is(tableWithHeader("Parameter", "Optional", "Description").row("a", "true", "one")
+				.row("b", "false", "two"));
 	}
 
 	@Test
 	public void additionalDescriptors() throws IOException {
 		RequestDocumentation.requestParameters(parameterWithName("a").description("one"))
-				.and(parameterWithName("b").description("two")).document(this.operationBuilder
-						.request("http://localhost").param("a", "bravo").param("b", "bravo").build());
+			.and(parameterWithName("b").description("two"))
+			.document(
+					this.operationBuilder.request("http://localhost").param("a", "bravo").param("b", "bravo").build());
 		assertThat(this.generatedSnippets.requestParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
 	public void additionalDescriptorsWithRelaxedRequestParameters() throws IOException {
 		RequestDocumentation.relaxedRequestParameters(parameterWithName("a").description("one"))
-				.and(parameterWithName("b").description("two"))
-				.document(this.operationBuilder.request("http://localhost").param("a", "bravo").param("b", "bravo")
-						.param("c", "undocumented").build());
+			.and(parameterWithName("b").description("two"))
+			.document(this.operationBuilder.request("http://localhost")
+				.param("a", "bravo")
+				.param("b", "bravo")
+				.param("c", "undocumented")
+				.build());
 		assertThat(this.generatedSnippets.requestParameters())
-				.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
 	@Test
 	public void requestParametersWithEscapedContent() throws IOException {
 		RequestDocumentation.requestParameters(parameterWithName("Foo|Bar").description("one|two"))
-				.document(this.operationBuilder.request("http://localhost").param("Foo|Bar", "baz").build());
+			.document(this.operationBuilder.request("http://localhost").param("Foo|Bar", "baz").build());
 		assertThat(this.generatedSnippets.requestParameters()).is(tableWithHeader("Parameter", "Description")
-				.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+			.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
 	}
 
 	private String escapeIfNecessary(String input) {

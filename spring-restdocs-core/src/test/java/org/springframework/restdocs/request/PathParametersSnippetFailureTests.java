@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,30 +44,30 @@ public class PathParametersSnippetFailureTests {
 	@Test
 	public void undocumentedPathParameter() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList())
-						.document(this.operationBuilder
-								.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/").build()))
-				.withMessage("Path parameters with the following names were not documented: [a]");
+			.isThrownBy(() -> new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList()).document(
+					this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/")
+						.build()))
+			.withMessage("Path parameters with the following names were not documented: [a]");
 	}
 
 	@Test
 	public void missingPathParameter() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-						.document(this.operationBuilder
-								.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/").build()))
-				.withMessage("Path parameters with the following names were not found in the request: [a]");
+			.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.document(this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/")
+					.build()))
+			.withMessage("Path parameters with the following names were not found in the request: [a]");
 	}
 
 	@Test
 	public void undocumentedAndMissingPathParameters() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-						.document(this.operationBuilder
-								.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{b}").build()))
-				.withMessage(
-						"Path parameters with the following names were not documented: [b]. Path parameters with the"
-								+ " following names were not found in the request: [a]");
+			.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.document(
+						this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{b}")
+							.build()))
+			.withMessage("Path parameters with the following names were not documented: [b]. Path parameters with the"
+					+ " following names were not found in the request: [a]");
 	}
 
 }

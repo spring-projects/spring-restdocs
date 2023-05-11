@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,122 +45,131 @@ public class ResponseFieldsSnippetFailureTests {
 	@Test
 	public void attemptToDocumentFieldsWithNoResponseBody() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
-						.document(this.operationBuilder.build()))
-				.withMessage("Cannot document response fields as the response body is empty");
+			.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
+				.document(this.operationBuilder.build()))
+			.withMessage("Cannot document response fields as the response body is empty");
 	}
 
 	@Test
 	public void fieldWithExplicitTypeThatDoesNotMatchThePayload() {
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(
-						Arrays.asList(fieldWithPath("a").description("one").type(JsonFieldType.OBJECT)))
-								.document(this.operationBuilder.response().content("{ \"a\": 5 }}").build()))
-				.withMessage("The documented type of the field 'a' is Object but the actual type is Number");
+			.isThrownBy(() -> new ResponseFieldsSnippet(
+					Arrays.asList(fieldWithPath("a").description("one").type(JsonFieldType.OBJECT)))
+				.document(this.operationBuilder.response().content("{ \"a\": 5 }}").build()))
+			.withMessage("The documented type of the field 'a' is Object but the actual type is Number");
 	}
 
 	@Test
 	public void fieldWithExplicitSpecificTypeThatActuallyVaries() {
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(
-						Arrays.asList(fieldWithPath("[].a").description("one").type(JsonFieldType.OBJECT))).document(
-								this.operationBuilder.response().content("[{ \"a\": 5 },{ \"a\": \"b\" }]").build()))
-				.withMessage("The documented type of the field '[].a' is Object but the actual type is Varies");
+			.isThrownBy(() -> new ResponseFieldsSnippet(
+					Arrays.asList(fieldWithPath("[].a").description("one").type(JsonFieldType.OBJECT)))
+				.document(this.operationBuilder.response().content("[{ \"a\": 5 },{ \"a\": \"b\" }]").build()))
+			.withMessage("The documented type of the field '[].a' is Object but the actual type is Varies");
 	}
 
 	@Test
 	public void undocumentedXmlResponseField() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(Collections.<FieldDescriptor>emptyList())
-						.document(this.operationBuilder.response().content("<a><b>5</b></a>")
-								.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE).build()))
-				.withMessageStartingWith("The following parts of the payload were not documented:");
+			.isThrownBy(() -> new ResponseFieldsSnippet(Collections.<FieldDescriptor>emptyList())
+				.document(this.operationBuilder.response()
+					.content("<a><b>5</b></a>")
+					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+					.build()))
+			.withMessageStartingWith("The following parts of the payload were not documented:");
 	}
 
 	@Test
 	public void missingXmlAttribute() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(
-						() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one").type("b"),
-								fieldWithPath("a/@id").description("two").type("c")))
-										.document(
-												this.operationBuilder.response().content("<a>foo</a>")
-														.header(HttpHeaders.CONTENT_TYPE,
-																MediaType.APPLICATION_XML_VALUE)
-														.build()))
-				.withMessage("Fields with the following paths were not found in the payload: [a/@id]");
+			.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one").type("b"),
+					fieldWithPath("a/@id").description("two").type("c")))
+				.document(this.operationBuilder.response()
+					.content("<a>foo</a>")
+					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+					.build()))
+			.withMessage("Fields with the following paths were not found in the payload: [a/@id]");
 	}
 
 	@Test
 	public void documentedXmlAttributesAreRemoved() {
-		assertThatExceptionOfType(SnippetException.class).isThrownBy(
-				() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/@id").description("one").type("a")))
-						.document(this.operationBuilder.response().content("<a id=\"foo\">bar</a>")
-								.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE).build()))
-				.withMessage(String.format("The following parts of the payload were not documented:%n<a>bar</a>%n"));
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(
+					() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/@id").description("one").type("a")))
+						.document(this.operationBuilder.response()
+							.content("<a id=\"foo\">bar</a>")
+							.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+							.build()))
+			.withMessage(String.format("The following parts of the payload were not documented:%n<a>bar</a>%n"));
 	}
 
 	@Test
 	public void xmlResponseFieldWithNoType() {
 		assertThatExceptionOfType(FieldTypeRequiredException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
-						.document(this.operationBuilder.response().content("<a>5</a>")
-								.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE).build()));
+			.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
+				.document(this.operationBuilder.response()
+					.content("<a>5</a>")
+					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+					.build()));
 	}
 
 	@Test
 	public void missingXmlResponseField() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(
-						Arrays.asList(fieldWithPath("a/b").description("one"), fieldWithPath("a").description("one")))
-								.document(this.operationBuilder.response().content("<a></a>")
-										.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE).build()))
-				.withMessage("Fields with the following paths were not found in the payload: [a/b]");
+			.isThrownBy(() -> new ResponseFieldsSnippet(
+					Arrays.asList(fieldWithPath("a/b").description("one"), fieldWithPath("a").description("one")))
+				.document(this.operationBuilder.response()
+					.content("<a></a>")
+					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+					.build()))
+			.withMessage("Fields with the following paths were not found in the payload: [a/b]");
 	}
 
 	@Test
 	public void undocumentedXmlResponseFieldAndMissingXmlResponseField() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
-						.document(this.operationBuilder.response().content("<a><c>5</c></a>")
-								.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE).build()))
-				.withMessageStartingWith("The following parts of the payload were not documented:")
-				.withMessageEndingWith("Fields with the following paths were not found in the payload: [a/b]");
+			.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a/b").description("one")))
+				.document(this.operationBuilder.response()
+					.content("<a><c>5</c></a>")
+					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+					.build()))
+			.withMessageStartingWith("The following parts of the payload were not documented:")
+			.withMessageEndingWith("Fields with the following paths were not found in the payload: [a/b]");
 	}
 
 	@Test
 	public void unsupportedContent() {
 		assertThatExceptionOfType(PayloadHandlingException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(Collections.<FieldDescriptor>emptyList())
-						.document(this.operationBuilder.response().content("Some plain text")
-								.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE).build()))
-				.withMessage("Cannot handle text/plain content as it could not be parsed as JSON or XML");
+			.isThrownBy(() -> new ResponseFieldsSnippet(Collections.<FieldDescriptor>emptyList())
+				.document(this.operationBuilder.response()
+					.content("Some plain text")
+					.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
+					.build()))
+			.withMessage("Cannot handle text/plain content as it could not be parsed as JSON or XML");
 	}
 
 	@Test
 	public void nonOptionalFieldBeneathArrayThatIsSometimesNull() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(
-						Arrays.asList(fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
-								fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
-										.document(this.operationBuilder.response()
-												.content("{\"a\":[{\"b\": 1,\"c\": 2}, " + "{\"b\": null, \"c\": 2},"
-														+ " {\"b\": 1,\"c\": 2}]}")
-												.build()))
-				.withMessageStartingWith("Fields with the following paths were not found in the payload: [a[].b]");
+			.isThrownBy(() -> new ResponseFieldsSnippet(
+					Arrays.asList(fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
+							fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
+				.document(this.operationBuilder.response()
+					.content("{\"a\":[{\"b\": 1,\"c\": 2}, " + "{\"b\": null, \"c\": 2}," + " {\"b\": 1,\"c\": 2}]}")
+					.build()))
+			.withMessageStartingWith("Fields with the following paths were not found in the payload: [a[].b]");
 	}
 
 	@Test
 	public void nonOptionalFieldBeneathArrayThatIsSometimesAbsent() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new ResponseFieldsSnippet(
-						Arrays.asList(fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
-								fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
-										.document(this.operationBuilder.response()
-												.content("{\"a\":[{\"b\": 1,\"c\": 2}, "
-														+ "{\"c\": 2}, {\"b\": 1,\"c\": 2}]}")
-												.build()))
-				.withMessageStartingWith("Fields with the following paths were not found in the payload: [a[].b]");
+			.isThrownBy(() -> new ResponseFieldsSnippet(
+					Arrays.asList(fieldWithPath("a[].b").description("one").type(JsonFieldType.NUMBER),
+							fieldWithPath("a[].c").description("two").type(JsonFieldType.NUMBER)))
+				.document(this.operationBuilder.response()
+					.content("{\"a\":[{\"b\": 1,\"c\": 2}, " + "{\"c\": 2}, {\"b\": 1,\"c\": 2}]}")
+					.build()))
+			.withMessageStartingWith("Fields with the following paths were not found in the payload: [a[].b]");
 	}
 
 }

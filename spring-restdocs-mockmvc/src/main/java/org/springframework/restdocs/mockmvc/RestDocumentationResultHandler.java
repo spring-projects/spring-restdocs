@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ public class RestDocumentationResultHandler implements ResultHandler {
 	private Map<String, Object> retrieveConfiguration(MvcResult result) {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> configuration = (Map<String, Object>) result.getRequest()
-				.getAttribute(ATTRIBUTE_NAME_CONFIGURATION);
+			.getAttribute(ATTRIBUTE_NAME_CONFIGURATION);
 		Assert.state(configuration != null, () -> "REST Docs configuration not found. Did you forget to apply a "
 				+ MockMvcRestDocumentationConfigurer.class.getSimpleName() + " when building the MockMvc instance?");
 		return configuration;

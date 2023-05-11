@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,37 +42,39 @@ public class LinksSnippetFailureTests {
 	@Test
 	public void undocumentedLink() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
-						Collections.<LinkDescriptor>emptyList()).document(this.operationBuilder.build()))
-				.withMessage("Links with the following relations were not documented: [foo]");
+			.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
+					Collections.<LinkDescriptor>emptyList())
+				.document(this.operationBuilder.build()))
+			.withMessage("Links with the following relations were not documented: [foo]");
 	}
 
 	@Test
 	public void missingLink() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor(),
-						Arrays.asList(new LinkDescriptor("foo").description("bar")))
-								.document(this.operationBuilder.build()))
-				.withMessage("Links with the following relations were not found in the response: [foo]");
+			.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor(),
+					Arrays.asList(new LinkDescriptor("foo").description("bar")))
+				.document(this.operationBuilder.build()))
+			.withMessage("Links with the following relations were not found in the response: [foo]");
 	}
 
 	@Test
 	public void undocumentedLinkAndMissingLink() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha")),
-						Arrays.asList(new LinkDescriptor("foo").description("bar")))
-								.document(this.operationBuilder.build()))
-				.withMessage("Links with the following relations were not documented: [a]. Links with the following"
-						+ " relations were not found in the response: [foo]");
+			.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor().withLinks(new Link("a", "alpha")),
+					Arrays.asList(new LinkDescriptor("foo").description("bar")))
+				.document(this.operationBuilder.build()))
+			.withMessage("Links with the following relations were not documented: [a]. Links with the following"
+					+ " relations were not found in the response: [foo]");
 	}
 
 	@Test
 	public void linkWithNoDescription() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
-						Arrays.asList(new LinkDescriptor("foo"))).document(this.operationBuilder.build()))
-				.withMessage("No description was provided for the link with rel 'foo' and no title was available"
-						+ " from the link in the payload");
+			.isThrownBy(() -> new LinksSnippet(new StubLinkExtractor().withLinks(new Link("foo", "bar")),
+					Arrays.asList(new LinkDescriptor("foo")))
+				.document(this.operationBuilder.build()))
+			.withMessage("No description was provided for the link with rel 'foo' and no title was available"
+					+ " from the link in the payload");
 	}
 
 }

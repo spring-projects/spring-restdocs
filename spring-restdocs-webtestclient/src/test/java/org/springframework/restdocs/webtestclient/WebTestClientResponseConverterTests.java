@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,27 +49,39 @@ public class WebTestClientResponseConverterTests {
 	@Test
 	public void basicResponse() {
 		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(
-						RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.ok().syncBody("Hello, World!")))
-				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").exchange().expectBody()
-				.returnResult();
+			.bindToRouterFunction(
+					RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.ok().syncBody("Hello, World!")))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationResponse response = this.converter.convert(result);
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK);
 		assertThat(response.getContentAsString()).isEqualTo("Hello, World!");
 		assertThat(response.getHeaders().getContentType())
-				.isEqualTo(MediaType.parseMediaType("text/plain;charset=UTF-8"));
+			.isEqualTo(MediaType.parseMediaType("text/plain;charset=UTF-8"));
 		assertThat(response.getHeaders().getContentLength()).isEqualTo(13);
 	}
 
 	@Test
 	public void responseWithCookie() {
 		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(GET("/foo"),
-						(req) -> ServerResponse.ok()
-								.cookie(ResponseCookie.from("name", "value").domain("localhost").httpOnly(true).build())
-								.build()))
-				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").exchange().expectBody()
-				.returnResult();
+			.bindToRouterFunction(RouterFunctions.route(GET("/foo"),
+					(req) -> ServerResponse.ok()
+						.cookie(ResponseCookie.from("name", "value").domain("localhost").httpOnly(true).build())
+						.build()))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationResponse response = this.converter.convert(result);
 		assertThat(response.getHeaders()).hasSize(1);
 		assertThat(response.getHeaders()).containsEntry(HttpHeaders.SET_COOKIE,
@@ -80,9 +92,15 @@ public class WebTestClientResponseConverterTests {
 	public void responseWithNonStandardStatusCode() {
 		assumeThat(ExchangeResult.class, hasMethod("getRawStatusCode"));
 		ExchangeResult result = WebTestClient
-				.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.status(210).build()))
-				.configureClient().baseUrl("http://localhost").build().get().uri("/foo").exchange().expectBody()
-				.returnResult();
+			.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.status(210).build()))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.exchange()
+			.expectBody()
+			.returnResult();
 		OperationResponse response = this.converter.convert(result);
 		assertThat(response.getStatusCode()).isEqualTo(210);
 	}

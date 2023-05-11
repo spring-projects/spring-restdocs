@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,8 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 		parameters.addAll(this.queryStringParser.parse(result.getUrl()));
 		if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(result.getRequestHeaders().getContentType())) {
 			parameters.addAll(this.formDataReader
-					.readMono(FORM_DATA_TYPE, new ExchangeResultReactiveHttpInputMessage(result), null).block());
+				.readMono(FORM_DATA_TYPE, new ExchangeResultReactiveHttpInputMessage(result), null)
+				.block());
 		}
 		return parameters;
 	}
@@ -99,10 +100,14 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 			return Collections.emptyList();
 		}
 		return new MultipartHttpMessageReader(partHttpMessageReader)
-				.readMono(ResolvableType.forClass(Part.class), new ExchangeResultReactiveHttpInputMessage(result),
-						Collections.emptyMap())
-				.onErrorReturn(new LinkedMultiValueMap<>()).block().values().stream()
-				.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart)).collect(Collectors.toList());
+			.readMono(ResolvableType.forClass(Part.class), new ExchangeResultReactiveHttpInputMessage(result),
+					Collections.emptyMap())
+			.onErrorReturn(new LinkedMultiValueMap<>())
+			.block()
+			.values()
+			.stream()
+			.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart))
+			.collect(Collectors.toList());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -110,7 +115,8 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 		if (ClassUtils.isPresent(DEFAULT_PART_HTTP_MESSAGE_READER, getClass().getClassLoader())) {
 			try {
 				return (HttpMessageReader<Part>) Class
-						.forName(DEFAULT_PART_HTTP_MESSAGE_READER, true, getClass().getClassLoader()).newInstance();
+					.forName(DEFAULT_PART_HTTP_MESSAGE_READER, true, getClass().getClassLoader())
+					.newInstance();
 			}
 			catch (Exception ex) {
 				// Continue

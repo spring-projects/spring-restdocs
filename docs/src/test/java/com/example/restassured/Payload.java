@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,42 +39,62 @@ public class Payload {
 
 	public void response() {
 		// tag::response[]
-		RestAssured.given(this.spec).accept("application/json").filter(document("user", responseFields(// <1>
-				fieldWithPath("contact.name").description("The user's name"), // <2>
-				fieldWithPath("contact.email").description("The user's email address")))) // <3>
-				.when().get("/user/5").then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.accept("application/json")
+			.filter(document("user", responseFields(// <1>
+					fieldWithPath("contact.name").description("The user's name"), // <2>
+					fieldWithPath("contact.email").description("The user's email address")))) // <3>
+			.when()
+			.get("/user/5")
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::response[]
 	}
 
 	public void subsection() {
 		// tag::subsection[]
-		RestAssured.given(this.spec).accept("application/json")
-				.filter(document("user",
-						responseFields(subsectionWithPath("contact").description("The user's contact details")))) // <1>
-				.when().get("/user/5").then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.accept("application/json")
+			.filter(document("user",
+					responseFields(subsectionWithPath("contact").description("The user's contact details")))) // <1>
+			.when()
+			.get("/user/5")
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::subsection[]
 	}
 
 	public void explicitType() {
-		RestAssured.given(this.spec).accept("application/json")
-				// tag::explicit-type[]
-				.filter(document("user", responseFields(fieldWithPath("contact.email").type(JsonFieldType.STRING) // <1>
-						.description("The user's email address"))))
-				// end::explicit-type[]
-				.when().get("/user/5").then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.accept("application/json")
+			// tag::explicit-type[]
+			.filter(document("user", responseFields(fieldWithPath("contact.email").type(JsonFieldType.STRING) // <1>
+				.description("The user's email address"))))
+			// end::explicit-type[]
+			.when()
+			.get("/user/5")
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 	}
 
 	public void constraints() {
-		RestAssured.given(this.spec).accept("application/json")
-				// tag::constraints[]
-				.filter(document("create-user",
-						requestFields(attributes(key("title").value("Fields for user creation")), // <1>
-								fieldWithPath("name").description("The user's name")
-										.attributes(key("constraints").value("Must not be null. Must not be empty")), // <2>
-								fieldWithPath("email").description("The user's email address")
-										.attributes(key("constraints").value("Must be a valid email address"))))) // <3>
-				// end::constraints[]
-				.when().post("/users").then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.accept("application/json")
+			// tag::constraints[]
+			.filter(document("create-user", requestFields(attributes(key("title").value("Fields for user creation")), // <1>
+					fieldWithPath("name").description("The user's name")
+						.attributes(key("constraints").value("Must not be null. Must not be empty")), // <2>
+					fieldWithPath("email").description("The user's email address")
+						.attributes(key("constraints").value("Must be a valid email address"))))) // <3>
+			// end::constraints[]
+			.when()
+			.post("/users")
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 	}
 
 	public void descriptorReuse() {
@@ -82,33 +102,54 @@ public class Payload {
 				fieldWithPath("author").description("Author of the book") };
 
 		// tag::single-book[]
-		RestAssured.given(this.spec).accept("application/json").filter(document("book", responseFields(book))) // <1>
-				.when().get("/books/1").then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.accept("application/json")
+			.filter(document("book", responseFields(book))) // <1>
+			.when()
+			.get("/books/1")
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::single-book[]
 
 		// tag::book-array[]
-		RestAssured.given(this.spec).accept("application/json")
-				.filter(document("books", responseFields(fieldWithPath("[]").description("An array of books")) // <1>
-						.andWithPrefix("[].", book))) // <2>
-				.when().get("/books").then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.accept("application/json")
+			.filter(document("books", responseFields(fieldWithPath("[]").description("An array of books")) // <1>
+				.andWithPrefix("[].", book))) // <2>
+			.when()
+			.get("/books")
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::book-array[]
 	}
 
 	public void fieldsSubsection() {
 		// tag::fields-subsection[]
-		RestAssured.given(this.spec).accept("application/json")
-				.filter(document("location", responseFields(beneathPath("weather.temperature"), // <1>
-						fieldWithPath("high").description("The forecast high in degrees celcius"), // <2>
-						fieldWithPath("low").description("The forecast low in degrees celcius"))))
-				.when().get("/locations/1").then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.accept("application/json")
+			.filter(document("location", responseFields(beneathPath("weather.temperature"), // <1>
+					fieldWithPath("high").description("The forecast high in degrees celcius"), // <2>
+					fieldWithPath("low").description("The forecast low in degrees celcius"))))
+			.when()
+			.get("/locations/1")
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::fields-subsection[]
 	}
 
 	public void bodySubsection() {
 		// tag::body-subsection[]
-		RestAssured.given(this.spec).accept("application/json")
-				.filter(document("location", responseBody(beneathPath("weather.temperature")))) // <1>
-				.when().get("/locations/1").then().assertThat().statusCode(is(200));
+		RestAssured.given(this.spec)
+			.accept("application/json")
+			.filter(document("location", responseBody(beneathPath("weather.temperature")))) // <1>
+			.when()
+			.get("/locations/1")
+			.then()
+			.assertThat()
+			.statusCode(is(200));
 		// end::body-subsection[]
 	}
 

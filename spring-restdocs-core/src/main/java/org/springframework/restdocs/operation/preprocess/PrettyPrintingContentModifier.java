@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.springframework.http.MediaType;
 public class PrettyPrintingContentModifier implements ContentModifier {
 
 	private static final List<PrettyPrinter> PRETTY_PRINTERS = Collections
-			.unmodifiableList(Arrays.asList(new JsonPrettyPrinter(), new XmlPrettyPrinter()));
+		.unmodifiableList(Arrays.asList(new JsonPrettyPrinter(), new XmlPrettyPrinter()));
 
 	@Override
 	public byte[] modifyContent(byte[] originalContent, MediaType contentType) {
@@ -142,7 +142,7 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 	private static final class JsonPrettyPrinter implements PrettyPrinter {
 
 		private final ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
-				.configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, true);
+			.configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, true);
 
 		@Override
 		public byte[] prettyPrint(byte[] original) throws IOException {

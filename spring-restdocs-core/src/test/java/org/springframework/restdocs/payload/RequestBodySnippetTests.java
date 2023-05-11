@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class RequestBodySnippetTests extends AbstractSnippetTests {
 	public void requestWithBody() throws IOException {
 		requestBody().document(this.operationBuilder.request("http://localhost").content("some content").build());
 		assertThat(this.generatedSnippets.snippet("request-body"))
-				.is(codeBlock(null, "nowrap").withContent("some content"));
+			.is(codeBlock(null, "nowrap").withContent("some content"));
 	}
 
 	@Test
@@ -60,22 +60,24 @@ public class RequestBodySnippetTests extends AbstractSnippetTests {
 
 	@Test
 	public void subsectionOfRequestBody() throws IOException {
-		requestBody(beneathPath("a.b")).document(
-				this.operationBuilder.request("http://localhost").content("{\"a\":{\"b\":{\"c\":5}}}").build());
+		requestBody(beneathPath("a.b"))
+			.document(this.operationBuilder.request("http://localhost").content("{\"a\":{\"b\":{\"c\":5}}}").build());
 		assertThat(this.generatedSnippets.snippet("request-body-beneath-a.b"))
-				.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
+			.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
 	}
 
 	@Test
 	public void customSnippetAttributes() throws IOException {
 		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
 		given(resolver.resolveTemplateResource("request-body"))
-				.willReturn(snippetResource("request-body-with-language"));
+			.willReturn(snippetResource("request-body-with-language"));
 		requestBody(attributes(key("language").value("json"))).document(
 				this.operationBuilder.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-						.request("http://localhost").content("{\"a\":\"alpha\"}").build());
+					.request("http://localhost")
+					.content("{\"a\":\"alpha\"}")
+					.build());
 		assertThat(this.generatedSnippets.snippet("request-body"))
-				.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
+			.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
 	}
 
 }

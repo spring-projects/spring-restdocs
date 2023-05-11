@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,14 +40,14 @@ public class FieldTypeResolverTests {
 	@Deprecated
 	public void whenForContentCalledWithJsonContentThenReturnsJsonFieldTypeResolver() {
 		assertThat(FieldTypeResolver.forContent("{\"field\": \"value\"}".getBytes(), MediaType.APPLICATION_JSON))
-				.isInstanceOf(JsonContentHandler.class);
+			.isInstanceOf(JsonContentHandler.class);
 	}
 
 	@Test
 	@Deprecated
 	public void whenForContentCalledWithXmlContentThenReturnsXmlContentHandler() {
 		assertThat(FieldTypeResolver.forContent("<a><b>5</b></a>".getBytes(), MediaType.APPLICATION_XML))
-				.isInstanceOf(XmlContentHandler.class);
+			.isInstanceOf(XmlContentHandler.class);
 	}
 
 	@Test
@@ -60,13 +60,15 @@ public class FieldTypeResolverTests {
 	@Test
 	public void whenForContentWithDescriptorsCalledWithJsonContentThenReturnsJsonFieldTypeResolver() {
 		assertThat(FieldTypeResolver.forContentWithDescriptors("{\"field\": \"value\"}".getBytes(),
-				MediaType.APPLICATION_JSON, Collections.emptyList())).isInstanceOf(JsonContentHandler.class);
+				MediaType.APPLICATION_JSON, Collections.emptyList()))
+			.isInstanceOf(JsonContentHandler.class);
 	}
 
 	@Test
 	public void whenForContentWithDescriptorsCalledWithXmlContentThenReturnsXmlContentHandler() {
 		assertThat(FieldTypeResolver.forContentWithDescriptors("<a><b>5</b></a>".getBytes(), MediaType.APPLICATION_XML,
-				Collections.emptyList())).isInstanceOf(XmlContentHandler.class);
+				Collections.emptyList()))
+			.isInstanceOf(XmlContentHandler.class);
 	}
 
 	@Test

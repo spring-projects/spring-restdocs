@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,32 +49,32 @@ public class LinkMaskingContentModifierTests {
 	@Test
 	public void halLinksAreMasked() throws Exception {
 		assertThat(this.contentModifier.modifyContent(halPayloadWithLinks(this.links), null))
-				.isEqualTo(halPayloadWithLinks(this.maskedLinks));
+			.isEqualTo(halPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void formattedHalLinksAreMasked() throws Exception {
 		assertThat(this.contentModifier.modifyContent(formattedHalPayloadWithLinks(this.links), null))
-				.isEqualTo(formattedHalPayloadWithLinks(this.maskedLinks));
+			.isEqualTo(formattedHalPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void atomLinksAreMasked() throws Exception {
 		assertThat(this.contentModifier.modifyContent(atomPayloadWithLinks(this.links), null))
-				.isEqualTo(atomPayloadWithLinks(this.maskedLinks));
+			.isEqualTo(atomPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void formattedAtomLinksAreMasked() throws Exception {
 		assertThat(this.contentModifier.modifyContent(formattedAtomPayloadWithLinks(this.links), null))
-				.isEqualTo(formattedAtomPayloadWithLinks(this.maskedLinks));
+			.isEqualTo(formattedAtomPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
 	public void maskCanBeCustomized() throws Exception {
 		assertThat(
 				new LinkMaskingContentModifier("custom").modifyContent(formattedAtomPayloadWithLinks(this.links), null))
-						.isEqualTo(formattedAtomPayloadWithLinks(new Link("a", "custom"), new Link("b", "custom")));
+			.isEqualTo(formattedAtomPayloadWithLinks(new Link("a", "custom"), new Link("b", "custom")));
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class LinkMaskingContentModifierTests {
 		String ellipsis = "\u2026";
 		assertThat(
 				new LinkMaskingContentModifier(ellipsis).modifyContent(formattedHalPayloadWithLinks(this.links), null))
-						.isEqualTo(formattedHalPayloadWithLinks(new Link("a", ellipsis), new Link("b", ellipsis)));
+			.isEqualTo(formattedHalPayloadWithLinks(new Link("a", ellipsis), new Link("b", ellipsis)));
 	}
 
 	private byte[] atomPayloadWithLinks(Link... links) throws JsonProcessingException {
@@ -91,7 +91,7 @@ public class LinkMaskingContentModifierTests {
 
 	private byte[] formattedAtomPayloadWithLinks(Link... links) throws JsonProcessingException {
 		return new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
-				.writeValueAsBytes(createAtomPayload(links));
+			.writeValueAsBytes(createAtomPayload(links));
 	}
 
 	private AtomPayload createAtomPayload(Link... links) {
@@ -106,7 +106,7 @@ public class LinkMaskingContentModifierTests {
 
 	private byte[] formattedHalPayloadWithLinks(Link... links) throws JsonProcessingException {
 		return new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
-				.writeValueAsBytes(createHalPayload(links));
+			.writeValueAsBytes(createHalPayload(links));
 	}
 
 	private HalPayload createHalPayload(Link... links) {

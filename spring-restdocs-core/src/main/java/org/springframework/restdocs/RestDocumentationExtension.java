@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,8 +81,9 @@ public class RestDocumentationExtension implements BeforeEachCallback, AfterEach
 
 	private ManualRestDocumentation getDelegate(ExtensionContext context) {
 		Namespace namespace = Namespace.create(getClass(), context.getUniqueId());
-		return context.getStore(namespace).getOrComputeIfAbsent(ManualRestDocumentation.class,
-				this::createManualRestDocumentation, ManualRestDocumentation.class);
+		return context.getStore(namespace)
+			.getOrComputeIfAbsent(ManualRestDocumentation.class, this::createManualRestDocumentation,
+					ManualRestDocumentation.class);
 	}
 
 	private ManualRestDocumentation createManualRestDocumentation(Class<ManualRestDocumentation> key) {

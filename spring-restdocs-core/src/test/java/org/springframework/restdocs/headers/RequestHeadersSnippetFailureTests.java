@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,17 +42,17 @@ public class RequestHeadersSnippetFailureTests {
 	@Test
 	public void missingRequestHeader() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
-						.document(this.operationBuilder.request("http://localhost").build()))
-				.withMessage("Headers with the following names were not found in the request: [Accept]");
+			.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
+				.document(this.operationBuilder.request("http://localhost").build()))
+			.withMessage("Headers with the following names were not found in the request: [Accept]");
 	}
 
 	@Test
 	public void undocumentedRequestHeaderAndMissingRequestHeader() {
 		assertThatExceptionOfType(SnippetException.class)
-				.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
-						.document(this.operationBuilder.request("http://localhost").header("X-Test", "test").build()))
-				.withMessageEndingWith("Headers with the following names were not found in the request: [Accept]");
+			.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
+				.document(this.operationBuilder.request("http://localhost").header("X-Test", "test").build()))
+			.withMessageEndingWith("Headers with the following names were not found in the request: [Accept]");
 
 	}
 

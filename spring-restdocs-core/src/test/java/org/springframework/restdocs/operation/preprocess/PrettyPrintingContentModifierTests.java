@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,15 +41,17 @@ public class PrettyPrintingContentModifierTests {
 	@Test
 	public void prettyPrintJson() {
 		assertThat(new PrettyPrintingContentModifier().modifyContent("{\"a\":5}".getBytes(), null))
-				.isEqualTo(String.format("{%n  \"a\" : 5%n}").getBytes());
+			.isEqualTo(String.format("{%n  \"a\" : 5%n}").getBytes());
 	}
 
 	@Test
 	public void prettyPrintXml() {
 		assertThat(new PrettyPrintingContentModifier()
-				.modifyContent("<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null))
-						.isEqualTo(String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
-								+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n").getBytes());
+			.modifyContent("<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null))
+			.isEqualTo(String
+				.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
+						+ "<one a=\"alpha\">%n    <two b=\"bravo\"/>%n</one>%n")
+				.getBytes());
 	}
 
 	@Test
@@ -61,7 +63,7 @@ public class PrettyPrintingContentModifierTests {
 	public void nonJsonAndNonXmlContentIsHandledGracefully() {
 		String content = "abcdefg";
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
-				.isEqualTo(content.getBytes());
+			.isEqualTo(content.getBytes());
 		assertThat(this.outputCapture).isEmpty();
 	}
 
@@ -69,7 +71,7 @@ public class PrettyPrintingContentModifierTests {
 	public void nonJsonContentThatInitiallyLooksLikeJsonIsHandledGracefully() {
 		String content = "\"abc\",\"def\"";
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
-				.isEqualTo(content.getBytes());
+			.isEqualTo(content.getBytes());
 		assertThat(this.outputCapture).isEmpty();
 	}
 

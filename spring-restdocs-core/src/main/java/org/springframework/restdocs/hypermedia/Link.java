@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,8 +118,10 @@ public class Link {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("rel", this.rel).append("href", this.href).append("title", this.title)
-				.toString();
+		return new ToStringCreator(this).append("rel", this.rel)
+			.append("href", this.href)
+			.append("title", this.title)
+			.toString();
 	}
 
 }

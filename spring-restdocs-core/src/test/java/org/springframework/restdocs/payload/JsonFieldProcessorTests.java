@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class JsonFieldProcessorTests {
 		List<Map<String, Object>> alpha = Arrays.asList(entry, new HashMap<String, Object>());
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract("a[].b", payload).getValue())
-				.isEqualTo(Arrays.asList("bravo", ExtractedField.ABSENT));
+			.isEqualTo(Arrays.asList("bravo", ExtractedField.ABSENT));
 	}
 
 	@Test
@@ -129,7 +129,7 @@ public class JsonFieldProcessorTests {
 		List<List<Map<String, String>>> alpha = Arrays.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract("a[][]", payload).getValue())
-				.isEqualTo(Arrays.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3)));
+			.isEqualTo(Arrays.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3)));
 	}
 
 	@Test
@@ -152,13 +152,13 @@ public class JsonFieldProcessorTests {
 		List<List<Map<String, Object>>> alpha = Arrays.asList(Arrays.asList(entry1, entry2), Arrays.asList(entry3));
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract("a[][].ids", payload).getValue())
-				.isEqualTo(Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3), Arrays.asList(4)));
+			.isEqualTo(Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3), Arrays.asList(4)));
 	}
 
 	@Test
 	public void nonExistentTopLevelField() {
 		assertThat(this.fieldProcessor.extract("a", Collections.emptyMap()).getValue())
-				.isEqualTo(ExtractedField.ABSENT);
+			.isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
@@ -204,7 +204,7 @@ public class JsonFieldProcessorTests {
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract("a.b[].id", payload).getValue())
-				.isEqualTo(Arrays.asList(ExtractedField.ABSENT));
+			.isEqualTo(Arrays.asList(ExtractedField.ABSENT));
 	}
 
 	@Test
