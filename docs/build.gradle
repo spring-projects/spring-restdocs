@@ -8,7 +8,7 @@ configurations {
 }
 
 dependencies {
-	asciidoctorExt("io.spring.asciidoctor.backends:spring-asciidoctor-backends:0.0.2")
+	asciidoctorExt("io.spring.asciidoctor.backends:spring-asciidoctor-backends:0.0.5")
 
 	internal(platform(project(":spring-restdocs-platform")))
 	internal(enforcedPlatform("org.springframework:spring-framework-bom:$springFrameworkVersion"))
