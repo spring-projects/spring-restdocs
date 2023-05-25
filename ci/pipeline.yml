@@ -77,21 +77,25 @@ resource_types:
 - name: artifactory-resource
   type: registry-image
   source:
+    <<: *registry-image-resource-source
     repository: springio/artifactory-resource
     tag: 0.0.17
 - name: github-status-resource
   type: registry-image
   source:
+    <<: *registry-image-resource-source
     repository: dpb587/github-status-resource
     tag: master
 - name: slack-notification
   type: registry-image
   source:
+    <<: *registry-image-resource-source
     repository: cfcommunity/slack-notification-resource
     tag: latest
 - name: github-release
   type: registry-image
   source:
+    <<: *registry-image-resource-source
     repository: concourse/github-release-resource
     tag: 1.7.2
 resources:
