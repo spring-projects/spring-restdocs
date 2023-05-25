@@ -171,12 +171,12 @@ This will automatically configure the `snippets` attribute for use in your `.ado
 It will also allow you to use the `operation` block macro.
 <4> Add a dependency on `spring-restdocs-mockmvc` in the `testImplementation` configuration.
 If you want to use `WebTestClient` or REST Assured rather than MockMvc, add a dependency on `spring-restdocs-webtestclient` or `spring-restdocs-restassured` respectively instead.
-<5> Configure a property to define the output location for generated snippets.
-<6> Configure the `test` task to add the snippets directory as an output.
+<5> Configure a `snippetsDir` property that defines the output location for generated snippets.
+<6> Make Gradle aware that running the `test` task will write output to the snippetsDir. This is required for https://docs.gradle.org/current/userguide/incremental_build.html[incremental builds].
 <7> Configure the `asciidoctor` task.
-<8> Configure the snippets directory as an input.
+<8> Make Gradle aware that running the task will read input from the snippetsDir. This is required for https://docs.gradle.org/current/userguide/incremental_build.html[incremental builds].
 <9> Configure the use of the `asciidoctorExt` configuration for extensions.
-<10> Make the task depend on the test task so that the tests are run before the documentation is created.
+<10> Make the task depend on the `test` task so that the tests are run before the documentation is created.
 
 
 
