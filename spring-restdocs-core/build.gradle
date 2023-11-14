@@ -82,3 +82,10 @@ components.java.withVariantsFromConfiguration(configurations.testFixturesApiElem
 components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) {
 	skip()
 }
+
+compatibilityTest {
+	dependency("Spring Framework") { springFramework ->
+		springFramework.groupId = "org.springframework"
+		springFramework.versions = ["6.1.+"]
+	}
+}
