@@ -213,7 +213,7 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 			while (matcher.find()) {
 				for (int i = 1; i <= matcher.groupCount(); i++) {
 					if (matcher.start(i) >= 0) {
-						builder.append(input.substring(previous, matcher.start(i)));
+						builder.append(input, previous, matcher.start(i));
 					}
 					if (matcher.start(i) >= 0) {
 						previous = matcher.end(i);
