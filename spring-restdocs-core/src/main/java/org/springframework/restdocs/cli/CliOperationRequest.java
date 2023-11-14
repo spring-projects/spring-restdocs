@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.springframework.restdocs.cli;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +31,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.RequestCookie;
-import org.springframework.util.Base64Utils;
 
 /**
  * An {@link OperationRequest} wrapper with methods that are useful when producing a
@@ -137,7 +137,7 @@ final class CliOperationRequest implements OperationRequest {
 		}
 
 		static String decodeBasicAuthHeader(List<String> value) {
-			return new String(Base64Utils.decodeFromString(value.get(0).substring(6)));
+			return new String(Base64.getDecoder().decode(value.get(0).substring(6)));
 		}
 
 	}

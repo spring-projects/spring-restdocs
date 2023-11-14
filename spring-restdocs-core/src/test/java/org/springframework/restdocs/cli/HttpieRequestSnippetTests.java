@@ -17,6 +17,7 @@
 package org.springframework.restdocs.cli;
 
 import java.io.IOException;
+import java.util.Base64;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.util.Base64Utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -260,7 +260,7 @@ public class HttpieRequestSnippetTests extends AbstractSnippetTests {
 	@Test
 	public void basicAuthCredentialsAreSuppliedUsingAuthOption() throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
-			.header(HttpHeaders.AUTHORIZATION, "Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
+			.header(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString("user:secret".getBytes()))
 			.build());
 		assertThat(this.generatedSnippets.httpieRequest())
 			.is(codeBlock("bash").withContent("$ http --auth 'user:secret' GET 'http://localhost/foo'"));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public class HeadersModifyingOperationPreprocessor implements OperationPreproces
 
 	private HttpHeaders preprocess(HttpHeaders headers) {
 		HttpHeaders modifiedHeaders = new HttpHeaders();
-		modifiedHeaders.putAll(headers);
+		modifiedHeaders.addAll(headers);
 		for (Modification modification : this.modifications) {
 			modification.applyTo(modifiedHeaders);
 		}
