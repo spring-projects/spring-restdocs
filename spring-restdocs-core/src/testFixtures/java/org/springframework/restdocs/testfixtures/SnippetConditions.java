@@ -81,7 +81,7 @@ public final class SnippetConditions {
 				new MarkdownCodeBlockCondition<>("http"), 2);
 	}
 
-	@SuppressWarnings({ "rawtypes" })
+	@SuppressWarnings("rawtypes")
 	public static CodeBlockCondition<?> codeBlock(TemplateFormat format, String language) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorCodeBlockCondition(language, null);
@@ -89,7 +89,7 @@ public final class SnippetConditions {
 		return new MarkdownCodeBlockCondition(language);
 	}
 
-	@SuppressWarnings({ "rawtypes" })
+	@SuppressWarnings("rawtypes")
 	public static CodeBlockCondition<?> codeBlock(TemplateFormat format, String language, String options) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorCodeBlockCondition(language, options);
