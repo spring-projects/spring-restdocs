@@ -1,4 +1,4 @@
-# Spring REST Docs [![Build status][1]][2]
+# Spring REST Docs [![Build status][1]][2] [![Revved up by Develocity][24]][25]
 
 ## Overview
 
@@ -67,3 +67,5 @@ Spring REST Docs is open source software released under the [Apache 2.0 license]
 [21]: https://github.com/ePages-de/restdocs-api-spec
 [22]: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md
 [23]: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md
+[24]: https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A
+[25]: https://ge.spring.io/scans?search.rootProjectNames=spring-restdocs
