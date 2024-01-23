@@ -51,7 +51,7 @@ public class ConcatenatingCommandFormatterTests {
 	@Test
 	public void formattingMultipleElements() {
 		assertThat(this.singleLineFormat.format(Arrays.asList("alpha", "bravo")))
-			.isEqualTo(String.format(" alpha bravo"));
+			.isEqualTo(" alpha bravo");
 	}
 
 }
