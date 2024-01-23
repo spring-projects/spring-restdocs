@@ -59,7 +59,7 @@ public abstract class AbstractSnippetTests {
 				new Object[] { "Markdown", TemplateFormats.markdown() });
 	}
 
-	public AbstractSnippetTests(String name, TemplateFormat templateFormat) {
+	protected AbstractSnippetTests(String name, TemplateFormat templateFormat) {
 		this.generatedSnippets = new GeneratedSnippets(templateFormat);
 		this.templateFormat = templateFormat;
 		this.operationBuilder = new OperationBuilder(this.templateFormat);
