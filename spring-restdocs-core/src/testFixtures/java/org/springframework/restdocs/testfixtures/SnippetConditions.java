@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public final class SnippetConditions {
 				new MarkdownCodeBlockCondition<>("http"), 2);
 	}
 
-	@SuppressWarnings({ "rawtypes" })
+	@SuppressWarnings("rawtypes")
 	public static CodeBlockCondition<?> codeBlock(TemplateFormat format, String language) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorCodeBlockCondition(language, null);
@@ -89,7 +89,7 @@ public final class SnippetConditions {
 		return new MarkdownCodeBlockCondition(language);
 	}
 
-	@SuppressWarnings({ "rawtypes" })
+	@SuppressWarnings("rawtypes")
 	public static CodeBlockCondition<?> codeBlock(TemplateFormat format, String language, String options) {
 		if ("adoc".equals(format.getFileExtension())) {
 			return new AsciidoctorCodeBlockCondition(language, options);
