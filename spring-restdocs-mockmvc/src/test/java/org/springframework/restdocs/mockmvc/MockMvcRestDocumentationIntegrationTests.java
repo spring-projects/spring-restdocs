@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -642,9 +642,9 @@ public class MockMvcRestDocumentationIntegrationTests {
 	/**
 	 * Test configuration that enables Spring MVC.
 	 */
-	@Configuration
 	@EnableWebMvc
-	static class TestConfiguration {
+	@Configuration(proxyBeanMethods = false)
+	static final class TestConfiguration {
 
 		@Bean
 		TestController testController() {
@@ -654,7 +654,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@RestController
-	private static class TestController {
+	private static final class TestController {
 
 		@RequestMapping(value = "/", produces = "application/json;charset=UTF-8")
 		ResponseEntity<Map<String, Object>> foo() {

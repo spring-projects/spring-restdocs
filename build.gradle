@@ -76,11 +76,12 @@ subprojects { subproject ->
 		checkstyle {
 			configFile = rootProject.file("config/checkstyle/checkstyle.xml")
 			configProperties = [ "checkstyle.config.dir" : rootProject.file("config/checkstyle") ]
-			toolVersion = "10.11.0"
+			toolVersion = "10.12.4"
 		}
 
 		dependencies {
-			checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:$javaFormatVersion")
+			checkstyle("com.puppycrawl.tools:checkstyle:${checkstyle.toolVersion}")
+			checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
 		}
 
 		plugins.withType(MavenPublishPlugin) {
