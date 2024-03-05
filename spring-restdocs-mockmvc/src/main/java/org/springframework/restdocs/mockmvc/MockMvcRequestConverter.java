@@ -16,40 +16,27 @@
 
 package org.springframework.restdocs.mockmvc;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Part;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
-import org.springframework.restdocs.operation.ConversionException;
-import org.springframework.restdocs.operation.OperationRequest;
-import org.springframework.restdocs.operation.OperationRequestFactory;
-import org.springframework.restdocs.operation.OperationRequestPart;
-import org.springframework.restdocs.operation.OperationRequestPartFactory;
-import org.springframework.restdocs.operation.RequestConverter;
-import org.springframework.restdocs.operation.RequestCookie;
+import org.springframework.restdocs.operation.*;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * A converter for creating an {@link OperationRequest} from a
@@ -115,11 +102,12 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 			return content;
 		}
 		MediaType contentType = headers.getContentType();
-		if (contentType == null || MediaType.APPLICATION_FORM_URLENCODED.includes(contentType)) {
+		if (contentType == null || MediaType.APPLICATION_FORM_URLENCODED.includes(contentType) || MediaType.MULTIPART_FORM_DATA.includes(contentType)) {
 			Map<String, String[]> parameters = mockRequest.getParameterMap();
 			if (!parameters.isEmpty() && (content == null || content.length == 0)) {
 				StringBuilder contentBuilder = new StringBuilder();
-				headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+				MediaType targetContentType = contentType == null || MediaType.APPLICATION_FORM_URLENCODED.includes(contentType) ? MediaType.APPLICATION_FORM_URLENCODED : MediaType.MULTIPART_FORM_DATA;
+				headers.setContentType(targetContentType);
 				MultiValueMap<String, String> queryParameters = parse(mockRequest.getQueryString());
 				mockRequest.getParameterMap().forEach((name, values) -> {
 					List<String> queryParameterValues = queryParameters.get(name);
