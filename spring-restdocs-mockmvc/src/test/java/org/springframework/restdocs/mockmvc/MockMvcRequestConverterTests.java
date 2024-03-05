@@ -232,6 +232,64 @@ public class MockMvcRequestConverterTests {
 		assertThat(part.getContent()).isEqualTo(new byte[] { 1, 2, 3, 4 });
 	}
 
+    @Test
+    public void requestWithPartAndParametersCreatesFormUrlEncodedContent() throws IOException {
+        MockHttpServletRequest mockRequest = MockMvcRequestBuilders.post("/foo").contentType(MediaType.MULTIPART_FORM_DATA).buildRequest(new MockServletContext());
+        Part mockPart = mock(Part.class);
+        given(mockPart.getHeaderNames()).willReturn(Arrays.asList("a", "b"));
+        given(mockPart.getHeaders("a")).willReturn(Arrays.asList("alpha"));
+        given(mockPart.getHeaders("b")).willReturn(Arrays.asList("bravo", "banana"));
+        given(mockPart.getInputStream()).willReturn(new ByteArrayInputStream(new byte[]{1, 2, 3, 4}));
+        given(mockPart.getName()).willReturn("part-name");
+        given(mockPart.getSubmittedFileName()).willReturn("submitted.png");
+        given(mockPart.getContentType()).willReturn("image/png");
+        mockRequest.addPart(mockPart);
+        mockRequest.addParameter("a", "apple");
+        mockRequest.addParameter("b", "br&vo");
+        OperationRequest request = this.factory.convert(mockRequest);
+        assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
+        assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+        assertThat(request.getContentAsString()).isEqualTo("a=apple&b=br%26vo");
+        assertThat(request.getHeaders().getContentType()).isEqualTo(MediaType.MULTIPART_FORM_DATA);
+        assertThat(request.getParts().size()).isEqualTo(1);
+        OperationRequestPart part = request.getParts().iterator().next();
+        assertThat(part.getName()).isEqualTo("part-name");
+        assertThat(part.getSubmittedFileName()).isEqualTo("submitted.png");
+        assertThat(part.getHeaders().getContentType()).isEqualTo(MediaType.IMAGE_PNG);
+        assertThat(part.getHeaders().get("a")).containsExactly("alpha");
+        assertThat(part.getHeaders().get("b")).containsExactly("bravo", "banana");
+        assertThat(part.getContent()).isEqualTo(new byte[]{1, 2, 3, 4});
+    }
+
+    @Test
+    public void requestWithPartAndParametersAndQueryStringCreatesFormUrlEncodedContentWithoutDuplication() throws IOException {
+        MockHttpServletRequest mockRequest = MockMvcRequestBuilders.post("/foo?a=alpha").contentType(MediaType.MULTIPART_FORM_DATA).buildRequest(new MockServletContext());
+        Part mockPart = mock(Part.class);
+        given(mockPart.getHeaderNames()).willReturn(Arrays.asList("a", "b"));
+        given(mockPart.getHeaders("a")).willReturn(Arrays.asList("alpha"));
+        given(mockPart.getHeaders("b")).willReturn(Arrays.asList("bravo", "banana"));
+        given(mockPart.getInputStream()).willReturn(new ByteArrayInputStream(new byte[]{1, 2, 3, 4}));
+        given(mockPart.getName()).willReturn("part-name");
+        given(mockPart.getSubmittedFileName()).willReturn("submitted.png");
+        given(mockPart.getContentType()).willReturn("image/png");
+        mockRequest.addPart(mockPart);
+        mockRequest.addParameter("a", "apple");
+        mockRequest.addParameter("b", "br&vo");
+        OperationRequest request = this.factory.convert(mockRequest);
+        assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha"));
+        assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+        assertThat(request.getContentAsString()).isEqualTo("a=apple&b=br%26vo");
+        assertThat(request.getHeaders().getContentType()).isEqualTo(MediaType.MULTIPART_FORM_DATA);
+        assertThat(request.getParts().size()).isEqualTo(1);
+        OperationRequestPart part = request.getParts().iterator().next();
+        assertThat(part.getName()).isEqualTo("part-name");
+        assertThat(part.getSubmittedFileName()).isEqualTo("submitted.png");
+        assertThat(part.getHeaders().getContentType()).isEqualTo(MediaType.IMAGE_PNG);
+        assertThat(part.getHeaders().get("a")).containsExactly("alpha");
+        assertThat(part.getHeaders().get("b")).containsExactly("bravo", "banana");
+        assertThat(part.getContent()).isEqualTo(new byte[]{1, 2, 3, 4});
+    }
+
 	private OperationRequest createOperationRequest(MockHttpServletRequestBuilder builder) {
 		return this.factory.convert(builder.buildRequest(new MockServletContext()));
 	}
