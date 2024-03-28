@@ -11,7 +11,7 @@ jobs:
     name: Build and Deploy Snapshot
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Java
+      - name: Set Up Java
         uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
         with:
           distribution: 'liberica'
@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.ARTIFACTORY_PASSWORD }}
           build-name: spring-restdocs
           repository: 'libs-snapshot-local'
-          folder: 'deployment-repository'
+          folder: 'distribution-repository'
           signing-key: ${{ secrets.GPG_PRIVATE_KEY }}
           signing-passphrase: ${{ secrets.GPG_PASSPHRASE }}
           artifact-properties: |
