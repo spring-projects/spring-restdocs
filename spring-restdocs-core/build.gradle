@@ -22,7 +22,7 @@ task jmustacheRepackJar(type: Jar) { repackJar ->
 		project.ant {
 			taskdef name: "jarjar", classname: "com.tonicsystems.jarjar.JarJarTask",
 				classpath: configurations.jarjar.asPath
-			jarjar(destfile: repackJar.archivePath) {
+			jarjar(destfile: repackJar.archiveFile.get()) {
 				configurations.jmustache.each { originalJar ->
 					zipfileset(src: originalJar, includes: "**/*.class")
 				}
@@ -70,7 +70,7 @@ dependencies {
 
 jar {
 	dependsOn jmustacheRepackJar
-	from(zipTree(jmustacheRepackJar.archivePath)) {
+	from(zipTree(jmustacheRepackJar.archiveFile.get())) {
 		include "org/springframework/restdocs/**"
 	}
 }
