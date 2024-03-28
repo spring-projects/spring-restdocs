@@ -7,7 +7,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   build:
-    if: ${{ github.repository == 'spring-gradle-plugins/dependency-management-plugin' }}
+    if: ${{ github.repository == 'spring-projects/spring-restdocs' }}
     name: Build and Deploy Snapshot
     runs-on: ubuntu-latest
     steps:
