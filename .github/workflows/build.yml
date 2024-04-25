@@ -46,4 +46,4 @@ jobs:
         env:
           GRADLE_ENTERPRISE_URL: 'https://ge.spring.io'
           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_SECRET_ACCESS_KEY }}
-        run: ./gradlew build
+        run: ./gradlew --refresh-dependencies build
