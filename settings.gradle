@@ -2,7 +2,6 @@ pluginManagement {
 	repositories {
 		mavenCentral()
 		gradlePluginPortal()
-		maven { url 'https://repo.spring.io/snapshot' }
 	}
 	resolutionStrategy {
 		eachPlugin {
@@ -15,7 +14,7 @@ pluginManagement {
 
 plugins {
 	id "com.gradle.develocity" version "3.17.2"
-	id "io.spring.ge.conventions" version "0.0.17-SNAPSHOT"
+	id "io.spring.ge.conventions" version "0.0.17"
 }
 
 rootProject.name = "spring-restdocs"

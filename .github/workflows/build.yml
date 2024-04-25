@@ -45,4 +45,4 @@ jobs:
       - name: Build
         env:
           DEVELOCITY_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_SECRET_ACCESS_KEY }}
-        run: ./gradlew --refresh-dependencies build
+        run: ./gradlew build
