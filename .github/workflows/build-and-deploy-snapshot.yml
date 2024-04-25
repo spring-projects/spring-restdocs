@@ -29,8 +29,7 @@ jobs:
           echo 'org.gradle.daemon=false' >> $HOME/.gradle/gradle.properties
       - name: Build and Publish
         env:
-          GRADLE_ENTERPRISE_URL: 'https://ge.spring.io'
-          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_SECRET_ACCESS_KEY }}
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_SECRET_ACCESS_KEY }}
         run: ./gradlew --refresh-dependencies -PdeploymentRepository=$(pwd)/distribution-repository build publishAllPublicationsToDeploymentRepository
       - name: Deploy
         uses: spring-io/artifactory-deploy-action@26bbe925a75f4f863e1e529e85be2d0093cac116 # v0.0.1
