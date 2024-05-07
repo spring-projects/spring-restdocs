@@ -661,11 +661,13 @@ The following examples show how to do so:
 include::{examples-dir}/com/example/mockmvc/QueryParameters.java[tags=query-parameters]
 ----
 <1> Perform a `GET` request with two parameters, `page` and `per_page`, in the query string.
+Query parameters should be included in the URL, as shown here, or specified using the request builder's `queryParam` or `queryParams` method.
+The `param` and `params` methods should be avoided as the source of the parameters is then ambiguous.
 <2> Configure Spring REST Docs to produce a snippet describing the request's query parameters.
 Uses the static `queryParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
-<3> Document the `page` parameter.
+<3> Document the `page` query parameter.
 Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
-<4> Document the `per_page` parameter.
+<4> Document the `per_page` query parameter.
 
 [source,java,indent=0,role="secondary"]
 .WebTestClient
