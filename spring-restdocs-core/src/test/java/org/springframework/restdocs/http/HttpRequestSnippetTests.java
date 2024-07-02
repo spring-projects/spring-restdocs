@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,6 +160,36 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 		String expectedContent = createPart(
 				String.format("Content-Disposition: " + "form-data; " + "name=image%n%n<< data >>"));
 		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.POST, "/upload")
+			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
+			.header(HttpHeaders.HOST, "localhost")
+			.content(expectedContent));
+	}
+
+	@Test
+	public void multipartPut() throws IOException {
+		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/upload")
+			.method("PUT")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+			.part("image", "<< data >>".getBytes())
+			.build());
+		String expectedContent = createPart(
+				String.format("Content-Disposition: " + "form-data; " + "name=image%n%n<< data >>"));
+		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.PUT, "/upload")
+			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
+			.header(HttpHeaders.HOST, "localhost")
+			.content(expectedContent));
+	}
+
+	@Test
+	public void multipartPatch() throws IOException {
+		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/upload")
+			.method("PATCH")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+			.part("image", "<< data >>".getBytes())
+			.build());
+		String expectedContent = createPart(
+				String.format("Content-Disposition: " + "form-data; " + "name=image%n%n<< data >>"));
+		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.PATCH, "/upload")
 			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
 			.header(HttpHeaders.HOST, "localhost")
 			.content(expectedContent));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,7 +120,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		if (StringUtils.hasText(content)) {
 			writer.printf("%n%s", content);
 		}
-		else if (isPutOrPost(request)) {
+		else if (isPutPostOrPatch(request)) {
 			if (!request.getParts().isEmpty()) {
 				writeParts(request, writer);
 			}
@@ -128,8 +128,9 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		return httpRequest.toString();
 	}
 
-	private boolean isPutOrPost(OperationRequest request) {
-		return HttpMethod.PUT.equals(request.getMethod()) || HttpMethod.POST.equals(request.getMethod());
+	private boolean isPutPostOrPatch(OperationRequest request) {
+		return HttpMethod.PUT.equals(request.getMethod()) || HttpMethod.POST.equals(request.getMethod())
+				|| HttpMethod.PATCH.equals(request.getMethod());
 	}
 
 	private void writeParts(OperationRequest request, PrintWriter writer) {
@@ -169,7 +170,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	}
 
 	private boolean requiresFormEncodingContentTypeHeader(OperationRequest request) {
-		return request.getHeaders().get(HttpHeaders.CONTENT_TYPE) == null && isPutOrPost(request)
+		return request.getHeaders().get(HttpHeaders.CONTENT_TYPE) == null && isPutPostOrPatch(request)
 				&& !includeParametersInUri(request);
 	}
 
