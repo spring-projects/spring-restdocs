@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class OptionalDependenciesPlugin implements Plugin<Project> {
 	public void apply(Project project) {
 		Configuration optional = project.getConfigurations().create(OPTIONAL_CONFIGURATION_NAME);
 		project.getConfigurations().all((configuration) -> {
-			if (configuration.getName().startsWith("testRuntimeClasspath_")) {
+			if (configuration.getName().startsWith("testRuntimeClasspath_") || configuration.getName().startsWith("testCompileClasspath_")) {
 				configuration.extendsFrom(optional);
 			}
 		});
