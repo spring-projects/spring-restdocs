@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 * @return the builder for the GET request
 	 */
 	public static MockHttpServletRequestBuilder get(String urlTemplate, Object... urlVariables) {
-		return MockMvcRequestBuilders.get(urlTemplate, urlVariables)
-			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return (MockHttpServletRequestBuilder) configureUrlTemplateRequestAttribute(
+				MockMvcRequestBuilders.get(urlTemplate, urlVariables), urlTemplate);
 	}
 
 	/**
@@ -72,8 +72,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 * @return the builder for the POST request
 	 */
 	public static MockHttpServletRequestBuilder post(String urlTemplate, Object... urlVariables) {
-		return MockMvcRequestBuilders.post(urlTemplate, urlVariables)
-			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return (MockHttpServletRequestBuilder) configureUrlTemplateRequestAttribute(
+				MockMvcRequestBuilders.post(urlTemplate, urlVariables), urlTemplate);
 	}
 
 	/**
@@ -93,8 +93,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 * @return the builder for the PUT request
 	 */
 	public static MockHttpServletRequestBuilder put(String urlTemplate, Object... urlVariables) {
-		return MockMvcRequestBuilders.put(urlTemplate, urlVariables)
-			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return (MockHttpServletRequestBuilder) configureUrlTemplateRequestAttribute(
+				MockMvcRequestBuilders.put(urlTemplate, urlVariables), urlTemplate);
 	}
 
 	/**
@@ -114,8 +114,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 * @return the builder for the PATCH request
 	 */
 	public static MockHttpServletRequestBuilder patch(String urlTemplate, Object... urlVariables) {
-		return MockMvcRequestBuilders.patch(urlTemplate, urlVariables)
-			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return (MockHttpServletRequestBuilder) configureUrlTemplateRequestAttribute(
+				MockMvcRequestBuilders.patch(urlTemplate, urlVariables), urlTemplate);
 	}
 
 	/**
@@ -135,8 +135,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 * @return the builder for the DELETE request
 	 */
 	public static MockHttpServletRequestBuilder delete(String urlTemplate, Object... urlVariables) {
-		return MockMvcRequestBuilders.delete(urlTemplate, urlVariables)
-			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return (MockHttpServletRequestBuilder) configureUrlTemplateRequestAttribute(
+				MockMvcRequestBuilders.delete(urlTemplate, urlVariables), urlTemplate);
 	}
 
 	/**
@@ -156,8 +156,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 * @return the builder for the OPTIONS request
 	 */
 	public static MockHttpServletRequestBuilder options(String urlTemplate, Object... urlVariables) {
-		return MockMvcRequestBuilders.options(urlTemplate, urlVariables)
-			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return (MockHttpServletRequestBuilder) configureUrlTemplateRequestAttribute(
+				MockMvcRequestBuilders.options(urlTemplate, urlVariables), urlTemplate);
 	}
 
 	/**
@@ -177,8 +177,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 * @return the builder for the HEAD request
 	 */
 	public static MockHttpServletRequestBuilder head(String urlTemplate, Object... urlVariables) {
-		return MockMvcRequestBuilders.head(urlTemplate, urlVariables)
-			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return (MockHttpServletRequestBuilder) configureUrlTemplateRequestAttribute(
+				MockMvcRequestBuilders.head(urlTemplate, urlVariables), urlTemplate);
 	}
 
 	/**
@@ -200,8 +200,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 */
 	public static MockHttpServletRequestBuilder request(HttpMethod httpMethod, String urlTemplate,
 			Object... urlVariables) {
-		return MockMvcRequestBuilders.request(httpMethod, urlTemplate, urlVariables)
-			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return (MockHttpServletRequestBuilder) configureUrlTemplateRequestAttribute(
+				MockMvcRequestBuilders.request(httpMethod, urlTemplate, urlVariables), urlTemplate);
 	}
 
 	/**
@@ -224,8 +224,8 @@ public abstract class RestDocumentationRequestBuilders {
 	 * @since 2.0.6
 	 */
 	public static MockMultipartHttpServletRequestBuilder multipart(String urlTemplate, Object... urlVariables) {
-		return (MockMultipartHttpServletRequestBuilder) MockMvcRequestBuilders.multipart(urlTemplate, urlVariables)
-			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		return (MockMultipartHttpServletRequestBuilder) configureUrlTemplateRequestAttribute(
+				MockMvcRequestBuilders.multipart(urlTemplate, urlVariables), urlTemplate);
 	}
 
 	/**
@@ -236,6 +236,17 @@ public abstract class RestDocumentationRequestBuilders {
 	 */
 	public static MockMultipartHttpServletRequestBuilder multipart(URI uri) {
 		return MockMvcRequestBuilders.multipart(uri);
+	}
+
+	private static Object configureUrlTemplateRequestAttribute(Object builder, String urlTemplate) {
+		try {
+			return builder.getClass()
+				.getMethod("requestAttr", String.class, Object.class)
+				.invoke(builder, RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+		}
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 }

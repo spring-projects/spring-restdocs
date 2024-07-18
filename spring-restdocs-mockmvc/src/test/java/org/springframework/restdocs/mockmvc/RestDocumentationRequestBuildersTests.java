@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -140,6 +141,15 @@ public class RestDocumentationRequestBuildersTests {
 
 	private void assertTemplate(MockHttpServletRequestBuilder builder, HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
+		assertTemplate(httpMethod, request);
+	}
+
+	private void assertTemplate(MockMultipartHttpServletRequestBuilder builder, HttpMethod httpMethod) {
+		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
+		assertTemplate(httpMethod, request);
+	}
+
+	private void assertTemplate(HttpMethod httpMethod, MockHttpServletRequest request) {
 		assertThat((String) request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE))
 			.isEqualTo("/{template}");
 		assertThat(request.getRequestURI()).isEqualTo("/t");
@@ -148,6 +158,15 @@ public class RestDocumentationRequestBuildersTests {
 
 	private void assertUri(MockHttpServletRequestBuilder builder, HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
+		assertUri(httpMethod, request);
+	}
+
+	private void assertUri(MockMultipartHttpServletRequestBuilder builder, HttpMethod httpMethod) {
+		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
+		assertUri(httpMethod, request);
+	}
+
+	private void assertUri(HttpMethod httpMethod, MockHttpServletRequest request) {
 		assertThat(request.getRequestURI()).isEqualTo("/uri");
 		assertThat(request.getMethod()).isEqualTo(httpMethod.name());
 	}

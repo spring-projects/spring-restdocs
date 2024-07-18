@@ -86,6 +86,6 @@ components.java.withVariantsFromConfiguration(configurations.testFixturesRuntime
 compatibilityTest {
 	dependency("Spring Framework") { springFramework ->
 		springFramework.groupId = "org.springframework"
-		springFramework.versions = ["6.1.+"]
+		springFramework.versions = ["6.1.+", "6.2.+"]
 	}
 }

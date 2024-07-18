@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -233,6 +234,10 @@ public class MockMvcRequestConverterTests {
 	}
 
 	private OperationRequest createOperationRequest(MockHttpServletRequestBuilder builder) {
+		return this.factory.convert(builder.buildRequest(new MockServletContext()));
+	}
+
+	private OperationRequest createOperationRequest(MockMultipartHttpServletRequestBuilder builder) {
 		return this.factory.convert(builder.buildRequest(new MockServletContext()));
 	}
 

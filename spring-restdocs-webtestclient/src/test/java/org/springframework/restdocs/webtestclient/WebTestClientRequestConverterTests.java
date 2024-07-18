@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -173,8 +173,10 @@ public class WebTestClientRequestConverterTests {
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getContentAsString()).isEqualTo("a=alpha&a=apple&b=br%26vo");
-		assertThat(request.getHeaders().getContentType())
-			.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8));
+		assertThat(request.getHeaders().getContentType()).satisfiesAnyOf(
+				(mediaType) -> assertThat(mediaType)
+					.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8)),
+				(mediaType) -> assertThat(mediaType).isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED)));
 	}
 
 	@Test
@@ -217,8 +219,10 @@ public class WebTestClientRequestConverterTests {
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?a=alpha&b=br%26vo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getContentAsString()).isEqualTo("a=apple");
-		assertThat(request.getHeaders().getContentType())
-			.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8));
+		assertThat(request.getHeaders().getContentType()).satisfiesAnyOf(
+				(mediaType) -> assertThat(mediaType)
+					.isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8)),
+				(mediaType) -> assertThat(mediaType).isEqualTo(new MediaType(MediaType.APPLICATION_FORM_URLENCODED)));
 	}
 
 	@Test
