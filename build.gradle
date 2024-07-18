@@ -50,6 +50,9 @@ subprojects { subproject ->
 		}
 
 		configurations {
+			all {
+				resolutionStrategy.cacheChangingModulesFor 0, "minutes"
+			}
 			internal {
 				canBeConsumed = false
 				canBeResolved = false
