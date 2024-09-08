@@ -27,8 +27,11 @@ use of HTTP verbs.
 | `POST`
 | Used to create a new resource
 
+| `PUT`
+| Used to update a resource, including all required fields. The entire resource is replaced with the data provided.
+
 | `PATCH`
-| Used to update an existing resource, including partial updates
+| Used to update an existing resource with partial updates. Only the fields that need to be changed are included in the request.
 
 | `DELETE`
 | Used to delete an existing resource
