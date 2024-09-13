@@ -16,12 +16,18 @@
 
 package org.springframework.restdocs.mockmvc;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
+import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -84,6 +90,33 @@ public class MockMvcRestDocumentationConfigurerTests {
 			.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 		assertThat(this.request.getHeader("Content-Length")).isNull();
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void uriTemplateFromRequestAttribute() {
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation)
+			.beforeMockMvcCreated(null, null);
+		this.request.setAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "{a}/{b}");
+		postProcessor.postProcessRequest(this.request);
+		Map<String, Object> configuration = (Map<String, Object>) this.request
+			.getAttribute(RestDocumentationResultHandler.ATTRIBUTE_NAME_CONFIGURATION);
+		assertThat(configuration).containsEntry(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "{a}/{b}");
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void uriTemplateFromRequest() {
+		Method setUriTemplate = ReflectionUtils.findMethod(MockHttpServletRequest.class, "setUriTemplate",
+				String.class);
+		Assume.assumeNotNull(setUriTemplate);
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation)
+			.beforeMockMvcCreated(null, null);
+		ReflectionUtils.invokeMethod(setUriTemplate, this.request, "{a}/{b}");
+		postProcessor.postProcessRequest(this.request);
+		Map<String, Object> configuration = (Map<String, Object>) this.request
+			.getAttribute(RestDocumentationResultHandler.ATTRIBUTE_NAME_CONFIGURATION);
+		assertThat(configuration).containsEntry(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "{a}/{b}");
 	}
 
 	private void assertUriConfiguration(String scheme, String host, int port) {

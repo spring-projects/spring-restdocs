@@ -802,7 +802,7 @@ Uses the static `parameterWithName` method on `org.springframework.restdocs.requ
 
 The result is a snippet named `path-parameters.adoc` that contains a table describing the path parameters that are supported by the resource.
 
-TIP: If you use MockMvc, to make the path parameters available for documentation, you must build the request by using one of the methods on `RestDocumentationRequestBuilders` rather than `MockMvcRequestBuilders`.
+TIP: If you use MockMvc with Spring Framework 6.1 or earlier, to make the path parameters available for documentation, you must build the request by using one of the methods on `RestDocumentationRequestBuilders` rather than `MockMvcRequestBuilders`.
 
 When documenting path parameters, the test fails if an undocumented path parameter is used in the request.
 Similarly, the test also fails if a documented path parameter is not found in the request and the path parameter has not been marked as optional.

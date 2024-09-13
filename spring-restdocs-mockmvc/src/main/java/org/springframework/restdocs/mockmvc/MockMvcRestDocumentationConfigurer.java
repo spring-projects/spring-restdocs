@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
 
 package org.springframework.restdocs.mockmvc;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.RestDocumentationContext;
@@ -27,6 +29,7 @@ import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -85,6 +88,26 @@ public final class MockMvcRestDocumentationConfigurer extends
 
 	private final class ConfigurerApplyingRequestPostProcessor implements RequestPostProcessor {
 
+		private static final Function<MockHttpServletRequest, String> urlTemplateExtractor;
+
+		static {
+			Function<MockHttpServletRequest, String> fromRequestAttribute = (
+					request) -> (String) request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE);
+			Function<MockHttpServletRequest, String> extractor;
+			try {
+				Method accessorMethod = MockHttpServletRequest.class.getMethod("getUriTemplate");
+				extractor = (request) -> {
+					String urlTemplate = fromRequestAttribute.apply(request);
+					return (urlTemplate != null) ? urlTemplate
+							: (String) ReflectionUtils.invokeMethod(accessorMethod, request);
+				};
+			}
+			catch (Exception ex) {
+				extractor = fromRequestAttribute;
+			}
+			urlTemplateExtractor = extractor;
+		}
+
 		private final RestDocumentationContextProvider contextManager;
 
 		private ConfigurerApplyingRequestPostProcessor(RestDocumentationContextProvider contextManager) {
@@ -97,7 +120,7 @@ public final class MockMvcRestDocumentationConfigurer extends
 			Map<String, Object> configuration = new HashMap<>();
 			configuration.put(MockHttpServletRequest.class.getName(), request);
 			configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-					request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE));
+					urlTemplateExtractor.apply(request));
 			configuration.put(RestDocumentationContext.class.getName(), context);
 			request.setAttribute(RestDocumentationResultHandler.ATTRIBUTE_NAME_CONFIGURATION, configuration);
 			MockMvcRestDocumentationConfigurer.this.apply(configuration, context);
