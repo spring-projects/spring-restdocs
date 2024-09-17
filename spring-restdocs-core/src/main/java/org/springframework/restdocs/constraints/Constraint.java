@@ -16,7 +16,9 @@
 
 package org.springframework.restdocs.constraints;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A constraint.
@@ -29,6 +31,8 @@ public class Constraint {
 
 	private final Map<String, Object> configuration;
 
+	private final Set<Class<?>> groups;
+
 	/**
 	 * Creates a new {@code Constraint} with the given {@code name} and
 	 * {@code configuration}.
@@ -38,6 +42,20 @@ public class Constraint {
 	public Constraint(String name, Map<String, Object> configuration) {
 		this.name = name;
 		this.configuration = configuration;
+		this.groups = Collections.emptySet();
+	}
+
+	/**
+	 * Creates a new {@code Constraint} with the given {@code name} and
+	 * {@code configuration}.
+	 * @param name the name
+	 * @param configuration the configuration
+	 * @param groups the groups
+	 */
+	public Constraint(String name, Map<String, Object> configuration, Set<Class<?>> groups) {
+		this.name = name;
+		this.configuration = configuration;
+		this.groups = groups;
 	}
 
 	/**
@@ -54,6 +72,14 @@ public class Constraint {
 	 */
 	public Map<String, Object> getConfiguration() {
 		return this.configuration;
+	}
+
+	/**
+	 * Returns the groups of the constraint.
+	 * @return the groups
+	 */
+	public Set<Class<?>> getGroups() {
+		return this.groups;
 	}
 
 }
