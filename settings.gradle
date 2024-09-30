@@ -19,18 +19,6 @@ plugins {
 
 rootProject.name = "spring-restdocs"
 
-settings.gradle.projectsLoaded {
-	develocity {
-		buildScan {
-			settings.gradle.rootProject.getBuildDir().mkdirs()
-			new File(settings.gradle.rootProject.getBuildDir(), "build-scan-uri.txt").text = "build scan not generated"
-			buildScanPublished { scan ->
-				new File(settings.gradle.rootProject.getBuildDir(), "build-scan-uri.txt").text = "<${scan.buildScanUri}|build scan>\n"
-			}
-		}
-	}
-}
-
 include "docs"
 include "spring-restdocs-asciidoctor"
 include "spring-restdocs-bom"
