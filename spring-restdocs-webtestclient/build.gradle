@@ -25,6 +25,6 @@ dependencies {
 compatibilityTest {
 	dependency("Spring Framework") { springFramework ->
 		springFramework.groupId = "org.springframework"
-		springFramework.versions = ["6.1.+", "6.2.+"]
+		springFramework.versions = ["6.0.+", "6.2.+"]
 	}
 }
