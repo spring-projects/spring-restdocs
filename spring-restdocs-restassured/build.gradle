@@ -1,4 +1,5 @@
 plugins {
+	id "io.spring.compatibility-test" version "0.0.3"
 	id "java-library"
 	id "maven-publish"
 }
@@ -21,4 +22,11 @@ dependencies {
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.hamcrest:hamcrest-library")
 	testImplementation("org.mockito:mockito-core")
+}
+
+compatibilityTest {
+	dependency("REST Assured") { restAssured ->
+		restAssured.groupId = "io.rest-assured"
+		restAssured.versions = ["5.3.+", "5.4.+", "5.5.+"]
+	}
 }
