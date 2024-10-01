@@ -171,6 +171,7 @@ The following listings show how to do so in both Maven and Gradle:
 ----
 <1> The existing declaration for the Asciidoctor plugin.
 <2> The resource plugin must be declared after the Asciidoctor plugin as they are bound to the same phase (`prepare-package`) and the resource plugin must run after the Asciidoctor plugin to ensure that the documentation is generated before it's copied.
+If you are not using Spring Boot and its plugin management, declare the plugin with an appropriate `<version>`.
 <3> Copy the generated documentation into the build output's `static/docs` directory, from where it will be included in the jar file.
 
 [source,indent=0,role="secondary"]
