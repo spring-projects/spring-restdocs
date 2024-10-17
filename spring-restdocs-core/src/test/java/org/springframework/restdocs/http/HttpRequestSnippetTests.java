@@ -82,8 +82,7 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 			.build());
 		assertThat(this.generatedSnippets.httpRequest())
 			.is(httpRequest(RequestMethod.GET, "/foo").header(HttpHeaders.HOST, "localhost")
-				.header(HttpHeaders.COOKIE, "name1=value1")
-				.header(HttpHeaders.COOKIE, "name2=value2"));
+				.header(HttpHeaders.COOKIE, "name1=value1; name2=value2"));
 	}
 
 	@Test
