@@ -103,8 +103,12 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 			}
 		}
 
+		List<String> cookies = new ArrayList<>();
 		for (RequestCookie cookie : request.getCookies()) {
-			headers.add(header(HttpHeaders.COOKIE, String.format("%s=%s", cookie.getName(), cookie.getValue())));
+			cookies.add(String.format("%s=%s", cookie.getName(), cookie.getValue()));
+		}
+		if (!cookies.isEmpty()) {
+			headers.add(header(HttpHeaders.COOKIE, String.join("; ", cookies)));
 		}
 
 		if (requiresFormEncodingContentTypeHeader(request)) {
