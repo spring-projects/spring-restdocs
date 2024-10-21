@@ -25,7 +25,7 @@ jobs:
         with:
           artifact-properties: |
             /**/spring-restdocs-*.zip::zip.type=docs,zip.deployed=false
-          build-name: ${{ format('spring-restdocs-{0}', github.ref_name) }}
+          build-name: 'spring-restdocs-3.0.x'
           folder: 'deployment-repository'
           password: ${{ secrets.ARTIFACTORY_PASSWORD }}
           repository: ${{ 'libs-snapshot-local' }}
