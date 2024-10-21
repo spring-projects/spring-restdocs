@@ -1,5 +1,4 @@
 changelog:
-  repository: spring-projects/spring-restdocs
   sections:
     - title: ":star: New Features"
       labels:

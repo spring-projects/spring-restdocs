@@ -1,31 +1,39 @@
-name: 'Build'
+name: Build
 description: 'Builds the project, optionally publishing it to a local deployment repository'
 inputs:
-  java-version:
+  develocity-access-key:
+    description: 'Access key for authentication with ge.spring.io'
     required: false
-    default: '17'
-    description: 'The Java version to compile and test with'
+  gradle-cache-read-only:
+    description: 'Whether Gradle''s cache should be read only'
+    required: false
+    default: 'true'
   java-distribution:
+    description: 'Java distribution to use'
     required: false
     default: 'liberica'
-    description: 'The Java distribution to use for the build'
+  java-early-access:
+    description: 'Whether the Java version is in early access'
+    required: false
+    default: 'false'
   java-toolchain:
-    required: false
-    default: 'false'
     description: 'Whether a Java toolchain should be used'
-  publish:
     required: false
     default: 'false'
-    description: 'Whether to publish artifacts ready for deployment to Artifactory'
-  develocity-access-key:
+  java-version:
+    description: 'Java version to compile and test with'
     required: false
-    description: 'The access key for authentication with ge.spring.io'
+    default: '17'
+  publish:
+    description: 'Whether to publish artifacts ready for deployment to Artifactory'
+    required: false
+    default: 'false'
 outputs:
   build-scan-url:
-    description: 'The URL, if any, of the build scan produced by the build'
+    description: 'URL, if any, of the build scan produced by the build'
     value: ${{ (inputs.publish == 'true' && steps.publish.outputs.build-scan-url) || steps.build.outputs.build-scan-url }}
   version:
-    description: 'The version that was built'
+    description: 'Version that was built'
     value: ${{ steps.read-version.outputs.version }}
 runs:
   using: composite
@@ -33,10 +41,12 @@ runs:
     - name: Prepare Gradle Build
       uses: ./.github/actions/prepare-gradle-build
       with:
+        cache-read-only: ${{ inputs.gradle-cache-read-only }}
         develocity-access-key: ${{ inputs.develocity-access-key }}
-        java-version: ${{ inputs.java-version }}
         java-distribution: ${{ inputs.java-distribution }}
+        java-early-access: ${{ inputs.java-early-access }}
         java-toolchain: ${{ inputs.java-toolchain }}
+        java-version: ${{ inputs.java-version }}
     - name: Build
       id: build
       if: ${{ inputs.publish == 'false' }}
