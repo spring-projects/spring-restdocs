@@ -37,7 +37,6 @@ jobs:
     name: Sync to Maven Central
     needs:
       - build-and-stage-release
-      - verify
     runs-on: ${{ vars.UBUNTU_SMALL || 'ubuntu-latest' }}
     steps:
       - name: Check Out Code
