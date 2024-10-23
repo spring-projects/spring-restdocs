@@ -43,6 +43,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  * Tests for {@link ResponseFieldsSnippet}.
  *
  * @author Andy Wilkinson
+ * @author Sungjun Lee
  */
 public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 
@@ -224,7 +225,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void fieldWithExplictExactlyMatchingType() throws IOException {
+	public void fieldWithExplicitExactlyMatchingType() throws IOException {
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one").type(JsonFieldType.NUMBER)))
 			.document(this.operationBuilder.response().content("{\"a\": 5 }").build());
 		assertThat(this.generatedSnippets.responseFields())
@@ -232,7 +233,7 @@ public class ResponseFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void fieldWithExplictVariesType() throws IOException {
+	public void fieldWithExplicitVariesType() throws IOException {
 		new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one").type(JsonFieldType.VARIES)))
 			.document(this.operationBuilder.response().content("{\"a\": 5 }").build());
 		assertThat(this.generatedSnippets.responseFields())

@@ -44,6 +44,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  * Tests for {@link RequestFieldsSnippet}.
  *
  * @author Andy Wilkinson
+ * @author Sungjun Lee
  */
 public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 
@@ -239,7 +240,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void fieldWithExplictExactlyMatchingType() throws IOException {
+	public void fieldWithExplicitExactlyMatchingType() throws IOException {
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one").type(JsonFieldType.NUMBER)))
 			.document(this.operationBuilder.request("http://localhost").content("{\"a\": 5 }").build());
 		assertThat(this.generatedSnippets.requestFields())
@@ -247,7 +248,7 @@ public class RequestFieldsSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
-	public void fieldWithExplictVariesType() throws IOException {
+	public void fieldWithExplicitVariesType() throws IOException {
 		new RequestFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one").type(JsonFieldType.VARIES)))
 			.document(this.operationBuilder.request("http://localhost").content("{\"a\": 5 }").build());
 		assertThat(this.generatedSnippets.requestFields())
