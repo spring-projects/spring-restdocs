@@ -1,6 +1,7 @@
 plugins {
 	id "java-library"
 	id "maven-publish"
+	id "io.spring.compatibility-test" version "0.0.3"
 }
 
 description = "Spring REST Docs Asciidoctor Extension"
@@ -18,4 +19,12 @@ dependencies {
 	testImplementation("org.springframework:spring-core")
 
 	testRuntimeOnly("org.asciidoctor:asciidoctorj-pdf")
+}
+
+compatibilityTest {
+	dependency("AsciidoctorJ") { asciidoctorj ->
+		asciidoctorj.groupId = "org.asciidoctor"
+		asciidoctorj.artifactId = "asciidoctorj"
+		asciidoctorj.versions = ["3.0.0"]
+	}
 }

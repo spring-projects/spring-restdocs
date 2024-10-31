@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,14 @@ import java.util.function.Supplier;
  *
  * @author Andy Wilkinson
  */
-class SnippetsDirectoryResolver {
+public class SnippetsDirectoryResolver {
 
-	File getSnippetsDirectory(Map<String, Object> attributes) {
+	/**
+	 * Returns the snippets directory derived from the given {@code attributes}.
+	 * @param attributes the attributes
+	 * @return the snippets directory
+	 */
+	public File getSnippetsDirectory(Map<String, Object> attributes) {
 		if (System.getProperty("maven.home") != null) {
 			return getMavenSnippetsDirectory(attributes);
 		}
