@@ -25,8 +25,7 @@ import java.util.function.Supplier;
 
 /**
  * Resolves the directory from which snippets can be read for inclusion in an Asciidoctor
- * document. The resolved directory is relative to the {@code docdir} of the Asciidoctor
- * document that it being rendered.
+ * document. The resolved directory is absolute.
  *
  * @author Andy Wilkinson
  */
@@ -46,7 +45,7 @@ public class SnippetsDirectoryResolver {
 
 	private File getMavenSnippetsDirectory(Map<String, Object> attributes) {
 		Path docdir = Paths.get(getRequiredAttribute(attributes, "docdir"));
-		return new File(docdir.relativize(findPom(docdir).getParent()).toFile(), "target/generated-snippets");
+		return new File(findPom(docdir).getParent().toFile(), "target/generated-snippets").getAbsoluteFile();
 	}
 
 	private Path findPom(Path docdir) {
@@ -63,7 +62,8 @@ public class SnippetsDirectoryResolver {
 
 	private File getGradleSnippetsDirectory(Map<String, Object> attributes) {
 		return new File(getRequiredAttribute(attributes, "gradle-projectdir",
-				() -> getRequiredAttribute(attributes, "projectdir")), "build/generated-snippets");
+				() -> getRequiredAttribute(attributes, "projectdir")), "build/generated-snippets")
+			.getAbsoluteFile();
 	}
 
 	private String getRequiredAttribute(Map<String, Object> attributes, String name) {

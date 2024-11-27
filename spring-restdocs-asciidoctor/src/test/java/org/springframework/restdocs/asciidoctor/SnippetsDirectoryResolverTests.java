@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,13 +39,13 @@ public class SnippetsDirectoryResolverTests {
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
 	@Test
-	public void mavenProjectsUseTargetGeneratedSnippetsRelativeToDocdir() throws IOException {
+	public void mavenProjectsUseTargetGeneratedSnippets() throws IOException {
 		this.temporaryFolder.newFile("pom.xml");
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("docdir", new File(this.temporaryFolder.getRoot(), "src/main/asciidoc").getAbsolutePath());
 		File snippetsDirectory = getMavenSnippetsDirectory(attributes);
-		assertThat(snippetsDirectory).isRelative();
-		assertThat(snippetsDirectory).isEqualTo(new File("../../../target/generated-snippets"));
+		assertThat(snippetsDirectory).isAbsolute();
+		assertThat(snippetsDirectory).isEqualTo(new File(this.temporaryFolder.getRoot(), "target/generated-snippets"));
 	}
 
 	@Test
@@ -69,7 +69,8 @@ public class SnippetsDirectoryResolverTests {
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("gradle-projectdir", "project/dir");
 		File snippetsDirectory = new SnippetsDirectoryResolver().getSnippetsDirectory(attributes);
-		assertThat(snippetsDirectory).isEqualTo(new File("project/dir/build/generated-snippets"));
+		assertThat(snippetsDirectory).isAbsolute();
+		assertThat(snippetsDirectory).isEqualTo(new File("project/dir/build/generated-snippets").getAbsoluteFile());
 	}
 
 	@Test
@@ -78,7 +79,8 @@ public class SnippetsDirectoryResolverTests {
 		attributes.put("gradle-projectdir", "project/dir");
 		attributes.put("projectdir", "fallback/dir");
 		File snippetsDirectory = new SnippetsDirectoryResolver().getSnippetsDirectory(attributes);
-		assertThat(snippetsDirectory).isEqualTo(new File("project/dir/build/generated-snippets"));
+		assertThat(snippetsDirectory).isAbsolute();
+		assertThat(snippetsDirectory).isEqualTo(new File("project/dir/build/generated-snippets").getAbsoluteFile());
 	}
 
 	@Test
@@ -86,7 +88,8 @@ public class SnippetsDirectoryResolverTests {
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("projectdir", "project/dir");
 		File snippetsDirectory = new SnippetsDirectoryResolver().getSnippetsDirectory(attributes);
-		assertThat(snippetsDirectory).isEqualTo(new File("project/dir/build/generated-snippets"));
+		assertThat(snippetsDirectory).isAbsolute();
+		assertThat(snippetsDirectory).isEqualTo(new File("project/dir/build/generated-snippets").getAbsoluteFile());
 	}
 
 	@Test
