@@ -16,15 +16,18 @@
 
 package org.springframework.restdocs.constraints;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.NotBlank;
@@ -56,6 +59,13 @@ public class ValidatorConstraintResolverTests {
 	}
 
 	@Test
+	public void singleGroupedFieldConstraint() {
+		List<Constraint> constraints = this.resolver.resolveForProperty("singleGrouped", ConstrainedFields.class);
+		assertThat(constraints).hasSize(1);
+		assertThat(constraints.get(0)).is(constraint(NotNull.class).groups(Serializable.class));
+	}
+
+	@Test
 	public void multipleFieldConstraints() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("multiple", ConstrainedFields.class);
 		assertThat(constraints).hasSize(2);
@@ -83,6 +93,9 @@ public class ValidatorConstraintResolverTests {
 
 		@NotNull
 		private String single;
+
+		@NotNull(groups = Serializable.class)
+		private String singleGrouped;
 
 		@NotNull
 		@Size(min = 8, max = 16)
@@ -118,13 +131,21 @@ public class ValidatorConstraintResolverTests {
 
 		private final Map<String, Object> configuration = new HashMap<>();
 
+		private final Set<Class<?>> groups = new HashSet<>();
+
 		private ConstraintCondition(Class<?> annotation) {
 			this.annotation = annotation;
-			as(new TextDescription("Constraint named %s with configuration %s", this.annotation, this.configuration));
+			as(new TextDescription("Constraint named %s with configuration %s and groups %s", this.annotation,
+					this.configuration, this.groups));
 		}
 
 		private ConstraintCondition config(String key, Object value) {
 			this.configuration.put(key, value);
+			return this;
+		}
+
+		private ConstraintCondition groups(Class<?>... groups) {
+			this.groups.addAll(List.of(groups));
 			return this;
 		}
 
@@ -135,6 +156,11 @@ public class ValidatorConstraintResolverTests {
 			}
 			for (Entry<String, Object> entry : this.configuration.entrySet()) {
 				if (!constraint.getConfiguration().get(entry.getKey()).equals(entry.getValue())) {
+					return false;
+				}
+			}
+			for (Class<?> group : this.groups) {
+				if (!constraint.getGroups().contains(group)) {
 					return false;
 				}
 			}
