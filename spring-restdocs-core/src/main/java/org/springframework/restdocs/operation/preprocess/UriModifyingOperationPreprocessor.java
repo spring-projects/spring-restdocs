@@ -66,6 +66,8 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 
 	private String port;
 
+	private String pathPrefix;
+
 	/**
 	 * Modifies the URI to use the given {@code scheme}. {@code null}, the default, will
 	 * leave the scheme unchanged.
@@ -100,6 +102,17 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 	}
 
 	/**
+	 * Modifies the URI to add the given path prefix.
+	 * @param pathPrefix the path prefix to add
+	 * @return {@code this}
+	 */
+	public UriModifyingOperationPreprocessor pathPrefix(String pathPrefix) {
+		this.pathPrefix = pathPrefix;
+		this.contentModifier.setPathPrefix(pathPrefix);
+		return this;
+	}
+
+	/**
 	 * Removes the port from the URI.
 	 * @return {@code this}
 	 */
@@ -129,6 +142,10 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 			else {
 				uriBuilder.port(null);
 			}
+		}
+		if (this.pathPrefix != null) {
+			String rawPath = request.getUri().getRawPath();
+			uriBuilder.replacePath(this.pathPrefix + ((rawPath != null) ? rawPath : ""));
 		}
 		URI modifiedUri = uriBuilder.build(true).toUri();
 		HttpHeaders modifiedHeaders = modify(request.getHeaders());
@@ -177,6 +194,8 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 
 		private String port;
 
+		private String pathPrefix;
+
 		private void setScheme(String scheme) {
 			this.scheme = scheme;
 		}
@@ -187,6 +206,10 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 
 		private void setPort(String port) {
 			this.port = port;
+		}
+
+		private void setPathPrefix(String pathPrefix) {
+			this.pathPrefix = pathPrefix;
 		}
 
 		@Override
@@ -204,7 +227,8 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 
 		private String modify(String input) {
 			List<String> replacements = Arrays.asList(this.scheme, this.host,
-					StringUtils.hasText(this.port) ? ":" + this.port : this.port);
+					StringUtils.hasText(this.port) ? ":" + this.port : this.port,
+					this.pathPrefix);
 
 			int previous = 0;
 
