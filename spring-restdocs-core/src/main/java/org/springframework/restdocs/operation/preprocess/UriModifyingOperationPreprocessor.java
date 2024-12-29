@@ -228,14 +228,15 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 		private String modify(String input) {
 			List<String> replacements = Arrays.asList(this.scheme, this.host,
 					StringUtils.hasText(this.port) ? ":" + this.port : this.port,
-					this.pathPrefix);
+					this.pathPrefix == null ? "" : this.pathPrefix.startsWith("/") ? this.pathPrefix : "/" + this.pathPrefix);
 
 			int previous = 0;
 
 			Matcher matcher = SCHEME_HOST_PORT_PATTERN.matcher(input);
 			StringBuilder builder = new StringBuilder();
 			while (matcher.find()) {
-				for (int i = 1; i <= matcher.groupCount(); i++) {
+				int matcherGroupCount = matcher.groupCount();
+				for (int i = 1; i <= matcherGroupCount; i++) {
 					if (matcher.start(i) >= 0) {
 						builder.append(input, previous, matcher.start(i));
 					}
@@ -243,6 +244,9 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 						previous = matcher.end(i);
 					}
 					builder.append(getReplacement(matcher.group(i), replacements.get(i - 1)));
+					if (i == matcherGroupCount) {
+						builder.append(replacements.get(i));
+					}
 				}
 			}
 
