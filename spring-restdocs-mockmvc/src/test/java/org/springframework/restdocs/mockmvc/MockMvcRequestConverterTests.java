@@ -190,8 +190,8 @@ public class MockMvcRequestConverterTests {
 
 	@Test
 	public void mockMultipartFileUploadByPart() {
-		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.multipart("/foo")
-			.part(new MockPart("file", "", new byte[] { 1, 2, 3, 4 }, null)));
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.multipart("/foo").part(new MockPart("file", "", new byte[] { 1, 2, 3, 4 })));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
 		assertThat(request.getParts().size()).isEqualTo(1);
@@ -205,29 +205,13 @@ public class MockMvcRequestConverterTests {
 	}
 
 	@Test
-	public void mockMultipartFileUploadByPartWithContentType() {
-		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.multipart("/foo")
-			.part(new MockPart("file", "original", new byte[] { 1, 2, 3, 4 }, MediaType.IMAGE_PNG)));
-		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
-		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
-		assertThat(request.getParts().size()).isEqualTo(1);
-		OperationRequestPart part = request.getParts().iterator().next();
-		assertThat(part.getName()).isEqualTo("file");
-		assertThat(part.getSubmittedFileName()).isEqualTo("original");
-		assertThat(part.getHeaders().getContentType()).isEqualTo(MediaType.IMAGE_PNG);
-		assertThat(part.getContent()).isEqualTo(new byte[] { 1, 2, 3, 4 });
-	}
-
-	@Test
 	public void mockMultiPartFileUploadByPartAndFile() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.multipart("/foo")
-			.part(new MockPart("file", "original", new byte[] { 1, 2, 3, 4 }, MediaType.IMAGE_PNG))
-			.part(new MockPart("file", "original", new byte[] { 1, 2, 3, 4 }, MediaType.IMAGE_PNG))
-			.file(new MockMultipartFile("file", "original", "image/png", new byte[] { 1, 2, 3, 4 }))
-			.part(new MockPart("file_part_only", "original_part_only", new byte[] { 5, 6, 7 },
-					MediaType.APPLICATION_PDF))
-			.file(new MockMultipartFile("file_file_only", "original_file_only", "application/pdf",
-					new byte[] { 8, 9, 10 })));
+			.part(new MockPart("file", "original", new byte[] { 1, 2, 3, 4 }))
+			.part(new MockPart("file", "original", new byte[] { 1, 2, 3, 4 }))
+			.file(new MockMultipartFile("file", "original", null, new byte[] { 1, 2, 3, 4 }))
+			.part(new MockPart("file_part_only", "original_part_only", new byte[] { 5, 6, 7 }))
+			.file(new MockMultipartFile("file_file_only", "original_file_only", null, new byte[] { 8, 9, 10 })));
 
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
