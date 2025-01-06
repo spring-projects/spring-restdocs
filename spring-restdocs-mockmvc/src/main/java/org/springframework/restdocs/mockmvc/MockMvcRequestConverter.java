@@ -156,12 +156,45 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 
 	private List<OperationRequestPart> extractParts(MockHttpServletRequest servletRequest)
 			throws IOException, ServletException {
-		List<OperationRequestPart> parts = new ArrayList<>();
-		parts.addAll(extractServletRequestParts(servletRequest));
+		List<OperationRequestPart> extractedPart = extractServletRequestParts(servletRequest);
+		List<OperationRequestPart> parts = new ArrayList<>(extractedPart);
 		if (servletRequest instanceof MockMultipartHttpServletRequest) {
-			parts.addAll(extractMultipartRequestParts((MockMultipartHttpServletRequest) servletRequest));
+			List<OperationRequestPart> extractedMultipartPart = extractMultipartRequestParts(
+					(MockMultipartHttpServletRequest) servletRequest);
+
+			for (OperationRequestPart candidate : extractedMultipartPart) {
+				boolean isDuplicated = false;
+				for (OperationRequestPart part : extractedPart) {
+					isDuplicated = checkIsDuplicated(candidate, part);
+
+					if (isDuplicated) {
+						extractedPart.remove(part);
+						break;
+					}
+				}
+				if (!isDuplicated) {
+					parts.add(candidate);
+				}
+			}
 		}
 		return parts;
+	}
+
+	private static boolean checkIsDuplicated(OperationRequestPart candidate, OperationRequestPart part) {
+		boolean isDuplicated;
+		boolean isDuplicatedName = candidate.getName().equals(part.getName());
+		boolean isDuplicatedFileName = (candidate.getSubmittedFileName() == null && part.getSubmittedFileName() == null)
+				|| candidate.getSubmittedFileName().equals(part.getSubmittedFileName());
+		boolean isDuplicatedContent = candidate.getContentAsString().equals(part.getContentAsString());
+
+		HttpHeaders candidateHeaders = new HttpHeaders();
+		candidateHeaders.putAll(candidate.getHeaders());
+		candidateHeaders.setContentDispositionFormData(candidate.getName(), candidate.getSubmittedFileName());
+		HttpHeaders partHeaders = part.getHeaders();
+
+		boolean isDuplicatedHeaders = candidateHeaders.equals(partHeaders);
+		isDuplicated = isDuplicatedName && isDuplicatedFileName && isDuplicatedContent && isDuplicatedHeaders;
+		return isDuplicated;
 	}
 
 	private List<OperationRequestPart> extractServletRequestParts(MockHttpServletRequest servletRequest)
