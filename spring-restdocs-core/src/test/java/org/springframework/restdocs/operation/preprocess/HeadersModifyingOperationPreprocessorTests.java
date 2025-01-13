@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 /**
  * Tests for {@link HeadersModifyingOperationPreprocessor}.
@@ -47,60 +48,66 @@ public class HeadersModifyingOperationPreprocessorTests {
 	@Test
 	public void addNewHeader() {
 		this.preprocessor.add("a", "alpha");
-		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders()).containsEntry("a",
-				Arrays.asList("alpha"));
-		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders()).containsEntry("a",
-				Arrays.asList("alpha"));
+		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().get("a"))
+			.isEqualTo(Arrays.asList("alpha"));
+		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders().get("a"))
+			.isEqualTo(Arrays.asList("alpha"));
 	}
 
 	@Test
 	public void addValueToExistingHeader() {
 		this.preprocessor.add("a", "alpha");
-		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple"))).getHeaders())
-			.containsEntry("a", Arrays.asList("apple", "alpha"));
-		assertThat(this.preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple"))).getHeaders())
-			.containsEntry("a", Arrays.asList("apple", "alpha"));
+		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple")))
+			.getHeaders()
+			.headerSet()).contains(entry("a", Arrays.asList("apple", "alpha")));
+		assertThat(this.preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple")))
+			.getHeaders()
+			.headerSet()).contains(entry("a", Arrays.asList("apple", "alpha")));
 	}
 
 	@Test
 	public void setNewHeader() {
 		this.preprocessor.set("a", "alpha", "avocado");
-		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders()).containsEntry("a",
-				Arrays.asList("alpha", "avocado"));
-		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders()).containsEntry("a",
-				Arrays.asList("alpha", "avocado"));
+		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().headerSet())
+			.contains(entry("a", Arrays.asList("alpha", "avocado")));
+		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders().headerSet())
+			.contains(entry("a", Arrays.asList("alpha", "avocado")));
 	}
 
 	@Test
 	public void setExistingHeader() {
 		this.preprocessor.set("a", "alpha", "avocado");
-		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple"))).getHeaders())
-			.containsEntry("a", Arrays.asList("alpha", "avocado"));
-		assertThat(this.preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple"))).getHeaders())
-			.containsEntry("a", Arrays.asList("alpha", "avocado"));
+		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple")))
+			.getHeaders()
+			.headerSet()).contains(entry("a", Arrays.asList("alpha", "avocado")));
+		assertThat(this.preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple")))
+			.getHeaders()
+			.headerSet()).contains(entry("a", Arrays.asList("alpha", "avocado")));
 	}
 
 	@Test
 	public void removeNonExistentHeader() {
 		this.preprocessor.remove("a");
-		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders()).doesNotContainKey("a");
-		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders()).doesNotContainKey("a");
+		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().headerNames()).doesNotContain("a");
+		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders().headerNames()).doesNotContain("a");
 	}
 
 	@Test
 	public void removeHeader() {
 		this.preprocessor.remove("a");
-		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple"))).getHeaders())
-			.doesNotContainKey("a");
-		assertThat(this.preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple"))).getHeaders())
-			.doesNotContainKey("a");
+		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple")))
+			.getHeaders()
+			.headerNames()).doesNotContain("a");
+		assertThat(this.preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple")))
+			.getHeaders()
+			.headerNames()).doesNotContain("a");
 	}
 
 	@Test
 	public void removeHeaderValueForNonExistentHeader() {
 		this.preprocessor.remove("a", "apple");
-		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders()).doesNotContainKey("a");
-		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders()).doesNotContainKey("a");
+		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().headerNames()).doesNotContain("a");
+		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders().headerNames()).doesNotContain("a");
 	}
 
 	@Test
@@ -108,20 +115,24 @@ public class HeadersModifyingOperationPreprocessorTests {
 		this.preprocessor.remove("a", "apple");
 		assertThat(
 				this.preprocessor.preprocess(createRequest((headers) -> headers.addAll("a", List.of("apple", "alpha"))))
-					.getHeaders())
-			.containsEntry("a", Arrays.asList("alpha"));
+					.getHeaders()
+					.headerSet())
+			.contains(entry("a", Arrays.asList("alpha")));
 		assertThat(this.preprocessor
 			.preprocess(createResponse((headers) -> headers.addAll("a", List.of("apple", "alpha"))))
-			.getHeaders()).containsEntry("a", Arrays.asList("alpha"));
+			.getHeaders()
+			.headerSet()).contains(entry("a", Arrays.asList("alpha")));
 	}
 
 	@Test
 	public void removeHeaderValueWithSingleValueRemovesEntryEntirely() {
 		this.preprocessor.remove("a", "apple");
-		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple"))).getHeaders())
-			.doesNotContainKey("a");
-		assertThat(this.preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple"))).getHeaders())
-			.doesNotContainKey("a");
+		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple")))
+			.getHeaders()
+			.headerNames()).doesNotContain("a");
+		assertThat(this.preprocessor.preprocess(createResponse((headers) -> headers.add("a", "apple")))
+			.getHeaders()
+			.headerNames()).doesNotContain("a");
 	}
 
 	@Test
@@ -133,10 +144,10 @@ public class HeadersModifyingOperationPreprocessorTests {
 			headers.add("bravo", "bravo");
 		};
 		this.preprocessor.removeMatching("^a.*");
-		assertThat(this.preprocessor.preprocess(createRequest(headersCustomizer)).getHeaders()).containsOnlyKeys("Host",
-				"bravo");
-		assertThat(this.preprocessor.preprocess(createResponse(headersCustomizer)).getHeaders())
-			.containsOnlyKeys("bravo");
+		assertThat(this.preprocessor.preprocess(createRequest(headersCustomizer)).getHeaders().headerNames())
+			.containsOnly("Host", "bravo");
+		assertThat(this.preprocessor.preprocess(createResponse(headersCustomizer)).getHeaders().headerNames())
+			.containsOnly("bravo");
 	}
 
 	private OperationRequest createRequest() {

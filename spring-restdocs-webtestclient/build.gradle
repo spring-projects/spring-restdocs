@@ -21,10 +21,3 @@ dependencies {
 
 	testRuntimeOnly("org.springframework:spring-context")
 }
-
-compatibilityTest {
-	dependency("Spring Framework") { springFramework ->
-		springFramework.groupId = "org.springframework"
-		springFramework.versions = ["6.0.+", "6.2.+"]
-	}
-}

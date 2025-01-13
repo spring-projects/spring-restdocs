@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 
 	private List<Map<String, String>> headers(OperationResponse response) {
 		List<Map<String, String>> headers = new ArrayList<>();
-		for (Entry<String, List<String>> header : response.getHeaders().entrySet()) {
+		for (Entry<String, List<String>> header : response.getHeaders().headerSet()) {
 			List<String> values = header.getValue();
 			for (String value : values) {
 				headers.add(header(header.getKey(), value));

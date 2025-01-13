@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ import org.springframework.restdocs.operation.RequestCookie;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.entry;
 
 /**
  * Tests for {@link RestAssuredRequestConverter}.
@@ -98,10 +99,8 @@ public class RestAssuredRequestConverterTests {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).header("Foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getHeaders()).hasSize(2);
-		assertThat(request.getHeaders()).containsEntry("Foo", Collections.singletonList("bar"));
-		assertThat(request.getHeaders()).containsEntry("Host",
-				Collections.singletonList("localhost:" + tomcat.getPort()));
+		assertThat(request.getHeaders().headerSet()).containsOnly(entry("Foo", Collections.singletonList("bar")),
+				entry("Host", Collections.singletonList("localhost:" + tomcat.getPort())));
 	}
 
 	@Test
@@ -112,11 +111,9 @@ public class RestAssuredRequestConverterTests {
 			.accept("application/json");
 		requestSpec.get("/");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
-		assertThat(request.getHeaders()).hasSize(3);
-		assertThat(request.getHeaders()).containsEntry("Foo", Collections.singletonList("bar"));
-		assertThat(request.getHeaders()).containsEntry("Accept", Collections.singletonList("application/json"));
-		assertThat(request.getHeaders()).containsEntry("Host",
-				Collections.singletonList("localhost:" + tomcat.getPort()));
+		assertThat(request.getHeaders().headerSet()).containsOnly(entry("Foo", Collections.singletonList("bar")),
+				entry("Accept", Collections.singletonList("application/json")),
+				entry("Host", Collections.singletonList("localhost:" + tomcat.getPort())));
 	}
 
 	@Test
@@ -153,8 +150,7 @@ public class RestAssuredRequestConverterTests {
 		assertThat(parts).extracting("name").containsExactly("a", "b");
 		assertThat(parts).extracting("submittedFileName").containsExactly("a.txt", "file");
 		assertThat(parts).extracting("contentAsString").containsExactly("alpha", "{\"foo\":\"bar\"}");
-		assertThat(parts).extracting("headers")
-			.extracting(HttpHeaders.CONTENT_TYPE)
+		assertThat(parts).map((part) -> part.getHeaders().get(HttpHeaders.CONTENT_TYPE))
 			.containsExactly(Collections.singletonList(MediaType.TEXT_PLAIN_VALUE),
 					Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
 	}
