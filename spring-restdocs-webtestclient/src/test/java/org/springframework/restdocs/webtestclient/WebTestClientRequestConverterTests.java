@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 
@@ -99,8 +100,8 @@ public class WebTestClientRequestConverterTests {
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
-		assertThat(request.getHeaders()).containsEntry("a", Arrays.asList("alpha", "apple"));
-		assertThat(request.getHeaders()).containsEntry("b", Arrays.asList("bravo"));
+		assertThat(request.getHeaders().headerSet()).contains(entry("a", Arrays.asList("alpha", "apple")),
+				entry("b", Arrays.asList("bravo")));
 	}
 
 	@Test
@@ -266,7 +267,7 @@ public class WebTestClientRequestConverterTests {
 		OperationRequestPart part = request.getParts().iterator().next();
 		assertThat(part.getName()).isEqualTo("file");
 		assertThat(part.getSubmittedFileName()).isNull();
-		assertThat(part.getHeaders()).hasSize(2);
+		assertThat(part.getHeaders().size()).isEqualTo(2);
 		assertThat(part.getHeaders().getContentLength()).isEqualTo(4L);
 		assertThat(part.getHeaders().getContentDisposition().getName()).isEqualTo("file");
 		assertThat(part.getContent()).containsExactly(1, 2, 3, 4);
@@ -303,7 +304,7 @@ public class WebTestClientRequestConverterTests {
 		OperationRequestPart part = request.getParts().iterator().next();
 		assertThat(part.getName()).isEqualTo("file");
 		assertThat(part.getSubmittedFileName()).isEqualTo("image.png");
-		assertThat(part.getHeaders()).hasSize(3);
+		assertThat(part.getHeaders().size()).isEqualTo(3);
 		assertThat(part.getHeaders().getContentLength()).isEqualTo(4);
 		ContentDisposition contentDisposition = part.getHeaders().getContentDisposition();
 		assertThat(contentDisposition.getName()).isEqualTo("file");

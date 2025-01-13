@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.ResponseCookie;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 /**
  * Tests for {@link MockMvcResponseConverter}.
@@ -57,9 +58,8 @@ public class MockMvcResponseConverterTests {
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 		OperationResponse operationResponse = this.factory.convert(response);
-		assertThat(operationResponse.getHeaders()).hasSize(1);
-		assertThat(operationResponse.getHeaders()).containsEntry(HttpHeaders.SET_COOKIE,
-				Collections.singletonList("name=value; Domain=localhost; HttpOnly"));
+		assertThat(operationResponse.getHeaders().headerSet()).containsOnly(
+				entry(HttpHeaders.SET_COOKIE, Collections.singletonList("name=value; Domain=localhost; HttpOnly")));
 		assertThat(operationResponse.getCookies()).hasSize(1);
 		assertThat(operationResponse.getCookies()).first().extracting(ResponseCookie::getName).isEqualTo("name");
 		assertThat(operationResponse.getCookies()).first().extracting(ResponseCookie::getValue).isEqualTo("value");

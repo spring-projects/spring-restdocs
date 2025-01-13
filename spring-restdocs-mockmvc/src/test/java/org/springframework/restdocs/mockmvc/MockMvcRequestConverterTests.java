@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -78,8 +79,8 @@ public class MockMvcRequestConverterTests {
 				MockMvcRequestBuilders.get("/foo").header("a", "alpha", "apple").header("b", "bravo"));
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
-		assertThat(request.getHeaders()).containsEntry("a", Arrays.asList("alpha", "apple"));
-		assertThat(request.getHeaders()).containsEntry("b", Arrays.asList("bravo"));
+		assertThat(request.getHeaders().headerSet()).contains(entry("a", Arrays.asList("alpha", "apple")),
+				entry("b", Arrays.asList("bravo")));
 	}
 
 	@Test

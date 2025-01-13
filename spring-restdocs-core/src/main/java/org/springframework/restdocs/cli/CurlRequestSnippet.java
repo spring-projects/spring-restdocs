@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,7 +132,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeHeaders(CliOperationRequest request, List<String> lines) {
-		for (Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
+		for (Entry<String, List<String>> entry : request.getHeaders().headerSet()) {
 			for (String header : entry.getValue()) {
 				if (StringUtils.hasText(request.getContentAsString()) && HttpHeaders.CONTENT_TYPE.equals(entry.getKey())
 						&& MediaType.APPLICATION_FORM_URLENCODED.equals(request.getHeaders().getContentType())) {

@@ -22,10 +22,3 @@ dependencies {
 	testImplementation("org.hamcrest:hamcrest-library")
 	testImplementation("org.mockito:mockito-core")
 }
-
-compatibilityTest {
-	dependency("Spring Framework") { springFramework ->
-		springFramework.groupId = "org.springframework"
-		springFramework.versions = ["6.0.+", "6.2.+"]
-	}
-}
