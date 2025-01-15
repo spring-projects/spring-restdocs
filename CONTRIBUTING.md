@@ -8,11 +8,10 @@ If you would like to contribute something, or simply want to work with the code,
 This project adheres to the Contributor Covenant [code of conduct][1]. By participating, you are expected to uphold this code.
 Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
 
-## Sign the contributor license agreement
+## Include a Signed-off-by Trailer
 
-Before we accept a non-trivial patch or pull request we will need you to sign the [contributor's license agreement (CLA)][2].
-Signing the contributor's agreement does not grant anyone commit rights to the main repository, but it does mean that we can accept your contributions, and you will get an author credit if we do.
-
+All commits must include a _Signed-off-by_ trailer at the end of each commit message to indicate that the contributor agrees to the [Developer Certificate of Origin (DCO)](https://en.wikipedia.org/wiki/Developer_Certificate_of_Origin).
+For additional details, please refer to the ["Hello DCO, Goodbye CLA: Simplifying Contributions to Spring"](https://spring.io/blog/2025/01/06/hello-dco-goodbye-cla-simplifying-contributions-to-spring) blog post.
 
 ## Code conventions and housekeeping
 
