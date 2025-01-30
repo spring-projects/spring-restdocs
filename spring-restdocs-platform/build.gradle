@@ -9,12 +9,12 @@ javaPlatform {
 dependencies {
 	constraints {
 		api("com.samskivert:jmustache:$jmustacheVersion")
-		api("jakarta.servlet:jakarta.servlet-api:6.0.0")
+		api("jakarta.servlet:jakarta.servlet-api:6.1.0")
 		api("jakarta.validation:jakarta.validation-api:3.1.0")
 		api("junit:junit:4.13.1")
 		api("org.apache.pdfbox:pdfbox:2.0.27")
-		api("org.apache.tomcat.embed:tomcat-embed-core:10.1.1")
-		api("org.apache.tomcat.embed:tomcat-embed-el:10.1.1")
+		api("org.apache.tomcat.embed:tomcat-embed-core:11.0.2")
+		api("org.apache.tomcat.embed:tomcat-embed-el:11.0.2")
 		api("org.asciidoctor:asciidoctorj:2.5.7")
 		api("org.asciidoctor:asciidoctorj-pdf:2.3.3")
 		api("org.assertj:assertj-core:3.23.1")
