@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -210,7 +210,7 @@ public class RestDocumentationConfigurerTests {
 		headers.add("Foo", "value");
 		OperationRequest request = new OperationRequestFactory().create(URI.create("http://localhost:8080"),
 				HttpMethod.GET, null, headers, null, Collections.emptyList());
-		assertThat(preprocessor.preprocess(request).getHeaders()).doesNotContainKey("Foo");
+		assertThat(preprocessor.preprocess(request).getHeaders().headerNames()).doesNotContain("Foo");
 	}
 
 	@Test
@@ -224,7 +224,7 @@ public class RestDocumentationConfigurerTests {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Foo", "value");
 		OperationResponse response = new OperationResponseFactory().create(HttpStatus.OK, headers, null);
-		assertThat(preprocessor.preprocess(response).getHeaders()).doesNotContainKey("Foo");
+		assertThat(preprocessor.preprocess(response).getHeaders().headerNames()).doesNotContain("Foo");
 	}
 
 	private RestDocumentationContext createContext() {
