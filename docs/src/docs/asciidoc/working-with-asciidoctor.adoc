@@ -28,6 +28,7 @@ This section covers how to include Asciidoc snippets.
 
 You can use a macro named `operation` to import all or some of the snippets that have been generated for a specific operation.
 It is made available by including `spring-restdocs-asciidoctor` in your project's <<getting-started-build-configuration, build configuration>>.
+`spring-restdocs-asciidoctor` requires AsciidoctorJ 3.0.
 
 The target of the macro is the name of the operation.
 In its simplest form, you can use the macro to include all of the snippets for an operation, as shown in the following example:

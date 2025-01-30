@@ -78,6 +78,7 @@ If you want to use `WebTestClient` or REST Assured rather than MockMvc, add a de
 <4> Add `spring-restdocs-asciidoctor` as a dependency of the Asciidoctor plugin.
 This will automatically configure the `snippets` attribute for use in your `.adoc` files to point to `target/generated-snippets`.
 It will also allow you to use the `operation` block macro.
+It requires AsciidoctorJ 3.0.
 
 [source,indent=0,subs="verbatim,attributes",role="secondary"]
 .Gradle
@@ -114,6 +115,7 @@ It will also allow you to use the `operation` block macro.
 <3> Add a dependency on `spring-restdocs-asciidoctor` in the `asciidoctorExt` configuration.
 This will automatically configure the `snippets` attribute for use in your `.adoc` files to point to `build/generated-snippets`.
 It will also allow you to use the `operation` block macro.
+It requires AsciidoctorJ 3.0.
 <4> Add a dependency on `spring-restdocs-mockmvc` in the `testImplementation` configuration.
 If you want to use `WebTestClient` or REST Assured rather than MockMvc, add a dependency on `spring-restdocs-webtestclient` or `spring-restdocs-restassured` respectively instead.
 <5> Configure a `snippetsDir` property that defines the output location for generated snippets.
