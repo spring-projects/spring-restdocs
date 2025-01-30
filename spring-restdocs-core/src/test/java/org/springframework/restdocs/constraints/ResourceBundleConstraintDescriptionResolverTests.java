@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,11 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListResourceBundle;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.money.MonetaryAmount;
 
@@ -61,7 +63,11 @@ import org.hibernate.validator.constraints.Range;
 import org.junit.Test;
 
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -181,12 +187,6 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	@Test
-	public void defaultMessageEmailHibernateValidator() {
-		assertThat(constraintDescriptionForField("emailHibernateValidator"))
-			.isEqualTo("Must be a well-formed email address");
-	}
-
-	@Test
 	public void defaultMessageLength() {
 		assertThat(constraintDescriptionForField("length")).isEqualTo("Length must be between 2 and 10 inclusive");
 	}
@@ -220,11 +220,6 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	@Test
 	public void defaultMessageNotBlank() {
 		assertThat(constraintDescriptionForField("notBlank")).isEqualTo("Must not be blank");
-	}
-
-	@Test
-	public void defaultMessageNotBlankHibernateValidator() {
-		assertThat(constraintDescriptionForField("notBlankHibernateValidator")).isEqualTo("Must not be blank");
 	}
 
 	@Test
@@ -296,6 +291,29 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		String description = new ResourceBundleConstraintDescriptionResolver(bundle)
 			.resolveDescription(new Constraint(NotNull.class.getName(), Collections.<String, Object>emptyMap()));
 		assertThat(description).isEqualTo("Not null");
+	}
+
+	@Test
+	public void allBeanValidationConstraintsAreTested() throws Exception {
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource[] resources = resolver.getResources("jakarta/validation/constraints/*.class");
+		Set<Class<?>> beanValidationConstraints = new HashSet<>();
+		for (Resource resource : resources) {
+			String className = ClassUtils.convertResourcePathToClassName(((ClassPathResource) resource).getPath());
+			if (className.endsWith(".class")) {
+				className = className.substring(0, className.length() - 6);
+			}
+			Class<?> type = Class.forName(className);
+			if (type.isAnnotation() && type.isAnnotationPresent(jakarta.validation.Constraint.class)) {
+				beanValidationConstraints.add(type);
+			}
+		}
+		ReflectionUtils.doWithFields(Constrained.class, (field) -> {
+			for (Annotation annotation : field.getAnnotations()) {
+				beanValidationConstraints.remove(annotation.annotationType());
+			}
+		});
+		assertThat(beanValidationConstraints).isEmpty();
 	}
 
 	private String constraintDescriptionForField(String name) {
@@ -372,10 +390,6 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		@Email
 		private String email;
 
-		@SuppressWarnings("deprecation")
-		@org.hibernate.validator.constraints.Email
-		private String emailHibernateValidator;
-
 		@Length(min = 2, max = 10)
 		private String length;
 
@@ -397,16 +411,8 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 		@NotBlank
 		private String notBlank;
 
-		@SuppressWarnings("deprecation")
-		@org.hibernate.validator.constraints.NotBlank
-		private String notBlankHibernateValidator;
-
 		@NotEmpty
 		private String notEmpty;
-
-		@SuppressWarnings("deprecation")
-		@org.hibernate.validator.constraints.NotEmpty
-		private String notEmptyHibernateValidator;
 
 		@Positive
 		private int positive;

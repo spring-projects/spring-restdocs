@@ -35,8 +35,8 @@ nohttp {
 ext {
 	javadocLinks = [
 		"https://docs.spring.io/spring-framework/docs/$springFrameworkVersion/javadoc-api/",
-		"https://docs.jboss.org/hibernate/validator/7.0/api/",
-		"https://jakarta.ee/specifications/bean-validation/3.0/apidocs/"
+		"https://docs.jboss.org/hibernate/validator/9.0/api/",
+		"https://jakarta.ee/specifications/bean-validation/3.1/apidocs/"
 	] as String[]
 }
 

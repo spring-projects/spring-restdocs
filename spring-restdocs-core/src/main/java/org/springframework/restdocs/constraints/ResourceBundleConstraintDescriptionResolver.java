@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ import org.springframework.util.StringUtils;
  * {@code jakarta.validation.constraints.NotNull} is
  * {@code jakarta.validation.constraints.NotNull.description}.
  * <p>
- * Default descriptions are provided for Bean Validation 2.0's constraints:
+ * Default descriptions are provided for all of Bean Validation 3.1's constraints:
  *
  * <ul>
  * <li>{@link AssertFalse}
@@ -92,20 +92,18 @@ import org.springframework.util.StringUtils;
  * </ul>
  *
  * <p>
- * Default descriptions are also provided for Hibernate Validator's constraints:
+ * Default descriptions are also provided for the following Hibernate Validator
+ * constraints:
  *
  * <ul>
  * <li>{@link CodePointLength}
  * <li>{@link CreditCardNumber}
  * <li>{@link Currency}
  * <li>{@link EAN}
- * <li>{@link org.hibernate.validator.constraints.Email}
  * <li>{@link Length}
  * <li>{@link LuhnCheck}
  * <li>{@link Mod10Check}
  * <li>{@link Mod11Check}
- * <li>{@link org.hibernate.validator.constraints.NotBlank}
- * <li>{@link org.hibernate.validator.constraints.NotEmpty}
  * <li>{@link Range}
  * <li>{@link URL}
  * </ul>
