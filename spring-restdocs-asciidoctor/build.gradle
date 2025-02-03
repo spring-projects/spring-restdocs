@@ -11,9 +11,7 @@ dependencies {
 	internal(platform(project(":spring-restdocs-platform")))
 
 	testImplementation("junit:junit")
-	testImplementation("org.apache.pdfbox:pdfbox") {
-		exclude group: "commons-logging", module: "commons-logging"
-	}
+	testImplementation("org.apache.pdfbox:pdfbox")
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.springframework:spring-core")
 
