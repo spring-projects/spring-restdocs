@@ -6,5 +6,6 @@ bin
 build
 !buildSrc/src/main/groovy/org/springframework/restdocs/build/
 target
-.idea
+.idea/*
+!.idea/icon.svg
 *.iml
