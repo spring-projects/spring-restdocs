@@ -181,7 +181,7 @@ If you are not using Spring Boot and its plugin management, declare the plugin w
 ----
 	bootJar {
 		dependsOn asciidoctor <1>
-		from ("${asciidoctor.outputDir}/html5") { <2>
+		from ("${asciidoctor.outputDir}") { <2>
 			into 'static/docs'
 		}
 	}
