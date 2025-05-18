@@ -68,7 +68,7 @@ public class ValidatorConstraintResolver implements ConstraintResolver {
 		if (propertyDescriptor != null) {
 			for (ConstraintDescriptor<?> constraintDescriptor : propertyDescriptor.getConstraintDescriptors()) {
 				constraints.add(new Constraint(constraintDescriptor.getAnnotation().annotationType().getName(),
-						constraintDescriptor.getAttributes()));
+						constraintDescriptor.getAttributes(), constraintDescriptor.getGroups()));
 			}
 		}
 		return constraints;
