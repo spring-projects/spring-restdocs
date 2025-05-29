@@ -34,6 +34,8 @@ import org.springframework.http.MediaType;
 class HalLinkExtractor extends AbstractJsonLinkExtractor {
 
 	static final MediaType HAL_MEDIA_TYPE = new MediaType("application", "hal+json");
+	static final MediaType VND_HAL_MEDIA_TYPE = new MediaType("application", "vnd.hal+json");
+	static final MediaType HAL_FORMS_MEDIA_TYPE = new MediaType("application", "prs.hal-forms+json");
 
 	@Override
 	public Map<String, List<Link>> extractLinks(Map<String, Object> json) {
