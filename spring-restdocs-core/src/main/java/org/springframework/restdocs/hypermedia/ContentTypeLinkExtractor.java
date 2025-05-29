@@ -30,6 +30,7 @@ import org.springframework.restdocs.operation.OperationResponse;
  * content type.
  *
  * @author Andy Wilkinson
+ * @author Oliver Drotbohm
  */
 class ContentTypeLinkExtractor implements LinkExtractor {
 
@@ -37,7 +38,11 @@ class ContentTypeLinkExtractor implements LinkExtractor {
 
 	ContentTypeLinkExtractor() {
 		this.linkExtractors.put(MediaType.APPLICATION_JSON, new AtomLinkExtractor());
-		this.linkExtractors.put(HalLinkExtractor.HAL_MEDIA_TYPE, new HalLinkExtractor());
+
+		LinkExtractor halLinkExtractor = new HalLinkExtractor();
+		this.linkExtractors.put(HalLinkExtractor.HAL_MEDIA_TYPE, halLinkExtractor);
+		this.linkExtractors.put(HalLinkExtractor.VND_HAL_MEDIA_TYPE, halLinkExtractor);
+		this.linkExtractors.put(HalLinkExtractor.HAL_FORMS_MEDIA_TYPE, halLinkExtractor);
 	}
 
 	ContentTypeLinkExtractor(Map<MediaType, LinkExtractor> linkExtractors) {
