@@ -78,8 +78,9 @@ class StandardWriterResolverTests {
 		PlaceholderResolver resolver = mock(PlaceholderResolver.class);
 		given(resolver.resolvePlaceholder("a")).willReturn("alpha");
 		given(this.placeholderResolverFactory.create(context)).willReturn(resolver);
-		Writer writer = this.resolver.resolve("{a}", "bravo", context);
-		assertSnippetLocation(writer, new File(outputDirectory, "alpha/bravo.adoc"));
+		try (Writer writer = this.resolver.resolve("{a}", "bravo", context)) {
+			assertSnippetLocation(writer, new File(outputDirectory, "alpha/bravo.adoc"));
+		}
 	}
 
 	@Test
@@ -89,8 +90,9 @@ class StandardWriterResolverTests {
 		PlaceholderResolver resolver = mock(PlaceholderResolver.class);
 		given(resolver.resolvePlaceholder("b")).willReturn("bravo");
 		given(this.placeholderResolverFactory.create(context)).willReturn(resolver);
-		Writer writer = this.resolver.resolve("alpha", "{b}", context);
-		assertSnippetLocation(writer, new File(outputDirectory, "alpha/bravo.adoc"));
+		try (Writer writer = this.resolver.resolve("alpha", "{b}", context)) {
+			assertSnippetLocation(writer, new File(outputDirectory, "alpha/bravo.adoc"));
+		}
 	}
 
 	private RestDocumentationContext createContext(String outputDir) {
