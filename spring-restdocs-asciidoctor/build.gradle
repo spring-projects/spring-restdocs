@@ -1,7 +1,7 @@
 plugins {
 	id "java-library"
 	id "maven-publish"
-	id "io.spring.compatibility-test" version "0.0.3"
+	id "io.spring.compatibility-test" version "0.0.4"
 }
 
 description = "Spring REST Docs Asciidoctor Extension"
