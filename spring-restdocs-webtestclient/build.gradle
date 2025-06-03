@@ -1,5 +1,4 @@
 plugins {
-	id "io.spring.compatibility-test" version "0.0.3"
 	id "java-library"
 	id "maven-publish"
 }
