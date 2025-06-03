@@ -69,44 +69,6 @@ public final class Preprocessors {
 	}
 
 	/**
-	 * Returns an {@code OperationPreprocessor} that will remove any header from the
-	 * request or response with a name that is equal to one of the given
-	 * {@code headersToRemove}.
-	 * @param headerNames the header names
-	 * @return the preprocessor
-	 * @deprecated since 3.0.0 in favor of {@link #modifyHeaders()} and
-	 * {@link HeadersModifyingOperationPreprocessor#remove(String)}
-	 * @see String#equals(Object)
-	 */
-	@Deprecated
-	public static OperationPreprocessor removeHeaders(String... headerNames) {
-		HeadersModifyingOperationPreprocessor preprocessor = new HeadersModifyingOperationPreprocessor();
-		for (String headerName : headerNames) {
-			preprocessor.remove(headerName);
-		}
-		return preprocessor;
-	}
-
-	/**
-	 * Returns an {@code OperationPreprocessor} that will remove any headers from the
-	 * request or response with a name that matches one of the given
-	 * {@code headerNamePatterns} regular expressions.
-	 * @param headerNamePatterns the header name patterns
-	 * @return the preprocessor
-	 * @deprecated since 3.0.0 in favor of {@link #modifyHeaders()} and
-	 * {@link HeadersModifyingOperationPreprocessor#removeMatching(String)}
-	 * @see java.util.regex.Matcher#matches()
-	 */
-	@Deprecated
-	public static OperationPreprocessor removeMatchingHeaders(String... headerNamePatterns) {
-		HeadersModifyingOperationPreprocessor preprocessor = new HeadersModifyingOperationPreprocessor();
-		for (String headerNamePattern : headerNamePatterns) {
-			preprocessor.removeMatching(headerNamePattern);
-		}
-		return preprocessor;
-	}
-
-	/**
 	 * Returns an {@code OperationPreprocessor} that will mask the href of hypermedia
 	 * links in the request or response.
 	 * @return the preprocessor
