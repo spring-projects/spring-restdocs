@@ -18,6 +18,7 @@ package org.springframework.restdocs.hypermedia;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -40,6 +42,8 @@ import static org.mockito.Mockito.verify;
 class ContentTypeLinkExtractorTests {
 
 	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
+
+	private final String halBody = "{ \"_links\" : { \"someRel\" : { \"href\" : \"someHref\" }} }";
 
 	@Test
 	void extractionFailsWithNullContentType() {
@@ -69,6 +73,24 @@ class ContentTypeLinkExtractorTests {
 		OperationResponse response = this.responseFactory.create(HttpStatus.OK, httpHeaders, null);
 		new ContentTypeLinkExtractor(extractors).extractLinks(response);
 		verify(extractor).extractLinks(response);
+	}
+
+	@Test
+	void extractsLinksFromVndHalMediaType() throws IOException {
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.parseMediaType("application/vnd.hal+json"));
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK, httpHeaders, this.halBody.getBytes());
+		Map<String, List<Link>> links = new ContentTypeLinkExtractor().extractLinks(response);
+		assertThat(links).containsKey("someRel");
+	}
+
+	@Test
+	void extractsLinksFromHalFormsMediaType() throws IOException {
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.parseMediaType("application/prs.hal-forms+json"));
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK, httpHeaders, this.halBody.getBytes());
+		Map<String, List<Link>> links = new ContentTypeLinkExtractor().extractLinks(response);
+		assertThat(links).containsKey("someRel");
 	}
 
 }

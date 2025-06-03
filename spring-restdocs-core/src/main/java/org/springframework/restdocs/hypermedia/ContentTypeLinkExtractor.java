@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.springframework.restdocs.operation.OperationResponse;
  * content type.
  *
  * @author Andy Wilkinson
+ * @author Oliver Drotbohm
  */
 class ContentTypeLinkExtractor implements LinkExtractor {
 
@@ -37,7 +38,10 @@ class ContentTypeLinkExtractor implements LinkExtractor {
 
 	ContentTypeLinkExtractor() {
 		this.linkExtractors.put(MediaType.APPLICATION_JSON, new AtomLinkExtractor());
-		this.linkExtractors.put(HalLinkExtractor.HAL_MEDIA_TYPE, new HalLinkExtractor());
+		LinkExtractor halLinkExtractor = new HalLinkExtractor();
+		this.linkExtractors.put(HalLinkExtractor.HAL_MEDIA_TYPE, halLinkExtractor);
+		this.linkExtractors.put(HalLinkExtractor.VND_HAL_MEDIA_TYPE, halLinkExtractor);
+		this.linkExtractors.put(HalLinkExtractor.HAL_FORMS_MEDIA_TYPE, halLinkExtractor);
 	}
 
 	ContentTypeLinkExtractor(Map<MediaType, LinkExtractor> linkExtractors) {
