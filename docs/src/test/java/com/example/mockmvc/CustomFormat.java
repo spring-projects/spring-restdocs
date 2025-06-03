@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package com.example.mockmvc;
 
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,10 +29,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
-public class CustomFormat {
-
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+@ExtendWith(RestDocumentationExtension.class)
+class CustomFormat {
 
 	@Autowired
 	private WebApplicationContext context;
@@ -39,11 +38,11 @@ public class CustomFormat {
 	@SuppressWarnings("unused")
 	private MockMvc mockMvc;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
 		// tag::custom-format[]
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-			.apply(documentationConfiguration(this.restDocumentation).snippets()
+			.apply(documentationConfiguration(restDocumentation).snippets()
 				.withTemplateFormat(TemplateFormats.markdown()))
 			.build();
 		// end::custom-format[]

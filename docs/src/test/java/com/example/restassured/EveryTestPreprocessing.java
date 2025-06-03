@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ package com.example.restassured;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
@@ -32,25 +33,23 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
-public class EveryTestPreprocessing {
-
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+@ExtendWith(RestDocumentationExtension.class)
+class EveryTestPreprocessing {
 
 	// tag::setup[]
 	private RequestSpecification spec;
 
-	@Before
-	public void setup() {
+	@BeforeEach
+	void setup(RestDocumentationContextProvider restDocumentation) {
 		this.spec = new RequestSpecBuilder()
-			.addFilter(documentationConfiguration(this.restDocumentation).operationPreprocessors()
+			.addFilter(documentationConfiguration(restDocumentation).operationPreprocessors()
 				.withRequestDefaults(modifyHeaders().remove("Foo")) // <1>
 				.withResponseDefaults(prettyPrint())) // <2>
 			.build();
 	}
 	// end::setup[]
 
-	public void use() {
+	void use() {
 		// tag::use[]
 		RestAssured.given(this.spec)
 			.filter(document("index", links(linkWithRel("self").description("Canonical self link"))))

@@ -47,7 +47,6 @@ dependencies {
 
 	optional(platform(project(":spring-restdocs-platform")))
 	optional("jakarta.validation:jakarta.validation-api")
-	optional("junit:junit")
 	optional("org.hibernate.validator:hibernate-validator")
 	optional("org.junit.jupiter:junit-jupiter-api")
 

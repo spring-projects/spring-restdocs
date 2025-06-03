@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,26 @@ package com.example.restassured;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 
 import static org.springframework.restdocs.cli.CliDocumentation.curlRequest;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
-public class CustomDefaultSnippets {
-
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+@ExtendWith(RestDocumentationExtension.class)
+class CustomDefaultSnippets {
 
 	@SuppressWarnings("unused")
 	private RequestSpecification spec;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
 		// tag::custom-default-snippets[]
 		this.spec = new RequestSpecBuilder()
-			.addFilter(documentationConfiguration(this.restDocumentation).snippets().withDefaults(curlRequest()))
+			.addFilter(documentationConfiguration(restDocumentation).snippets().withDefaults(curlRequest()))
 			.build();
 		// end::custom-default-snippets[]
 	}

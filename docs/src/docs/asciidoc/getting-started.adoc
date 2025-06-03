@@ -203,8 +203,7 @@ It then produces documentation snippets for the request and the resulting respon
 ==== Setting up Your Tests
 
 Exactly how you set up your tests depends on the test framework that you use.
-Spring REST Docs provides first-class support for JUnit 5 and JUnit 4.
-JUnit 5 is recommended.
+Spring REST Docs provides first-class support for JUnit 5.
 Other frameworks, such as TestNG, are also supported, although slightly more setup is required.
 
 
@@ -261,72 +260,6 @@ The following listings show how to do so:
 [source,java,indent=0,role="primary"]
 .MockMvc
 ----
-include::{examples-dir}/com/example/mockmvc/ExampleApplicationJUnit5Tests.java[tags=setup]
-----
-<1> The `MockMvc` instance is configured by using a `MockMvcRestDocumentationConfigurer`.
-You can obtain an instance of this class from the static `documentationConfiguration()` method on `org.springframework.restdocs.mockmvc.MockMvcRestDocumentation`.
-
-[source,java,indent=0,role="secondary"]
-.WebTestClient
-----
-include::{examples-dir}/com/example/webtestclient/ExampleApplicationJUnit5Tests.java[tags=setup]
-----
-<1> The `WebTestClient` instance is configured by adding a `WebTestClientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.
-You can obtain an instance of this class from the static `documentationConfiguration()` method on `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
-
-[source,java,indent=0,role="secondary"]
-.REST Assured
-----
-include::{examples-dir}/com/example/restassured/ExampleApplicationJUnit5Tests.java[tags=setup]
-----
-<1> REST Assured is configured by adding a `RestAssuredRestDocumentationConfigurer` as a `Filter`.
-You can obtain an instance of this class from the static `documentationConfiguration()` method on `RestAssuredRestDocumentation` in the `org.springframework.restdocs.restassured` package.
-
-The configurer applies sensible defaults and also provides an API for customizing the configuration.
-See the <<configuration, configuration section>> for more information.
-
-
-
-[[getting-started-documentation-snippets-setup-junit]]
-===== Setting up Your JUnit 4 Tests
-
-When using JUnit 4, the first step in generating documentation snippets is to declare a `public` `JUnitRestDocumentation` field that is annotated as a JUnit `@Rule`.
-The following example shows how to do so:
-
-[source,java,indent=0]
-----
-@Rule
-public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-----
-
-By default, the `JUnitRestDocumentation` rule is automatically configured with an output directory based on your project's build tool:
-
-[cols="2,5"]
-|===
-| Build tool | Output directory
-
-| Maven
-| `target/generated-snippets`
-
-| Gradle
-| `build/generated-snippets`
-|===
-
-You can override the default by providing an output directory when you create the `JUnitRestDocumentation` instance.
-The following example shows how to do so:
-
-[source,java,indent=0]
-----
-@Rule
-public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("custom");
-----
-
-Next, you must provide an `@Before` method to configure MockMvc or WebTestClient, or REST Assured.
-The following examples show how to do so:
-
-[source,java,indent=0,role="primary"]
-.MockMvc
-----
 include::{examples-dir}/com/example/mockmvc/ExampleApplicationTests.java[tags=setup]
 ----
 <1> The `MockMvc` instance is configured by using a `MockMvcRestDocumentationConfigurer`.
@@ -337,7 +270,7 @@ You can obtain an instance of this class from the static `documentationConfigura
 ----
 include::{examples-dir}/com/example/webtestclient/ExampleApplicationTests.java[tags=setup]
 ----
-<1> The `WebTestClient` instance is configured by adding a `WebTestclientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.
+<1> The `WebTestClient` instance is configured by adding a `WebTestClientRestDocumentationConfigurer` as an `ExchangeFilterFunction`.
 You can obtain an instance of this class from the static `documentationConfiguration()` method on `org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation`.
 
 [source,java,indent=0,role="secondary"]
@@ -353,16 +286,15 @@ See the <<configuration, configuration section>> for more information.
 
 
 
+
 [[getting-started-documentation-snippets-setup-manual]]
 ===== Setting up your tests without JUnit
 
-The configuration when JUnit is not being used is largely similar to when it is being used.
-This section describes the key differences.
-The {samples}/testng[TestNG sample] also illustrates the approach.
+The configuration when JUnit is not being used is a little more involved as the test class must perform some lifecycle management.
+The {samples}/testng[TestNG sample] illustrates the approach.
 
-The first difference is that you should use `ManualRestDocumentation` in place of `JUnitRestDocumentation`.
-Also, you do not need the `@Rule` annotation.
-The following example shows how to use `ManualRestDocumentation`:
+First, you need a `ManualRestDocumentation` field.
+The following example shows how to define it:
 
 [source,java,indent=0]
 ----

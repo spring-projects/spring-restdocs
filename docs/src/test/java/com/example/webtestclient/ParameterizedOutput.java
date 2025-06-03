@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,20 @@
 
 package com.example.webtestclient;
 
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 
-public class ParameterizedOutput {
-
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+@ExtendWith(RestDocumentationExtension.class)
+class ParameterizedOutput {
 
 	@SuppressWarnings("unused")
 	private WebTestClient webTestClient;
@@ -39,11 +38,11 @@ public class ParameterizedOutput {
 	private ApplicationContext context;
 
 	// tag::parameterized-output[]
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
 		this.webTestClient = WebTestClient.bindToApplicationContext(this.context)
 			.configureClient()
-			.filter(documentationConfiguration(this.restDocumentation))
+			.filter(documentationConfiguration(restDocumentation))
 			.entityExchangeResultConsumer(document("{method-name}/{step}"))
 			.build();
 	}

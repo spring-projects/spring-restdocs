@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,19 @@
 
 package com.example.webtestclient;
 
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 
-public class CustomUriConfiguration {
-
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+@ExtendWith(RestDocumentationExtension.class)
+class CustomUriConfiguration {
 
 	@SuppressWarnings("unused")
 	private WebTestClient webTestClient;
@@ -38,12 +37,12 @@ public class CustomUriConfiguration {
 	private ApplicationContext context;
 
 	// tag::custom-uri-configuration[]
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
 		this.webTestClient = WebTestClient.bindToApplicationContext(this.context)
 			.configureClient()
 			.baseUrl("https://api.example.com") // <1>
-			.filter(documentationConfiguration(this.restDocumentation))
+			.filter(documentationConfiguration(restDocumentation))
 			.build();
 	}
 	// end::custom-uri-configuration[]

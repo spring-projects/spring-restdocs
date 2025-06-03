@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,28 @@
 
 package com.example.mockmvc;
 
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
-public class ExampleApplicationTests {
-
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+@ExtendWith(RestDocumentationExtension.class)
+class ExampleApplicationTests {
 
 	@SuppressWarnings("unused")
 	// tag::setup[]
 	private MockMvc mockMvc;
 
-	@Autowired
-	private WebApplicationContext context;
-
-	@Before
-	public void setUp() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-			.apply(documentationConfiguration(this.restDocumentation)) // <1>
+	@BeforeEach
+	void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+			.apply(documentationConfiguration(restDocumentation)) // <1>
 			.build();
 	}
 	// end::setup[]

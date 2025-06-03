@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,22 @@
 
 package com.example.webtestclient;
 
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 
-public class CustomFormat {
+@ExtendWith(RestDocumentationExtension.class)
+class CustomFormat {
 
 	// @formatter:off
-
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@Autowired
 	private ApplicationContext context;
@@ -40,11 +39,11 @@ public class CustomFormat {
 	@SuppressWarnings("unused")
 	private WebTestClient webTestClient;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
 		// tag::custom-format[]
 		this.webTestClient = WebTestClient.bindToApplicationContext(this.context).configureClient()
-			.filter(documentationConfiguration(this.restDocumentation)
+			.filter(documentationConfiguration(restDocumentation)
 				.snippets().withTemplateFormat(TemplateFormats.markdown()))
 			.build();
 		// end::custom-format[]

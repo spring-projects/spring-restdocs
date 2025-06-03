@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,15 @@ package org.springframework.restdocs;
 
 import java.io.File;
 
+import org.junit.jupiter.api.extension.Extension;
+
 /**
  * {@code ManualRestDocumentation} is used to manually manage the
  * {@link RestDocumentationContext}. Primarly intended for use with TestNG, but suitable
  * for use in any environment where manual management of the context is required.
  * <p>
- * Users of JUnit should use {@link JUnitRestDocumentation} and take advantage of its
- * Rule-based support for automatic management of the context.
+ * Users of JUnit should use {@link RestDocumentationExtension} and take advantage of its
+ * {@link Extension}-based support for automatic management of the context.
  *
  * @author Andy Wilkinson
  * @since 1.1.0

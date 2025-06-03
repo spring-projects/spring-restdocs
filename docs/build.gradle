@@ -18,7 +18,6 @@ dependencies {
 	testImplementation(project(":spring-restdocs-webtestclient"))
 	testImplementation("jakarta.servlet:jakarta.servlet-api")
 	testImplementation("jakarta.validation:jakarta.validation-api")
-	testImplementation("junit:junit")
 	testImplementation("org.testng:testng:6.9.10")
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
 }
