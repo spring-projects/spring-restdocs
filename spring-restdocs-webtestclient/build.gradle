@@ -10,7 +10,11 @@ dependencies {
 	api("org.springframework:spring-test")
 	api("org.springframework:spring-webflux")
 
+	compileOnly("org.hamcrest:hamcrest-core")
+
 	internal(platform(project(":spring-restdocs-platform")))
+
+	testCompileOnly("org.hamcrest:hamcrest-core")
 
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
 
