@@ -76,7 +76,7 @@ class ContentTypeLinkExtractorTests {
 	}
 
 	@Test
-	public void extractsLinksFromVndHalMediaType() throws IOException {
+	void extractsLinksFromVndHalMediaType() throws IOException {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.parseMediaType("application/vnd.hal+json"));
 		OperationResponse response = this.responseFactory.create(HttpStatus.OK, httpHeaders, this.halBody.getBytes());
@@ -85,7 +85,7 @@ class ContentTypeLinkExtractorTests {
 	}
 
 	@Test
-	public void extractsLinksFromHalFormsMediaType() throws IOException {
+	void extractsLinksFromHalFormsMediaType() throws IOException {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.parseMediaType("application/prs.hal-forms+json"));
 		OperationResponse response = this.responseFactory.create(HttpStatus.OK, httpHeaders, this.halBody.getBytes());

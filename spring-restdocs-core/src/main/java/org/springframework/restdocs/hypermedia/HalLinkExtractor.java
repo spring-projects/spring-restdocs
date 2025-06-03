@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,14 @@ import org.springframework.http.MediaType;
  * format.
  *
  * @author Andy Wilkinson
+ * @author Oliver Drotbohm
  */
 class HalLinkExtractor extends AbstractJsonLinkExtractor {
 
 	static final MediaType HAL_MEDIA_TYPE = new MediaType("application", "hal+json");
+
 	static final MediaType VND_HAL_MEDIA_TYPE = new MediaType("application", "vnd.hal+json");
+
 	static final MediaType HAL_FORMS_MEDIA_TYPE = new MediaType("application", "prs.hal-forms+json");
 
 	@Override
