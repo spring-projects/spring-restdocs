@@ -19,7 +19,7 @@ task jmustacheRepackJar(type: Jar) { repackJar ->
 	repackJar.archiveVersion = jmustacheVersion
 
 	doLast() {
-		project.ant {
+		ant {
 			taskdef name: "jarjar", classname: "com.tonicsystems.jarjar.JarJarTask",
 				classpath: configurations.jarjar.asPath
 			jarjar(destfile: repackJar.archiveFile.get()) {
