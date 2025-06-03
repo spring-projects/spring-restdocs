@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,20 @@ package org.springframework.restdocs.request;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
-import org.junit.Test;
-
-import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
-import org.springframework.restdocs.templates.TemplateEngine;
+import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
-import org.springframework.restdocs.templates.TemplateResourceResolver;
-import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTemplate;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -41,164 +41,192 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  *
  * @author Andy Wilkinson
  */
-public class PathParametersSnippetTests extends AbstractSnippetTests {
+class PathParametersSnippetTests {
 
-	public PathParametersSnippetTests(String name, TemplateFormat templateFormat) {
-		super(name, templateFormat);
-	}
-
-	@Test
-	public void pathParameters() throws IOException {
+	@RenderedSnippetTest
+	void pathParameters(OperationBuilder operationBuilder, AssertableSnippets snippets, TemplateFormat templateFormat)
+			throws IOException {
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one"), parameterWithName("b").description("two")))
-			.document(
-					this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
-						.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`a`", "one").row("`b`", "two"));
-	}
-
-	@Test
-	public void ignoredPathParameter() throws IOException {
-		new PathParametersSnippet(
-				Arrays.asList(parameterWithName("a").ignored(), parameterWithName("b").description("two")))
-			.document(
-					this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
-						.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`", "two"));
-	}
-
-	@Test
-	public void allUndocumentedPathParametersCanBeIgnored() throws IOException {
-		new PathParametersSnippet(Arrays.asList(parameterWithName("b").description("two")), true).document(
-				this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
-					.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`b`", "two"));
-	}
-
-	@Test
-	public void missingOptionalPathParameter() throws IOException {
-		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
-				parameterWithName("b").description("two").optional()))
-			.document(this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}")
+			.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
 				.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle("/{a}"), "Parameter", "Description").row("`a`", "one")
+		assertThat(snippets.pathParameters())
+			.isTable((table) -> table.withTitleAndHeader(getTitle(templateFormat), "Parameter", "Description")
+				.row("`a`", "one")
 				.row("`b`", "two"));
 	}
 
-	@Test
-	public void presentOptionalPathParameter() throws IOException {
-		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional()))
-			.document(this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}")
+	@RenderedSnippetTest
+	void ignoredPathParameter(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
+		new PathParametersSnippet(
+				Arrays.asList(parameterWithName("a").ignored(), parameterWithName("b").description("two")))
+			.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
 				.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle("/{a}"), "Parameter", "Description").row("`a`", "one"));
+		assertThat(snippets.pathParameters())
+			.isTable((table) -> table.withTitleAndHeader(getTitle(templateFormat), "Parameter", "Description")
+				.row("`b`", "two"));
 	}
 
-	@Test
-	public void pathParametersWithQueryString() throws IOException {
+	@RenderedSnippetTest
+	void allUndocumentedPathParametersCanBeIgnored(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
+		new PathParametersSnippet(Arrays.asList(parameterWithName("b").description("two")), true).document(
+				operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}").build());
+		assertThat(snippets.pathParameters())
+			.isTable((table) -> table.withTitleAndHeader(getTitle(templateFormat), "Parameter", "Description")
+				.row("`b`", "two"));
+	}
+
+	@RenderedSnippetTest
+	void missingOptionalPathParameter(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one"),
+				parameterWithName("b").description("two").optional()))
+			.document(
+					operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}").build());
+		assertThat(snippets.pathParameters())
+			.isTable((table) -> table.withTitleAndHeader(getTitle(templateFormat, "/{a}"), "Parameter", "Description")
+				.row("`a`", "one")
+				.row("`b`", "two"));
+	}
+
+	@RenderedSnippetTest
+	void presentOptionalPathParameter(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
+		new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional())).document(
+				operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}").build());
+		assertThat(snippets.pathParameters())
+			.isTable((table) -> table.withTitleAndHeader(getTitle(templateFormat, "/{a}"), "Parameter", "Description")
+				.row("`a`", "one"));
+	}
+
+	@RenderedSnippetTest
+	void pathParametersWithQueryString(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one"), parameterWithName("b").description("two")))
-			.document(this.operationBuilder
+			.document(operationBuilder
 				.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}?foo=bar")
 				.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+		assertThat(snippets.pathParameters())
+			.isTable((table) -> table.withTitleAndHeader(getTitle(templateFormat), "Parameter", "Description")
+				.row("`a`", "one")
+				.row("`b`", "two"));
 	}
 
-	@Test
-	public void pathParametersWithQueryStringWithParameters() throws IOException {
+	@RenderedSnippetTest
+	void pathParametersWithQueryStringWithParameters(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one"), parameterWithName("b").description("two")))
-			.document(this.operationBuilder
+			.document(operationBuilder
 				.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}?foo={c}")
 				.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+		assertThat(snippets.pathParameters())
+			.isTable((table) -> table.withTitleAndHeader(getTitle(templateFormat), "Parameter", "Description")
+				.row("`a`", "one")
+				.row("`b`", "two"));
 	}
 
-	@Test
-	public void pathParametersWithCustomAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("path-parameters"))
-			.willReturn(snippetResource("path-parameters-with-title"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "path-parameters", template = "path-parameters-with-title")
+	void pathParametersWithCustomAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").attributes(key("foo").value("alpha")),
 						parameterWithName("b").description("two").attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title")))
-			.document(
-					this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
-						.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-						.build());
-		assertThat(this.generatedSnippets.pathParameters()).contains("The title");
+			.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
+				.build());
+		assertThat(snippets.pathParameters()).contains("The title");
 	}
 
-	@Test
-	public void pathParametersWithCustomDescriptorAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("path-parameters"))
-			.willReturn(snippetResource("path-parameters-with-extra-column"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "path-parameters", template = "path-parameters-with-extra-column")
+	void pathParametersWithCustomDescriptorAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
 		new PathParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").attributes(key("foo").value("alpha")),
 						parameterWithName("b").description("two").attributes(key("foo").value("bravo"))))
-			.document(
-					this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
-						.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-						.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithHeader("Parameter", "Description", "Foo").row("a", "one", "alpha").row("b", "two", "bravo"));
+			.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
+				.build());
+		assertThat(snippets.pathParameters()).isTable((table) -> table.withHeader("Parameter", "Description", "Foo")
+			.row("a", "one", "alpha")
+			.row("b", "two", "bravo"));
 	}
 
-	@Test
-	public void additionalDescriptors() throws IOException {
+	@RenderedSnippetTest
+	void additionalDescriptors(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
 		RequestDocumentation.pathParameters(parameterWithName("a").description("one"))
 			.and(parameterWithName("b").description("two"))
-			.document(
-					this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
-						.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle(), "Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}")
+				.build());
+		assertThat(snippets.pathParameters()).isTable(
+				(table) -> table.withTitleAndHeader(getTitle(templateFormat, "/{a}/{b}"), "Parameter", "Description")
+					.row("`a`", "one")
+					.row("`b`", "two"));
 	}
 
-	@Test
-	public void additionalDescriptorsWithRelaxedRequestParameters() throws IOException {
+	@RenderedSnippetTest
+	void additionalDescriptorsWithRelaxedRequestParameters(OperationBuilder operationBuilder,
+			AssertableSnippets snippets, TemplateFormat templateFormat) throws IOException {
 		RequestDocumentation.relaxedPathParameters(parameterWithName("a").description("one"))
 			.and(parameterWithName("b").description("two"))
-			.document(this.operationBuilder
-				.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}/{c}")
+			.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{b}/{c}")
 				.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle("/{a}/{b}/{c}"), "Parameter", "Description").row("`a`", "one")
-				.row("`b`", "two"));
+		assertThat(snippets.pathParameters()).isTable((table) -> table
+			.withTitleAndHeader(getTitle(templateFormat, "/{a}/{b}/{c}"), "Parameter", "Description")
+			.row("`a`", "one")
+			.row("`b`", "two"));
 	}
 
-	@Test
-	public void pathParametersWithEscapedContent() throws IOException {
+	@RenderedSnippetTest
+	void pathParametersWithEscapedContent(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
 		RequestDocumentation.pathParameters(parameterWithName("Foo|Bar").description("one|two"))
-			.document(
-					this.operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "{Foo|Bar}")
-						.build());
-		assertThat(this.generatedSnippets.pathParameters())
-			.is(tableWithTitleAndHeader(getTitle("{Foo|Bar}"), "Parameter", "Description")
-				.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+			.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "{Foo|Bar}")
+				.build());
+		assertThat(snippets.pathParameters()).isTable(
+				(table) -> table.withTitleAndHeader(getTitle(templateFormat, "{Foo|Bar}"), "Parameter", "Description")
+					.row("`Foo|Bar`", "one|two"));
 	}
 
-	private String escapeIfNecessary(String input) {
-		if (this.templateFormat.getId().equals(TemplateFormats.markdown().getId())) {
-			return input;
-		}
-		return input.replace("|", "\\|");
+	@SnippetTest
+	void undocumentedPathParameter(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new PathParametersSnippet(Collections.<ParameterDescriptor>emptyList())
+				.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/")
+					.build()))
+			.withMessage("Path parameters with the following names were not documented: [a]");
 	}
 
-	private String getTitle() {
-		return getTitle("/{a}/{b}");
+	@SnippetTest
+	void missingPathParameter(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/")
+					.build()))
+			.withMessage("Path parameters with the following names were not found in the request: [a]");
 	}
 
-	private String getTitle(String title) {
-		if (this.templateFormat.getId().equals(TemplateFormats.asciidoctor().getId())) {
+	@SnippetTest
+	void undocumentedAndMissingPathParameters(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new PathParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{b}")
+					.build()))
+			.withMessage("Path parameters with the following names were not documented: [b]. Path parameters with the"
+					+ " following names were not found in the request: [a]");
+	}
+
+	private String getTitle(TemplateFormat templateFormat) {
+		return getTitle(templateFormat, "/{a}/{b}");
+	}
+
+	private String getTitle(TemplateFormat templateFormat, String title) {
+		if (templateFormat.getId().equals(TemplateFormats.asciidoctor().getId())) {
 			return "+" + title + "+";
 		}
 		return "`" + title + "`";

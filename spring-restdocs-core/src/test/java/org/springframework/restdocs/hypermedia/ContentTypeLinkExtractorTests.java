@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,18 +37,18 @@ import static org.mockito.Mockito.verify;
  *
  * @author Andy Wilkinson
  */
-public class ContentTypeLinkExtractorTests {
+class ContentTypeLinkExtractorTests {
 
 	private final OperationResponseFactory responseFactory = new OperationResponseFactory();
 
 	@Test
-	public void extractionFailsWithNullContentType() {
+	void extractionFailsWithNullContentType() {
 		assertThatIllegalStateException().isThrownBy(() -> new ContentTypeLinkExtractor()
 			.extractLinks(this.responseFactory.create(HttpStatus.OK, new HttpHeaders(), null)));
 	}
 
 	@Test
-	public void extractorCalledWithMatchingContextType() throws IOException {
+	void extractorCalledWithMatchingContextType() throws IOException {
 		Map<MediaType, LinkExtractor> extractors = new HashMap<>();
 		LinkExtractor extractor = mock(LinkExtractor.class);
 		extractors.put(MediaType.APPLICATION_JSON, extractor);
@@ -60,7 +60,7 @@ public class ContentTypeLinkExtractorTests {
 	}
 
 	@Test
-	public void extractorCalledWithCompatibleContextType() throws IOException {
+	void extractorCalledWithCompatibleContextType() throws IOException {
 		Map<MediaType, LinkExtractor> extractors = new HashMap<>();
 		LinkExtractor extractor = mock(LinkExtractor.class);
 		extractors.put(MediaType.APPLICATION_JSON, extractor);

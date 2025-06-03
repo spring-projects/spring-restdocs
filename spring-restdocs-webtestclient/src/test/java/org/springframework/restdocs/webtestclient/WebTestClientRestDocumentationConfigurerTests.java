@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,14 @@ package org.springframework.restdocs.webtestclient;
 
 import java.net.URI;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
@@ -38,16 +40,19 @@ import static org.mockito.Mockito.verify;
  *
  * @author Andy Wilkinson
  */
-public class WebTestClientRestDocumentationConfigurerTests {
+@ExtendWith(RestDocumentationExtension.class)
+class WebTestClientRestDocumentationConfigurerTests {
 
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+	private WebTestClientRestDocumentationConfigurer configurer;
 
-	private final WebTestClientRestDocumentationConfigurer configurer = new WebTestClientRestDocumentationConfigurer(
-			this.restDocumentation);
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
+		this.configurer = new WebTestClientRestDocumentationConfigurer(restDocumentation);
+
+	}
 
 	@Test
-	public void configurationCanBeRetrievedButOnlyOnce() {
+	void configurationCanBeRetrievedButOnlyOnce() {
 		ClientRequest request = ClientRequest.create(HttpMethod.GET, URI.create("/test"))
 			.header(WebTestClient.WEBTESTCLIENT_REQUEST_ID, "1")
 			.build();
@@ -58,7 +63,7 @@ public class WebTestClientRestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void requestUriHasDefaultsAppliedWhenItHasNoHost() {
+	void requestUriHasDefaultsAppliedWhenItHasNoHost() {
 		ClientRequest request = ClientRequest.create(HttpMethod.GET, URI.create("/test?foo=bar#baz"))
 			.header(WebTestClient.WEBTESTCLIENT_REQUEST_ID, "1")
 			.build();
@@ -70,7 +75,7 @@ public class WebTestClientRestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void requestUriIsNotChangedWhenItHasAHost() {
+	void requestUriIsNotChangedWhenItHasAHost() {
 		ClientRequest request = ClientRequest
 			.create(HttpMethod.GET, URI.create("https://api.example.com:4567/test?foo=bar#baz"))
 			.header(WebTestClient.WEBTESTCLIENT_REQUEST_ID, "1")

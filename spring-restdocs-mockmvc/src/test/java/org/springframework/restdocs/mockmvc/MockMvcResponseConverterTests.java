@@ -20,7 +20,7 @@ import java.util.Collections;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,12 +37,12 @@ import static org.assertj.core.api.Assertions.entry;
  *
  * @author Tomasz Kopczynski
  */
-public class MockMvcResponseConverterTests {
+class MockMvcResponseConverterTests {
 
 	private final MockMvcResponseConverter factory = new MockMvcResponseConverter();
 
 	@Test
-	public void basicResponse() {
+	void basicResponse() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setStatus(HttpServletResponse.SC_OK);
 		OperationResponse operationResponse = this.factory.convert(response);
@@ -50,7 +50,7 @@ public class MockMvcResponseConverterTests {
 	}
 
 	@Test
-	public void responseWithCookie() {
+	void responseWithCookie() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setStatus(HttpServletResponse.SC_OK);
 		Cookie cookie = new Cookie("name", "value");
@@ -66,7 +66,7 @@ public class MockMvcResponseConverterTests {
 	}
 
 	@Test
-	public void responseWithCustomStatus() {
+	void responseWithCustomStatus() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		response.setStatus(600);
 		OperationResponse operationResponse = this.factory.convert(response);

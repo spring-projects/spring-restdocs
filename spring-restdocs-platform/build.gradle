@@ -15,6 +15,7 @@ dependencies {
 		api("org.apache.pdfbox:pdfbox:2.0.27")
 		api("org.apache.tomcat.embed:tomcat-embed-core:11.0.2")
 		api("org.apache.tomcat.embed:tomcat-embed-el:11.0.2")
+		api("org.apiguardian:apiguardian-api:1.1.2")
 		api("org.asciidoctor:asciidoctorj:3.0.0")
 		api("org.asciidoctor:asciidoctorj-pdf:2.3.19")
 		api("org.assertj:assertj-core:3.23.1")
@@ -22,10 +23,10 @@ dependencies {
 		api("org.hamcrest:hamcrest-library:1.3")
 		api("org.hibernate.validator:hibernate-validator:9.0.0.CR1")
 		api("org.javamoney:moneta:1.4.2")
-		api("org.junit.jupiter:junit-jupiter-api:5.0.0")
 	}
 	api(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.14.0"))
 	api(enforcedPlatform("io.rest-assured:rest-assured-bom:5.2.1"))
 	api(enforcedPlatform("org.mockito:mockito-bom:4.9.0"))
+	api(enforcedPlatform("org.junit:junit-bom:5.13.0"))
 	api(enforcedPlatform("org.springframework:spring-framework-bom:$springFrameworkVersion"))
 }

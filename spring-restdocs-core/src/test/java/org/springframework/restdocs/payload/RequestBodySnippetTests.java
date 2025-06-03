@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,14 @@ package org.springframework.restdocs.payload;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.templates.TemplateEngine;
-import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.templates.TemplateResourceResolver;
-import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestBody;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
@@ -41,77 +36,74 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  *
  * @author Andy Wilkinson
  */
-public class RequestBodySnippetTests extends AbstractSnippetTests {
+class RequestBodySnippetTests {
 
-	public RequestBodySnippetTests(String name, TemplateFormat templateFormat) {
-		super(name, templateFormat);
+	@RenderedSnippetTest
+	void requestWithBody(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		requestBody().document(operationBuilder.request("http://localhost").content("some content").build());
+		assertThat(snippets.requestBody())
+			.isCodeBlock((codeBlock) -> codeBlock.withOptions("nowrap").content("some content"));
 	}
 
-	@Test
-	public void requestWithBody() throws IOException {
-		requestBody().document(this.operationBuilder.request("http://localhost").content("some content").build());
-		assertThat(this.generatedSnippets.snippet("request-body"))
-			.is(codeBlock(null, "nowrap").withContent("some content"));
+	@RenderedSnippetTest
+	void requestWithNoBody(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		requestBody().document(operationBuilder.request("http://localhost").build());
+		assertThat(snippets.requestBody()).isCodeBlock((codeBlock) -> codeBlock.withOptions("nowrap").content(""));
 	}
 
-	@Test
-	public void requestWithNoBody() throws IOException {
-		requestBody().document(this.operationBuilder.request("http://localhost").build());
-		assertThat(this.generatedSnippets.snippet("request-body")).is(codeBlock(null, "nowrap").withContent(""));
-	}
-
-	@Test
-	public void requestWithJsonMediaType() throws IOException {
-		requestBody().document(this.operationBuilder.request("http://localhost")
+	@RenderedSnippetTest
+	void requestWithJsonMediaType(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		requestBody().document(operationBuilder.request("http://localhost")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 			.build());
-		assertThat(this.generatedSnippets.snippet("request-body")).is(codeBlock("json", "nowrap").withContent(""));
+		assertThat(snippets.requestBody())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguageAndOptions("json", "nowrap").content(""));
 	}
 
-	@Test
-	public void requestWithJsonSubtypeMediaType() throws IOException {
-		requestBody().document(this.operationBuilder.request("http://localhost")
+	@RenderedSnippetTest
+	void requestWithJsonSubtypeMediaType(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		requestBody().document(operationBuilder.request("http://localhost")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PROBLEM_JSON_VALUE)
 			.build());
-		assertThat(this.generatedSnippets.snippet("request-body")).is(codeBlock("json", "nowrap").withContent(""));
+		assertThat(snippets.requestBody())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguageAndOptions("json", "nowrap").content(""));
 	}
 
-	@Test
-	public void requestWithXmlMediaType() throws IOException {
-		requestBody().document(this.operationBuilder.request("http://localhost")
+	@RenderedSnippetTest
+	void requestWithXmlMediaType(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		requestBody().document(operationBuilder.request("http://localhost")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
 			.build());
-		assertThat(this.generatedSnippets.snippet("request-body")).is(codeBlock("xml", "nowrap").withContent(""));
+		assertThat(snippets.requestBody())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguageAndOptions("xml", "nowrap").content(""));
 	}
 
-	@Test
-	public void requestWithXmlSubtypeMediaType() throws IOException {
-		requestBody().document(this.operationBuilder.request("http://localhost")
+	@RenderedSnippetTest
+	void requestWithXmlSubtypeMediaType(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		requestBody().document(operationBuilder.request("http://localhost")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML_VALUE)
 			.build());
-		assertThat(this.generatedSnippets.snippet("request-body")).is(codeBlock("xml", "nowrap").withContent(""));
+		assertThat(snippets.requestBody())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguageAndOptions("xml", "nowrap").content(""));
 	}
 
-	@Test
-	public void subsectionOfRequestBody() throws IOException {
+	@RenderedSnippetTest
+	void subsectionOfRequestBody(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		requestBody(beneathPath("a.b"))
-			.document(this.operationBuilder.request("http://localhost").content("{\"a\":{\"b\":{\"c\":5}}}").build());
-		assertThat(this.generatedSnippets.snippet("request-body-beneath-a.b"))
-			.is(codeBlock(null, "nowrap").withContent("{\"c\":5}"));
+			.document(operationBuilder.request("http://localhost").content("{\"a\":{\"b\":{\"c\":5}}}").build());
+		assertThat(snippets.requestBody("beneath-a.b"))
+			.isCodeBlock((codeBlock) -> codeBlock.withOptions("nowrap").content("{\"c\":5}"));
 	}
 
-	@Test
-	public void customSnippetAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-body"))
-			.willReturn(snippetResource("request-body-with-language"));
-		requestBody(attributes(key("language").value("json"))).document(
-				this.operationBuilder.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-					.request("http://localhost")
-					.content("{\"a\":\"alpha\"}")
-					.build());
-		assertThat(this.generatedSnippets.snippet("request-body"))
-			.is(codeBlock("json", "nowrap").withContent("{\"a\":\"alpha\"}"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "request-body", template = "request-body-with-language")
+	void customSnippetAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		requestBody(attributes(key("language").value("json")))
+			.document(operationBuilder.request("http://localhost").content("{\"a\":\"alpha\"}").build());
+		assertThat(snippets.requestBody()).isCodeBlock(
+				(codeBlock) -> codeBlock.withLanguageAndOptions("json", "nowrap").content("{\"a\":\"alpha\"}"));
 	}
 
 }

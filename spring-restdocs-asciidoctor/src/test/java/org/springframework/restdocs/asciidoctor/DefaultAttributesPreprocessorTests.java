@@ -21,7 +21,7 @@ import java.io.File;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
 import org.asciidoctor.Options;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,23 +30,23 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andy Wilkinson
  */
-public class DefaultAttributesPreprocessorTests {
+class DefaultAttributesPreprocessorTests {
 
 	@Test
-	public void snippetsAttributeIsSet() {
+	void snippetsAttributeIsSet() {
 		String converted = createAsciidoctor().convert("{snippets}", createOptions("projectdir=../../.."));
 		assertThat(converted).contains("build" + File.separatorChar + "generated-snippets");
 	}
 
 	@Test
-	public void snippetsAttributeFromConvertArgumentIsNotOverridden() {
+	void snippetsAttributeFromConvertArgumentIsNotOverridden() {
 		String converted = createAsciidoctor().convert("{snippets}",
 				createOptions("snippets=custom projectdir=../../.."));
 		assertThat(converted).contains("custom");
 	}
 
 	@Test
-	public void snippetsAttributeFromDocumentPreambleIsNotOverridden() {
+	void snippetsAttributeFromDocumentPreambleIsNotOverridden() {
 		String converted = createAsciidoctor().convert(":snippets: custom\n{snippets}",
 				createOptions("projectdir=../../.."));
 		assertThat(converted).contains("custom");

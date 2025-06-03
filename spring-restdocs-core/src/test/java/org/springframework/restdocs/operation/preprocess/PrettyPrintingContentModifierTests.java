@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.springframework.restdocs.testfixtures.OutputCaptureRule;
+import org.springframework.restdocs.testfixtures.jupiter.CapturedOutput;
+import org.springframework.restdocs.testfixtures.jupiter.OutputCaptureExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,19 +34,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Andy Wilkinson
  *
  */
-public class PrettyPrintingContentModifierTests {
-
-	@Rule
-	public OutputCaptureRule outputCapture = new OutputCaptureRule();
+@ExtendWith(OutputCaptureExtension.class)
+class PrettyPrintingContentModifierTests {
 
 	@Test
-	public void prettyPrintJson() {
+	void prettyPrintJson() {
 		assertThat(new PrettyPrintingContentModifier().modifyContent("{\"a\":5}".getBytes(), null))
 			.isEqualTo(String.format("{%n  \"a\" : 5%n}").getBytes());
 	}
 
 	@Test
-	public void prettyPrintXml() {
+	void prettyPrintXml() {
 		assertThat(new PrettyPrintingContentModifier()
 			.modifyContent("<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null))
 			.isEqualTo(String
@@ -55,28 +54,28 @@ public class PrettyPrintingContentModifierTests {
 	}
 
 	@Test
-	public void empytContentIsHandledGracefully() {
+	void empytContentIsHandledGracefully() {
 		assertThat(new PrettyPrintingContentModifier().modifyContent("".getBytes(), null)).isEqualTo("".getBytes());
 	}
 
 	@Test
-	public void nonJsonAndNonXmlContentIsHandledGracefully() {
+	void nonJsonAndNonXmlContentIsHandledGracefully(CapturedOutput output) {
 		String content = "abcdefg";
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
 			.isEqualTo(content.getBytes());
-		assertThat(this.outputCapture).isEmpty();
+		assertThat(output).isEmpty();
 	}
 
 	@Test
-	public void nonJsonContentThatInitiallyLooksLikeJsonIsHandledGracefully() {
+	void nonJsonContentThatInitiallyLooksLikeJsonIsHandledGracefully(CapturedOutput output) {
 		String content = "\"abc\",\"def\"";
 		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
 			.isEqualTo(content.getBytes());
-		assertThat(this.outputCapture).isEmpty();
+		assertThat(output).isEmpty();
 	}
 
 	@Test
-	public void encodingIsPreserved() throws Exception {
+	void encodingIsPreserved() throws Exception {
 		Map<String, String> input = new HashMap<>();
 		input.put("japanese", "\u30b3\u30f3\u30c6\u30f3\u30c4");
 		ObjectMapper objectMapper = new ObjectMapper();

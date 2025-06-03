@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.restdocs.operation.Operation;
-import org.springframework.restdocs.templates.TemplateFormats;
-import org.springframework.restdocs.testfixtures.GeneratedSnippets;
-import org.springframework.restdocs.testfixtures.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,16 +35,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andy Wilkinson
  */
-public class TemplatedSnippetTests {
-
-	@Rule
-	public OperationBuilder operationBuilder = new OperationBuilder(TemplateFormats.asciidoctor());
-
-	@Rule
-	public GeneratedSnippets snippets = new GeneratedSnippets(TemplateFormats.asciidoctor());
+class TemplatedSnippetTests {
 
 	@Test
-	public void attributesAreCopied() {
+	void attributesAreCopied() {
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("a", "alpha");
 		TemplatedSnippet snippet = new TestTemplatedSnippet(attributes);
@@ -55,22 +48,23 @@ public class TemplatedSnippetTests {
 	}
 
 	@Test
-	public void nullAttributesAreTolerated() {
+	void nullAttributesAreTolerated() {
 		assertThat(new TestTemplatedSnippet(null).getAttributes()).isNotNull();
 		assertThat(new TestTemplatedSnippet(null).getAttributes()).isEmpty();
 	}
 
 	@Test
-	public void snippetName() {
+	void snippetName() {
 		assertThat(new TestTemplatedSnippet(Collections.<String, Object>emptyMap()).getSnippetName()).isEqualTo("test");
 	}
 
-	@Test
-	public void multipleSnippetsCanBeProducedFromTheSameTemplate() throws IOException {
-		new TestTemplatedSnippet("one", "multiple-snippets").document(this.operationBuilder.build());
-		new TestTemplatedSnippet("two", "multiple-snippets").document(this.operationBuilder.build());
-		assertThat(this.snippets.snippet("multiple-snippets-one")).isNotNull();
-		assertThat(this.snippets.snippet("multiple-snippets-two")).isNotNull();
+	@RenderedSnippetTest
+	void multipleSnippetsCanBeProducedFromTheSameTemplate(OperationBuilder operationBuilder, AssertableSnippets snippet)
+			throws IOException {
+		new TestTemplatedSnippet("one", "multiple-snippets").document(operationBuilder.build());
+		new TestTemplatedSnippet("two", "multiple-snippets").document(operationBuilder.build());
+		assertThat(snippet.named("multiple-snippets-one")).exists();
+		assertThat(snippet.named("multiple-snippets-two")).exists();
 	}
 
 	private static class TestTemplatedSnippet extends TemplatedSnippet {

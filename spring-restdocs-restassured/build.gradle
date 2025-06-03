@@ -13,13 +13,14 @@ dependencies {
 
 	internal(platform(project(":spring-restdocs-platform")))
 
+	testCompileOnly("org.apiguardian:apiguardian-api")
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
 	testImplementation("com.fasterxml.jackson.core:jackson-databind")
-	testImplementation("junit:junit")
 	testImplementation("org.apache.tomcat.embed:tomcat-embed-core")
-	testImplementation("org.assertj:assertj-core")
-	testImplementation("org.hamcrest:hamcrest-library")
-	testImplementation("org.mockito:mockito-core")
+}
+
+tasks.named("test") {
+	useJUnitPlatform();
 }
 
 compatibilityTest {

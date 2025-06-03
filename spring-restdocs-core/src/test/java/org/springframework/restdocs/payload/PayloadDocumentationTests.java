@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.springframework.restdocs.payload;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.payload.PayloadDocumentation.applyPathPrefix;
@@ -31,10 +31,10 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  *
  * @author Andy Wilkinson
  */
-public class PayloadDocumentationTests {
+class PayloadDocumentationTests {
 
 	@Test
-	public void applyPathPrefixAppliesPrefixToDescriptorPaths() {
+	void applyPathPrefixAppliesPrefixToDescriptorPaths() {
 		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.",
 				Arrays.asList(fieldWithPath("bravo"), fieldWithPath("charlie")));
 		assertThat(descriptors.size()).isEqualTo(2);
@@ -42,21 +42,21 @@ public class PayloadDocumentationTests {
 	}
 
 	@Test
-	public void applyPathPrefixCopiesIgnored() {
+	void applyPathPrefixCopiesIgnored() {
 		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.", Arrays.asList(fieldWithPath("bravo").ignored()));
 		assertThat(descriptors.size()).isEqualTo(1);
 		assertThat(descriptors.get(0).isIgnored()).isTrue();
 	}
 
 	@Test
-	public void applyPathPrefixCopiesOptional() {
+	void applyPathPrefixCopiesOptional() {
 		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.", Arrays.asList(fieldWithPath("bravo").optional()));
 		assertThat(descriptors.size()).isEqualTo(1);
 		assertThat(descriptors.get(0).isOptional()).isTrue();
 	}
 
 	@Test
-	public void applyPathPrefixCopiesDescription() {
+	void applyPathPrefixCopiesDescription() {
 		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.",
 				Arrays.asList(fieldWithPath("bravo").description("Some field")));
 		assertThat(descriptors.size()).isEqualTo(1);
@@ -64,7 +64,7 @@ public class PayloadDocumentationTests {
 	}
 
 	@Test
-	public void applyPathPrefixCopiesType() {
+	void applyPathPrefixCopiesType() {
 		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.",
 				Arrays.asList(fieldWithPath("bravo").type(JsonFieldType.OBJECT)));
 		assertThat(descriptors.size()).isEqualTo(1);
@@ -72,7 +72,7 @@ public class PayloadDocumentationTests {
 	}
 
 	@Test
-	public void applyPathPrefixCopiesAttributes() {
+	void applyPathPrefixCopiesAttributes() {
 		List<FieldDescriptor> descriptors = applyPathPrefix("alpha.",
 				Arrays.asList(fieldWithPath("bravo").attributes(key("a").value("alpha"), key("b").value("bravo"))));
 		assertThat(descriptors.size()).isEqualTo(1);

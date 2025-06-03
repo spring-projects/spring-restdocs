@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.testfixtures;
+package org.springframework.restdocs.testfixtures.jupiter;
 
 import java.io.File;
 import java.net.URI;
@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.junit.runners.model.Statement;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -59,21 +57,27 @@ import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
  *
  * @author Andy Wilkinson
  */
-public class OperationBuilder extends OperationTestRule {
+public class OperationBuilder {
 
 	private final Map<String, Object> attributes = new HashMap<>();
 
-	private OperationResponseBuilder responseBuilder;
+	private final File outputDirectory;
 
-	private String name;
-
-	private File outputDirectory;
+	private final String name;
 
 	private final TemplateFormat templateFormat;
 
+	private OperationResponseBuilder responseBuilder;
+
 	private OperationRequestBuilder requestBuilder;
 
-	public OperationBuilder(TemplateFormat templateFormat) {
+	OperationBuilder(File outputDirectory, String name) {
+		this(outputDirectory, name, null);
+	}
+
+	OperationBuilder(File outputDirectory, String name, TemplateFormat templateFormat) {
+		this.outputDirectory = outputDirectory;
+		this.name = name;
 		this.templateFormat = templateFormat;
 	}
 
@@ -90,13 +94,6 @@ public class OperationBuilder extends OperationTestRule {
 	public OperationBuilder attribute(String name, Object value) {
 		this.attributes.put(name, value);
 		return this;
-	}
-
-	private void prepare(String operationName, File outputDirectory) {
-		this.name = operationName;
-		this.outputDirectory = outputDirectory;
-		this.requestBuilder = null;
-		this.attributes.clear();
 	}
 
 	public Operation build() {
@@ -125,12 +122,6 @@ public class OperationBuilder extends OperationTestRule {
 		manualRestDocumentation.beforeTest(null, null);
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;
-	}
-
-	@Override
-	public Statement apply(Statement base, File outputDirectory, String operationName) {
-		prepare(operationName, outputDirectory);
-		return base;
 	}
 
 	/**

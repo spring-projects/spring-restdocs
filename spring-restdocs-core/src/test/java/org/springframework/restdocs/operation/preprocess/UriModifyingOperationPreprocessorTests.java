@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andy Wilkinson
  */
-public class UriModifyingOperationPreprocessorTests {
+class UriModifyingOperationPreprocessorTests {
 
 	private final OperationRequestFactory requestFactory = new OperationRequestFactory();
 
@@ -50,14 +50,14 @@ public class UriModifyingOperationPreprocessorTests {
 	private final UriModifyingOperationPreprocessor preprocessor = new UriModifyingOperationPreprocessor();
 
 	@Test
-	public void requestUriSchemeCanBeModified() {
+	void requestUriSchemeCanBeModified() {
 		this.preprocessor.scheme("https");
 		OperationRequest processed = this.preprocessor.preprocess(createRequestWithUri("http://localhost:12345"));
 		assertThat(processed.getUri()).isEqualTo(URI.create("https://localhost:12345"));
 	}
 
 	@Test
-	public void requestUriHostCanBeModified() {
+	void requestUriHostCanBeModified() {
 		this.preprocessor.host("api.example.com");
 		OperationRequest processed = this.preprocessor.preprocess(createRequestWithUri("https://api.foo.com:12345"));
 		assertThat(processed.getUri()).isEqualTo(URI.create("https://api.example.com:12345"));
@@ -65,7 +65,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestUriPortCanBeModified() {
+	void requestUriPortCanBeModified() {
 		this.preprocessor.port(23456);
 		OperationRequest processed = this.preprocessor
 			.preprocess(createRequestWithUri("https://api.example.com:12345"));
@@ -74,7 +74,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestUriPortCanBeRemoved() {
+	void requestUriPortCanBeRemoved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
 			.preprocess(createRequestWithUri("https://api.example.com:12345"));
@@ -83,7 +83,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestUriPathIsPreserved() {
+	void requestUriPathIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
 			.preprocess(createRequestWithUri("https://api.example.com:12345/foo/bar"));
@@ -91,7 +91,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestUriQueryIsPreserved() {
+	void requestUriQueryIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
 			.preprocess(createRequestWithUri("https://api.example.com:12345?foo=bar"));
@@ -99,7 +99,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestUriAnchorIsPreserved() {
+	void requestUriAnchorIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
 			.preprocess(createRequestWithUri("https://api.example.com:12345#foo"));
@@ -107,7 +107,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestContentUriSchemeCanBeModified() {
+	void requestContentUriSchemeCanBeModified() {
 		this.preprocessor.scheme("https");
 		OperationRequest processed = this.preprocessor.preprocess(createRequestWithContent(
 				"The uri 'https://localhost:12345' should be used. foo:bar will be unaffected"));
@@ -116,7 +116,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestContentUriHostCanBeModified() {
+	void requestContentUriHostCanBeModified() {
 		this.preprocessor.host("api.example.com");
 		OperationRequest processed = this.preprocessor.preprocess(createRequestWithContent(
 				"The uri 'https://localhost:12345' should be used. foo:bar will be unaffected"));
@@ -125,7 +125,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestContentHostOfUriWithoutPortCanBeModified() {
+	void requestContentHostOfUriWithoutPortCanBeModified() {
 		this.preprocessor.host("api.example.com");
 		OperationRequest processed = this.preprocessor.preprocess(
 				createRequestWithContent("The uri 'https://localhost' should be used. foo:bar will be unaffected"));
@@ -134,7 +134,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestContentUriPortCanBeAdded() {
+	void requestContentUriPortCanBeAdded() {
 		this.preprocessor.port(23456);
 		OperationRequest processed = this.preprocessor.preprocess(
 				createRequestWithContent("The uri 'http://localhost' should be used. foo:bar will be unaffected"));
@@ -143,7 +143,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestContentUriPortCanBeModified() {
+	void requestContentUriPortCanBeModified() {
 		this.preprocessor.port(23456);
 		OperationRequest processed = this.preprocessor.preprocess(createRequestWithContent(
 				"The uri 'http://localhost:12345' should be used. foo:bar will be unaffected"));
@@ -152,7 +152,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestContentUriPortCanBeRemoved() {
+	void requestContentUriPortCanBeRemoved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor.preprocess(createRequestWithContent(
 				"The uri 'http://localhost:12345' should be used. foo:bar will be unaffected"));
@@ -161,7 +161,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void multipleRequestContentUrisCanBeModified() {
+	void multipleRequestContentUrisCanBeModified() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor.preprocess(createRequestWithContent(
 				"Use 'http://localhost:12345' or 'https://localhost:23456' to access the service"));
@@ -170,7 +170,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestContentUriPathIsPreserved() {
+	void requestContentUriPathIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
 			.preprocess(createRequestWithContent("The uri 'http://localhost:12345/foo/bar' should be used"));
@@ -178,7 +178,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestContentUriQueryIsPreserved() {
+	void requestContentUriQueryIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
 			.preprocess(createRequestWithContent("The uri 'http://localhost:12345?foo=bar' should be used"));
@@ -186,7 +186,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void requestContentUriAnchorIsPreserved() {
+	void requestContentUriAnchorIsPreserved() {
 		this.preprocessor.removePort();
 		OperationRequest processed = this.preprocessor
 			.preprocess(createRequestWithContent("The uri 'http://localhost:12345#foo' should be used"));
@@ -194,7 +194,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void responseContentUriSchemeCanBeModified() {
+	void responseContentUriSchemeCanBeModified() {
 		this.preprocessor.scheme("https");
 		OperationResponse processed = this.preprocessor
 			.preprocess(createResponseWithContent("The uri 'http://localhost:12345' should be used"));
@@ -202,7 +202,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void responseContentUriHostCanBeModified() {
+	void responseContentUriHostCanBeModified() {
 		this.preprocessor.host("api.example.com");
 		OperationResponse processed = this.preprocessor
 			.preprocess(createResponseWithContent("The uri 'https://localhost:12345' should be used"));
@@ -211,7 +211,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void responseContentUriPortCanBeModified() {
+	void responseContentUriPortCanBeModified() {
 		this.preprocessor.port(23456);
 		OperationResponse processed = this.preprocessor
 			.preprocess(createResponseWithContent("The uri 'http://localhost:12345' should be used"));
@@ -219,7 +219,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void responseContentUriPortCanBeRemoved() {
+	void responseContentUriPortCanBeRemoved() {
 		this.preprocessor.removePort();
 		OperationResponse processed = this.preprocessor
 			.preprocess(createResponseWithContent("The uri 'http://localhost:12345' should be used"));
@@ -227,7 +227,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void multipleResponseContentUrisCanBeModified() {
+	void multipleResponseContentUrisCanBeModified() {
 		this.preprocessor.removePort();
 		OperationResponse processed = this.preprocessor.preprocess(createResponseWithContent(
 				"Use 'http://localhost:12345' or 'https://localhost:23456' to access the service"));
@@ -236,7 +236,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void responseContentUriPathIsPreserved() {
+	void responseContentUriPathIsPreserved() {
 		this.preprocessor.removePort();
 		OperationResponse processed = this.preprocessor
 			.preprocess(createResponseWithContent("The uri 'http://localhost:12345/foo/bar' should be used"));
@@ -244,7 +244,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void responseContentUriQueryIsPreserved() {
+	void responseContentUriQueryIsPreserved() {
 		this.preprocessor.removePort();
 		OperationResponse processed = this.preprocessor
 			.preprocess(createResponseWithContent("The uri 'http://localhost:12345?foo=bar' should be used"));
@@ -252,7 +252,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void responseContentUriAnchorIsPreserved() {
+	void responseContentUriAnchorIsPreserved() {
 		this.preprocessor.removePort();
 		OperationResponse processed = this.preprocessor
 			.preprocess(createResponseWithContent("The uri 'http://localhost:12345#foo' should be used"));
@@ -260,7 +260,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void urisInRequestHeadersCanBeModified() {
+	void urisInRequestHeadersCanBeModified() {
 		OperationRequest processed = this.preprocessor.host("api.example.com")
 			.preprocess(createRequestWithHeader("Foo", "https://locahost:12345"));
 		assertThat(processed.getHeaders().getFirst("Foo")).isEqualTo("https://api.example.com:12345");
@@ -268,14 +268,14 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void urisInResponseHeadersCanBeModified() {
+	void urisInResponseHeadersCanBeModified() {
 		OperationResponse processed = this.preprocessor.host("api.example.com")
 			.preprocess(createResponseWithHeader("Foo", "https://locahost:12345"));
 		assertThat(processed.getHeaders().getFirst("Foo")).isEqualTo("https://api.example.com:12345");
 	}
 
 	@Test
-	public void urisInRequestPartHeadersCanBeModified() {
+	void urisInRequestPartHeadersCanBeModified() {
 		OperationRequest processed = this.preprocessor.host("api.example.com")
 			.preprocess(createRequestWithPartWithHeader("Foo", "https://locahost:12345"));
 		assertThat(processed.getParts().iterator().next().getHeaders().getFirst("Foo"))
@@ -283,7 +283,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void urisInRequestPartContentCanBeModified() {
+	void urisInRequestPartContentCanBeModified() {
 		OperationRequest processed = this.preprocessor.host("api.example.com")
 			.preprocess(createRequestWithPartWithContent("The uri 'https://localhost:12345' should be used"));
 		assertThat(new String(processed.getParts().iterator().next().getContent()))
@@ -291,7 +291,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void modifiedUriDoesNotGetDoubleEncoded() {
+	void modifiedUriDoesNotGetDoubleEncoded() {
 		this.preprocessor.scheme("https");
 		OperationRequest processed = this.preprocessor
 			.preprocess(createRequestWithUri("http://localhost:12345?foo=%7B%7D"));
@@ -300,7 +300,7 @@ public class UriModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void resultingRequestHasCookiesFromOriginalRequst() {
+	void resultingRequestHasCookiesFromOriginalRequst() {
 		List<RequestCookie> cookies = Arrays.asList(new RequestCookie("a", "alpha"));
 		OperationRequest request = this.requestFactory.create(URI.create("http://localhost:12345"), HttpMethod.GET,
 				new byte[0], new HttpHeaders(), Collections.<OperationRequestPart>emptyList(), cookies);

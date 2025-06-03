@@ -32,6 +32,8 @@ task jmustacheRepackJar(type: Jar) { repackJar ->
 }
 
 dependencies {
+	compileOnly("org.apiguardian:apiguardian-api")
+
 	implementation("com.fasterxml.jackson.core:jackson-databind")
 	implementation("org.springframework:spring-web")
 	implementation(files(jmustacheRepackJar))
@@ -50,21 +52,29 @@ dependencies {
 	optional("org.junit.jupiter:junit-jupiter-api")
 
 	testFixturesApi(platform(project(":spring-restdocs-platform")))
-	testFixturesApi("junit:junit")
 	testFixturesApi("org.assertj:assertj-core")
-	testFixturesApi("org.hamcrest:hamcrest-core")
+	testFixturesApi("org.junit.jupiter:junit-jupiter")
+	testFixturesApi("org.mockito:mockito-core")
+
+	testFixturesCompileOnly("org.apiguardian:apiguardian-api")
+
 	testFixturesImplementation(files(jmustacheRepackJar))
 	testFixturesImplementation("org.hamcrest:hamcrest-library")
+	testFixturesImplementation("org.mockito:mockito-core")
 	testFixturesImplementation("org.springframework:spring-core")
 	testFixturesImplementation("org.springframework:spring-web")
+	
+	testFixturesRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-	testImplementation("junit:junit")
+	testCompileOnly("org.apiguardian:apiguardian-api")
+
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.javamoney:moneta")
 	testImplementation("org.mockito:mockito-core")
 	testImplementation("org.springframework:spring-test")
 
 	testRuntimeOnly("org.apache.tomcat.embed:tomcat-embed-el")
+	testRuntimeOnly("org.junit.platform:junit-platform-engine")
 }
 
 jar {
@@ -80,4 +90,8 @@ components.java.withVariantsFromConfiguration(configurations.testFixturesApiElem
 
 components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) {
 	skip()
+}
+
+tasks.named("test") {
+	useJUnitPlatform()
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,11 @@ package org.springframework.restdocs.cli;
 import java.io.IOException;
 import java.util.Base64;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,200 +37,209 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Paul-Christian Volkmer
  * @author Tomasz Kopczynski
  */
-@RunWith(Parameterized.class)
-public class CurlRequestSnippetTests extends AbstractSnippetTests {
+class CurlRequestSnippetTests {
 
 	private CommandFormatter commandFormatter = CliDocumentation.singleLineFormat();
 
-	public CurlRequestSnippetTests(String name, TemplateFormat templateFormat) {
-		super(name, templateFormat);
-	}
-
-	@Test
-	public void getRequest() throws IOException {
+	@RenderedSnippetTest
+	void getRequest(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X GET"));
+			.document(operationBuilder.request("http://localhost/foo").build());
+		assertThat(snippets.curlRequest()).isCodeBlock(
+				(codeBlock) -> codeBlock.withLanguage("bash").content("$ curl 'http://localhost/foo' -i -X GET"));
 	}
 
-	@Test
-	public void nonGetRequest() throws IOException {
+	@RenderedSnippetTest
+	void nonGetRequest(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo").method("POST").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST"));
+			.document(operationBuilder.request("http://localhost/foo").method("POST").build());
+		assertThat(snippets.curlRequest()).isCodeBlock(
+				(codeBlock) -> codeBlock.withLanguage("bash").content("$ curl 'http://localhost/foo' -i -X POST"));
 	}
 
-	@Test
-	public void requestWithContent() throws IOException {
+	@RenderedSnippetTest
+	void requestWithContent(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo").content("content").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X GET -d 'content'"));
+			.document(operationBuilder.request("http://localhost/foo").content("content").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X GET -d 'content'"));
 	}
 
-	@Test
-	public void getRequestWithQueryString() throws IOException {
+	@RenderedSnippetTest
+	void getRequestWithQueryString(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo?param=value").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?param=value' -i -X GET"));
+			.document(operationBuilder.request("http://localhost/foo?param=value").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo?param=value' -i -X GET"));
 	}
 
-	@Test
-	public void getRequestWithQueryStringWithNoValue() throws IOException {
+	@RenderedSnippetTest
+	void getRequestWithQueryStringWithNoValue(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo?param").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?param' -i -X GET"));
+			.document(operationBuilder.request("http://localhost/foo?param").build());
+		assertThat(snippets.curlRequest()).isCodeBlock(
+				(codeBlock) -> codeBlock.withLanguage("bash").content("$ curl 'http://localhost/foo?param' -i -X GET"));
 	}
 
-	@Test
-	public void postRequestWithQueryString() throws IOException {
+	@RenderedSnippetTest
+	void postRequestWithQueryString(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo?param=value").method("POST").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?param=value' -i -X POST"));
+			.document(operationBuilder.request("http://localhost/foo?param=value").method("POST").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo?param=value' -i -X POST"));
 	}
 
-	@Test
-	public void postRequestWithQueryStringWithNoValue() throws IOException {
+	@RenderedSnippetTest
+	void postRequestWithQueryStringWithNoValue(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo?param").method("POST").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?param' -i -X POST"));
+			.document(operationBuilder.request("http://localhost/foo?param").method("POST").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo?param' -i -X POST"));
 	}
 
-	@Test
-	public void postRequestWithOneParameter() throws IOException {
+	@RenderedSnippetTest
+	void postRequestWithOneParameter(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo").method("POST").content("k1=v1").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
+			.document(operationBuilder.request("http://localhost/foo").method("POST").content("k1=v1").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
 	}
 
-	@Test
-	public void postRequestWithOneParameterAndExplicitContentType() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+	@RenderedSnippetTest
+	void postRequestWithOneParameterAndExplicitContentType(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 			.method("POST")
 			.content("k1=v1")
 			.build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1=v1'"));
 	}
 
-	@Test
-	public void postRequestWithOneParameterWithNoValue() throws IOException {
+	@RenderedSnippetTest
+	void postRequestWithOneParameterWithNoValue(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo").method("POST").content("k1=").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST -d 'k1='"));
+			.document(operationBuilder.request("http://localhost/foo").method("POST").content("k1=").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1='"));
 	}
 
-	@Test
-	public void postRequestWithMultipleParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+	@RenderedSnippetTest
+	void postRequestWithMultipleParameters(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
 			.method("POST")
 			.content("k1=v1&k1=v1-bis&k2=v2")
 			.build());
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash")
-			.withContent("$ curl 'http://localhost/foo' -i -X POST" + " -d 'k1=v1&k1=v1-bis&k2=v2'"));
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X POST" + " -d 'k1=v1&k1=v1-bis&k2=v2'"));
 	}
 
-	@Test
-	public void postRequestWithUrlEncodedParameter() throws IOException {
+	@RenderedSnippetTest
+	void postRequestWithUrlEncodedParameter(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo").method("POST").content("k1=a%26b").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
+			.document(operationBuilder.request("http://localhost/foo").method("POST").content("k1=a%26b").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X POST -d 'k1=a%26b'"));
 	}
 
-	@Test
-	public void postRequestWithJsonData() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+	@RenderedSnippetTest
+	void postRequestWithJsonData(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
 			.method("POST")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 			.content("{\"a\":\"alpha\"}")
 			.build());
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(
-				"$ curl 'http://localhost/foo' -i -X POST -H 'Content-Type: application/json' -d '{\"a\":\"alpha\"}'"));
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content(
+					"$ curl 'http://localhost/foo' -i -X POST -H 'Content-Type: application/json' -d '{\"a\":\"alpha\"}'"));
 	}
 
-	@Test
-	public void putRequestWithOneParameter() throws IOException {
+	@RenderedSnippetTest
+	void putRequestWithOneParameter(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo").method("PUT").content("k1=v1").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=v1'"));
+			.document(operationBuilder.request("http://localhost/foo").method("PUT").content("k1=v1").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=v1'"));
 	}
 
-	@Test
-	public void putRequestWithMultipleParameters() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+	@RenderedSnippetTest
+	void putRequestWithMultipleParameters(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
 			.method("PUT")
 			.content("k1=v1&k1=v1-bis&k2=v2")
 			.build());
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash")
-			.withContent("$ curl 'http://localhost/foo' -i -X PUT" + " -d 'k1=v1&k1=v1-bis&k2=v2'"));
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X PUT" + " -d 'k1=v1&k1=v1-bis&k2=v2'"));
 	}
 
-	@Test
-	public void putRequestWithUrlEncodedParameter() throws IOException {
+	@RenderedSnippetTest
+	void putRequestWithUrlEncodedParameter(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo").method("PUT").content("k1=a%26b").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=a%26b'"));
+			.document(operationBuilder.request("http://localhost/foo").method("PUT").content("k1=a%26b").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X PUT -d 'k1=a%26b'"));
 	}
 
-	@Test
-	public void requestWithHeaders() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+	@RenderedSnippetTest
+	void requestWithHeaders(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 			.header("a", "alpha")
 			.build());
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(
-				"$ curl 'http://localhost/foo' -i -X GET" + " -H 'Content-Type: application/json' -H 'a: alpha'"));
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X GET" + " -H 'Content-Type: application/json' -H 'a: alpha'"));
 	}
 
-	@Test
-	public void requestWithHeadersMultiline() throws IOException {
+	@RenderedSnippetTest
+	void requestWithHeadersMultiline(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new CurlRequestSnippet(CliDocumentation.multiLineFormat())
-			.document(this.operationBuilder.request("http://localhost/foo")
+			.document(operationBuilder.request("http://localhost/foo")
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.header("a", "alpha")
 				.build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent(String.format("$ curl 'http://localhost/foo' -i -X GET \\%n"
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content(String.format("$ curl 'http://localhost/foo' -i -X GET \\%n"
 					+ "    -H 'Content-Type: application/json' \\%n" + "    -H 'a: alpha'")));
 	}
 
-	@Test
-	public void requestWithCookies() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+	@RenderedSnippetTest
+	void requestWithCookies(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
 			.cookie("name1", "value1")
 			.cookie("name2", "value2")
 			.build());
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash")
-			.withContent("$ curl 'http://localhost/foo' -i -X GET" + " --cookie 'name1=value1;name2=value2'"));
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X GET" + " --cookie 'name1=value1;name2=value2'"));
 	}
 
-	@Test
-	public void multipartPostWithNoSubmittedFileName() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/upload")
+	@RenderedSnippetTest
+	void multipartPostWithNoSubmittedFileName(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
 			.method("POST")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 			.part("metadata", "{\"description\": \"foo\"}".getBytes())
 			.build());
 		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
 				+ "'Content-Type: multipart/form-data' -F " + "'metadata={\"description\": \"foo\"}'";
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(expectedContent));
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content(expectedContent));
 	}
 
-	@Test
-	public void multipartPostWithContentType() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/upload")
+	@RenderedSnippetTest
+	void multipartPostWithContentType(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
 			.method("POST")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 			.part("image", new byte[0])
@@ -242,12 +248,13 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 			.build());
 		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
 				+ "'Content-Type: multipart/form-data' -F " + "'image=@documents/images/example.png;type=image/png'";
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(expectedContent));
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content(expectedContent));
 	}
 
-	@Test
-	public void multipartPost() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/upload")
+	@RenderedSnippetTest
+	void multipartPost(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
 			.method("POST")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 			.part("image", new byte[0])
@@ -255,36 +262,38 @@ public class CurlRequestSnippetTests extends AbstractSnippetTests {
 			.build());
 		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
 				+ "'Content-Type: multipart/form-data' -F " + "'image=@documents/images/example.png'";
-		assertThat(this.generatedSnippets.curlRequest()).is(codeBlock("bash").withContent(expectedContent));
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content(expectedContent));
 	}
 
-	@Test
-	public void basicAuthCredentialsAreSuppliedUsingUserOption() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+	@RenderedSnippetTest
+	void basicAuthCredentialsAreSuppliedUsingUserOption(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
 			.header(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString("user:secret".getBytes()))
 			.build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -u 'user:secret' -X GET"));
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -u 'user:secret' -X GET"));
 	}
 
-	@Test
-	public void customAttributes() throws IOException {
-		new CurlRequestSnippet(this.commandFormatter).document(this.operationBuilder.request("http://localhost/foo")
+	@RenderedSnippetTest
+	void customAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
 			.header(HttpHeaders.HOST, "api.example.com")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 			.header("a", "alpha")
 			.build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo' -i -X GET -H 'Host: api.example.com'"
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X GET -H 'Host: api.example.com'"
 					+ " -H 'Content-Type: application/json' -H 'a: alpha'"));
 	}
 
-	@Test
-	public void deleteWithQueryString() throws IOException {
+	@RenderedSnippetTest
+	void deleteWithQueryString(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
-			.document(this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("DELETE").build());
-		assertThat(this.generatedSnippets.curlRequest())
-			.is(codeBlock("bash").withContent("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i " + "-X DELETE"));
+			.document(operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("DELETE").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo?a=alpha&b=bravo' -i " + "-X DELETE"));
 	}
 
 }

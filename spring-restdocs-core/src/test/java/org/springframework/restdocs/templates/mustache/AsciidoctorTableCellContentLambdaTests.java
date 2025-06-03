@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.springframework.restdocs.templates.mustache;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.restdocs.mustache.Template.Fragment;
 
@@ -32,10 +32,10 @@ import static org.mockito.Mockito.mock;
  *
  * @author Andy Wilkinson
  */
-public class AsciidoctorTableCellContentLambdaTests {
+class AsciidoctorTableCellContentLambdaTests {
 
 	@Test
-	public void verticalBarCharactersAreEscaped() throws IOException {
+	void verticalBarCharactersAreEscaped() throws IOException {
 		Fragment fragment = mock(Fragment.class);
 		given(fragment.execute()).willReturn("|foo|bar|baz|");
 		StringWriter writer = new StringWriter();
@@ -44,7 +44,7 @@ public class AsciidoctorTableCellContentLambdaTests {
 	}
 
 	@Test
-	public void escapedVerticalBarCharactersAreNotEscapedAgain() throws IOException {
+	void escapedVerticalBarCharactersAreNotEscapedAgain() throws IOException {
 		Fragment fragment = mock(Fragment.class);
 		given(fragment.execute()).willReturn("\\|foo|bar\\|baz|");
 		StringWriter writer = new StringWriter();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.testfixtures;
+package org.springframework.restdocs.testfixtures.jupiter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,8 +35,6 @@ import org.springframework.util.Assert;
  * @author Madhura Bhave
  * @author Phillip Webb
  * @author Andy Wilkinson
- * @author Sam Brannen
- * @see OutputCaptureRule
  */
 class OutputCapture implements CapturedOutput {
 
@@ -61,7 +59,7 @@ class OutputCapture implements CapturedOutput {
 		if (obj == this) {
 			return true;
 		}
-		if (obj instanceof CapturedOutput || obj instanceof CharSequence) {
+		if (obj instanceof CharSequence) {
 			return getAll().equals(obj.toString());
 		}
 		return false;
@@ -123,16 +121,16 @@ class OutputCapture implements CapturedOutput {
 	}
 
 	/**
-	 * A capture session that captures {@link System#out System.out} and {@link System#out
+	 * A capture session that captures {@link System#out System.out} and {@link System#err
 	 * System.err}.
 	 */
 	private static class SystemCapture {
 
-		private final Object monitor = new Object();
-
 		private final PrintStreamCapture out;
 
 		private final PrintStreamCapture err;
+
+		private final Object monitor = new Object();
 
 		private final List<CapturedString> capturedStrings = new ArrayList<>();
 
@@ -195,8 +193,8 @@ class OutputCapture implements CapturedOutput {
 		}
 
 		private static PrintStream getSystemStream(PrintStream printStream) {
-			while (printStream instanceof PrintStreamCapture) {
-				printStream = ((PrintStreamCapture) printStream).getParent();
+			while (printStream instanceof PrintStreamCapture printStreamCapture) {
+				printStream = printStreamCapture.getParent();
 			}
 			return printStream;
 		}

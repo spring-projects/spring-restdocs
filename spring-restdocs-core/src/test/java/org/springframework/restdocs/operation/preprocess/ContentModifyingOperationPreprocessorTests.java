@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.springframework.restdocs.operation.preprocess;
 import java.net.URI;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Andy Wilkinson
  *
  */
-public class ContentModifyingOperationPreprocessorTests {
+class ContentModifyingOperationPreprocessorTests {
 
 	private final OperationRequestFactory requestFactory = new OperationRequestFactory();
 
@@ -56,7 +56,7 @@ public class ContentModifyingOperationPreprocessorTests {
 			});
 
 	@Test
-	public void modifyRequestContent() {
+	void modifyRequestContent() {
 		OperationRequest request = this.requestFactory.create(URI.create("http://localhost"), HttpMethod.GET,
 				"content".getBytes(), new HttpHeaders(), Collections.<OperationRequestPart>emptyList());
 		OperationRequest preprocessed = this.preprocessor.preprocess(request);
@@ -64,7 +64,7 @@ public class ContentModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void modifyResponseContent() {
+	void modifyResponseContent() {
 		OperationResponse response = this.responseFactory.create(HttpStatus.OK, new HttpHeaders(),
 				"content".getBytes());
 		OperationResponse preprocessed = this.preprocessor.preprocess(response);
@@ -72,7 +72,7 @@ public class ContentModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void contentLengthIsUpdated() {
+	void contentLengthIsUpdated() {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentLength(7);
 		OperationRequest request = this.requestFactory.create(URI.create("http://localhost"), HttpMethod.GET,

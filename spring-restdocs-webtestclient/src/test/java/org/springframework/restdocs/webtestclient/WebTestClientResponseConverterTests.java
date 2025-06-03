@@ -18,7 +18,7 @@ package org.springframework.restdocs.webtestclient;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,12 +40,12 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
  *
  * @author Andy Wilkinson
  */
-public class WebTestClientResponseConverterTests {
+class WebTestClientResponseConverterTests {
 
 	private final WebTestClientResponseConverter converter = new WebTestClientResponseConverter();
 
 	@Test
-	public void basicResponse() {
+	void basicResponse() {
 		ExchangeResult result = WebTestClient
 			.bindToRouterFunction(
 					RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.ok().bodyValue("Hello, World!")))
@@ -66,7 +66,7 @@ public class WebTestClientResponseConverterTests {
 	}
 
 	@Test
-	public void responseWithCookie() {
+	void responseWithCookie() {
 		ExchangeResult result = WebTestClient
 			.bindToRouterFunction(RouterFunctions.route(GET("/foo"),
 					(req) -> ServerResponse.ok()
@@ -92,7 +92,7 @@ public class WebTestClientResponseConverterTests {
 	}
 
 	@Test
-	public void responseWithNonStandardStatusCode() {
+	void responseWithNonStandardStatusCode() {
 		ExchangeResult result = WebTestClient
 			.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.status(210).build()))
 			.configureClient()

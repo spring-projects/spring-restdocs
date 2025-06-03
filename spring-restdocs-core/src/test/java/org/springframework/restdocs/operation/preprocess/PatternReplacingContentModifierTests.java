@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.MediaType;
 
@@ -31,10 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andy Wilkinson
  */
-public class PatternReplacingContentModifierTests {
+class PatternReplacingContentModifierTests {
 
 	@Test
-	public void patternsAreReplaced() {
+	void patternsAreReplaced() {
 		Pattern pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
 				Pattern.CASE_INSENSITIVE);
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(pattern, "<<uuid>>");
@@ -44,7 +44,7 @@ public class PatternReplacingContentModifierTests {
 	}
 
 	@Test
-	public void contentThatDoesNotMatchIsUnchanged() {
+	void contentThatDoesNotMatchIsUnchanged() {
 		Pattern pattern = Pattern.compile("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
 				Pattern.CASE_INSENSITIVE);
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(pattern, "<<uuid>>");
@@ -53,7 +53,7 @@ public class PatternReplacingContentModifierTests {
 	}
 
 	@Test
-	public void encodingIsPreservedUsingCharsetFromContentType() {
+	void encodingIsPreservedUsingCharsetFromContentType() {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		Pattern pattern = Pattern.compile("[0-9]+");
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(pattern, "<<number>>");
@@ -63,7 +63,7 @@ public class PatternReplacingContentModifierTests {
 	}
 
 	@Test
-	public void encodingIsPreservedUsingFallbackCharset() {
+	void encodingIsPreservedUsingFallbackCharset() {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		Pattern pattern = Pattern.compile("[0-9]+");
 		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(pattern, "<<number>>",

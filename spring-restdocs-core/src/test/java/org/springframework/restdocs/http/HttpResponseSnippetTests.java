@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,16 @@ package org.springframework.restdocs.http;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.templates.TemplateEngine;
-import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.templates.TemplateResourceResolver;
-import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -42,72 +37,66 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
  */
-public class HttpResponseSnippetTests extends AbstractSnippetTests {
+class HttpResponseSnippetTests {
 
-	public HttpResponseSnippetTests(String name, TemplateFormat templateFormat) {
-		super(name, templateFormat);
+	@RenderedSnippetTest
+	void basicResponse(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpResponseSnippet().document(operationBuilder.build());
+		assertThat(snippets.httpResponse()).isHttpResponse((response) -> response.ok());
 	}
 
-	@Test
-	public void basicResponse() throws IOException {
-		new HttpResponseSnippet().document(this.operationBuilder.build());
-		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.OK));
+	@RenderedSnippetTest
+	void nonOkResponse(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpResponseSnippet().document(operationBuilder.response().status(HttpStatus.BAD_REQUEST).build());
+		assertThat(snippets.httpResponse()).isHttpResponse((response) -> response.badRequest());
 	}
 
-	@Test
-	public void nonOkResponse() throws IOException {
-		new HttpResponseSnippet().document(this.operationBuilder.response().status(HttpStatus.BAD_REQUEST).build());
-		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.BAD_REQUEST));
-	}
-
-	@Test
-	public void responseWithHeaders() throws IOException {
-		new HttpResponseSnippet().document(this.operationBuilder.response()
+	@RenderedSnippetTest
+	void responseWithHeaders(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpResponseSnippet().document(operationBuilder.response()
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 			.header("a", "alpha")
 			.build());
-		assertThat(this.generatedSnippets.httpResponse())
-			.is(httpResponse(HttpStatus.OK).header("Content-Type", "application/json").header("a", "alpha"));
+		assertThat(snippets.httpResponse()).isHttpResponse(
+				(response) -> response.ok().header("Content-Type", "application/json").header("a", "alpha"));
 	}
 
-	@Test
-	public void responseWithContent() throws IOException {
+	@RenderedSnippetTest
+	void responseWithContent(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		String content = "content";
-		new HttpResponseSnippet().document(this.operationBuilder.response().content(content).build());
-		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(HttpStatus.OK).content(content)
+		new HttpResponseSnippet().document(operationBuilder.response().content(content).build());
+		assertThat(snippets.httpResponse()).isHttpResponse((response) -> response.ok()
+			.content(content)
 			.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 	}
 
-	@Test
-	public void responseWithCharset() throws IOException {
+	@RenderedSnippetTest
+	void responseWithCharset(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
-		new HttpResponseSnippet().document(this.operationBuilder.response()
+		new HttpResponseSnippet().document(operationBuilder.response()
 			.header("Content-Type", "text/plain;charset=UTF-8")
 			.content(contentBytes)
 			.build());
-		assertThat(this.generatedSnippets.httpResponse())
-			.is(httpResponse(HttpStatus.OK).header("Content-Type", "text/plain;charset=UTF-8")
-				.content(japaneseContent)
-				.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length));
+		assertThat(snippets.httpResponse()).isHttpResponse((response) -> response.ok()
+			.header("Content-Type", "text/plain;charset=UTF-8")
+			.content(japaneseContent)
+			.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length));
 	}
 
-	@Test
-	public void responseWithCustomSnippetAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("http-response"))
-			.willReturn(snippetResource("http-response-with-title"));
-		new HttpResponseSnippet(attributes(key("title").value("Title for the response"))).document(
-				this.operationBuilder.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-					.build());
-		assertThat(this.generatedSnippets.httpResponse()).contains("Title for the response");
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "http-response", template = "http-response-with-title")
+	void responseWithCustomSnippetAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new HttpResponseSnippet(attributes(key("title").value("Title for the response")))
+			.document(operationBuilder.build());
+		assertThat(snippets.httpResponse()).contains("Title for the response");
 	}
 
-	@Test
-	public void responseWithCustomStatus() throws IOException {
-		new HttpResponseSnippet()
-			.document(this.operationBuilder.response().status(HttpStatusCode.valueOf(215)).build());
-		assertThat(this.generatedSnippets.httpResponse()).is(httpResponse(215));
+	@RenderedSnippetTest
+	void responseWithCustomStatus(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpResponseSnippet().document(operationBuilder.response().status(HttpStatusCode.valueOf(215)).build());
+		assertThat(snippets.httpResponse()).isHttpResponse(((response) -> response.status(215)));
 	}
 
 }

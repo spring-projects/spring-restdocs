@@ -60,7 +60,7 @@ import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.Mod10Check;
 import org.hibernate.validator.constraints.Mod11Check;
 import org.hibernate.validator.constraints.Range;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
@@ -77,183 +77,183 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andy Wilkinson
  */
-public class ResourceBundleConstraintDescriptionResolverTests {
+class ResourceBundleConstraintDescriptionResolverTests {
 
 	private final ResourceBundleConstraintDescriptionResolver resolver = new ResourceBundleConstraintDescriptionResolver();
 
 	@Test
-	public void defaultMessageAssertFalse() {
+	void defaultMessageAssertFalse() {
 		assertThat(constraintDescriptionForField("assertFalse")).isEqualTo("Must be false");
 	}
 
 	@Test
-	public void defaultMessageAssertTrue() {
+	void defaultMessageAssertTrue() {
 		assertThat(constraintDescriptionForField("assertTrue")).isEqualTo("Must be true");
 	}
 
 	@Test
-	public void defaultMessageCodePointLength() {
+	void defaultMessageCodePointLength() {
 		assertThat(constraintDescriptionForField("codePointLength"))
 			.isEqualTo("Code point length must be between 2 and 5 inclusive");
 	}
 
 	@Test
-	public void defaultMessageCurrency() {
+	void defaultMessageCurrency() {
 		assertThat(constraintDescriptionForField("currency"))
 			.isEqualTo("Must be in an accepted currency unit (GBP, USD)");
 	}
 
 	@Test
-	public void defaultMessageDecimalMax() {
+	void defaultMessageDecimalMax() {
 		assertThat(constraintDescriptionForField("decimalMax")).isEqualTo("Must be at most 9.875");
 	}
 
 	@Test
-	public void defaultMessageDecimalMin() {
+	void defaultMessageDecimalMin() {
 		assertThat(constraintDescriptionForField("decimalMin")).isEqualTo("Must be at least 1.5");
 	}
 
 	@Test
-	public void defaultMessageDigits() {
+	void defaultMessageDigits() {
 		assertThat(constraintDescriptionForField("digits"))
 			.isEqualTo("Must have at most 2 integral digits and 5 fractional digits");
 	}
 
 	@Test
-	public void defaultMessageFuture() {
+	void defaultMessageFuture() {
 		assertThat(constraintDescriptionForField("future")).isEqualTo("Must be in the future");
 	}
 
 	@Test
-	public void defaultMessageFutureOrPresent() {
+	void defaultMessageFutureOrPresent() {
 		assertThat(constraintDescriptionForField("futureOrPresent")).isEqualTo("Must be in the future or the present");
 	}
 
 	@Test
-	public void defaultMessageMax() {
+	void defaultMessageMax() {
 		assertThat(constraintDescriptionForField("max")).isEqualTo("Must be at most 10");
 	}
 
 	@Test
-	public void defaultMessageMin() {
+	void defaultMessageMin() {
 		assertThat(constraintDescriptionForField("min")).isEqualTo("Must be at least 10");
 	}
 
 	@Test
-	public void defaultMessageNotNull() {
+	void defaultMessageNotNull() {
 		assertThat(constraintDescriptionForField("notNull")).isEqualTo("Must not be null");
 	}
 
 	@Test
-	public void defaultMessageNull() {
+	void defaultMessageNull() {
 		assertThat(constraintDescriptionForField("nul")).isEqualTo("Must be null");
 	}
 
 	@Test
-	public void defaultMessagePast() {
+	void defaultMessagePast() {
 		assertThat(constraintDescriptionForField("past")).isEqualTo("Must be in the past");
 	}
 
 	@Test
-	public void defaultMessagePastOrPresent() {
+	void defaultMessagePastOrPresent() {
 		assertThat(constraintDescriptionForField("pastOrPresent")).isEqualTo("Must be in the past or the present");
 	}
 
 	@Test
-	public void defaultMessagePattern() {
+	void defaultMessagePattern() {
 		assertThat(constraintDescriptionForField("pattern"))
 			.isEqualTo("Must match the regular expression `[A-Z][a-z]+`");
 	}
 
 	@Test
-	public void defaultMessageSize() {
+	void defaultMessageSize() {
 		assertThat(constraintDescriptionForField("size")).isEqualTo("Size must be between 2 and 10 inclusive");
 	}
 
 	@Test
-	public void defaultMessageCreditCardNumber() {
+	void defaultMessageCreditCardNumber() {
 		assertThat(constraintDescriptionForField("creditCardNumber"))
 			.isEqualTo("Must be a well-formed credit card number");
 	}
 
 	@Test
-	public void defaultMessageEan() {
+	void defaultMessageEan() {
 		assertThat(constraintDescriptionForField("ean")).isEqualTo("Must be a well-formed EAN13 number");
 	}
 
 	@Test
-	public void defaultMessageEmail() {
+	void defaultMessageEmail() {
 		assertThat(constraintDescriptionForField("email")).isEqualTo("Must be a well-formed email address");
 	}
 
 	@Test
-	public void defaultMessageLength() {
+	void defaultMessageLength() {
 		assertThat(constraintDescriptionForField("length")).isEqualTo("Length must be between 2 and 10 inclusive");
 	}
 
 	@Test
-	public void defaultMessageLuhnCheck() {
+	void defaultMessageLuhnCheck() {
 		assertThat(constraintDescriptionForField("luhnCheck"))
 			.isEqualTo("Must pass the Luhn Modulo 10 checksum algorithm");
 	}
 
 	@Test
-	public void defaultMessageMod10Check() {
+	void defaultMessageMod10Check() {
 		assertThat(constraintDescriptionForField("mod10Check")).isEqualTo("Must pass the Mod10 checksum algorithm");
 	}
 
 	@Test
-	public void defaultMessageMod11Check() {
+	void defaultMessageMod11Check() {
 		assertThat(constraintDescriptionForField("mod11Check")).isEqualTo("Must pass the Mod11 checksum algorithm");
 	}
 
 	@Test
-	public void defaultMessageNegative() {
+	void defaultMessageNegative() {
 		assertThat(constraintDescriptionForField("negative")).isEqualTo("Must be negative");
 	}
 
 	@Test
-	public void defaultMessageNegativeOrZero() {
+	void defaultMessageNegativeOrZero() {
 		assertThat(constraintDescriptionForField("negativeOrZero")).isEqualTo("Must be negative or zero");
 	}
 
 	@Test
-	public void defaultMessageNotBlank() {
+	void defaultMessageNotBlank() {
 		assertThat(constraintDescriptionForField("notBlank")).isEqualTo("Must not be blank");
 	}
 
 	@Test
-	public void defaultMessageNotEmpty() {
+	void defaultMessageNotEmpty() {
 		assertThat(constraintDescriptionForField("notEmpty")).isEqualTo("Must not be empty");
 	}
 
 	@Test
-	public void defaultMessageNotEmptyHibernateValidator() {
+	void defaultMessageNotEmptyHibernateValidator() {
 		assertThat(constraintDescriptionForField("notEmpty")).isEqualTo("Must not be empty");
 	}
 
 	@Test
-	public void defaultMessagePositive() {
+	void defaultMessagePositive() {
 		assertThat(constraintDescriptionForField("positive")).isEqualTo("Must be positive");
 	}
 
 	@Test
-	public void defaultMessagePositiveOrZero() {
+	void defaultMessagePositiveOrZero() {
 		assertThat(constraintDescriptionForField("positiveOrZero")).isEqualTo("Must be positive or zero");
 	}
 
 	@Test
-	public void defaultMessageRange() {
+	void defaultMessageRange() {
 		assertThat(constraintDescriptionForField("range")).isEqualTo("Must be at least 10 and at most 100");
 	}
 
 	@Test
-	public void defaultMessageUrl() {
+	void defaultMessageUrl() {
 		assertThat(constraintDescriptionForField("url")).isEqualTo("Must be a well-formed URL");
 	}
 
 	@Test
-	public void customMessage() {
+	void customMessage() {
 		Thread.currentThread().setContextClassLoader(new ClassLoader() {
 
 			@Override
@@ -279,7 +279,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	@Test
-	public void customResourceBundle() {
+	void customResourceBundle() {
 		ResourceBundle bundle = new ListResourceBundle() {
 
 			@Override
@@ -294,7 +294,7 @@ public class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	@Test
-	public void allBeanValidationConstraintsAreTested() throws Exception {
+	void allBeanValidationConstraintsAreTested() throws Exception {
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		Resource[] resources = resolver.getResources("jakarta/validation/constraints/*.class");
 		Set<Class<?>> beanValidationConstraints = new HashSet<>();

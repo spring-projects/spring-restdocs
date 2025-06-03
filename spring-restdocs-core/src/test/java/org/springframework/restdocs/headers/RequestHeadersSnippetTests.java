@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,15 @@ package org.springframework.restdocs.headers;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Test;
-
-import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.templates.TemplateEngine;
-import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.templates.TemplateFormats;
-import org.springframework.restdocs.templates.TemplateResourceResolver;
-import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
+import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTemplate;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -41,19 +38,15 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  * @author Andreas Evers
  * @author Andy Wilkinson
  */
-public class RequestHeadersSnippetTests extends AbstractSnippetTests {
+class RequestHeadersSnippetTests {
 
-	public RequestHeadersSnippetTests(String name, TemplateFormat templateFormat) {
-		super(name, templateFormat);
-	}
-
-	@Test
-	public void requestWithHeaders() throws IOException {
+	@RenderedSnippetTest
+	void requestWithHeaders(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one"),
 				headerWithName("Accept").description("two"), headerWithName("Accept-Encoding").description("three"),
 				headerWithName("Accept-Language").description("four"),
 				headerWithName("Cache-Control").description("five"), headerWithName("Connection").description("six")))
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.header("X-Test", "test")
 				.header("Accept", "*/*")
 				.header("Accept-Encoding", "gzip, deflate")
@@ -61,79 +54,69 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 				.header("Cache-Control", "max-age=0")
 				.header("Connection", "keep-alive")
 				.build());
-		assertThat(this.generatedSnippets.requestHeaders())
-			.is(tableWithHeader("Name", "Description").row("`X-Test`", "one")
-				.row("`Accept`", "two")
-				.row("`Accept-Encoding`", "three")
-				.row("`Accept-Language`", "four")
-				.row("`Cache-Control`", "five")
-				.row("`Connection`", "six"));
+		assertThat(snippets.requestHeaders()).isTable((table) -> table.withHeader("Name", "Description")
+			.row("`X-Test`", "one")
+			.row("`Accept`", "two")
+			.row("`Accept-Encoding`", "three")
+			.row("`Accept-Language`", "four")
+			.row("`Cache-Control`", "five")
+			.row("`Connection`", "six"));
 	}
 
-	@Test
-	public void caseInsensitiveRequestHeaders() throws IOException {
+	@RenderedSnippetTest
+	void caseInsensitiveRequestHeaders(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one")))
-			.document(this.operationBuilder.request("/").header("X-test", "test").build());
-		assertThat(this.generatedSnippets.requestHeaders())
-			.is(tableWithHeader("Name", "Description").row("`X-Test`", "one"));
+			.document(operationBuilder.request("/").header("X-test", "test").build());
+		assertThat(snippets.requestHeaders())
+			.isTable((table) -> table.withHeader("Name", "Description").row("`X-Test`", "one"));
 	}
 
-	@Test
-	public void undocumentedRequestHeader() throws IOException {
-		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one")))
-			.document(this.operationBuilder.request("http://localhost")
-				.header("X-Test", "test")
-				.header("Accept", "*/*")
-				.build());
-		assertThat(this.generatedSnippets.requestHeaders())
-			.is(tableWithHeader("Name", "Description").row("`X-Test`", "one"));
+	@RenderedSnippetTest
+	void undocumentedRequestHeader(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one"))).document(
+				operationBuilder.request("http://localhost").header("X-Test", "test").header("Accept", "*/*").build());
+		assertThat(snippets.requestHeaders())
+			.isTable((table) -> table.withHeader("Name", "Description").row("`X-Test`", "one"));
 	}
 
-	@Test
-	public void requestHeadersWithCustomAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-headers"))
-			.willReturn(snippetResource("request-headers-with-title"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "request-headers", template = "request-headers-with-title")
+	void requestHeadersWithCustomAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one")),
 				attributes(key("title").value("Custom title")))
-			.document(this.operationBuilder
-				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-				.request("http://localhost")
-				.header("X-Test", "test")
-				.build());
-		assertThat(this.generatedSnippets.requestHeaders()).contains("Custom title");
+			.document(operationBuilder.request("http://localhost").header("X-Test", "test").build());
+		assertThat(snippets.requestHeaders()).contains("Custom title");
 	}
 
-	@Test
-	public void requestHeadersWithCustomDescriptorAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-headers"))
-			.willReturn(snippetResource("request-headers-with-extra-column"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "request-headers", template = "request-headers-with-extra-column")
+	void requestHeadersWithCustomDescriptorAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new RequestHeadersSnippet(
 				Arrays.asList(headerWithName("X-Test").description("one").attributes(key("foo").value("alpha")),
 						headerWithName("Accept-Encoding").description("two").attributes(key("foo").value("bravo")),
 						headerWithName("Accept").description("three").attributes(key("foo").value("charlie"))))
-			.document(this.operationBuilder
-				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-				.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.header("X-Test", "test")
 				.header("Accept-Encoding", "gzip, deflate")
 				.header("Accept", "*/*")
 				.build());
-		assertThat(this.generatedSnippets.requestHeaders()).is(//
-				tableWithHeader("Name", "Description", "Foo").row("X-Test", "one", "alpha")
-					.row("Accept-Encoding", "two", "bravo")
-					.row("Accept", "three", "charlie"));
+		assertThat(snippets.requestHeaders()).isTable((table) -> table.withHeader("Name", "Description", "Foo")
+			.row("X-Test", "one", "alpha")
+			.row("Accept-Encoding", "two", "bravo")
+			.row("Accept", "three", "charlie"));
 	}
 
-	@Test
-	public void additionalDescriptors() throws IOException {
+	@RenderedSnippetTest
+	void additionalDescriptors(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		HeaderDocumentation
 			.requestHeaders(headerWithName("X-Test").description("one"), headerWithName("Accept").description("two"),
 					headerWithName("Accept-Encoding").description("three"),
 					headerWithName("Accept-Language").description("four"))
 			.and(headerWithName("Cache-Control").description("five"), headerWithName("Connection").description("six"))
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.header("X-Test", "test")
 				.header("Accept", "*/*")
 				.header("Accept-Encoding", "gzip, deflate")
@@ -141,28 +124,39 @@ public class RequestHeadersSnippetTests extends AbstractSnippetTests {
 				.header("Cache-Control", "max-age=0")
 				.header("Connection", "keep-alive")
 				.build());
-		assertThat(this.generatedSnippets.requestHeaders())
-			.is(tableWithHeader("Name", "Description").row("`X-Test`", "one")
-				.row("`Accept`", "two")
-				.row("`Accept-Encoding`", "three")
-				.row("`Accept-Language`", "four")
-				.row("`Cache-Control`", "five")
-				.row("`Connection`", "six"));
+		assertThat(snippets.requestHeaders()).isTable((table) -> table.withHeader("Name", "Description")
+			.row("`X-Test`", "one")
+			.row("`Accept`", "two")
+			.row("`Accept-Encoding`", "three")
+			.row("`Accept-Language`", "four")
+			.row("`Cache-Control`", "five")
+			.row("`Connection`", "six"));
 	}
 
-	@Test
-	public void tableCellContentIsEscapedWhenNecessary() throws IOException {
+	@RenderedSnippetTest
+	void tableCellContentIsEscapedWhenNecessary(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new RequestHeadersSnippet(Arrays.asList(headerWithName("Foo|Bar").description("one|two")))
-			.document(this.operationBuilder.request("http://localhost").header("Foo|Bar", "baz").build());
-		assertThat(this.generatedSnippets.requestHeaders()).is(tableWithHeader("Name", "Description")
-			.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+			.document(operationBuilder.request("http://localhost").header("Foo|Bar", "baz").build());
+		assertThat(snippets.requestHeaders())
+			.isTable((table) -> table.withHeader("Name", "Description").row("`Foo|Bar`", "one|two"));
 	}
 
-	private String escapeIfNecessary(String input) {
-		if (this.templateFormat.getId().equals(TemplateFormats.markdown().getId())) {
-			return input;
-		}
-		return input.replace("|", "\\|");
+	@SnippetTest
+	void missingRequestHeader(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
+				.document(operationBuilder.request("http://localhost").build()))
+			.withMessage("Headers with the following names were not found in the request: [Accept]");
+	}
+
+	@SnippetTest
+	void undocumentedRequestHeaderAndMissingRequestHeader(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new RequestHeadersSnippet(Arrays.asList(headerWithName("Accept").description("one")))
+				.document(operationBuilder.request("http://localhost").header("X-Test", "test").build()))
+			.withMessageEndingWith("Headers with the following names were not found in the request: [Accept]");
+
 	}
 
 }

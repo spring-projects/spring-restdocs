@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.io.Resource;
 
@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
  *
  * @author Andy Wilkinson
  */
-public class StandardTemplateResourceResolverTests {
+class StandardTemplateResourceResolverTests {
 
 	private final TemplateResourceResolver resolver = new StandardTemplateResourceResolver(
 			TemplateFormats.asciidoctor());
@@ -42,7 +42,7 @@ public class StandardTemplateResourceResolverTests {
 	private final TestClassLoader classLoader = new TestClassLoader();
 
 	@Test
-	public void formatSpecificCustomSnippetHasHighestPrecedence() throws IOException {
+	void formatSpecificCustomSnippetHasHighestPrecedence() throws IOException {
 		this.classLoader.addResource("org/springframework/restdocs/templates/asciidoctor/test.snippet",
 				getClass().getResource("test-format-specific-custom.snippet"));
 		this.classLoader.addResource("org/springframework/restdocs/templates/test.snippet",
@@ -62,7 +62,7 @@ public class StandardTemplateResourceResolverTests {
 	}
 
 	@Test
-	public void generalCustomSnippetIsUsedInAbsenceOfFormatSpecificCustomSnippet() throws IOException {
+	void generalCustomSnippetIsUsedInAbsenceOfFormatSpecificCustomSnippet() throws IOException {
 		this.classLoader.addResource("org/springframework/restdocs/templates/test.snippet",
 				getClass().getResource("test-custom.snippet"));
 		this.classLoader.addResource("org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
@@ -80,7 +80,7 @@ public class StandardTemplateResourceResolverTests {
 	}
 
 	@Test
-	public void defaultSnippetIsUsedInAbsenceOfCustomSnippets() throws Exception {
+	void defaultSnippetIsUsedInAbsenceOfCustomSnippets() throws Exception {
 		this.classLoader.addResource("org/springframework/restdocs/templates/asciidoctor/default-test.snippet",
 				getClass().getResource("test-default.snippet"));
 		Resource snippet = doWithThreadContextClassLoader(this.classLoader, new Callable<Resource>() {
@@ -96,7 +96,7 @@ public class StandardTemplateResourceResolverTests {
 	}
 
 	@Test
-	public void failsIfCustomAndDefaultSnippetsDoNotExist() {
+	void failsIfCustomAndDefaultSnippetsDoNotExist() {
 		assertThatIllegalStateException()
 			.isThrownBy(() -> doWithThreadContextClassLoader(this.classLoader,
 					() -> StandardTemplateResourceResolverTests.this.resolver.resolveTemplateResource("test")))

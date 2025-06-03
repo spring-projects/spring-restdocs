@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
@@ -37,19 +37,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andy Wilkinson
  */
-public class JsonFieldProcessorTests {
+class JsonFieldProcessorTests {
 
 	private final JsonFieldProcessor fieldProcessor = new JsonFieldProcessor();
 
 	@Test
-	public void extractTopLevelMapEntry() {
+	void extractTopLevelMapEntry() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", "alpha");
 		assertThat(this.fieldProcessor.extract("a", payload).getValue()).isEqualTo("alpha");
 	}
 
 	@Test
-	public void extractNestedMapEntry() {
+	void extractNestedMapEntry() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -58,7 +58,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractTopLevelArray() {
+	void extractTopLevelArray() {
 		List<Map<String, Object>> payload = new ArrayList<>();
 		Map<String, Object> bravo = new HashMap<>();
 		bravo.put("b", "bravo");
@@ -68,7 +68,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractArray() {
+	void extractArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> bravo = new HashMap<>();
 		bravo.put("b", "bravo");
@@ -78,7 +78,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractArrayContents() {
+	void extractArrayContents() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> bravo = new HashMap<>();
 		bravo.put("b", "bravo");
@@ -88,7 +88,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractFromItemsInArray() {
+	void extractFromItemsInArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> entry = new HashMap<>();
 		entry.put("b", "bravo");
@@ -98,7 +98,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractOccasionallyAbsentFieldFromItemsInArray() {
+	void extractOccasionallyAbsentFieldFromItemsInArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> entry = new HashMap<>();
 		entry.put("b", "bravo");
@@ -109,7 +109,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractOccasionallyNullFieldFromItemsInArray() {
+	void extractOccasionallyNullFieldFromItemsInArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> nonNullField = new HashMap<>();
 		nonNullField.put("b", "bravo");
@@ -121,7 +121,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractNestedArray() {
+	void extractNestedArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, String> entry1 = createEntry("id:1");
 		Map<String, String> entry2 = createEntry("id:2");
@@ -133,7 +133,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractFromItemsInNestedArray() {
+	void extractFromItemsInNestedArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, String> entry1 = createEntry("id:1");
 		Map<String, String> entry2 = createEntry("id:2");
@@ -144,7 +144,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void extractArraysFromItemsInNestedArray() {
+	void extractArraysFromItemsInNestedArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> entry1 = createEntry("ids", Arrays.asList(1, 2));
 		Map<String, Object> entry2 = createEntry("ids", Arrays.asList(3));
@@ -156,27 +156,27 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void nonExistentTopLevelField() {
+	void nonExistentTopLevelField() {
 		assertThat(this.fieldProcessor.extract("a", Collections.emptyMap()).getValue())
 			.isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
-	public void nonExistentNestedField() {
+	void nonExistentNestedField() {
 		HashMap<String, Object> payload = new HashMap<>();
-		payload.put("a", new HashMap<String, Object>());
+		payload.put("a", new HashMap<>());
 		assertThat(this.fieldProcessor.extract("a.b", payload).getValue()).isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
-	public void nonExistentNestedFieldWhenParentIsNotAMap() {
+	void nonExistentNestedFieldWhenParentIsNotAMap() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
 		assertThat(this.fieldProcessor.extract("a.b", payload).getValue()).isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
-	public void nonExistentFieldWhenParentIsAnArray() {
+	void nonExistentFieldWhenParentIsAnArray() {
 		HashMap<String, Object> payload = new HashMap<>();
 		HashMap<String, Object> alpha = new HashMap<>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
@@ -185,20 +185,20 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void nonExistentArrayField() {
+	void nonExistentArrayField() {
 		HashMap<String, Object> payload = new HashMap<>();
 		assertThat(this.fieldProcessor.extract("a[]", payload).getValue()).isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
-	public void nonExistentArrayFieldAsTypeDoesNotMatch() {
+	void nonExistentArrayFieldAsTypeDoesNotMatch() {
 		HashMap<String, Object> payload = new HashMap<>();
 		payload.put("a", 5);
 		assertThat(this.fieldProcessor.extract("a[]", payload).getValue()).isEqualTo(ExtractedField.ABSENT);
 	}
 
 	@Test
-	public void nonExistentFieldBeneathAnArray() {
+	void nonExistentFieldBeneathAnArray() {
 		HashMap<String, Object> payload = new HashMap<>();
 		HashMap<String, Object> alpha = new HashMap<>();
 		alpha.put("b", Arrays.asList(new HashMap<String, Object>()));
@@ -208,7 +208,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void removeTopLevelMapEntry() {
+	void removeTopLevelMapEntry() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", "alpha");
 		this.fieldProcessor.remove("a", payload);
@@ -216,7 +216,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void mapWithEntriesIsNotRemovedWhenNotAlsoRemovingDescendants() {
+	void mapWithEntriesIsNotRemovedWhenNotAlsoRemovingDescendants() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -226,7 +226,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void removeSubsectionRemovesMapWithEntries() {
+	void removeSubsectionRemovesMapWithEntries() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -236,7 +236,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void removeNestedMapEntry() {
+	void removeNestedMapEntry() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -247,7 +247,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void removeItemsInArray() throws IOException {
+	void removeItemsInArray() throws IOException {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}",
 				Map.class);
 		this.fieldProcessor.remove("a[].b", payload);
@@ -256,7 +256,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void removeItemsInNestedArray() throws IOException {
+	void removeItemsInNestedArray() throws IOException {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[{\"id\":1},{\"id\":2}], [{\"id\":3}]]}",
 				Map.class);
 		this.fieldProcessor.remove("a[][].id", payload);
@@ -265,7 +265,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void removeDoesNotRemoveArrayWithMapEntries() throws IOException {
+	void removeDoesNotRemoveArrayWithMapEntries() throws IOException {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}",
 				Map.class);
 		this.fieldProcessor.remove("a[]", payload);
@@ -274,7 +274,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void removeDoesNotRemoveArrayWithListEntries() throws IOException {
+	void removeDoesNotRemoveArrayWithListEntries() throws IOException {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}", Map.class);
 		this.fieldProcessor.remove("a[]", payload);
 		assertThat(payload.size()).isEqualTo(1);
@@ -282,7 +282,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void removeRemovesArrayWithOnlyScalarEntries() throws IOException {
+	void removeRemovesArrayWithOnlyScalarEntries() throws IOException {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [\"bravo\", \"charlie\"]}", Map.class);
 		this.fieldProcessor.remove("a", payload);
 		assertThat(payload.size()).isEqualTo(0);
@@ -290,7 +290,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void removeSubsectionRemovesArrayWithMapEntries() throws IOException {
+	void removeSubsectionRemovesArrayWithMapEntries() throws IOException {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}",
 				Map.class);
 		this.fieldProcessor.removeSubsection("a[]", payload);
@@ -299,14 +299,14 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void removeSubsectionRemovesArrayWithListEntries() throws IOException {
+	void removeSubsectionRemovesArrayWithListEntries() throws IOException {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}", Map.class);
 		this.fieldProcessor.removeSubsection("a[]", payload);
 		assertThat(payload.size()).isEqualTo(0);
 	}
 
 	@Test
-	public void extractNestedEntryWithDotInKeys() {
+	void extractNestedEntryWithDotInKeys() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a.key", alpha);
@@ -316,7 +316,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void extractNestedEntriesUsingTopLevelWildcard() {
+	void extractNestedEntriesUsingTopLevelWildcard() {
 		Map<String, Object> payload = new LinkedHashMap<>();
 		Map<String, Object> alpha = new LinkedHashMap<>();
 		payload.put("a", alpha);
@@ -330,7 +330,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void extractNestedEntriesUsingMidLevelWildcard() {
+	void extractNestedEntriesUsingMidLevelWildcard() {
 		Map<String, Object> payload = new LinkedHashMap<>();
 		Map<String, Object> alpha = new LinkedHashMap<>();
 		payload.put("a", alpha);
@@ -344,7 +344,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void extractUsingLeafWildcardMatchingSingleItem() {
+	void extractUsingLeafWildcardMatchingSingleItem() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -357,7 +357,7 @@ public class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void extractUsingLeafWildcardMatchingMultipleItems() {
+	void extractUsingLeafWildcardMatchingMultipleItems() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -368,7 +368,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void removeUsingLeafWildcard() {
+	void removeUsingLeafWildcard() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -379,7 +379,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void removeUsingTopLevelWildcard() {
+	void removeUsingTopLevelWildcard() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> alpha = new HashMap<>();
 		payload.put("a", alpha);
@@ -390,7 +390,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void removeUsingMidLevelWildcard() {
+	void removeUsingMidLevelWildcard() {
 		Map<String, Object> payload = new LinkedHashMap<>();
 		Map<String, Object> alpha = new LinkedHashMap<>();
 		payload.put("a", alpha);
@@ -407,28 +407,28 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsTrueForNonNullFieldInMap() {
+	void hasFieldIsTrueForNonNullFieldInMap() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", "alpha");
 		assertThat(this.fieldProcessor.hasField("a", payload)).isTrue();
 	}
 
 	@Test
-	public void hasFieldIsTrueForNullFieldInMap() {
+	void hasFieldIsTrueForNullFieldInMap() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", null);
 		assertThat(this.fieldProcessor.hasField("a", payload)).isTrue();
 	}
 
 	@Test
-	public void hasFieldIsFalseForAbsentFieldInMap() {
+	void hasFieldIsFalseForAbsentFieldInMap() {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", null);
 		assertThat(this.fieldProcessor.hasField("b", payload)).isFalse();
 	}
 
 	@Test
-	public void hasFieldIsTrueForNeverNullFieldBeneathArray() {
+	void hasFieldIsTrueForNeverNullFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> nested = new HashMap<>();
 		nested.put("b", "bravo");
@@ -437,7 +437,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsTrueForAlwaysNullFieldBeneathArray() {
+	void hasFieldIsTrueForAlwaysNullFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> nested = new HashMap<>();
 		nested.put("b", null);
@@ -446,7 +446,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsFalseForAlwaysAbsentFieldBeneathArray() {
+	void hasFieldIsFalseForAlwaysAbsentFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> nested = new HashMap<>();
 		nested.put("b", "bravo");
@@ -455,7 +455,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsFalseForOccasionallyAbsentFieldBeneathArray() {
+	void hasFieldIsFalseForOccasionallyAbsentFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> nested = new HashMap<>();
 		nested.put("b", "bravo");
@@ -464,7 +464,7 @@ public class JsonFieldProcessorTests {
 	}
 
 	@Test
-	public void hasFieldIsFalseForOccasionallyNullFieldBeneathArray() {
+	void hasFieldIsFalseForOccasionallyNullFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
 		Map<String, Object> fieldPresent = new HashMap<>();
 		fieldPresent.put("b", "bravo");

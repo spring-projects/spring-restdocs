@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,13 @@ import java.util.Map;
 import io.restassured.filter.FilterContext;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
@@ -45,10 +47,8 @@ import static org.mockito.Mockito.verify;
  * @author Andy Wilkinson
  * @author Filip Hrisafov
  */
-public class RestAssuredRestDocumentationConfigurerTests {
-
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+@ExtendWith(RestDocumentationExtension.class)
+class RestAssuredRestDocumentationConfigurerTests {
 
 	private final FilterableRequestSpecification requestSpec = mock(FilterableRequestSpecification.class);
 
@@ -56,17 +56,21 @@ public class RestAssuredRestDocumentationConfigurerTests {
 
 	private final FilterContext filterContext = mock(FilterContext.class);
 
-	private final RestAssuredRestDocumentationConfigurer configurer = new RestAssuredRestDocumentationConfigurer(
-			this.restDocumentation);
+	private RestAssuredRestDocumentationConfigurer configurer;
+
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
+		this.configurer = new RestAssuredRestDocumentationConfigurer(restDocumentation);
+	}
 
 	@Test
-	public void nextFilterIsCalled() {
+	void nextFilterIsCalled() {
 		this.configurer.filter(this.requestSpec, this.responseSpec, this.filterContext);
 		verify(this.filterContext).next(this.requestSpec, this.responseSpec);
 	}
 
 	@Test
-	public void configurationIsAddedToTheContext() {
+	void configurationIsAddedToTheContext() {
 		this.configurer.operationPreprocessors()
 			.withRequestDefaults(Preprocessors.prettyPrint())
 			.withResponseDefaults(Preprocessors.modifyHeaders().remove("Foo"))

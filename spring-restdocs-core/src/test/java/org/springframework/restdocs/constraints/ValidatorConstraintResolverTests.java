@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import org.assertj.core.api.Condition;
 import org.assertj.core.description.TextDescription;
 import org.hibernate.validator.constraints.CompositionType;
 import org.hibernate.validator.constraints.ConstraintComposition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,19 +44,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andy Wilkinson
  */
-public class ValidatorConstraintResolverTests {
+class ValidatorConstraintResolverTests {
 
 	private final ValidatorConstraintResolver resolver = new ValidatorConstraintResolver();
 
 	@Test
-	public void singleFieldConstraint() {
+	void singleFieldConstraint() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("single", ConstrainedFields.class);
 		assertThat(constraints).hasSize(1);
 		assertThat(constraints.get(0).getName()).isEqualTo(NotNull.class.getName());
 	}
 
 	@Test
-	public void multipleFieldConstraints() {
+	void multipleFieldConstraints() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("multiple", ConstrainedFields.class);
 		assertThat(constraints).hasSize(2);
 		assertThat(constraints.get(0)).is(constraint(NotNull.class));
@@ -64,13 +64,13 @@ public class ValidatorConstraintResolverTests {
 	}
 
 	@Test
-	public void noFieldConstraints() {
+	void noFieldConstraints() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("none", ConstrainedFields.class);
 		assertThat(constraints).hasSize(0);
 	}
 
 	@Test
-	public void compositeConstraint() {
+	void compositeConstraint() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("composite", ConstrainedFields.class);
 		assertThat(constraints).hasSize(1);
 	}

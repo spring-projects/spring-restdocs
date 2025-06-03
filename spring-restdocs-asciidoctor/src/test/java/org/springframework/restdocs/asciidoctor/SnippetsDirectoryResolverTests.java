@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -35,23 +34,23 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
  */
 public class SnippetsDirectoryResolverTests {
 
-	@Rule
-	public TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@TempDir
+	File temp;
 
 	@Test
 	public void mavenProjectsUseTargetGeneratedSnippets() throws IOException {
-		this.temporaryFolder.newFile("pom.xml");
+		new File(this.temp, "pom.xml").createNewFile();
 		Map<String, Object> attributes = new HashMap<>();
-		attributes.put("docdir", new File(this.temporaryFolder.getRoot(), "src/main/asciidoc").getAbsolutePath());
+		attributes.put("docdir", new File(this.temp, "src/main/asciidoc").getAbsolutePath());
 		File snippetsDirectory = getMavenSnippetsDirectory(attributes);
 		assertThat(snippetsDirectory).isAbsolute();
-		assertThat(snippetsDirectory).isEqualTo(new File(this.temporaryFolder.getRoot(), "target/generated-snippets"));
+		assertThat(snippetsDirectory).isEqualTo(new File(this.temp, "target/generated-snippets"));
 	}
 
 	@Test
 	public void illegalStateExceptionWhenMavenPomCannotBeFound() {
 		Map<String, Object> attributes = new HashMap<>();
-		String docdir = new File(this.temporaryFolder.getRoot(), "src/main/asciidoc").getAbsolutePath();
+		String docdir = new File(this.temp, "src/main/asciidoc").getAbsolutePath();
 		attributes.put("docdir", docdir);
 		assertThatIllegalStateException().isThrownBy(() -> getMavenSnippetsDirectory(attributes))
 			.withMessage("pom.xml not found in '" + docdir + "' or above");

@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -63,13 +63,13 @@ import static org.mockito.Mockito.mock;
  * @author Andy Wilkinson
  * @author Filip Hrisafov
  */
-public class RestDocumentationConfigurerTests {
+class RestDocumentationConfigurerTests {
 
 	private final TestRestDocumentationConfigurer configurer = new TestRestDocumentationConfigurer();
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void defaultConfiguration() {
+	void defaultConfiguration() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.apply(configuration, createContext());
 		assertThat(configuration).containsKey(TemplateEngine.class.getName());
@@ -102,7 +102,7 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customTemplateEngine() {
+	void customTemplateEngine() {
 		Map<String, Object> configuration = new HashMap<>();
 		TemplateEngine templateEngine = mock(TemplateEngine.class);
 		this.configurer.templateEngine(templateEngine).apply(configuration, createContext());
@@ -110,7 +110,7 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customWriterResolver() {
+	void customWriterResolver() {
 		Map<String, Object> configuration = new HashMap<>();
 		WriterResolver writerResolver = mock(WriterResolver.class);
 		this.configurer.writerResolver(writerResolver).apply(configuration, createContext());
@@ -118,7 +118,7 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customDefaultSnippets() {
+	void customDefaultSnippets() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippets().withDefaults(CliDocumentation.curlRequest()).apply(configuration, createContext());
 		assertThat(configuration).containsKey(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_SNIPPETS);
@@ -133,7 +133,7 @@ public class RestDocumentationConfigurerTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void additionalDefaultSnippets() {
+	void additionalDefaultSnippets() {
 		Map<String, Object> configuration = new HashMap<>();
 		Snippet snippet = mock(Snippet.class);
 		this.configurer.snippets().withAdditionalDefaults(snippet).apply(configuration, createContext());
@@ -148,7 +148,7 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customSnippetEncoding() {
+	void customSnippetEncoding() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippets().withEncoding("ISO-8859-1");
 		this.configurer.apply(configuration, createContext());
@@ -162,7 +162,7 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customTemplateFormat() {
+	void customTemplateFormat() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippets().withTemplateFormat(TemplateFormats.markdown()).apply(configuration, createContext());
 		assertThat(configuration).containsKey(SnippetConfiguration.class.getName());
@@ -174,7 +174,7 @@ public class RestDocumentationConfigurerTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void asciidoctorTableCellContentLambaIsInstalledWhenUsingAsciidoctorTemplateFormat() {
+	void asciidoctorTableCellContentLambaIsInstalledWhenUsingAsciidoctorTemplateFormat() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.apply(configuration, createContext());
 		TemplateEngine templateEngine = (TemplateEngine) configuration.get(TemplateEngine.class.getName());
@@ -187,7 +187,7 @@ public class RestDocumentationConfigurerTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void asciidoctorTableCellContentLambaIsNotInstalledWhenUsingNonAsciidoctorTemplateFormat() {
+	void asciidoctorTableCellContentLambaIsNotInstalledWhenUsingNonAsciidoctorTemplateFormat() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.snippetConfigurer.withTemplateFormat(TemplateFormats.markdown());
 		this.configurer.apply(configuration, createContext());
@@ -199,7 +199,7 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customDefaultOperationRequestPreprocessor() {
+	void customDefaultOperationRequestPreprocessor() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.operationPreprocessors()
 			.withRequestDefaults(Preprocessors.prettyPrint(), Preprocessors.modifyHeaders().remove("Foo"))
@@ -214,7 +214,7 @@ public class RestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customDefaultOperationResponsePreprocessor() {
+	void customDefaultOperationResponsePreprocessor() {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.operationPreprocessors()
 			.withResponseDefaults(Preprocessors.prettyPrint(), Preprocessors.modifyHeaders().remove("Foo"))

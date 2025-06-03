@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package org.springframework.restdocs.restassured;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.assertj.core.api.AbstractAssert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -34,12 +34,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andy Wilkinson
  */
-public class RestAssuredParameterBehaviorTests {
+class RestAssuredParameterBehaviorTests {
 
 	private static final MediaType APPLICATION_FORM_URLENCODED_ISO_8859_1 = MediaType
 		.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=ISO-8859-1");
 
-	@ClassRule
+	@RegisterExtension
 	public static TomcatServer tomcat = new TomcatServer();
 
 	private final RestAssuredRequestConverter factory = new RestAssuredRequestConverter();
@@ -54,7 +54,7 @@ public class RestAssuredParameterBehaviorTests {
 		});
 
 	@Test
-	public void queryParameterOnGet() {
+	void queryParameterOnGet() {
 		this.spec.queryParam("a", "alpha", "apple")
 			.queryParam("b", "bravo")
 			.get("/query-parameter")
@@ -64,7 +64,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void queryParameterOnHead() {
+	void queryParameterOnHead() {
 		this.spec.queryParam("a", "alpha", "apple")
 			.queryParam("b", "bravo")
 			.head("/query-parameter")
@@ -74,7 +74,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void queryParameterOnPost() {
+	void queryParameterOnPost() {
 		this.spec.queryParam("a", "alpha", "apple")
 			.queryParam("b", "bravo")
 			.post("/query-parameter")
@@ -84,7 +84,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void queryParameterOnPut() {
+	void queryParameterOnPut() {
 		this.spec.queryParam("a", "alpha", "apple")
 			.queryParam("b", "bravo")
 			.put("/query-parameter")
@@ -94,7 +94,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void queryParameterOnPatch() {
+	void queryParameterOnPatch() {
 		this.spec.queryParam("a", "alpha", "apple")
 			.queryParam("b", "bravo")
 			.patch("/query-parameter")
@@ -104,7 +104,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void queryParameterOnDelete() {
+	void queryParameterOnDelete() {
 		this.spec.queryParam("a", "alpha", "apple")
 			.queryParam("b", "bravo")
 			.delete("/query-parameter")
@@ -114,7 +114,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void queryParameterOnOptions() {
+	void queryParameterOnOptions() {
 		this.spec.queryParam("a", "alpha", "apple")
 			.queryParam("b", "bravo")
 			.options("/query-parameter")
@@ -124,49 +124,49 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void paramOnGet() {
+	void paramOnGet() {
 		this.spec.param("a", "alpha", "apple").param("b", "bravo").get("/query-parameter").then().statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.GET);
 	}
 
 	@Test
-	public void paramOnHead() {
+	void paramOnHead() {
 		this.spec.param("a", "alpha", "apple").param("b", "bravo").head("/query-parameter").then().statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.HEAD);
 	}
 
 	@Test
-	public void paramOnPost() {
+	void paramOnPost() {
 		this.spec.param("a", "alpha", "apple").param("b", "bravo").post("/form-url-encoded").then().statusCode(200);
 		assertThatRequest(this.request).isFormUrlEncodedWithMethod(HttpMethod.POST);
 	}
 
 	@Test
-	public void paramOnPut() {
+	void paramOnPut() {
 		this.spec.param("a", "alpha", "apple").param("b", "bravo").put("/query-parameter").then().statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.PUT);
 	}
 
 	@Test
-	public void paramOnPatch() {
+	void paramOnPatch() {
 		this.spec.param("a", "alpha", "apple").param("b", "bravo").patch("/query-parameter").then().statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.PATCH);
 	}
 
 	@Test
-	public void paramOnDelete() {
+	void paramOnDelete() {
 		this.spec.param("a", "alpha", "apple").param("b", "bravo").delete("/query-parameter").then().statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.DELETE);
 	}
 
 	@Test
-	public void paramOnOptions() {
+	void paramOnOptions() {
 		this.spec.param("a", "alpha", "apple").param("b", "bravo").options("/query-parameter").then().statusCode(200);
 		assertThatRequest(this.request).hasQueryParametersWithMethod(HttpMethod.OPTIONS);
 	}
 
 	@Test
-	public void formParamOnGet() {
+	void formParamOnGet() {
 		this.spec.formParam("a", "alpha", "apple")
 			.formParam("b", "bravo")
 			.get("/query-parameter")
@@ -176,7 +176,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void formParamOnHead() {
+	void formParamOnHead() {
 		this.spec.formParam("a", "alpha", "apple")
 			.formParam("b", "bravo")
 			.head("/form-url-encoded")
@@ -186,7 +186,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void formParamOnPost() {
+	void formParamOnPost() {
 		this.spec.formParam("a", "alpha", "apple")
 			.formParam("b", "bravo")
 			.post("/form-url-encoded")
@@ -196,7 +196,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void formParamOnPut() {
+	void formParamOnPut() {
 		this.spec.formParam("a", "alpha", "apple")
 			.formParam("b", "bravo")
 			.put("/form-url-encoded")
@@ -206,7 +206,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void formParamOnPatch() {
+	void formParamOnPatch() {
 		this.spec.formParam("a", "alpha", "apple")
 			.formParam("b", "bravo")
 			.patch("/form-url-encoded")
@@ -216,7 +216,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void formParamOnDelete() {
+	void formParamOnDelete() {
 		this.spec.formParam("a", "alpha", "apple")
 			.formParam("b", "bravo")
 			.delete("/form-url-encoded")
@@ -226,7 +226,7 @@ public class RestAssuredParameterBehaviorTests {
 	}
 
 	@Test
-	public void formParamOnOptions() {
+	void formParamOnOptions() {
 		this.spec.formParam("a", "alpha", "apple")
 			.formParam("b", "bravo")
 			.options("/form-url-encoded")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package org.springframework.restdocs.testfixtures;
+package org.springframework.restdocs.testfixtures.jupiter;
 
 /**
  * Provides access to {@link System#out System.out} and {@link System#err System.err}
- * output that has been captured by the {@link OutputCaptureRule}. Can be used to apply
- * assertions using AssertJ. For example: <pre class="code">
- * assertThat(output).contains("started"); // Checks all output
- * assertThat(output.getErr()).contains("failed"); // Only checks System.err
- * assertThat(output.getOut()).contains("ok"); // Only checks System.out
- * </pre>
+ * output that has been captured.
  *
  * @author Madhura Bhave
  * @author Phillip Webb

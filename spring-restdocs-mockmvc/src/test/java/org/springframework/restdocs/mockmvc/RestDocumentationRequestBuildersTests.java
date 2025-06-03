@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.springframework.restdocs.mockmvc;
 import java.net.URI;
 
 import jakarta.servlet.ServletContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -44,97 +44,97 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
  * @author Andy Wilkinson
  *
  */
-public class RestDocumentationRequestBuildersTests {
+class RestDocumentationRequestBuildersTests {
 
 	private final ServletContext servletContext = new MockServletContext();
 
 	@Test
-	public void getTemplate() {
+	void getTemplate() {
 		assertTemplate(get("/{template}", "t"), HttpMethod.GET);
 	}
 
 	@Test
-	public void getUri() {
+	void getUri() {
 		assertUri(get(URI.create("/uri")), HttpMethod.GET);
 	}
 
 	@Test
-	public void postTemplate() {
+	void postTemplate() {
 		assertTemplate(post("/{template}", "t"), HttpMethod.POST);
 	}
 
 	@Test
-	public void postUri() {
+	void postUri() {
 		assertUri(post(URI.create("/uri")), HttpMethod.POST);
 	}
 
 	@Test
-	public void putTemplate() {
+	void putTemplate() {
 		assertTemplate(put("/{template}", "t"), HttpMethod.PUT);
 	}
 
 	@Test
-	public void putUri() {
+	void putUri() {
 		assertUri(put(URI.create("/uri")), HttpMethod.PUT);
 	}
 
 	@Test
-	public void patchTemplate() {
+	void patchTemplate() {
 		assertTemplate(patch("/{template}", "t"), HttpMethod.PATCH);
 	}
 
 	@Test
-	public void patchUri() {
+	void patchUri() {
 		assertUri(patch(URI.create("/uri")), HttpMethod.PATCH);
 	}
 
 	@Test
-	public void deleteTemplate() {
+	void deleteTemplate() {
 		assertTemplate(delete("/{template}", "t"), HttpMethod.DELETE);
 	}
 
 	@Test
-	public void deleteUri() {
+	void deleteUri() {
 		assertUri(delete(URI.create("/uri")), HttpMethod.DELETE);
 	}
 
 	@Test
-	public void optionsTemplate() {
+	void optionsTemplate() {
 		assertTemplate(options("/{template}", "t"), HttpMethod.OPTIONS);
 	}
 
 	@Test
-	public void optionsUri() {
+	void optionsUri() {
 		assertUri(options(URI.create("/uri")), HttpMethod.OPTIONS);
 	}
 
 	@Test
-	public void headTemplate() {
+	void headTemplate() {
 		assertTemplate(head("/{template}", "t"), HttpMethod.HEAD);
 	}
 
 	@Test
-	public void headUri() {
+	void headUri() {
 		assertUri(head(URI.create("/uri")), HttpMethod.HEAD);
 	}
 
 	@Test
-	public void requestTemplate() {
+	void requestTemplate() {
 		assertTemplate(request(HttpMethod.GET, "/{template}", "t"), HttpMethod.GET);
 	}
 
 	@Test
-	public void requestUri() {
+	void requestUri() {
 		assertUri(request(HttpMethod.GET, URI.create("/uri")), HttpMethod.GET);
 	}
 
 	@Test
-	public void multipartTemplate() {
+	void multipartTemplate() {
 		assertTemplate(multipart("/{template}", "t"), HttpMethod.POST);
 	}
 
 	@Test
-	public void multipartUri() {
+	void multipartUri() {
 		assertUri(multipart(URI.create("/uri")), HttpMethod.POST);
 	}
 

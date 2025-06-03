@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,23 +20,23 @@ import java.io.File;
 import java.io.IOException;
 
 import org.asciidoctor.Attributes;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Tests for Ruby operation block macro when used in a Maven build.
  *
  * @author Andy Wilkinson
  */
-public class MavenOperationBlockMacroTests extends AbstractOperationBlockMacroTests {
+class MavenOperationBlockMacroTests extends AbstractOperationBlockMacroTests {
 
-	@Before
-	public void setMavenHome() {
+	@BeforeEach
+	void setMavenHome() {
 		System.setProperty("maven.home", "maven-home");
 	}
 
-	@After
-	public void clearMavenHome() {
+	@AfterEach
+	void clearMavenHome() {
 		System.clearProperty("maven.home");
 	}
 
@@ -55,14 +55,14 @@ public class MavenOperationBlockMacroTests extends AbstractOperationBlockMacroTe
 
 	@Override
 	protected File getBuildOutputLocation() {
-		File outputLocation = new File(this.temp.getRoot(), "maven-project/target");
+		File outputLocation = new File(this.temp, "maven-project/target");
 		outputLocation.mkdirs();
 		return outputLocation;
 	}
 
 	@Override
 	protected File getSourceLocation() {
-		File sourceLocation = new File(this.temp.getRoot(), "maven-project/src/main/asciidoc");
+		File sourceLocation = new File(this.temp, "maven-project/src/main/asciidoc");
 		if (!sourceLocation.exists()) {
 			sourceLocation.mkdirs();
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
-
-import org.springframework.restdocs.AbstractSnippetTests;
 import org.springframework.restdocs.operation.Operation;
-import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
@@ -36,86 +38,110 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
  * @author Mathieu Pousse
  * @author Andy Wilkinson
  */
-public class RequestPartFieldsSnippetTests extends AbstractSnippetTests {
+public class RequestPartFieldsSnippetTests {
 
-	public RequestPartFieldsSnippetTests(String name, TemplateFormat templateFormat) {
-		super(name, templateFormat);
-	}
-
-	@Test
-	public void mapRequestPartFields() throws IOException {
+	@RenderedSnippetTest
+	void mapRequestPartFields(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new RequestPartFieldsSnippet("one",
 				Arrays.asList(fieldWithPath("a.b").description("one"), fieldWithPath("a.c").description("two"),
 						fieldWithPath("a").description("three")))
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestPartFields("one"))
-			.is(tableWithHeader("Path", "Type", "Description").row("`a.b`", "`Number`", "one")
-				.row("`a.c`", "`String`", "two")
-				.row("`a`", "`Object`", "three"));
+		assertThat(snippets.requestPartFields("one")).isTable((table) -> table.withHeader("Path", "Type", "Description")
+			.row("`a.b`", "`Number`", "one")
+			.row("`a.c`", "`String`", "two")
+			.row("`a`", "`Object`", "three"));
 	}
 
-	@Test
-	public void mapRequestPartSubsectionFields() throws IOException {
+	@RenderedSnippetTest
+	void mapRequestPartSubsectionFields(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new RequestPartFieldsSnippet("one", beneathPath("a"),
 				Arrays.asList(fieldWithPath("b").description("one"), fieldWithPath("c").description("two")))
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.snippet("request-part-one-fields-beneath-a"))
-			.is(tableWithHeader("Path", "Type", "Description").row("`b`", "`Number`", "one")
+		assertThat(snippets.requestPartFields("one", "beneath-a"))
+			.isTable((table) -> table.withHeader("Path", "Type", "Description")
+				.row("`b`", "`Number`", "one")
 				.row("`c`", "`String`", "two"));
 	}
 
-	@Test
-	public void multipleRequestParts() throws IOException {
-		Operation operation = this.operationBuilder.request("http://localhost")
+	@RenderedSnippetTest
+	void multipleRequestParts(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		Operation operation = operationBuilder.request("http://localhost")
 			.part("one", "{}".getBytes())
 			.and()
 			.part("two", "{}".getBytes())
 			.build();
 		new RequestPartFieldsSnippet("one", Collections.<FieldDescriptor>emptyList()).document(operation);
 		new RequestPartFieldsSnippet("two", Collections.<FieldDescriptor>emptyList()).document(operation);
-		assertThat(this.generatedSnippets.requestPartFields("one")).isNotNull();
-		assertThat(this.generatedSnippets.requestPartFields("two")).isNotNull();
+		assertThat(snippets.requestPartFields("one")).isNotNull();
+		assertThat(snippets.requestPartFields("two")).isNotNull();
 	}
 
-	@Test
-	public void allUndocumentedRequestPartFieldsCanBeIgnored() throws IOException {
-		new RequestPartFieldsSnippet("one", Arrays.asList(fieldWithPath("b").description("Field b")), true)
-			.document(this.operationBuilder.request("http://localhost")
-				.part("one", "{\"a\": 5, \"b\": 4}".getBytes())
-				.build());
-		assertThat(this.generatedSnippets.requestPartFields("one"))
-			.is(tableWithHeader("Path", "Type", "Description").row("`b`", "`Number`", "Field b"));
+	@RenderedSnippetTest
+	void allUndocumentedRequestPartFieldsCanBeIgnored(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new RequestPartFieldsSnippet("one", Arrays.asList(fieldWithPath("b").description("Field b")), true).document(
+				operationBuilder.request("http://localhost").part("one", "{\"a\": 5, \"b\": 4}".getBytes()).build());
+		assertThat(snippets.requestPartFields("one"))
+			.isTable((table) -> table.withHeader("Path", "Type", "Description").row("`b`", "`Number`", "Field b"));
 	}
 
-	@Test
-	public void additionalDescriptors() throws IOException {
+	@RenderedSnippetTest
+	void additionalDescriptors(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		PayloadDocumentation
 			.requestPartFields("one", fieldWithPath("a.b").description("one"), fieldWithPath("a.c").description("two"))
 			.and(fieldWithPath("a").description("three"))
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestPartFields("one"))
-			.is(tableWithHeader("Path", "Type", "Description").row("`a.b`", "`Number`", "one")
-				.row("`a.c`", "`String`", "two")
-				.row("`a`", "`Object`", "three"));
+		assertThat(snippets.requestPartFields("one")).isTable((table) -> table.withHeader("Path", "Type", "Description")
+			.row("`a.b`", "`Number`", "one")
+			.row("`a.c`", "`String`", "two")
+			.row("`a`", "`Object`", "three"));
 	}
 
-	@Test
-	public void prefixedAdditionalDescriptors() throws IOException {
+	@RenderedSnippetTest
+	void prefixedAdditionalDescriptors(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		PayloadDocumentation.requestPartFields("one", fieldWithPath("a").description("one"))
 			.andWithPrefix("a.", fieldWithPath("b").description("two"), fieldWithPath("c").description("three"))
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("one", "{\"a\": {\"b\": 5, \"c\": \"charlie\"}}".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestPartFields("one"))
-			.is(tableWithHeader("Path", "Type", "Description").row("`a`", "`Object`", "one")
-				.row("`a.b`", "`Number`", "two")
-				.row("`a.c`", "`String`", "three"));
+		assertThat(snippets.requestPartFields("one")).isTable((table) -> table.withHeader("Path", "Type", "Description")
+			.row("`a`", "`Object`", "one")
+			.row("`a.b`", "`Number`", "two")
+			.row("`a.c`", "`String`", "three"));
+	}
+
+	@SnippetTest
+	void undocumentedRequestPartField(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new RequestPartFieldsSnippet("part", Collections.<FieldDescriptor>emptyList())
+				.document(operationBuilder.request("http://localhost").part("part", "{\"a\": 5}".getBytes()).build()))
+			.withMessageStartingWith("The following parts of the payload were not documented:");
+	}
+
+	@SnippetTest
+	void missingRequestPartField(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new RequestPartFieldsSnippet("part", Arrays.asList(fieldWithPath("b").description("one")))
+				.document(operationBuilder.request("http://localhost").part("part", "{\"a\": 5}".getBytes()).build()))
+			.withMessageStartingWith("The following parts of the payload were not documented:");
+	}
+
+	@SnippetTest
+	void missingRequestPart(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class).isThrownBy(
+				() -> new RequestPartFieldsSnippet("another", Arrays.asList(fieldWithPath("a.b").description("one")))
+					.document(operationBuilder.request("http://localhost")
+						.part("part", "{\"a\": {\"b\": 5}}".getBytes())
+						.build()))
+			.withMessage("A request part named 'another' was not found in the request");
 	}
 
 }

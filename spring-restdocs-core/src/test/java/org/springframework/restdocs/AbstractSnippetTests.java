@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,16 @@
 
 package org.springframework.restdocs;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Rule;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
-import org.springframework.restdocs.testfixtures.GeneratedSnippets;
-import org.springframework.restdocs.testfixtures.OperationBuilder;
 import org.springframework.restdocs.testfixtures.SnippetConditions;
 import org.springframework.restdocs.testfixtures.SnippetConditions.CodeBlockCondition;
 import org.springframework.restdocs.testfixtures.SnippetConditions.HttpRequestCondition;
 import org.springframework.restdocs.testfixtures.SnippetConditions.HttpResponseCondition;
 import org.springframework.restdocs.testfixtures.SnippetConditions.TableCondition;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
@@ -42,28 +33,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  * @author Andy Wilkinson
  */
-@RunWith(Parameterized.class)
 public abstract class AbstractSnippetTests {
 
-	protected final TemplateFormat templateFormat;
+	protected final TemplateFormat templateFormat = TemplateFormats.asciidoctor();
 
-	@Rule
-	public GeneratedSnippets generatedSnippets;
-
-	@Rule
-	public OperationBuilder operationBuilder;
-
-	@Parameters(name = "{0}")
-	public static List<Object[]> parameters() {
-		return Arrays.asList(new Object[] { "Asciidoctor", TemplateFormats.asciidoctor() },
-				new Object[] { "Markdown", TemplateFormats.markdown() });
-	}
-
-	protected AbstractSnippetTests(String name, TemplateFormat templateFormat) {
-		this.generatedSnippets = new GeneratedSnippets(templateFormat);
-		this.templateFormat = templateFormat;
-		this.operationBuilder = new OperationBuilder(this.templateFormat);
-	}
+	protected AssertableSnippets snippets;
 
 	public CodeBlockCondition<?> codeBlock(String language) {
 		return this.codeBlock(language, null);

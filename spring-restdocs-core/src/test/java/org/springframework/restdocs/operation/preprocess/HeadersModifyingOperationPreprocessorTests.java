@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -41,12 +41,12 @@ import static org.assertj.core.api.Assertions.entry;
  * @author Jihoon Cha
  * @author Andy Wilkinson
  */
-public class HeadersModifyingOperationPreprocessorTests {
+class HeadersModifyingOperationPreprocessorTests {
 
 	private final HeadersModifyingOperationPreprocessor preprocessor = new HeadersModifyingOperationPreprocessor();
 
 	@Test
-	public void addNewHeader() {
+	void addNewHeader() {
 		this.preprocessor.add("a", "alpha");
 		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().get("a"))
 			.isEqualTo(Arrays.asList("alpha"));
@@ -55,7 +55,7 @@ public class HeadersModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void addValueToExistingHeader() {
+	void addValueToExistingHeader() {
 		this.preprocessor.add("a", "alpha");
 		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple")))
 			.getHeaders()
@@ -66,7 +66,7 @@ public class HeadersModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void setNewHeader() {
+	void setNewHeader() {
 		this.preprocessor.set("a", "alpha", "avocado");
 		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().headerSet())
 			.contains(entry("a", Arrays.asList("alpha", "avocado")));
@@ -75,7 +75,7 @@ public class HeadersModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void setExistingHeader() {
+	void setExistingHeader() {
 		this.preprocessor.set("a", "alpha", "avocado");
 		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple")))
 			.getHeaders()
@@ -86,14 +86,14 @@ public class HeadersModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void removeNonExistentHeader() {
+	void removeNonExistentHeader() {
 		this.preprocessor.remove("a");
 		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().headerNames()).doesNotContain("a");
 		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders().headerNames()).doesNotContain("a");
 	}
 
 	@Test
-	public void removeHeader() {
+	void removeHeader() {
 		this.preprocessor.remove("a");
 		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple")))
 			.getHeaders()
@@ -104,14 +104,14 @@ public class HeadersModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void removeHeaderValueForNonExistentHeader() {
+	void removeHeaderValueForNonExistentHeader() {
 		this.preprocessor.remove("a", "apple");
 		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().headerNames()).doesNotContain("a");
 		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders().headerNames()).doesNotContain("a");
 	}
 
 	@Test
-	public void removeHeaderValueWithMultipleValues() {
+	void removeHeaderValueWithMultipleValues() {
 		this.preprocessor.remove("a", "apple");
 		assertThat(
 				this.preprocessor.preprocess(createRequest((headers) -> headers.addAll("a", List.of("apple", "alpha"))))
@@ -125,7 +125,7 @@ public class HeadersModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void removeHeaderValueWithSingleValueRemovesEntryEntirely() {
+	void removeHeaderValueWithSingleValueRemovesEntryEntirely() {
 		this.preprocessor.remove("a", "apple");
 		assertThat(this.preprocessor.preprocess(createRequest((headers) -> headers.add("a", "apple")))
 			.getHeaders()
@@ -136,7 +136,7 @@ public class HeadersModifyingOperationPreprocessorTests {
 	}
 
 	@Test
-	public void removeHeadersByNamePattern() {
+	void removeHeadersByNamePattern() {
 		Consumer<HttpHeaders> headersCustomizer = (headers) -> {
 			headers.add("apple", "apple");
 			headers.add("alpha", "alpha");

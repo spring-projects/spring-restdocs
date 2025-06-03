@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,46 +32,57 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
-import org.junit.rules.ExternalResource;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.Extension;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.junit.jupiter.api.extension.ExtensionContext.Store;
 
 import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
 
 /**
- * {@link ExternalResource} that starts and stops a Tomcat server.
+ * {@link Extension} that starts and stops a Tomcat server.
  *
  * @author Andy Wilkinson
  */
-class TomcatServer extends ExternalResource {
-
-	private Tomcat tomcat;
+class TomcatServer implements BeforeAllCallback, AfterAllCallback {
 
 	private int port;
 
 	@Override
-	protected void before() throws LifecycleException {
-		this.tomcat = new Tomcat();
-		this.tomcat.getConnector().setPort(0);
-		Context context = this.tomcat.addContext("/", null);
-		this.tomcat.addServlet("/", "test", new TestServlet());
-		context.addServletMappingDecoded("/", "test");
-		this.tomcat.addServlet("/", "set-cookie", new CookiesServlet());
-		context.addServletMappingDecoded("/set-cookie", "set-cookie");
-		this.tomcat.addServlet("/", "query-parameter", new QueryParameterServlet());
-		context.addServletMappingDecoded("/query-parameter", "query-parameter");
-		this.tomcat.addServlet("/", "form-url-encoded", new FormUrlEncodedServlet());
-		context.addServletMappingDecoded("/form-url-encoded", "form-url-encoded");
-		this.tomcat.start();
-		this.port = this.tomcat.getConnector().getLocalPort();
+	public void beforeAll(ExtensionContext extensionContext) {
+		Store store = extensionContext.getStore(Namespace.create(TomcatServer.class));
+		store.getOrComputeIfAbsent(Tomcat.class, (key) -> {
+			Tomcat tomcat = new Tomcat();
+			tomcat.getConnector().setPort(0);
+			Context context = tomcat.addContext("/", null);
+			tomcat.addServlet("/", "test", new TestServlet());
+			context.addServletMappingDecoded("/", "test");
+			tomcat.addServlet("/", "set-cookie", new CookiesServlet());
+			context.addServletMappingDecoded("/set-cookie", "set-cookie");
+			tomcat.addServlet("/", "query-parameter", new QueryParameterServlet());
+			context.addServletMappingDecoded("/query-parameter", "query-parameter");
+			tomcat.addServlet("/", "form-url-encoded", new FormUrlEncodedServlet());
+			context.addServletMappingDecoded("/form-url-encoded", "form-url-encoded");
+			try {
+				tomcat.start();
+			}
+			catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			this.port = tomcat.getConnector().getLocalPort();
+			return tomcat;
+		});
 	}
 
 	@Override
-	protected void after() {
-		try {
-			this.tomcat.stop();
-		}
-		catch (LifecycleException ex) {
-			throw new RuntimeException(ex);
+	public void afterAll(ExtensionContext extensionContext) throws LifecycleException {
+		Store store = extensionContext.getStore(Namespace.create(TomcatServer.class));
+		Tomcat tomcat = store.get(Tomcat.class, Tomcat.class);
+		if (tomcat != null) {
+			tomcat.stop();
 		}
 	}
 

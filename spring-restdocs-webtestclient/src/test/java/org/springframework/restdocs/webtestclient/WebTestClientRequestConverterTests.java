@@ -20,7 +20,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
@@ -48,12 +48,12 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
  *
  * @author Andy Wilkinson
  */
-public class WebTestClientRequestConverterTests {
+class WebTestClientRequestConverterTests {
 
 	private final WebTestClientRequestConverter converter = new WebTestClientRequestConverter();
 
 	@Test
-	public void httpRequest() {
+	void httpRequest() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 			.configureClient()
 			.baseUrl("http://localhost")
@@ -69,7 +69,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void httpRequestWithCustomPort() {
+	void httpRequestWithCustomPort() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 			.configureClient()
 			.baseUrl("http://localhost:8080")
@@ -85,7 +85,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void requestWithHeaders() {
+	void requestWithHeaders() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/"), (req) -> null))
 			.configureClient()
 			.baseUrl("http://localhost")
@@ -105,7 +105,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void httpsRequest() {
+	void httpsRequest() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 			.configureClient()
 			.baseUrl("https://localhost")
@@ -121,7 +121,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void httpsRequestWithCustomPort() {
+	void httpsRequestWithCustomPort() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 			.configureClient()
 			.baseUrl("https://localhost:8443")
@@ -137,7 +137,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void getRequestWithQueryString() {
+	void getRequestWithQueryString() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 			.configureClient()
 			.baseUrl("http://localhost")
@@ -153,7 +153,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithFormDataParameters() {
+	void postRequestWithFormDataParameters() {
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 		parameters.addAll("a", Arrays.asList("alpha", "apple"));
 		parameters.addAll("b", Arrays.asList("br&vo"));
@@ -181,7 +181,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithQueryStringParameters() {
+	void postRequestWithQueryStringParameters() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
 			req.body(BodyExtractors.toFormData()).block();
 			return null;
@@ -200,7 +200,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithQueryStringAndFormDataParameters() {
+	void postRequestWithQueryStringAndFormDataParameters() {
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 		parameters.addAll("a", Arrays.asList("apple"));
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> {
@@ -227,7 +227,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void postRequestWithNoContentType() {
+	void postRequestWithNoContentType() {
 		ExchangeResult result = WebTestClient
 			.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> ServerResponse.ok().build()))
 			.configureClient()
@@ -244,7 +244,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void multipartUpload() {
+	void multipartUpload() {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("file", new byte[] { 1, 2, 3, 4 });
 		ExchangeResult result = WebTestClient
@@ -274,7 +274,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void multipartUploadFromResource() {
+	void multipartUploadFromResource() {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("file", new ByteArrayResource(new byte[] { 1, 2, 3, 4 }) {
 
@@ -314,7 +314,7 @@ public class WebTestClientRequestConverterTests {
 	}
 
 	@Test
-	public void requestWithCookies() {
+	void requestWithCookies() {
 		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
 			.configureClient()
 			.baseUrl("http://localhost")

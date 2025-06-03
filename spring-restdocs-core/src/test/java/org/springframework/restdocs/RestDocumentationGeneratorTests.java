@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -55,7 +55,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
  * @author Andy Wilkinson
  * @author Filip Hrisafov
  */
-public class RestDocumentationGeneratorTests {
+class RestDocumentationGeneratorTests {
 
 	@SuppressWarnings("unchecked")
 	private final RequestConverter<Object> requestConverter = mock(RequestConverter.class);
@@ -80,7 +80,7 @@ public class RestDocumentationGeneratorTests {
 	private final OperationPreprocessor responsePreprocessor = mock(OperationPreprocessor.class);
 
 	@Test
-	public void basicHandling() throws IOException {
+	void basicHandling() throws IOException {
 		given(this.requestConverter.convert(this.request)).willReturn(this.operationRequest);
 		given(this.responseConverter.convert(this.response)).willReturn(this.operationResponse);
 		HashMap<String, Object> configuration = new HashMap<>();
@@ -90,7 +90,7 @@ public class RestDocumentationGeneratorTests {
 	}
 
 	@Test
-	public void defaultSnippetsAreCalled() throws IOException {
+	void defaultSnippetsAreCalled() throws IOException {
 		given(this.requestConverter.convert(this.request)).willReturn(this.operationRequest);
 		given(this.responseConverter.convert(this.response)).willReturn(this.operationResponse);
 		HashMap<String, Object> configuration = new HashMap<>();
@@ -107,7 +107,7 @@ public class RestDocumentationGeneratorTests {
 	}
 
 	@Test
-	public void defaultOperationRequestPreprocessorsAreCalled() throws IOException {
+	void defaultOperationRequestPreprocessorsAreCalled() throws IOException {
 		given(this.requestConverter.convert(this.request)).willReturn(this.operationRequest);
 		given(this.responseConverter.convert(this.response)).willReturn(this.operationResponse);
 		HashMap<String, Object> configuration = new HashMap<>();
@@ -128,7 +128,7 @@ public class RestDocumentationGeneratorTests {
 	}
 
 	@Test
-	public void defaultOperationResponsePreprocessorsAreCalled() throws IOException {
+	void defaultOperationResponsePreprocessorsAreCalled() throws IOException {
 		given(this.requestConverter.convert(this.request)).willReturn(this.operationRequest);
 		given(this.responseConverter.convert(this.response)).willReturn(this.operationResponse);
 		HashMap<String, Object> configuration = new HashMap<>();
@@ -149,7 +149,7 @@ public class RestDocumentationGeneratorTests {
 	}
 
 	@Test
-	public void newGeneratorOnlyCallsItsSnippets() throws IOException {
+	void newGeneratorOnlyCallsItsSnippets() throws IOException {
 		OperationRequestPreprocessor requestPreprocessor = mock(OperationRequestPreprocessor.class);
 		OperationResponsePreprocessor responsePreprocessor = mock(OperationResponsePreprocessor.class);
 		given(this.requestConverter.convert(this.request)).willReturn(this.operationRequest);

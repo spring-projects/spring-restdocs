@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,13 @@ package org.springframework.restdocs.mockmvc;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.junit.Assume;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.util.ReflectionUtils;
@@ -41,24 +42,22 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Andy Wilkinson
  * @author Dmitriy Mayboroda
  */
-public class MockMvcRestDocumentationConfigurerTests {
+@ExtendWith(RestDocumentationExtension.class)
+class MockMvcRestDocumentationConfigurerTests {
 
 	private MockHttpServletRequest request = new MockHttpServletRequest();
 
-	@Rule
-	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-
 	@Test
-	public void defaultConfiguration() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation)
+	void defaultConfiguration(RestDocumentationContextProvider restDocumentation) {
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(restDocumentation)
 			.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
 		assertUriConfiguration("http", "localhost", 8080);
 	}
 
 	@Test
-	public void customScheme() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation).uris()
+	void customScheme(RestDocumentationContextProvider restDocumentation) {
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(restDocumentation).uris()
 			.withScheme("https")
 			.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
@@ -66,8 +65,8 @@ public class MockMvcRestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customHost() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation).uris()
+	void customHost(RestDocumentationContextProvider restDocumentation) {
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(restDocumentation).uris()
 			.withHost("api.example.com")
 			.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
@@ -75,8 +74,8 @@ public class MockMvcRestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void customPort() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation).uris()
+	void customPort(RestDocumentationContextProvider restDocumentation) {
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(restDocumentation).uris()
 			.withPort(8081)
 			.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
@@ -84,8 +83,8 @@ public class MockMvcRestDocumentationConfigurerTests {
 	}
 
 	@Test
-	public void noContentLengthHeaderWhenRequestHasNotContent() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation).uris()
+	void noContentLengthHeaderWhenRequestHasNotContent(RestDocumentationContextProvider restDocumentation) {
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(restDocumentation).uris()
 			.withPort(8081)
 			.beforeMockMvcCreated(null, null);
 		postProcessor.postProcessRequest(this.request);
@@ -94,8 +93,8 @@ public class MockMvcRestDocumentationConfigurerTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void uriTemplateFromRequestAttribute() {
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation)
+	void uriTemplateFromRequestAttribute(RestDocumentationContextProvider restDocumentation) {
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(restDocumentation)
 			.beforeMockMvcCreated(null, null);
 		this.request.setAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "{a}/{b}");
 		postProcessor.postProcessRequest(this.request);
@@ -106,11 +105,11 @@ public class MockMvcRestDocumentationConfigurerTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void uriTemplateFromRequest() {
+	void uriTemplateFromRequest(RestDocumentationContextProvider restDocumentation) {
 		Method setUriTemplate = ReflectionUtils.findMethod(MockHttpServletRequest.class, "setUriTemplate",
 				String.class);
-		Assume.assumeNotNull(setUriTemplate);
-		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(this.restDocumentation)
+		Assumptions.assumeFalse(setUriTemplate == null);
+		RequestPostProcessor postProcessor = new MockMvcRestDocumentationConfigurer(restDocumentation)
 			.beforeMockMvcCreated(null, null);
 		ReflectionUtils.invokeMethod(setUriTemplate, this.request, "{a}/{b}");
 		postProcessor.postProcessRequest(this.request);

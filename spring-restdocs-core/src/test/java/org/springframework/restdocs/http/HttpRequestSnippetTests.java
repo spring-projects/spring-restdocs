@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,14 @@ package org.springframework.restdocs.http;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.templates.TemplateEngine;
-import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.templates.TemplateResourceResolver;
-import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -41,162 +35,160 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  * @author Andy Wilkinson
  * @author Jonathan Pearlin
  */
-public class HttpRequestSnippetTests extends AbstractSnippetTests {
+class HttpRequestSnippetTests {
 
 	private static final String BOUNDARY = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
 
-	public HttpRequestSnippetTests(String name, TemplateFormat templateFormat) {
-		super(name, templateFormat);
-	}
-
-	@Test
-	public void getRequest() throws IOException {
+	@RenderedSnippetTest
+	void getRequest(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new HttpRequestSnippet()
-			.document(this.operationBuilder.request("http://localhost/foo").header("Alpha", "a").build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a").header(HttpHeaders.HOST, "localhost"));
+			.document(operationBuilder.request("http://localhost/foo").header("Alpha", "a").build());
+		assertThat(snippets.httpRequest())
+			.isHttpRequest((request) -> request.get("/foo").header("Alpha", "a").header(HttpHeaders.HOST, "localhost"));
 	}
 
-	@Test
-	public void getRequestWithQueryParameters() throws IOException {
+	@RenderedSnippetTest
+	void getRequestWithQueryParameters(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new HttpRequestSnippet()
-			.document(this.operationBuilder.request("http://localhost/foo?b=bravo").header("Alpha", "a").build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.GET, "/foo?b=bravo").header("Alpha", "a")
-				.header(HttpHeaders.HOST, "localhost"));
+			.document(operationBuilder.request("http://localhost/foo?b=bravo").header("Alpha", "a").build());
+		assertThat(snippets.httpRequest()).isHttpRequest(
+				(request) -> request.get("/foo?b=bravo").header("Alpha", "a").header(HttpHeaders.HOST, "localhost"));
 	}
 
-	@Test
-	public void getRequestWithPort() throws IOException {
+	@RenderedSnippetTest
+	void getRequestWithPort(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new HttpRequestSnippet()
-			.document(this.operationBuilder.request("http://localhost:8080/foo").header("Alpha", "a").build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.GET, "/foo").header("Alpha", "a").header(HttpHeaders.HOST, "localhost:8080"));
+			.document(operationBuilder.request("http://localhost:8080/foo").header("Alpha", "a").build());
+		assertThat(snippets.httpRequest()).isHttpRequest(
+				(request) -> request.get("/foo").header("Alpha", "a").header(HttpHeaders.HOST, "localhost:8080"));
 	}
 
-	@Test
-	public void getRequestWithCookies() throws IOException {
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/foo")
+	@RenderedSnippetTest
+	void getRequestWithCookies(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/foo")
 			.cookie("name1", "value1")
 			.cookie("name2", "value2")
 			.build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.GET, "/foo").header(HttpHeaders.HOST, "localhost")
-				.header(HttpHeaders.COOKIE, "name1=value1; name2=value2"));
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.get("/foo")
+			.header(HttpHeaders.HOST, "localhost")
+			.header(HttpHeaders.COOKIE, "name1=value1; name2=value2"));
 	}
 
-	@Test
-	public void getRequestWithQueryString() throws IOException {
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/foo?bar=baz").build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.GET, "/foo?bar=baz").header(HttpHeaders.HOST, "localhost"));
+	@RenderedSnippetTest
+	void getRequestWithQueryString(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/foo?bar=baz").build());
+		assertThat(snippets.httpRequest())
+			.isHttpRequest((request) -> request.get("/foo?bar=baz").header(HttpHeaders.HOST, "localhost"));
 	}
 
-	@Test
-	public void getRequestWithQueryStringWithNoValue() throws IOException {
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/foo?bar").build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.GET, "/foo?bar").header(HttpHeaders.HOST, "localhost"));
+	@RenderedSnippetTest
+	void getRequestWithQueryStringWithNoValue(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/foo?bar").build());
+		assertThat(snippets.httpRequest())
+			.isHttpRequest((request) -> request.get("/foo?bar").header(HttpHeaders.HOST, "localhost"));
 	}
 
-	@Test
-	public void postRequestWithContent() throws IOException {
+	@RenderedSnippetTest
+	void postRequestWithContent(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		String content = "Hello, world";
 		new HttpRequestSnippet()
-			.document(this.operationBuilder.request("http://localhost/foo").method("POST").content(content).build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.POST, "/foo").header(HttpHeaders.HOST, "localhost")
-				.content(content)
-				.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+			.document(operationBuilder.request("http://localhost/foo").method("POST").content(content).build());
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.post("/foo")
+			.header(HttpHeaders.HOST, "localhost")
+			.content(content)
+			.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 	}
 
-	@Test
-	public void postRequestWithContentAndQueryParameters() throws IOException {
+	@RenderedSnippetTest
+	void postRequestWithContentAndQueryParameters(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		String content = "Hello, world";
-		new HttpRequestSnippet().document(
-				this.operationBuilder.request("http://localhost/foo?a=alpha").method("POST").content(content).build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.POST, "/foo?a=alpha").header(HttpHeaders.HOST, "localhost")
-				.content(content)
-				.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+		new HttpRequestSnippet()
+			.document(operationBuilder.request("http://localhost/foo?a=alpha").method("POST").content(content).build());
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.post("/foo?a=alpha")
+			.header(HttpHeaders.HOST, "localhost")
+			.content(content)
+			.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 
 	}
 
-	@Test
-	public void postRequestWithCharset() throws IOException {
+	@RenderedSnippetTest
+	void postRequestWithCharset(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		byte[] contentBytes = japaneseContent.getBytes("UTF-8");
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/foo")
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/foo")
 			.method("POST")
 			.header("Content-Type", "text/plain;charset=UTF-8")
 			.content(contentBytes)
 			.build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.POST, "/foo").header("Content-Type", "text/plain;charset=UTF-8")
-				.header(HttpHeaders.HOST, "localhost")
-				.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length)
-				.content(japaneseContent));
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.post("/foo")
+			.header("Content-Type", "text/plain;charset=UTF-8")
+			.header(HttpHeaders.HOST, "localhost")
+			.header(HttpHeaders.CONTENT_LENGTH, contentBytes.length)
+			.content(japaneseContent));
 	}
 
-	@Test
-	public void putRequestWithContent() throws IOException {
+	@RenderedSnippetTest
+	void putRequestWithContent(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		String content = "Hello, world";
 		new HttpRequestSnippet()
-			.document(this.operationBuilder.request("http://localhost/foo").method("PUT").content(content).build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.PUT, "/foo").header(HttpHeaders.HOST, "localhost")
-				.content(content)
-				.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
+			.document(operationBuilder.request("http://localhost/foo").method("PUT").content(content).build());
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.put("/foo")
+			.header(HttpHeaders.HOST, "localhost")
+			.content(content)
+			.header(HttpHeaders.CONTENT_LENGTH, content.getBytes().length));
 	}
 
-	@Test
-	public void multipartPost() throws IOException {
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/upload")
+	@RenderedSnippetTest
+	void multipartPost(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/upload")
 			.method("POST")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 			.part("image", "<< data >>".getBytes())
 			.build());
 		String expectedContent = createPart(
 				String.format("Content-Disposition: " + "form-data; " + "name=image%n%n<< data >>"));
-		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.POST, "/upload")
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.post("/upload")
 			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
 			.header(HttpHeaders.HOST, "localhost")
 			.content(expectedContent));
 	}
 
-	@Test
-	public void multipartPut() throws IOException {
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/upload")
+	@RenderedSnippetTest
+	void multipartPut(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/upload")
 			.method("PUT")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 			.part("image", "<< data >>".getBytes())
 			.build());
 		String expectedContent = createPart(
 				String.format("Content-Disposition: " + "form-data; " + "name=image%n%n<< data >>"));
-		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.PUT, "/upload")
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.put("/upload")
 			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
 			.header(HttpHeaders.HOST, "localhost")
 			.content(expectedContent));
 	}
 
-	@Test
-	public void multipartPatch() throws IOException {
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/upload")
+	@RenderedSnippetTest
+	void multipartPatch(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/upload")
 			.method("PATCH")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 			.part("image", "<< data >>".getBytes())
 			.build());
 		String expectedContent = createPart(
 				String.format("Content-Disposition: " + "form-data; " + "name=image%n%n<< data >>"));
-		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.PATCH, "/upload")
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.patch("/upload")
 			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
 			.header(HttpHeaders.HOST, "localhost")
 			.content(expectedContent));
 	}
 
-	@Test
-	public void multipartPostWithFilename() throws IOException {
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/upload")
+	@RenderedSnippetTest
+	void multipartPostWithFilename(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/upload")
 			.method("POST")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 			.part("image", "<< data >>".getBytes())
@@ -204,15 +196,16 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 			.build());
 		String expectedContent = createPart(String
 			.format("Content-Disposition: " + "form-data; " + "name=image; filename=image.png%n%n<< data >>"));
-		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.POST, "/upload")
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.post("/upload")
 			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
 			.header(HttpHeaders.HOST, "localhost")
 			.content(expectedContent));
 	}
 
-	@Test
-	public void multipartPostWithContentType() throws IOException {
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/upload")
+	@RenderedSnippetTest
+	void multipartPostWithContentType(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/upload")
 			.method("POST")
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
 			.part("image", "<< data >>".getBytes())
@@ -220,38 +213,35 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 			.build());
 		String expectedContent = createPart(String
 			.format("Content-Disposition: form-data; name=image%nContent-Type: " + "image/png%n%n<< data >>"));
-		assertThat(this.generatedSnippets.httpRequest()).is(httpRequest(RequestMethod.POST, "/upload")
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.post("/upload")
 			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
 			.header(HttpHeaders.HOST, "localhost")
 			.content(expectedContent));
 	}
 
-	@Test
-	public void getRequestWithCustomHost() throws IOException {
-		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/foo")
-			.header(HttpHeaders.HOST, "api.example.com")
-			.build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.GET, "/foo").header(HttpHeaders.HOST, "api.example.com"));
+	@RenderedSnippetTest
+	void getRequestWithCustomHost(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(
+				operationBuilder.request("http://localhost/foo").header(HttpHeaders.HOST, "api.example.com").build());
+		assertThat(snippets.httpRequest())
+			.isHttpRequest((request) -> request.get("/foo").header(HttpHeaders.HOST, "api.example.com"));
 	}
 
-	@Test
-	public void requestWithCustomSnippetAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("http-request")).willReturn(snippetResource("http-request-with-title"));
-		new HttpRequestSnippet(attributes(key("title").value("Title for the request"))).document(
-				this.operationBuilder.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-					.request("http://localhost/foo")
-					.build());
-		assertThat(this.generatedSnippets.httpRequest()).contains("Title for the request");
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "http-request", template = "http-request-with-title")
+	void requestWithCustomSnippetAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new HttpRequestSnippet(attributes(key("title").value("Title for the request")))
+			.document(operationBuilder.request("http://localhost/foo").build());
+		assertThat(snippets.httpRequest()).contains("Title for the request");
 	}
 
-	@Test
-	public void deleteWithQueryString() throws IOException {
+	@RenderedSnippetTest
+	void deleteWithQueryString(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new HttpRequestSnippet()
-			.document(this.operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("DELETE").build());
-		assertThat(this.generatedSnippets.httpRequest())
-			.is(httpRequest(RequestMethod.DELETE, "/foo?a=alpha&b=bravo").header("Host", "localhost"));
+			.document(operationBuilder.request("http://localhost/foo?a=alpha&b=bravo").method("DELETE").build());
+		assertThat(snippets.httpRequest())
+			.isHttpRequest((request) -> request.delete("/foo?a=alpha&b=bravo").header("Host", "localhost"));
 	}
 
 	private String createPart(String content) {

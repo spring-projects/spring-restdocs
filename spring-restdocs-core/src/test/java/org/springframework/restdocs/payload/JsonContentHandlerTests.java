@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -31,10 +31,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * @author Andy Wilkinson
  * @author Mathias Düsterhöft
  */
-public class JsonContentHandlerTests {
+class JsonContentHandlerTests {
 
 	@Test
-	public void typeForFieldWithNullValueMustMatch() {
+	void typeForFieldWithNullValueMustMatch() {
 		FieldDescriptor descriptor = new FieldDescriptor("a").type(JsonFieldType.STRING);
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class)
 			.isThrownBy(() -> new JsonContentHandler("{\"a\": null}".getBytes(), Arrays.asList(descriptor))
@@ -42,7 +42,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForFieldWithNotNullAndThenNullValueMustMatch() {
+	void typeForFieldWithNotNullAndThenNullValueMustMatch() {
 		FieldDescriptor descriptor = new FieldDescriptor("a[].id").type(JsonFieldType.STRING);
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class).isThrownBy(
 				() -> new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}".getBytes(), Arrays.asList(descriptor))
@@ -50,7 +50,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForFieldWithNullAndThenNotNullValueMustMatch() {
+	void typeForFieldWithNullAndThenNotNullValueMustMatch() {
 		FieldDescriptor descriptor = new FieldDescriptor("a.[].id").type(JsonFieldType.STRING);
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class).isThrownBy(
 				() -> new JsonContentHandler("{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes(), Arrays.asList(descriptor))
@@ -58,7 +58,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForOptionalFieldWithNumberAndThenNullValueIsNumber() {
+	void typeForOptionalFieldWithNumberAndThenNullValueIsNumber() {
 		FieldDescriptor descriptor = new FieldDescriptor("a[].id").optional();
 		Object fieldType = new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes(),
 				Arrays.asList(descriptor))
@@ -67,7 +67,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForOptionalFieldWithNullAndThenNumberIsNumber() {
+	void typeForOptionalFieldWithNullAndThenNumberIsNumber() {
 		FieldDescriptor descriptor = new FieldDescriptor("a[].id").optional();
 		Object fieldType = new JsonContentHandler("{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes(),
 				Arrays.asList(descriptor))
@@ -76,7 +76,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForFieldWithNumberAndThenNullValueIsVaries() {
+	void typeForFieldWithNumberAndThenNullValueIsVaries() {
 		FieldDescriptor descriptor = new FieldDescriptor("a[].id");
 		Object fieldType = new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes(),
 				Arrays.asList(descriptor))
@@ -85,7 +85,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForFieldWithNullAndThenNumberIsVaries() {
+	void typeForFieldWithNullAndThenNumberIsVaries() {
 		FieldDescriptor descriptor = new FieldDescriptor("a[].id");
 		Object fieldType = new JsonContentHandler("{\"a\":[{\"id\":null},{\"id\":1}]}".getBytes(),
 				Arrays.asList(descriptor))
@@ -94,7 +94,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForOptionalFieldWithNullValueCanBeProvidedExplicitly() {
+	void typeForOptionalFieldWithNullValueCanBeProvidedExplicitly() {
 		FieldDescriptor descriptor = new FieldDescriptor("a").type(JsonFieldType.STRING).optional();
 		Object fieldType = new JsonContentHandler("{\"a\": null}".getBytes(), Arrays.asList(descriptor))
 			.resolveFieldType(descriptor);
@@ -102,7 +102,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void typeForFieldWithSometimesPresentOptionalAncestorCanBeProvidedExplicitly() {
+	void typeForFieldWithSometimesPresentOptionalAncestorCanBeProvidedExplicitly() {
 		FieldDescriptor descriptor = new FieldDescriptor("a.[].b.c").type(JsonFieldType.NUMBER);
 		FieldDescriptor ancestor = new FieldDescriptor("a.[].b").optional();
 		Object fieldType = new JsonContentHandler("{\"a\":[ { \"d\": 4}, {\"b\":{\"c\":5}, \"d\": 4}]}".getBytes(),
@@ -112,13 +112,13 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void failsFastWithNonJsonContent() {
+	void failsFastWithNonJsonContent() {
 		assertThatExceptionOfType(PayloadHandlingException.class)
 			.isThrownBy(() -> new JsonContentHandler("Non-JSON content".getBytes(), Collections.emptyList()));
 	}
 
 	@Test
-	public void describedFieldThatIsNotPresentIsConsideredMissing() {
+	void describedFieldThatIsNotPresentIsConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a"), new FieldDescriptor("b"),
 				new FieldDescriptor("c"));
 		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"a\": \"alpha\", \"b\":\"bravo\"}".getBytes(),
@@ -129,7 +129,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void describedOptionalFieldThatIsNotPresentIsNotConsideredMissing() {
+	void describedOptionalFieldThatIsNotPresentIsNotConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a"), new FieldDescriptor("b"),
 				new FieldDescriptor("c").optional());
 		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"a\": \"alpha\", \"b\":\"bravo\"}".getBytes(),
@@ -139,7 +139,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void describedFieldThatIsNotPresentNestedBeneathOptionalFieldThatIsPresentIsConsideredMissing() {
+	void describedFieldThatIsNotPresentNestedBeneathOptionalFieldThatIsPresentIsConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a").optional(), new FieldDescriptor("b"),
 				new FieldDescriptor("a.c"));
 		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"a\":\"alpha\",\"b\":\"bravo\"}".getBytes(),
@@ -150,7 +150,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void describedFieldThatIsNotPresentNestedBeneathOptionalFieldThatIsNotPresentIsNotConsideredMissing() {
+	void describedFieldThatIsNotPresentNestedBeneathOptionalFieldThatIsNotPresentIsNotConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a").optional(), new FieldDescriptor("b"),
 				new FieldDescriptor("a.c"));
 		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"b\":\"bravo\"}".getBytes(), descriptors)
@@ -159,7 +159,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void describedFieldThatIsNotPresentNestedBeneathOptionalArrayThatIsEmptyIsNotConsideredMissing() {
+	void describedFieldThatIsNotPresentNestedBeneathOptionalArrayThatIsEmptyIsNotConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("outer"),
 				new FieldDescriptor("outer[]").optional(), new FieldDescriptor("outer[].inner"));
 		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"outer\":[]}".getBytes(), descriptors)
@@ -168,7 +168,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void describedSometimesPresentFieldThatIsChildOfSometimesPresentOptionalArrayIsNotConsideredMissing() {
+	void describedSometimesPresentFieldThatIsChildOfSometimesPresentOptionalArrayIsNotConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a.[].c").optional(),
 				new FieldDescriptor("a.[].c.d"));
 		List<FieldDescriptor> missingFields = new JsonContentHandler(
@@ -178,7 +178,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void describedMissingFieldThatIsChildOfNestedOptionalArrayThatIsEmptyIsNotConsideredMissing() {
+	void describedMissingFieldThatIsChildOfNestedOptionalArrayThatIsEmptyIsNotConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a.[].b").optional(),
 				new FieldDescriptor("a.[].b.[]").optional(), new FieldDescriptor("a.[].b.[].c"));
 		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"a\":[{\"b\":[]}]}".getBytes(), descriptors)
@@ -187,7 +187,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void describedMissingFieldThatIsChildOfNestedOptionalArrayThatContainsAnObjectIsConsideredMissing() {
+	void describedMissingFieldThatIsChildOfNestedOptionalArrayThatContainsAnObjectIsConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a.[].b").optional(),
 				new FieldDescriptor("a.[].b.[]").optional(), new FieldDescriptor("a.[].b.[].c"));
 		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"a\":[{\"b\":[{}]}]}".getBytes(), descriptors)
@@ -197,7 +197,7 @@ public class JsonContentHandlerTests {
 	}
 
 	@Test
-	public void describedMissingFieldThatIsChildOfOptionalObjectThatIsNullIsNotConsideredMissing() {
+	void describedMissingFieldThatIsChildOfOptionalObjectThatIsNullIsNotConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a").optional(),
 				new FieldDescriptor("a.b"));
 		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"a\":null}".getBytes(), descriptors)

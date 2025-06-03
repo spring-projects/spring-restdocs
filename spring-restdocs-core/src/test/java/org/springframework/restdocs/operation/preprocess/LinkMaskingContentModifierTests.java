@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.restdocs.hypermedia.Link;
 
@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Andy Wilkinson
  *
  */
-public class LinkMaskingContentModifierTests {
+class LinkMaskingContentModifierTests {
 
 	private final ContentModifier contentModifier = new LinkMaskingContentModifier();
 
@@ -47,38 +47,38 @@ public class LinkMaskingContentModifierTests {
 	private final Link[] maskedLinks = new Link[] { new Link("a", "..."), new Link("b", "...") };
 
 	@Test
-	public void halLinksAreMasked() throws Exception {
+	void halLinksAreMasked() throws Exception {
 		assertThat(this.contentModifier.modifyContent(halPayloadWithLinks(this.links), null))
 			.isEqualTo(halPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
-	public void formattedHalLinksAreMasked() throws Exception {
+	void formattedHalLinksAreMasked() throws Exception {
 		assertThat(this.contentModifier.modifyContent(formattedHalPayloadWithLinks(this.links), null))
 			.isEqualTo(formattedHalPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
-	public void atomLinksAreMasked() throws Exception {
+	void atomLinksAreMasked() throws Exception {
 		assertThat(this.contentModifier.modifyContent(atomPayloadWithLinks(this.links), null))
 			.isEqualTo(atomPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
-	public void formattedAtomLinksAreMasked() throws Exception {
+	void formattedAtomLinksAreMasked() throws Exception {
 		assertThat(this.contentModifier.modifyContent(formattedAtomPayloadWithLinks(this.links), null))
 			.isEqualTo(formattedAtomPayloadWithLinks(this.maskedLinks));
 	}
 
 	@Test
-	public void maskCanBeCustomized() throws Exception {
+	void maskCanBeCustomized() throws Exception {
 		assertThat(
 				new LinkMaskingContentModifier("custom").modifyContent(formattedAtomPayloadWithLinks(this.links), null))
 			.isEqualTo(formattedAtomPayloadWithLinks(new Link("a", "custom"), new Link("b", "custom")));
 	}
 
 	@Test
-	public void maskCanUseUtf8Characters() throws Exception {
+	void maskCanUseUtf8Characters() throws Exception {
 		String ellipsis = "\u2026";
 		assertThat(
 				new LinkMaskingContentModifier(ellipsis).modifyContent(formattedHalPayloadWithLinks(this.links), null))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.springframework.restdocs.constraints;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.mock;
  *
  * @author Andy Wilkinson
  */
-public class ConstraintDescriptionsTests {
+class ConstraintDescriptionsTests {
 
 	private final ConstraintResolver constraintResolver = mock(ConstraintResolver.class);
 
@@ -41,7 +41,7 @@ public class ConstraintDescriptionsTests {
 			this.constraintResolver, this.constraintDescriptionResolver);
 
 	@Test
-	public void descriptionsForConstraints() {
+	void descriptionsForConstraints() {
 		Constraint constraint1 = new Constraint("constraint1", Collections.<String, Object>emptyMap());
 		Constraint constraint2 = new Constraint("constraint2", Collections.<String, Object>emptyMap());
 		given(this.constraintResolver.resolveForProperty("foo", Constrained.class))
@@ -52,7 +52,7 @@ public class ConstraintDescriptionsTests {
 	}
 
 	@Test
-	public void emptyListOfDescriptionsWhenThereAreNoConstraints() {
+	void emptyListOfDescriptionsWhenThereAreNoConstraints() {
 		given(this.constraintResolver.resolveForProperty("foo", Constrained.class))
 			.willReturn(Collections.<Constraint>emptyList());
 		assertThat(this.constraintDescriptions.descriptionsForProperty("foo").size()).isEqualTo(0);

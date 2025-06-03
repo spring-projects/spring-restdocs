@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
@@ -31,10 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Andy Wilkinson
  */
-public class JsonFieldPathsTests {
+class JsonFieldPathsTests {
 
 	@Test
-	public void noUncommonPathsForSingleItem() {
+	void noUncommonPathsForSingleItem() {
 		assertThat(
 				JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": [ { \"c\": 2}, {\"c\": 3}, {\"c\": null}]}")))
 					.getUncommon())
@@ -42,20 +42,20 @@ public class JsonFieldPathsTests {
 	}
 
 	@Test
-	public void noUncommonPathsForMultipleIdenticalItems() {
+	void noUncommonPathsForMultipleIdenticalItems() {
 		Object item = json("{\"a\": 1, \"b\": [ { \"c\": 2}, {\"c\": 3} ]}");
 		assertThat(JsonFieldPaths.from(Arrays.asList(item, item)).getUncommon()).isEmpty();
 	}
 
 	@Test
-	public void noUncommonPathsForMultipleMatchingItemsWithDifferentScalarValues() {
+	void noUncommonPathsForMultipleMatchingItemsWithDifferentScalarValues() {
 		assertThat(JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": [ { \"c\": 2}, {\"c\": 3} ]}"),
 				json("{\"a\": 4, \"b\": [ { \"c\": 5}, {\"c\": 6} ]}")))
 			.getUncommon()).isEmpty();
 	}
 
 	@Test
-	public void missingEntryInMapIsIdentifiedAsUncommon() {
+	void missingEntryInMapIsIdentifiedAsUncommon() {
 		assertThat(
 				JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1}"), json("{\"a\": 1}"), json("{\"a\": 1, \"b\": 2}")))
 					.getUncommon())
@@ -63,21 +63,21 @@ public class JsonFieldPathsTests {
 	}
 
 	@Test
-	public void missingEntryInNestedMapIsIdentifiedAsUncommon() {
+	void missingEntryInNestedMapIsIdentifiedAsUncommon() {
 		assertThat(JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": {\"c\": 1}}"),
 				json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"c\": 1, \"d\": 2}}")))
 			.getUncommon()).containsExactly("b.d");
 	}
 
 	@Test
-	public void missingEntriesInNestedMapAreIdentifiedAsUncommon() {
+	void missingEntriesInNestedMapAreIdentifiedAsUncommon() {
 		assertThat(JsonFieldPaths.from(Arrays.asList(json("{\"a\": 1, \"b\": {\"c\": 1}}"),
 				json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"d\": 2}}")))
 			.getUncommon()).containsExactly("b.c", "b.d");
 	}
 
 	@Test
-	public void absentItemFromFieldExtractionCausesAllPresentFieldsToBeIdentifiedAsUncommon() {
+	void absentItemFromFieldExtractionCausesAllPresentFieldsToBeIdentifiedAsUncommon() {
 		assertThat(JsonFieldPaths
 			.from(Arrays.asList(ExtractedField.ABSENT, json("{\"a\": 1, \"b\": {\"c\": 1}}"),
 					json("{\"a\": 1, \"b\": {\"c\": 1}}"), json("{\"a\": 1, \"b\": {\"d\": 2}}")))
@@ -85,14 +85,14 @@ public class JsonFieldPathsTests {
 	}
 
 	@Test
-	public void missingEntryBeneathArrayIsIdentifiedAsUncommon() {
+	void missingEntryBeneathArrayIsIdentifiedAsUncommon() {
 		assertThat(JsonFieldPaths
 			.from(Arrays.asList(json("[{\"b\": 1}]"), json("[{\"b\": 1}]"), json("[{\"b\": 1, \"c\": 2}]")))
 			.getUncommon()).containsExactly("[].c");
 	}
 
 	@Test
-	public void missingEntryBeneathNestedArrayIsIdentifiedAsUncommon() {
+	void missingEntryBeneathNestedArrayIsIdentifiedAsUncommon() {
 		assertThat(JsonFieldPaths.from(Arrays.asList(json("{\"a\": [{\"b\": 1}]}"), json("{\"a\": [{\"b\": 1}]}"),
 				json("{\"a\": [{\"b\": 1, \"c\": 2}]}")))
 			.getUncommon()).containsExactly("a.[].c");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,17 @@ package org.springframework.restdocs.request;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
-import org.junit.Test;
-
-import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.templates.TemplateEngine;
-import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.templates.TemplateFormats;
-import org.springframework.restdocs.templates.TemplateResourceResolver;
-import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
+import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTemplate;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -40,145 +38,157 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  *
  * @author Andy Wilkinson
  */
-public class RequestPartsSnippetTests extends AbstractSnippetTests {
+class RequestPartsSnippetTests {
 
-	public RequestPartsSnippetTests(String name, TemplateFormat templateFormat) {
-		super(name, templateFormat);
-	}
-
-	@Test
-	public void requestParts() throws IOException {
+	@RenderedSnippetTest
+	void requestParts(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new RequestPartsSnippet(
 				Arrays.asList(partWithName("a").description("one"), partWithName("b").description("two")))
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("a", "bravo".getBytes())
 				.and()
 				.part("b", "bravo".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestParts())
-			.is(tableWithHeader("Part", "Description").row("`a`", "one").row("`b`", "two"));
+		assertThat(snippets.requestParts())
+			.isTable((table) -> table.withHeader("Part", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
-	@Test
-	public void ignoredRequestPart() throws IOException {
+	@RenderedSnippetTest
+	void ignoredRequestPart(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new RequestPartsSnippet(Arrays.asList(partWithName("a").ignored(), partWithName("b").description("two")))
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("a", "bravo".getBytes())
 				.and()
 				.part("b", "bravo".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestParts()).is(tableWithHeader("Part", "Description").row("`b`", "two"));
+		assertThat(snippets.requestParts())
+			.isTable((table) -> table.withHeader("Part", "Description").row("`b`", "two"));
 	}
 
-	@Test
-	public void allUndocumentedRequestPartsCanBeIgnored() throws IOException {
+	@RenderedSnippetTest
+	void allUndocumentedRequestPartsCanBeIgnored(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new RequestPartsSnippet(Arrays.asList(partWithName("b").description("two")), true)
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("a", "bravo".getBytes())
 				.and()
 				.part("b", "bravo".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestParts()).is(tableWithHeader("Part", "Description").row("`b`", "two"));
+		assertThat(snippets.requestParts())
+			.isTable((table) -> table.withHeader("Part", "Description").row("`b`", "two"));
 	}
 
-	@Test
-	public void missingOptionalRequestPart() throws IOException {
+	@RenderedSnippetTest
+	void missingOptionalRequestPart(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new RequestPartsSnippet(
 				Arrays.asList(partWithName("a").description("one").optional(), partWithName("b").description("two")))
-			.document(this.operationBuilder.request("http://localhost").part("b", "bravo".getBytes()).build());
-		assertThat(this.generatedSnippets.requestParts())
-			.is(tableWithHeader("Part", "Description").row("`a`", "one").row("`b`", "two"));
+			.document(operationBuilder.request("http://localhost").part("b", "bravo".getBytes()).build());
+		assertThat(snippets.requestParts())
+			.isTable((table) -> table.withHeader("Part", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
-	@Test
-	public void presentOptionalRequestPart() throws IOException {
+	@RenderedSnippetTest
+	void presentOptionalRequestPart(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one").optional()))
-			.document(this.operationBuilder.request("http://localhost").part("a", "one".getBytes()).build());
-		assertThat(this.generatedSnippets.requestParts()).is(tableWithHeader("Part", "Description").row("`a`", "one"));
+			.document(operationBuilder.request("http://localhost").part("a", "one".getBytes()).build());
+		assertThat(snippets.requestParts())
+			.isTable((table) -> table.withHeader("Part", "Description").row("`a`", "one"));
 	}
 
-	@Test
-	public void requestPartsWithCustomAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-parts"))
-			.willReturn(snippetResource("request-parts-with-title"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "request-parts", template = "request-parts-with-title")
+	void requestPartsWithCustomAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new RequestPartsSnippet(
 				Arrays.asList(partWithName("a").description("one").attributes(key("foo").value("alpha")),
 						partWithName("b").description("two").attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title")))
-			.document(this.operationBuilder
-				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-				.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("a", "alpha".getBytes())
 				.and()
 				.part("b", "bravo".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestParts()).contains("The title");
+		assertThat(snippets.requestParts()).contains("The title");
 	}
 
-	@Test
-	public void requestPartsWithCustomDescriptorAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-parts"))
-			.willReturn(snippetResource("request-parts-with-extra-column"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "request-parts", template = "request-parts-with-extra-column")
+	void requestPartsWithCustomDescriptorAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new RequestPartsSnippet(
 				Arrays.asList(partWithName("a").description("one").attributes(key("foo").value("alpha")),
 						partWithName("b").description("two").attributes(key("foo").value("bravo"))))
-			.document(this.operationBuilder
-				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-				.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("a", "alpha".getBytes())
 				.and()
 				.part("b", "bravo".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestParts())
-			.is(tableWithHeader("Part", "Description", "Foo").row("a", "one", "alpha").row("b", "two", "bravo"));
+		assertThat(snippets.requestParts()).isTable((table) -> table.withHeader("Part", "Description", "Foo")
+			.row("a", "one", "alpha")
+			.row("b", "two", "bravo"));
 	}
 
-	@Test
-	public void requestPartsWithOptionalColumn() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("request-parts"))
-			.willReturn(snippetResource("request-parts-with-optional-column"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "request-parts", template = "request-parts-with-optional-column")
+	void requestPartsWithOptionalColumn(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new RequestPartsSnippet(
 				Arrays.asList(partWithName("a").description("one").optional(), partWithName("b").description("two")))
-			.document(this.operationBuilder
-				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-				.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("a", "alpha".getBytes())
 				.and()
 				.part("b", "bravo".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestParts())
-			.is(tableWithHeader("Part", "Optional", "Description").row("a", "true", "one").row("b", "false", "two"));
+		assertThat(snippets.requestParts()).isTable((table) -> table.withHeader("Part", "Optional", "Description")
+			.row("a", "true", "one")
+			.row("b", "false", "two"));
 	}
 
-	@Test
-	public void additionalDescriptors() throws IOException {
+	@RenderedSnippetTest
+	void additionalDescriptors(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		RequestDocumentation.requestParts(partWithName("a").description("one"))
 			.and(partWithName("b").description("two"))
-			.document(this.operationBuilder.request("http://localhost")
+			.document(operationBuilder.request("http://localhost")
 				.part("a", "bravo".getBytes())
 				.and()
 				.part("b", "bravo".getBytes())
 				.build());
-		assertThat(this.generatedSnippets.requestParts())
-			.is(tableWithHeader("Part", "Description").row("`a`", "one").row("`b`", "two"));
+		assertThat(snippets.requestParts())
+			.isTable((table) -> table.withHeader("Part", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
-	@Test
-	public void requestPartsWithEscapedContent() throws IOException {
+	@RenderedSnippetTest
+	void requestPartsWithEscapedContent(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		RequestDocumentation.requestParts(partWithName("Foo|Bar").description("one|two"))
-			.document(this.operationBuilder.request("http://localhost").part("Foo|Bar", "baz".getBytes()).build());
-		assertThat(this.generatedSnippets.requestParts()).is(tableWithHeader("Part", "Description")
-			.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+			.document(operationBuilder.request("http://localhost").part("Foo|Bar", "baz".getBytes()).build());
+		assertThat(snippets.requestParts())
+			.isTable((table) -> table.withHeader("Part", "Description").row("`Foo|Bar`", "one|two"));
 	}
 
-	private String escapeIfNecessary(String input) {
-		if (this.templateFormat.getId().equals(TemplateFormats.markdown().getId())) {
-			return input;
-		}
-		return input.replace("|", "\\|");
+	@SnippetTest
+	void undocumentedPart(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new RequestPartsSnippet(Collections.<RequestPartDescriptor>emptyList())
+				.document(operationBuilder.request("http://localhost").part("a", "alpha".getBytes()).build()))
+			.withMessage("Request parts with the following names were not documented: [a]");
+	}
+
+	@SnippetTest
+	void missingPart(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
+				.document(operationBuilder.request("http://localhost").build()))
+			.withMessage("Request parts with the following names were not found in the request: [a]");
+	}
+
+	@SnippetTest
+	void undocumentedAndMissingParts(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new RequestPartsSnippet(Arrays.asList(partWithName("a").description("one")))
+				.document(operationBuilder.request("http://localhost").part("b", "bravo".getBytes()).build()))
+			.withMessage("Request parts with the following names were not documented: [b]. Request parts with the"
+					+ " following names were not found in the request: [a]");
 	}
 
 }

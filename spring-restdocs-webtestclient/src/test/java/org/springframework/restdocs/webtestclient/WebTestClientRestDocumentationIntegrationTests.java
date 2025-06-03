@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,15 +30,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Condition;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.testfixtures.SnippetConditions;
@@ -75,15 +76,13 @@ import static org.springframework.web.reactive.function.BodyInserters.fromValue;
  *
  * @author Andy Wilkinson
  */
+@ExtendWith(RestDocumentationExtension.class)
 public class WebTestClientRestDocumentationIntegrationTests {
-
-	@Rule
-	public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	private WebTestClient webTestClient;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
 		RouterFunction<ServerResponse> route = RouterFunctions
 			.route(RequestPredicates.GET("/"),
 					(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
@@ -99,12 +98,12 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		this.webTestClient = WebTestClient.bindToRouterFunction(route)
 			.configureClient()
 			.baseUrl("https://api.example.com")
-			.filter(documentationConfiguration(this.restDocumentation))
+			.filter(documentationConfiguration(restDocumentation))
 			.build();
 	}
 
 	@Test
-	public void defaultSnippetGeneration() {
+	void defaultSnippetGeneration() {
 		File outputDir = new File("build/generated-snippets/default-snippets");
 		FileSystemUtils.deleteRecursively(outputDir);
 		this.webTestClient.get()
@@ -119,7 +118,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void pathParametersSnippet() {
+	void pathParametersSnippet() {
 		this.webTestClient.get()
 			.uri("/{foo}/{bar}", "1", "2")
 			.exchange()
@@ -136,7 +135,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void queryParametersSnippet() {
+	void queryParametersSnippet() {
 		this.webTestClient.get()
 			.uri("/?a=alpha&b=bravo")
 			.exchange()
@@ -153,7 +152,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void multipart() {
+	void multipart() {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("a", "alpha");
 		multipartData.add("b", "bravo");
@@ -173,7 +172,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void responseWithSetCookie() {
+	void responseWithSetCookie() {
 		this.webTestClient.get()
 			.uri("/set-cookie")
 			.exchange()
@@ -187,7 +186,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithCookies() {
+	void curlSnippetWithCookies() {
 		this.webTestClient.get()
 			.uri("/")
 			.cookie("cookieName", "cookieVal")
@@ -204,7 +203,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithEmptyParameterQueryString() {
+	void curlSnippetWithEmptyParameterQueryString() {
 		this.webTestClient.get()
 			.uri("/?a=")
 			.accept(MediaType.APPLICATION_JSON)
@@ -220,7 +219,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void httpieSnippetWithCookies() {
+	void httpieSnippetWithCookies() {
 		this.webTestClient.get()
 			.uri("/")
 			.cookie("cookieName", "cookieVal")
@@ -237,7 +236,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void illegalStateExceptionShouldBeThrownWhenCallDocumentWebClientNotConfigured() {
+	void illegalStateExceptionShouldBeThrownWhenCallDocumentWebClientNotConfigured() {
 		assertThatThrownBy(() -> this.webTestClient
 			.mutateWith((builder, httpHandlerBuilder, connector) -> builder.filters(List::clear).build())
 			.get()

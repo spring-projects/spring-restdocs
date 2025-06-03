@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.springframework.restdocs.cli;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,27 +29,27 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tomasz Kopczynski
  * @author Andy Wilkinson
  */
-public class ConcatenatingCommandFormatterTests {
+class ConcatenatingCommandFormatterTests {
 
 	private CommandFormatter singleLineFormat = new ConcatenatingCommandFormatter(" ");
 
 	@Test
-	public void formattingAnEmptyListProducesAnEmptyString() {
+	void formattingAnEmptyListProducesAnEmptyString() {
 		assertThat(this.singleLineFormat.format(Collections.<String>emptyList())).isEqualTo("");
 	}
 
 	@Test
-	public void formattingNullProducesAnEmptyString() {
+	void formattingNullProducesAnEmptyString() {
 		assertThat(this.singleLineFormat.format(null)).isEqualTo("");
 	}
 
 	@Test
-	public void formattingASingleElement() {
+	void formattingASingleElement() {
 		assertThat(this.singleLineFormat.format(Collections.singletonList("alpha"))).isEqualTo(" alpha");
 	}
 
 	@Test
-	public void formattingMultipleElements() {
+	void formattingMultipleElements() {
 		assertThat(this.singleLineFormat.format(Arrays.asList("alpha", "bravo"))).isEqualTo(" alpha bravo");
 	}
 

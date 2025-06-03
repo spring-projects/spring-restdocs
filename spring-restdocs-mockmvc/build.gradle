@@ -16,8 +16,8 @@ dependencies {
 	internal(platform(project(":spring-restdocs-platform")))
 
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
-	testImplementation("junit:junit")
-	testImplementation("org.assertj:assertj-core")
-	testImplementation("org.hamcrest:hamcrest-library")
-	testImplementation("org.mockito:mockito-core")
+}
+
+tasks.named("test") {
+	useJUnitPlatform()
 }

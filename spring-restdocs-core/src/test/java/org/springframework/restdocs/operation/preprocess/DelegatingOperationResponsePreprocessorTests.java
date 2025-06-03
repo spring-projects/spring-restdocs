@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.springframework.restdocs.operation.preprocess;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.restdocs.operation.OperationResponse;
 
@@ -31,10 +31,10 @@ import static org.mockito.Mockito.mock;
  *
  * @author Andy Wilkinson
  */
-public class DelegatingOperationResponsePreprocessorTests {
+class DelegatingOperationResponsePreprocessorTests {
 
 	@Test
-	public void delegationOccurs() {
+	void delegationOccurs() {
 		OperationResponse originalResponse = mock(OperationResponse.class);
 		OperationPreprocessor preprocessor1 = mock(OperationPreprocessor.class);
 		OperationResponse preprocessedResponse1 = mock(OperationResponse.class);

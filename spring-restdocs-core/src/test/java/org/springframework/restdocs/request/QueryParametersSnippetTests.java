@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,17 @@ package org.springframework.restdocs.request;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
-import org.junit.Test;
-
-import org.springframework.restdocs.AbstractSnippetTests;
-import org.springframework.restdocs.templates.TemplateEngine;
-import org.springframework.restdocs.templates.TemplateFormat;
-import org.springframework.restdocs.templates.TemplateFormats;
-import org.springframework.restdocs.templates.TemplateResourceResolver;
-import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
+import org.springframework.restdocs.snippet.SnippetException;
+import org.springframework.restdocs.testfixtures.jupiter.AssertableSnippets;
+import org.springframework.restdocs.testfixtures.jupiter.OperationBuilder;
+import org.springframework.restdocs.testfixtures.jupiter.RenderedSnippetTest;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTemplate;
+import org.springframework.restdocs.testfixtures.jupiter.SnippetTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -40,142 +38,151 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  *
  * @author Andy Wilkinson
  */
-public class QueryParametersSnippetTests extends AbstractSnippetTests {
+class QueryParametersSnippetTests {
 
-	public QueryParametersSnippetTests(String name, TemplateFormat templateFormat) {
-		super(name, templateFormat);
-	}
-
-	@Test
-	public void queryParameters() throws IOException {
+	@RenderedSnippetTest
+	void queryParameters(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new QueryParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one"), parameterWithName("b").description("two")))
-			.document(this.operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.document(operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
-	@Test
-	public void queryParameterWithNoValue() throws IOException {
+	@RenderedSnippetTest
+	void queryParameterWithNoValue(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new QueryParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
-			.document(this.operationBuilder.request("http://localhost?a").build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
+			.document(operationBuilder.request("http://localhost?a").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Description").row("`a`", "one"));
 	}
 
-	@Test
-	public void ignoredQueryParameter() throws IOException {
+	@RenderedSnippetTest
+	void ignoredQueryParameter(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new QueryParametersSnippet(
 				Arrays.asList(parameterWithName("a").ignored(), parameterWithName("b").description("two")))
-			.document(this.operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
+			.document(operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Description").row("`b`", "two"));
 	}
 
-	@Test
-	public void allUndocumentedQueryParametersCanBeIgnored() throws IOException {
+	@RenderedSnippetTest
+	void allUndocumentedQueryParametersCanBeIgnored(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new QueryParametersSnippet(Arrays.asList(parameterWithName("b").description("two")), true)
-			.document(this.operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Description").row("`b`", "two"));
+			.document(operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Description").row("`b`", "two"));
 	}
 
-	@Test
-	public void missingOptionalQueryParameter() throws IOException {
+	@RenderedSnippetTest
+	void missingOptionalQueryParameter(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new QueryParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional(),
 				parameterWithName("b").description("two")))
-			.document(this.operationBuilder.request("http://localhost?b=bravo").build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.document(operationBuilder.request("http://localhost?b=bravo").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
-	@Test
-	public void presentOptionalQueryParameter() throws IOException {
+	@RenderedSnippetTest
+	void presentOptionalQueryParameter(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new QueryParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional()))
-			.document(this.operationBuilder.request("http://localhost?a=alpha").build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Description").row("`a`", "one"));
+			.document(operationBuilder.request("http://localhost?a=alpha").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Description").row("`a`", "one"));
 	}
 
-	@Test
-	public void queryParametersWithCustomAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("query-parameters"))
-			.willReturn(snippetResource("query-parameters-with-title"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "query-parameters", template = "query-parameters-with-title")
+	void queryParametersWithCustomAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new QueryParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").attributes(key("foo").value("alpha")),
 						parameterWithName("b").description("two").attributes(key("foo").value("bravo"))),
 				attributes(key("title").value("The title")))
-			.document(this.operationBuilder
-				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-				.request("http://localhost?a=alpha&b=bravo")
-				.build());
-		assertThat(this.generatedSnippets.queryParameters()).contains("The title");
+			.document(operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
+		assertThat(snippets.queryParameters()).contains("The title");
 	}
 
-	@Test
-	public void queryParametersWithCustomDescriptorAttributes() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("query-parameters"))
-			.willReturn(snippetResource("query-parameters-with-extra-column"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "query-parameters", template = "query-parameters-with-extra-column")
+	void queryParametersWithCustomDescriptorAttributes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new QueryParametersSnippet(
 				Arrays.asList(parameterWithName("a").description("one").attributes(key("foo").value("alpha")),
 						parameterWithName("b").description("two").attributes(key("foo").value("bravo"))))
-			.document(this.operationBuilder
-				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-				.request("http://localhost?a=alpha&b=bravo")
-				.build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Description", "Foo").row("a", "one", "alpha").row("b", "two", "bravo"));
+			.document(operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
+		assertThat(snippets.queryParameters()).isTable((table) -> table.withHeader("Parameter", "Description", "Foo")
+			.row("a", "one", "alpha")
+			.row("b", "two", "bravo"));
 	}
 
-	@Test
-	public void queryParametersWithOptionalColumn() throws IOException {
-		TemplateResourceResolver resolver = mock(TemplateResourceResolver.class);
-		given(resolver.resolveTemplateResource("query-parameters"))
-			.willReturn(snippetResource("query-parameters-with-optional-column"));
+	@RenderedSnippetTest
+	@SnippetTemplate(snippet = "query-parameters", template = "query-parameters-with-optional-column")
+	void queryParametersWithOptionalColumn(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		new QueryParametersSnippet(Arrays.asList(parameterWithName("a").description("one").optional(),
 				parameterWithName("b").description("two")))
-			.document(this.operationBuilder
-				.attribute(TemplateEngine.class.getName(), new MustacheTemplateEngine(resolver))
-				.request("http://localhost?a=alpha&b=bravo")
-				.build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Optional", "Description").row("a", "true", "one")
+			.document(operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Optional", "Description")
+				.row("a", "true", "one")
 				.row("b", "false", "two"));
 	}
 
-	@Test
-	public void additionalDescriptors() throws IOException {
+	@RenderedSnippetTest
+	void additionalDescriptors(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		RequestDocumentation.queryParameters(parameterWithName("a").description("one"))
 			.and(parameterWithName("b").description("two"))
-			.document(this.operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.document(operationBuilder.request("http://localhost?a=alpha&b=bravo").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
-	@Test
-	public void additionalDescriptorsWithRelaxedQueryParameters() throws IOException {
+	@RenderedSnippetTest
+	void additionalDescriptorsWithRelaxedQueryParameters(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		RequestDocumentation.relaxedQueryParameters(parameterWithName("a").description("one"))
 			.and(parameterWithName("b").description("two"))
-			.document(this.operationBuilder.request("http://localhost?a=alpha&b=bravo&c=undocumented").build());
-		assertThat(this.generatedSnippets.queryParameters())
-			.is(tableWithHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
+			.document(operationBuilder.request("http://localhost?a=alpha&b=bravo&c=undocumented").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Description").row("`a`", "one").row("`b`", "two"));
 	}
 
-	@Test
-	public void queryParametersWithEscapedContent() throws IOException {
+	@RenderedSnippetTest
+	void queryParametersWithEscapedContent(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
 		RequestDocumentation.queryParameters(parameterWithName("Foo|Bar").description("one|two"))
-			.document(this.operationBuilder.request("http://localhost?Foo%7CBar=baz").build());
-		assertThat(this.generatedSnippets.queryParameters()).is(tableWithHeader("Parameter", "Description")
-			.row(escapeIfNecessary("`Foo|Bar`"), escapeIfNecessary("one|two")));
+			.document(operationBuilder.request("http://localhost?Foo%7CBar=baz").build());
+		assertThat(snippets.queryParameters())
+			.isTable((table) -> table.withHeader("Parameter", "Description").row("`Foo|Bar`", "one|two"));
 	}
 
-	private String escapeIfNecessary(String input) {
-		if (this.templateFormat.getId().equals(TemplateFormats.markdown().getId())) {
-			return input;
-		}
-		return input.replace("|", "\\|");
+	@SnippetTest
+	void undocumentedParameter(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new QueryParametersSnippet(Collections.<ParameterDescriptor>emptyList())
+				.document(operationBuilder.request("http://localhost?a=alpha").build()))
+			.withMessage("Query parameters with the following names were not documented: [a]");
+	}
+
+	@SnippetTest
+	void missingParameter(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new QueryParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.document(operationBuilder.request("http://localhost").build()))
+			.withMessage("Query parameters with the following names were not found in the request: [a]");
+	}
+
+	@SnippetTest
+	void undocumentedAndMissingParameters(OperationBuilder operationBuilder) {
+		assertThatExceptionOfType(SnippetException.class)
+			.isThrownBy(() -> new QueryParametersSnippet(Arrays.asList(parameterWithName("a").description("one")))
+				.document(operationBuilder.request("http://localhost?b=bravo").build()))
+			.withMessage("Query parameters with the following names were not documented: [b]. Query parameters"
+					+ " with the following names were not found in the request: [a]");
 	}
 
 }

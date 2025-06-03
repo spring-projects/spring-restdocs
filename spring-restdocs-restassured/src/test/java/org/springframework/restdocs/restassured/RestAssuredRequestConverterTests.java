@@ -28,8 +28,8 @@ import java.util.Iterator;
 import io.restassured.RestAssured;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -47,15 +47,15 @@ import static org.assertj.core.api.Assertions.entry;
  *
  * @author Andy Wilkinson
  */
-public class RestAssuredRequestConverterTests {
+class RestAssuredRequestConverterTests {
 
-	@ClassRule
+	@RegisterExtension
 	public static TomcatServer tomcat = new TomcatServer();
 
 	private final RestAssuredRequestConverter factory = new RestAssuredRequestConverter();
 
 	@Test
-	public void requestUri() {
+	void requestUri() {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort());
 		requestSpec.get("/foo/bar");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
@@ -63,7 +63,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void requestMethod() {
+	void requestMethod() {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort());
 		requestSpec.head("/foo/bar");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
@@ -71,7 +71,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void queryStringParameters() {
+	void queryStringParameters() {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).queryParam("foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
@@ -79,7 +79,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void queryStringFromUrlParameters() {
+	void queryStringFromUrlParameters() {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort());
 		requestSpec.get("/?foo=bar&foo=qix");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
@@ -87,7 +87,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void paramOnGetRequestIsMappedToQueryString() {
+	void paramOnGetRequestIsMappedToQueryString() {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).param("foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
@@ -95,7 +95,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void headers() {
+	void headers() {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).header("Foo", "bar");
 		requestSpec.get("/");
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
@@ -104,7 +104,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void headersWithCustomAccept() {
+	void headersWithCustomAccept() {
 		RequestSpecification requestSpec = RestAssured.given()
 			.port(tomcat.getPort())
 			.header("Foo", "bar")
@@ -117,7 +117,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void cookies() {
+	void cookies() {
 		RequestSpecification requestSpec = RestAssured.given()
 			.port(tomcat.getPort())
 			.cookie("cookie1", "cookieVal1")
@@ -138,7 +138,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void multipart() {
+	void multipart() {
 		RequestSpecification requestSpec = RestAssured.given()
 			.port(tomcat.getPort())
 			.multiPart("a", "a.txt", "alpha", null)
@@ -156,14 +156,14 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void byteArrayBody() {
+	void byteArrayBody() {
 		RequestSpecification requestSpec = RestAssured.given().body("body".getBytes()).port(tomcat.getPort());
 		requestSpec.post();
 		this.factory.convert((FilterableRequestSpecification) requestSpec);
 	}
 
 	@Test
-	public void stringBody() {
+	void stringBody() {
 		RequestSpecification requestSpec = RestAssured.given().body("body").port(tomcat.getPort());
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
@@ -171,7 +171,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void objectBody() {
+	void objectBody() {
 		RequestSpecification requestSpec = RestAssured.given().body(new ObjectBody("bar")).port(tomcat.getPort());
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
@@ -179,7 +179,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void byteArrayInputStreamBody() {
+	void byteArrayInputStreamBody() {
 		RequestSpecification requestSpec = RestAssured.given()
 			.body(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }))
 			.port(tomcat.getPort());
@@ -189,7 +189,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void fileBody() {
+	void fileBody() {
 		RequestSpecification requestSpec = RestAssured.given()
 			.body(new File("src/test/resources/body.txt"))
 			.port(tomcat.getPort());
@@ -199,7 +199,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void fileInputStreamBody() throws FileNotFoundException {
+	void fileInputStreamBody() throws FileNotFoundException {
 		FileInputStream inputStream = new FileInputStream("src/test/resources/body.txt");
 		RequestSpecification requestSpec = RestAssured.given().body(inputStream).port(tomcat.getPort());
 		requestSpec.post();
@@ -209,7 +209,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void multipartWithByteArrayInputStreamBody() {
+	void multipartWithByteArrayInputStreamBody() {
 		RequestSpecification requestSpec = RestAssured.given()
 			.port(tomcat.getPort())
 			.multiPart("foo", "foo.txt", new ByteArrayInputStream("foo".getBytes()));
@@ -219,7 +219,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void multipartWithStringBody() {
+	void multipartWithStringBody() {
 		RequestSpecification requestSpec = RestAssured.given().port(tomcat.getPort()).multiPart("control", "foo");
 		requestSpec.post();
 		OperationRequest request = this.factory.convert((FilterableRequestSpecification) requestSpec);
@@ -227,7 +227,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void multipartWithByteArrayBody() {
+	void multipartWithByteArrayBody() {
 		RequestSpecification requestSpec = RestAssured.given()
 			.port(tomcat.getPort())
 			.multiPart("control", "file", "foo".getBytes());
@@ -237,7 +237,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void multipartWithFileBody() {
+	void multipartWithFileBody() {
 		RequestSpecification requestSpec = RestAssured.given()
 			.port(tomcat.getPort())
 			.multiPart(new File("src/test/resources/body.txt"));
@@ -247,7 +247,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void multipartWithFileInputStreamBody() throws FileNotFoundException {
+	void multipartWithFileInputStreamBody() throws FileNotFoundException {
 		FileInputStream inputStream = new FileInputStream("src/test/resources/body.txt");
 		RequestSpecification requestSpec = RestAssured.given()
 			.port(tomcat.getPort())
@@ -259,7 +259,7 @@ public class RestAssuredRequestConverterTests {
 	}
 
 	@Test
-	public void multipartWithObjectBody() {
+	void multipartWithObjectBody() {
 		RequestSpecification requestSpec = RestAssured.given()
 			.port(tomcat.getPort())
 			.multiPart("control", new ObjectBody("bar"));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2024 the original author or authors.
+ * Copyright 2014-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,10 @@ import java.util.regex.Pattern;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.assertj.core.api.Condition;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -47,7 +46,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentationIntegrationTests.TestConfiguration;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
@@ -56,7 +56,7 @@ import org.springframework.restdocs.testfixtures.SnippetConditions.CodeBlockCond
 import org.springframework.restdocs.testfixtures.SnippetConditions.HttpRequestCondition;
 import org.springframework.restdocs.testfixtures.SnippetConditions.HttpResponseCondition;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -106,29 +106,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Tomasz Kopczynski
  * @author Filip Hrisafov
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@SpringJUnitConfig
 @WebAppConfiguration
+@ExtendWith(RestDocumentationExtension.class)
 @ContextConfiguration(classes = TestConfiguration.class)
 public class MockMvcRestDocumentationIntegrationTests {
 
-	@Rule
-	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+	private RestDocumentationContextProvider restDocumentation;
 
 	@Autowired
 	private WebApplicationContext context;
 
-	@Before
-	public void deleteSnippets() {
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
+		this.restDocumentation = restDocumentation;
 		FileSystemUtils.deleteRecursively(new File("build/generated-snippets"));
 	}
 
-	@After
-	public void clearOutputDirSystemProperty() {
+	@AfterEach
+	void clearOutputDirSystemProperty() {
 		System.clearProperty("org.springframework.restdocs.outputDir");
 	}
 
 	@Test
-	public void basicSnippetGeneration() throws Exception {
+	void basicSnippetGeneration() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(new MockMvcRestDocumentationConfigurer(this.restDocumentation).snippets().withEncoding("UTF-8"))
 			.build();
@@ -140,7 +141,19 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void markdownSnippetGeneration() throws Exception {
+	void getRequestWithBody() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+			.apply(new MockMvcRestDocumentationConfigurer(this.restDocumentation).snippets().withEncoding("UTF-8"))
+			.build();
+		mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON).content("some body content"))
+			.andExpect(status().isOk())
+			.andDo(document("get-request-with-body"));
+		assertExpectedSnippetFilesExist(new File("build/generated-snippets/get-request-with-body"), "http-request.adoc",
+				"http-response.adoc", "curl-request.adoc");
+	}
+
+	@Test
+	void markdownSnippetGeneration() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(new MockMvcRestDocumentationConfigurer(this.restDocumentation).snippets()
 				.withEncoding("UTF-8")
@@ -154,7 +167,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithContent() throws Exception {
+	void curlSnippetWithContent() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -168,7 +181,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithCookies() throws Exception {
+	void curlSnippetWithCookies() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -182,7 +195,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithQueryStringOnPost() throws Exception {
+	void curlSnippetWithQueryStringOnPost() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -196,7 +209,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithEmptyParameterQueryString() throws Exception {
+	void curlSnippetWithEmptyParameterQueryString() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -210,7 +223,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void curlSnippetWithContentAndParametersOnPost() throws Exception {
+	void curlSnippetWithContentAndParametersOnPost() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -224,7 +237,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void httpieSnippetWithContent() throws Exception {
+	void httpieSnippetWithContent() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -237,7 +250,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void httpieSnippetWithCookies() throws Exception {
+	void httpieSnippetWithCookies() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -251,7 +264,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void httpieSnippetWithQueryStringOnPost() throws Exception {
+	void httpieSnippetWithQueryStringOnPost() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -265,7 +278,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void httpieSnippetWithContentAndParametersOnPost() throws Exception {
+	void httpieSnippetWithContentAndParametersOnPost() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -280,7 +293,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void linksSnippet() throws Exception {
+	void linksSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -293,7 +306,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void pathParametersSnippet() throws Exception {
+	void pathParametersSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -305,7 +318,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void queryParametersSnippet() throws Exception {
+	void queryParametersSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -317,7 +330,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void requestFieldsSnippet() throws Exception {
+	void requestFieldsSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -329,7 +342,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void requestPartsSnippet() throws Exception {
+	void requestPartsSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -341,7 +354,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void responseFieldsSnippet() throws Exception {
+	void responseFieldsSnippet() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -354,7 +367,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void responseWithSetCookie() throws Exception {
+	void responseWithSetCookie() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -368,7 +381,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void parameterizedOutputDirectory() throws Exception {
+	void parameterizedOutputDirectory() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -380,7 +393,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void multiStep() throws Exception {
+	void multiStep() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.alwaysDo(document("{method-name}-{step}"))
@@ -398,7 +411,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void alwaysDoWithAdditionalSnippets() throws Exception {
+	void alwaysDoWithAdditionalSnippets() throws Exception {
 		RestDocumentationResultHandler documentation = document("{method-name}-{step}");
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
@@ -412,7 +425,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void preprocessedRequest() throws Exception {
+	void preprocessedRequest() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -455,7 +468,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void defaultPreprocessedRequest() throws Exception {
+	void defaultPreprocessedRequest() throws Exception {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors()
@@ -486,7 +499,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void preprocessedResponse() throws Exception {
+	void preprocessedResponse() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -515,7 +528,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void defaultPreprocessedResponse() throws Exception {
+	void defaultPreprocessedResponse() throws Exception {
 		Pattern pattern = Pattern.compile("(\"alpha\")");
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation).operationPreprocessors()
@@ -537,7 +550,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void customSnippetTemplate() throws Exception {
+	void customSnippetTemplate() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -559,7 +572,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void customContextPath() throws Exception {
+	void customContextPath() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
@@ -573,7 +586,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void exceptionShouldBeThrownWhenCallDocumentMockMvcNotConfigured() {
+	void exceptionShouldBeThrownWhenCallDocumentMockMvcNotConfigured() {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 		assertThatThrownBy(() -> mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON)).andDo(document("basic")))
 			.isInstanceOf(IllegalStateException.class)
@@ -583,7 +596,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void exceptionShouldBeThrownWhenCallDocumentSnippetsMockMvcNotConfigured() {
+	void exceptionShouldBeThrownWhenCallDocumentSnippetsMockMvcNotConfigured() {
 		RestDocumentationResultHandler documentation = document("{method-name}-{step}");
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 		assertThatThrownBy(() -> mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
@@ -594,7 +607,7 @@ public class MockMvcRestDocumentationIntegrationTests {
 	}
 
 	@Test
-	public void multiPart() throws Exception {
+	void multiPart() throws Exception {
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(this.restDocumentation))
 			.build();
