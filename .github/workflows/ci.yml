@@ -22,11 +22,9 @@ jobs:
           - version: 17
             toolchain: false
           - version: 21
-            toolchain: true
-          - version: 22
-            toolchain: true
-          - version: 23
-            toolchain: true
+            toolchain: false
+          - version: 24
+            toolchain: false
         exclude:
           - os:
               name: Linux
