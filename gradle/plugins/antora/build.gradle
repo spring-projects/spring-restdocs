@@ -1,0 +1,26 @@
+plugins {
+	id "java-gradle-plugin"
+}
+
+repositories {
+	gradlePluginPortal()
+	mavenCentral()
+}
+
+dependencies {
+	implementation(platform("com.fasterxml.jackson:jackson-bom:2.20.1"))
+	implementation("com.fasterxml.jackson.core:jackson-databind")
+	implementation("com.github.node-gradle:gradle-node-plugin:7.1.0")
+	implementation("io.spring.gradle.antora:spring-antora-plugin:0.0.1")
+	implementation("org.yaml:snakeyaml:2.5")
+	implementation("org.antora:gradle-antora-plugin:1.0.0")
+}
+
+gradlePlugin {
+	plugins {
+		antora {
+			id = "org.springframework.restdocs.antora"
+			implementationClass = "org.springframework.restdocs.build.antora.AntoraPlugin"
+		}
+	}
+}

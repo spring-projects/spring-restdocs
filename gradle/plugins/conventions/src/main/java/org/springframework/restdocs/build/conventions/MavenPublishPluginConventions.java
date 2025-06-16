@@ -17,7 +17,6 @@
 package org.springframework.restdocs.build.conventions;
 
 import org.gradle.api.Project;
-import org.gradle.api.component.SoftwareComponent;
 import org.gradle.api.plugins.JavaPlatformPlugin;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
@@ -28,6 +27,7 @@ import org.gradle.api.publish.tasks.GenerateModuleMetadata;
 import org.gradle.api.tasks.javadoc.Javadoc;
 import org.gradle.external.javadoc.JavadocMemberLevel;
 import org.gradle.external.javadoc.StandardJavadocDocletOptions;
+import org.gradle.jvm.tasks.Jar;
 
 /**
  * Conventions for when the {@link MavenPublishPlugin} is applied.
@@ -54,10 +54,16 @@ class MavenPublishPluginConventions extends Conventions<MavenPublishPlugin> {
 		configurePom(maven);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void configureContents(MavenPublication maven) {
 		getProject().getPlugins().withType(JavaPlugin.class).configureEach((javaPlugin) -> {
-			SoftwareComponent java = getProject().getComponents().getByName("java");
-			maven.from(java);
+			getProject().afterEvaluate((evaluated) -> {
+				if (((Jar) evaluated.getTasks().getByName(JavaPlugin.JAR_TASK_NAME)).isEnabled()) {
+					evaluated.getComponents()
+						.matching((component) -> component.getName().equals("java"))
+						.all(maven::from);
+				}
+			});
 			maven.versionMapping((versionMapping) -> {
 				versionMapping.usage("java-api", (strategy) -> strategy.fromResolutionResult());
 				versionMapping.usage("java-runtime", (strategy) -> strategy.fromResolutionResult());

@@ -1,0 +1,152 @@
+[[configuration]]
+= Configuration
+
+This section covers how to configure Spring REST Docs.
+
+
+
+[[configuration.uris]]
+== Documented URIs
+
+This section covers configuring documented URIs.
+
+
+
+[[configuration.uris.mockmvc]]
+=== MockMvc URI Customization
+
+When using MockMvc, the default configuration for URIs documented by Spring REST Docs is as follows:
+
+|===
+|Setting |Default
+
+|Scheme
+|`http`
+
+|Host
+|`localhost`
+
+|Port
+|`8080`
+|===
+
+This configuration is applied by `MockMvcRestDocumentationConfigurer`.
+You can use its API to change one or more of the defaults to suit your needs.
+The following example shows how to do so:
+
+include-code::CustomUriConfiguration[]
+
+NOTE: If the port is set to the default for the configured scheme (port 80 for HTTP or port 443 for HTTPS), it is omitted from any URIs in the generated snippets.
+
+TIP: To configure a request's context path, use the `contextPath` method on `MockHttpServletRequestBuilder`.
+
+
+
+[[configuration.uris.webtestclient]]
+=== WebTestClient URI Customization
+
+When using WebTestClient, the default base for URIs documented by Spring REST Docs is `http://localhost:8080`.
+You can customize this base by using the {spring-framework-api}/org/springframework/test/web/reactive/server/WebTestClient.Builder.html#baseUrl-java.lang.String-[ `baseUrl(String)` method on `WebTestClient.Builder`].
+The following example shows how to do so:
+
+include-code::CustomUriConfiguration[]
+
+<1> Configure the base of documented URIs to be `https://api.example.com`.
+
+
+
+[[configuration.snippet-encoding]]
+== Snippet Encoding
+
+The default snippet encoding is `UTF-8`.
+You can change the default snippet encoding by using the `RestDocumentationConfigurer` API.
+For example, the following examples use `ISO-8859-1`:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/CustomEncoding[]
+
+WebTestClient::
++
+include-code::webtestclient/CustomEncoding[]
+====
+
+TIP: When Spring REST Docs converts the content of a request or a response to a `String`, the `charset` specified in the `Content-Type` header is used if it is available.
+In its absence, the JVM's default `Charset` is used.
+You can configure the JVM's default `Charset` by using the `file.encoding` system property.
+
+
+
+[[configuration.snippet-template-format]]
+== Snippet Template Format
+
+The default snippet template format is Asciidoctor.
+Markdown is also supported out of the box.
+You can change the default format by using the `RestDocumentationConfigurer` API.
+The following examples show how to do so:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/CustomFormat[]
+
+WebTestClient::
++
+include-code::webtestclient/CustomFormat[]
+====
+
+
+
+[[configuration.default-snippets]]
+== Default Snippets
+
+Six snippets are produced by default:
+
+* `curl-request`
+* `http-request`
+* `http-response`
+* `httpie-request`
+* `request-body`
+* `response-body`
+
+You can change the default snippet configuration during setup by using the `RestDocumentationConfigurer` API.
+The following examples produce only the `curl-request` snippet by default:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/CustomDefaultSnippets[]
+
+WebTestClient::
++
+include-code::webtestclient/CustomDefaultSnippets[]
+====
+
+
+
+[[configuration.default-preprocessors]]
+== Default Operation Preprocessors
+
+You can configure default request and response preprocessors during setup by using the `RestDocumentationConfigurer` API.
+The following examples remove the `Foo` headers from all requests and pretty print all responses:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/CustomDefaultOperationPreprocessors[]
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
+
+WebTestClient::
++
+include-code::webtestclient/CustomDefaultOperationPreprocessors[]
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
+====
+
+

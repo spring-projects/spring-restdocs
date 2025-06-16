@@ -13,6 +13,7 @@ pluginManagement {
 	}
 }
 
+include "antora"
 include "conventions"
 include "optional-dependencies"
 include "toolchain"

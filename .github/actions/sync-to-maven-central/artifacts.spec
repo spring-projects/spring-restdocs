@@ -8,7 +8,7 @@
               "@build.name": "${buildName}",
               "@build.number": "${buildNumber}",
               "path": {
-                "$nmatch": "org/springframework/restdocs/spring-restdocs/*"
+                "$nmatch": "org/springframework/restdocs/spring-restdocs-docs/*"
               }
             }
           ]

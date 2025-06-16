@@ -1,0 +1,134 @@
+plugins {
+	id "java"
+	id "maven-publish"
+	id "org.springframework.restdocs.antora"
+	id "org.springframework.restdocs.conventions"
+}
+
+jar {
+	enabled = false
+}
+
+javadoc {
+	enabled = false
+}
+
+javadocJar {
+	enabled = false
+}
+
+sourcesJar {
+	enabled = false
+}
+
+configurations {
+	javadoc {
+		canBeConsumed = true
+		canBeResolved = false
+		attributes {
+			attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
+			attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EMBEDDED))
+			attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.JAVADOC))
+		}
+	}
+	javadocSource {
+		transitive = false
+		canBeConsumed = false
+		canBeResolved = true
+		attributes {
+			attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.VERIFICATION))
+			attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.SOURCES))
+			attribute(VerificationType.VERIFICATION_TYPE_ATTRIBUTE, objects.named(VerificationType.class, VerificationType.MAIN_SOURCES))
+		}
+		extendsFrom configurations.javadoc
+	}
+	javadocClasspath {
+		canBeConsumed = false
+		canBeResolved = true
+		attributes {
+			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+		}
+		extendsFrom configurations.javadoc
+	}
+}
+
+def aggregatedJavadoc = tasks.register('aggregatedJavadoc', Javadoc) {
+	// dependsOn configurations.resolvedBom
+	destinationDir = project.file(project.layout.buildDirectory.dir("docs/javadoc"))
+	source = configurations.javadocSource
+	classpath = configurations.javadocClasspath
+	include("**/*.java")
+	options {
+		author = true
+		docTitle = "Spring REST Docs ${project.version} API"
+		memberLevel = "protected"
+		outputLevel = "quiet"
+		splitIndex = true
+		use = true
+		windowTitle = "Spring REST Docs ${project.version} API"
+	}
+	// doFirst(new ConfigureJavadocLinks(configurations.resolvedBom, ["Spring Framework", "Spring Security", "Tomcat"]))
+}
+
+project.rootProject.gradle.projectsEvaluated {
+	rootProject.subprojects
+		.findAll { it != project }
+		.findAll { it.plugins.hasPlugin(JavaPlugin) && it.plugins.hasPlugin(MavenPublishPlugin) }
+		.each { javadocProject ->
+			dependencies {
+				javadoc(project(javadocProject.path))
+				javadocProject.plugins.withId("org.springframework.restdocs.optional-dependencies") {
+					javadoc(project(path: javadocProject.path, configuration: 'optional'))
+				}
+			}
+		}
+}
+
+dependencies {
+	javadoc(platform(project(":spring-restdocs-platform")))
+	testImplementation(project(":spring-restdocs-mockmvc"))
+	testImplementation(project(":spring-restdocs-webtestclient"))
+
+	testImplementation("jakarta.servlet:jakarta.servlet-api")
+	testImplementation("jakarta.validation:jakarta.validation-api")
+	testImplementation("org.testng:testng:6.9.10")
+
+	testImplementation(testFixtures(project(":spring-restdocs-core")))
+}
+
+def zipRootAggregateContent = tasks.register("zipRootAggregateContent", Zip) {
+	from("src/test") {
+		into "modules/ROOT/examples"
+	}
+	from(tasks.getByName("generateAntoraYml")) {
+		into "modules"
+	}
+	destinationDirectory = layout.buildDirectory.dir("generated/docs/antora-content")
+	archiveClassifier = "%s-%s-content".formatted("root", "aggregate")
+}
+
+def zipApiCatalogContent = tasks.register("zipApiCatalogContent", Zip) {
+	from(aggregatedJavadoc) {
+		into "java"
+	}
+	destinationDirectory = layout.buildDirectory.dir("generated/docs/antora-content")
+	archiveClassifier = "%s-%s-content".formatted("api", "catalog")
+}
+
+tasks.named("antora") {
+	inputs.files(zipApiCatalogContent).withPathSensitivity(PathSensitivity.RELATIVE).withPropertyName(zipApiCatalogContent.name);
+	inputs.files(zipRootAggregateContent).withPathSensitivity(PathSensitivity.RELATIVE).withPropertyName(zipRootAggregateContent.name);
+}
+
+tasks.named("test") {
+	enabled = false
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			artifact zipApiCatalogContent
+			artifact zipRootAggregateContent
+		}
+	}
+}

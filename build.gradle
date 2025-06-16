@@ -39,27 +39,3 @@ task api (type: Javadoc) {
 		}
 	}
 }
-
-task docsZip(type: Zip, dependsOn: [":docs:asciidoctor", ":api"]) {
-	group = "Distribution"
-	archiveBaseName = "spring-restdocs"
-	archiveClassifier = "docs"
-	description = "Builds -${archiveClassifier} archive containing API and reference documentation"
-	destinationDirectory = file("${project.buildDir}/distributions")
-
-	from(project.tasks.findByPath(":docs:asciidoctor")) {
-		into "reference/htmlsingle"
-	}
-
-	from(api) {
-		into "api"
-	}
-}
-
-publishing {
-	publications {
-		maven(MavenPublication) {
-			artifact docsZip
-		}
-	}
-}
