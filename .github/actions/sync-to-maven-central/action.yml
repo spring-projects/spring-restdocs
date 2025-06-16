@@ -26,14 +26,8 @@ runs:
     - name: Sync
       uses: spring-io/central-publish-action@0cdd90d12e6876341e82860d951e1bcddc1e51b6 # v0.2.0
       with:
-        close: true
-        create: true
-        generate-checksums: true
-        password: ${{ inputs.ossrh-s01-token-password }}
-        release: true
-        staging-profile-name: ${{ inputs.ossrh-s01-staging-profile }}
-        upload: true
-        username: ${{ inputs.ossrh-s01-token-username }}
+        token: ${{ inputs.central-token-password }}
+        token-name: ${{ inputs.central-token-username }}
     - name: Await
       uses: ./.github/actions/await-http-resource
       with:
