@@ -5,7 +5,7 @@ This section provides more details about using Spring REST Docs to document your
 
 
 
-[[documenting-your-api-null-safety]]
+[[documenting-your-api.null-safety]]
 === Null Safety
 Spring REST Docs is annotated with https://jspecify.dev/docs/start-here/[JSpecify ] annotations to declare the nullability of its API.
 To learn more about JSpecify, its https://jspecify.dev/docs/user-guide/[user guide] is recommended reading.
@@ -19,7 +19,7 @@ To learn more about null safety with Spring, refer to the {spring-framework-docs
 
 
 
-[[documenting-your-api-hypermedia]]
+[[documenting-your-api.hypermedia]]
 === Hypermedia
 
 Spring REST Docs provides support for documenting the links in a https://en.wikipedia.org/wiki/HATEOAS[hypermedia-based] API.
@@ -64,7 +64,7 @@ This can be useful when documenting a particular scenario where you only want to
 
 
 
-[[documenting-your-api-hypermedia-link-formats]]
+[[documenting-your-api.hypermedia.link-formats]]
 ==== Hypermedia Link Formats
 
 Two link formats are understood by default:
@@ -97,11 +97,11 @@ If your API represents its links in a format other than Atom or HAL, you can pro
 
 
 
-[[documenting-your-api-hypermedia-ignoring-common-links]]
+[[documenting-your-api.hypermedia.ignoring-common-links]]
 ==== Ignoring Common Links
 
 Rather than documenting links that are common to every response, such as `self` and `curies` when using HAL, you may want to document them once in an overview section and then ignore them in the rest of your API's documentation.
-To do so, you can build on the <<documenting-your-api-reusing-snippets,support for reusing snippets>> to add link descriptors to a snippet that is preconfigured to ignore certain links.
+To do so, you can build on the <<documenting-your-api.reusing-snippets,support for reusing snippets>> to add link descriptors to a snippet that is preconfigured to ignore certain links.
 The following example shows how to do so:
 
 [source,java,indent=0]
@@ -111,17 +111,17 @@ include::{examples-dir}/com/example/Hypermedia.java[tags=ignore-links]
 
 
 
-[[documenting-your-api-request-response-payloads]]
+[[documenting-your-api.request-response-payloads]]
 === Request and Response Payloads
 
-In addition to the hypermedia-specific support <<documenting-your-api-hypermedia,described earlier>>, support for general documentation of request and response payloads is also provided.
+In addition to the hypermedia-specific support <<documenting-your-api.hypermedia,described earlier>>, support for general documentation of request and response payloads is also provided.
 
 By default, Spring REST Docs automatically generates snippets for the body of the request and the body of the response.
 These snippets are named `request-body.adoc` and `response-body.adoc` respectively.
 
 
 
-[[documenting-your-api-request-response-payloads-fields]]
+[[documenting-your-api.request-response-payloads.fields]]
 ==== Request and Response Fields
 
 To provide more detailed documentation of a request or response payload, support for documenting the payload's fields is provided.
@@ -194,7 +194,7 @@ Uses the static `subsectionWithPath` method on `org.springframework.restdocs.pay
 
 `subsectionWithPath` can be useful for providing a high-level overview of a particular section of a payload.
 You can then produce separate, more detailed documentation for a subsection.
-See <<documenting-your-api-request-response-payloads-subsections>>.
+See <<documenting-your-api.request-response-payloads.subsections>>.
 
 If you do not want to document a field or subsection at all, you can mark it as ignored.
 This prevents it from appearing in the generated snippet while avoiding the failure described earlier.
@@ -208,14 +208,14 @@ If you want to document an XML payload, the content type of the request or respo
 
 
 
-[[documenting-your-api-request-response-payloads-fields-json]]
+[[documenting-your-api.request-response-payloads.fields.json]]
 ===== Fields in JSON Payloads
 
 This section describes how to work with fields in JSON payloads.
 
 
 
-[[documenting-your-api-request-response-payloads-fields-json-field-paths]]
+[[documenting-your-api.request-response-payloads.fields.json.field-paths]]
 ====== JSON Field Paths
 
 JSON field paths use either dot notation or bracket notation.
@@ -320,7 +320,7 @@ For example, `users.*.role` could be used to document the role of every user in 
 
 
 
-[[documenting-your-api-request-response-payloads-fields-json-field-types]]
+[[documenting-your-api.request-response-payloads.fields.json.field-types]]
 ====== JSON Field Types
 
 When a field is documented, Spring REST Docs tries to determine its type by examining the payload.
@@ -373,14 +373,14 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=explicit-typ
 
 
 
-[[documenting-your-api-request-response-payloads-fields-xml]]
+[[documenting-your-api.request-response-payloads.fields.xml]]
 ===== XML payloads
 
 This section describes how to work with XML payloads.
 
 
 
-[[documenting-your-api-request-response-payloads-fields-xml-field-paths]]
+[[documenting-your-api.request-response-payloads.fields.xml.field-paths]]
 ====== XML Field Paths
 
 XML field paths are described using XPath.
@@ -388,7 +388,7 @@ XML field paths are described using XPath.
 
 
 
-[[documenting-your-api-request-response-payloads-fields-xml-field-types]]
+[[documenting-your-api.request-response-payloads.fields.xml.field-types]]
 ====== XML Field Types
 
 When documenting an XML payload, you must provide a type for the field by using the `type(Object)` method on `FieldDescriptor`.
@@ -396,10 +396,10 @@ The result of the supplied type's `toString` method is used in the documentation
 
 
 
-[[documenting-your-api-request-response-payloads-fields-reusing-field-descriptors]]
+[[documenting-your-api.request-response-payloads.fields.reusing-field-descriptors]]
 ===== Reusing Field Descriptors
 
-In addition to the general support for <<documenting-your-api-reusing-snippets,reusing snippets>>, the request and response snippets let additional descriptors be configured with a path prefix.
+In addition to the general support for <<documenting-your-api.reusing-snippets,reusing snippets>>, the request and response snippets let additional descriptors be configured with a path prefix.
 This lets the descriptors for a repeated portion of a request or response payload be created once and then reused.
 
 Consider an endpoint that returns a book:
@@ -474,7 +474,7 @@ include::{examples-dir}/com/example/webtestclient/Payload.java[tags=book-array]
 
 
 
-[[documenting-your-api-request-response-payloads-subsections]]
+[[documenting-your-api.request-response-payloads.subsections]]
 ==== Documenting a Subsection of a Request or Response Payload
 
 If a payload is large or structurally complex, it can be useful to document individual sections of the payload.
@@ -482,7 +482,7 @@ REST Docs let you do so by extracting a subsection of the payload and then docum
 
 
 
-[[documenting-your-api-request-response-payloads-subsections-body]]
+[[documenting-your-api.request-response-payloads.subsections.body]]
 ===== Documenting a Subsection of a Request or Response Body
 
 Consider the following JSON response body:
@@ -549,7 +549,7 @@ The result is a snippet named `request-body-temp.adoc`.
 
 
 
-[[documenting-your-api-request-response-payloads-subsections-fields]]
+[[documenting-your-api.request-response-payloads.subsections.fields]]
 ===== Documenting the Fields of a Subsection of a Request or Response
 
 As well as documenting a subsection of a request or response body, you can also document the fields in a particular subsection.
@@ -580,7 +580,7 @@ For example, the preceding code results in a snippet named `response-fields-bene
 
 
 
-[[documenting-your-api-query-parameters]]
+[[documenting-your-api.query-parameters]]
 === Query Parameters
 
 You can document a request's query parameters by using `queryParameters`.
@@ -624,7 +624,7 @@ This can be useful when documenting a particular scenario where you only want to
 
 
 
-[[documenting-your-api-form-parameters]]
+[[documenting-your-api.form-parameters]]
 === Form Parameters
 
 You can document a request's form parameters by using `formParameters`.
@@ -666,7 +666,7 @@ This can be useful when documenting a particular scenario where you only want to
 
 
 
-[[documenting-your-api-path-parameters]]
+[[documenting-your-api.path-parameters]]
 === Path Parameters
 
 You can document a request's path parameters by using `pathParameters`.
@@ -710,7 +710,7 @@ Doing so prevents it from appearing in the generated snippet while avoiding the 
 
 
 
-[[documenting-your-api-request-parts]]
+[[documenting-your-api.request-parts]]
 === Request Parts
 
 You can use `requestParts` to document the parts of a multipart request.
@@ -752,14 +752,14 @@ This prevents it from appearing in the generated snippet while avoiding the fail
 
 
 
-[[documenting-your-api-request-parts-payloads]]
+[[documenting-your-api.request-part-payloads]]
 === Request Part Payloads
 
-You can document the payload of a request part in much the same way as the <<documenting-your-api-request-response-payloads,payload of a request>>, with support for documenting a request part's body and its fields.
+You can document the payload of a request part in much the same way as the <<documenting-your-api.request-response-payloads,payload of a request>>, with support for documenting a request part's body and its fields.
 
 
 
-[[documenting-your-api-request-parts-payloads-body]]
+[[documenting-your-api.request-part-payloads.body]]
 ==== Documenting a Request Part's Body
 
 You can generate a snippet containing the body of a request part as follows:
@@ -785,7 +785,7 @@ For example, documenting a part named `metadata` produces a snippet named `reque
 
 
 
-[[documenting-your-api-request-parts-payloads-fields]]
+[[documenting-your-api.request-part-payloads.fields]]
 ==== Documenting a Request Part's Fields
 
 You can document a request part's fields in much the same way as the fields of a request or response, as follows:
@@ -825,11 +825,11 @@ You can also document fields in a relaxed mode, where any undocumented fields do
 To do so, use the `relaxedRequestPartFields` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
 This can be useful when documenting a particular scenario where you only want to focus on a subset of the payload of the part.
 
-For further information on describing fields, documenting payloads that use XML, and more, see the <<documenting-your-api-request-response-payloads,section on documenting request and response payloads>>.
+For further information on describing fields, documenting payloads that use XML, and more, see the <<documenting-your-api.request-response-payloads,section on documenting request and response payloads>>.
 
 
 
-[[documenting-your-api-http-headers]]
+[[documenting-your-api.http-headers]]
 === HTTP Headers
 
 You can document the headers in a request or response by using `requestHeaders` and `responseHeaders`, respectively.
@@ -868,7 +868,7 @@ When documenting HTTP Headers, the test fails if a documented header is not foun
 
 
 
-[[documenting-your-api-http-cookies]]
+[[documenting-your-api.http-cookies]]
 === HTTP Cookies
 
 You can document the cookies in a request or response by using `requestCookies` and `responseCookies`, respectively.
@@ -913,7 +913,7 @@ Doing so prevents it from appearing in the generated snippet while avoiding the 
 
 
 
-[[documenting-your-api-reusing-snippets]]
+[[documenting-your-api.reusing-snippets]]
 === Reusing Snippets
 
 It is common for an API that is being documented to have some features that are common across several of its resources.
@@ -948,7 +948,7 @@ The result of the example is that links with `rel` values of `first`, `last`, `n
 
 
 
-[[documenting-your-api-constraints]]
+[[documenting-your-api.constraints]]
 === Documenting Constraints
 
 Spring REST Docs provides a number of classes that can help you to document constraints.
@@ -967,7 +967,7 @@ The {samples}/restful-notes-spring-hateoas/src/test/java/com/example/notes/ApiDo
 
 
 
-[[documenting-your-api-constraints-finding]]
+[[documenting-your-api.constraints.finding]]
 ==== Finding Constraints
 
 By default, constraints are found by using a Bean Validation `Validator`.
@@ -977,7 +977,7 @@ To take complete control of constraint resolution, you can use your own implemen
 
 
 
-[[documenting-your-api-constraints-describing]]
+[[documenting-your-api.constraints.describing]]
 ==== Describing Constraints
 
 Default descriptions are provided for all of Bean Validation 3.1's constraints:
@@ -1037,17 +1037,17 @@ To take more control of constraint description resolution, you can create `Const
 To take complete control, you can create `ConstraintDescriptions` with a custom `ConstraintDescriptionResolver` implementation.
 
 
-
+[[documenting-your-api.constraints.using-descriptions]]
 ==== Using Constraint Descriptions in Generated Snippets
 
 Once you have a constraint's descriptions, you are free to use them however you like in the generated snippets.
 For example, you may want to include the constraint descriptions as part of a field's description.
-Alternatively, you could include the constraints as <<documenting-your-api-customizing-including-extra-information, extra information>> in the request fields snippet.
+Alternatively, you could include the constraints as <<documenting-your-api.customizing.including-extra-information, extra information>> in the request fields snippet.
 The {samples}/restful-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`] class in the Spring HATEOAS-based sample illustrates the latter approach.
 
 
 
-[[documenting-your-api-default-snippets]]
+[[documenting-your-api.default-snippets]]
 === Default Snippets
 
 A number of snippets are produced automatically when you document a request and response.
@@ -1082,7 +1082,7 @@ See the <<configuration, configuration section>> for more information.
 
 
 
-[[documentating-your-api-parameterized-output-directories]]
+[[documenting-your-api.parameterized-output-directories]]
 === Using Parameterized Output Directories
 
 You can parameterize the output directory used by `document`.
@@ -1132,19 +1132,19 @@ include::{examples-dir}/com/example/mockmvc/ParameterizedOutput.java[tags=parame
 include::{examples-dir}/com/example/webtestclient/ParameterizedOutput.java[tags=parameterized-output]
 ----
 
-With this configuration in place, every call to the service you are testing produces the <<documenting-your-api-default-snippets,default snippets>> without any further configuration.
+With this configuration in place, every call to the service you are testing produces the <<documenting-your-api.default-snippets,default snippets>> without any further configuration.
 Take a look at the `GettingStartedDocumentation` classes in each of the sample applications to see this functionality in action.
 
 
 
-[[documenting-your-api-customizing]]
+[[documenting-your-api.customizing]]
 === Customizing the Output
 
 This section describes how to customize the output of Spring REST Docs.
 
 
 
-[[documenting-your-api-customizing-snippets]]
+[[documenting-your-api.customizing.snippets]]
 ==== Customizing the Generated Snippets
 
 Spring REST Docs uses https://mustache.github.io[Mustache] templates to produce the generated snippets.
@@ -1159,7 +1159,7 @@ For example, to override the template for the `curl-request.adoc` snippet, creat
 
 
 
-[[documenting-your-api-customizing-including-extra-information]]
+[[documenting-your-api.customizing.including-extra-information]]
 ==== Including Extra Information
 
 There are two ways to provide extra information for inclusion in a generated snippet:

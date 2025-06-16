@@ -64,19 +64,19 @@ See <<Preprocessors, below>> for further details.
 
 
 
-[[customizing-requests-and-responses-preprocessors]]
+[[customizing-requests-and-responses.preprocessors]]
 === Preprocessors
 
 
 
-[[customizing-requests-and-responses-preprocessors-pretty-print]]
+[[customizing-requests-and-responses.preprocessors.pretty-print]]
 ==== Pretty Printing
 
 `prettyPrint` on `Preprocessors` formats the content of the request or response to make it easier to read.
 
 
 
-[[customizing-requests-and-responses-preprocessors-mask-links]]
+[[customizing-requests-and-responses.preprocessors.mask-links]]
 ==== Masking Links
 
 If you are documenting a hypermedia-based API, you may want to encourage clients to navigate the API by using links rather than through the use of hard coded URIs.
@@ -86,14 +86,14 @@ You can also specify a different replacement if you wish.
 
 
 
-[[customizing-requests-and-responses-preprocessors-modify-headers]]
+[[customizing-requests-and-responses.preprocessors.modify-headers]]
 ==== Modifying Headers
 
 You can use `modifyHeaders` on `Preprocessors` to add, set, and remove request or response headers.
 
 
 
-[[customizing-requests-and-responses-preprocessors-replace-patterns]]
+[[customizing-requests-and-responses.preprocessors.replace-patterns]]
 ==== Replacing Patterns
 
 `replacePattern` on `Preprocessors` provides a general purpose mechanism for replacing content in a request or response.
@@ -101,17 +101,17 @@ Any occurrences that match a regular expression are replaced.
 
 
 
-[[customizing-requests-and-responses-preprocessors-modify-uris]]
+[[customizing-requests-and-responses.preprocessors.modify-uris]]
 ==== Modifying URIs
 
-TIP: If you use MockMvc or a WebTestClient that is not bound to a server, you should customize URIs by <<configuration-uris, changing the configuration>>.
+TIP: If you use MockMvc or a WebTestClient that is not bound to a server, you should customize URIs by <<configuration.uris, changing the configuration>>.
 
 You can use `modifyUris` on `Preprocessors` to modify any URIs in a request or a response.
 When using `WebTestClient` bound to a server, this lets you customize the URIs that appear in the documentation while testing a local instance of the service.
 
 
 
-[[customizing-requests-and-responses-preprocessors-writing-your-own]]
+[[customizing-requests-and-responses.preprocessors.writing-your-own]]
 ==== Writing Your Own Preprocessor
 
 If one of the built-in preprocessors does not meet your needs, you can write your own by implementing the `OperationPreprocessor` interface.

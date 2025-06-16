@@ -5,14 +5,14 @@ This section describes how to get started with Spring REST Docs.
 
 
 
-[[getting-started-sample-applications]]
+[[getting-started.sample-applications]]
 === Sample Applications
 
 If you want to jump straight in, a number of https://github.com/spring-projects/spring-restdocs-samples[sample applications are available].
 
 
 
-[[getting-started-requirements]]
+[[getting-started.requirements]]
 === Requirements
 
 Spring REST Docs has the following minimum requirements:
@@ -20,7 +20,9 @@ Spring REST Docs has the following minimum requirements:
 * Java 17
 * Spring Framework 7
 
-[[getting-started-build-configuration]]
+
+
+[[getting-started.build-configuration]]
 === Build configuration
 
 The first step in using Spring REST Docs is to configure your project's build.
@@ -70,7 +72,7 @@ The key parts of the configuration are described in the following listings:
 <1> Add a dependency on `spring-restdocs-mockmvc` in the `test` scope.
 If you want to use `WebTestClient` rather than MockMvc, add a dependency on `spring-restdocs-webtestclient` instead.
 <2> Add the Asciidoctor plugin.
-<3> Using `prepare-package` allows the documentation to be <<getting-started-build-configuration-packaging-the-documentation, included in the package>>.
+<3> Using `prepare-package` allows the documentation to be <<getting-started.build-configuration.packaging-the-documentation, included in the package>>.
 <4> Add `spring-restdocs-asciidoctor` as a dependency of the Asciidoctor plugin.
 This will automatically configure the `snippets` attribute for use in your `.adoc` files to point to `target/generated-snippets`.
 It will also allow you to use the `operation` block macro.
@@ -123,7 +125,7 @@ If you want to use `WebTestClient` rather than MockMvc, add a dependency on `spr
 
 
 
-[[getting-started-build-configuration-packaging-the-documentation]]
+[[getting-started.build-configuration.packaging-the-documentation]]
 ==== Packaging the Documentation
 
 You may want to package the generated documentation in your project's jar file -- for example, to have it {spring-boot-docs}/#boot-features-spring-mvc-static-content[served as static content] by Spring Boot.
@@ -187,7 +189,7 @@ If you are not using Spring Boot and its plugin management, declare the plugin w
 
 
 
-[[getting-started-documentation-snippets]]
+[[getting-started.documentation-snippets]]
 === Generating Documentation Snippets
 
 Spring REST Docs uses Spring MVC's {spring-framework-docs}/testing/mockmvc.html[test framework] or Spring WebFlux's {spring-framework-docs}/testing/webtestclient.html[`WebTestClient`] to make requests to the service that you are documenting.
@@ -195,7 +197,7 @@ It then produces documentation snippets for the request and the resulting respon
 
 
 
-[[getting-started-documentation-snippets-setup]]
+[[getting-started.documentation-snippets.setup]]
 ==== Setting up Your Tests
 
 Exactly how you set up your tests depends on the test framework that you use.
@@ -204,7 +206,7 @@ Other frameworks, such as TestNG, are also supported, although slightly more set
 
 
 
-[[getting-started-documentation-snippets-setup-junit]]
+[[getting-started.documentation-snippets.setup.junit]]
 ===== Setting up Your JUnit 6 Tests
 
 When using JUnit 6, the first step in generating documentation snippets is to apply the `RestDocumentationExtension` to your test class.
@@ -275,7 +277,7 @@ See the <<configuration, configuration section>> for more information.
 
 
 
-[[getting-started-documentation-snippets-setup-manual]]
+[[getting-started.documentation-snippets.setup.manual]]
 ===== Setting up your tests without JUnit
 
 The configuration when JUnit is not being used is a little more involved as the test class must perform some lifecycle management.
@@ -315,7 +317,7 @@ include::{examples-dir}/com/example/mockmvc/ExampleApplicationTestNgTests.java[t
 
 
 
-[[getting-started-documentation-snippets-invoking-the-service]]
+[[getting-started.documentation-snippets.invoking-the-service]]
 ==== Invoking the RESTful Service
 
 Now that you have configured the testing framework, you can use it to invoke the RESTful service and document the request and response.
@@ -356,7 +358,7 @@ See <<documenting-your-api>> for more information about these and other snippets
 
 
 
-[[getting-started-using-the-snippets]]
+[[getting-started.using-the-snippets]]
 === Using the Snippets
 
 Before using the generated snippets, you must create an `.adoc` source file.
@@ -378,7 +380,7 @@ The default location of the source files and the resulting HTML files depends on
 |===
 
 You can then include the generated snippets in the manually created Asciidoc file (described earlier in this section) by using the https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro].
-You can use the `snippets` attribute that is automatically set by `spring-restdocs-asciidoctor` configured in the <<getting-started-build-configuration,build configuration>> to reference the snippets output directory.
+You can use the `snippets` attribute that is automatically set by `spring-restdocs-asciidoctor` configured in the <<getting-started.build-configuration,build configuration>> to reference the snippets output directory.
 The following example shows how to do so:
 
 [source,adoc,indent=0]

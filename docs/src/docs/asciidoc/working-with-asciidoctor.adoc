@@ -8,7 +8,7 @@ Asciidoctor is the tool that produces content (usually as HTML) from Asciidoc fi
 
 
 
-[[working-with-asciidoctor-resources]]
+[[working-with-asciidoctor.resources]]
 === Resources
 
  * https://asciidoctor.org/docs/asciidoc-syntax-quick-reference[Syntax quick reference]
@@ -16,18 +16,18 @@ Asciidoctor is the tool that produces content (usually as HTML) from Asciidoc fi
 
 
 
-[[working-with-asciidoctor-including-snippets]]
+[[working-with-asciidoctor.including-snippets]]
 === Including Snippets
 
 This section covers how to include Asciidoc snippets.
 
 
 
-[[working-with-asciidoctor-including-snippets-operation]]
+[[working-with-asciidoctor.including-snippets.operation]]
 ==== Including Multiple Snippets for an Operation
 
 You can use a macro named `operation` to import all or some of the snippets that have been generated for a specific operation.
-It is made available by including `spring-restdocs-asciidoctor` in your project's <<getting-started-build-configuration, build configuration>>.
+It is made available by including `spring-restdocs-asciidoctor` in your project's <<getting-started.build-configuration, build configuration>>.
 `spring-restdocs-asciidoctor` requires AsciidoctorJ 3.0.
 
 The target of the macro is the name of the operation.
@@ -72,7 +72,7 @@ The preceding example is the equivalent of the following:
 
 
 
-[[working-with-asciidoctor-including-snippets-operation-titles]]
+[[working-with-asciidoctor.including-snippets.operation.titles]]
 ===== Section Titles
 
 For each snippet that is included by using the `operation` macro, a section with a title is created.
@@ -123,11 +123,11 @@ For example, to customize the title of the `curl-request` snippet to be "Example
 
 
 
-[[working-with-asciidoctor-including-snippets-individual]]
+[[working-with-asciidoctor.including-snippets.individual]]
 ==== Including Individual Snippets
 
 The https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files[include macro] is used to include individual snippets in your documentation.
-You can use the `snippets` attribute (which is automatically set by `spring-restdocs-asciidoctor` configured in the <<getting-started-build-configuration, build configuration>>) to reference the snippets output directory.
+You can use the `snippets` attribute (which is automatically set by `spring-restdocs-asciidoctor` configured in the <<getting-started.build-configuration, build configuration>>) to reference the snippets output directory.
 The following example shows how to do so:
 
 [source,indent=0]
@@ -137,7 +137,7 @@ The following example shows how to do so:
 
 
 
-[[working-with-asciidoctor-customizing-tables]]
+[[working-with-asciidoctor.customizing-tables]]
 === Customizing Tables
 
 Many of the snippets contain a table in its default configuration.
@@ -145,7 +145,7 @@ The appearance of the table can be customized, either by providing some addition
 
 
 
-[[working-with-asciidoctor-customizing-tables-formatting-columns]]
+[[working-with-asciidoctor.customizing-tables.formatting-columns]]
 ==== Formatting Columns
 
 Asciidoctor has rich support for https://asciidoctor.org/docs/user-manual/#cols-format[formatting a table's columns].
@@ -160,7 +160,7 @@ As the following example shows, you can specify the widths of a table's columns 
 
 
 
-[[working-with-asciidoctor-customizing-tables-title]]
+[[working-with-asciidoctor.customizing-tables.title]]
 ==== Configuring the Title
 
 You can specify the title of a table by using a line prefixed by a `.`.
@@ -175,7 +175,7 @@ The following example shows how to do so:
 
 
 
-[[working-with-asciidoctor-customizing-tables-formatting-problems]]
+[[working-with-asciidoctor.customizing-tables.formatting-problems]]
 ==== Avoiding Table Formatting Problems
 
 Asciidoctor uses the `|` character to delimit cells in a table.
@@ -191,7 +191,7 @@ The following example shows how to escape `|` characters in a cell that contains
 ----
 
 
-[[working-with-asciidoctor-further-reading]]
+[[working-with-asciidoctor.further-reading]]
 === Further Reading
 
 See the https://asciidoctor.org/docs/user-manual/#tables[Tables section of the Asciidoctor user manual] for more information about customizing tables.

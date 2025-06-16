@@ -9,6 +9,7 @@ configurations {
 }
 
 dependencies {
+	asciidoctorExt("io.spring.asciidoctor:spring-asciidoctor-extensions-section-ids:0.6.3")
 	asciidoctorExt("io.spring.asciidoctor.backends:spring-asciidoctor-backends:0.0.5")
 
 	testCompileOnly("org.hamcrest:hamcrest-core")

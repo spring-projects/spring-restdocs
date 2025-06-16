@@ -5,14 +5,14 @@ This section covers how to configure Spring REST Docs.
 
 
 
-[[configuration-uris]]
+[[configuration.uris]]
 === Documented URIs
 
 This section covers configuring documented URIs.
 
 
 
-[[configuration-uris-mockmvc]]
+[[configuration.uris.mockmvc]]
 ==== MockMvc URI Customization
 
 When using MockMvc, the default configuration for URIs documented by Spring REST Docs is as follows:
@@ -45,7 +45,18 @@ TIP: To configure a request's context path, use the `contextPath` method on `Moc
 
 
 
-[[configuration-uris-webtestclient]]
+[[configuration.uris.rest-assured]]
+==== REST Assured URI Customization
+
+REST Assured tests a service by making actual HTTP requests. As a result, URIs must be
+customized once the operation on the service has been performed but before it is
+documented. A
+<<customizing-requests-and-responses.preprocessors.modify-uris, REST-Assured-specific
+preprocessor>> is provided for this purpose.
+
+
+
+[[configuration.uris.webtestclient]]
 ==== WebTestClient URI Customization
 
 When using WebTestClient, the default base for URIs documented by Spring REST Docs is `http://localhost:8080`.
@@ -60,7 +71,7 @@ include::{examples-dir}/com/example/webtestclient/CustomUriConfiguration.java[ta
 
 
 
-[[configuration-snippet-encoding]]
+[[configuration.snippet-encoding]]
 === Snippet Encoding
 
 The default snippet encoding is `UTF-8`.
@@ -85,7 +96,7 @@ You can configure the JVM's default `Charset` by using the `file.encoding` syste
 
 
 
-[[configuration-snippet-template-format]]
+[[configuration.snippet-template-format]]
 === Snippet Template Format
 
 The default snippet template format is Asciidoctor.
@@ -107,7 +118,7 @@ include::{examples-dir}/com/example/webtestclient/CustomFormat.java[tags=custom-
 
 
 
-[[configuration-default-snippets]]
+[[configuration.default-snippets]]
 === Default Snippets
 
 Six snippets are produced by default:
@@ -136,7 +147,7 @@ include::{examples-dir}/com/example/webtestclient/CustomDefaultSnippets.java[tag
 
 
 
-[[configuration-default-preprocessors]]
+[[configuration.default-preprocessors]]
 === Default Operation Preprocessors
 
 You can configure default request and response preprocessors during setup by using the `RestDocumentationConfigurer` API.
