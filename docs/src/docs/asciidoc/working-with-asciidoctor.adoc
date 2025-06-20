@@ -38,8 +38,8 @@ In its simplest form, you can use the macro to include all of the snippets for a
 operation::index[]
 ----
 
-You can use the operation macro also supports a `snippets` attribute.
-The `snippets` attribute to select the snippets that should be included.
+The operation macro also supports a `snippets` attribute.
+You can use it to select the snippets that should be included.
 The attribute's value is a comma-separated list.
 Each entry in the list should be the name of a snippet file (minus the `.adoc` suffix) to include.
 For example, only the curl, HTTP request, and HTTP response snippets can be included, as shown in the following example:
