@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - v3.0.[0-9]+
+permissions:
+  contents: read
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 jobs:
@@ -69,6 +71,8 @@ jobs:
       - build-and-stage-release
       - promote-release
     runs-on: ${{ vars.UBUNTU_SMALL || 'ubuntu-latest' }}
+    permissions:
+      contents: write
     steps:
       - name: Check Out Code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
