@@ -23,6 +23,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Resolves the directory from which snippets can be read for inclusion in an Asciidoctor
  * document. The resolved directory is absolute.
@@ -40,7 +42,12 @@ class SnippetsDirectoryResolver {
 
 	private File getMavenSnippetsDirectory(Map<String, Object> attributes) {
 		Path docdir = Paths.get(getRequiredAttribute(attributes, "docdir"));
-		return new File(findPom(docdir).getParent().toFile(), "target/generated-snippets").getAbsoluteFile();
+		Path pom = findPom(docdir);
+		Path parent = pom.getParent();
+		if (parent == null) {
+			throw new IllegalStateException("Pom '" + pom + "' has no parent directory");
+		}
+		return new File(parent.toFile(), "target/generated-snippets").getAbsoluteFile();
 	}
 
 	private Path findPom(Path docdir) {
@@ -65,7 +72,8 @@ class SnippetsDirectoryResolver {
 		return getRequiredAttribute(attributes, name, null);
 	}
 
-	private String getRequiredAttribute(Map<String, Object> attributes, String name, Supplier<String> fallback) {
+	private String getRequiredAttribute(Map<String, Object> attributes, String name,
+			@Nullable Supplier<String> fallback) {
 		String attribute = (String) attributes.get(name);
 		if (attribute == null || attribute.length() == 0) {
 			if (fallback != null) {

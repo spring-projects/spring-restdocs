@@ -16,7 +16,10 @@
 
 package org.springframework.restdocs.payload;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.snippet.IgnorableDescriptor;
+import org.springframework.util.Assert;
 
 /**
  * A description of a field found in a request or response payload.
@@ -29,7 +32,7 @@ public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 
 	private final String path;
 
-	private Object type;
+	private @Nullable Object type;
 
 	private boolean optional;
 
@@ -39,6 +42,7 @@ public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 	 * @param path the path
 	 */
 	protected FieldDescriptor(String path) {
+		Assert.notNull(path, "Path must not be null");
 		this.path = path;
 	}
 
@@ -49,7 +53,7 @@ public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 	 * @return {@code this}
 	 * @see JsonFieldType
 	 */
-	public final FieldDescriptor type(Object type) {
+	public final FieldDescriptor type(@Nullable Object type) {
 		this.type = type;
 		return this;
 	}
@@ -75,7 +79,7 @@ public class FieldDescriptor extends IgnorableDescriptor<FieldDescriptor> {
 	 * Returns the type of the field described by this descriptor.
 	 * @return the type
 	 */
-	public final Object getType() {
+	public final @Nullable Object getType() {
 		return this.type;
 	}
 

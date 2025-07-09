@@ -19,6 +19,8 @@ package org.springframework.restdocs.payload;
 import java.io.IOException;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Snippet;
@@ -39,10 +41,12 @@ public class ResponseBodySnippet extends AbstractBodySnippet {
 
 	/**
 	 * Creates a new {@code ResponseBodySnippet} that will document the subsection of the
-	 * response body extracted by the given {@code subsectionExtractor}.
-	 * @param subsectionExtractor the subsection extractor
+	 * response body extracted by the given {@code subsectionExtractor}. If the extractor
+	 * is {@code null} the entire response body will be documented.
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the entire response body
 	 */
-	public ResponseBodySnippet(PayloadSubsectionExtractor<?> subsectionExtractor) {
+	public ResponseBodySnippet(@Nullable PayloadSubsectionExtractor<?> subsectionExtractor) {
 		this(subsectionExtractor, null);
 	}
 
@@ -51,19 +55,21 @@ public class ResponseBodySnippet extends AbstractBodySnippet {
 	 * {@code attributes} that will be included in the model during template rendering.
 	 * @param attributes the additional attributes
 	 */
-	public ResponseBodySnippet(Map<String, Object> attributes) {
+	public ResponseBodySnippet(@Nullable Map<String, Object> attributes) {
 		this(null, attributes);
 	}
 
 	/**
 	 * Creates a new {@code ResponseBodySnippet} that will document the subsection of the
-	 * response body extracted by the given {@code subsectionExtractor}. The given
-	 * additional {@code attributes} that will be included in the model during template
-	 * rendering.
-	 * @param subsectionExtractor the subsection extractor
+	 * response body extracted by the given {@code subsectionExtractor}. If the extractor
+	 * is {@code null} the entire response body will be documented. The given additional
+	 * {@code attributes} that will be included in the model during template rendering.
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the entire response body
 	 * @param attributes the additional attributes
 	 */
-	public ResponseBodySnippet(PayloadSubsectionExtractor<?> subsectionExtractor, Map<String, Object> attributes) {
+	public ResponseBodySnippet(@Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			@Nullable Map<String, Object> attributes) {
 		super("response", subsectionExtractor, attributes);
 	}
 
@@ -73,7 +79,7 @@ public class ResponseBodySnippet extends AbstractBodySnippet {
 	}
 
 	@Override
-	protected MediaType getContentType(Operation operation) {
+	protected @Nullable MediaType getContentType(Operation operation) {
 		return operation.getResponse().getHeaders().getContentType();
 	}
 

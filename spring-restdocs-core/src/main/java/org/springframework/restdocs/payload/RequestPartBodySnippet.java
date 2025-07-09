@@ -19,6 +19,8 @@ package org.springframework.restdocs.payload;
 import java.io.IOException;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequestPart;
@@ -46,37 +48,41 @@ public class RequestPartBodySnippet extends AbstractBodySnippet {
 	/**
 	 * Creates a new {@code RequestPartBodySnippet} that will document the subsection of
 	 * the body of the request part with the given {@code partName} extracted by the given
-	 * {@code subsectionExtractor}.
+	 * {@code subsectionExtractor}. If the extractor is {@code null} the entire body of
+	 * the request part will be documented.
 	 * @param partName the name of the request part
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor or {@code null} to document the
+	 * request part's entire body
 	 */
-	public RequestPartBodySnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor) {
+	public RequestPartBodySnippet(String partName, @Nullable PayloadSubsectionExtractor<?> subsectionExtractor) {
 		this(partName, subsectionExtractor, null);
 	}
 
 	/**
 	 * Creates a new {@code RequestPartBodySnippet} that will document the body of the
-	 * request part with the given {@code partName}. The given additional
+	 * request part with the given {@code partName}. If the extractor is {@code null} the
+	 * entire body of the request part will be documented. The given additional
 	 * {@code attributes} will be included in the model during template rendering.
 	 * @param partName the name of the request part
 	 * @param attributes the additional attributes
 	 */
-	public RequestPartBodySnippet(String partName, Map<String, Object> attributes) {
+	public RequestPartBodySnippet(String partName, @Nullable Map<String, Object> attributes) {
 		this(partName, null, attributes);
 	}
 
 	/**
-	 * Creates a new {@code RequestPartBodySnippet} that will document the body of the
-	 * request part with the given {@code partName}. The subsection of the body extracted
-	 * by the given {@code subsectionExtractor} will be documented and the given
-	 * additional {@code attributes} that will be included in the model during template
-	 * rendering.
+	 * Creates a new {@code RequestPartBodySnippet} that will document the subsection of
+	 * the body of the request part with the given {@code partName} extracted by the given
+	 * {@code subsectionExtractor}. If the extractor is {@code null} the entire body of
+	 * the request part will be documented. The given additional {@code attributes} will
+	 * be included in the model during template rendering.
 	 * @param partName the name of the request part
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor or {@code null} to document the
+	 * request part's entire body
 	 * @param attributes the additional attributes
 	 */
-	public RequestPartBodySnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
-			Map<String, Object> attributes) {
+	public RequestPartBodySnippet(String partName, @Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			@Nullable Map<String, Object> attributes) {
 		super("request-part-" + partName, "request-part", subsectionExtractor, attributes);
 		this.partName = partName;
 	}
@@ -87,7 +93,7 @@ public class RequestPartBodySnippet extends AbstractBodySnippet {
 	}
 
 	@Override
-	protected MediaType getContentType(Operation operation) {
+	protected @Nullable MediaType getContentType(Operation operation) {
 		return findPart(operation).getHeaders().getContentType();
 	}
 

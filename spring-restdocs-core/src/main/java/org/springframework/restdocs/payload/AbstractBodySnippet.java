@@ -21,6 +21,8 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.ModelCreationException;
@@ -35,20 +37,21 @@ import org.springframework.restdocs.snippet.TemplatedSnippet;
  */
 public abstract class AbstractBodySnippet extends TemplatedSnippet {
 
-	private final PayloadSubsectionExtractor<?> subsectionExtractor;
+	private final @Nullable PayloadSubsectionExtractor<?> subsectionExtractor;
 
 	/**
 	 * Creates a new {@code AbstractBodySnippet} that will produce a snippet named
 	 * {@code <type>-body} using a template named {@code <type>-body}. The snippet will
 	 * contain the subsection of the body extracted by the given
-	 * {@code subsectionExtractor}. The given {@code attributes} will be included in the
-	 * model during template rendering
+	 * {@code subsectionExtractor}. If the extractor is {@code null}, the snippet will
+	 * contain the entire body. The given {@code attributes} will be included in the model
+	 * during template rendering
 	 * @param type the type of the body
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 */
-	protected AbstractBodySnippet(String type, PayloadSubsectionExtractor<?> subsectionExtractor,
-			Map<String, Object> attributes) {
+	protected AbstractBodySnippet(String type, @Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			@Nullable Map<String, Object> attributes) {
 		this(type, type, subsectionExtractor, attributes);
 	}
 
@@ -56,15 +59,16 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 	 * Creates a new {@code AbstractBodySnippet} that will produce a snippet named
 	 * {@code <name>-body} using a template named {@code <type>-body}. The snippet will
 	 * contain the subsection of the body extracted by the given
-	 * {@code subsectionExtractor}. The given {@code attributes} will be included in the
-	 * model during template rendering
+	 * {@code subsectionExtractor}. If the extractor is {@code null}, the snippet will
+	 * contain the entire body. The given {@code attributes} will be included in the model
+	 * during template rendering
 	 * @param name the name of the snippet
 	 * @param type the type of the body
 	 * @param subsectionExtractor the subsection extractor
 	 * @param attributes the attributes
 	 */
-	protected AbstractBodySnippet(String name, String type, PayloadSubsectionExtractor<?> subsectionExtractor,
-			Map<String, Object> attributes) {
+	protected AbstractBodySnippet(String name, String type, @Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			@Nullable Map<String, Object> attributes) {
 		super(name + "-body" + ((subsectionExtractor != null) ? "-" + subsectionExtractor.getSubsectionId() : ""),
 				type + "-body", attributes);
 		this.subsectionExtractor = subsectionExtractor;
@@ -91,14 +95,14 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 		}
 	}
 
-	private String determineLanguage(MediaType contentType) {
+	private @Nullable String determineLanguage(@Nullable MediaType contentType) {
 		if (contentType == null) {
 			return null;
 		}
 		return (contentType.getSubtypeSuffix() != null) ? contentType.getSubtypeSuffix() : contentType.getSubtype();
 	}
 
-	private Charset extractCharset(MediaType contentType) {
+	private @Nullable Charset extractCharset(@Nullable MediaType contentType) {
 		if (contentType == null) {
 			return null;
 		}
@@ -120,6 +124,6 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 	 * @param operation the operation
 	 * @return the content type
 	 */
-	protected abstract MediaType getContentType(Operation operation);
+	protected abstract @Nullable MediaType getContentType(Operation operation);
 
 }

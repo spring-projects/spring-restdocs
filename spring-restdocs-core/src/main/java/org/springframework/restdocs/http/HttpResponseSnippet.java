@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.restdocs.operation.Operation;
@@ -50,7 +52,7 @@ public class HttpResponseSnippet extends TemplatedSnippet {
 	 * {@code attributes} that will be included in the model during template rendering.
 	 * @param attributes the additional attributes
 	 */
-	protected HttpResponseSnippet(Map<String, Object> attributes) {
+	protected HttpResponseSnippet(@Nullable Map<String, Object> attributes) {
 		super("http-response", attributes);
 	}
 

@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Attributes;
@@ -48,7 +50,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 
 	private final String type;
 
-	private final PayloadSubsectionExtractor<?> subsectionExtractor;
+	private final @Nullable PayloadSubsectionExtractor<?> subsectionExtractor;
 
 	/**
 	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
@@ -62,8 +64,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors, Map<String, Object> attributes,
-			boolean ignoreUndocumentedFields) {
+	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
+			@Nullable Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
 		this(type, type, descriptors, attributes, ignoreUndocumentedFields);
 	}
 
@@ -71,7 +73,8 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
 	 * {@code <type>-fields} using a template named {@code <type>-fields}. The fields in
 	 * the subsection of the payload extracted by the given {@code subsectionExtractor}
-	 * will be documented using the given {@code  descriptors} and the given
+	 * will be documented using the given {@code descriptors}. If the extractor is
+	 * {@code null}, the fields of the entire payload will be documented. The given
 	 * {@code attributes} will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
@@ -79,11 +82,13 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @param descriptors the field descriptors
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor or {@code null} to document the
+	 * fields of the entire payload
 	 * @since 1.2.0
 	 */
-	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors, Map<String, Object> attributes,
-			boolean ignoreUndocumentedFields, PayloadSubsectionExtractor<?> subsectionExtractor) {
+	protected AbstractFieldsSnippet(String type, List<FieldDescriptor> descriptors,
+			@Nullable Map<String, Object> attributes, boolean ignoreUndocumentedFields,
+			@Nullable PayloadSubsectionExtractor<?> subsectionExtractor) {
 		this(type, type, descriptors, attributes, ignoreUndocumentedFields, subsectionExtractor);
 	}
 
@@ -101,16 +106,17 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
 	protected AbstractFieldsSnippet(String name, String type, List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+			@Nullable Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
 		this(name, type, descriptors, attributes, ignoreUndocumentedFields, null);
 	}
 
 	/**
 	 * Creates a new {@code AbstractFieldsSnippet} that will produce a snippet named
 	 * {@code <name>-fields} using a template named {@code <type>-fields}. The fields in
-	 * the subsection of the payload identified by {@code subsectionPath} will be
-	 * documented using the given {@code  descriptors} and the given {@code attributes}
-	 * will be included in the model during template rendering. If
+	 * the subsection of the payload extracted by the given {@code subsectionExtractor}
+	 * will be documented using the given {@code descriptors}. If the extractor is
+	 * {@code null}, the fields of the entire payload will be documented. The given
+	 * {@code attributes} will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
 	 * @param name the name of the snippet
@@ -118,13 +124,13 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @param descriptors the field descriptors
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
-	 * @param subsectionExtractor the subsection extractor documented. {@code null} or an
-	 * empty string can be used to indicate that the entire payload should be documented.
+	 * @param subsectionExtractor the subsection extractor or {@code null} to document the
+	 * fields of the entire payload.
 	 * @since 1.2.0
 	 */
 	protected AbstractFieldsSnippet(String name, String type, List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedFields,
-			PayloadSubsectionExtractor<?> subsectionExtractor) {
+			@Nullable Map<String, Object> attributes, boolean ignoreUndocumentedFields,
+			@Nullable PayloadSubsectionExtractor<?> subsectionExtractor) {
 		super(name + "-fields" + ((subsectionExtractor != null) ? "-" + subsectionExtractor.getSubsectionId() : ""),
 				type + "-fields", attributes);
 		for (FieldDescriptor descriptor : descriptors) {
@@ -225,7 +231,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @param operation the operation
 	 * @return the content type
 	 */
-	protected abstract MediaType getContentType(Operation operation);
+	protected abstract @Nullable MediaType getContentType(Operation operation);
 
 	/**
 	 * Returns the content of the request or response extracted form the given
@@ -258,7 +264,7 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	 * @return the subsection extractor or {@code null}
 	 * @since 1.2.4
 	 */
-	protected final PayloadSubsectionExtractor<?> getSubsectionExtractor() {
+	protected final @Nullable PayloadSubsectionExtractor<?> getSubsectionExtractor() {
 		return this.subsectionExtractor;
 	}
 
@@ -270,7 +276,10 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 	protected Map<String, Object> createModelForDescriptor(FieldDescriptor descriptor) {
 		Map<String, Object> model = new HashMap<>();
 		model.put("path", descriptor.getPath());
-		model.put("type", descriptor.getType().toString());
+		Object type = descriptor.getType();
+		Assert.notNull(type,
+				() -> "Field with path '" + descriptor.getPath() + "' cannot be documented as its type is unknown");
+		model.put("type", type.toString());
 		model.put("description", descriptor.getDescription());
 		model.put("optional", descriptor.isOptional());
 		model.putAll(descriptor.getAttributes());

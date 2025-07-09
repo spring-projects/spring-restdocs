@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.operation;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -34,9 +36,9 @@ public interface OperationRequestPart {
 
 	/**
 	 * Returns the name of the file that is being uploaded in this part.
-	 * @return the name of the file
+	 * @return the name of the file, or {@code null} if the part has no file name
 	 */
-	String getSubmittedFileName();
+	@Nullable String getSubmittedFileName();
 
 	/**
 	 * Returns the contents of the part.

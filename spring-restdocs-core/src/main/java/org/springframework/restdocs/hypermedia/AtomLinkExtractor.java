@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -47,7 +49,7 @@ class AtomLinkExtractor extends AbstractJsonLinkExtractor {
 		return extractedLinks;
 	}
 
-	private static Link maybeCreateLink(Map<String, Object> linkMap) {
+	private static @Nullable Link maybeCreateLink(Map<String, Object> linkMap) {
 		Object hrefObject = linkMap.get("href");
 		Object relObject = linkMap.get("rel");
 		if (relObject instanceof String && hrefObject instanceof String) {
@@ -58,7 +60,7 @@ class AtomLinkExtractor extends AbstractJsonLinkExtractor {
 		return null;
 	}
 
-	private static void maybeStoreLink(Link link, MultiValueMap<String, Link> extractedLinks) {
+	private static void maybeStoreLink(@Nullable Link link, MultiValueMap<String, Link> extractedLinks) {
 		if (link != null) {
 			extractedLinks.add(link.getRel(), link);
 		}

@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -88,12 +90,12 @@ public final class MockMvcRestDocumentationConfigurer extends
 
 	private final class ConfigurerApplyingRequestPostProcessor implements RequestPostProcessor {
 
-		private static final Function<MockHttpServletRequest, String> urlTemplateExtractor;
+		private static final Function<MockHttpServletRequest, @Nullable String> urlTemplateExtractor;
 
 		static {
-			Function<MockHttpServletRequest, String> fromRequestAttribute = (
+			Function<MockHttpServletRequest, @Nullable String> fromRequestAttribute = (
 					request) -> (String) request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE);
-			Function<MockHttpServletRequest, String> extractor;
+			Function<MockHttpServletRequest, @Nullable String> extractor;
 			try {
 				Method accessorMethod = MockHttpServletRequest.class.getMethod("getUriTemplate");
 				extractor = (request) -> {

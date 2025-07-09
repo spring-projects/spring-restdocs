@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Snippet;
@@ -65,7 +67,7 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
+	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors, @Nullable Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -79,7 +81,7 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+	protected ResponseFieldsSnippet(List<FieldDescriptor> descriptors, @Nullable Map<String, Object> attributes,
 			boolean ignoreUndocumentedFields) {
 		this(null, descriptors, attributes, ignoreUndocumentedFields);
 	}
@@ -87,9 +89,11 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	/**
 	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in a
 	 * subsection of the response using the given {@code descriptors}. The subsection will
-	 * be extracted using the given {@code subsectionExtractor}. Undocumented fields will
-	 * trigger a failure.
-	 * @param subsectionExtractor the subsection extractor
+	 * be extracted using the given {@code subsectionExtractor}. If the extractor is
+	 * {@code null} the fields of the entire response will be documented. Undocumented
+	 * fields will trigger a failure.
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the fields of the entire response
 	 * @param descriptors the descriptors
 	 * @since 1.2.0
 	 */
@@ -101,10 +105,12 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	/**
 	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in the
 	 * subsection of the response using the given {@code descriptors}. The subsection will
-	 * be extracted using the given {@code subsectionExtractor}. If
+	 * be extracted using the given {@code subsectionExtractor}. If the extractor is
+	 * {@code null} the fields of the entire response will be documented. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the fields of the entire response
 	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 * @since 1.2.0
@@ -117,10 +123,12 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	/**
 	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in a
 	 * subsection of the response using the given {@code descriptors}. The subsection will
-	 * be extracted using the given {@code subsectionExtractor}. The given
+	 * be extracted using the given {@code subsectionExtractor}. If the extractor is
+	 * {@code null} the fields of the entire response will be documented. The given
 	 * {@code attributes} will be included in the model during template rendering.
 	 * Undocumented fields will trigger a failure.
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the fields of the entire response
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 * @since 1.2.0
@@ -133,23 +141,26 @@ public class ResponseFieldsSnippet extends AbstractFieldsSnippet {
 	/**
 	 * Creates a new {@code ResponseFieldsSnippet} that will document the fields in a
 	 * subsection of the response using the given {@code descriptors}. The subsection will
-	 * be extracted using the given {@code subsectionExtractor}. The given
+	 * be extracted using the given {@code subsectionExtractor}. If the extractor is
+	 * {@code null} the fields of the entire response will be documented. The given
 	 * {@code attributes} will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the fields of the entire response
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 * @since 1.2.0
 	 */
-	protected ResponseFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
-			List<FieldDescriptor> descriptors, Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+	protected ResponseFieldsSnippet(@Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, @Nullable Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
 		super("response", descriptors, attributes, ignoreUndocumentedFields, subsectionExtractor);
 	}
 
 	@Override
-	protected MediaType getContentType(Operation operation) {
+	protected @Nullable MediaType getContentType(Operation operation) {
 		return operation.getResponse().getHeaders().getContentType();
 	}
 

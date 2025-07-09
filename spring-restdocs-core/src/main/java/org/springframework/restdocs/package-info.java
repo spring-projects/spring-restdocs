@@ -17,4 +17,7 @@
 /**
  * Core Spring REST Docs classes.
  */
+@NullMarked
 package org.springframework.restdocs;
+
+import org.jspecify.annotations.NullMarked;

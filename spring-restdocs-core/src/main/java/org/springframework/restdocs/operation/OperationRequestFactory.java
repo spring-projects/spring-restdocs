@@ -20,6 +20,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
@@ -43,8 +45,8 @@ public class OperationRequestFactory {
 	 * @return the {@code OperationRequest}
 	 * @since 3.0.0
 	 */
-	public OperationRequest create(URI uri, HttpMethod method, byte[] content, HttpHeaders headers,
-			Collection<OperationRequestPart> parts, Collection<RequestCookie> cookies) {
+	public OperationRequest create(URI uri, HttpMethod method, byte @Nullable [] content, HttpHeaders headers,
+			@Nullable Collection<OperationRequestPart> parts, Collection<RequestCookie> cookies) {
 		return new StandardOperationRequest(uri, method, content, augmentHeaders(headers, uri, content),
 				(parts != null) ? parts : Collections.emptyList(), cookies);
 	}
@@ -61,7 +63,7 @@ public class OperationRequestFactory {
 	 * @return the {@code OperationRequest}
 	 * @since 3.0.0
 	 */
-	public OperationRequest create(URI uri, HttpMethod method, byte[] content, HttpHeaders headers,
+	public OperationRequest create(URI uri, HttpMethod method, byte @Nullable [] content, HttpHeaders headers,
 			Collection<OperationRequestPart> parts) {
 		return create(uri, method, content, headers, parts, Collections.emptyList());
 	}
@@ -74,7 +76,7 @@ public class OperationRequestFactory {
 	 * @param newContent the new content
 	 * @return the new request with the new content
 	 */
-	public OperationRequest createFrom(OperationRequest original, byte[] newContent) {
+	public OperationRequest createFrom(OperationRequest original, byte @Nullable [] newContent) {
 		return new StandardOperationRequest(original.getUri(), original.getMethod(), newContent,
 				getUpdatedHeaders(original.getHeaders(), newContent), original.getParts(), original.getCookies());
 	}
@@ -91,7 +93,7 @@ public class OperationRequestFactory {
 				original.getParts(), original.getCookies());
 	}
 
-	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, URI uri, byte[] content) {
+	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, URI uri, byte @Nullable [] content) {
 		return new HttpHeadersHelper(originalHeaders).addIfAbsent(HttpHeaders.HOST, createHostHeader(uri))
 			.setContentLengthHeader(content)
 			.getHeaders();
@@ -104,7 +106,7 @@ public class OperationRequestFactory {
 		return uri.getHost() + ":" + uri.getPort();
 	}
 
-	private HttpHeaders getUpdatedHeaders(HttpHeaders originalHeaders, byte[] updatedContent) {
+	private HttpHeaders getUpdatedHeaders(HttpHeaders originalHeaders, byte @Nullable [] updatedContent) {
 		return new HttpHeadersHelper(originalHeaders).updateContentLengthHeaderIfPresent(updatedContent).getHeaders();
 	}
 

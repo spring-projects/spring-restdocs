@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.Assert;
@@ -56,7 +58,7 @@ public abstract class AbstractParametersSnippet extends TemplatedSnippet {
 	 * ignored
 	 */
 	protected AbstractParametersSnippet(String snippetName, List<ParameterDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedParameters) {
+			@Nullable Map<String, Object> attributes, boolean ignoreUndocumentedParameters) {
 		super(snippetName, attributes);
 		for (ParameterDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getName(), "Parameter descriptors must have a name");

@@ -18,6 +18,7 @@ gradlePlugin {
 
 dependencies {
 	implementation(project(":toolchain"))
+	implementation("io.spring.gradle.nullability:nullability-plugin:0.0.2")
 	implementation("io.spring.javaformat:spring-javaformat-gradle-plugin:$javaFormatVersion")
 	implementation("io.spring.nohttp:nohttp-gradle:0.0.11")
 }

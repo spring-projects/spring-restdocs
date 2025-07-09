@@ -7,6 +7,8 @@ plugins {
 description = "Spring REST Docs Asciidoctor Extension"
 
 dependencies {
+	compileOnly("org.jspecify:jspecify")
+
 	implementation("org.asciidoctor:asciidoctorj")
 
 	testImplementation("org.apache.pdfbox:pdfbox")

@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Snippet;
@@ -64,7 +66,7 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
+	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors, @Nullable Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -78,7 +80,7 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors, Map<String, Object> attributes,
+	protected RequestFieldsSnippet(List<FieldDescriptor> descriptors, @Nullable Map<String, Object> attributes,
 			boolean ignoreUndocumentedFields) {
 		this(null, descriptors, attributes, ignoreUndocumentedFields);
 	}
@@ -91,7 +93,7 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param descriptors the descriptors
 	 * @since 1.2.0
 	 */
-	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor,
+	protected RequestFieldsSnippet(@Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
 			List<FieldDescriptor> descriptors) {
 		this(subsectionExtractor, descriptors, null, false);
 	}
@@ -99,53 +101,59 @@ public class RequestFieldsSnippet extends AbstractFieldsSnippet {
 	/**
 	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
 	 * subsection of the request extracted by the given {@code subsectionExtractor} using
-	 * the given {@code descriptors}. If {@code ignoreUndocumentedFields} is {@code true},
-	 * undocumented fields will be ignored and will not trigger a failure.
-	 * @param subsectionExtractor the subsection extractor document
+	 * the given {@code descriptors}. If the extractor is {@code null}, the fields of the
+	 * entire request will be documented. If {@code ignoreUndocumentedFields} is
+	 * {@code true}, undocumented fields will be ignored and will not trigger a failure.
+	 * @param subsectionExtractor the subsection extractor or {@code null} to document the
+	 * fields of the entire request
 	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 * @since 1.2.0
 	 */
-	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor, List<FieldDescriptor> descriptors,
-			boolean ignoreUndocumentedFields) {
+	protected RequestFieldsSnippet(@Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, boolean ignoreUndocumentedFields) {
 		this(subsectionExtractor, descriptors, null, ignoreUndocumentedFields);
 	}
 
 	/**
 	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
 	 * subsection of the request extracted by the given {@code subsectionExtractor} using
-	 * the given {@code descriptors}. The given {@code attributes} will be included in the
-	 * model during template rendering. Undocumented fields will trigger a failure.
-	 * @param subsectionExtractor the subsection extractor
+	 * the given {@code descriptors}. If the extractor is {@code null}, the fields of the
+	 * entire request will be documented. The given {@code attributes} will be included in
+	 * the model during template rendering. Undocumented fields will trigger a failure.
+	 * @param subsectionExtractor the subsection extractor or {@code null} to document the
+	 * fields of the entire request
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 * @since 1.2.0
 	 */
-	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor, List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes) {
+	protected RequestFieldsSnippet(@Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, @Nullable Map<String, Object> attributes) {
 		this(subsectionExtractor, descriptors, attributes, false);
 	}
 
 	/**
 	 * Creates a new {@code RequestFieldsSnippet} that will document the fields in the
 	 * subsection of the request extracted by the given {@code subsectionExtractor} using
-	 * the given {@code descriptors}. The given {@code attributes} will be included in the
-	 * model during template rendering. If {@code ignoreUndocumentedFields} is
+	 * the given {@code descriptors}. If the extractor is {@code null}, the fields of the
+	 * entire request will be documented. The given {@code attributes} will be included in
+	 * the model during template rendering. If {@code ignoreUndocumentedFields} is
 	 * {@code true}, undocumented fields will be ignored and will not trigger a failure.
-	 * @param subsectionExtractor the path identifying the subsection of the payload to
-	 * document
+	 * @param subsectionExtractor the subsection extractor or {@code null} to document the
+	 * fields of the entire request
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 * @since 1.2.0
 	 */
-	protected RequestFieldsSnippet(PayloadSubsectionExtractor<?> subsectionExtractor, List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+	protected RequestFieldsSnippet(@Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, @Nullable Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
 		super("request", descriptors, attributes, ignoreUndocumentedFields, subsectionExtractor);
 	}
 
 	@Override
-	protected MediaType getContentType(Operation operation) {
+	protected @Nullable MediaType getContentType(Operation operation) {
 		return operation.getRequest().getHeaders().getContentType();
 	}
 

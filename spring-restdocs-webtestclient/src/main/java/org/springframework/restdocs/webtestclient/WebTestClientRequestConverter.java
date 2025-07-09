@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import reactor.core.publisher.Flux;
 
 import org.springframework.core.ResolvableType;
@@ -68,17 +69,17 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 		return extracted;
 	}
 
-	private List<OperationRequestPart> extractRequestParts(ExchangeResult result) {
+	private @Nullable List<OperationRequestPart> extractRequestParts(ExchangeResult result) {
 		HttpMessageReader<Part> partHttpMessageReader = new DefaultPartHttpMessageReader();
 		return new MultipartHttpMessageReader(partHttpMessageReader)
 			.readMono(ResolvableType.forClass(Part.class), new ExchangeResultReactiveHttpInputMessage(result),
 					Collections.emptyMap())
 			.onErrorReturn(new LinkedMultiValueMap<>())
-			.block()
-			.values()
-			.stream()
-			.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart))
-			.collect(Collectors.toList());
+			.map((partsMap) -> partsMap.values()
+				.stream()
+				.flatMap((parts) -> parts.stream().map(this::createOperationRequestPart))
+				.collect(Collectors.toList()))
+			.block();
 	}
 
 	private OperationRequestPart createOperationRequestPart(Part part) {
@@ -124,6 +125,9 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 		@Override
 		public Flux<DataBuffer> getBody() {
 			byte[] requestBodyContent = this.result.getRequestBodyContent();
+			if (requestBodyContent == null) {
+				requestBodyContent = new byte[0];
+			}
 			DefaultDataBuffer buffer = new DefaultDataBufferFactory().allocateBuffer(requestBodyContent.length);
 			buffer.write(requestBodyContent);
 			return Flux.fromArray(new DataBuffer[] { buffer });

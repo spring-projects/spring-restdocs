@@ -26,8 +26,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.Contract;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.RequestCookie;
@@ -55,7 +58,7 @@ final class CliOperationRequest implements OperationRequest {
 		return HttpMethod.PUT.equals(this.delegate.getMethod()) || HttpMethod.POST.equals(this.delegate.getMethod());
 	}
 
-	String getBasicAuthCredentials() {
+	@Nullable String getBasicAuthCredentials() {
 		List<String> headerValue = this.delegate.getHeaders().get(HttpHeaders.AUTHORIZATION);
 		if (BasicAuthHeaderFilter.isBasicAuthHeader(headerValue)) {
 			return BasicAuthHeaderFilter.decodeBasicAuthHeader(headerValue);
@@ -132,7 +135,8 @@ final class CliOperationRequest implements OperationRequest {
 			return !(HttpHeaders.AUTHORIZATION.equals(name) && isBasicAuthHeader(value));
 		}
 
-		static boolean isBasicAuthHeader(List<String> value) {
+		@Contract("null -> false")
+		static boolean isBasicAuthHeader(@Nullable List<String> value) {
 			return value != null && (!value.isEmpty()) && value.get(0).startsWith("Basic ");
 		}
 

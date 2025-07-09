@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.hypermedia;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.core.style.ToStringCreator;
 
 /**
@@ -29,7 +31,7 @@ public class Link {
 
 	private final String href;
 
-	private final String title;
+	private final @Nullable String title;
 
 	/**
 	 * Creates a new {@code Link} with the given {@code rel} and {@code href}.
@@ -47,7 +49,7 @@ public class Link {
 	 * @param href the link's href
 	 * @param title the link's title
 	 */
-	public Link(String rel, String href, String title) {
+	public Link(String rel, String href, @Nullable String title) {
 		this.rel = rel;
 		this.href = href;
 		this.title = title;
@@ -73,7 +75,7 @@ public class Link {
 	 * Returns the link's {@code title}, or {@code null} if it does not have a title.
 	 * @return the link's {@code title} or {@code null}
 	 */
-	public String getTitle() {
+	public @Nullable String getTitle() {
 		return this.title;
 	}
 

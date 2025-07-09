@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.FormParameters;
@@ -66,7 +68,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 * @param commandFormatter the formatter for generating the snippet
 	 */
-	protected HttpieRequestSnippet(Map<String, Object> attributes, CommandFormatter commandFormatter) {
+	protected HttpieRequestSnippet(@Nullable Map<String, Object> attributes, CommandFormatter commandFormatter) {
 		super("httpie-request", attributes);
 		Assert.notNull(commandFormatter, "Command formatter must not be null");
 		this.commandFormatter = commandFormatter;
@@ -161,9 +163,11 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	private void writeHeaders(OperationRequest request, List<String> lines) {
 		HttpHeaders headers = request.getHeaders();
 		for (Entry<String, List<String>> entry : headers.headerSet()) {
-			if (entry.getKey().equals(HttpHeaders.CONTENT_TYPE)
-					&& headers.getContentType().isCompatibleWith(MediaType.APPLICATION_FORM_URLENCODED)) {
-				continue;
+			if (entry.getKey().equals(HttpHeaders.CONTENT_TYPE)) {
+				MediaType contentType = headers.getContentType();
+				if (contentType != null && contentType.isCompatibleWith(MediaType.APPLICATION_FORM_URLENCODED)) {
+					continue;
+				}
 			}
 			for (String header : entry.getValue()) {
 				// HTTPie adds Content-Type automatically with --form

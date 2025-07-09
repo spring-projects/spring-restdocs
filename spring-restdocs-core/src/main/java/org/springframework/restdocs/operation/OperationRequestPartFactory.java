@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.operation;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -35,7 +37,8 @@ public class OperationRequestPartFactory {
 	 * @param headers the headers of the part
 	 * @return the {@code OperationRequestPart}
 	 */
-	public OperationRequestPart create(String name, String submittedFileName, byte[] content, HttpHeaders headers) {
+	public OperationRequestPart create(String name, @Nullable String submittedFileName, byte[] content,
+			HttpHeaders headers) {
 		return new StandardOperationRequestPart(name, submittedFileName, content, augmentHeaders(headers, content));
 	}
 

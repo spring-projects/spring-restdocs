@@ -19,6 +19,8 @@ package org.springframework.restdocs.operation.preprocess;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 
 /**
@@ -43,7 +45,7 @@ class LinkMaskingContentModifier implements ContentModifier {
 	}
 
 	@Override
-	public byte[] modifyContent(byte[] originalContent, MediaType contentType) {
+	public byte[] modifyContent(byte[] originalContent, @Nullable MediaType contentType) {
 		return this.contentModifier.modifyContent(originalContent, contentType);
 	}
 

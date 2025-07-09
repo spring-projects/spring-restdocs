@@ -18,6 +18,8 @@ package org.springframework.restdocs.operation;
 
 import java.util.Collection;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 
@@ -41,7 +43,7 @@ class StandardOperationResponse extends AbstractOperationMessage implements Oper
 	 * @param content the content of the response
 	 * @param cookies any cookies included in the response
 	 */
-	StandardOperationResponse(HttpStatusCode status, HttpHeaders headers, byte[] content,
+	StandardOperationResponse(HttpStatusCode status, HttpHeaders headers, byte @Nullable [] content,
 			Collection<ResponseCookie> cookies) {
 		super(content, headers);
 		this.status = status;

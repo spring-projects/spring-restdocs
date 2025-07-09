@@ -19,6 +19,8 @@ package org.springframework.restdocs.snippet;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.snippet.Attributes.Attribute;
 
 /**
@@ -32,7 +34,7 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 
 	private Map<String, Object> attributes = new HashMap<>();
 
-	private Object description;
+	private @Nullable Object description;
 
 	/**
 	 * Adds the given {@code attributes} to the descriptor.
@@ -53,7 +55,7 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 	 * @return the descriptor
 	 */
 	@SuppressWarnings("unchecked")
-	public final T description(Object description) {
+	public final T description(@Nullable Object description) {
 		this.description = description;
 		return (T) this;
 	}
@@ -62,7 +64,7 @@ public abstract class AbstractDescriptor<T extends AbstractDescriptor<T>> {
 	 * Returns the description.
 	 * @return the description
 	 */
-	public final Object getDescription() {
+	public final @Nullable Object getDescription() {
 		return this.description;
 	}
 

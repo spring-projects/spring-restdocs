@@ -25,6 +25,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
@@ -104,7 +105,7 @@ class JsonContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public String getUndocumentedContent() {
+	public @Nullable String getUndocumentedContent() {
 		Object content = readContent();
 		for (FieldDescriptor fieldDescriptor : this.fieldDescriptors) {
 			if (describesSubsection(fieldDescriptor)) {

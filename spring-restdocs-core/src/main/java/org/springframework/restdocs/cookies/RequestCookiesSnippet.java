@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
@@ -68,7 +70,7 @@ public class RequestCookiesSnippet extends AbstractCookiesSnippet {
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected RequestCookiesSnippet(List<CookieDescriptor> descriptors, Map<String, Object> attributes) {
+	protected RequestCookiesSnippet(List<CookieDescriptor> descriptors, @Nullable Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -80,7 +82,7 @@ public class RequestCookiesSnippet extends AbstractCookiesSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedCookies whether undocumented cookies should be ignored
 	 */
-	protected RequestCookiesSnippet(List<CookieDescriptor> descriptors, Map<String, Object> attributes,
+	protected RequestCookiesSnippet(List<CookieDescriptor> descriptors, @Nullable Map<String, Object> attributes,
 			boolean ignoreUndocumentedCookies) {
 		super("request", descriptors, attributes, ignoreUndocumentedCookies);
 	}

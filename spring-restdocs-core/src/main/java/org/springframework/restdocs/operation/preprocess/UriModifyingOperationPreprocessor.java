@@ -25,6 +25,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -60,11 +62,11 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 	private final OperationPreprocessor contentModifyingDelegate = new ContentModifyingOperationPreprocessor(
 			this.contentModifier);
 
-	private String scheme;
+	private @Nullable String scheme;
 
-	private String host;
+	private @Nullable String host;
 
-	private String port;
+	private @Nullable String port;
 
 	/**
 	 * Modifies the URI to use the given {@code scheme}. {@code null}, the default, will
@@ -72,7 +74,7 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 	 * @param scheme the scheme
 	 * @return {@code this}
 	 */
-	public UriModifyingOperationPreprocessor scheme(String scheme) {
+	public UriModifyingOperationPreprocessor scheme(@Nullable String scheme) {
 		this.scheme = scheme;
 		this.contentModifier.setScheme(scheme);
 		return this;
@@ -84,7 +86,7 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 	 * @param host the host
 	 * @return {@code this}
 	 */
-	public UriModifyingOperationPreprocessor host(String host) {
+	public UriModifyingOperationPreprocessor host(@Nullable String host) {
 		this.host = host;
 		this.contentModifier.setHost(host);
 		return this;
@@ -171,26 +173,26 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 		private static final Pattern SCHEME_HOST_PORT_PATTERN = Pattern
 			.compile("(http[s]?)://([a-zA-Z0-9-\\.]+)(:[0-9]+)?");
 
-		private String scheme;
+		private @Nullable String scheme;
 
-		private String host;
+		private @Nullable String host;
 
-		private String port;
+		private @Nullable String port;
 
-		private void setScheme(String scheme) {
+		private void setScheme(@Nullable String scheme) {
 			this.scheme = scheme;
 		}
 
-		private void setHost(String host) {
+		private void setHost(@Nullable String host) {
 			this.host = host;
 		}
 
-		private void setPort(String port) {
+		private void setPort(@Nullable String port) {
 			this.port = port;
 		}
 
 		@Override
-		public byte[] modifyContent(byte[] content, MediaType contentType) {
+		public byte[] modifyContent(byte[] content, @Nullable MediaType contentType) {
 			String input;
 			if (contentType != null && contentType.getCharset() != null) {
 				input = new String(content, contentType.getCharset());

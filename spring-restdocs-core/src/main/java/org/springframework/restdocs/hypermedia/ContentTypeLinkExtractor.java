@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationResponse;
 
@@ -59,7 +61,7 @@ class ContentTypeLinkExtractor implements LinkExtractor {
 				"No LinkExtractor has been provided and one is not available for the " + "content type " + contentType);
 	}
 
-	private LinkExtractor getExtractorForContentType(MediaType contentType) {
+	private @Nullable LinkExtractor getExtractorForContentType(@Nullable MediaType contentType) {
 		if (contentType != null) {
 			for (Entry<MediaType, LinkExtractor> entry : this.linkExtractors.entrySet()) {
 				if (contentType.isCompatibleWith(entry.getKey())) {

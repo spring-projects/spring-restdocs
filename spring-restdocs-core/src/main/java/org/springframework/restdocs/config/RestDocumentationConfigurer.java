@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.mustache.Mustache;
 import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolverFactory;
@@ -32,6 +34,7 @@ import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.mustache.AsciidoctorTableCellContentLambda;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
+import org.springframework.util.Assert;
 
 /**
  * Abstract base class for the configuration of Spring REST Docs.
@@ -103,7 +106,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 
 	private static final class TemplateEngineConfigurer extends AbstractConfigurer {
 
-		private TemplateEngine templateEngine;
+		private @Nullable TemplateEngine templateEngine;
 
 		@Override
 		public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
@@ -111,6 +114,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 			if (engineToUse == null) {
 				SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 					.get(SnippetConfiguration.class.getName());
+				Assert.notNull(snippetConfiguration, () -> "Snippet configuration unavailable");
 				Map<String, Object> templateContext = new HashMap<>();
 				if (snippetConfiguration.getTemplateFormat().getId().equals(TemplateFormats.asciidoctor().getId())) {
 					templateContext.put("tableCellContent", new AsciidoctorTableCellContentLambda());
@@ -131,7 +135,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 
 	private static final class WriterResolverConfigurer extends AbstractConfigurer {
 
-		private WriterResolver writerResolver;
+		private @Nullable WriterResolver writerResolver;
 
 		@Override
 		public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
@@ -139,6 +143,7 @@ public abstract class RestDocumentationConfigurer<S extends AbstractConfigurer, 
 			if (resolverToUse == null) {
 				SnippetConfiguration snippetConfiguration = (SnippetConfiguration) configuration
 					.get(SnippetConfiguration.class.getName());
+				Assert.notNull(snippetConfiguration, () -> "Snippet configuration unavailable");
 				resolverToUse = new StandardWriterResolver(new RestDocumentationContextPlaceholderResolverFactory(),
 						snippetConfiguration.getEncoding(), snippetConfiguration.getTemplateFormat());
 			}

@@ -18,6 +18,8 @@ package org.springframework.restdocs.cli;
 
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.snippet.Snippet;
 
 /**
@@ -80,7 +82,7 @@ public abstract class CliDocumentation {
 	 * @return the snippet that will document the curl request
 	 * @since 1.2.0
 	 */
-	public static Snippet curlRequest(Map<String, Object> attributes, CommandFormatter commandFormatter) {
+	public static Snippet curlRequest(@Nullable Map<String, Object> attributes, CommandFormatter commandFormatter) {
 		return new CurlRequestSnippet(attributes, commandFormatter);
 	}
 
@@ -126,7 +128,7 @@ public abstract class CliDocumentation {
 	 * @return the snippet that will document the HTTPie request
 	 * @since 1.2.0
 	 */
-	public static Snippet httpieRequest(Map<String, Object> attributes, CommandFormatter commandFormatter) {
+	public static Snippet httpieRequest(@Nullable Map<String, Object> attributes, CommandFormatter commandFormatter) {
 		return new HttpieRequestSnippet(attributes, commandFormatter);
 	}
 

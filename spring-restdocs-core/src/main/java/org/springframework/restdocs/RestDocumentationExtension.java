@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.Extension;
@@ -32,7 +33,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  */
 public class RestDocumentationExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
-	private final String outputDirectory;
+	private final @Nullable String outputDirectory;
 
 	/**
 	 * Creates a new {@code RestDocumentationExtension} that will use the default output
@@ -48,7 +49,7 @@ public class RestDocumentationExtension implements BeforeEachCallback, AfterEach
 	 * @param outputDirectory snippet output directory
 	 * @since 2.0.4
 	 */
-	public RestDocumentationExtension(String outputDirectory) {
+	public RestDocumentationExtension(@Nullable String outputDirectory) {
 		this.outputDirectory = outputDirectory;
 	}
 

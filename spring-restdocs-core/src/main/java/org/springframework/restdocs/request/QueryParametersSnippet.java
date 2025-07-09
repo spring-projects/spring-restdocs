@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.QueryParameters;
 import org.springframework.restdocs.snippet.Snippet;
@@ -68,7 +70,7 @@ public class QueryParametersSnippet extends AbstractParametersSnippet {
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected QueryParametersSnippet(List<ParameterDescriptor> descriptors, Map<String, Object> attributes) {
+	protected QueryParametersSnippet(List<ParameterDescriptor> descriptors, @Nullable Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -83,7 +85,7 @@ public class QueryParametersSnippet extends AbstractParametersSnippet {
 	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
 	 * ignored
 	 */
-	protected QueryParametersSnippet(List<ParameterDescriptor> descriptors, Map<String, Object> attributes,
+	protected QueryParametersSnippet(List<ParameterDescriptor> descriptors, @Nullable Map<String, Object> attributes,
 			boolean ignoreUndocumentedParameters) {
 		super("query-parameters", descriptors, attributes, ignoreUndocumentedParameters);
 	}

@@ -17,4 +17,7 @@
 /**
  * Snippet generation.
  */
+@NullMarked
 package org.springframework.restdocs.snippet;
+
+import org.jspecify.annotations.NullMarked;

@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
@@ -97,7 +99,7 @@ class WebTestClientResponseConverter implements ResponseConverter<ExchangeResult
 		return new ResponseCookie(original.getName(), original.getValue());
 	}
 
-	private void appendIfAvailable(StringBuilder header, String name, String value) {
+	private void appendIfAvailable(StringBuilder header, String name, @Nullable String value) {
 		if (StringUtils.hasText(value)) {
 			header.append(name);
 			header.append(value);

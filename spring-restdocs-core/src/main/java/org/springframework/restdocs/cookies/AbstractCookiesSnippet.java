@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
 import org.springframework.util.Assert;
@@ -54,8 +56,8 @@ public abstract class AbstractCookiesSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedCookies whether undocumented cookies should be ignored
 	 */
-	protected AbstractCookiesSnippet(String type, List<CookieDescriptor> descriptors, Map<String, Object> attributes,
-			boolean ignoreUndocumentedCookies) {
+	protected AbstractCookiesSnippet(String type, List<CookieDescriptor> descriptors,
+			@Nullable Map<String, Object> attributes, boolean ignoreUndocumentedCookies) {
 		super(type + "-cookies", attributes);
 		for (CookieDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getName(), "Cookie descriptors must have a name");

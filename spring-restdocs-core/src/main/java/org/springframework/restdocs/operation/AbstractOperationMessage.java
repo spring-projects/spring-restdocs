@@ -20,6 +20,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -34,7 +36,7 @@ abstract class AbstractOperationMessage implements OperationMessage {
 
 	private final HttpHeaders headers;
 
-	AbstractOperationMessage(byte[] content, HttpHeaders headers) {
+	AbstractOperationMessage(byte @Nullable [] content, HttpHeaders headers) {
 		this.content = (content != null) ? content : new byte[0];
 		this.headers = headers;
 	}
@@ -61,7 +63,7 @@ abstract class AbstractOperationMessage implements OperationMessage {
 		return "";
 	}
 
-	private Charset extractCharsetFromContentTypeHeader() {
+	private @Nullable Charset extractCharsetFromContentTypeHeader() {
 		if (this.headers == null) {
 			return null;
 		}

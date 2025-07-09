@@ -505,7 +505,7 @@ class RequestFieldsSnippetTests {
 					.content("Some plain text")
 					.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
 					.build()))
-			.withMessage("Cannot handle text/plain content as it could not be parsed as JSON or XML");
+			.withMessage("Cannot handle content with type text/plain as it could not be parsed as JSON or XML");
 	}
 
 	@SnippetTest

@@ -35,6 +35,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -106,7 +107,7 @@ class XmlContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public String getUndocumentedContent() {
+	public @Nullable String getUndocumentedContent() {
 		Document payload = readPayload();
 		List<Node> matchedButNotRemoved = new ArrayList<>();
 		for (FieldDescriptor fieldDescriptor : this.fieldDescriptors) {

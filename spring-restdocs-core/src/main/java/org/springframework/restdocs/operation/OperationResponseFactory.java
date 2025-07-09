@@ -19,6 +19,8 @@ package org.springframework.restdocs.operation;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 
@@ -40,7 +42,7 @@ public class OperationResponseFactory {
 	 * @return the {@code OperationResponse}
 	 * @since 3.0.0
 	 */
-	public OperationResponse create(HttpStatusCode status, HttpHeaders headers, byte[] content) {
+	public OperationResponse create(HttpStatusCode status, HttpHeaders headers, byte @Nullable [] content) {
 		return new StandardOperationResponse(status, augmentHeaders(headers, content), content,
 				Collections.emptyList());
 	}
@@ -56,7 +58,7 @@ public class OperationResponseFactory {
 	 * @return the {@code OperationResponse}
 	 * @since 3.0.0
 	 */
-	public OperationResponse create(HttpStatusCode status, HttpHeaders headers, byte[] content,
+	public OperationResponse create(HttpStatusCode status, HttpHeaders headers, byte @Nullable [] content,
 			Collection<ResponseCookie> cookies) {
 		return new StandardOperationResponse(status, augmentHeaders(headers, content), content, cookies);
 	}
@@ -87,7 +89,7 @@ public class OperationResponseFactory {
 				original.getCookies());
 	}
 
-	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, byte[] content) {
+	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, byte @Nullable [] content) {
 		return new HttpHeadersHelper(originalHeaders).setContentLengthHeader(content).getHeaders();
 	}
 

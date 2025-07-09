@@ -17,4 +17,7 @@
 /**
  * Template API used to render documentation snippets.
  */
+@NullMarked
 package org.springframework.restdocs.templates;
+
+import org.jspecify.annotations.NullMarked;

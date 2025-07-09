@@ -102,6 +102,9 @@ public class UriConfigurer extends AbstractNestedConfigurer<MockMvcRestDocumenta
 	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
 		MockHttpServletRequest request = (MockHttpServletRequest) configuration
 			.get(MockHttpServletRequest.class.getName());
+		if (request == null) {
+			throw new IllegalStateException("MockHttpServletRequest not found in configuration");
+		}
 		request.setScheme(this.scheme);
 		request.setServerPort(this.port);
 		request.setServerName(this.host);

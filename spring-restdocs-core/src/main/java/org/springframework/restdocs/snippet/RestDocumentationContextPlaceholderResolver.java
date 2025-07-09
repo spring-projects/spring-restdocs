@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.snippet;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
@@ -60,7 +62,7 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 	}
 
 	@Override
-	public String resolvePlaceholder(String placeholderName) {
+	public @Nullable String resolvePlaceholder(String placeholderName) {
 		if ("step".equals(placeholderName)) {
 			return Integer.toString(this.context.getStepCount());
 		}
@@ -71,7 +73,7 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 		return tryClassNameConversion(placeholderName);
 	}
 
-	private String tryMethodNameConversion(String placeholderName) {
+	private @Nullable String tryMethodNameConversion(String placeholderName) {
 		if ("methodName".equals(placeholderName)) {
 			return this.context.getTestMethodName();
 		}
@@ -84,7 +86,7 @@ public class RestDocumentationContextPlaceholderResolver implements PlaceholderR
 		return null;
 	}
 
-	private String tryClassNameConversion(String placeholderName) {
+	private @Nullable String tryClassNameConversion(String placeholderName) {
 		if ("ClassName".equals(placeholderName)) {
 			return this.context.getTestClass().getSimpleName();
 		}

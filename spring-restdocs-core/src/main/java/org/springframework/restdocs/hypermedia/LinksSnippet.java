@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.snippet.ModelCreationException;
@@ -88,7 +90,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 */
 	protected LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors,
-			Map<String, Object> attributes) {
+			@Nullable Map<String, Object> attributes) {
 		this(linkExtractor, descriptors, attributes, false);
 	}
 
@@ -104,7 +106,7 @@ public class LinksSnippet extends TemplatedSnippet {
 	 * @param ignoreUndocumentedLinks whether undocumented links should be ignored
 	 */
 	protected LinksSnippet(LinkExtractor linkExtractor, List<LinkDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedLinks) {
+			@Nullable Map<String, Object> attributes, boolean ignoreUndocumentedLinks) {
 		super("links", attributes);
 		this.linkExtractor = linkExtractor;
 		for (LinkDescriptor descriptor : descriptors) {

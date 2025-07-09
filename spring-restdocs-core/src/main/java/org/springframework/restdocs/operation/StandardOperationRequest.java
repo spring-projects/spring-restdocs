@@ -20,6 +20,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
@@ -49,7 +51,7 @@ class StandardOperationRequest extends AbstractOperationMessage implements Opera
 	 * @param parts the parts
 	 * @param cookies the cookies
 	 */
-	StandardOperationRequest(URI uri, HttpMethod method, byte[] content, HttpHeaders headers,
+	StandardOperationRequest(URI uri, HttpMethod method, byte @Nullable [] content, HttpHeaders headers,
 			Collection<OperationRequestPart> parts, Collection<RequestCookie> cookies) {
 		super(content, headers);
 		this.uri = uri;

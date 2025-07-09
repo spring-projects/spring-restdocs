@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.snippet.Snippet;
@@ -77,7 +79,7 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors, Map<String, Object> attributes) {
+	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors, @Nullable Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -90,7 +92,7 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedParts whether undocumented parts should be ignored
 	 */
-	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors, Map<String, Object> attributes,
+	protected RequestPartsSnippet(List<RequestPartDescriptor> descriptors, @Nullable Map<String, Object> attributes,
 			boolean ignoreUndocumentedParts) {
 		super("request-parts", attributes);
 		for (RequestPartDescriptor descriptor : descriptors) {

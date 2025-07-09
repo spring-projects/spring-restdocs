@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.util.PropertyPlaceholderHelper;
@@ -81,7 +83,7 @@ public final class StandardWriterResolver implements WriterResolver {
 		return this.propertyPlaceholderHelper.replacePlaceholders(input, resolver);
 	}
 
-	File resolveFile(String outputDirectory, String fileName, RestDocumentationContext context) {
+	@Nullable File resolveFile(String outputDirectory, String fileName, RestDocumentationContext context) {
 		File outputFile = new File(outputDirectory, fileName);
 		if (!outputFile.isAbsolute()) {
 			outputFile = makeRelativeToConfiguredOutputDir(outputFile, context);
@@ -89,7 +91,7 @@ public final class StandardWriterResolver implements WriterResolver {
 		return outputFile;
 	}
 
-	private File makeRelativeToConfiguredOutputDir(File outputFile, RestDocumentationContext context) {
+	private @Nullable File makeRelativeToConfiguredOutputDir(File outputFile, RestDocumentationContext context) {
 		File configuredOutputDir = context.getOutputDirectory();
 		if (configuredOutputDir != null) {
 			return new File(configuredOutputDir, outputFile.getPath());

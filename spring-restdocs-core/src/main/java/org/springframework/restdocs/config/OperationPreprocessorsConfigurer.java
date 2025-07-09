@@ -18,6 +18,8 @@ package org.springframework.restdocs.config;
 
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.preprocess.OperationPreprocessor;
@@ -36,9 +38,9 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors;
  */
 public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE> extends AbstractNestedConfigurer<PARENT> {
 
-	private OperationRequestPreprocessor defaultOperationRequestPreprocessor;
+	private @Nullable OperationRequestPreprocessor defaultOperationRequestPreprocessor;
 
-	private OperationResponsePreprocessor defaultOperationResponsePreprocessor;
+	private @Nullable OperationResponsePreprocessor defaultOperationResponsePreprocessor;
 
 	/**
 	 * Creates a new {@code OperationPreprocessorConfigurer} with the given

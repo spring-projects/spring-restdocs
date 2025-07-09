@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.SnippetException;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
@@ -48,7 +50,8 @@ public abstract class AbstractHeadersSnippet extends TemplatedSnippet {
 	 * @param descriptors the header descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected AbstractHeadersSnippet(String type, List<HeaderDescriptor> descriptors, Map<String, Object> attributes) {
+	protected AbstractHeadersSnippet(String type, List<HeaderDescriptor> descriptors,
+			@Nullable Map<String, Object> attributes) {
 		super(type + "-headers", attributes);
 		for (HeaderDescriptor descriptor : descriptors) {
 			Assert.notNull(descriptor.getName(), "The name of the header must not be null");

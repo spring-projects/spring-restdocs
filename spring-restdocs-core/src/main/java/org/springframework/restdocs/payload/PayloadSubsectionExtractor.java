@@ -18,6 +18,8 @@ package org.springframework.restdocs.payload;
 
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 
 /**
@@ -36,7 +38,7 @@ public interface PayloadSubsectionExtractor<T extends PayloadSubsectionExtractor
 	 * @param contentType the content type of the payload
 	 * @return the subsection of the payload
 	 */
-	byte[] extractSubsection(byte[] payload, MediaType contentType);
+	byte[] extractSubsection(byte[] payload, @Nullable MediaType contentType);
 
 	/**
 	 * Extracts a subsection of the given {@code payload} that has the given
@@ -47,7 +49,8 @@ public interface PayloadSubsectionExtractor<T extends PayloadSubsectionExtractor
 	 * @return the subsection of the payload
 	 * @since 2.0.4
 	 */
-	default byte[] extractSubsection(byte[] payload, MediaType contentType, List<FieldDescriptor> descriptors) {
+	default byte[] extractSubsection(byte[] payload, @Nullable MediaType contentType,
+			List<FieldDescriptor> descriptors) {
 		return extractSubsection(payload, contentType);
 	}
 

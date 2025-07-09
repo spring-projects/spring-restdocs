@@ -21,6 +21,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.templates.Template;
@@ -49,7 +51,7 @@ public abstract class TemplatedSnippet implements Snippet {
 	 * @param attributes the additional attributes
 	 * @see #TemplatedSnippet(String, String, Map)
 	 */
-	protected TemplatedSnippet(String snippetName, Map<String, Object> attributes) {
+	protected TemplatedSnippet(String snippetName, @Nullable Map<String, Object> attributes) {
 		this(snippetName, snippetName, attributes);
 	}
 
@@ -61,7 +63,7 @@ public abstract class TemplatedSnippet implements Snippet {
 	 * @param templateName the name of the template
 	 * @param attributes the additional attributes
 	 */
-	protected TemplatedSnippet(String snippetName, String templateName, Map<String, Object> attributes) {
+	protected TemplatedSnippet(String snippetName, String templateName, @Nullable Map<String, Object> attributes) {
 		this.templateName = templateName;
 		this.snippetName = snippetName;
 		if (attributes != null) {
@@ -71,16 +73,23 @@ public abstract class TemplatedSnippet implements Snippet {
 
 	@Override
 	public void document(Operation operation) throws IOException {
-		RestDocumentationContext context = (RestDocumentationContext) operation.getAttributes()
-			.get(RestDocumentationContext.class.getName());
-		WriterResolver writerResolver = (WriterResolver) operation.getAttributes().get(WriterResolver.class.getName());
+		RestDocumentationContext context = getRequiredAttribute(operation, RestDocumentationContext.class);
+		WriterResolver writerResolver = getRequiredAttribute(operation, WriterResolver.class);
 		Map<String, Object> model = createModel(operation);
 		model.putAll(this.attributes);
 		try (Writer writer = writerResolver.resolve(operation.getName(), this.snippetName, context)) {
-			TemplateEngine templateEngine = (TemplateEngine) operation.getAttributes()
-				.get(TemplateEngine.class.getName());
+			TemplateEngine templateEngine = getRequiredAttribute(operation, TemplateEngine.class);
 			writer.append(templateEngine.compileTemplate(this.templateName).render(model));
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> T getRequiredAttribute(Operation operation, Class<T> type) {
+		T attribute = (T) operation.getAttributes().get(type.getName());
+		if (attribute == null) {
+			throw new SnippetException("Operation must have a non-null " + type.getName() + " attribute");
+		}
+		return attribute;
 	}
 
 	/**

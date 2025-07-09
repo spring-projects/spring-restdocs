@@ -37,6 +37,7 @@ import javax.xml.transform.stream.StreamResult;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.jspecify.annotations.Nullable;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -56,7 +57,7 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 		.unmodifiableList(Arrays.asList(new JsonPrettyPrinter(), new XmlPrettyPrinter()));
 
 	@Override
-	public byte[] modifyContent(byte[] originalContent, MediaType contentType) {
+	public byte[] modifyContent(byte[] originalContent, @Nullable MediaType contentType) {
 		if (originalContent.length > 0) {
 			for (PrettyPrinter prettyPrinter : PRETTY_PRINTERS) {
 				try {

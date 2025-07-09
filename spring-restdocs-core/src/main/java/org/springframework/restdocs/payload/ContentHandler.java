@@ -18,6 +18,8 @@ package org.springframework.restdocs.payload;
 
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 
 /**
@@ -45,7 +47,7 @@ interface ContentHandler extends FieldTypeResolver {
 	 * documented
 	 * @throws PayloadHandlingException if a failure occurs
 	 */
-	String getUndocumentedContent();
+	@Nullable String getUndocumentedContent();
 
 	/**
 	 * Create a {@link ContentHandler} for the given content type and payload, described
@@ -56,7 +58,7 @@ interface ContentHandler extends FieldTypeResolver {
 	 * @return the ContentHandler
 	 * @throws PayloadHandlingException if no known ContentHandler can handle the content
 	 */
-	static ContentHandler forContentWithDescriptors(byte[] content, MediaType contentType,
+	static ContentHandler forContentWithDescriptors(byte[] content, @Nullable MediaType contentType,
 			List<FieldDescriptor> descriptors) {
 		try {
 			return new JsonContentHandler(content, descriptors);
@@ -66,8 +68,9 @@ interface ContentHandler extends FieldTypeResolver {
 				return new XmlContentHandler(content, descriptors);
 			}
 			catch (Exception xe) {
-				throw new PayloadHandlingException(
-						"Cannot handle " + contentType + " content as it could not be parsed as JSON or XML");
+				throw new PayloadHandlingException("Cannot handle content "
+						+ ((contentType != null) ? "with type " + contentType : "of unknown type")
+						+ " as it could not be parsed as JSON or XML");
 			}
 		}
 	}

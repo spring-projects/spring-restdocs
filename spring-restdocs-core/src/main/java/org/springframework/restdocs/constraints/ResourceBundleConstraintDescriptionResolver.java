@@ -52,7 +52,9 @@ import org.hibernate.validator.constraints.Mod10Check;
 import org.hibernate.validator.constraints.Mod11Check;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
+import org.jspecify.annotations.Nullable;
 
+import org.springframework.util.Assert;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 import org.springframework.util.StringUtils;
@@ -114,9 +116,9 @@ public class ResourceBundleConstraintDescriptionResolver implements ConstraintDe
 
 	private final PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper("${", "}");
 
-	private final ResourceBundle defaultDescriptions;
+	private final ResourceBundle defaultDescriptions = getDefaultDescriptions();
 
-	private final ResourceBundle userDescriptions;
+	private final @Nullable ResourceBundle userDescriptions;
 
 	/**
 	 * Creates a new {@code ResourceBundleConstraintDescriptionResolver} that will resolve
@@ -125,7 +127,7 @@ public class ResourceBundleConstraintDescriptionResolver implements ConstraintDe
 	 * default locale loaded using the thread context class loader.
 	 */
 	public ResourceBundleConstraintDescriptionResolver() {
-		this(getBundle("ConstraintDescriptions"));
+		this.userDescriptions = getBundle("ConstraintDescriptions");
 	}
 
 	/**
@@ -134,11 +136,16 @@ public class ResourceBundleConstraintDescriptionResolver implements ConstraintDe
 	 * @param resourceBundle the resource bundle
 	 */
 	public ResourceBundleConstraintDescriptionResolver(ResourceBundle resourceBundle) {
-		this.defaultDescriptions = getBundle("DefaultConstraintDescriptions");
 		this.userDescriptions = resourceBundle;
 	}
 
-	private static ResourceBundle getBundle(String name) {
+	private static ResourceBundle getDefaultDescriptions() {
+		ResourceBundle bundle = getBundle("DefaultConstraintDescriptions");
+		Assert.notNull(bundle, () -> "Failed to load default constraint descriptions");
+		return bundle;
+	}
+
+	private static @Nullable ResourceBundle getBundle(String name) {
 		try {
 			return ResourceBundle.getBundle(
 					ResourceBundleConstraintDescriptionResolver.class.getPackage().getName() + "." + name,
@@ -177,7 +184,7 @@ public class ResourceBundleConstraintDescriptionResolver implements ConstraintDe
 		}
 
 		@Override
-		public String resolvePlaceholder(String placeholderName) {
+		public @Nullable String resolvePlaceholder(String placeholderName) {
 			Object replacement = this.constraint.getConfiguration().get(placeholderName);
 			if (replacement == null) {
 				return null;

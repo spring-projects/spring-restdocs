@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.operation;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -27,7 +29,7 @@ class StandardOperationRequestPart extends AbstractOperationMessage implements O
 
 	private final String name;
 
-	private final String submittedFileName;
+	private final @Nullable String submittedFileName;
 
 	/**
 	 * Creates a new {@code StandardOperationRequestPart} with the given {@code name}.
@@ -36,7 +38,7 @@ class StandardOperationRequestPart extends AbstractOperationMessage implements O
 	 * @param content the contents of the part
 	 * @param headers the headers of the part
 	 */
-	StandardOperationRequestPart(String name, String submittedFileName, byte[] content, HttpHeaders headers) {
+	StandardOperationRequestPart(String name, @Nullable String submittedFileName, byte[] content, HttpHeaders headers) {
 		super(content, headers);
 		this.name = name;
 		this.submittedFileName = submittedFileName;
@@ -48,7 +50,7 @@ class StandardOperationRequestPart extends AbstractOperationMessage implements O
 	}
 
 	@Override
-	public String getSubmittedFileName() {
+	public @Nullable String getSubmittedFileName() {
 		return this.submittedFileName;
 	}
 

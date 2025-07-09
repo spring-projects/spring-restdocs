@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.operation.preprocess;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationResponse;
@@ -36,6 +38,6 @@ public interface ContentModifier {
 	 * @param contentType the type of the original content, may be {@code null}
 	 * @return the modified content
 	 */
-	byte[] modifyContent(byte[] originalContent, MediaType contentType);
+	byte[] modifyContent(byte[] originalContent, @Nullable MediaType contentType);
 
 }

@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.operation;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -42,14 +44,14 @@ class HttpHeadersHelper {
 		return this;
 	}
 
-	HttpHeadersHelper updateContentLengthHeaderIfPresent(byte[] content) {
+	HttpHeadersHelper updateContentLengthHeaderIfPresent(byte @Nullable [] content) {
 		if (this.httpHeaders.getContentLength() != -1) {
 			setContentLengthHeader(content);
 		}
 		return this;
 	}
 
-	HttpHeadersHelper setContentLengthHeader(byte[] content) {
+	HttpHeadersHelper setContentLengthHeader(byte @Nullable [] content) {
 		if (content == null || content.length == 0) {
 			this.httpHeaders.remove(HttpHeaders.CONTENT_LENGTH);
 		}

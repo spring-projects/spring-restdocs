@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -58,7 +60,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 	 * {@code attributes} that will be included in the model during template rendering.
 	 * @param attributes the additional attributes
 	 */
-	protected HttpRequestSnippet(Map<String, Object> attributes) {
+	protected HttpRequestSnippet(@Nullable Map<String, Object> attributes) {
 		super("http-request", attributes);
 	}
 
@@ -156,7 +158,8 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 				part.getHeaders().getContentType(), writer);
 	}
 
-	private void writePart(String name, String value, String filename, MediaType contentType, PrintWriter writer) {
+	private void writePart(String name, String value, @Nullable String filename, @Nullable MediaType contentType,
+			PrintWriter writer) {
 		writer.printf("Content-Disposition: form-data; name=%s", name);
 		if (StringUtils.hasText(filename)) {
 			writer.printf("; filename=%s", filename);

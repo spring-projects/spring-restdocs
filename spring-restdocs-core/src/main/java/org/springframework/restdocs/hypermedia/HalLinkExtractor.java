@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 
 /**
@@ -70,7 +72,7 @@ class HalLinkExtractor extends AbstractJsonLinkExtractor {
 		return links;
 	}
 
-	private static Link maybeCreateLink(String rel, Object possibleLinkObject) {
+	private static @Nullable Link maybeCreateLink(String rel, Object possibleLinkObject) {
 		if (possibleLinkObject instanceof Map) {
 			Map<?, ?> possibleLinkMap = (Map<?, ?>) possibleLinkObject;
 			Object hrefObject = possibleLinkMap.get("href");
@@ -83,7 +85,7 @@ class HalLinkExtractor extends AbstractJsonLinkExtractor {
 		return null;
 	}
 
-	private static void maybeAddLink(Link possibleLink, List<Link> links) {
+	private static void maybeAddLink(@Nullable Link possibleLink, List<Link> links) {
 		if (possibleLink != null) {
 			links.add(possibleLink);
 		}

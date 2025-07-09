@@ -20,6 +20,8 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 
 /**
@@ -65,7 +67,7 @@ class PatternReplacingContentModifier implements ContentModifier {
 	}
 
 	@Override
-	public byte[] modifyContent(byte[] content, MediaType contentType) {
+	public byte[] modifyContent(byte[] content, @Nullable MediaType contentType) {
 		Charset charset = (contentType != null && contentType.getCharset() != null) ? contentType.getCharset()
 				: this.fallbackCharset;
 		String original = new String(content, charset);

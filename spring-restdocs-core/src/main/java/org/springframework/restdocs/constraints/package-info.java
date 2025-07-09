@@ -17,4 +17,7 @@
 /**
  * Documenting a RESTful API's constraints.
  */
+@NullMarked
 package org.springframework.restdocs.constraints;
+
+import org.jspecify.annotations.NullMarked;

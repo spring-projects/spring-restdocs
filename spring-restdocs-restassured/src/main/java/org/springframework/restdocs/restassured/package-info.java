@@ -17,4 +17,7 @@
 /**
  * Core classes for using Spring REST Docs with REST Assured.
  */
+@NullMarked
 package org.springframework.restdocs.restassured;
+
+import org.jspecify.annotations.NullMarked;

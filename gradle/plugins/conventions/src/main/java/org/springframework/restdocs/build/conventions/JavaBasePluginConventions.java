@@ -19,6 +19,7 @@ package org.springframework.restdocs.build.conventions;
 import java.util.List;
 import java.util.Map;
 
+import io.spring.gradle.nullability.NullabilityPlugin;
 import io.spring.javaformat.gradle.SpringJavaFormatPlugin;
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Project;
@@ -49,6 +50,7 @@ class JavaBasePluginConventions extends Conventions<JavaBasePlugin> {
 
 	@Override
 	void apply(JavaBasePlugin plugin) {
+		configureNullability();
 		configureToolchains();
 		configureCheckstyle();
 		configureJavaFormat();
@@ -56,6 +58,10 @@ class JavaBasePluginConventions extends Conventions<JavaBasePlugin> {
 		configureJavaCompileTasks();
 		configureTestTasks();
 		configureDependencyManagement();
+	}
+
+	private void configureNullability() {
+		getProject().getPlugins().apply(NullabilityPlugin.class);
 	}
 
 	private void configureToolchains() {

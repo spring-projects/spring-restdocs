@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.snippet.Snippet;
@@ -73,7 +75,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	 * @param descriptors the parameter descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected PathParametersSnippet(List<ParameterDescriptor> descriptors, Map<String, Object> attributes) {
+	protected PathParametersSnippet(List<ParameterDescriptor> descriptors, @Nullable Map<String, Object> attributes) {
 		this(descriptors, attributes, false);
 	}
 
@@ -88,7 +90,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 	 * @param ignoreUndocumentedParameters whether undocumented parameters should be
 	 * ignored
 	 */
-	protected PathParametersSnippet(List<ParameterDescriptor> descriptors, Map<String, Object> attributes,
+	protected PathParametersSnippet(List<ParameterDescriptor> descriptors, @Nullable Map<String, Object> attributes,
 			boolean ignoreUndocumentedParameters) {
 		super("path-parameters", descriptors, attributes, ignoreUndocumentedParameters);
 	}

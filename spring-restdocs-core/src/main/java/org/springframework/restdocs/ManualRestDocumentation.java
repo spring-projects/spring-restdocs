@@ -18,7 +18,10 @@ package org.springframework.restdocs;
 
 import java.io.File;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.Extension;
+
+import org.springframework.util.Assert;
 
 /**
  * {@code ManualRestDocumentation} is used to manually manage the
@@ -35,7 +38,7 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 
 	private final File outputDirectory;
 
-	private StandardRestDocumentationContext context;
+	private @Nullable StandardRestDocumentationContext context;
 
 	/**
 	 * Creates a new {@code ManualRestDocumentation} instance that will generate snippets
@@ -68,9 +71,7 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 	 * @throws IllegalStateException if a context has already be created
 	 */
 	public void beforeTest(Class<?> testClass, String testMethodName) {
-		if (this.context != null) {
-			throw new IllegalStateException("Context already exists. Did you forget to call afterTest()?");
-		}
+		Assert.isNull(this.context, () -> "Context already exists. Did you forget to call afterTest()?");
 		this.context = new StandardRestDocumentationContext(testClass, testMethodName, this.outputDirectory);
 	}
 
@@ -84,6 +85,7 @@ public final class ManualRestDocumentation implements RestDocumentationContextPr
 
 	@Override
 	public RestDocumentationContext beforeOperation() {
+		Assert.notNull(this.context, () -> "Context is null. Did you forget to call beforeTest(Class, String)?");
 		this.context.getAndIncrementStepCount();
 		return this.context;
 	}

@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequestPart;
@@ -76,7 +78,7 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param attributes the additional attributes
 	 */
 	protected RequestPartFieldsSnippet(String partName, List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes) {
+			@Nullable Map<String, Object> attributes) {
 		this(partName, descriptors, attributes, false);
 	}
 
@@ -92,20 +94,22 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
 	protected RequestPartFieldsSnippet(String partName, List<FieldDescriptor> descriptors,
-			Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+			@Nullable Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
 		this(partName, null, descriptors, attributes, ignoreUndocumentedFields);
 	}
 
 	/**
 	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in a
 	 * subsection of the request part using the given {@code descriptors}. The subsection
-	 * will be extracted using the given {@code subsectionExtractor}. Undocumented fields
-	 * will trigger a failure.
+	 * will be extracted using the given {@code subsectionExtractor}. If the extractor is
+	 * {@code null} the fields of the entire request part will be documented. Undocumented
+	 * fields will trigger a failure.
 	 * @param partName the part name
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the fields of the entire request part
 	 * @param descriptors the descriptors
 	 */
-	protected RequestPartFieldsSnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
+	protected RequestPartFieldsSnippet(String partName, @Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
 			List<FieldDescriptor> descriptors) {
 		this(partName, subsectionExtractor, descriptors, null, false);
 	}
@@ -113,15 +117,17 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	/**
 	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in a
 	 * subsection the request part using the given {@code descriptors}. The subsection
-	 * will be extracted using the given {@code subsectionExtractor}. If
+	 * will be extracted using the given {@code subsectionExtractor}. If the extractor is
+	 * {@code null} the fields of the entire request part will be documented. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
 	 * @param partName the part name
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the fields of the entire request part
 	 * @param descriptors the descriptors
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected RequestPartFieldsSnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
+	protected RequestPartFieldsSnippet(String partName, @Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
 			List<FieldDescriptor> descriptors, boolean ignoreUndocumentedFields) {
 		this(partName, subsectionExtractor, descriptors, null, ignoreUndocumentedFields);
 	}
@@ -129,41 +135,46 @@ public class RequestPartFieldsSnippet extends AbstractFieldsSnippet {
 	/**
 	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in a
 	 * subsection of the request part using the given {@code descriptors}. The subsection
-	 * will be extracted using the given {@code subsectionExtractor}. The given
+	 * will be extracted using the given {@code subsectionExtractor}. If the extractor is
+	 * {@code null} the fields of the entire request part will be documented. The given
 	 * {@code attributes} will be included in the model during template rendering.
 	 * Undocumented fields will trigger a failure.
 	 * @param partName the part name
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the fields of the entire request part
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 */
-	protected RequestPartFieldsSnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
-			List<FieldDescriptor> descriptors, Map<String, Object> attributes) {
+	protected RequestPartFieldsSnippet(String partName, @Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, @Nullable Map<String, Object> attributes) {
 		this(partName, subsectionExtractor, descriptors, attributes, false);
 	}
 
 	/**
 	 * Creates a new {@code RequestPartFieldsSnippet} that will document the fields in a
 	 * subsection of the request part using the given {@code descriptors}. The subsection
-	 * will be extracted using the given {@code subsectionExtractor}. The given
+	 * will be extracted using the given {@code subsectionExtractor}. If the extractor is
+	 * {@code null} the fields of the entire request part will be documented. The given
 	 * {@code attributes} will be included in the model during template rendering. If
 	 * {@code ignoreUndocumentedFields} is {@code true}, undocumented fields will be
 	 * ignored and will not trigger a failure.
 	 * @param partName the part name
-	 * @param subsectionExtractor the subsection extractor
+	 * @param subsectionExtractor the subsection extractor, or {@code null} to document
+	 * the fields of the entire request part
 	 * @param descriptors the descriptors
 	 * @param attributes the additional attributes
 	 * @param ignoreUndocumentedFields whether undocumented fields should be ignored
 	 */
-	protected RequestPartFieldsSnippet(String partName, PayloadSubsectionExtractor<?> subsectionExtractor,
-			List<FieldDescriptor> descriptors, Map<String, Object> attributes, boolean ignoreUndocumentedFields) {
+	protected RequestPartFieldsSnippet(String partName, @Nullable PayloadSubsectionExtractor<?> subsectionExtractor,
+			List<FieldDescriptor> descriptors, @Nullable Map<String, Object> attributes,
+			boolean ignoreUndocumentedFields) {
 		super("request-part-" + partName, "request-part", descriptors, attributes, ignoreUndocumentedFields,
 				subsectionExtractor);
 		this.partName = partName;
 	}
 
 	@Override
-	protected MediaType getContentType(Operation operation) {
+	protected @Nullable MediaType getContentType(Operation operation) {
 		return findPart(operation).getHeaders().getContentType();
 	}
 

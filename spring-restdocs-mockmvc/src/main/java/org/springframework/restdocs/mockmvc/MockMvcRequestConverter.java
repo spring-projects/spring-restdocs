@@ -32,6 +32,7 @@ import java.util.Scanner;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Part;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -66,9 +67,12 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 			HttpHeaders headers = extractHeaders(mockRequest);
 			List<OperationRequestPart> parts = extractParts(mockRequest);
 			Collection<RequestCookie> cookies = extractCookies(mockRequest, headers);
-			return new OperationRequestFactory().create(getRequestUri(mockRequest),
-					HttpMethod.valueOf(mockRequest.getMethod()), getRequestContent(mockRequest, headers), headers,
-					parts, cookies);
+			String requestMethod = mockRequest.getMethod();
+			if (requestMethod == null) {
+				throw new IllegalStateException("MockHttpServletRequest cannot be converted as its method is null");
+			}
+			return new OperationRequestFactory().create(getRequestUri(mockRequest), HttpMethod.valueOf(requestMethod),
+					getRequestContent(mockRequest, headers), headers, parts, cookies);
 		}
 		catch (Exception ex) {
 			throw new ConversionException(ex);
@@ -96,7 +100,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		for (String name : IterableEnumeration.of(mockRequest.getParameterNames())) {
 			if (!queryParameters.containsKey(name)) {
 				String[] values = mockRequest.getParameterValues(name);
-				if (values.length == 0) {
+				if (values == null || values.length == 0) {
 					append(parameters, name);
 				}
 				else {
@@ -109,7 +113,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		return parameters.toString();
 	}
 
-	private byte[] getRequestContent(MockHttpServletRequest mockRequest, HttpHeaders headers) {
+	private byte @Nullable [] getRequestContent(MockHttpServletRequest mockRequest, HttpHeaders headers) {
 		byte[] content = mockRequest.getContentAsByteArray();
 		if ("GET".equals(mockRequest.getMethod())) {
 			return content;
@@ -247,7 +251,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 		return URLEncoder.encode(s, StandardCharsets.UTF_8);
 	}
 
-	private static MultiValueMap<String, String> parse(String query) {
+	private static MultiValueMap<String, String> parse(@Nullable String query) {
 		MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 		if (!StringUtils.hasLength(query)) {
 			return parameters;

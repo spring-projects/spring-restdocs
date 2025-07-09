@@ -17,4 +17,7 @@
 /**
  * Support for Asciidoctor.
  */
+@NullMarked
 package org.springframework.restdocs.asciidoctor;
+
+import org.jspecify.annotations.NullMarked;

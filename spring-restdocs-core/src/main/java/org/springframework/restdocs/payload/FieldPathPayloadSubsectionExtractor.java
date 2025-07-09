@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
@@ -73,12 +74,13 @@ public class FieldPathPayloadSubsectionExtractor
 	}
 
 	@Override
-	public byte[] extractSubsection(byte[] payload, MediaType contentType) {
+	public byte[] extractSubsection(byte[] payload, @Nullable MediaType contentType) {
 		return extractSubsection(payload, contentType, Collections.emptyList());
 	}
 
 	@Override
-	public byte[] extractSubsection(byte[] payload, MediaType contentType, List<FieldDescriptor> descriptors) {
+	public byte[] extractSubsection(byte[] payload, @Nullable MediaType contentType,
+			List<FieldDescriptor> descriptors) {
 		try {
 			ExtractedField extractedField = new JsonFieldProcessor().extract(this.fieldPath,
 					objectMapper.readValue(payload, Object.class));

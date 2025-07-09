@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
@@ -61,11 +63,11 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code CurlRequestSnippet} with the given additional
 	 * {@code attributes} that will be included in the model during template rendering.
-	 * The given {@code commandFormaatter} will be used to format the curl command.
+	 * The given {@code commandFormatter} will be used to format the curl command.
 	 * @param attributes the additional attributes
 	 * @param commandFormatter the formatter for generating the snippet
 	 */
-	protected CurlRequestSnippet(Map<String, Object> attributes, CommandFormatter commandFormatter) {
+	protected CurlRequestSnippet(@Nullable Map<String, Object> attributes, CommandFormatter commandFormatter) {
 		super("curl-request", attributes);
 		Assert.notNull(commandFormatter, "Command formatter must not be null");
 		this.commandFormatter = commandFormatter;

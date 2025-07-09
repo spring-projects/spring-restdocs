@@ -17,4 +17,7 @@
 /**
  * Documenting the headers of a RESTful API's requests and responses.
  */
+@NullMarked
 package org.springframework.restdocs.headers;
+
+import org.jspecify.annotations.NullMarked;

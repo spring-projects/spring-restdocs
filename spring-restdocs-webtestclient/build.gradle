@@ -12,6 +12,7 @@ dependencies {
 	api("org.springframework:spring-webflux")
 
 	compileOnly("org.hamcrest:hamcrest-core")
+	compileOnly("com.google.code.findbugs:jsr305")
 
 	testCompileOnly("org.hamcrest:hamcrest-core")
 
