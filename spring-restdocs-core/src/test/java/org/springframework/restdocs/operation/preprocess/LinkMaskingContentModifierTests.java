@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.restdocs.hypermedia.Link;
 
@@ -85,12 +86,14 @@ class LinkMaskingContentModifierTests {
 			.isEqualTo(formattedHalPayloadWithLinks(new Link("a", ellipsis), new Link("b", ellipsis)));
 	}
 
-	private byte[] atomPayloadWithLinks(Link... links) throws JsonProcessingException {
+	private byte[] atomPayloadWithLinks(Link... links) throws JacksonException {
 		return new ObjectMapper().writeValueAsBytes(createAtomPayload(links));
 	}
 
-	private byte[] formattedAtomPayloadWithLinks(Link... links) throws JsonProcessingException {
-		return new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
+	private byte[] formattedAtomPayloadWithLinks(Link... links) throws JacksonException {
+		return JsonMapper.builder()
+			.enable(SerializationFeature.INDENT_OUTPUT)
+			.build()
 			.writeValueAsBytes(createAtomPayload(links));
 	}
 
@@ -100,12 +103,14 @@ class LinkMaskingContentModifierTests {
 		return payload;
 	}
 
-	private byte[] halPayloadWithLinks(Link... links) throws JsonProcessingException {
+	private byte[] halPayloadWithLinks(Link... links) throws JacksonException {
 		return new ObjectMapper().writeValueAsBytes(createHalPayload(links));
 	}
 
-	private byte[] formattedHalPayloadWithLinks(Link... links) throws JsonProcessingException {
-		return new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
+	private byte[] formattedHalPayloadWithLinks(Link... links) throws JacksonException {
+		return JsonMapper.builder()
+			.enable(SerializationFeature.INDENT_OUTPUT)
+			.build()
 			.writeValueAsBytes(createHalPayload(links));
 	}
 

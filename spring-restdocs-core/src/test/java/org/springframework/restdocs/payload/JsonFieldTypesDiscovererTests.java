@@ -16,10 +16,8 @@
 
 package org.springframework.restdocs.payload;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -34,105 +32,105 @@ class JsonFieldTypesDiscovererTests {
 	private final JsonFieldTypesDiscoverer fieldTypeDiscoverer = new JsonFieldTypesDiscoverer();
 
 	@Test
-	void arrayField() throws IOException {
+	void arrayField() {
 		assertThat(discoverFieldTypes("[]")).containsExactly(JsonFieldType.ARRAY);
 	}
 
 	@Test
-	void topLevelArray() throws IOException {
+	void topLevelArray() {
 		assertThat(discoverFieldTypes("[]", "[{\"a\":\"alpha\"}]")).containsExactly(JsonFieldType.ARRAY);
 	}
 
 	@Test
-	void nestedArray() throws IOException {
+	void nestedArray() {
 		assertThat(discoverFieldTypes("a[]", "{\"a\": [{\"b\":\"bravo\"}]}")).containsExactly(JsonFieldType.ARRAY);
 	}
 
 	@Test
-	void arrayNestedBeneathAnArray() throws IOException {
+	void arrayNestedBeneathAnArray() {
 		assertThat(discoverFieldTypes("a[].b[]", "{\"a\": [{\"b\": [ 1, 2 ]}]}")).containsExactly(JsonFieldType.ARRAY);
 	}
 
 	@Test
-	void specificFieldOfObjectInArrayNestedBeneathAnArray() throws IOException {
+	void specificFieldOfObjectInArrayNestedBeneathAnArray() {
 		assertThat(discoverFieldTypes("a[].b[].c", "{\"a\": [{\"b\": [ {\"c\": 5}, {\"c\": 5}]}]}"))
 			.containsExactly(JsonFieldType.NUMBER);
 	}
 
 	@Test
-	void booleanField() throws IOException {
+	void booleanField() {
 		assertThat(discoverFieldTypes("true")).containsExactly(JsonFieldType.BOOLEAN);
 	}
 
 	@Test
-	void objectField() throws IOException {
+	void objectField() {
 		assertThat(discoverFieldTypes("{}")).containsExactly(JsonFieldType.OBJECT);
 	}
 
 	@Test
-	void nullField() throws IOException {
+	void nullField() {
 		assertThat(discoverFieldTypes("null")).containsExactly(JsonFieldType.NULL);
 	}
 
 	@Test
-	void numberField() throws IOException {
+	void numberField() {
 		assertThat(discoverFieldTypes("1.2345")).containsExactly(JsonFieldType.NUMBER);
 	}
 
 	@Test
-	void stringField() throws IOException {
+	void stringField() {
 		assertThat(discoverFieldTypes("\"Foo\"")).containsExactly(JsonFieldType.STRING);
 	}
 
 	@Test
-	void nestedField() throws IOException {
+	void nestedField() {
 		assertThat(discoverFieldTypes("a.b.c", "{\"a\":{\"b\":{\"c\":{}}}}")).containsExactly(JsonFieldType.OBJECT);
 	}
 
 	@Test
-	void multipleFieldsWithSameType() throws IOException {
+	void multipleFieldsWithSameType() {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":2}]}"))
 			.containsExactly(JsonFieldType.NUMBER);
 	}
 
 	@Test
-	void multipleFieldsWithDifferentTypes() throws IOException {
+	void multipleFieldsWithDifferentTypes() {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":true}]}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.BOOLEAN);
 	}
 
 	@Test
-	void multipleFieldsWithDifferentTypesAndSometimesAbsent() throws IOException {
+	void multipleFieldsWithDifferentTypesAndSometimesAbsent() {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":true}, {}]}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.BOOLEAN, JsonFieldType.NULL);
 	}
 
 	@Test
-	void multipleFieldsWhenSometimesAbsent() throws IOException {
+	void multipleFieldsWhenSometimesAbsent() {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":2}, {}]}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.NULL);
 	}
 
 	@Test
-	void multipleFieldsWhenSometimesNull() throws IOException {
+	void multipleFieldsWhenSometimesNull() {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":2}, {\"id\":null}]}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.NULL);
 	}
 
 	@Test
-	void multipleFieldsWithDifferentTypesAndSometimesNull() throws IOException {
+	void multipleFieldsWithDifferentTypesAndSometimesNull() {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":1},{\"id\":true}, {\"id\":null}]}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.BOOLEAN, JsonFieldType.NULL);
 	}
 
 	@Test
-	void multipleFieldsWhenEitherNullOrAbsent() throws IOException {
+	void multipleFieldsWhenEitherNullOrAbsent() {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{},{\"id\":null}]}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NULL);
 	}
 
 	@Test
-	void multipleFieldsThatAreAllNull() throws IOException {
+	void multipleFieldsThatAreAllNull() {
 		assertThat(discoverFieldTypes("a[].id", "{\"a\":[{\"id\":null},{\"id\":null}]}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NULL);
 	}
@@ -152,34 +150,34 @@ class JsonFieldTypesDiscovererTests {
 	}
 
 	@Test
-	void leafWildcardWithCommonType() throws IOException {
+	void leafWildcardWithCommonType() {
 		assertThat(discoverFieldTypes("a.*", "{\"a\": {\"b\": 5, \"c\": 6}}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NUMBER);
 	}
 
 	@Test
-	void leafWildcardWithVaryingType() throws IOException {
+	void leafWildcardWithVaryingType() {
 		assertThat(discoverFieldTypes("a.*", "{\"a\": {\"b\": 5, \"c\": \"six\"}}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.STRING);
 	}
 
 	@Test
-	void intermediateWildcardWithCommonType() throws IOException {
-		assertThat(discoverFieldTypes("a.*.d", "{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": 5}}}}"))
+	void intermediateWildcardWithCommonType() {
+		assertThat(discoverFieldTypes("a.*.d", "{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": 5}}}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NUMBER);
 	}
 
 	@Test
-	void intermediateWildcardWithVaryingType() throws IOException {
-		assertThat(discoverFieldTypes("a.*.d", "{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": \"four\"}}}}"))
+	void intermediateWildcardWithVaryingType() {
+		assertThat(discoverFieldTypes("a.*.d", "{\"a\": {\"b\": {\"d\": 4}, \"c\": {\"d\": \"four\"}}}"))
 			.containsExactlyInAnyOrder(JsonFieldType.NUMBER, JsonFieldType.STRING);
 	}
 
-	private JsonFieldTypes discoverFieldTypes(String value) throws IOException {
+	private JsonFieldTypes discoverFieldTypes(String value) {
 		return discoverFieldTypes("field", "{\"field\":" + value + "}");
 	}
 
-	private JsonFieldTypes discoverFieldTypes(String path, String json) throws IOException {
+	private JsonFieldTypes discoverFieldTypes(String path, String json) {
 		return this.fieldTypeDiscoverer.discoverFieldTypes(path, new ObjectMapper().readValue(json, Object.class));
 	}
 

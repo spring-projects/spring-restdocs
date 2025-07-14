@@ -60,7 +60,7 @@ class JsonContentHandlerTests {
 	@Test
 	void typeForOptionalFieldWithNumberAndThenNullValueIsNumber() {
 		FieldDescriptor descriptor = new FieldDescriptor("a[].id").optional();
-		Object fieldType = new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes(),
+		Object fieldType = new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}".getBytes(),
 				Arrays.asList(descriptor))
 			.resolveFieldType(descriptor);
 		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.NUMBER);
@@ -78,7 +78,7 @@ class JsonContentHandlerTests {
 	@Test
 	void typeForFieldWithNumberAndThenNullValueIsVaries() {
 		FieldDescriptor descriptor = new FieldDescriptor("a[].id");
-		Object fieldType = new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}\"".getBytes(),
+		Object fieldType = new JsonContentHandler("{\"a\":[{\"id\":1},{\"id\":null}]}".getBytes(),
 				Arrays.asList(descriptor))
 			.resolveFieldType(descriptor);
 		assertThat((JsonFieldType) fieldType).isEqualTo(JsonFieldType.VARIES);

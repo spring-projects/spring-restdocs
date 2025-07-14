@@ -408,7 +408,7 @@ public class ResponseFieldsSnippetTests {
 		assertThatExceptionOfType(FieldTypesDoNotMatchException.class)
 			.isThrownBy(() -> new ResponseFieldsSnippet(
 					Arrays.asList(fieldWithPath("a").description("one").type(JsonFieldType.OBJECT)))
-				.document(operationBuilder.response().content("{ \"a\": 5 }}").build()))
+				.document(operationBuilder.response().content("{ \"a\": 5 }").build()))
 			.withMessage("The documented type of the field 'a' is Object but the actual type is Number");
 	}
 

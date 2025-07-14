@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,8 +24,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
@@ -247,7 +246,7 @@ class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void removeItemsInArray() throws IOException {
+	void removeItemsInArray() {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}",
 				Map.class);
 		this.fieldProcessor.remove("a[].b", payload);
@@ -256,7 +255,7 @@ class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void removeItemsInNestedArray() throws IOException {
+	void removeItemsInNestedArray() {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[{\"id\":1},{\"id\":2}], [{\"id\":3}]]}",
 				Map.class);
 		this.fieldProcessor.remove("a[][].id", payload);
@@ -265,7 +264,7 @@ class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void removeDoesNotRemoveArrayWithMapEntries() throws IOException {
+	void removeDoesNotRemoveArrayWithMapEntries() {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}",
 				Map.class);
 		this.fieldProcessor.remove("a[]", payload);
@@ -274,7 +273,7 @@ class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void removeDoesNotRemoveArrayWithListEntries() throws IOException {
+	void removeDoesNotRemoveArrayWithListEntries() {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}", Map.class);
 		this.fieldProcessor.remove("a[]", payload);
 		assertThat(payload.size()).isEqualTo(1);
@@ -282,7 +281,7 @@ class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void removeRemovesArrayWithOnlyScalarEntries() throws IOException {
+	void removeRemovesArrayWithOnlyScalarEntries() {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [\"bravo\", \"charlie\"]}", Map.class);
 		this.fieldProcessor.remove("a", payload);
 		assertThat(payload.size()).isEqualTo(0);
@@ -290,7 +289,7 @@ class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void removeSubsectionRemovesArrayWithMapEntries() throws IOException {
+	void removeSubsectionRemovesArrayWithMapEntries() {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\":\"bravo\"},{\"b\":\"bravo\"}]}",
 				Map.class);
 		this.fieldProcessor.removeSubsection("a[]", payload);
@@ -299,7 +298,7 @@ class JsonFieldProcessorTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void removeSubsectionRemovesArrayWithListEntries() throws IOException {
+	void removeSubsectionRemovesArrayWithListEntries() {
 		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [[2],[3]]}", Map.class);
 		this.fieldProcessor.removeSubsection("a[]", payload);
 		assertThat(payload.size()).isEqualTo(0);

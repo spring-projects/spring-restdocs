@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -38,6 +36,7 @@ import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
+import tools.jackson.databind.ObjectMapper;
 
 import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
@@ -107,7 +106,7 @@ class TomcatServer implements BeforeAllCallback, AfterAllCallback {
 			respondWithJson(response);
 		}
 
-		private void respondWithJson(HttpServletResponse response) throws IOException, JsonProcessingException {
+		private void respondWithJson(HttpServletResponse response) throws IOException {
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/json");
 			Map<String, Object> content = new HashMap<>();

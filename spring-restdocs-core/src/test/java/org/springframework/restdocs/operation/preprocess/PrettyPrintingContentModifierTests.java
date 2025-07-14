@@ -19,9 +19,9 @@ package org.springframework.restdocs.operation.preprocess;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import tools.jackson.databind.ObjectMapper;
 
 import org.springframework.restdocs.testfixtures.jupiter.CapturedOutput;
 import org.springframework.restdocs.testfixtures.jupiter.OutputCaptureExtension;

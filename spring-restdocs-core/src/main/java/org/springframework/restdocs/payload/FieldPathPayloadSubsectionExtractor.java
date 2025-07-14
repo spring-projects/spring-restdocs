@@ -16,7 +16,6 @@
 
 package org.springframework.restdocs.payload;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +23,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
@@ -44,8 +45,9 @@ public class FieldPathPayloadSubsectionExtractor
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	private static final ObjectMapper prettyPrintingOjectMapper = new ObjectMapper()
-		.enable(SerializationFeature.INDENT_OUTPUT);
+	private static final ObjectMapper prettyPrintingOjectMapper = JsonMapper.builder()
+		.enable(SerializationFeature.INDENT_OUTPUT)
+		.build();
 
 	private final String fieldPath;
 
@@ -124,7 +126,7 @@ public class FieldPathPayloadSubsectionExtractor
 			}
 			return getObjectMapper(payload).writeValueAsBytes(value);
 		}
-		catch (IOException ex) {
+		catch (JacksonException ex) {
 			throw new PayloadHandlingException(ex);
 		}
 	}

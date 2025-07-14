@@ -16,16 +16,14 @@
 
 package org.springframework.restdocs.payload;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.http.MediaType;
 
@@ -42,7 +40,7 @@ class FieldPathPayloadSubsectionExtractorTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	void extractMapSubsectionOfJsonMap() throws JsonParseException, JsonMappingException, IOException {
+	void extractMapSubsectionOfJsonMap() throws JacksonException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.b")
 			.extractSubsection("{\"a\":{\"b\":{\"c\":5}}}".getBytes(), MediaType.APPLICATION_JSON);
 		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
@@ -52,7 +50,7 @@ class FieldPathPayloadSubsectionExtractorTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	void extractSingleElementArraySubsectionOfJsonMap() throws JsonParseException, JsonMappingException, IOException {
+	void extractSingleElementArraySubsectionOfJsonMap() throws JacksonException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[]")
 			.extractSubsection("{\"a\":[{\"b\":5}]}".getBytes(), MediaType.APPLICATION_JSON);
 		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
@@ -62,7 +60,7 @@ class FieldPathPayloadSubsectionExtractorTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	void extractMultiElementArraySubsectionOfJsonMap() throws JsonParseException, JsonMappingException, IOException {
+	void extractMultiElementArraySubsectionOfJsonMap() throws JacksonException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a")
 			.extractSubsection("{\"a\":[{\"b\":5},{\"b\":4}]}".getBytes(), MediaType.APPLICATION_JSON);
 		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
@@ -72,8 +70,7 @@ class FieldPathPayloadSubsectionExtractorTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	void extractMapSubsectionFromSingleElementArrayInAJsonMap()
-			throws JsonParseException, JsonMappingException, IOException {
+	void extractMapSubsectionFromSingleElementArrayInAJsonMap() throws JacksonException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b")
 			.extractSubsection("{\"a\":[{\"b\":{\"c\":5}}]}".getBytes(), MediaType.APPLICATION_JSON);
 		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
@@ -83,8 +80,7 @@ class FieldPathPayloadSubsectionExtractorTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	void extractMapSubsectionWithCommonStructureFromMultiElementArrayInAJsonMap()
-			throws JsonParseException, JsonMappingException, IOException {
+	void extractMapSubsectionWithCommonStructureFromMultiElementArrayInAJsonMap() throws JacksonException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b")
 			.extractSubsection("{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6}}]}".getBytes(), MediaType.APPLICATION_JSON);
 		Map<String, Object> extracted = new ObjectMapper().readValue(extractedPayload, Map.class);
@@ -120,7 +116,7 @@ class FieldPathPayloadSubsectionExtractorTests {
 	@Test
 	@SuppressWarnings("unchecked")
 	void extractMapSubsectionWithVaryingStructureDueToOptionalFieldsFromMultiElementArrayInAJsonMap()
-			throws JsonParseException, JsonMappingException, IOException {
+			throws JacksonException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
 				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": 7}}]}".getBytes(), MediaType.APPLICATION_JSON,
 				Arrays.asList(new FieldDescriptor("d").optional()));
@@ -132,7 +128,7 @@ class FieldPathPayloadSubsectionExtractorTests {
 	@Test
 	@SuppressWarnings("unchecked")
 	void extractMapSubsectionWithVaryingStructureDueToOptionalParentFieldsFromMultiElementArrayInAJsonMap()
-			throws JsonParseException, JsonMappingException, IOException {
+			throws JacksonException {
 		byte[] extractedPayload = new FieldPathPayloadSubsectionExtractor("a.[].b").extractSubsection(
 				"{\"a\":[{\"b\":{\"c\":5}},{\"b\":{\"c\":6, \"d\": { \"e\": 7}}}]}".getBytes(),
 				MediaType.APPLICATION_JSON, Arrays.asList(new FieldDescriptor("d").optional()));
@@ -142,9 +138,8 @@ class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
-	void extractedSubsectionIsPrettyPrintedWhenInputIsPrettyPrinted()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
-		ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+	void extractedSubsectionIsPrettyPrintedWhenInputIsPrettyPrinted() throws JacksonException {
+		ObjectMapper objectMapper = JsonMapper.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
 		byte[] prettyPrintedPayload = objectMapper
 			.writeValueAsBytes(objectMapper.readValue("{\"a\": { \"b\": { \"c\": 1 }}}", Object.class));
 		byte[] extractedSubsection = new FieldPathPayloadSubsectionExtractor("a.b")
@@ -155,8 +150,7 @@ class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
-	void extractedSubsectionIsNotPrettyPrintedWhenInputIsNotPrettyPrinted()
-			throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+	void extractedSubsectionIsNotPrettyPrintedWhenInputIsNotPrettyPrinted() throws JacksonException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		byte[] payload = objectMapper
 			.writeValueAsBytes(objectMapper.readValue("{\"a\": { \"b\": { \"c\": 1 }}}", Object.class));
@@ -176,8 +170,8 @@ class FieldPathPayloadSubsectionExtractorTests {
 
 	@Test
 	void extractEmptyArraySubsection() {
-		assertThatThrownBy(() -> new FieldPathPayloadSubsectionExtractor("a")
-			.extractSubsection("{\"a\":[]}}".getBytes(), MediaType.APPLICATION_JSON))
+		assertThatThrownBy(() -> new FieldPathPayloadSubsectionExtractor("a").extractSubsection("{\"a\":[]}".getBytes(),
+				MediaType.APPLICATION_JSON))
 			.isInstanceOf(PayloadHandlingException.class)
 			.hasMessage("a identifies an empty section of the payload");
 	}

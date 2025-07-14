@@ -28,7 +28,7 @@ def jmustacheShadowJar = tasks.register("jmustacheShadowJar", ShadowJar) {
 dependencies {
 	compileOnly("org.apiguardian:apiguardian-api")
 
-	implementation("com.fasterxml.jackson.core:jackson-databind")
+	implementation("tools.jackson.core:jackson-databind")
 	implementation("org.springframework:spring-web")
 	implementation(files(jmustacheShadowJar))
 

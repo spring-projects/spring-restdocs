@@ -15,4 +15,5 @@ dependencies {
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
 	testImplementation("com.fasterxml.jackson.core:jackson-databind")
 	testImplementation("org.apache.tomcat.embed:tomcat-embed-core")
+	testImplementation("tools.jackson.core:jackson-databind")
 }

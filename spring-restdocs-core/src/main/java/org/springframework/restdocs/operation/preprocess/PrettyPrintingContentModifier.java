@@ -34,15 +34,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.jspecify.annotations.Nullable;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.http.MediaType;
 
@@ -142,8 +142,9 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 	private static final class JsonPrettyPrinter implements PrettyPrinter {
 
-		private final ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
-			.configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, true);
+		private final ObjectMapper objectMapper = JsonMapper.builder()
+			.enable(SerializationFeature.INDENT_OUTPUT)
+			.build();
 
 		@Override
 		public byte[] prettyPrint(byte[] original) throws IOException {
