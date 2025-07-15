@@ -2,7 +2,8 @@ name: Release
 on:
   push:
     tags:
-      - v4.0.[0-9]+
+      - v4.0.0-M[0-9]
+      - v4.0.0-RC[0-9]
 permissions:
   contents: read
 concurrency:
@@ -64,7 +65,7 @@ jobs:
         env:
           JF_ENV_SPRING: ${{ secrets.JF_ARTIFACTORY_SPRING }}
       - name: Promote Open Source Build
-        run: jfrog rt build-promote ${{ format('spring-restdocs-{0}', needs.build-and-stage-release.outputs.version)}} ${{ github.run_number }} libs-release-local
+        run: jfrog rt build-promote ${{ format('spring-restdocs-{0}', needs.build-and-stage-release.outputs.version)}} ${{ github.run_number }} libs-milestone-local
   create-github-release:
     name: Create GitHub Release
     needs:
@@ -78,4 +79,5 @@ jobs:
         uses: ./.github/actions/create-github-release
         with:
           milestone: ${{ needs.build-and-stage-release.outputs.version }}
+          pre-release: true
           token: ${{ secrets.GH_ACTIONS_REPO_TOKEN }}
