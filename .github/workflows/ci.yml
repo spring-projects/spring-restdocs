@@ -22,16 +22,16 @@ jobs:
             name: Windows
         java:
           - version: 17
-            toolchain: false
+            toolchain: true
           - version: 21
-            toolchain: false
+            toolchain: true
           - version: 24
             toolchain: false
         exclude:
           - os:
               name: Linux
             java:
-              version: 17
+              version: 24
     steps:
       - name: Prepare Windows runner
         if: ${{ runner.os == 'Windows' }}
