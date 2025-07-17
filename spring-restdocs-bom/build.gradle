@@ -1,4 +1,5 @@
 plugins {
+	id 'org.springframework.restdocs.conventions'
 	id "java-platform"
 	id "maven-publish"
 }

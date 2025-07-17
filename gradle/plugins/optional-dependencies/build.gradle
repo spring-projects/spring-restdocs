@@ -1,0 +1,12 @@
+plugins {
+	id "java-gradle-plugin"
+}
+
+gradlePlugin {
+	plugins {
+		optionalDependencies {
+			id = "org.springframework.restdocs.optional-dependencies"
+			implementationClass = "org.springframework.restdocs.build.optional.OptionalDependenciesPlugin"
+		}
+	}
+}

@@ -1,4 +1,5 @@
 plugins {
+	id 'org.springframework.restdocs.conventions'
 	id "java-library"
 	id "maven-publish"
 }
@@ -8,8 +9,6 @@ description = "Spring REST Docs Asciidoctor Extension"
 dependencies {
 	implementation("org.asciidoctor:asciidoctorj")
 
-	internal(platform(project(":spring-restdocs-platform")))
-
 	testImplementation("org.apache.pdfbox:pdfbox")
 	testImplementation("org.assertj:assertj-core")
 	testImplementation("org.junit.jupiter:junit-jupiter")
@@ -17,8 +16,4 @@ dependencies {
 
 	testRuntimeOnly("org.asciidoctor:asciidoctorj-pdf")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
-
-tasks.named("test") {
-	useJUnitPlatform()
 }

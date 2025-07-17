@@ -1,8 +1,7 @@
 plugins {
 	id 'base'
-	id 'io.spring.javaformat' version "$javaFormatVersion" apply false
-	id 'io.spring.nohttp' version '0.0.11' apply false
 	id 'maven-publish'
+	id 'org.springframework.restdocs.conventions'
 }
 
 allprojects {
@@ -23,105 +22,6 @@ allprojects {
 	}
 }
 
-apply plugin: "io.spring.nohttp"
-apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
-
-nohttp {
-	source.exclude "buildSrc/.gradle/**"
-	source.exclude "**/build/**"
-	source.exclude "**/target/**"
-}
-
-ext {
-	javadocLinks = [
-		"https://docs.spring.io/spring-framework/docs/$springFrameworkVersion/javadoc-api/",
-		"https://docs.jboss.org/hibernate/validator/9.0/api/",
-		"https://jakarta.ee/specifications/bean-validation/3.1/apidocs/"
-	] as String[]
-}
-
-check {
-	dependsOn checkstyleNohttp
-}
-
-subprojects { subproject ->
-	plugins.withType(JavaPlugin) {
-		subproject.apply plugin: "io.spring.javaformat"
-		subproject.apply plugin: "checkstyle"
-
-		java {
-			sourceCompatibility = 17
-			targetCompatibility = 17
-		}
-
-		configurations {
-			all {
-				resolutionStrategy.cacheChangingModulesFor 0, "minutes"
-			}
-			internal {
-				canBeConsumed = false
-				canBeResolved = false
-			}
-			compileClasspath.extendsFrom(internal)
-			runtimeClasspath.extendsFrom(internal)
-			testCompileClasspath.extendsFrom(internal)
-			testRuntimeClasspath.extendsFrom(internal)
-		}
-
-		test {
-			testLogging {
-				exceptionFormat = "full"
-			}
-		}
-
-		tasks.withType(JavaCompile) {
-			options.compilerArgs = [ "-Werror", "-Xlint:unchecked", "-Xlint:deprecation", "-Xlint:rawtypes", "-Xlint:varargs", "-Xlint:options" ]
-			options.encoding = "UTF-8"
-		}
-
-		tasks.withType(Test) {
-			maxHeapSize = "1024M"
-		}
-
-		checkstyle {
-			configFile = rootProject.file("config/checkstyle/checkstyle.xml")
-			configProperties = [ "checkstyle.config.dir" : rootProject.file("config/checkstyle") ]
-			toolVersion = "10.12.4"
-		}
-
-		dependencies {
-			checkstyle("com.puppycrawl.tools:checkstyle:${checkstyle.toolVersion}")
-			checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
-		}
-
-		plugins.withType(MavenPublishPlugin) {
-			javadoc {
-				description = "Generates project-level javadoc for use in -javadoc jar"
-				options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-				options.author = true
-				options.header = "Spring REST Docs $version"
-				options.docTitle = "${options.header} API"
-				options.links = javadocLinks
-				options.addStringOption "-quiet"
-				options.encoding = "UTF-8"
-				options.source = "17"
-			}
-
-			java {
-				withJavadocJar()
-				withSourcesJar()
-			}
-		}
-	}
-	plugins.withType(MavenPublishPlugin) {
-			subproject.apply from: "${rootProject.projectDir}/gradle/publish-maven.gradle"
-	}
-	tasks.withType(GenerateModuleMetadata) {
-		enabled = false
-	}
-
-}
-
 task api (type: Javadoc) {
 	group = "Documentation"
 	description = "Generates aggregated Javadoc API documentation."
@@ -130,7 +30,6 @@ task api (type: Javadoc) {
 		Set<Project> publishedProjects = rootProject.subprojects.findAll { it != project}
 			.findAll { it.plugins.hasPlugin(JavaPlugin) && it.plugins.hasPlugin(MavenPublishPlugin) }
 			.findAll { !excludedProjects.contains(it.name) }
-			.findAll { !it.name.startsWith('spring-boot-starter') }
 		dependsOn publishedProjects.javadoc
 		source publishedProjects.javadoc.source
 		classpath = project.files(publishedProjects.javadoc.classpath)

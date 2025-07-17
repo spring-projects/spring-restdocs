@@ -1,0 +1,17 @@
+pluginManagement {
+	new File(rootDir.parentFile.parentFile, "gradle.properties").withInputStream {
+		def properties = new Properties()
+		properties.load(it)
+		properties.each { key, value ->
+			if (key.endsWith("Version")) {
+				gradle.extensions.extraProperties.set(key, value)
+			}
+		}
+	}
+	plugins {
+		id "io.spring.javaformat" version gradle.extensions.extraProperties.get("javaFormatVersion")
+	}
+}
+
+include "conventions"
+include "optional-dependencies"

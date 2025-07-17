@@ -1,4 +1,5 @@
 plugins {
+	id 'org.springframework.restdocs.conventions'
 	id "java-library"
 	id "maven-publish"
 }
@@ -12,15 +13,9 @@ dependencies {
 
 	compileOnly("org.hamcrest:hamcrest-core")
 
-	internal(platform(project(":spring-restdocs-platform")))
-
 	testCompileOnly("org.hamcrest:hamcrest-core")
 
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
 
 	testRuntimeOnly("org.springframework:spring-context")
-}
-
-tasks.named("test") {
-	useJUnitPlatform();
 }

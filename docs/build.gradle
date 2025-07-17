@@ -1,6 +1,7 @@
 plugins {
 	id "org.asciidoctor.jvm.convert" version "4.0.4"
-	id "java-library"
+	id "org.springframework.restdocs.conventions"
+	id "java"
 }
 
 configurations {
@@ -10,19 +11,16 @@ configurations {
 dependencies {
 	asciidoctorExt("io.spring.asciidoctor.backends:spring-asciidoctor-backends:0.0.5")
 
-	internal(platform(project(":spring-restdocs-platform")))
-	internal(enforcedPlatform("org.springframework:spring-framework-bom:$springFrameworkVersion"))
-
 	testImplementation(project(":spring-restdocs-mockmvc"))
 	testImplementation(project(":spring-restdocs-restassured"))
 	testImplementation(project(":spring-restdocs-webtestclient"))
 	testImplementation("jakarta.servlet:jakarta.servlet-api")
 	testImplementation("jakarta.validation:jakarta.validation-api")
 	testImplementation("org.testng:testng:6.9.10")
-	testImplementation("org.junit.jupiter:junit-jupiter-api")
-}
+	testImplementation("org.junit.jupiter:junit-jupiter")
 
-tasks.findByPath("artifactoryPublish")?.enabled = false
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
 
 tasks.withType(org.asciidoctor.gradle.jvm.AbstractAsciidoctorTask) {
 	baseDirFollowsSourceDir()

@@ -1,7 +1,8 @@
 plugins {
+	id 'org.springframework.restdocs.conventions'
 	id "java-library"
 	id "maven-publish"
-	id "optional-dependencies"
+	id "org.springframework.restdocs.optional-dependencies"
 }
 
 description = "Spring REST Docs MockMvc"
@@ -13,11 +14,5 @@ dependencies {
 
 	implementation("jakarta.servlet:jakarta.servlet-api")
 
-	internal(platform(project(":spring-restdocs-platform")))
-
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
-}
-
-tasks.named("test") {
-	useJUnitPlatform()
 }

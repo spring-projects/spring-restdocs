@@ -1,4 +1,5 @@
 plugins {
+	id 'org.springframework.restdocs.conventions'
 	id "io.spring.compatibility-test" version "0.0.4"
 	id "java-library"
 	id "maven-publish"
@@ -11,16 +12,10 @@ dependencies {
 	api("io.rest-assured:rest-assured")
 	implementation("org.springframework:spring-web")
 
-	internal(platform(project(":spring-restdocs-platform")))
-
 	testCompileOnly("org.apiguardian:apiguardian-api")
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
 	testImplementation("com.fasterxml.jackson.core:jackson-databind")
 	testImplementation("org.apache.tomcat.embed:tomcat-embed-core")
-}
-
-tasks.named("test") {
-	useJUnitPlatform();
 }
 
 compatibilityTest {

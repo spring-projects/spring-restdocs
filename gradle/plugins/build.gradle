@@ -1,0 +1,32 @@
+plugins {
+	id "io.spring.javaformat" apply false
+	id "base"
+}
+
+new File(rootDir.parentFile.parentFile, "gradle.properties").withInputStream {
+	def properties = new Properties()
+	properties.load(it)
+	properties.each { key, value ->
+		if (key.endsWith("Version")) {
+			project.ext.set(key, value)
+		}
+	}
+}
+
+subprojects {
+	apply plugin: "io.spring.javaformat"
+	apply plugin: "checkstyle"
+
+	repositories {
+		mavenCentral()
+	}
+
+	checkstyle {
+		toolVersion = "10.12.4"
+	}
+
+	dependencies {
+		checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:$javaFormatVersion")
+		checkstyle("com.puppycrawl.tools:checkstyle:${checkstyle.toolVersion}")
+	}
+}

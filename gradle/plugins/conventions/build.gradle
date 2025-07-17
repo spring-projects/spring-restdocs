@@ -1,0 +1,22 @@
+plugins {
+	id "java-gradle-plugin"
+}
+
+repositories {
+	mavenCentral()
+	gradlePluginPortal()
+}
+
+gradlePlugin {
+	plugins {
+		conventions {
+			id = "org.springframework.restdocs.conventions"
+			implementationClass = "org.springframework.restdocs.build.conventions.ConventionsPlugin"
+		}
+	}
+}
+
+dependencies {
+	implementation("io.spring.javaformat:spring-javaformat-gradle-plugin:$javaFormatVersion")
+	implementation("io.spring.nohttp:nohttp-gradle:0.0.11")
+}
