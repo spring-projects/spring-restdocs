@@ -8,14 +8,6 @@ allprojects {
 	group = "org.springframework.restdocs"
 	repositories {
 		mavenCentral()
-		maven {
-			url = "https://repo.spring.io/milestone"
-			content {
-				includeGroup "io.micrometer"
-				includeGroup "io.projectreactor"
-				includeGroup "org.springframework"
-			}
-		}
 		if (version.endsWith('-SNAPSHOT')) {
 			maven { url = "https://repo.spring.io/snapshot" }
 		}
