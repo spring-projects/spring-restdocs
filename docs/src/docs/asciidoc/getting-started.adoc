@@ -20,7 +20,7 @@ Spring REST Docs has the following minimum requirements:
 * Java 17
 * Spring Framework 7
 
-Additionally, the `spring-restdocs-restassured` module requires REST Assured 5.2.
+Additionally, the `spring-restdocs-restassured` module requires REST Assured 5.5.
 
 
 

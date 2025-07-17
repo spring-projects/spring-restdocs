@@ -1,6 +1,5 @@
 plugins {
 	id 'org.springframework.restdocs.conventions'
-	id "io.spring.compatibility-test" version "0.0.4"
 	id "java-library"
 	id "maven-publish"
 }
@@ -16,11 +15,4 @@ dependencies {
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
 	testImplementation("com.fasterxml.jackson.core:jackson-databind")
 	testImplementation("org.apache.tomcat.embed:tomcat-embed-core")
-}
-
-compatibilityTest {
-	dependency("REST Assured") { restAssured ->
-		restAssured.groupId = "io.rest-assured"
-		restAssured.versions = ["5.3.+", "5.4.+", "5.5.+"]
-	}
 }
