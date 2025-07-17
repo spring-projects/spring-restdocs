@@ -23,7 +23,7 @@ dependencies {
 		api("org.hamcrest:hamcrest-library:1.3")
 		api("org.hibernate.validator:hibernate-validator:9.0.1.Final")
 		api("org.jspecify:jspecify:1.0.0")
-		api("org.javamoney:moneta:1.4.2")
+		api("org.javamoney:moneta:1.4.5")
 	}
 	api(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.14.0"))
 	api(enforcedPlatform("io.rest-assured:rest-assured-bom:5.5.2"))
