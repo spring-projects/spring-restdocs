@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.contentstream.PDFStreamEngine;
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.cos.COSBase;
@@ -233,11 +234,12 @@ abstract class AbstractOperationBlockMacroTests {
 	}
 
 	private List<String> extractStrings(File pdfFile) throws IOException {
-		PDDocument pdf = PDDocument.load(pdfFile);
-		assertThat(pdf.getNumberOfPages()).isEqualTo(1);
-		StringExtractor stringExtractor = new StringExtractor();
-		stringExtractor.processPage(pdf.getPage(0));
-		return stringExtractor.getStrings();
+		try (PDDocument pdf = Loader.loadPDF(pdfFile)) {
+			assertThat(pdf.getNumberOfPages()).isEqualTo(1);
+			StringExtractor stringExtractor = new StringExtractor();
+			stringExtractor.processPage(pdf.getPage(0));
+			return stringExtractor.getStrings();
+		}
 	}
 
 	private static final class StringExtractor extends PDFStreamEngine {
