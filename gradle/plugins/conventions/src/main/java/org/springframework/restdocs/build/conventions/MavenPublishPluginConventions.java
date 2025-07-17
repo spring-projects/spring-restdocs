@@ -83,8 +83,9 @@ class MavenPublishPluginConventions extends Conventions<MavenPublishPlugin> {
 						"https://jakarta.ee/specifications/bean-validation/3.1/apidocs/");
 			});
 		});
-		getProject().getPlugins().withType(JavaPlatformPlugin.class).configureEach((javaPlatformPlugin) ->
-			maven.from(getProject().getComponents().getByName("javaPlatform")));
+		getProject().getPlugins()
+			.withType(JavaPlatformPlugin.class)
+			.configureEach((javaPlatformPlugin) -> maven.from(getProject().getComponents().getByName("javaPlatform")));
 	}
 
 	private void configureDeploymentRepository(PublishingExtension publishing) {

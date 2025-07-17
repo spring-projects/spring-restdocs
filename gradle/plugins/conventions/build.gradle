@@ -17,6 +17,7 @@ gradlePlugin {
 }
 
 dependencies {
+	implementation(project(":toolchain"))
 	implementation("io.spring.javaformat:spring-javaformat-gradle-plugin:$javaFormatVersion")
 	implementation("io.spring.nohttp:nohttp-gradle:0.0.11")
 }

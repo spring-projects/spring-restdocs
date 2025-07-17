@@ -34,6 +34,8 @@ import org.gradle.api.tasks.compile.CompileOptions;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.testing.Test;
 
+import org.springframework.restdocs.build.toolchain.ToolchainPlugin;
+
 /**
  * Conventions for the {@link JavaBasePlugin}.
  *
@@ -47,12 +49,17 @@ class JavaBasePluginConventions extends Conventions<JavaBasePlugin> {
 
 	@Override
 	void apply(JavaBasePlugin plugin) {
+		configureToolchains();
 		configureCheckstyle();
 		configureJavaFormat();
 		configureSourceAndTargetCompatibility();
 		configureJavaCompileTasks();
 		configureTestTasks();
 		configureDependencyManagement();
+	}
+
+	private void configureToolchains() {
+		getProject().getPlugins().apply(ToolchainPlugin.class);
 	}
 
 	private void configureDependencyManagement() {
@@ -91,6 +98,7 @@ class JavaBasePluginConventions extends Conventions<JavaBasePlugin> {
 			options.setCompilerArgs(List.of("-Werror", "-Xlint:unchecked", "-Xlint:deprecation", "-Xlint:rawtypes",
 					"-Xlint:varargs", "-Xlint:options"));
 			options.setEncoding("UTF-8");
+			options.getRelease().set(17);
 		});
 	}
 
