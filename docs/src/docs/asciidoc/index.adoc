@@ -13,7 +13,7 @@ Andy Wilkinson; Jay Bryant
 :samples: https://github.com/spring-projects/spring-restdocs-samples/tree/main
 :templates: {source}spring-restdocs/src/main/resources/org/springframework/restdocs/templates
 :spring-boot-docs: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle
-:spring-framework-docs: https://docs.spring.io/spring-framework/docs/{spring-framework-version}/reference/html/
+:spring-framework-docs: https://docs.spring.io/spring-framework/reference/6.2
 :spring-framework-api: https://docs.spring.io/spring-framework/docs/{spring-framework-version}/javadoc-api
 
 [[abstract]]

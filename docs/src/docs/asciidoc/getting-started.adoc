@@ -192,7 +192,7 @@ If you are not using Spring Boot and its plugin management, declare the plugin w
 [[getting-started-documentation-snippets]]
 === Generating Documentation Snippets
 
-Spring REST Docs uses Spring MVC's {spring-framework-docs}/testing.html#spring-mvc-test-framework[test framework], Spring WebFlux's {spring-framework-docs}/testing.html#webtestclient[`WebTestClient`], or https://rest-assured.io/[REST Assured] to make requests to the service that you are documenting.
+Spring REST Docs uses Spring MVC's {spring-framework-docs}/testing/mockmvc.html[test framework], Spring WebFlux's {spring-framework-docs}/testing/webtestclient.html[`WebTestClient`], or https://rest-assured.io/[REST Assured] to make requests to the service that you are documenting.
 It then produces documentation snippets for the request and the resulting response.
 
 
