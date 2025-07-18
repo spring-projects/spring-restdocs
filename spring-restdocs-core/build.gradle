@@ -1,35 +1,28 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
 	id 'org.springframework.restdocs.conventions'
 	id "java-library"
 	id "java-test-fixtures"
 	id "maven-publish"
 	id "org.springframework.restdocs.optional-dependencies"
+	id "com.gradleup.shadow" version "8.3.8" apply false
 }
 
 description = "Spring REST Docs Core"
 
 configurations {
-	jarjar
 	jmustache
 	testArtifacts.extendsFrom testRuntime
 }
 
-task jmustacheRepackJar(type: Jar) { repackJar ->
-	repackJar.archiveBaseName = "restdocs-jmustache-repack"
-	repackJar.archiveVersion = jmustacheVersion
-
-	doLast() {
-		ant {
-			taskdef name: "jarjar", classname: "com.tonicsystems.jarjar.JarJarTask",
-				classpath: configurations.jarjar.asPath
-			jarjar(destfile: repackJar.archiveFile.get()) {
-				configurations.jmustache.each { originalJar ->
-					zipfileset(src: originalJar, includes: "**/*.class")
-				}
-				rule(pattern: "com.samskivert.**", result: "org.springframework.restdocs.@1")
-			}
-		}
-	}
+def jmustacheShadowJar = tasks.register("jmustacheShadowJar", ShadowJar) {
+	archiveBaseName = "restdocs-jmustache"
+	archiveVersion = jmustacheVersion
+	configurations = [ project.configurations.jmustache ]
+	include("*.jar")
+	include("com/samskivert/**/*.class")
+	relocate("com.samskivert", "org.springframework.restdocs")
 }
 
 dependencies {
@@ -37,9 +30,7 @@ dependencies {
 
 	implementation("com.fasterxml.jackson.core:jackson-databind")
 	implementation("org.springframework:spring-web")
-	implementation(files(jmustacheRepackJar))
-
-	jarjar("com.googlecode.jarjar:jarjar:1.3")
+	implementation(files(jmustacheShadowJar))
 
 	jmustache(platform(project(":spring-restdocs-platform")))
 	jmustache("com.samskivert:jmustache@jar")
@@ -56,7 +47,7 @@ dependencies {
 
 	testFixturesCompileOnly("org.apiguardian:apiguardian-api")
 
-	testFixturesImplementation(files(jmustacheRepackJar))
+	testFixturesImplementation(files(jmustacheShadowJar))
 	testFixturesImplementation("org.hamcrest:hamcrest-library")
 	testFixturesImplementation("org.mockito:mockito-core")
 	testFixturesImplementation("org.springframework:spring-core")
@@ -75,9 +66,9 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-engine")
 }
 
-jar {
-	dependsOn jmustacheRepackJar
-	from(zipTree(jmustacheRepackJar.archiveFile.get())) {
+tasks.named("jar") {
+	dependsOn jmustacheShadowJar
+	from(zipTree(jmustacheShadowJar.map { it.archiveFile } )) {
 		include "org/springframework/restdocs/**"
 	}
 }
