@@ -8,6 +8,9 @@
 		<property name="avoidStaticImportExcludes" value="org.springframework.restdocs.cli.CliDocumentation.*,
 				org.springframework.restdocs.cookies.CookieDocumentation.*"/>
 	</module>
+	<module name="io.spring.javaformat.checkstyle.check.SpringHeaderCheck">
+		<property name="headerCopyrightPattern" value="2014-present" />
+	</module>
 	<module name="com.puppycrawl.tools.checkstyle.TreeWalker">
 		<module name="com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck">
 			<property name="regexp" value="true" />
