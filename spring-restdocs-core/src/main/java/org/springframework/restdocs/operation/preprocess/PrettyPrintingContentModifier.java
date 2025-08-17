@@ -19,6 +19,7 @@ package org.springframework.restdocs.operation.preprocess;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -81,16 +82,76 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 		@Override
 		public byte[] prettyPrint(byte[] original) throws Exception {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
+
+			try {
+				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			}
+			catch (IllegalArgumentException ex) {
+				// safely ignore if indent-amount is not supported
+			}
+
 			ByteArrayOutputStream transformed = new ByteArrayOutputStream();
 			transformer.setErrorListener(new SilentErrorListener());
 			transformer.transform(createSaxSource(original), new StreamResult(transformed));
 
-			return transformed.toByteArray();
+			if (transformerFactory.getClass().getName().contains("saxon")) {
+				byte[] rawResult = transformed.toByteArray();
+				String resultString = new String(rawResult, StandardCharsets.UTF_8);
+				resultString = normalizeToStandardFormat(resultString);
+				return resultString.getBytes(StandardCharsets.UTF_8);
+			}
+			else {
+				return transformed.toByteArray();
+			}
 		}
+
+		/**
+		 * Normalizes XML output to use 4-space indentation and CRLF line endings.
+		 * Converts Saxon's 3-space format to match Xalan's 4-space format.
+		 *
+		 * @param xmlOutput the XML string to normalize
+		 * @return normalized XML string
+		 */
+		private String normalizeToStandardFormat(String xmlOutput) {
+			String normalized = xmlOutput.replace("\r\n", "\n").replace("\n", "\r\n");
+
+			StringBuilder result = new StringBuilder();
+			String[] lines = normalized.split("\r\n");
+
+			for (String line : lines) {
+				if (line.trim().isEmpty()) {
+					result.append("\r\n");
+					continue;
+				}
+
+				int spaces = 0;
+				for (char c : line.toCharArray()) {
+					if (c == ' ') {
+						spaces++;
+					}
+					else {
+						break;
+					}
+				}
+				String content = line.trim();
+
+				if (spaces > 0) {
+					int level = (spaces + 1) / 3;
+					String newIndent = "    ".repeat(level);
+					result.append(newIndent).append(content).append("\r\n");
+				}
+				else {
+					result.append(content).append("\r\n");
+				}
+			}
+
+			return result.toString();
+		}
+
 
 		private SAXSource createSaxSource(byte[] original) throws ParserConfigurationException, SAXException {
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();

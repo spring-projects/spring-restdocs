@@ -174,16 +174,72 @@ class XmlContentHandler implements ContentHandler {
 			StringWriter stringWriter = new StringWriter();
 			StreamResult xmlOutput = new StreamResult(stringWriter);
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			transformerFactory.setAttribute("indent-number", 4);
+
+			try {
+				transformerFactory.setAttribute("indent-number", 4);
+			}
+			catch (IllegalArgumentException ex) {
+				// safely ignore if indent-amount is not supported
+			}
+
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+
 			transformer.transform(new DOMSource(document), xmlOutput);
-			return xmlOutput.getWriter().toString();
-		}
-		catch (Exception ex) {
+			String result = xmlOutput.getWriter().toString();
+
+			if (transformerFactory.getClass().getName().contains("saxon")) {
+				result = normalizeToStandardFormat(result);
+			}
+
+			return result;
+		} catch (Exception ex) {
 			throw new PayloadHandlingException(ex);
 		}
+	}
+
+	/**
+	 * Normalizes XML output to use 4-space indentation and CRLF line endings.
+	 * Converts Saxon's 3-space format to match Xalan's 4-space format.
+	 *
+	 * @param xmlOutput the XML string to normalize
+	 * @return normalized XML string
+	 */
+	private String normalizeToStandardFormat(String xmlOutput) {
+		String normalized = xmlOutput.replace("\r\n", "\n").replace("\n", "\r\n");
+
+		StringBuilder result = new StringBuilder();
+		String[] lines = normalized.split("\r\n");
+
+		for (String line : lines) {
+			if (line.trim().isEmpty()) {
+				result.append("\r\n");
+				continue;
+			}
+
+			int spaces = 0;
+			for (char c : line.toCharArray()) {
+				if (c == ' ') {
+					spaces++;
+				}
+				else {
+					break;
+				}
+			}
+			String content = line.trim();
+
+			if (spaces > 0) {
+				int level = (spaces + 1) / 3;
+				String newIndent = "    ".repeat(level);
+				result.append(newIndent).append(content).append("\r\n");
+			}
+			else {
+				result.append(content).append("\r\n");
+			}
+		}
+
+		return result.toString();
 	}
 
 	@Override
