@@ -27,7 +27,7 @@ dependencies {
 	}
 	api(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.20.0-rc1"))
 	api(enforcedPlatform("io.rest-assured:rest-assured-bom:5.5.2"))
-	api(enforcedPlatform("org.mockito:mockito-bom:4.9.0"))
+	api(enforcedPlatform("org.mockito:mockito-bom:5.19.0"))
 	api(enforcedPlatform("org.junit:junit-bom:5.13.3"))
 	api(enforcedPlatform("org.springframework:spring-framework-bom:$springFrameworkVersion"))
 	api(enforcedPlatform("tools.jackson:jackson-bom:3.0.0-rc8"))
