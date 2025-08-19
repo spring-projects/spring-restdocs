@@ -22,10 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.samskivert.mustache.Mustache;
 import org.jspecify.annotations.Nullable;
 
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.mustache.Mustache;
 import org.springframework.restdocs.snippet.RestDocumentationContextPlaceholderResolverFactory;
 import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;

@@ -23,9 +23,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
+import com.samskivert.mustache.Mustache;
+import com.samskivert.mustache.Mustache.Compiler;
+
 import org.springframework.core.io.Resource;
-import org.springframework.restdocs.mustache.Mustache;
-import org.springframework.restdocs.mustache.Mustache.Compiler;
 import org.springframework.restdocs.templates.Template;
 import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateResourceResolver;
@@ -33,8 +34,6 @@ import org.springframework.restdocs.templates.TemplateResourceResolver;
 /**
  * A <a href="https://mustache.github.io">Mustache</a>-based {@link TemplateEngine}
  * implemented using <a href="https://github.com/samskivert/jmustache">JMustache</a>.
- * <p>
- * Note that JMustache has been repackaged and embedded to prevent classpath conflicts.
  *
  * @author Andy Wilkinson
  */
@@ -76,6 +75,7 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	 * {@code compiler} to compile them. Templates will be read as UTF-8.
 	 * @param templateResourceResolver the resolver to use
 	 * @param compiler the compiler to use
+	 * @since 4.0.0
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver, Compiler compiler) {
 		this(templateResourceResolver, compiler, Collections.<String, Object>emptyMap());
@@ -89,7 +89,7 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	 * @param templateResourceResolver the resolver to use
 	 * @param templateEncoding the charset to use when reading the templates
 	 * @param compiler the compiler to use
-	 * @since 2.0.5
+	 * @since 4.0.0
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver, Charset templateEncoding,
 			Compiler compiler) {
@@ -104,8 +104,8 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	 * @param templateResourceResolver the resolver to use
 	 * @param compiler the compiler to use
 	 * @param context the context to pass to compiled templates
-	 * @see MustacheTemplate#MustacheTemplate(org.springframework.restdocs.mustache.Template,
-	 * Map)
+	 * @since 4.0.0
+	 * @see MustacheTemplate#MustacheTemplate(com.samskivert.mustache.Template, Map)
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver, Compiler compiler,
 			Map<String, Object> context) {
@@ -122,9 +122,8 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	 * @param templateEncoding the charset to use when reading the templates
 	 * @param compiler the compiler to use
 	 * @param context the context to pass to compiled templates
-	 * @since 2.0.5
-	 * @see MustacheTemplate#MustacheTemplate(org.springframework.restdocs.mustache.Template,
-	 * Map)
+	 * @since 4.0.0
+	 * @see MustacheTemplate#MustacheTemplate(com.samskivert.mustache.Template, Map)
 	 */
 	public MustacheTemplateEngine(TemplateResourceResolver templateResourceResolver, Charset templateEncoding,
 			Compiler compiler, Map<String, Object> context) {
@@ -145,6 +144,7 @@ public class MustacheTemplateEngine implements TemplateEngine {
 	/**
 	 * Returns the {@link Compiler} used to compile Mustache templates.
 	 * @return the compiler
+	 * @since 4.0.0
 	 */
 	protected final Compiler getCompiler() {
 		return this.compiler;

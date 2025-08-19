@@ -26,13 +26,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.samskivert.mustache.Mustache;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.restdocs.ManualRestDocumentation;
 import org.springframework.restdocs.RestDocumentationContext;
-import org.springframework.restdocs.mustache.Mustache;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;

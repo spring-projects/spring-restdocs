@@ -1,39 +1,19 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
 	id 'org.springframework.restdocs.conventions'
 	id "java-library"
 	id "java-test-fixtures"
 	id "maven-publish"
 	id "org.springframework.restdocs.optional-dependencies"
-	id "com.gradleup.shadow" version "8.3.8" apply false
 }
 
 description = "Spring REST Docs Core"
-
-configurations {
-	jmustache
-	testArtifacts.extendsFrom testRuntime
-}
-
-def jmustacheShadowJar = tasks.register("jmustacheShadowJar", ShadowJar) {
-	archiveBaseName = "restdocs-jmustache"
-	archiveVersion = jmustacheVersion
-	configurations = [ project.configurations.jmustache ]
-	include("*.jar")
-	include("com/samskivert/**/*.class")
-	relocate("com.samskivert", "org.springframework.restdocs")
-}
 
 dependencies {
 	compileOnly("org.apiguardian:apiguardian-api")
 
 	implementation("tools.jackson.core:jackson-databind")
 	implementation("org.springframework:spring-web")
-	implementation(files(jmustacheShadowJar))
-
-	jmustache(platform(project(":spring-restdocs-platform")))
-	jmustache("com.samskivert:jmustache@jar")
+	implementation("com.samskivert:jmustache")
 
 	optional(platform(project(":spring-restdocs-platform")))
 	optional("jakarta.validation:jakarta.validation-api")
@@ -47,7 +27,7 @@ dependencies {
 
 	testFixturesCompileOnly("org.apiguardian:apiguardian-api")
 
-	testFixturesImplementation(files(jmustacheShadowJar))
+	testFixturesImplementation("com.samskivert:jmustache")
 	testFixturesImplementation("org.hamcrest:hamcrest-library")
 	testFixturesImplementation("org.mockito:mockito-core")
 	testFixturesImplementation("org.springframework:spring-core")
@@ -64,11 +44,4 @@ dependencies {
 
 	testRuntimeOnly("org.apache.tomcat.embed:tomcat-embed-el")
 	testRuntimeOnly("org.junit.platform:junit-platform-engine")
-}
-
-tasks.named("jar") {
-	dependsOn jmustacheShadowJar
-	from(zipTree(jmustacheShadowJar.map { it.archiveFile } )) {
-		include "org/springframework/restdocs/**"
-	}
 }

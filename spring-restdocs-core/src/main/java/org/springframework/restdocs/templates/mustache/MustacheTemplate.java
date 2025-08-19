@@ -30,15 +30,16 @@ import org.springframework.restdocs.templates.Template;
  */
 public class MustacheTemplate implements Template {
 
-	private final org.springframework.restdocs.mustache.Template delegate;
+	private final com.samskivert.mustache.Template delegate;
 
 	private final Map<String, Object> context;
 
 	/**
 	 * Creates a new {@code MustacheTemplate} that adapts the given {@code delegate}.
 	 * @param delegate the delegate to adapt
+	 * @since 4.0.0
 	 */
-	public MustacheTemplate(org.springframework.restdocs.mustache.Template delegate) {
+	public MustacheTemplate(com.samskivert.mustache.Template delegate) {
 		this(delegate, Collections.<String, Object>emptyMap());
 	}
 
@@ -46,11 +47,12 @@ public class MustacheTemplate implements Template {
 	 * Creates a new {@code MustacheTemplate} that adapts the given {@code delegate}.
 	 * During rendering, the given {@code context} and the context passed into
 	 * {@link #render(Map)} will be combined and then passed to the delegate when it is
-	 * {@link org.springframework.restdocs.mustache.Template#execute executed}.
+	 * {@link com.samskivert.mustache.Template#execute executed}.
 	 * @param delegate the delegate to adapt
 	 * @param context the context
+	 * @since 4.0.0
 	 */
-	public MustacheTemplate(org.springframework.restdocs.mustache.Template delegate, Map<String, Object> context) {
+	public MustacheTemplate(com.samskivert.mustache.Template delegate, Map<String, Object> context) {
 		this.delegate = delegate;
 		this.context = context;
 	}

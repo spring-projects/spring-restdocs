@@ -19,15 +19,15 @@ package org.springframework.restdocs.templates.mustache;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.springframework.restdocs.mustache.Mustache.Lambda;
-import org.springframework.restdocs.mustache.Template.Fragment;
+import com.samskivert.mustache.Mustache.Lambda;
+import com.samskivert.mustache.Template.Fragment;
 
 /**
  * A {@link Lambda} that escapes {@code |} characters so that the do not break the table's
  * formatting.
  *
  * @author Andy Wilkinson
- * @since 1.1.0
+ * @since 4.0.0
  */
 public final class AsciidoctorTableCellContentLambda implements Lambda {
 
