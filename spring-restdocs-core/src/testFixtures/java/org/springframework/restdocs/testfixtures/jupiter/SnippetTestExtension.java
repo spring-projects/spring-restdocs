@@ -41,7 +41,7 @@ class SnippetTestExtension implements ParameterResolver {
 
 	@Override
 	public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-		return getStore(extensionContext).getOrComputeIfAbsent(OperationBuilder.class,
+		return getStore(extensionContext).computeIfAbsent(OperationBuilder.class,
 				(key) -> new OperationBuilder(determineOutputDirectory(extensionContext),
 						determineOperationName(extensionContext)));
 	}

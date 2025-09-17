@@ -105,14 +105,14 @@ class RenderedSnippetTestExtension implements TestTemplateInvocationContextProvi
 		public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
 			Class<?> parameterType = parameterContext.getParameter().getType();
 			if (AssertableSnippets.class.equals(parameterType)) {
-				return getStore(extensionContext).getOrComputeIfAbsent(AssertableSnippets.class,
+				return getStore(extensionContext).computeIfAbsent(AssertableSnippets.class,
 						(key) -> new AssertableSnippets(determineOutputDirectory(extensionContext),
 								determineOperationName(extensionContext), this.templateFormat));
 			}
 			if (TemplateFormat.class.equals(parameterType)) {
 				return this.templateFormat;
 			}
-			return getStore(extensionContext).getOrComputeIfAbsent(OperationBuilder.class, (key) -> {
+			return getStore(extensionContext).computeIfAbsent(OperationBuilder.class, (key) -> {
 				OperationBuilder operationBuilder = new OperationBuilder(determineOutputDirectory(extensionContext),
 						determineOperationName(extensionContext), this.templateFormat);
 				AnnotationUtils.findAnnotation(extensionContext.getRequiredTestMethod(), SnippetTemplate.class)

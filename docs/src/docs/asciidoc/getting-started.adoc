@@ -203,21 +203,21 @@ It then produces documentation snippets for the request and the resulting respon
 ==== Setting up Your Tests
 
 Exactly how you set up your tests depends on the test framework that you use.
-Spring REST Docs provides first-class support for JUnit 5.
+Spring REST Docs provides first-class support for JUnit 6.
 Other frameworks, such as TestNG, are also supported, although slightly more setup is required.
 
 
 
-[[getting-started-documentation-snippets-setup-junit-5]]
-===== Setting up Your JUnit 5 Tests
+[[getting-started-documentation-snippets-setup-junit]]
+===== Setting up Your JUnit 6 Tests
 
-When using JUnit 5, the first step in generating documentation snippets is to apply the `RestDocumentationExtension` to your test class.
+When using JUnit 6, the first step in generating documentation snippets is to apply the `RestDocumentationExtension` to your test class.
 The following example shows how to do so:
 
 [source,java,indent=0]
 ----
 @ExtendWith(RestDocumentationExtension.class)
-public class JUnit5ExampleTests {
+public class JUnit6ExampleTests {
 ----
 
 When testing a typical Spring application, you should also apply the `SpringExtension`:
@@ -225,7 +225,7 @@ When testing a typical Spring application, you should also apply the `SpringExte
 [source,java,indent=0]
 ----
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class JUnit5ExampleTests {
+public class JUnit6ExampleTests {
 ----
 
 The `RestDocumentationExtension` is automatically configured with an output directory based on your project's build tool:
@@ -241,12 +241,12 @@ The `RestDocumentationExtension` is automatically configured with an output dire
 | `build/generated-snippets`
 |===
 
-If you are using JUnit 5.1, you can override the default by registering the extension as a field in your test class and providing an output directory when creating it.
+You can override the default by registering the extension as a field in your test class and providing an output directory when creating it.
 The following example shows how to do so:
 
 [source,java,indent=0]
 ----
-public class JUnit5ExampleTests {
+public class JUnit6ExampleTests {
 
 	@RegisterExtension
 	final RestDocumentationExtension restDocumentation = new RestDocumentationExtension ("custom");

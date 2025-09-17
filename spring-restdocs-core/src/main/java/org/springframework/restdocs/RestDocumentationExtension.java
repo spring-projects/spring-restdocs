@@ -83,7 +83,7 @@ public class RestDocumentationExtension implements BeforeEachCallback, AfterEach
 	private ManualRestDocumentation getDelegate(ExtensionContext context) {
 		Namespace namespace = Namespace.create(getClass(), context.getUniqueId());
 		return context.getStore(namespace)
-			.getOrComputeIfAbsent(ManualRestDocumentation.class, this::createManualRestDocumentation,
+			.computeIfAbsent(ManualRestDocumentation.class, this::createManualRestDocumentation,
 					ManualRestDocumentation.class);
 	}
 

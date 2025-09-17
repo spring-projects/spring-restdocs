@@ -53,7 +53,7 @@ class TomcatServer implements BeforeAllCallback, AfterAllCallback {
 	@Override
 	public void beforeAll(ExtensionContext extensionContext) {
 		Store store = extensionContext.getStore(Namespace.create(TomcatServer.class));
-		store.getOrComputeIfAbsent(Tomcat.class, (key) -> {
+		store.computeIfAbsent(Tomcat.class, (key) -> {
 			Tomcat tomcat = new Tomcat();
 			tomcat.getConnector().setPort(0);
 			Context context = tomcat.addContext("/", null);
