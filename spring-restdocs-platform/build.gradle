@@ -11,7 +11,7 @@ dependencies {
 		api("com.google.code.findbugs:jsr305:3.0.2")
 		api("com.samskivert:jmustache:1.16")
 		api("jakarta.servlet:jakarta.servlet-api:6.1.0")
-		api("jakarta.validation:jakarta.validation-api:3.1.0")
+		api("jakarta.validation:jakarta.validation-api:3.1.1")
 		api("org.apache.pdfbox:pdfbox:3.0.5")
 		api("org.apache.tomcat.embed:tomcat-embed-core:11.0.11")
 		api("org.apache.tomcat.embed:tomcat-embed-el:11.0.11")
