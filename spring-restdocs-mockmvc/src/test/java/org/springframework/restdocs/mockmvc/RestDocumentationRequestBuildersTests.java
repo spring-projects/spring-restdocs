@@ -25,7 +25,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -138,7 +138,7 @@ class RestDocumentationRequestBuildersTests {
 		assertUri(multipart(URI.create("/uri")), HttpMethod.POST);
 	}
 
-	private void assertTemplate(MockHttpServletRequestBuilder builder, HttpMethod httpMethod) {
+	private void assertTemplate(AbstractMockHttpServletRequestBuilder<?> builder, HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
 		assertThat((String) request.getAttribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE))
 			.isEqualTo("/{template}");
@@ -146,7 +146,7 @@ class RestDocumentationRequestBuildersTests {
 		assertThat(request.getMethod()).isEqualTo(httpMethod.name());
 	}
 
-	private void assertUri(MockHttpServletRequestBuilder builder, HttpMethod httpMethod) {
+	private void assertUri(AbstractMockHttpServletRequestBuilder<?> builder, HttpMethod httpMethod) {
 		MockHttpServletRequest request = builder.buildRequest(this.servletContext);
 		assertThat(request.getRequestURI()).isEqualTo("/uri");
 		assertThat(request.getMethod()).isEqualTo(httpMethod.name());

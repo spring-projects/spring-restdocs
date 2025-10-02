@@ -224,7 +224,7 @@ public abstract class RestDocumentationRequestBuilders {
 	 * @since 2.0.6
 	 */
 	public static MockMultipartHttpServletRequestBuilder multipart(String urlTemplate, Object... urlVariables) {
-		return (MockMultipartHttpServletRequestBuilder) MockMvcRequestBuilders.multipart(urlTemplate, urlVariables)
+		return MockMvcRequestBuilders.multipart(urlTemplate, urlVariables)
 			.requestAttr(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
 	}
 

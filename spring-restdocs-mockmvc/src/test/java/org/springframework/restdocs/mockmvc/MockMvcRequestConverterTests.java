@@ -33,6 +33,7 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.RequestCookie;
+import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -233,7 +234,7 @@ class MockMvcRequestConverterTests {
 		assertThat(part.getContent()).isEqualTo(new byte[] { 1, 2, 3, 4 });
 	}
 
-	private OperationRequest createOperationRequest(MockHttpServletRequestBuilder builder) {
+	private OperationRequest createOperationRequest(AbstractMockHttpServletRequestBuilder<?> builder) {
 		return this.factory.convert(builder.buildRequest(new MockServletContext()));
 	}
 
