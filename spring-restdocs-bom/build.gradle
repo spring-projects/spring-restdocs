@@ -11,7 +11,6 @@ dependencies {
 		api(project(":spring-restdocs-asciidoctor"))
 		api(project(":spring-restdocs-core"))
 		api(project(":spring-restdocs-mockmvc"))
-		api(project(":spring-restdocs-restassured"))
 		api(project(":spring-restdocs-webtestclient"))
 	}
 }

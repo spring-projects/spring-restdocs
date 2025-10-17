@@ -11,8 +11,9 @@ configurations {
 dependencies {
 	asciidoctorExt("io.spring.asciidoctor.backends:spring-asciidoctor-backends:0.0.5")
 
+	testCompileOnly("org.hamcrest:hamcrest-core")
+
 	testImplementation(project(":spring-restdocs-mockmvc"))
-	testImplementation(project(":spring-restdocs-restassured"))
 	testImplementation(project(":spring-restdocs-webtestclient"))
 	testImplementation("jakarta.servlet:jakarta.servlet-api")
 	testImplementation("jakarta.validation:jakarta.validation-api")
