@@ -23,7 +23,7 @@ inputs:
   java-version:
     description: 'Java version to use for the build'
     required: false
-    default: '24'
+    default: '25'
 runs:
   using: composite
   steps:
@@ -33,7 +33,7 @@ runs:
         distribution: ${{ inputs.java-early-access == 'true' && 'temurin' || (inputs.java-distribution || 'liberica') }}
         java-version: |
           ${{ inputs.java-early-access == 'true' && format('{0}-ea', inputs.java-version) || inputs.java-version }}
-          ${{ inputs.java-toolchain == 'true' && '24' || '' }}
+          ${{ inputs.java-toolchain == 'true' && '25' || '' }}
     - name: Set Up Gradle With Read/Write Cache
       if: ${{ inputs.cache-read-only == 'false' }}
       uses: gradle/actions/setup-gradle@d156388eb19639ec20ade50009f3d199ce1e2808 # v4.1.0
