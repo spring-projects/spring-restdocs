@@ -48,3 +48,7 @@ asciidoctor {
 		backends "spring-html"
 	}
 }
+
+tasks.named("test") {
+	failOnNoDiscoveredTests = false
+}
