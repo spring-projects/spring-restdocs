@@ -12,7 +12,6 @@ plugins {
 
 rootProject.name = "spring-restdocs"
 
-include "docs"
 include "spring-restdocs-asciidoctor"
 include "spring-restdocs-bom"
 include "spring-restdocs-core"
