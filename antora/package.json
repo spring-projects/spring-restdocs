@@ -1,7 +1,6 @@
 {
   "scripts": {
-    "antora": "node npm/antora.js",
-    "postinstall": "patch-package"
+    "antora": "node npm/antora.js"
   },
   "dependencies": {
     "@antora/cli": "3.2.0-alpha.10",
