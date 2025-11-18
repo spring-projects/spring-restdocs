@@ -1,0 +1,32 @@
+[[documenting-your-api.default-snippets]]
+= Default Snippets
+
+A number of snippets are produced automatically when you document a request and response.
+
+[cols="1,3"]
+|===
+|Snippet | Description
+
+| `curl-request.adoc`
+| Contains the https://curl.haxx.se[`curl`] command that is equivalent to the `MockMvc`
+call that is being documented.
+
+| `httpie-request.adoc`
+| Contains the https://httpie.org[`HTTPie`] command that is equivalent to the `MockMvc`
+call that is being documented.
+
+| `http-request.adoc`
+| Contains the HTTP request that is equivalent to the `MockMvc` call that is being documented.
+
+| `http-response.adoc`
+| Contains the HTTP response that was returned.
+
+| `request-body.adoc`
+| Contains the body of the request that was sent.
+
+| `response-body.adoc`
+| Contains the body of the response that was returned.
+|===
+
+You can configure which snippets are produced by default.
+See the xref:configuration/default-snippets.adoc#configuration.default-snippets[configuration section] for more information.

@@ -1,0 +1,4 @@
+[[configuration]]
+= Configuring Spring REST Docs
+
+This section provides information about configuring Spring REST Docs.

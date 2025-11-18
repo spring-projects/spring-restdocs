@@ -1,0 +1,40 @@
+[[documenting-your-api.query-parameters]]
+= Query Parameters
+
+You can document a request's query parameters by using `queryParameters`.
+The following examples show how to do so:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/QueryParameters[]
+<1> Perform a `GET` request with two parameters, `page` and `per_page`, in the query string.
+Query parameters should be included in the URL, as shown here, or specified using the request builder's `queryParam` or `queryParams` method.
+The `param` and `params` methods should be avoided as the source of the parameters is then ambiguous.
+<2> Configure Spring REST Docs to produce a snippet describing the request's query parameters.
+Uses the static `queryParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the `page` query parameter.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<4> Document the `per_page` query parameter.
+
+WebTestClient::
++
+include-code::webtestclient/QueryParameters[]
+<1> Perform a `GET` request with two parameters, `page` and `per_page`, in the query string.
+<2> Configure Spring REST Docs to produce a snippet describing the request's query parameters.
+Uses the static `queryParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the `page` parameter.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<4> Document the `per_page` parameter.
+====
+
+When documenting query parameters, the test fails if an undocumented query parameter is used in the request's query string.
+Similarly, the test also fails if a documented query parameter is not found in the request's query string and the parameter has not been marked as optional.
+
+If you do not want to document a query parameter, you can mark it as ignored.
+This prevents it from appearing in the generated snippet while avoiding the failure described above.
+
+You can also document query parameters in a relaxed mode where any undocumented parameters do not cause a test failure.
+To do so, use the `relaxedQueryParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+This can be useful when documenting a particular scenario where you only want to focus on a subset of the query parameters.

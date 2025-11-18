@@ -1,0 +1,28 @@
+[[how-to.reusing-snippets]]
+= Reusing Snippets
+
+It is common for an API that is being documented to have some features that are common across several of its resources.
+To avoid repetition when documenting such resources, you can reuse a `Snippet` configured with the common elements.
+
+First, create the `Snippet` that describes the common elements.
+The following example shows how to do so:
+
+include-code::CommonSnippets[]
+
+Second, use this snippet and add further descriptors that are resource-specific.
+The following examples show how to do so:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/ReusingSnippets[]
+<1> Reuse the `pagingLinks` `Snippet`, calling `and` to add descriptors that are specific to the resource that is being documented.
+
+WebTestClient::
++
+include-code::webtestclient/ReusingSnippets[]
+<1> Reuse the `pagingLinks` `Snippet`, calling `and` to add descriptors that are specific to the resource that is being documented.
+====
+
+The result of the example is that links with `rel` values of `first`, `last`, `next`, `previous`, `alpha`, and `bravo` are all documented.

@@ -1,0 +1,4 @@
+* xref:how-to:index.adoc[]
+** xref:how-to:reusing-snippets.adoc[]
+** xref:how-to:parameterizing-the-output-directory.adoc[]
+** xref:how-to:customizing-the-output.adoc[]

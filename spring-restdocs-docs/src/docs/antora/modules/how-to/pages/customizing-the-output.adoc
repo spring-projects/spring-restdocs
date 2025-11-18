@@ -1,0 +1,73 @@
+[[how-to.customizing]]
+= Customizing the Output
+
+
+
+[[how-to.customizing.snippets]]
+== Customizing the Generated Snippets
+
+Spring REST Docs uses https://mustache.github.io[Mustache] templates to produce the generated snippets.
+{source}/spring-restdocs-core/src/main/resources/org/springframework/restdocs/templates[Default templates] are provided for each of the snippets that Spring REST Docs can produce.
+To customize a snippet's content, you can provide your own template.
+
+Templates are loaded from the classpath from an `org.springframework.restdocs.templates` subpackage.
+The name of the subpackage is determined by the ID of the template format that is in use.
+The default template format, Asciidoctor, has an ID of `asciidoctor`, so snippets are loaded from `org.springframework.restdocs.templates.asciidoctor`.
+Each template is named after the snippet that it produces.
+For example, to override the template for the `curl-request.adoc` snippet, create a template named `curl-request.snippet` in `src/test/resources/org/springframework/restdocs/templates/asciidoctor`.
+
+
+
+[[how-to.customizing.including-extra-information]]
+== Including Extra Information
+
+There are two ways to provide extra information for inclusion in a generated snippet:
+
+* Use the `attributes` method on a descriptor to add one or more attributes to it.
+* Pass in some attributes when calling `curlRequest`, `httpRequest`, `httpResponse`, and so on.
+  Such attributes are associated with the snippet as a whole.
+
+Any additional attributes are made available during the template rendering process.
+Coupled with a custom snippet template, this makes it possible to include extra information in a generated snippet.
+
+A concrete example is the addition of a constraints column and a title when documenting request fields.
+The first step is to provide a `constraints` attribute for each field that you document and to provide a `title` attribute.
+The following examples show how to do so:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/IncludingExtraInformation[]
+<1> Configure the `title` attribute for the request fields snippet.
+<2> Set the `constraints` attribute for the `name` field.
+<3> Set the `constraints` attribute for the `email` field.
+
+WebTestClient::
++
+include-code::webtestclient/IncludingExtraInformation[]
+<1> Configure the `title` attribute for the request fields snippet.
+<2> Set the `constraints` attribute for the `name` field.
+<3> Set the `constraints` attribute for the `email` field.
+====
+
+The second step is to provide a custom template named `request-fields.snippet` that includes the information about the fields' constraints in the generated snippet's table and adds a title.
+
+[source,indent=0]
+----
+	.{{title}} // <1>
+	|===
+	|Path|Type|Description|Constraints // <2>
+
+	{{#fields}}
+	|{{path}}
+	|{{type}}
+	|{{description}}
+	|{{constraints}} // <3>
+
+	{{/fields}}
+	|===
+----
+// <1> Add a title to the table.
+// <2> Add a new column named "Constraints".
+// <3> Include the descriptors' `constraints` attribute in each row of the table.

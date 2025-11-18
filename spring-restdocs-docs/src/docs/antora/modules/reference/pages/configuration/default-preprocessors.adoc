@@ -1,0 +1,22 @@
+[[configuration.default-preprocessors]]
+= Default Operation Preprocessors
+
+You can configure default request and response preprocessors during setup by using the `RestDocumentationConfigurer` API.
+The following examples remove the `Foo` headers from all requests and pretty print all responses:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/CustomDefaultOperationPreprocessors[]
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
+
+WebTestClient::
++
+include-code::webtestclient/CustomDefaultOperationPreprocessors[]
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
+====
+
+

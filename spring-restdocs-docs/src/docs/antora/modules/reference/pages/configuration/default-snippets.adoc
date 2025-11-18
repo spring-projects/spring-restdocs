@@ -1,0 +1,25 @@
+[[configuration.default-snippets]]
+= Default Snippets
+
+Six snippets are produced by default:
+
+* `curl-request`
+* `http-request`
+* `http-response`
+* `httpie-request`
+* `request-body`
+* `response-body`
+
+You can change the default snippet configuration during setup by using the `RestDocumentationConfigurer` API.
+The following examples produce only the `curl-request` snippet by default:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/CustomDefaultSnippets[]
+
+WebTestClient::
++
+include-code::webtestclient/CustomDefaultSnippets[]
+====

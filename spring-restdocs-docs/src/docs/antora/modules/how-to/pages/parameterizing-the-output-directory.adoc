@@ -1,0 +1,51 @@
+[[how-to.parameterizing-the-output-directory]]
+= Parameterizing the Output Directory
+
+You can parameterize the output directory used by `document`.
+The following parameters are supported:
+
+[cols="1,3"]
+|===
+| Parameter | Description
+
+| \{methodName}
+| The unmodified name of the test method.
+
+| \{method-name}
+| The name of the test method, formatted using kebab-case.
+
+| \{method_name}
+| The name of the test method, formatted using snake_case.
+
+| \{ClassName}
+| The unmodified simple name of the test class.
+
+| \{class-name}
+| The simple name of the test class, formatted using kebab-case.
+
+| \{class_name}
+| The simple name of the test class, formatted using snake_case.
+
+| \{step}
+| The count of calls made to the service in the current test.
+|===
+
+For example, `document("\{class-name}/\{method-name}")` in a test method named `creatingANote` on the test class `GettingStartedDocumentation` writes snippets into a directory named `getting-started-documentation/creating-a-note`.
+
+A parameterized output directory is particularly useful in combination with a `@BeforeEach` method.
+It lets documentation be configured once in a setup method and then reused in every test in the class.
+The following examples show how to do so:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/ParameterizedOutput[]
+
+WebTestClient::
++
+include-code::webtestclient/ParameterizedOutput[]
+====
+
+With this configuration in place, every call to the service you are testing produces the <<documenting-your-api.default-snippets,default snippets>> without any further configuration.
+Take a look at the `GettingStartedDocumentation` classes in each of the sample applications to see this functionality in action.

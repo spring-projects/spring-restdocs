@@ -1,0 +1,40 @@
+[[documenting-your-api.path-parameters]]
+= Path Parameters
+
+You can document a request's path parameters by using `pathParameters`.
+The following examples show how to do so:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/PathParameters[]
+<1> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's path parameters.
+Uses the static `pathParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the parameter named `latitude`.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<4> Document the parameter named `longitude`.
+
+WebTestClient::
++
+include-code::webtestclient/PathParameters[]
+<1> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's path parameters.
+Uses the static `pathParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the parameter named `latitude`.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<4> Document the parameter named `longitude`.
+====
+
+The result is a snippet named `path-parameters.adoc` that contains a table describing the path parameters that are supported by the resource.
+
+When documenting path parameters, the test fails if an undocumented path parameter is used in the request.
+Similarly, the test also fails if a documented path parameter is not found in the request and the path parameter has not been marked as optional.
+
+You can also document path parameters in a relaxed mode, where any undocumented parameters do not cause a test failure.
+To do so, use the `relaxedPathParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+This can be useful when documenting a particular scenario where you only want to focus on a subset of the path parameters.
+
+If you do not want to document a path parameter, you can mark it as ignored.
+Doing so prevents it from appearing in the generated snippet while avoiding the failure described earlier.

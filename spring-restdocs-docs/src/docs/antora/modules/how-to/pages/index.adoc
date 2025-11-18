@@ -1,0 +1,7 @@
+[[howto]]
+= How-to Guides
+
+This section provides answers to some common '`how do I do that...`' questions that arise when using Spring REST Docs.
+
+If you have a specific problem that we do not cover here, you might want to check https://stackoverflow.com/tags/spring-restdocs[stackoverflow.com] to see if someone has already provided an answer.
+This is also a great place to ask new questions using the `spring-restdocs` tag.

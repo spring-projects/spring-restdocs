@@ -1,0 +1,7 @@
+[[system-requirements]]
+= System Requirements
+
+Spring REST Docs has the following minimum requirements:
+
+* Java 17
+* Spring Framework 7

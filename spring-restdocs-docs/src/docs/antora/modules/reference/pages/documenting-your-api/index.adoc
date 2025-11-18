@@ -1,0 +1,4 @@
+[[documenting-your-api]]
+= Documenting your API
+
+This section provides more details about using Spring REST Docs to document your API.

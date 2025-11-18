@@ -1,0 +1,21 @@
+[[configuration.snippet-encoding]]
+= Snippet Encoding
+
+The default snippet encoding is `UTF-8`.
+You can change the default snippet encoding by using the `RestDocumentationConfigurer` API.
+For example, the following examples use `ISO-8859-1`:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/CustomEncoding[]
+
+WebTestClient::
++
+include-code::webtestclient/CustomEncoding[]
+====
+
+TIP: When Spring REST Docs converts the content of a request or a response to a `String`, the `charset` specified in the `Content-Type` header is used if it is available.
+In its absence, the JVM's default `Charset` is used.
+You can configure the JVM's default `Charset` by using the `file.encoding` system property.

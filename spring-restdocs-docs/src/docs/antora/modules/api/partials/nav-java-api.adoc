@@ -1,2 +1,0 @@
-* Java APIs
-** xref:api:java/index.html[Spring REST Docs,role=link-external, window=_blank]

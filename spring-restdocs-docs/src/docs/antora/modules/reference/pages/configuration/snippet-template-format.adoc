@@ -1,0 +1,18 @@
+[[configuration.snippet-template-format]]
+= Snippet Template Format
+
+The default snippet template format is Asciidoctor.
+Markdown is also supported out of the box.
+You can change the default format by using the `RestDocumentationConfigurer` API.
+The following examples show how to do so:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/CustomFormat[]
+
+WebTestClient::
++
+include-code::webtestclient/CustomFormat[]
+====

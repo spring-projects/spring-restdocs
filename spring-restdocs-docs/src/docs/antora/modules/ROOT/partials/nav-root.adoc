@@ -1,8 +1,0 @@
-* xref:introduction.adoc[]
-* xref:getting-started.adoc[]
-* xref:documenting-your-api.adoc[]
-* xref:customizing-requests-and-responses.adoc[]
-* xref:configuration.adoc[]
-* xref:working-with-asciidoctor.adoc[]
-* xref:working-with-markdown.adoc[]
-* xref:contributing.adoc[]

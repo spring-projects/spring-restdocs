@@ -1,0 +1,84 @@
+[[documenting-your-api.hypermedia]]
+= Hypermedia
+
+Spring REST Docs provides support for documenting the links in a https://en.wikipedia.org/wiki/HATEOAS[hypermedia-based] API.
+The following examples show how to use it:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/Hypermedia[]
+<1> Configure Spring REST docs to produce a snippet describing the response's links.
+Uses the static `links` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<2> Expect a link whose `rel` is `alpha`.
+Uses the static `linkWithRel` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<3> Expect a link whose `rel` is `bravo`.
+
+WebTestClient::
++
+include-code::webtestclient/Hypermedia[]
+<1> Configure Spring REST docs to produce a snippet describing the response's links.
+Uses the static `links` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<2> Expect a link whose `rel` is `alpha`.
+Uses the static `linkWithRel` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<3> Expect a link whose `rel` is `bravo`.
+====
+
+The result is a snippet named `links.adoc` that contains a table describing the resource's links.
+
+TIP: If a link in the response has a `title`, you can omit the description from its descriptor and the `title` is used.
+If you omit the description and the link does not have a `title`, a failure occurs.
+
+When documenting links, the test fails if an undocumented link is found in the response.
+Similarly, the test also fails if a documented link is not found in the response and the link has not been marked as optional.
+
+If you do not want to document a link, you can mark it as ignored.
+Doing so prevents it from appearing in the generated snippet while avoiding the failure described above.
+
+You can also document links in a relaxed mode, where any undocumented links do not cause a test failure.
+To do so, use the `relaxedLinks` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+This can be useful when documenting a particular scenario where you only want to focus on a subset of the links.
+
+
+
+[[documenting-your-api.hypermedia.link-formats]]
+== Hypermedia Link Formats
+
+Two link formats are understood by default:
+
+* Atom: Links are expected to be in an array named `links`.
+  This is used by default when the content type of the response is compatible with `application/json`.
+* HAL: Links are expected to be in a map named `_links`.
+  This is used by default when the content type of the response is compatible with `application/hal+json`.
+
+If you use Atom- or HAL-format links but with a different content type, you can provide one of the built-in `LinkExtractor` implementations to `links`.
+The following examples show how to do so:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/HypermediaWithSpecificExtractor[]
+// <1> Indicate that the links are in HAL format.
+Uses the static `halLinks` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+
+WebTestClient::
++
+include-code::webtestclient/HypermediaWithSpecificExtractor[]
+// <1> Indicate that the links are in HAL format.
+Uses the static `halLinks` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+====
+
+If your API represents its links in a format other than Atom or HAL, you can provide your own implementation of the `LinkExtractor` interface to extract the links from the response.
+
+
+
+[[documenting-your-api.hypermedia.ignoring-common-links]]
+== Ignoring Common Links
+
+Rather than documenting links that are common to every response, such as `self` and `curies` when using HAL, you may want to document them once in an overview section and then ignore them in the rest of your API's documentation.
+To do so, you can build on the <<documenting-your-api.reusing-snippets,support for reusing snippets>> to add link descriptors to a snippet that is preconfigured to ignore certain links.
+The following example shows how to do so:
+
+include-code::Hypermedia[]

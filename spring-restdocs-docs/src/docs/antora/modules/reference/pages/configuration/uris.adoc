@@ -1,0 +1,47 @@
+[[configuration.uris]]
+= Documented URIs
+
+This section covers configuring documented URIs.
+
+
+
+[[configuration.uris.mockmvc]]
+== MockMvc URI Customization
+
+When using MockMvc, the default configuration for URIs documented by Spring REST Docs is as follows:
+
+|===
+|Setting |Default
+
+|Scheme
+|`http`
+
+|Host
+|`localhost`
+
+|Port
+|`8080`
+|===
+
+This configuration is applied by `MockMvcRestDocumentationConfigurer`.
+You can use its API to change one or more of the defaults to suit your needs.
+The following example shows how to do so:
+
+include-code::CustomUriConfiguration[]
+
+NOTE: If the port is set to the default for the configured scheme (port 80 for HTTP or port 443 for HTTPS), it is omitted from any URIs in the generated snippets.
+
+TIP: To configure a request's context path, use the `contextPath` method on `MockHttpServletRequestBuilder`.
+
+
+
+[[configuration.uris.webtestclient]]
+== WebTestClient URI Customization
+
+When using WebTestClient, the default base for URIs documented by Spring REST Docs is `http://localhost:8080`.
+You can customize this base by using the {spring-framework-api}/org/springframework/test/web/reactive/server/WebTestClient.Builder.html#baseUrl-java.lang.String-[ `baseUrl(String)` method on `WebTestClient.Builder`].
+The following example shows how to do so:
+
+include-code::CustomUriConfiguration[]
+
+<1> Configure the base of documented URIs to be `https://api.example.com`.

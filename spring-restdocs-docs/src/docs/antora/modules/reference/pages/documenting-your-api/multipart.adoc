@@ -1,0 +1,118 @@
+[[documenting-your-api.multipart]]
+= Multipart
+
+Spring REST Docs provides support for documenting multipart requests.
+
+[[documenting-your-api.multipart.request-parts]]
+== Request Parts
+
+You can use `requestParts` to document the parts of a multipart request.
+The following example shows how to do so:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/RequestParts[]
+<1> Perform a `POST` request with a single part named `file`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's parts.
+Uses the static `requestParts` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the part named `file`.
+Uses the static `partWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+
+WebTestClient::
++
+include-code::webtestclient/RequestParts[]
+<1> Perform a `POST` request with a single part named `file`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's parts.
+Uses the static `requestParts` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the part named `file`.
+Uses the static `partWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+====
+
+The result is a snippet named `request-parts.adoc` that contains a table describing the request parts that are supported by the resource.
+
+When documenting request parts, the test fails if an undocumented part is used in the request.
+Similarly, the test also fails if a documented part is not found in the request and the part has not been marked as optional.
+
+You can also document request parts in a relaxed mode where any undocumented parts do not cause a test failure.
+To do so, use the `relaxedRequestParts` method on `org.springframework.restdocs.request.RequestDocumentation`.
+This can be useful when documenting a particular scenario where you only want to focus on a subset of the request parts.
+
+If you do not want to document a request part, you can mark it as ignored.
+This prevents it from appearing in the generated snippet while avoiding the failure described earlier.
+
+
+
+[[documenting-your-api.multipart.request-part-payloads]]
+== Request Part Payloads
+
+You can document the payload of a request part in much the same way as the <<documenting-your-api.request-response-payloads,payload of a request>>, with support for documenting a request part's body and its fields.
+
+
+
+[[documenting-your-api.multipart.request-part-payloads.body]]
+=== Documenting a Request Part's Body
+
+You can generate a snippet containing the body of a request part as follows:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/RequestPartBody[]
+<1> Configure Spring REST docs to produce a snippet containing the body of the request part named `metadata`.
+Uses the static `requestPartBody` method on `PayloadDocumentation`.
+
+WebTestClient::
++
+include-code::webtestclient/RequestPartBody[]
+<1> Configure Spring REST docs to produce a snippet containing the body of the request part named `metadata`.
+Uses the static `requestPartBody` method on `PayloadDocumentation`.
+====
+
+The result is a snippet named `request-part-$\{part-name}-body.adoc` that contains the part's body.
+For example, documenting a part named `metadata` produces a snippet named `request-part-metadata-body.adoc`.
+
+
+
+[[documenting-your-api.multipart.request-part-payloads.fields]]
+=== Documenting a Request Part's Fields
+
+You can document a request part's fields in much the same way as the fields of a request or response, as follows:
+
+[tabs]
+====
+MockMvc::
++
+include-code::mockmvc/RequestPartFields[]
+<1> Configure Spring REST docs to produce a snippet describing the fields in the payload of the request part named `metadata`.
+Uses the static `requestPartFields` method on `PayloadDocumentation`.
+<2> Expect a field with the path `version`.
+Uses the static `fieldWithPath` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+
+WebTestClient::
++
+include-code::webtestclient/RequestPartFields[]
+<1> Configure Spring REST docs to produce a snippet describing the fields in the payload of the request part named `metadata`.
+Uses the static `requestPartFields` method on `PayloadDocumentation`.
+<2> Expect a field with the path `version`.
+Uses the static `fieldWithPath` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+====
+
+The result is a snippet that contains a table describing the part's fields.
+This snippet is named `request-part-$\{part-name}-fields.adoc`.
+For example, documenting a part named `metadata` produces a snippet named `request-part-metadata-fields.adoc`.
+
+When documenting fields, the test fails if an undocumented field is found in the payload of the part.
+Similarly, the test also fails if a documented field is not found in the payload of the part and the field has not been marked as optional.
+For payloads with a hierarchical structure, documenting a field is sufficient for all of its descendants to also be treated as having been documented.
+
+If you do not want to document a field, you can mark it as ignored.
+Doing so prevents it from appearing in the generated snippet while avoiding the failure described above.
+
+You can also document fields in a relaxed mode, where any undocumented fields do not cause a test failure.
+To do so, use the `relaxedRequestPartFields` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+This can be useful when documenting a particular scenario where you only want to focus on a subset of the payload of the part.
+
+For further information on describing fields, documenting payloads that use XML, and more, see the <<documenting-your-api.request-response-payloads,section on documenting request and response payloads>>.
