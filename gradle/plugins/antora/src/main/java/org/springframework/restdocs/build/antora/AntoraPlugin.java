@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.gradle.node.NodeExtension;
@@ -87,7 +88,6 @@ public class AntoraPlugin implements Plugin<Project> {
 					target.getLayout().getBuildDirectory().file("generated/docs/antora-yml/antora.yml"));
 			task.setProperty("yml", getDefaultYml(target));
 			task.getAsciidocAttributes().putAll(getAsciidocAttributes(target));
-
 		});
 		tasks.withType(AntoraTask.class, (antoraTask) -> {
 			antoraTask.setGroup("Documentation");
@@ -130,16 +130,17 @@ public class AntoraPlugin implements Plugin<Project> {
 	private Provider<Map<String, String>> getAsciidocAttributes(Project project) {
 		return project.provider(() -> {
 			String version = project.getVersion().toString();
-			return Map.of( //
-					"branch-or-tag", version.toString().endsWith("SNAPSHOT") ? "main" : "v$%s".formatted(version), //
-					"github", "https://github.com/spring-projects/spring-restdocs", //
-					"include-java", "ROOT:example$java/org/springframework/restdocs/docs", //
-					"project-version", version.toString(), //
-					"samples", "https://github.com/spring-projects/spring-restdocs-samples/tree/main", //
-					"source", "https://github.com/spring-projects/spring-restdocs/tree/{branch-or-tag}", //
-					"spring-boot-docs", "https://docs.spring.io/spring-boot/reference", //
-					"spring-framework-api", "https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api", //
-					"spring-framework-docs", "https://docs.spring.io/spring-framework/reference");
+			Map<String, String> attributes = new LinkedHashMap<>();
+			attributes.put("branch-or-tag", version.toString().endsWith("SNAPSHOT") ? "main" : "v$%s".formatted(version));
+			attributes.put("github", "https://github.com/spring-projects/spring-restdocs");
+			attributes.put("include-java", "ROOT:example$java/org/springframework/restdocs/docs");
+			attributes.put("project-version", version.toString());
+			attributes.put("samples", "https://github.com/spring-projects/spring-restdocs-samples/tree/main");
+			attributes.put("source", "https://github.com/spring-projects/spring-restdocs/tree/{branch-or-tag}");
+			attributes.put("spring-boot-docs", "https://docs.spring.io/spring-boot/reference");
+			attributes.put("spring-framework-api", "https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api");
+			attributes.put("spring-framework-docs", "https://docs.spring.io/spring-framework/reference");
+			return attributes;
 		});
 	}
 
