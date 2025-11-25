@@ -107,7 +107,6 @@ class MockMvcResponseConverter implements ResponseConverter<MockHttpServletRespo
 
 	private void appendIfAvailable(StringBuilder header, String value) {
 		if (StringUtils.hasText(value)) {
-			header.append("");
 			header.append(value);
 		}
 	}
