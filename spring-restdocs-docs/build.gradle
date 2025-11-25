@@ -53,7 +53,6 @@ configurations {
 }
 
 def aggregatedJavadoc = tasks.register('aggregatedJavadoc', Javadoc) {
-	// dependsOn configurations.resolvedBom
 	destinationDir = project.file(project.layout.buildDirectory.dir("docs/javadoc"))
 	source = configurations.javadocSource
 	classpath = configurations.javadocClasspath
@@ -61,13 +60,17 @@ def aggregatedJavadoc = tasks.register('aggregatedJavadoc', Javadoc) {
 	options {
 		author = true
 		docTitle = "Spring REST Docs ${project.version} API"
+		links = [
+			"https://docs.spring.io/spring-framework/docs/$springFrameworkVersion/javadoc-api/",
+			"https://docs.hibernate.org/validator/9.0/api/",
+			"https://jakarta.ee/specifications/bean-validation/3.1/apidocs/"
+		] as String[]
 		memberLevel = "protected"
 		outputLevel = "quiet"
 		splitIndex = true
 		use = true
 		windowTitle = "Spring REST Docs ${project.version} API"
 	}
-	// doFirst(new ConfigureJavadocLinks(configurations.resolvedBom, ["Spring Framework", "Spring Security", "Tomcat"]))
 }
 
 project.rootProject.gradle.projectsEvaluated {
