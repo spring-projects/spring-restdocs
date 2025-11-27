@@ -35,7 +35,7 @@ Maven::
 			<plugin> <2>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>generate-docs</id>
@@ -74,46 +74,51 @@ Gradle::
 [source,indent=0,subs="verbatim,attributes"]
 ----
 	plugins { <1>
-		id "org.asciidoctor.jvm.convert" version "3.3.2"
+		id "org.asciidoctor.jvm.convert" version "4.0.5"
+	}
+
+	asciidoctorj { <2>
+		version = "3.0.0"
 	}
 
 	configurations {
-		asciidoctorExt <2>
+		asciidoctorExt <3>
 	}
 
 	dependencies {
-		asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}' <3>
-		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <4>
+		asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:{project-version}' <4>
+		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:{project-version}' <5>
 	}
 
-	ext { <5>
+	ext { <6>
 		snippetsDir = file('build/generated-snippets')
 	}
 
-	test { <6>
+	tasks.named("test") { <7>
 		outputs.dir snippetsDir
 	}
 
-	asciidoctor { <7>
-		inputs.dir snippetsDir <8>
-		configurations 'asciidoctorExt' <9>
-		dependsOn test <10>
+	tasks.named("asciidoctor") { <8>
+		inputs.dir snippetsDir <9>
+		configurations 'asciidoctorExt' <10>
+		dependsOn test <11>
 	}
 ----
 <1> Apply the Asciidoctor plugin.
-<2> Declare the `asciidoctorExt` configuration for dependencies that extend Asciidoctor.
-<3> Add a dependency on `spring-restdocs-asciidoctor` in the `asciidoctorExt` configuration.
+<2> Configure the Asciidoctor plugin to use the required version of AsciidoctorJ.
+<3> Declare the `asciidoctorExt` configuration for dependencies that extend Asciidoctor.
+<4> Add a dependency on `spring-restdocs-asciidoctor` in the `asciidoctorExt` configuration.
 This will automatically configure the `snippets` attribute for use in your `.adoc` files to point to `build/generated-snippets`.
 It will also allow you to use the `operation` block macro.
 It requires AsciidoctorJ 3.0.
-<4> Add a dependency on `spring-restdocs-mockmvc` in the `testImplementation` configuration.
+<5> Add a dependency on `spring-restdocs-mockmvc` in the `testImplementation` configuration.
 If you want to use `WebTestClient` rather than MockMvc, add a dependency on `spring-restdocs-webtestclient` instead.
-<5> Configure a `snippetsDir` property that defines the output location for generated snippets.
-<6> Make Gradle aware that running the `test` task will write output to the snippetsDir. This is required for https://docs.gradle.org/current/userguide/incremental_build.html[incremental builds].
-<7> Configure the `asciidoctor` task.
-<8> Make Gradle aware that running the task will read input from the snippetsDir. This is required for https://docs.gradle.org/current/userguide/incremental_build.html[incremental builds].
-<9> Configure the use of the `asciidoctorExt` configuration for extensions.
-<10> Make the task depend on the `test` task so that the tests are run before the documentation is created.
+<6> Configure a `snippetsDir` property that defines the output location for generated snippets.
+<7> Make Gradle aware that running the `test` task will write output to the snippetsDir. This is required for https://docs.gradle.org/current/userguide/incremental_build.html[incremental builds].
+<8> Configure the `asciidoctor` task.
+<9> Make Gradle aware that running the task will read input from the snippetsDir. This is required for https://docs.gradle.org/current/userguide/incremental_build.html[incremental builds].
+<10> Configure the use of the `asciidoctorExt` configuration for extensions.
+<11> Make the task depend on the `test` task so that the tests are run before the documentation is created.
 ====
 
 
