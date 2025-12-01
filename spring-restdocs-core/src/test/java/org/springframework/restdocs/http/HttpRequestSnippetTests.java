@@ -139,6 +139,13 @@ public class HttpRequestSnippetTests extends AbstractSnippetTests {
 	}
 
 	@Test
+	public void postRequestWithNoContentTypeAndNoBodyDoesNotIncludeContentTypeHeader() throws IOException {
+		new HttpRequestSnippet().document(this.operationBuilder.request("http://localhost/foo").method("POST").build());
+		assertThat(this.generatedSnippets.httpRequest())
+			.is(httpRequest(RequestMethod.POST, "/foo").header(HttpHeaders.HOST, "localhost"));
+	}
+
+	@Test
 	public void putRequestWithContent() throws IOException {
 		String content = "Hello, world";
 		new HttpRequestSnippet()
