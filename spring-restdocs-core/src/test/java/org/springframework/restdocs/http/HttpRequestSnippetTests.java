@@ -244,6 +244,14 @@ class HttpRequestSnippetTests {
 			.isHttpRequest((request) -> request.delete("/foo?a=alpha&b=bravo").header("Host", "localhost"));
 	}
 
+	@RenderedSnippetTest
+	void postRequestWithNoContentTypeAndNoBodyDoesNotIncludeContentTypeHeader(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/foo").method("POST").build());
+		assertThat(snippets.httpRequest())
+			.isHttpRequest((request) -> request.post("/foo").header(HttpHeaders.HOST, "localhost"));
+	}
+
 	private String createPart(String content) {
 		return this.createPart(content, true);
 	}
