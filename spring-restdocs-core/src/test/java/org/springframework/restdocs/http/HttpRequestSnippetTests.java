@@ -244,6 +244,22 @@ class HttpRequestSnippetTests {
 			.isHttpRequest((request) -> request.delete("/foo?a=alpha&b=bravo").header("Host", "localhost"));
 	}
 
+	@RenderedSnippetTest
+	void postFormUrlEncodedRequestIsDocumentedWhenContentTypeIsExplicit(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		String body = "a=alpha&b=bravo";
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/foo")
+			.method("POST")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+			.content(body)
+			.build());
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.post("/foo")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+			.header(HttpHeaders.HOST, "localhost")
+			.header(HttpHeaders.CONTENT_LENGTH, body.getBytes().length)
+			.content(body));
+	}
+
 	private String createPart(String content) {
 		return this.createPart(content, true);
 	}
