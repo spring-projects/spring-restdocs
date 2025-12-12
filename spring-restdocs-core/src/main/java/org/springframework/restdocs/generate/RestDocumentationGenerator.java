@@ -161,7 +161,6 @@ public final class RestDocumentationGenerator<REQ, RESP> {
 		Assert.notNull(identifier, "identifier must be non-null");
 		Assert.notNull(requestConverter, "requestConverter must be non-null");
 		Assert.notNull(responseConverter, "responseConverter must be non-null");
-		Assert.notNull(identifier, "identifier must be non-null");
 		Assert.notNull(requestPreprocessor, "requestPreprocessor must be non-null");
 		Assert.notNull(responsePreprocessor, "responsePreprocessor must be non-null");
 		Assert.notNull(snippets, "snippets must be non-null");
