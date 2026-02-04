@@ -111,7 +111,7 @@ public final class Preprocessors {
 
 	/**
 	 * Returns a {@code UriModifyingOperationPreprocessor} that will modify URIs in the
-	 * request or response by changing one or more of their host, scheme, and port.
+	 * request or response by changing one or more of their host, scheme, port, and path.
 	 * @return the preprocessor
 	 * @since 2.0.1
 	 */
