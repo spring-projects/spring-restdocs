@@ -102,6 +102,14 @@ class HttpRequestSnippetTests {
 	}
 
 	@RenderedSnippetTest
+	void postRequestWithoutContentDoesNotInferContentType(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/foo").method("POST").build());
+		assertThat(snippets.httpRequest())
+			.isHttpRequest((request) -> request.post("/foo").header(HttpHeaders.HOST, "localhost"));
+	}
+
+	@RenderedSnippetTest
 	void postRequestWithContentAndQueryParameters(OperationBuilder operationBuilder, AssertableSnippets snippets)
 			throws IOException {
 		String content = "Hello, world";
