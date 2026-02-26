@@ -18,8 +18,9 @@ package org.springframework.restdocs.payload;
 
 import java.util.Arrays;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import tools.jackson.databind.ObjectMapper;
 
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
@@ -98,7 +99,12 @@ class JsonFieldPathsTests {
 	}
 
 	private Object json(String json) {
-		return new ObjectMapper().readValue(json, Object.class);
+		try {
+			return new ObjectMapper().readValue(json, Object.class);
+		}
+		catch (JsonProcessingException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 }

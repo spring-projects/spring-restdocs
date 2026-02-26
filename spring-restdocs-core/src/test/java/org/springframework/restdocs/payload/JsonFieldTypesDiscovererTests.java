@@ -16,8 +16,9 @@
 
 package org.springframework.restdocs.payload;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -178,7 +179,12 @@ class JsonFieldTypesDiscovererTests {
 	}
 
 	private JsonFieldTypes discoverFieldTypes(String path, String json) {
-		return this.fieldTypeDiscoverer.discoverFieldTypes(path, new ObjectMapper().readValue(json, Object.class));
+		try {
+			return this.fieldTypeDiscoverer.discoverFieldTypes(path, new ObjectMapper().readValue(json, Object.class));
+		}
+		catch (JsonProcessingException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 }

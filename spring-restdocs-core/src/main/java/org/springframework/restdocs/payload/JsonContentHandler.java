@@ -16,16 +16,17 @@
 
 package org.springframework.restdocs.payload;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.jspecify.annotations.Nullable;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.SerializationFeature;
-import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
@@ -119,7 +120,7 @@ class JsonContentHandler implements ContentHandler {
 			try {
 				return this.objectMapper.writeValueAsString(content);
 			}
-			catch (JacksonException ex) {
+			catch (JsonProcessingException ex) {
 				throw new PayloadHandlingException(ex);
 			}
 		}
@@ -134,7 +135,7 @@ class JsonContentHandler implements ContentHandler {
 		try {
 			return new ObjectMapper().readValue(this.rawContent, Object.class);
 		}
-		catch (JacksonException ex) {
+		catch (IOException ex) {
 			throw new PayloadHandlingException(ex);
 		}
 	}

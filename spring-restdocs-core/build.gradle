@@ -11,7 +11,7 @@ description = "Spring REST Docs Core"
 dependencies {
 	compileOnly("org.apiguardian:apiguardian-api")
 
-	implementation("tools.jackson.core:jackson-databind")
+	implementation("com.fasterxml.jackson.core:jackson-databind")
 	implementation("org.springframework:spring-web")
 	implementation("com.samskivert:jmustache")
 
