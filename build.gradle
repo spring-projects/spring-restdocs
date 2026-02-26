@@ -2,8 +2,38 @@ allprojects {
 	group = "org.springframework.restdocs"
 	repositories {
 		mavenCentral()
-		if (version.endsWith('-SNAPSHOT')) {
-			maven { url = "https://repo.spring.io/snapshot" }
+//		if (version.endsWith('-SNAPSHOT')) {
+//			maven { url = "https://repo.spring.io/snapshot" }
+//		}
+	}
+}
+
+subprojects {
+	// ./gradlew publish -PpublishUrl=XXX -PpublishUser=YYY -PpublishPassword=ZZZ
+	plugins.withId("maven-publish") {
+		publishing {
+			repositories {
+				maven {
+					name = "releaseRepo"
+					url = uri(findProperty("publishUrl"))
+					credentials {
+						username = findProperty("publishUser")
+						password = findProperty("publishPassword")
+					}
+				}
+			}
+		}
+
+		repositories {
+			maven {
+				name = "releaseRepo"
+				url = uri(findProperty("publishUrl"))
+
+				credentials {
+					username = findProperty("publishUser")
+					password = findProperty("publishPassword")
+				}
+			}
 		}
 	}
 }
