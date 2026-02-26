@@ -1,3 +1,14 @@
+# FORKED REPOSITORY
+
+This fork was made to create a version compatible with Spring Boot 4 but using Jackson 2.
+This is required because the mere presence of Jackson 3 on the classpath can trigger autoconfiguration or feature detection
+in some parts of Spring/Spring Boot.
+While we can decorrelate the upgrade to Spring Boot 4 from the upgrade to Jackson 3, to Apps are encouraged to migrate to Jackson 3 soon.
+
+Deploy to our Maven repo with `./gradlew publish -PpublishUrl=XXX -PpublishUser=YYY -PpublishPassword=ZZZ`.
+
+We won't maintain this fork for longer than necessary for internal use and support only our internal use cases.
+
 # Spring REST Docs [![Build status][1]][2] [![Revved up by Develocity][23]][24]
 
 ## Overview
