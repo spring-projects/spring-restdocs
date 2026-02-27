@@ -85,7 +85,7 @@ class MavenPublishPluginConventions extends Conventions<MavenPublishPlugin> {
 				options.links(
 						"https://docs.spring.io/spring-framework/docs/"
 								+ getProject().property("springFrameworkVersion") + "/javadoc-api/",
-						"https://docs.jboss.org/hibernate/validator/9.0/api/",
+						"https://docs.hibernate.org/validator/9.0/api/",
 						"https://jakarta.ee/specifications/bean-validation/3.1/apidocs/");
 			});
 		});
