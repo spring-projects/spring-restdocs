@@ -21,6 +21,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,37 @@ class ValidatorConstraintResolverTests {
 	}
 
 	@Test
+	void singleMethodParameterConstraint() throws NoSuchMethodException {
+		Method method = ConstrainedMethods.class.getDeclaredMethod("single", String.class);
+		List<Constraint> constraints = this.resolver.resolveForMethodParameter(method, 0);
+		assertThat(constraints).hasSize(1);
+		assertThat(constraints.get(0).getName()).isEqualTo(NotNull.class.getName());
+	}
+
+	@Test
+	void multipleMethodParameterConstraints() throws NoSuchMethodException {
+		Method method = ConstrainedMethods.class.getDeclaredMethod("multiple", String.class);
+		List<Constraint> constraints = this.resolver.resolveForMethodParameter(method, 0);
+		assertThat(constraints).hasSize(2);
+		assertThat(constraints.get(0)).is(constraint(NotNull.class));
+		assertThat(constraints.get(1)).is(constraint(Size.class).config("min", 8).config("max", 16));
+	}
+
+	@Test
+	void noMethodParameterConstraints() throws NoSuchMethodException {
+		Method method = ConstrainedMethods.class.getDeclaredMethod("none", String.class);
+		List<Constraint> constraints = this.resolver.resolveForMethodParameter(method, 0);
+		assertThat(constraints).hasSize(0);
+	}
+
+	@Test
+	void negativeMethodParameterIndexReturnsNoConstraints() throws NoSuchMethodException {
+		Method method = ConstrainedMethods.class.getDeclaredMethod("single", String.class);
+		List<Constraint> constraints = this.resolver.resolveForMethodParameter(method, -1);
+		assertThat(constraints).isEmpty();
+	}
+
+	@Test
 	void compositeConstraint() {
 		List<Constraint> constraints = this.resolver.resolveForProperty("composite", ConstrainedFields.class);
 		assertThat(constraints).hasSize(1);
@@ -93,6 +125,19 @@ class ValidatorConstraintResolverTests {
 
 		@CompositeConstraint
 		private String composite;
+
+	}
+
+	private static final class ConstrainedMethods {
+
+		void single(@NotNull String single) {
+		}
+
+		void multiple(@NotNull @Size(min = 8, max = 16) String multiple) {
+		}
+
+		void none(String none) {
+		}
 
 	}
 
