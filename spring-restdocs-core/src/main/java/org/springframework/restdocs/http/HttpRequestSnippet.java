@@ -178,7 +178,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private boolean requiresFormEncodingContentTypeHeader(OperationRequest request) {
 		return request.getHeaders().get(HttpHeaders.CONTENT_TYPE) == null && isPutPostOrPatch(request)
-				&& !includeParametersInUri(request);
+				&& request.getContent().length > 0 && !includeParametersInUri(request);
 	}
 
 	private Map<String, String> header(String name, String value) {

@@ -131,7 +131,16 @@ class HttpRequestSnippetTests {
 	}
 
 	@RenderedSnippetTest
+	void postRequestWithNoContentTypeAndNoBodyDoesNotIncludeContentTypeHeader(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/foo").method("POST").build());
+		assertThat(snippets.httpRequest())
+			.isHttpRequest((request) -> request.post("/foo").header(HttpHeaders.HOST, "localhost"));
+	}
+
+	@RenderedSnippetTest
 	void putRequestWithContent(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+
 		String content = "Hello, world";
 		new HttpRequestSnippet()
 			.document(operationBuilder.request("http://localhost/foo").method("PUT").content(content).build());
