@@ -31,6 +31,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.groups.Default;
 import org.assertj.core.api.Condition;
 import org.assertj.core.description.TextDescription;
 import org.hibernate.validator.constraints.CompositionType;
@@ -46,18 +47,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class ValidatorConstraintResolverTests {
 
-	private final ValidatorConstraintResolver resolver = new ValidatorConstraintResolver();
-
 	@Test
 	void singleFieldConstraint() {
-		List<Constraint> constraints = this.resolver.resolveForProperty("single", ConstrainedFields.class);
+		List<Constraint> constraints = resolveForProperty("single", ConstrainedFields.class);
 		assertThat(constraints).hasSize(1);
 		assertThat(constraints.get(0).getName()).isEqualTo(NotNull.class.getName());
 	}
 
 	@Test
 	void multipleFieldConstraints() {
-		List<Constraint> constraints = this.resolver.resolveForProperty("multiple", ConstrainedFields.class);
+		List<Constraint> constraints = resolveForProperty("multiple", ConstrainedFields.class);
 		assertThat(constraints).hasSize(2);
 		assertThat(constraints.get(0)).is(constraint(NotNull.class));
 		assertThat(constraints.get(1)).is(constraint(Size.class).config("min", 8).config("max", 16));
@@ -65,14 +64,67 @@ class ValidatorConstraintResolverTests {
 
 	@Test
 	void noFieldConstraints() {
-		List<Constraint> constraints = this.resolver.resolveForProperty("none", ConstrainedFields.class);
+		List<Constraint> constraints = resolveForProperty("none", ConstrainedFields.class);
 		assertThat(constraints).hasSize(0);
 	}
 
 	@Test
 	void compositeConstraint() {
-		List<Constraint> constraints = this.resolver.resolveForProperty("composite", ConstrainedFields.class);
+		List<Constraint> constraints = resolveForProperty("composite", ConstrainedFields.class);
 		assertThat(constraints).hasSize(1);
+	}
+
+	@Test
+	void constraintsWithSpecificGroup() {
+		List<Constraint> constraints = resolveForProperty("street1", ConstrainedFields.class, BasicPostal.class);
+		assertThat(constraints).hasSize(1);
+		assertThat(constraints.get(0)).is(constraint(NotNull.class));
+	}
+
+	@Test
+	void constraintsWithSpecificGroupInheritance() {
+		List<Constraint> constraints = resolveForProperty("street1", ConstrainedFields.class, FullPostal.class);
+		assertThat(constraints).hasSize(1);
+		assertThat(constraints.get(0)).is(constraint(NotNull.class));
+	}
+
+	@Test
+	void constraintsWithSpecificGroupInheritanceIncludingDefault() {
+		List<Constraint> constraints = resolveForProperty("single", ConstrainedFields.class, FullPostal.class);
+		assertThat(constraints).hasSize(1);
+		assertThat(constraints.get(0)).is(constraint(NotNull.class));
+	}
+
+	@Test
+	void constraintsWithNoMatchingGroup() {
+		List<Constraint> constraints = resolveForProperty("doorCode", ConstrainedFields.class, BasicPostal.class);
+		assertThat(constraints).hasSize(0);
+	}
+
+	@Test
+	void constraintsWithMatchingGroup() {
+		List<Constraint> constraints = resolveForProperty("doorCode", ConstrainedFields.class, FullPostal.class);
+		assertThat(constraints).hasSize(1);
+		assertThat(constraints.get(0)).is(constraint(NotNull.class));
+	}
+
+	@Test
+	void constraintsWithMultipleGroups() {
+		List<Constraint> constraints = resolveForProperty("street1", ConstrainedFields.class, BasicPostal.class,
+				FullPostal.class);
+		assertThat(constraints).hasSize(1);
+		assertThat(constraints.get(0)).is(constraint(NotNull.class));
+	}
+
+	@Test
+	void constraintsWithDefaultGroup() {
+		List<Constraint> constraints = resolveForProperty("single", ConstrainedFields.class, Default.class);
+		assertThat(constraints).hasSize(1);
+	}
+
+	private List<Constraint> resolveForProperty(String property, Class<?> clazz, Class<?>... groups) {
+		ValidatorConstraintResolver resolver = new ValidatorConstraintResolver(groups);
+		return resolver.resolveForProperty(property, clazz);
 	}
 
 	private ConstraintCondition constraint(final Class<? extends Annotation> annotation) {
@@ -93,6 +145,15 @@ class ValidatorConstraintResolverTests {
 
 		@CompositeConstraint
 		private String composite;
+
+		@NotNull(groups = BasicPostal.class)
+		String street1;
+
+		@NotNull(groups = BasicPostal.class)
+		String zipCode;
+
+		@NotNull(groups = FullPostal.class)
+		String doorCode;
 
 	}
 
@@ -140,6 +201,14 @@ class ValidatorConstraintResolverTests {
 			}
 			return true;
 		}
+
+	}
+
+	interface BasicPostal extends Default {
+
+	}
+
+	interface FullPostal extends BasicPostal {
 
 	}
 
