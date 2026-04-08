@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.constraints;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,8 @@ import jakarta.validation.ValidatorFactory;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.metadata.BeanDescriptor;
 import jakarta.validation.metadata.ConstraintDescriptor;
+import jakarta.validation.metadata.MethodDescriptor;
+import jakarta.validation.metadata.ParameterDescriptor;
 import jakarta.validation.metadata.PropertyDescriptor;
 
 /**
@@ -69,6 +72,28 @@ public class ValidatorConstraintResolver implements ConstraintResolver {
 			for (ConstraintDescriptor<?> constraintDescriptor : propertyDescriptor.getConstraintDescriptors()) {
 				constraints.add(new Constraint(constraintDescriptor.getAnnotation().annotationType().getName(),
 						constraintDescriptor.getAttributes()));
+			}
+		}
+		return constraints;
+	}
+
+	@Override
+	public List<Constraint> resolveForMethodParameter(Method method, int parameterIndex) {
+		List<Constraint> constraints = new ArrayList<>();
+		if (parameterIndex < 0) {
+			return constraints;
+		}
+		BeanDescriptor beanDescriptor = this.validator.getConstraintsForClass(method.getDeclaringClass());
+		MethodDescriptor methodDescriptor = beanDescriptor.getConstraintsForMethod(method.getName(),
+				method.getParameterTypes());
+		if (methodDescriptor != null) {
+			List<ParameterDescriptor> parameterDescriptors = methodDescriptor.getParameterDescriptors();
+			if (parameterIndex < parameterDescriptors.size()) {
+				ParameterDescriptor parameterDescriptor = parameterDescriptors.get(parameterIndex);
+				for (ConstraintDescriptor<?> constraintDescriptor : parameterDescriptor.getConstraintDescriptors()) {
+					constraints.add(new Constraint(constraintDescriptor.getAnnotation().annotationType().getName(),
+							constraintDescriptor.getAttributes()));
+				}
 			}
 		}
 		return constraints;

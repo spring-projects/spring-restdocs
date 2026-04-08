@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.constraints;
 
+import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,5 +35,17 @@ public interface ConstraintResolver {
 	 * @return the list of constraints, never {@code null}
 	 */
 	List<Constraint> resolveForProperty(String property, Class<?> clazz);
+
+	/**
+	 * Resolves and returns the constraints for the given {@code parameterIndex} of the
+	 * given {@code method}. If there are no constraints, an empty list is returned.
+	 * @param method the method
+	 * @param parameterIndex the index of the parameter
+	 * @return the list of constraints, never {@code null}
+	 * @since 4.0.1
+	 */
+	default List<Constraint> resolveForMethodParameter(Method method, int parameterIndex) {
+		return Collections.emptyList();
+	}
 
 }
