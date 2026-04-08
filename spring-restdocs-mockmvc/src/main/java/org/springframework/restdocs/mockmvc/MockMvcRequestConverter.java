@@ -284,7 +284,7 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 	}
 
 	private static String decode(String encoded) {
-		return URLDecoder.decode(encoded, StandardCharsets.US_ASCII);
+		return URLDecoder.decode(encoded, StandardCharsets.UTF_8);
 	}
 
 }

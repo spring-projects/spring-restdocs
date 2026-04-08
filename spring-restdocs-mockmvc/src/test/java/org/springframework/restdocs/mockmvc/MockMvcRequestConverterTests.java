@@ -161,6 +161,17 @@ class MockMvcRequestConverterTests {
 	}
 
 	@Test
+	void postRequestWithNonAsciiParametersAndQueryStringCreatesFormUrlEncodedContentWithoutDuplication() {
+		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.post("/foo?name=\uD64D\uAE38\uB3D9")
+			.param("name", "\uD64D\uAE38\uB3D9")
+			.param("other", "\uD64D\uAE38\uB3D9"));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?name=%ED%99%8D%EA%B8%B8%EB%8F%99"));
+		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+		assertThat(request.getContentAsString()).isEqualTo("other=%ED%99%8D%EA%B8%B8%EB%8F%99");
+		assertThat(request.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_FORM_URLENCODED);
+	}
+
+	@Test
 	void mockMultipartFileUpload() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.multipart("/foo")
 			.file(new MockMultipartFile("file", new byte[] { 1, 2, 3, 4 })));
