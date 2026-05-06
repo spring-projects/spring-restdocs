@@ -105,8 +105,8 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 	}
 
 	private RequestCookie createRequestCookie(String header) {
-		String[] components = header.split("=");
-		return new RequestCookie(components[0], components[1]);
+		int separator = header.indexOf('=');
+		return new RequestCookie(header.substring(0, separator), header.substring(separator + 1));
 	}
 
 	private final class ExchangeResultReactiveHttpInputMessage implements ReactiveHttpInputMessage {
