@@ -335,4 +335,22 @@ public class WebTestClientRequestConverterTests {
 		assertThat(request.getCookies()).extracting("value").containsExactly("cookieVal1", "cookieVal2");
 	}
 
+	@Test
+	public void requestWithCookieValueContainingEqualsSign() {
+		ExchangeResult result = WebTestClient.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> null))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.cookie("sessionId", "YWJjZGVm==")
+			.exchange()
+			.expectBody()
+			.returnResult();
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getCookies()).hasSize(1);
+		assertThat(request.getCookies()).extracting("name").containsExactly("sessionId");
+		assertThat(request.getCookies()).extracting("value").containsExactly("YWJjZGVm==");
+	}
+
 }
