@@ -17,6 +17,7 @@
 package org.springframework.restdocs.operation.preprocess;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.OperationRequest;
 import org.springframework.restdocs.operation.OperationRequestFactory;
 import org.springframework.restdocs.operation.OperationRequestPart;
@@ -297,6 +299,32 @@ public class UriModifyingOperationPreprocessorTests {
 			.preprocess(createRequestWithUri("http://localhost:12345?foo=%7B%7D"));
 		assertThat(processed.getUri()).isEqualTo(URI.create("https://localhost:12345?foo=%7B%7D"));
 
+	}
+
+	@Test
+	public void requestContentWithNonAsciiCharactersIsPreservedWhenCharsetIsIso88591() {
+		this.preprocessor.scheme("https");
+		String original = "café http://localhost:12345 done";
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType("text/plain;charset=ISO-8859-1"));
+		OperationRequest request = this.requestFactory.create(URI.create("http://localhost"), HttpMethod.GET,
+				original.getBytes(StandardCharsets.ISO_8859_1), headers, Collections.<OperationRequestPart>emptyList());
+		OperationRequest processed = this.preprocessor.preprocess(request);
+		String result = new String(processed.getContent(), StandardCharsets.ISO_8859_1);
+		assertThat(result).isEqualTo("café https://localhost:12345 done");
+	}
+
+	@Test
+	public void responseContentWithNonAsciiCharactersIsPreservedWhenCharsetIsIso88591() {
+		this.preprocessor.scheme("https");
+		String original = "café http://localhost:12345 done";
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType("text/plain;charset=ISO-8859-1"));
+		OperationResponse response = this.responseFactory.create(HttpStatus.OK, headers,
+				original.getBytes(StandardCharsets.ISO_8859_1));
+		OperationResponse processed = this.preprocessor.preprocess(response);
+		String result = new String(processed.getContent(), StandardCharsets.ISO_8859_1);
+		assertThat(result).isEqualTo("café https://localhost:12345 done");
 	}
 
 	@Test
