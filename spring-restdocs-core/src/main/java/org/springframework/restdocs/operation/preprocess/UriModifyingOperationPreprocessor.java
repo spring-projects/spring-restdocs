@@ -17,6 +17,7 @@
 package org.springframework.restdocs.operation.preprocess;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -193,15 +194,9 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 
 		@Override
 		public byte[] modifyContent(byte[] content, @Nullable MediaType contentType) {
-			String input;
-			if (contentType != null && contentType.getCharset() != null) {
-				input = new String(content, contentType.getCharset());
-			}
-			else {
-				input = new String(content);
-			}
-
-			return modify(input).getBytes();
+			Charset charset = (contentType != null && contentType.getCharset() != null) ? contentType.getCharset()
+					: Charset.defaultCharset();
+			return modify(new String(content, charset)).getBytes(charset);
 		}
 
 		private String modify(String input) {
