@@ -17,7 +17,9 @@
 package org.springframework.restdocs.constraints;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -38,40 +40,51 @@ import jakarta.validation.metadata.PropertyDescriptor;
  */
 public class ValidatorConstraintResolver implements ConstraintResolver {
 
+	private final Class<?>[] groups;
+
 	private final Validator validator;
 
 	/**
 	 * Creates a new {@code ValidatorConstraintResolver} that will use a {@link Validator}
 	 * in its default configuration to resolve constraints.
-	 *
+	 * @param groups the validation groups to consider when resolving constraints
 	 * @see Validation#buildDefaultValidatorFactory()
 	 * @see ValidatorFactory#getValidator()
 	 */
-	public ValidatorConstraintResolver() {
-		this(Validation.buildDefaultValidatorFactory().getValidator());
+	public ValidatorConstraintResolver(Class<?>... groups) {
+		this(Validation.buildDefaultValidatorFactory().getValidator(), groups);
 	}
 
 	/**
 	 * Creates a new {@code ValidatorConstraintResolver} that will use the given
 	 * {@code Validator} to resolve constraints.
 	 * @param validator the validator
+	 * @param groups the validation groups to consider when resolving constraints.
 	 */
-	public ValidatorConstraintResolver(Validator validator) {
+	public ValidatorConstraintResolver(Validator validator, Class<?>... groups) {
 		this.validator = validator;
+		this.groups = groups;
 	}
 
 	@Override
 	public List<Constraint> resolveForProperty(String property, Class<?> clazz) {
 		List<Constraint> constraints = new ArrayList<>();
+		for (ConstraintDescriptor<?> constraintDescriptor : getConstraintDescriptors(property, clazz)) {
+			constraints.add(new Constraint(constraintDescriptor.getAnnotation().annotationType().getName(),
+					constraintDescriptor.getAttributes()));
+		}
+		return constraints;
+	}
+
+	private Set<ConstraintDescriptor<?>> getConstraintDescriptors(String property, Class<?> clazz) {
 		BeanDescriptor beanDescriptor = this.validator.getConstraintsForClass(clazz);
 		PropertyDescriptor propertyDescriptor = beanDescriptor.getConstraintsForProperty(property);
 		if (propertyDescriptor != null) {
-			for (ConstraintDescriptor<?> constraintDescriptor : propertyDescriptor.getConstraintDescriptors()) {
-				constraints.add(new Constraint(constraintDescriptor.getAnnotation().annotationType().getName(),
-						constraintDescriptor.getAttributes()));
-			}
+			return propertyDescriptor.findConstraints()
+				.unorderedAndMatchingGroups(this.groups)
+				.getConstraintDescriptors();
 		}
-		return constraints;
+		return Collections.emptySet();
 	}
 
 }
