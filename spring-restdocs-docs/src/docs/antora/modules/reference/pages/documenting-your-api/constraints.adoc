@@ -3,12 +3,19 @@
 
 Spring REST Docs provides a number of classes that can help you to document constraints.
 You can use an instance of `ConstraintDescriptions` to access descriptions of a class's constraints.
-The following example shows how to do so:
+The following example shows how to do so for property constraints:
 
 include-code::Constraints[]
 <1> Create an instance of `ConstraintDescriptions` for the `UserInput` class.
 <2> Get the descriptions of the `name` property's constraints.
 This list contains two descriptions: one for the `NotNull` constraint and one for the `Size` constraint.
+
+The following example shows how to do so for method parameter constraints:
+
+include-code::MethodParameterConstraints[]
+<1> Create an instance of `ConstraintDescriptions` for the `UserController` class.
+<2> Get the descriptions of the first parameter's constraints of the `user` method.
+This list contains two descriptions: one for the `NotNull` constraint and one for the `Min` constraint.
 
 The {samples}/restful-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`] class in the Spring HATEOAS sample shows this functionality in action.
 
@@ -18,7 +25,7 @@ The {samples}/restful-notes-spring-hateoas/src/test/java/com/example/notes/ApiDo
 == Finding Constraints
 
 By default, constraints are found by using a Bean Validation `Validator`.
-Currently, only property constraints are supported.
+Both property and method parameter constraints are supported.
 You can customize the `Validator` that is used by creating `ConstraintDescriptions` with a custom `ValidatorConstraintResolver` instance.
 To take complete control of constraint resolution, you can use your own implementation of `ConstraintResolver`.
 

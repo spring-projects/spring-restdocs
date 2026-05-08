@@ -16,9 +16,13 @@
 
 package org.springframework.restdocs.constraints;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides access to descriptions of a class's constraints.
@@ -89,6 +93,56 @@ public class ConstraintDescriptions {
 	 */
 	public List<String> descriptionsForProperty(String property) {
 		List<Constraint> constraints = this.constraintResolver.resolveForProperty(property, this.clazz);
+		return resolveDescriptions(constraints);
+	}
+
+	/**
+	 * Returns a list of the descriptions for the constraints on the given
+	 * {@code parameterIndex} of the given {@code method}.
+	 * @param method the method
+	 * @param parameterIndex the index of the parameter
+	 * @return the list of constraint descriptions
+	 * @since 4.0.1
+	 */
+	public List<String> descriptionsForMethodParameter(Method method, int parameterIndex) {
+		List<Constraint> constraints = this.constraintResolver.resolveForMethodParameter(method, parameterIndex);
+		return resolveDescriptions(constraints);
+	}
+
+	/**
+	 * Returns a list of the descriptions for the constraints on the given
+	 * {@code parameterIndex} of the method with the given {@code methodName} and
+	 * {@code parameterTypes}.
+	 * @param methodName the name of the method
+	 * @param parameterIndex the index of the parameter
+	 * @param parameterTypes the types of the parameters of the method
+	 * @return the list of constraint descriptions
+	 * @since 4.0.1
+	 */
+	public List<String> descriptionsForMethodParameter(String methodName, int parameterIndex,
+			Class<?>... parameterTypes) {
+		Method method = findMethod(this.clazz, methodName, parameterTypes);
+		if (method == null) {
+			throw new IllegalArgumentException("No method named '" + methodName + "' with parameter types "
+					+ Arrays.toString(parameterTypes) + " found on " + this.clazz);
+		}
+		return descriptionsForMethodParameter(method, parameterIndex);
+	}
+
+	@Nullable private Method findMethod(Class<?> clazz, String name, Class<?>[] parameterTypes) {
+		Class<?> currentClass = clazz;
+		while (currentClass != null) {
+			try {
+				return currentClass.getDeclaredMethod(name, parameterTypes);
+			}
+			catch (NoSuchMethodException ex) {
+				currentClass = currentClass.getSuperclass();
+			}
+		}
+		return null;
+	}
+
+	private List<String> resolveDescriptions(List<Constraint> constraints) {
 		List<String> descriptions = new ArrayList<>();
 		for (Constraint constraint : constraints) {
 			descriptions.add(this.descriptionResolver.resolveDescription(constraint));
