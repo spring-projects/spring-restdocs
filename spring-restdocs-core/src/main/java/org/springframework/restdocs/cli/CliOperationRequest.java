@@ -171,6 +171,9 @@ final class CliOperationRequest implements OperationRequest {
 
 		@Override
 		public boolean allow(String name, List<String> value) {
+			if (!HttpHeaders.HOST.equalsIgnoreCase(name)) {
+				return true;
+			}
 			return !(value.isEmpty() || this.getImplicitHostHeader().equals(value.get(0)));
 		}
 
