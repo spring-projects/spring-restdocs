@@ -159,6 +159,26 @@ class JsonContentHandlerTests {
 	}
 
 	@Test
+	void describedFieldThatIsNotPresentWithPathPrefixedByPathOfMissingOptionalFieldIsConsideredMissing() {
+		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a").optional(),
+				new FieldDescriptor("ab"));
+		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"c\":\"charlie\"}".getBytes(), descriptors)
+			.findMissingFields();
+		assertThat(missingFields.size()).isEqualTo(1);
+		assertThat(missingFields.get(0).getPath()).isEqualTo("ab");
+	}
+
+	@Test
+	void describedNestedFieldThatIsNotPresentWithPathPrefixedByPathOfMissingOptionalFieldIsConsideredMissing() {
+		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("a.b").optional(),
+				new FieldDescriptor("a.bc"));
+		List<FieldDescriptor> missingFields = new JsonContentHandler("{\"a\":{}}".getBytes(), descriptors)
+			.findMissingFields();
+		assertThat(missingFields.size()).isEqualTo(1);
+		assertThat(missingFields.get(0).getPath()).isEqualTo("a.bc");
+	}
+
+	@Test
 	void describedFieldThatIsNotPresentNestedBeneathOptionalArrayThatIsEmptyIsNotConsideredMissing() {
 		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("outer"),
 				new FieldDescriptor("outer[]").optional(), new FieldDescriptor("outer[].inner"));
