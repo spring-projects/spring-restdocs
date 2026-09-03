@@ -222,6 +222,26 @@ class CurlRequestSnippetTests {
 	}
 
 	@RenderedSnippetTest
+	void requestWithContentContainingSingleQuotes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
+			.method("POST")
+			.content("{\"name\": \"O'Brien\"}")
+			.build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X POST -d '{\"name\": \"O'\\''Brien\"}'"));
+	}
+
+	@RenderedSnippetTest
+	void requestWithHeaderContainingSingleQuotes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new CurlRequestSnippet(this.commandFormatter)
+			.document(operationBuilder.request("http://localhost/foo").header("X-Example", "quote'value").build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -i -X GET -H 'X-Example: quote'\\''value'"));
+	}
+
+	@RenderedSnippetTest
 	void requestWithCookies(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
 			.cookie("name1", "value1")

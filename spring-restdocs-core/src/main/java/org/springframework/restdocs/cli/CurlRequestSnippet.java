@@ -83,7 +83,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 	private String getUrl(Operation operation) {
 		OperationRequest request = operation.getRequest();
-		return String.format("'%s'", request.getUri());
+		return String.format("'%s'", escapeSingleQuotes(request.getUri().toString()));
 	}
 
 	private String getOptions(Operation operation) {
@@ -114,7 +114,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 				}
 				cookiesBuilder.append(String.format("%s=%s", cookie.getName(), cookie.getValue()));
 			}
-			lines.add(String.format("--cookie '%s'", cookiesBuilder.toString()));
+			lines.add(String.format("--cookie '%s'", escapeSingleQuotes(cookiesBuilder.toString())));
 		}
 	}
 
@@ -125,7 +125,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	private void writeUserOptionIfNecessary(CliOperationRequest request, StringBuilder builder) {
 		String credentials = request.getBasicAuthCredentials();
 		if (credentials != null) {
-			builder.append(String.format(" -u '%s'", credentials));
+			builder.append(String.format(" -u '%s'", escapeSingleQuotes(credentials)));
 		}
 	}
 
@@ -140,7 +140,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 						&& MediaType.APPLICATION_FORM_URLENCODED.equals(request.getHeaders().getContentType())) {
 					continue;
 				}
-				lines.add(String.format("-H '%s: %s'", entry.getKey(), header));
+				lines.add(String.format("-H '%s: %s'", entry.getKey(), escapeSingleQuotes(header)));
 			}
 		}
 	}
@@ -150,10 +150,10 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 			StringBuilder oneLine = new StringBuilder();
 			oneLine.append(String.format("-F '%s=", part.getName()));
 			if (!StringUtils.hasText(part.getSubmittedFileName())) {
-				oneLine.append(part.getContentAsString());
+				oneLine.append(escapeSingleQuotes(part.getContentAsString()));
 			}
 			else {
-				oneLine.append(String.format("@%s", part.getSubmittedFileName()));
+				oneLine.append(String.format("@%s", escapeSingleQuotes(part.getSubmittedFileName())));
 			}
 			if (part.getHeaders().getContentType() != null) {
 				oneLine.append(";type=");
@@ -167,8 +167,12 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	private void writeContent(CliOperationRequest request, List<String> lines) {
 		String content = request.getContentAsString();
 		if (StringUtils.hasText(content)) {
-			lines.add(String.format("-d '%s'", content));
+			lines.add(String.format("-d '%s'", escapeSingleQuotes(content)));
 		}
+	}
+
+	private static String escapeSingleQuotes(String input) {
+		return input.replace("'", "'\\''");
 	}
 
 }

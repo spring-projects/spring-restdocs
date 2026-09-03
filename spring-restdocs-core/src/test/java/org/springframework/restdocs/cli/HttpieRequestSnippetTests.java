@@ -67,6 +67,26 @@ class HttpieRequestSnippetTests {
 	}
 
 	@RenderedSnippetTest
+	void requestWithContentContainingSingleQuotes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new HttpieRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
+			.method("POST")
+			.content("{\"name\": \"O'Brien\"}")
+			.build());
+		assertThat(snippets.httpieRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ echo '{\"name\": \"O'\\''Brien\"}' | http POST 'http://localhost/foo'"));
+	}
+
+	@RenderedSnippetTest
+	void requestWithHeaderContainingSingleQuotes(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new HttpieRequestSnippet(this.commandFormatter)
+			.document(operationBuilder.request("http://localhost/foo").header("X-Example", "quote'value").build());
+		assertThat(snippets.httpieRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ http GET 'http://localhost/foo' 'X-Example:quote'\\''value'"));
+	}
+
+	@RenderedSnippetTest
 	void getRequestWithQueryString(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new HttpieRequestSnippet(this.commandFormatter)
 			.document(operationBuilder.request("http://localhost/foo?param=value").build());
