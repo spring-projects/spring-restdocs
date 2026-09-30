@@ -91,7 +91,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 		}
 		String content = request.getContentAsString();
 		if (StringUtils.hasText(content)) {
-			return String.format("echo '%s' | ", content);
+			return String.format("echo '%s' | ", escapeSingleQuotes(content));
 		}
 		return "";
 	}
@@ -106,7 +106,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	}
 
 	private String getUrl(OperationRequest request) {
-		return String.format("'%s'", request.getUri());
+		return String.format("'%s'", escapeSingleQuotes(request.getUri().toString()));
 	}
 
 	private String getRequestItems(CliOperationRequest request) {
@@ -131,7 +131,7 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	private void writeUserOptionIfNecessary(CliOperationRequest request, PrintWriter writer) {
 		String credentials = request.getBasicAuthCredentials();
 		if (credentials != null) {
-			writer.print(String.format("--auth '%s' ", credentials));
+			writer.print(String.format("--auth '%s' ", escapeSingleQuotes(credentials)));
 		}
 	}
 
@@ -142,17 +142,18 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 	private void writeFormDataIfNecessary(OperationRequest request, List<String> lines) {
 		if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(request.getHeaders().getContentType())) {
 			FormParameters.from(request)
-				.forEach((key, values) -> values.forEach((value) -> lines.add(String.format("'%s=%s'", key, value))));
+				.forEach((key, values) -> values.forEach((value) -> lines
+					.add(String.format("'%s=%s'", escapeSingleQuotes(key), escapeSingleQuotes(value)))));
 		}
 		else {
 			for (OperationRequestPart part : request.getParts()) {
 				StringBuilder oneLine = new StringBuilder();
 				oneLine.append(String.format("'%s'", part.getName()));
 				if (!StringUtils.hasText(part.getSubmittedFileName())) {
-					oneLine.append(String.format("='%s'", part.getContentAsString()));
+					oneLine.append(String.format("='%s'", escapeSingleQuotes(part.getContentAsString())));
 				}
 				else {
-					oneLine.append(String.format("@'%s'", part.getSubmittedFileName()));
+					oneLine.append(String.format("@'%s'", escapeSingleQuotes(part.getSubmittedFileName())));
 				}
 
 				lines.add(oneLine.toString());
@@ -175,15 +176,20 @@ public class HttpieRequestSnippet extends TemplatedSnippet {
 						&& header.startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)) {
 					continue;
 				}
-				lines.add(String.format("'%s:%s'", entry.getKey(), header));
+				lines.add(String.format("'%s:%s'", entry.getKey(), escapeSingleQuotes(header)));
 			}
 		}
 	}
 
 	private void writeCookies(OperationRequest request, List<String> lines) {
 		for (RequestCookie cookie : request.getCookies()) {
-			lines.add(String.format("'Cookie:%s=%s'", cookie.getName(), cookie.getValue()));
+			lines.add(String.format("'Cookie:%s=%s'", escapeSingleQuotes(cookie.getName()),
+					escapeSingleQuotes(cookie.getValue())));
 		}
+	}
+
+	private static String escapeSingleQuotes(String input) {
+		return input.replace("'", "'\\''");
 	}
 
 }
