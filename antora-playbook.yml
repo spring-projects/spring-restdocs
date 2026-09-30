@@ -33,7 +33,7 @@ content:
     branches:
     - 'main'
     tags:
-    - 'v4.0.0'
+    - 'v4.0.*'
     start_paths:
     - spring-restdocs-docs/src/docs/antora
     version: unspecified
