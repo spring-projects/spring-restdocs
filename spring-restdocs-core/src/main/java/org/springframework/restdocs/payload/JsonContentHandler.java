@@ -75,12 +75,16 @@ class JsonContentHandler implements ContentHandler {
 		List<FieldDescriptor> candidates = new ArrayList<>(this.fieldDescriptors);
 		candidates.remove(descriptor);
 		for (FieldDescriptor candidate : candidates) {
-			if (candidate.isOptional() && descriptor.getPath().startsWith(candidate.getPath())
+			if (candidate.isOptional() && isNestedBeneath(candidate.getPath(), descriptor.getPath())
 					&& isMissing(candidate, payload)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private boolean isNestedBeneath(String ancestorPath, String path) {
+		return path.equals(ancestorPath) || path.startsWith(ancestorPath + ".") || path.startsWith(ancestorPath + "[");
 	}
 
 	private boolean isMissing(FieldDescriptor candidate, Object payload) {
