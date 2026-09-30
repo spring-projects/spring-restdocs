@@ -17,13 +17,16 @@
 package org.springframework.restdocs.constraints;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListResourceBundle;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -60,13 +63,13 @@ import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.Mod10Check;
 import org.hibernate.validator.constraints.Mod11Check;
 import org.hibernate.validator.constraints.Range;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -321,11 +324,23 @@ class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	private Constraint getConstraintFromField(String name) {
-		Annotation[] annotations = ReflectionUtils.findField(Constrained.class, name).getAnnotations();
-		Assert.isTrue(annotations.length == 1,
-				"The field '" + name + "' must have " + "exactly one @Constrained annotation");
+		Field field = ReflectionUtils.findField(Constrained.class, name);
+		assertThat(field).isNotNull();
+		Annotation[] annotations = field.getAnnotations();
+		assertThat(annotations).as("Check that field '%s' has exactly one @Constrained annotation", name).hasSize(1);
 		return new Constraint(annotations[0].annotationType().getName(),
-				AnnotationUtils.getAnnotationAttributes(annotations[0]));
+				withoutNullValues(AnnotationUtils.getAnnotationAttributes(annotations[0])));
+	}
+
+	private Map<String, Object> withoutNullValues(Map<String, @Nullable Object> map) {
+		Map<String, Object> result = new LinkedHashMap<>();
+		map.forEach((key, value) -> {
+			if (value != null) {
+				result.put(key, value);
+			}
+
+		});
+		return result;
 	}
 
 	private static final class Constrained {
@@ -337,25 +352,25 @@ class ResourceBundleConstraintDescriptionResolverTests {
 		private boolean assertTrue;
 
 		@CodePointLength(min = 2, max = 5)
-		private String codePointLength;
+		private @Nullable String codePointLength;
 
 		@Currency({ "GBP", "USD" })
-		private MonetaryAmount currency;
+		private @Nullable MonetaryAmount currency;
 
 		@DecimalMax("9.875")
-		private BigDecimal decimalMax;
+		private @Nullable BigDecimal decimalMax;
 
 		@DecimalMin("1.5")
-		private BigDecimal decimalMin;
+		private @Nullable BigDecimal decimalMin;
 
 		@Digits(integer = 2, fraction = 5)
-		private String digits;
+		private @Nullable String digits;
 
 		@Future
-		private Date future;
+		private @Nullable Date future;
 
 		@FutureOrPresent
-		private Date futureOrPresent;
+		private @Nullable Date futureOrPresent;
 
 		@Max(10)
 		private int max;
@@ -364,43 +379,43 @@ class ResourceBundleConstraintDescriptionResolverTests {
 		private int min;
 
 		@NotNull
-		private String notNull;
+		private @Nullable String notNull;
 
 		@Null
-		private String nul;
+		private @Nullable String nul;
 
 		@Past
-		private Date past;
+		private @Nullable Date past;
 
 		@PastOrPresent
-		private Date pastOrPresent;
+		private @Nullable Date pastOrPresent;
 
 		@Pattern(regexp = "[A-Z][a-z]+")
-		private String pattern;
+		private @Nullable String pattern;
 
 		@Size(min = 2, max = 10)
-		private List<String> size;
+		private @Nullable List<String> size;
 
 		@CreditCardNumber
-		private String creditCardNumber;
+		private @Nullable String creditCardNumber;
 
 		@EAN
-		private String ean;
+		private @Nullable String ean;
 
 		@Email
-		private String email;
+		private @Nullable String email;
 
 		@Length(min = 2, max = 10)
-		private String length;
+		private @Nullable String length;
 
 		@LuhnCheck
-		private String luhnCheck;
+		private @Nullable String luhnCheck;
 
 		@Mod10Check
-		private String mod10Check;
+		private @Nullable String mod10Check;
 
 		@Mod11Check
-		private String mod11Check;
+		private @Nullable String mod11Check;
 
 		@Negative
 		private int negative;
@@ -409,10 +424,10 @@ class ResourceBundleConstraintDescriptionResolverTests {
 		private int negativeOrZero;
 
 		@NotBlank
-		private String notBlank;
+		private @Nullable String notBlank;
 
 		@NotEmpty
-		private String notEmpty;
+		private @Nullable String notEmpty;
 
 		@Positive
 		private int positive;
@@ -424,7 +439,7 @@ class ResourceBundleConstraintDescriptionResolverTests {
 		private int range;
 
 		@org.hibernate.validator.constraints.URL
-		private String url;
+		private @Nullable String url;
 
 	}
 

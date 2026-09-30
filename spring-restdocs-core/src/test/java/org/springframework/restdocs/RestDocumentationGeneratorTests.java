@@ -19,6 +19,7 @@ package org.springframework.restdocs;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.generate.RestDocumentationGenerator;
 import org.springframework.restdocs.operation.Operation;
@@ -67,11 +69,12 @@ class RestDocumentationGeneratorTests {
 
 	private final Object response = new Object();
 
-	private final OperationRequest operationRequest = new OperationRequestFactory()
-		.create(URI.create("http://localhost:8080"), null, null, new HttpHeaders(), null, null);
+	private final OperationRequest operationRequest = new OperationRequestFactory().create(
+			URI.create("http://localhost:8080"), HttpMethod.GET, null, new HttpHeaders(), null,
+			Collections.emptyList());
 
-	private final OperationResponse operationResponse = new OperationResponseFactory().create(HttpStatus.OK, null,
-			null);
+	private final OperationResponse operationResponse = new OperationResponseFactory().create(HttpStatus.OK,
+			new HttpHeaders(), null);
 
 	private final Snippet snippet = mock(Snippet.class);
 
@@ -194,12 +197,12 @@ class RestDocumentationGeneratorTests {
 	}
 
 	private static OperationRequest createRequest() {
-		return new OperationRequestFactory().create(URI.create("http://localhost:8080"), null, null, new HttpHeaders(),
-				null, null);
+		return new OperationRequestFactory().create(URI.create("http://localhost:8080"), HttpMethod.GET, null,
+				new HttpHeaders(), null, Collections.emptyList());
 	}
 
 	private static OperationResponse createResponse() {
-		return new OperationResponseFactory().create(HttpStatus.OK, null, null);
+		return new OperationResponseFactory().create(HttpStatus.OK, new HttpHeaders(), null);
 	}
 
 }

@@ -90,7 +90,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 					(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
 			.andRoute(RequestPredicates.POST("/upload"),
 					(request) -> request.body(BodyExtractors.toMultipartData())
-						.map((parts) -> ServerResponse.status(HttpStatus.OK).build().block()))
+						.flatMap((parts) -> ServerResponse.status(HttpStatus.OK).build()))
 			.andRoute(RequestPredicates.GET("/set-cookie"),
 					(request) -> ServerResponse.ok()
 						.cookie(ResponseCookie.from("name", "value").domain("localhost").httpOnly(true).build())

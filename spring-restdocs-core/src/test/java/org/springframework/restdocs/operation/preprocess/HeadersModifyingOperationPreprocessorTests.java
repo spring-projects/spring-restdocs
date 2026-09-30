@@ -151,28 +151,28 @@ class HeadersModifyingOperationPreprocessorTests {
 	}
 
 	private OperationRequest createRequest() {
-		return createRequest(null);
+		return createRequest(this::unchanged);
 	}
 
 	private OperationRequest createRequest(Consumer<HttpHeaders> headersCustomizer) {
 		HttpHeaders headers = new HttpHeaders();
-		if (headersCustomizer != null) {
-			headersCustomizer.accept(headers);
-		}
+		headersCustomizer.accept(headers);
 		return new OperationRequestFactory().create(URI.create("http://localhost:8080"), HttpMethod.GET, new byte[0],
 				headers, Collections.emptyList());
 	}
 
 	private OperationResponse createResponse() {
-		return createResponse(null);
+		return (createResponse(this::unchanged));
 	}
 
 	private OperationResponse createResponse(Consumer<HttpHeaders> headersCustomizer) {
 		HttpHeaders headers = new HttpHeaders();
-		if (headersCustomizer != null) {
-			headersCustomizer.accept(headers);
-		}
+		headersCustomizer.accept(headers);
 		return new OperationResponseFactory().create(HttpStatus.OK, headers, new byte[0]);
+	}
+
+	private void unchanged(HttpHeaders headers) {
+
 	}
 
 }

@@ -178,11 +178,12 @@ class RestDocumentationConfigurerTests {
 		Map<String, Object> configuration = new HashMap<>();
 		this.configurer.apply(configuration, createContext());
 		TemplateEngine templateEngine = (TemplateEngine) configuration.get(TemplateEngine.class.getName());
+		assertThat(templateEngine).isNotNull();
 		MustacheTemplateEngine mustacheTemplateEngine = (MustacheTemplateEngine) templateEngine;
 		Map<String, Object> templateContext = (Map<String, Object>) ReflectionTestUtils.getField(mustacheTemplateEngine,
 				"context");
-		assertThat(templateContext).containsKey("tableCellContent");
-		assertThat(templateContext.get("tableCellContent")).isInstanceOf(AsciidoctorTableCellContentLambda.class);
+		assertThat(templateContext).hasEntrySatisfying("tableCellContent",
+				(content) -> assertThat(content).isInstanceOf(AsciidoctorTableCellContentLambda.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -192,10 +193,11 @@ class RestDocumentationConfigurerTests {
 		this.configurer.snippetConfigurer.withTemplateFormat(TemplateFormats.markdown());
 		this.configurer.apply(configuration, createContext());
 		TemplateEngine templateEngine = (TemplateEngine) configuration.get(TemplateEngine.class.getName());
+		assertThat(templateEngine).isNotNull();
 		MustacheTemplateEngine mustacheTemplateEngine = (MustacheTemplateEngine) templateEngine;
 		Map<String, Object> templateContext = (Map<String, Object>) ReflectionTestUtils.getField(mustacheTemplateEngine,
 				"context");
-		assertThat(templateContext.size()).isEqualTo(0);
+		assertThat(templateContext).hasSize(0);
 	}
 
 	@Test
@@ -206,6 +208,7 @@ class RestDocumentationConfigurerTests {
 			.apply(configuration, createContext());
 		OperationRequestPreprocessor preprocessor = (OperationRequestPreprocessor) configuration
 			.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR);
+		assertThat(preprocessor).isNotNull();
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Foo", "value");
 		OperationRequest request = new OperationRequestFactory().create(URI.create("http://localhost:8080"),
@@ -221,6 +224,7 @@ class RestDocumentationConfigurerTests {
 			.apply(configuration, createContext());
 		OperationResponsePreprocessor preprocessor = (OperationResponsePreprocessor) configuration
 			.get(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR);
+		assertThat(preprocessor).isNotNull();
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Foo", "value");
 		OperationResponse response = new OperationResponseFactory().create(HttpStatus.OK, headers, null);
@@ -229,7 +233,7 @@ class RestDocumentationConfigurerTests {
 
 	private RestDocumentationContext createContext() {
 		ManualRestDocumentation manualRestDocumentation = new ManualRestDocumentation("build");
-		manualRestDocumentation.beforeTest(null, null);
+		manualRestDocumentation.beforeTest(getClass(), "example");
 		RestDocumentationContext context = manualRestDocumentation.beforeOperation();
 		return context;
 	}

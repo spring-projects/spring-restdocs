@@ -35,6 +35,7 @@ import org.assertj.core.api.Condition;
 import org.assertj.core.description.TextDescription;
 import org.hibernate.validator.constraints.CompositionType;
 import org.hibernate.validator.constraints.ConstraintComposition;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,17 +83,17 @@ class ValidatorConstraintResolverTests {
 	private static final class ConstrainedFields {
 
 		@NotNull
-		private String single;
+		private @Nullable String single;
 
 		@NotNull
 		@Size(min = 8, max = 16)
-		private String multiple;
+		private @Nullable String multiple;
 
 		@SuppressWarnings("unused")
-		private String none;
+		private @Nullable String none;
 
 		@CompositeConstraint
-		private String composite;
+		private @Nullable String composite;
 
 	}
 
@@ -134,7 +135,7 @@ class ValidatorConstraintResolverTests {
 				return false;
 			}
 			for (Entry<String, Object> entry : this.configuration.entrySet()) {
-				if (!constraint.getConfiguration().get(entry.getKey()).equals(entry.getValue())) {
+				if (!entry.getValue().equals(constraint.getConfiguration().get(entry.getKey()))) {
 					return false;
 				}
 			}

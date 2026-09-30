@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.operation.OperationResponse;
 import org.springframework.restdocs.operation.OperationResponseFactory;
@@ -104,7 +105,7 @@ class LinkExtractorsPayloadTests {
 	}
 
 	private OperationResponse createResponse(String contentName) throws IOException {
-		return this.responseFactory.create(HttpStatus.OK, null,
+		return this.responseFactory.create(HttpStatus.OK, new HttpHeaders(),
 				FileCopyUtils.copyToByteArray(getPayloadFile(contentName)));
 	}
 

@@ -19,6 +19,7 @@ package org.springframework.restdocs.operation.preprocess;
 import java.net.URI;
 import java.util.Collections;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpHeaders;
@@ -49,7 +50,7 @@ class ContentModifyingOperationPreprocessorTests {
 			new ContentModifier() {
 
 				@Override
-				public byte[] modifyContent(byte[] originalContent, MediaType mediaType) {
+				public byte[] modifyContent(byte[] originalContent, @Nullable MediaType mediaType) {
 					return "modified".getBytes();
 				}
 

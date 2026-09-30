@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
@@ -128,9 +129,9 @@ class LinkMaskingContentModifierTests {
 
 	public static final class AtomPayload {
 
-		private List<Link> links;
+		private @Nullable List<Link> links;
 
-		public List<Link> getLinks() {
+		public @Nullable List<Link> getLinks() {
 			return this.links;
 		}
 
@@ -142,10 +143,10 @@ class LinkMaskingContentModifierTests {
 
 	public static final class HalPayload {
 
-		private Map<String, Object> links;
+		private @Nullable Map<String, Object> links;
 
 		@JsonProperty("_links")
-		public Map<String, Object> getLinks() {
+		public @Nullable Map<String, Object> getLinks() {
 			return this.links;
 		}
 

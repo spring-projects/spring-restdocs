@@ -110,7 +110,7 @@ class RestDocumentationContextPlaceholderResolverTests {
 	}
 
 	private PlaceholderResolver createResolver() {
-		return createResolver(null);
+		return createResolver("example");
 	}
 
 	private PlaceholderResolver createResolver(String methodName) {

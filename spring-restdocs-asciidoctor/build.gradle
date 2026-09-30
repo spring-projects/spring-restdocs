@@ -19,3 +19,7 @@ dependencies {
 	testRuntimeOnly("org.asciidoctor:asciidoctorj-pdf")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
+
+tasks.named("compileTestJava") {
+	options.nullability.checking = "tests"
+}

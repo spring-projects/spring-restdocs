@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.core.io.Resource;
@@ -129,7 +130,7 @@ class StandardTemplateResourceResolverTests {
 		}
 
 		@Override
-		public URL getResource(String name) {
+		public @Nullable URL getResource(String name) {
 			return this.resources.get(name);
 		}
 

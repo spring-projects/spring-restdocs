@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.restdocs.operation.Operation;
@@ -73,7 +74,7 @@ class TemplatedSnippetTests {
 			super(templateName + "-" + snippetName, templateName, Collections.<String, Object>emptyMap());
 		}
 
-		protected TestTemplatedSnippet(Map<String, Object> attributes) {
+		protected TestTemplatedSnippet(@Nullable Map<String, Object> attributes) {
 			super("test", attributes);
 		}
 

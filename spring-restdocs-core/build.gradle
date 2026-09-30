@@ -45,3 +45,7 @@ dependencies {
 	testRuntimeOnly("org.apache.tomcat.embed:tomcat-embed-el")
 	testRuntimeOnly("org.junit.platform:junit-platform-engine")
 }
+
+tasks.named("compileTestJava") {
+	options.nullability.checking = "tests"
+}

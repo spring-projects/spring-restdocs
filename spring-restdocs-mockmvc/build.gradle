@@ -16,3 +16,7 @@ dependencies {
 
 	testImplementation(testFixtures(project(":spring-restdocs-core")))
 }
+
+tasks.named("compileTestJava") {
+	options.nullability.checking = "tests"
+}

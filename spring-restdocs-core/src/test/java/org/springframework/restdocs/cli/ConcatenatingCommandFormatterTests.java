@@ -39,6 +39,7 @@ class ConcatenatingCommandFormatterTests {
 	}
 
 	@Test
+	@SuppressWarnings("NullAway") // Test null handling
 	void formattingNullProducesAnEmptyString() {
 		assertThat(this.singleLineFormat.format(null)).isEqualTo("");
 	}

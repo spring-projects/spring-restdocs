@@ -20,3 +20,7 @@ dependencies {
 
 	testRuntimeOnly("org.springframework:spring-context")
 }
+
+tasks.named("compileTestJava") {
+	options.nullability.checking = "tests"
+}
