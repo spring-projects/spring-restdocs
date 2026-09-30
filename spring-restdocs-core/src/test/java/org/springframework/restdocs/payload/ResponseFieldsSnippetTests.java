@@ -396,6 +396,15 @@ public class ResponseFieldsSnippetTests {
 	}
 
 	@SnippetTest
+	void undocumentedResponseFieldDescriptorMustHaveADescription() {
+		assertThatExceptionOfType(IllegalArgumentException.class)
+			.isThrownBy(() -> new ResponseFieldsSnippet(
+					Arrays.asList(fieldWithPath("input_data_type").type(JsonFieldType.STRING))))
+			.withMessage(
+					"The descriptor for 'input_data_type' must have a description or it must be marked as ignored");
+	}
+
+	@SnippetTest
 	void attemptToDocumentFieldsWithNoResponseBody(OperationBuilder operationBuilder) {
 		assertThatExceptionOfType(SnippetException.class)
 			.isThrownBy(() -> new ResponseFieldsSnippet(Arrays.asList(fieldWithPath("a").description("one")))
