@@ -19,19 +19,19 @@ jobs:
     runs-on: ${{ vars.UBUNTU_SMALL || 'ubuntu-latest' }}
     steps:
       - name: Check Out
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Fetch Main Branch
         run: git fetch origin ${{ github.event.repository.default_branch }}:main
       - name: Set Up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 20
       - name: Check Out 'package.json' From Main
         run: node run.js --only-checkout
       - name: Cache Files
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: antora-${{ hashFiles('package-lock.json', 'antora-playbook.yml') }}
           path: |
@@ -45,7 +45,7 @@ jobs:
           BUILD_VERSION: ${{ github.event.inputs.build-version }}
         run: node run.js --no-checkout
       - name: Sync Documentation
-        uses: spring-io/spring-doc-actions/rsync-antora-reference@v0.0.20
+        uses: spring-io/spring-doc-actions/rsync-antora-reference@415e2b11a766ba64799fffb5c97a4f7e17f677cf # v0.0.22
         with:
           docs-username: ${{ secrets.DOCS_USERNAME }}
           docs-host: ${{ secrets.DOCS_HOST }}
@@ -56,7 +56,7 @@ jobs:
           BUILD_REFNAME: ${{ github.event.inputs.build-refname }}
           BUILD_VERSION: ${{ github.event.inputs.build-version }}
       - name: Bust Cloudflare Cache
-        uses: spring-io/spring-doc-actions/bust-cloudflare-antora-cache@v0.0.20
+        uses: spring-io/spring-doc-actions/bust-cloudflare-antora-cache@415e2b11a766ba64799fffb5c97a4f7e17f677cf # v0.0.22
         with:
           context-root: spring-restdocs
           context-path: /
