@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.payload.JsonFieldPath.PathType;
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
@@ -54,7 +56,7 @@ class JsonFieldTypesDiscoverer {
 		return new JsonFieldTypes(determineFieldType(value));
 	}
 
-	private JsonFieldType determineFieldType(Object fieldValue) {
+	private JsonFieldType determineFieldType(@Nullable Object fieldValue) {
 		if (fieldValue == null || fieldValue == ExtractedField.ABSENT) {
 			return JsonFieldType.NULL;
 		}

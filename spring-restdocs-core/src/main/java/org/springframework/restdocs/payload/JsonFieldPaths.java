@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
 /**
@@ -62,7 +64,7 @@ final class JsonFieldPaths {
 		return new JsonFieldPaths(uncommonFieldPaths);
 	}
 
-	private static void from(Set<String> paths, String parent, Object object) {
+	private static void from(Set<String> paths, String parent, @Nullable Object object) {
 		if (object instanceof List) {
 			String path = append(parent, "[]");
 			paths.add(path);

@@ -95,7 +95,7 @@ class JsonContentHandler implements ContentHandler {
 		return extracted.getValue() == null || isEmptyCollection(extracted.getValue());
 	}
 
-	private boolean isEmptyCollection(Object value) {
+	private boolean isEmptyCollection(@Nullable Object value) {
 		if (!(value instanceof Collection)) {
 			return false;
 		}
