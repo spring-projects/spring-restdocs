@@ -34,6 +34,10 @@ content:
     - 'main'
     tags:
     - 'v4.0.*'
+    - '!v4.0.0-M1'
+    - '!v4.0.0-M2'
+    - '!v4.0.0-M3'
+    - '!v4.0.0-RC1'
     start_paths:
     - spring-restdocs-docs/src/docs/antora
     version: unspecified
