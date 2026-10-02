@@ -24,6 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.util.Assert;
 
 /**
  * A factory for creating {@link OperationRequest OperationRequests}.
@@ -94,16 +95,18 @@ public class OperationRequestFactory {
 	}
 
 	private HttpHeaders augmentHeaders(HttpHeaders originalHeaders, URI uri, byte @Nullable [] content) {
-		return new HttpHeadersHelper(originalHeaders).addIfAbsent(HttpHeaders.HOST, createHostHeader(uri))
+		return new HttpHeadersHelper(originalHeaders).addIfAbsent(HttpHeaders.HOST, () -> createHostHeader(uri))
 			.setContentLengthHeader(content)
 			.getHeaders();
 	}
 
 	private String createHostHeader(URI uri) {
+		String host = uri.getHost();
+		Assert.state(host != null, () -> "Cannot create Host header from URI '%s' as it has no host".formatted(uri));
 		if (uri.getPort() == -1) {
-			return uri.getHost();
+			return host;
 		}
-		return uri.getHost() + ":" + uri.getPort();
+		return host + ":" + uri.getPort();
 	}
 
 	private HttpHeaders getUpdatedHeaders(HttpHeaders originalHeaders, byte @Nullable [] updatedContent) {

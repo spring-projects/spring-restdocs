@@ -19,6 +19,7 @@ package org.springframework.restdocs.asciidoctor;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -208,7 +209,9 @@ abstract class AbstractOperationBlockMacroTests {
 	}
 
 	private String getExpectedContentFromFile(String fileName) throws URISyntaxException, IOException {
-		Path filePath = Paths.get(this.getClass().getResource("/operations/" + fileName + ".html").toURI());
+		URL resource = this.getClass().getResource("/operations/" + fileName + ".html");
+		assertThat(resource).as("Resource for %s", fileName).isNotNull();
+		Path filePath = Paths.get(resource.toURI());
 		String content = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
 		if (isWindows()) {
 			return content.replace("\r\n", "\n");

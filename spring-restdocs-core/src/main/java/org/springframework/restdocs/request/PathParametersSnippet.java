@@ -117,6 +117,7 @@ public class PathParametersSnippet extends AbstractParametersSnippet {
 		Set<String> actualParameters = new HashSet<>();
 		while (matcher.find()) {
 			String match = matcher.group(1);
+			Assert.state(match != null, "No value for group 1 in matched URL template '%s'".formatted(urlTemplate));
 			actualParameters.add(getParameterName(match));
 		}
 		return actualParameters;

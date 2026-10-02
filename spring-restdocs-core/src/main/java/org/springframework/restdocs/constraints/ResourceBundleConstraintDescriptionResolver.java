@@ -147,13 +147,25 @@ public class ResourceBundleConstraintDescriptionResolver implements ConstraintDe
 
 	private static @Nullable ResourceBundle getBundle(String name) {
 		try {
-			return ResourceBundle.getBundle(
-					ResourceBundleConstraintDescriptionResolver.class.getPackage().getName() + "." + name,
-					Locale.getDefault(), Thread.currentThread().getContextClassLoader());
+			Package pkg = ResourceBundleConstraintDescriptionResolver.class.getPackage();
+			Assert.state(pkg != null, () -> "Class has no known package");
+			return ResourceBundle.getBundle(pkg.getName() + "." + name, Locale.getDefault(), classLoader());
 		}
 		catch (MissingResourceException ex) {
 			return null;
 		}
+	}
+
+	private static ClassLoader classLoader() {
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		if (classLoader != null) {
+			return classLoader;
+		}
+		classLoader = ResourceBundleConstraintDescriptionResolver.class.getClassLoader();
+		if (classLoader != null) {
+			return classLoader;
+		}
+		return ClassLoader.getSystemClassLoader();
 	}
 
 	@Override

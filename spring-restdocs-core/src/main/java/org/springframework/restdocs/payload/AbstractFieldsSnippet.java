@@ -280,7 +280,10 @@ public abstract class AbstractFieldsSnippet extends TemplatedSnippet {
 		Assert.notNull(type,
 				() -> "Field with path '" + descriptor.getPath() + "' cannot be documented as its type is unknown");
 		model.put("type", type.toString());
-		model.put("description", descriptor.getDescription());
+		Object description = descriptor.getDescription();
+		if (description != null) {
+			model.put("description", description);
+		}
 		model.put("optional", descriptor.isOptional());
 		model.putAll(descriptor.getAttributes());
 		return model;

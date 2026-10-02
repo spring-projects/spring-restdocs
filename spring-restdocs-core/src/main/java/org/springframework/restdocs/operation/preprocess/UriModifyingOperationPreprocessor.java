@@ -200,7 +200,7 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 		}
 
 		private String modify(String input) {
-			List<String> replacements = Arrays.asList(this.scheme, this.host,
+			List<@Nullable String> replacements = Arrays.asList(this.scheme, this.host,
 					StringUtils.hasText(this.port) ? ":" + this.port : this.port);
 
 			int previous = 0;
@@ -225,7 +225,7 @@ public class UriModifyingOperationPreprocessor implements OperationPreprocessor 
 			return builder.toString();
 		}
 
-		private String getReplacement(String original, String candidate) {
+		private String getReplacement(@Nullable String original, @Nullable String candidate) {
 			if (candidate != null) {
 				return candidate;
 			}

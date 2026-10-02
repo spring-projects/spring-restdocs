@@ -121,8 +121,10 @@ public final class MockMvcRestDocumentationConfigurer extends
 			RestDocumentationContext context = this.contextManager.beforeOperation();
 			Map<String, Object> configuration = new HashMap<>();
 			configuration.put(MockHttpServletRequest.class.getName(), request);
-			configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE,
-					urlTemplateExtractor.apply(request));
+			String urlTemplate = urlTemplateExtractor.apply(request);
+			if (urlTemplate != null) {
+				configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, urlTemplate);
+			}
 			configuration.put(RestDocumentationContext.class.getName(), context);
 			request.setAttribute(RestDocumentationResultHandler.ATTRIBUTE_NAME_CONFIGURATION, configuration);
 			MockMvcRestDocumentationConfigurer.this.apply(configuration, context);

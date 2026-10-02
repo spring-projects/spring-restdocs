@@ -43,6 +43,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import org.springframework.util.Assert;
+
 /**
  * A {@link ContentHandler} for XML content.
  *
@@ -124,14 +126,16 @@ class XmlContentHandler implements ContentHandler {
 				throw new PayloadHandlingException(ex);
 			}
 			for (int i = 0; i < matchingNodes.getLength(); i++) {
-				Node node = matchingNodes.item(i);
+				Node node = nodeAt(i, matchingNodes);
 				if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
 					Attr attr = (Attr) node;
-					attr.getOwnerElement().removeAttributeNode(attr);
+					Element ownerElement = attr.getOwnerElement();
+					Assert.state(ownerElement != null, () -> "Attr %s has no owner element".formatted(attr.getName()));
+					ownerElement.removeAttributeNode(attr);
 				}
 				else {
 					if (fieldDescriptor instanceof SubsectionDescriptor || isLeafNode(node)) {
-						node.getParentNode().removeChild(node);
+						removeFromParent(node);
 					}
 					else {
 						matchedButNotRemoved.add(node);
@@ -147,6 +151,19 @@ class XmlContentHandler implements ContentHandler {
 		return null;
 	}
 
+	private Node nodeAt(int index, NodeList nodeList) {
+		Node node = nodeList.item(index);
+		Assert.state(node != null, () -> "Node list of length %d returned null for node at index %d"
+			.formatted(nodeList.getLength(), index));
+		return node;
+	}
+
+	private void removeFromParent(Node node) {
+		Node parentNode = node.getParentNode();
+		Assert.state(parentNode != null, () -> "Node has no parent");
+		parentNode.removeChild(node);
+	}
+
 	private void removeLeafNodes(List<Node> candidates) {
 		boolean changed = true;
 		while (changed) {
@@ -155,7 +172,7 @@ class XmlContentHandler implements ContentHandler {
 			while (iterator.hasNext()) {
 				Node node = iterator.next();
 				if (isLeafNode(node)) {
-					node.getParentNode().removeChild(node);
+					removeFromParent(node);
 					iterator.remove();
 					changed = true;
 				}

@@ -249,7 +249,9 @@ public class WebTestClientRestDocumentationIntegrationTests {
 	}
 
 	private void assertExpectedSnippetFilesExist(File directory, String... snippets) {
-		Set<File> actual = new HashSet<>(Arrays.asList(directory.listFiles()));
+		File[] files = directory.listFiles();
+		assertThat(files).isNotNull();
+		Set<File> actual = new HashSet<>(Arrays.asList(files));
 		Set<File> expected = Stream.of(snippets)
 			.map((snippet) -> new File(directory, snippet))
 			.collect(Collectors.toSet());

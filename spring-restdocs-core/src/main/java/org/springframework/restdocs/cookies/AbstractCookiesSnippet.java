@@ -151,7 +151,10 @@ public abstract class AbstractCookiesSnippet extends TemplatedSnippet {
 	protected Map<String, Object> createModelForDescriptor(CookieDescriptor descriptor) {
 		Map<String, Object> model = new HashMap<>();
 		model.put("name", descriptor.getName());
-		model.put("description", descriptor.getDescription());
+		Object description = descriptor.getDescription();
+		if (description != null) {
+			model.put("description", description);
+		}
 		model.put("optional", descriptor.isOptional());
 		model.putAll(descriptor.getAttributes());
 		return model;

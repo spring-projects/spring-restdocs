@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.operation;
 
+import java.util.function.Supplier;
+
 import org.jspecify.annotations.Nullable;
 
 import org.springframework.http.HttpHeaders;
@@ -37,9 +39,9 @@ class HttpHeadersHelper {
 		this.httpHeaders = headers;
 	}
 
-	HttpHeadersHelper addIfAbsent(String name, String value) {
+	HttpHeadersHelper addIfAbsent(String name, Supplier<String> value) {
 		if (this.httpHeaders.get(name) == null) {
-			this.httpHeaders.add(name, value);
+			this.httpHeaders.add(name, value.get());
 		}
 		return this;
 	}

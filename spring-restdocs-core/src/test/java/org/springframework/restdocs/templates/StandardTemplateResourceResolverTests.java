@@ -125,7 +125,8 @@ class StandardTemplateResourceResolverTests {
 
 		private Map<String, URL> resources = new HashMap<>();
 
-		private void addResource(String name, URL url) {
+		private void addResource(String name, @Nullable URL url) {
+			assertThat(url).as("URL for resource %s", name).isNotNull();
 			this.resources.put(name, url);
 		}
 

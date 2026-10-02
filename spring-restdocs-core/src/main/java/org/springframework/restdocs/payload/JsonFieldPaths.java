@@ -27,6 +27,7 @@ import java.util.Set;
 import org.jspecify.annotations.Nullable;
 
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
+import org.springframework.util.Assert;
 
 /**
  * {@code JsonFieldPaths} provides support for extracting fields paths from JSON
@@ -64,6 +65,7 @@ final class JsonFieldPaths {
 		return new JsonFieldPaths(uncommonFieldPaths);
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void from(Set<String> paths, String parent, @Nullable Object object) {
 		if (object instanceof List) {
 			String path = append(parent, "[]");
@@ -71,7 +73,7 @@ final class JsonFieldPaths {
 			from(paths, path, (List<?>) object);
 		}
 		else if (object instanceof Map) {
-			from(paths, parent, (Map<?, ?>) object);
+			from(paths, parent, (Map<String, ?>) object);
 		}
 		else if (ExtractedField.ABSENT.equals(object)) {
 			paths.add(parent);
@@ -84,9 +86,11 @@ final class JsonFieldPaths {
 		}
 	}
 
-	private static void from(Set<String> paths, String parent, Map<?, ?> map) {
+	private static void from(Set<String> paths, String parent, Map<String, ?> map) {
 		for (Entry<?, ?> entry : map.entrySet()) {
-			String path = append(parent, entry.getKey());
+			Object key = entry.getKey();
+			Assert.notNull(key, "Unexpected null key in JSON-originated map");
+			String path = append(parent, key);
 			paths.add(path);
 			from(paths, path, entry.getValue());
 		}

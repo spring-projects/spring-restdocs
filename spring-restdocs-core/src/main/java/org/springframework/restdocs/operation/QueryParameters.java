@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.util.LinkedMultiValueMap;
 
 /**
@@ -47,7 +49,7 @@ public final class QueryParameters extends LinkedMultiValueMap<String, String> {
 		return from(request.getUri().getRawQuery());
 	}
 
-	private static QueryParameters from(String queryString) {
+	private static QueryParameters from(@Nullable String queryString) {
 		if (queryString == null || queryString.length() == 0) {
 			return new QueryParameters();
 		}

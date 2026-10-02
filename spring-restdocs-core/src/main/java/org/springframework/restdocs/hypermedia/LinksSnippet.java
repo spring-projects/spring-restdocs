@@ -224,7 +224,10 @@ public class LinksSnippet extends TemplatedSnippet {
 	protected Map<String, Object> createModelForDescriptor(LinkDescriptor descriptor) {
 		Map<String, Object> model = new HashMap<>();
 		model.put("rel", descriptor.getRel());
-		model.put("description", descriptor.getDescription());
+		Object description = descriptor.getDescription();
+		if (description != null) {
+			model.put("description", description);
+		}
 		model.put("optional", descriptor.isOptional());
 		model.putAll(descriptor.getAttributes());
 		return model;

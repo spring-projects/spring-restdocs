@@ -26,6 +26,7 @@ import org.jspecify.annotations.Nullable;
 
 import org.springframework.restdocs.RestDocumentationContext;
 import org.springframework.restdocs.templates.TemplateFormat;
+import org.springframework.util.Assert;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver;
 
@@ -101,6 +102,7 @@ public final class StandardWriterResolver implements WriterResolver {
 
 	private void createDirectoriesIfNecessary(File outputFile) {
 		File parent = outputFile.getParentFile();
+		Assert.notNull(parent, () -> "Output file '%s' has no parent".formatted(outputFile));
 		if (!parent.isDirectory() && !parent.mkdirs()) {
 			throw new IllegalStateException("Failed to create directory '" + parent + "'");
 		}

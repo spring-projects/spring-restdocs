@@ -137,7 +137,10 @@ public abstract class WebTestClientRestDocumentation {
 	private static Map<String, Object> retrieveConfiguration(ExchangeResult result) {
 		Map<String, Object> configuration = WebTestClientRestDocumentationConfigurer
 			.retrieveConfiguration(result.getRequestHeaders());
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, result.getUriTemplate());
+		String uriTemplate = result.getUriTemplate();
+		if (uriTemplate != null) {
+			configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, uriTemplate);
+		}
 		return configuration;
 	}
 

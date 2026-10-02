@@ -260,7 +260,7 @@ class ResourceBundleConstraintDescriptionResolverTests {
 		Thread.currentThread().setContextClassLoader(new ClassLoader() {
 
 			@Override
-			public URL getResource(String name) {
+			public @Nullable URL getResource(String name) {
 				if (name.startsWith("org/springframework/restdocs/constraints/ConstraintDescriptions")) {
 					return super.getResource(
 							"org/springframework/restdocs/constraints/TestConstraintDescriptions.properties");

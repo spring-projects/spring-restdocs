@@ -23,6 +23,8 @@ import org.asciidoctor.Attributes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import org.springframework.util.Assert;
+
 /**
  * Tests for Ruby operation block macro when used in a Maven build.
  *
@@ -44,13 +46,19 @@ class MavenOperationBlockMacroTests extends AbstractOperationBlockMacroTests {
 	protected Attributes getAttributes() {
 		try {
 			File sourceLocation = getSourceLocation();
-			new File(sourceLocation.getParentFile().getParentFile().getParentFile(), "pom.xml").createNewFile();
+			new File(getParent(getParent(getParent(sourceLocation))), "pom.xml").createNewFile();
 			Attributes attributes = Attributes.builder().attribute("docdir", sourceLocation.getAbsolutePath()).build();
 			return attributes;
 		}
 		catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	private File getParent(File file) {
+		File parent = file.getParentFile();
+		Assert.state(parent != null, () -> "File '%s' has no parent".formatted(file));
+		return parent;
 	}
 
 	@Override

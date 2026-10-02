@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.spring.gradle.nullability.NullabilityPlugin;
+import io.spring.gradle.nullability.NullabilityPluginExtension;
 import io.spring.javaformat.gradle.SpringJavaFormatPlugin;
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Project;
@@ -62,6 +63,9 @@ class JavaBasePluginConventions extends Conventions<JavaBasePlugin> {
 
 	private void configureNullability() {
 		getProject().getPlugins().apply(NullabilityPlugin.class);
+		getProject().getExtensions()
+			.getByType(NullabilityPluginExtension.class)
+			.jspecify((jspecify) -> jspecify.getExperimental().set(true));
 	}
 
 	private void configureToolchains() {

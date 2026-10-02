@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
+import org.springframework.util.Assert;
+
 /**
  * A path that identifies a field in a JSON payload.
  *
@@ -56,7 +60,7 @@ final class JsonFieldPath {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(@Nullable Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -114,11 +118,14 @@ final class JsonFieldPath {
 			if (previous != matcher.start()) {
 				segments.addAll(extractDotSeparatedSegments(path.substring(previous, matcher.start())));
 			}
-			if (matcher.group(1) != null) {
-				segments.add(matcher.group(1));
+			String groupOne = matcher.group(1);
+			if (groupOne != null) {
+				segments.add(groupOne);
 			}
 			else {
-				segments.add(matcher.group());
+				String group = matcher.group();
+				Assert.state(group != null, "Missing group when parsing path '%s'".formatted(path));
+				segments.add(group);
 			}
 			previous = matcher.end(0);
 		}

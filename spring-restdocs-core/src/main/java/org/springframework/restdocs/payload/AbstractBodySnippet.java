@@ -86,7 +86,9 @@ public abstract class AbstractBodySnippet extends TemplatedSnippet {
 			Charset charset = extractCharset(contentType);
 			String body = (charset != null) ? new String(content, charset) : new String(content);
 			Map<String, Object> model = new HashMap<>();
-			model.put("language", language);
+			if (language != null) {
+				model.put("language", language);
+			}
 			model.put("body", body);
 			return model;
 		}

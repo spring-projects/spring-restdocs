@@ -43,7 +43,7 @@ final class JsonFieldProcessor {
 
 	ExtractedField extract(String path, Object payload) {
 		JsonFieldPath compiledPath = JsonFieldPath.compile(path);
-		final List<Object> values = new ArrayList<>();
+		List<@Nullable Object> values = new ArrayList<>();
 		traverse(new ProcessingContext(payload, compiledPath), new MatchCallback() {
 
 			@Override
@@ -111,8 +111,12 @@ final class JsonFieldProcessor {
 			Iterator<?> items = collection.iterator();
 			while (items.hasNext()) {
 				Object item = items.next();
-				traverse(context.descend(item, new CollectionMatch(items, collection, item, context.getParentMatch())),
-						matchCallback);
+				if (item != null) {
+					traverse(
+							context.descend(item,
+									new CollectionMatch(items, collection, item, context.getParentMatch())),
+							matchCallback);
+				}
 			}
 		}
 	}
@@ -129,8 +133,12 @@ final class JsonFieldProcessor {
 		else {
 			while (items.hasNext()) {
 				Object item = items.next();
-				traverse(context.descend(item, new CollectionMatch(items, collection, item, context.getParentMatch())),
-						matchCallback);
+				if (item != null) {
+					traverse(
+							context.descend(item,
+									new CollectionMatch(items, collection, item, context.getParentMatch())),
+							matchCallback);
+				}
 			}
 		}
 	}
@@ -143,8 +151,9 @@ final class JsonFieldProcessor {
 			if (context.isLeaf()) {
 				matchCallback.foundMatch(mapMatch);
 			}
-			else {
+			else if (item != null) {
 				traverse(context.descend(item, mapMatch), matchCallback);
+
 			}
 		}
 		else if ("*".equals(context.getSegment())) {
@@ -194,7 +203,7 @@ final class JsonFieldProcessor {
 
 	private static final class MapMatch implements Match {
 
-		private final Object item;
+		private final @Nullable Object item;
 
 		private final Map<?, ?> map;
 
@@ -202,7 +211,7 @@ final class JsonFieldProcessor {
 
 		private final @Nullable Match parent;
 
-		private MapMatch(Object item, Map<?, ?> map, String segment, @Nullable Match parent) {
+		private MapMatch(@Nullable Object item, Map<?, ?> map, String segment, @Nullable Match parent) {
 			this.item = item;
 			this.map = map;
 			this.segment = segment;
@@ -210,7 +219,7 @@ final class JsonFieldProcessor {
 		}
 
 		@Override
-		public Object getValue() {
+		public @Nullable Object getValue() {
 			return this.item;
 		}
 
@@ -258,11 +267,12 @@ final class JsonFieldProcessor {
 
 		private final Collection<?> collection;
 
-		private final Object item;
+		private final @Nullable Object item;
 
 		private final @Nullable Match parent;
 
-		private CollectionMatch(Iterator<?> items, Collection<?> collection, Object item, @Nullable Match parent) {
+		private CollectionMatch(Iterator<?> items, Collection<?> collection, @Nullable Object item,
+				@Nullable Match parent) {
 			this.items = items;
 			this.collection = collection;
 			this.item = item;
@@ -270,7 +280,7 @@ final class JsonFieldProcessor {
 		}
 
 		@Override
-		public Object getValue() {
+		public @Nullable Object getValue() {
 			return this.item;
 		}
 
@@ -297,11 +307,11 @@ final class JsonFieldProcessor {
 			return !isMapWithEntries(this.item) && !isCollectionWithEntries(this.item);
 		}
 
-		private boolean isMapWithEntries(Object object) {
+		private boolean isMapWithEntries(@Nullable Object object) {
 			return object instanceof Map && !((Map<?, ?>) object).isEmpty();
 		}
 
-		private boolean isCollectionWithEntries(Object object) {
+		private boolean isCollectionWithEntries(@Nullable Object object) {
 			return object instanceof Collection && !((Collection<?>) object).isEmpty();
 		}
 
@@ -363,7 +373,7 @@ final class JsonFieldProcessor {
 
 	private interface Match {
 
-		Object getValue();
+		@Nullable Object getValue();
 
 		void remove();
 
@@ -423,16 +433,16 @@ final class JsonFieldProcessor {
 
 		static final Object ABSENT = new Object();
 
-		private final Object value;
+		private final @Nullable Object value;
 
 		private final PathType type;
 
-		ExtractedField(Object value, PathType type) {
+		ExtractedField(@Nullable Object value, PathType type) {
 			this.value = value;
 			this.type = type;
 		}
 
-		Object getValue() {
+		@Nullable Object getValue() {
 			return this.value;
 		}
 

@@ -194,7 +194,10 @@ public class RequestPartsSnippet extends TemplatedSnippet {
 	private Map<String, Object> createModelForDescriptor(RequestPartDescriptor descriptor) {
 		Map<String, Object> model = new HashMap<>();
 		model.put("name", descriptor.getName());
-		model.put("description", descriptor.getDescription());
+		Object description = descriptor.getDescription();
+		if (description != null) {
+			model.put("description", description);
+		}
 		model.put("optional", descriptor.isOptional());
 		model.putAll(descriptor.getAttributes());
 		return model;

@@ -35,6 +35,7 @@ import org.springframework.restdocs.operation.OperationRequestPart;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.restdocs.snippet.TemplatedSnippet;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
@@ -76,6 +77,7 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 
 	private String getPath(OperationRequest request) {
 		String path = request.getUri().getRawPath();
+		Assert.state(path != null, () -> "URI '%s' has no path".formatted(request.getUri()));
 		String queryString = request.getUri().getRawQuery();
 		if (StringUtils.hasText(queryString)) {
 			path = path + "?" + queryString;

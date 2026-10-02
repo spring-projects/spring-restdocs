@@ -67,7 +67,7 @@ class RequestHeadersSnippetTests {
 	void caseInsensitiveRequestHeaders(OperationBuilder operationBuilder, AssertableSnippets snippets)
 			throws IOException {
 		new RequestHeadersSnippet(Arrays.asList(headerWithName("X-Test").description("one")))
-			.document(operationBuilder.request("/").header("X-test", "test").build());
+			.document(operationBuilder.request("http://localhost").header("X-test", "test").build());
 		assertThat(snippets.requestHeaders())
 			.isTable((table) -> table.withHeader("Name", "Description").row("`X-Test`", "one"));
 	}

@@ -24,9 +24,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.ObjectMapper;
 
+import org.springframework.restdocs.payload.JsonFieldPath.PathType;
 import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,6 +47,15 @@ class JsonFieldProcessorTests {
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("a", "alpha");
 		assertThat(this.fieldProcessor.extract("a", payload).getValue()).isEqualTo("alpha");
+	}
+
+	@Test
+	void extractNullMapEntry() {
+		Map<String, @Nullable Object> payload = new HashMap<>();
+		payload.put("a", null);
+		ExtractedField extracted = this.fieldProcessor.extract("a", payload);
+		assertThat(extracted.getValue()).isNull();
+		assertThat(extracted.getType()).isEqualTo(PathType.SINGLE);
 	}
 
 	@Test
@@ -110,11 +121,11 @@ class JsonFieldProcessorTests {
 	@Test
 	void extractOccasionallyNullFieldFromItemsInArray() {
 		Map<String, Object> payload = new HashMap<>();
-		Map<String, Object> nonNullField = new HashMap<>();
+		Map<String, @Nullable Object> nonNullField = new HashMap<>();
 		nonNullField.put("b", "bravo");
-		Map<String, Object> nullField = new HashMap<>();
+		Map<String, @Nullable Object> nullField = new HashMap<>();
 		nullField.put("b", null);
-		List<Map<String, Object>> alpha = Arrays.asList(nonNullField, nullField);
+		List<Map<String, @Nullable Object>> alpha = Arrays.asList(nonNullField, nullField);
 		payload.put("a", alpha);
 		assertThat(this.fieldProcessor.extract("a[].b", payload).getValue()).isEqualTo(Arrays.asList("bravo", null));
 	}
@@ -414,14 +425,14 @@ class JsonFieldProcessorTests {
 
 	@Test
 	void hasFieldIsTrueForNullFieldInMap() {
-		Map<String, Object> payload = new HashMap<>();
+		Map<String, @Nullable Object> payload = new HashMap<>();
 		payload.put("a", null);
 		assertThat(this.fieldProcessor.hasField("a", payload)).isTrue();
 	}
 
 	@Test
 	void hasFieldIsFalseForAbsentFieldInMap() {
-		Map<String, Object> payload = new HashMap<>();
+		Map<String, @Nullable Object> payload = new HashMap<>();
 		payload.put("a", null);
 		assertThat(this.fieldProcessor.hasField("b", payload)).isFalse();
 	}
@@ -438,7 +449,7 @@ class JsonFieldProcessorTests {
 	@Test
 	void hasFieldIsTrueForAlwaysNullFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
-		Map<String, Object> nested = new HashMap<>();
+		Map<String, @Nullable Object> nested = new HashMap<>();
 		nested.put("b", null);
 		payload.put("a", Arrays.asList(nested, nested, nested));
 		assertThat(this.fieldProcessor.hasField("a.[].b", payload)).isTrue();
@@ -465,9 +476,9 @@ class JsonFieldProcessorTests {
 	@Test
 	void hasFieldIsFalseForOccasionallyNullFieldBeneathArray() {
 		Map<String, Object> payload = new HashMap<>();
-		Map<String, Object> fieldPresent = new HashMap<>();
+		Map<String, @Nullable Object> fieldPresent = new HashMap<>();
 		fieldPresent.put("b", "bravo");
-		Map<String, Object> fieldNull = new HashMap<>();
+		Map<String, @Nullable Object> fieldNull = new HashMap<>();
 		fieldNull.put("b", null);
 		payload.put("a", Arrays.asList(fieldPresent, fieldPresent, fieldNull));
 		assertThat(this.fieldProcessor.hasField("a.[].b", payload)).isFalse();

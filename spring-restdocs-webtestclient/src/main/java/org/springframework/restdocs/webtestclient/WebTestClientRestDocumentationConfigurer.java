@@ -88,6 +88,7 @@ public class WebTestClientRestDocumentationConfigurer extends
 	@Override
 	public Mono<ClientResponse> filter(ClientRequest request, ExchangeFunction next) {
 		String index = request.headers().getFirst(WebTestClient.WEBTESTCLIENT_REQUEST_ID);
+		Assert.state(index != null, "Missing %s header".formatted(WebTestClient.WEBTESTCLIENT_REQUEST_ID));
 		configurations.put(index, createConfiguration());
 		return next.exchange(applyUriDefaults(request));
 	}

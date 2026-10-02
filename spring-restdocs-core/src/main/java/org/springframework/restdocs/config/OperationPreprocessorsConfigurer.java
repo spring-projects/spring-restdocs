@@ -53,10 +53,14 @@ public abstract class OperationPreprocessorsConfigurer<PARENT, TYPE> extends Abs
 
 	@Override
 	public void apply(Map<String, Object> configuration, RestDocumentationContext context) {
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
-				this.defaultOperationRequestPreprocessor);
-		configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
-				this.defaultOperationResponsePreprocessor);
+		if (this.defaultOperationRequestPreprocessor != null) {
+			configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_REQUEST_PREPROCESSOR,
+					this.defaultOperationRequestPreprocessor);
+		}
+		if (this.defaultOperationResponsePreprocessor != null) {
+			configuration.put(RestDocumentationGenerator.ATTRIBUTE_NAME_DEFAULT_OPERATION_RESPONSE_PREPROCESSOR,
+					this.defaultOperationResponsePreprocessor);
+		}
 	}
 
 	/**
