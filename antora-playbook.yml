@@ -31,9 +31,11 @@ content:
   sources:
   - url: .
     branches:
+    - '4.0.x'
     - 'main'
     tags:
     - 'v4.0.*'
+    - 'v4.1.*'
     - '!v4.0.0-M1'
     - '!v4.0.0-M2'
     - '!v4.0.0-M3'
