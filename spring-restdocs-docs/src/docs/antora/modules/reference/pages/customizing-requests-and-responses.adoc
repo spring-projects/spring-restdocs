@@ -16,6 +16,12 @@ include-code::mockmvc/PerTestPreprocessing[]
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
 
+RestTestClient::
++
+include-code::resttestclient/PerTestPreprocessing[]
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
+
 WebTestClient::
 +
 include-code::webtestclient/PerTestPreprocessing[]
@@ -32,6 +38,12 @@ For example, to remove the `Foo` header from all requests and pretty print all r
 MockMvc::
 +
 include-code::mockmvc/EveryTestPreprocessing[]
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
+
+RestTestClient::
++
+include-code::resttestclient/PerTestPreprocessing[]
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
 

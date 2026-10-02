@@ -15,6 +15,15 @@ Uses the static `links` method on `org.springframework.restdocs.hypermedia.Hyper
 Uses the static `linkWithRel` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 <3> Expect a link whose `rel` is `bravo`.
 
+RestTestClient::
++
+include-code::resttestclient/Hypermedia[]
+<1> Configure Spring REST docs to produce a snippet describing the response's links.
+Uses the static `links` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<2> Expect a link whose `rel` is `alpha`.
+Uses the static `linkWithRel` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+<3> Expect a link whose `rel` is `bravo`.
+
 WebTestClient::
 +
 include-code::webtestclient/Hypermedia[]
@@ -60,6 +69,12 @@ The following examples show how to do so:
 MockMvc::
 +
 include-code::mockmvc/HypermediaWithSpecificExtractor[]
+// <1> Indicate that the links are in HAL format.
+Uses the static `halLinks` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
+
+RestTestClient::
++
+include-code::resttestclient/HypermediaWithSpecificExtractor[]
 // <1> Indicate that the links are in HAL format.
 Uses the static `halLinks` method on `org.springframework.restdocs.hypermedia.HypermediaDocumentation`.
 

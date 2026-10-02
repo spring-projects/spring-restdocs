@@ -18,6 +18,16 @@ Uses the static `queryParameters` method on `org.springframework.restdocs.reques
 Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the `per_page` query parameter.
 
+RestTestClient::
++
+include-code::resttestclient/QueryParameters[]
+<1> Perform a `GET` request with two parameters, `page` and `per_page`, in the query string.
+<2> Configure Spring REST Docs to produce a snippet describing the request's query parameters.
+Uses the static `queryParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the `page` parameter.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<4> Document the `per_page` parameter.
+
 WebTestClient::
 +
 include-code::webtestclient/QueryParameters[]

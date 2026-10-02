@@ -12,6 +12,12 @@ include-code::mockmvc/CustomDefaultOperationPreprocessors[]
 <1> Apply a request preprocessor that removes the header named `Foo`.
 <2> Apply a response preprocessor that pretty prints its content.
 
+RestTestClient::
++
+include-code::resttestclient/CustomDefaultOperationPreprocessors[]
+<1> Apply a request preprocessor that removes the header named `Foo`.
+<2> Apply a response preprocessor that pretty prints its content.
+
 WebTestClient::
 +
 include-code::webtestclient/CustomDefaultOperationPreprocessors[]

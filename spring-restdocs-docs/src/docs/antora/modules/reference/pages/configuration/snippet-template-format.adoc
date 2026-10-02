@@ -12,6 +12,10 @@ MockMvc::
 +
 include-code::mockmvc/CustomFormat[]
 
+RestTestClient::
++
+include-code::resttestclient/CustomFormat[]
+
 WebTestClient::
 +
 include-code::webtestclient/CustomFormat[]

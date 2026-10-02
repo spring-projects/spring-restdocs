@@ -16,6 +16,18 @@ include-code::mockmvc/HttpCookies[]
 <4> Produce a snippet describing the response's cookies.
 	Uses the static `responseCookies` method on `org.springframework.restdocs.cookies.CookieDocumentation`.
 
+RestTestClient::
++
+include-code::resttestclient/HttpCookies[]
+<1> Make a GET request with a `JSESSIONID` cookie.
+<2> Configure Spring REST Docs to produce a snippet describing the request's cookies.
+	Uses the static `requestCookies` method on
+	`org.springframework.restdocs.cookies.CookieDocumentation`.
+<3> Document the `JSESSIONID` cookie.
+	Uses the static `cookieWithName` method on `org.springframework.restdocs.cookies.CookieDocumentation`.
+<4> Produce a snippet describing the response's cookies.
+	Uses the static `responseCookies` method on `org.springframework.restdocs.cookies.CookieDocumentation`.
+
 WebTestClient::
 +
 include-code::webtestclient/HttpCookies[]

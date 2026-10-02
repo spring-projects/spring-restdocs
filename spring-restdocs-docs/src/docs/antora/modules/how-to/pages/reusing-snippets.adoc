@@ -19,6 +19,11 @@ MockMvc::
 include-code::mockmvc/ReusingSnippets[]
 <1> Reuse the `pagingLinks` `Snippet`, calling `and` to add descriptors that are specific to the resource that is being documented.
 
+RestTestClient::
++
+include-code::resttestclient/ReusingSnippets[]
+<1> Reuse the `pagingLinks` `Snippet`, calling `and` to add descriptors that are specific to the resource that is being documented.
+
 WebTestClient::
 +
 include-code::webtestclient/ReusingSnippets[]

@@ -43,6 +43,13 @@ include-code::mockmvc/IncludingExtraInformation[]
 <2> Set the `constraints` attribute for the `name` field.
 <3> Set the `constraints` attribute for the `email` field.
 
+RestTestClient::
++
+include-code::resttestclient/IncludingExtraInformation[]
+<1> Configure the `title` attribute for the request fields snippet.
+<2> Set the `constraints` attribute for the `name` field.
+<3> Set the `constraints` attribute for the `email` field.
+
 WebTestClient::
 +
 include-code::webtestclient/IncludingExtraInformation[]

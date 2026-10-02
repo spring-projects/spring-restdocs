@@ -42,6 +42,10 @@ MockMvc::
 +
 include-code::mockmvc/ParameterizedOutput[]
 
+RestTestClient::
++
+include-code::resttestclient/ParameterizedOutput[]
+
 WebTestClient::
 +
 include-code::webtestclient/ParameterizedOutput[]

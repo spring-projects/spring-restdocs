@@ -35,6 +35,19 @@ TIP: To configure a request's context path, use the `contextPath` method on `Moc
 
 
 
+[[configuration.uris.resttestclient]]
+== RestTestClient URI Customization
+
+When using RestTestClient, the default base for URIs documented by Spring REST Docs is `http://localhost:8080`.
+You can customize this base by using the {spring-framework-api}/org/springframework/test/web/servlet/client/RestTestClient.Builder.html#baseUrl-java.lang.String-[ `baseUrl(String)` method on `RestTestClient.Builder`].
+The following example shows how to do so:
+
+include-code::CustomUriConfiguration[]
+
+<1> Configure the base of documented URIs to be `https://api.example.com`.
+
+
+
 [[configuration.uris.webtestclient]]
 == WebTestClient URI Customization
 

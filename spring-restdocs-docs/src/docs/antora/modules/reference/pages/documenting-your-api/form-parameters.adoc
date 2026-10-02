@@ -15,6 +15,15 @@ Uses the static `formParameters` method on `org.springframework.restdocs.request
 <3> Document the `username` parameter.
 Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
 
+RestTestClient::
++
+include-code::resttestclient/FormParameters[]
+<1> Perform a `POST` request with a single form parameter, `username`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's form parameters.
+Uses the static `formParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the `username` parameter.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+
 WebTestClient::
 +
 include-code::webtestclient/FormParameters[]

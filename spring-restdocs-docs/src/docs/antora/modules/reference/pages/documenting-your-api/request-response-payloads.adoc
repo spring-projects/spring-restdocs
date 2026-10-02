@@ -39,6 +39,16 @@ Both are static methods on `org.springframework.restdocs.payload.PayloadDocument
 Uses the static `fieldWithPath` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
 <3> Expect a field with the path `contact.name`.
 
+RestTestClient::
++
+include-code::resttestclient/ResponseFields[]
+<1> Configure Spring REST docs to produce a snippet describing the fields in the response payload.
+To document a request, you can use `requestFields`.
+Both are static methods on `org.springframework.restdocs.payload.PayloadDocumentation`.
+<2> Expect a field with the path `contact.email`.
+Uses the static `fieldWithPath` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+<3> Expect a field with the path `contact.name`.
+
 WebTestClient::
 +
 include-code::webtestclient/ResponseFields[]
@@ -65,6 +75,13 @@ The following examples show how to do so:
 MockMvc::
 +
 include-code::mockmvc/Subsection[]
+<1> Document the subsection with the path `contact`.
+`contact.email` and `contact.name` are now seen as having also been documented.
+Uses the static `subsectionWithPath` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+
+RestTestClient::
++
+include-code::resttestclient/Subsection[]
 <1> Document the subsection with the path `contact`.
 `contact.email` and `contact.name` are now seen as having also been documented.
 Uses the static `subsectionWithPath` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
@@ -249,6 +266,11 @@ MockMvc::
 include-code::mockmvc/ExplicitFieldType[]
 <1> Set the field's type to `String`.
 
+RestTestClient::
++
+include-code::resttestclient/ExplicitFieldType[]
+<1> Set the field's type to `String`.
+
 WebTestClient::
 +
 include-code::webtestclient/ExplicitFieldType[]
@@ -328,6 +350,11 @@ MockMvc::
 include-code::mockmvc/DescriptorReuse[]
 <1> Document `title` and `author` by using existing descriptors
 
+RestTestClient::
++
+include-code::resttestclient/DescriptorReuse[]
+<1> Document `title` and `author` by using existing descriptors
+
 WebTestClient::
 +
 include-code::webtestclient/DescriptorReuse[]
@@ -341,6 +368,12 @@ You can also use the descriptors to document an array of books, as follows:
 MockMvc::
 +
 include-code::mockmvc/ArrayDescriptorReuse[]
+<1> Document the array.
+<2> Document `[].title` and `[].author` by using the existing descriptors prefixed with `[].`
+
+RestTestClient::
++
+include-code::resttestclient/ArrayDescriptorReuse[]
 <1> Document the array.
 <2> Document `[].title` and `[].author` by using the existing descriptors prefixed with `[].`
 
@@ -392,6 +425,13 @@ include-code::mockmvc/BodySubsection[]
 Uses the static `responseBody` and `beneathPath` methods on `org.springframework.restdocs.payload.PayloadDocumentation`.
 To produce a snippet for the request body, you can use `requestBody` in place of `responseBody`.
 
+RestTestClient::
++
+include-code::resttestclient/BodySubsection[]
+<1> Produce a snippet containing a subsection of the response body.
+Uses the static `responseBody` and `beneathPath` methods on `org.springframework.restdocs.payload.PayloadDocumentation`.
+To produce a snippet for the request body, you can use `requestBody` in place of `responseBody`.
+
 WebTestClient::
 +
 include-code::webtestclient/BodySubsection[]
@@ -434,6 +474,13 @@ You can produce a snippet that documents the fields of the `temperature` object 
 MockMvc::
 +
 include-code::mockmvc/FieldsSubsection[]
+<1> Produce a snippet describing the fields in the subsection of the response payload beneath the path `weather.temperature`.
+Uses the static `beneathPath` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+<2> Document the `high` and `low` fields.
+
+RestTestClient::
++
+include-code::resttestclient/FieldsSubsection[]
 <1> Produce a snippet describing the fields in the subsection of the response payload beneath the path `weather.temperature`.
 Uses the static `beneathPath` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
 <2> Document the `high` and `low` fields.

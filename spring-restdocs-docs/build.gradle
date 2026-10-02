@@ -90,6 +90,7 @@ project.rootProject.gradle.projectsEvaluated {
 dependencies {
 	javadoc(platform(project(":spring-restdocs-platform")))
 	testImplementation(project(":spring-restdocs-mockmvc"))
+	testImplementation(project(":spring-restdocs-resttestclient"))
 	testImplementation(project(":spring-restdocs-webtestclient"))
 
 	testImplementation("jakarta.servlet:jakarta.servlet-api")

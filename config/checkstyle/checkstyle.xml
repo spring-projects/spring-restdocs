@@ -5,8 +5,10 @@
 		<property name="file" value="${config_loc}/checkstyle-suppressions.xml"/>
 	</module>
 	<module name="io.spring.javaformat.checkstyle.SpringChecks">
-		<property name="avoidStaticImportExcludes" value="org.springframework.restdocs.cli.CliDocumentation.*,
-				org.springframework.restdocs.cookies.CookieDocumentation.*"/>
+		<property name="avoidStaticImportExcludes" value="
+				org.springframework.restdocs.cli.CliDocumentation.*,
+				org.springframework.restdocs.cookies.CookieDocumentation.*,
+				org.springframework.restdocs.resttestclient.RestTestClientRestDocumentation.*"/>
 	</module>
 	<module name="io.spring.javaformat.checkstyle.check.SpringHeaderCheck">
 		<property name="headerCopyrightPattern" value="2014-present" />

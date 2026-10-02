@@ -20,6 +20,15 @@ Uses the static `requestParts` method on `org.springframework.restdocs.request.R
 <3> Document the part named `file`.
 Uses the static `partWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
 
+RestTestClient::
++
+include-code::resttestclient/RequestParts[]
+<1> Perform a `POST` request with a single part named `file`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's parts.
+Uses the static `requestParts` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the part named `file`.
+Uses the static `partWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+
 WebTestClient::
 +
 include-code::webtestclient/RequestParts[]
@@ -64,6 +73,12 @@ include-code::mockmvc/RequestPartBody[]
 <1> Configure Spring REST docs to produce a snippet containing the body of the request part named `metadata`.
 Uses the static `requestPartBody` method on `PayloadDocumentation`.
 
+RestTestClient::
++
+include-code::resttestclient/RequestPartBody[]
+<1> Configure Spring REST docs to produce a snippet containing the body of the request part named `metadata`.
+Uses the static `requestPartBody` method on `PayloadDocumentation`.
+
 WebTestClient::
 +
 include-code::webtestclient/RequestPartBody[]
@@ -86,6 +101,14 @@ You can document a request part's fields in much the same way as the fields of a
 MockMvc::
 +
 include-code::mockmvc/RequestPartFields[]
+<1> Configure Spring REST docs to produce a snippet describing the fields in the payload of the request part named `metadata`.
+Uses the static `requestPartFields` method on `PayloadDocumentation`.
+<2> Expect a field with the path `version`.
+Uses the static `fieldWithPath` method on `org.springframework.restdocs.payload.PayloadDocumentation`.
+
+RestTestClient::
++
+include-code::resttestclient/RequestPartFields[]
 <1> Configure Spring REST docs to produce a snippet describing the fields in the payload of the request part named `metadata`.
 Uses the static `requestPartFields` method on `PayloadDocumentation`.
 <2> Expect a field with the path `version`.

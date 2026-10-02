@@ -11,6 +11,10 @@ MockMvc::
 +
 include-code::mockmvc/CustomEncoding[]
 
+RestTestClient::
++
+include-code::resttestclient/CustomEncoding[]
+
 WebTestClient::
 +
 include-code::webtestclient/CustomEncoding[]

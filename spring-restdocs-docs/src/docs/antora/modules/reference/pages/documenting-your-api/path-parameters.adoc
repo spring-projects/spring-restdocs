@@ -16,6 +16,16 @@ Uses the static `pathParameters` method on `org.springframework.restdocs.request
 Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
 <4> Document the parameter named `longitude`.
 
+RestTestClient::
++
+include-code::resttestclient/PathParameters[]
+<1> Perform a `GET` request with two path parameters, `latitude` and `longitude`.
+<2> Configure Spring REST Docs to produce a snippet describing the request's path parameters.
+Uses the static `pathParameters` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<3> Document the parameter named `latitude`.
+Uses the static `parameterWithName` method on `org.springframework.restdocs.request.RequestDocumentation`.
+<4> Document the parameter named `longitude`.
+
 WebTestClient::
 +
 include-code::webtestclient/PathParameters[]
