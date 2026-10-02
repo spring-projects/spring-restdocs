@@ -138,8 +138,8 @@ public class AntoraPlugin implements Plugin<Project> {
 			attributes.put("samples", "https://github.com/spring-projects/spring-restdocs-samples/tree/main");
 			attributes.put("source", "https://github.com/spring-projects/spring-restdocs/tree/{branch-or-tag}");
 			attributes.put("spring-boot-docs", "https://docs.spring.io/spring-boot/reference");
-			attributes.put("spring-framework-api", "https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api");
-			attributes.put("spring-framework-docs", "https://docs.spring.io/spring-framework/reference");
+			attributes.put("spring-framework-api", "https://docs.spring.io/spring-framework/docs/7.1.x/javadoc-api");
+			attributes.put("spring-framework-docs", "https://docs.spring.io/spring-framework/reference/7.1");
 			return attributes;
 		});
 	}
