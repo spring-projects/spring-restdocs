@@ -25,7 +25,7 @@ concurrency:
 jobs:
   test-release:
     name: "Test Release"
-    runs-on: "ubuntu22-4-16"
+    runs-on: "ubuntu22-2-8"
     steps:
     - name: "Prevent Re-runs"
       id: "prevent-re-runs"
@@ -34,13 +34,6 @@ jobs:
           echo "Re-runs are prohibited. Use the 'Release Train – Retry' workflow to retry test failures"
           exit 1
         fi
-    - name: "Free Disk Space"
-      id: "free-disk-space"
-      if: "${{ runner.os == 'Linux' }}"
-      uses: "jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be" # v1.3.1
-      with:
-        docker-images: "false"
-        tool-cache: "true"
     - name: "Set up Java"
       id: "set-up-java"
       uses: "actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95" # v5.6.0

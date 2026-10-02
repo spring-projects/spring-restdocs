@@ -16,5 +16,3 @@ workflow:
             COMMERCIAL_RELEASE_REPO_URL: vars.COMMERCIAL_RELEASE_REPO_URL
             COMMERCIAL_REPO_USERNAME: secrets.COMMERCIAL_ARTIFACTORY_USERNAME
             COMMERCIAL_REPO_PASSWORD: secrets.COMMERCIAL_ARTIFACTORY_PASSWORD
-          free-disk-space: true
-          runs-on: ubuntu22-4-16
