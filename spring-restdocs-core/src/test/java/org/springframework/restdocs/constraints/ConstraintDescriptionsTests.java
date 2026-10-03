@@ -16,12 +16,14 @@
 
 package org.springframework.restdocs.constraints;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -58,7 +60,71 @@ class ConstraintDescriptionsTests {
 		assertThat(this.constraintDescriptions.descriptionsForProperty("foo").size()).isEqualTo(0);
 	}
 
-	private static final class Constrained {
+	@Test
+	void descriptionsForMethodParameterConstraints() throws NoSuchMethodException {
+		Method method = Constrained.class.getDeclaredMethod("foo", String.class);
+		Constraint constraint1 = new Constraint("constraint1", Collections.<String, Object>emptyMap());
+		Constraint constraint2 = new Constraint("constraint2", Collections.<String, Object>emptyMap());
+		given(this.constraintResolver.resolveForMethodParameter(method, 0))
+			.willReturn(Arrays.asList(constraint1, constraint2));
+		given(this.constraintDescriptionResolver.resolveDescription(constraint1)).willReturn("Bravo");
+		given(this.constraintDescriptionResolver.resolveDescription(constraint2)).willReturn("Alpha");
+		assertThat(this.constraintDescriptions.descriptionsForMethodParameter(method, 0)).containsExactly("Alpha",
+				"Bravo");
+	}
+
+	@Test
+	void descriptionsForMethodParameterConstraintsUsingName() throws NoSuchMethodException {
+		Method method = Constrained.class.getDeclaredMethod("foo", String.class);
+		Constraint constraint1 = new Constraint("constraint1", Collections.<String, Object>emptyMap());
+		Constraint constraint2 = new Constraint("constraint2", Collections.<String, Object>emptyMap());
+		given(this.constraintResolver.resolveForMethodParameter(method, 0))
+			.willReturn(Arrays.asList(constraint1, constraint2));
+		given(this.constraintDescriptionResolver.resolveDescription(constraint1)).willReturn("Bravo");
+		given(this.constraintDescriptionResolver.resolveDescription(constraint2)).willReturn("Alpha");
+		assertThat(this.constraintDescriptions.descriptionsForMethodParameter("foo", 0, String.class))
+			.containsExactly("Alpha", "Bravo");
+	}
+
+	@Test
+	void descriptionsForMethodParameterConstraintsWithNoTypesUsingName() throws NoSuchMethodException {
+		Method method = Constrained.class.getDeclaredMethod("bar");
+		Constraint constraint1 = new Constraint("constraint1", Collections.<String, Object>emptyMap());
+		given(this.constraintResolver.resolveForMethodParameter(method, 0)).willReturn(Arrays.asList(constraint1));
+		given(this.constraintDescriptionResolver.resolveDescription(constraint1)).willReturn("Alpha");
+		assertThat(this.constraintDescriptions.descriptionsForMethodParameter("bar", 0)).containsExactly("Alpha");
+	}
+
+	@Test
+	void descriptionsForInheritedMethodParameterConstraintsUsingName() throws NoSuchMethodException {
+		Method method = Constrained.class.getDeclaredMethod("foo", String.class);
+		Constraint constraint1 = new Constraint("constraint1", Collections.<String, Object>emptyMap());
+		given(this.constraintResolver.resolveForMethodParameter(method, 0)).willReturn(Arrays.asList(constraint1));
+		given(this.constraintDescriptionResolver.resolveDescription(constraint1)).willReturn("Alpha");
+
+		ConstraintDescriptions subclassDescriptions = new ConstraintDescriptions(SubclassConstrained.class,
+				this.constraintResolver, this.constraintDescriptionResolver);
+		assertThat(subclassDescriptions.descriptionsForMethodParameter("foo", 0, String.class))
+			.containsExactly("Alpha");
+	}
+
+	@Test
+	void descriptionsForNonExistentMethodParameter() {
+		assertThatIllegalArgumentException()
+			.isThrownBy(() -> this.constraintDescriptions.descriptionsForMethodParameter("baz", 0));
+	}
+
+	private static class Constrained {
+
+		void foo(String foo) {
+		}
+
+		void bar() {
+		}
+
+	}
+
+	private static final class SubclassConstrained extends Constrained {
 
 	}
 
