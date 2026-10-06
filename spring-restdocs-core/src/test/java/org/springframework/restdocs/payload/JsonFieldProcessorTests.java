@@ -315,6 +315,32 @@ class JsonFieldProcessorTests {
 		assertThat(payload.size()).isEqualTo(0);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
+	void removeFieldBeneathArrayThatIsSometimesEmpty() {
+		Map<String, Object> payload = new ObjectMapper()
+			.readValue("{\"a\": [{\"b\": []}, {\"b\": [{\"c\": \"charlie\"}, {\"c\": \"charlie\"}]}]}", Map.class);
+		this.fieldProcessor.remove("a[].b[].c", payload);
+		assertThat(payload.size()).isEqualTo(0);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void removeFieldBeneathArrayThatIsAlwaysEmpty() {
+		Map<String, Object> payload = new ObjectMapper().readValue("{\"a\": [{\"b\": []}]}", Map.class);
+		this.fieldProcessor.remove("a[].b[].c", payload);
+		assertThat(payload.size()).isEqualTo(0);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void removeSubsectionBeneathArrayThatIsSometimesEmpty() {
+		Map<String, Object> payload = new ObjectMapper()
+			.readValue("{\"a\": [{\"b\": []}, {\"b\": [{\"c\": {\"d\": \"delta\"}}]}]}", Map.class);
+		this.fieldProcessor.removeSubsection("a[].b[].c", payload);
+		assertThat(payload.size()).isEqualTo(0);
+	}
+
 	@Test
 	void extractNestedEntryWithDotInKeys() {
 		Map<String, Object> payload = new HashMap<>();

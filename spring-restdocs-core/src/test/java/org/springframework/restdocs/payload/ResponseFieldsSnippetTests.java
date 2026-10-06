@@ -385,6 +385,22 @@ public class ResponseFieldsSnippetTests {
 	}
 
 	@RenderedSnippetTest
+	void fieldBeneathArrayThatIsSometimesEmpty(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new ResponseFieldsSnippet(
+				Arrays.asList(fieldWithPath("count").description("one"), fieldWithPath("items[].k1").description("two"),
+						fieldWithPath("items[].k2[].name").description("three")))
+			.document(operationBuilder.response()
+				.content("{\"count\": 2, \"items\": [{\"k1\": \"v1\", \"k2\": []}, "
+						+ "{\"k1\": \"v2\", \"k2\": [{\"name\": \"joe\"}, {\"name\": \"alice\"}]}]}")
+				.build());
+		assertThat(snippets.responseFields()).isTable((table) -> table.withHeader("Path", "Type", "Description")
+			.row("`count`", "`Number`", "one")
+			.row("`items[].k1`", "`String`", "two")
+			.row("`items[].k2[].name`", "`String`", "three"));
+	}
+
+	@RenderedSnippetTest
 	void typeDeterminationDoesNotSetTypeOnDescriptor(OperationBuilder operationBuilder, AssertableSnippets snippets)
 			throws IOException {
 		FieldDescriptor descriptor = fieldWithPath("id").description("one");
