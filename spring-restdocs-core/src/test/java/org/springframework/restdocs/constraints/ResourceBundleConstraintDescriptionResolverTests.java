@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.Normalizer;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -54,15 +55,20 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.BitcoinAddress;
 import org.hibernate.validator.constraints.CodePointLength;
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Currency;
 import org.hibernate.validator.constraints.EAN;
+import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.Mod10Check;
 import org.hibernate.validator.constraints.Mod11Check;
+import org.hibernate.validator.constraints.Normalized;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.UUID;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
@@ -256,6 +262,32 @@ class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	@Test
+	void defaultMessageBitcoinAddress() {
+		assertThat(constraintDescriptionForField("bitcoinAddress")).isEqualTo("Must be a well-formed Bitcoin address");
+	}
+
+	@Test
+	void defaultMessageIsbn() {
+		assertThat(constraintDescriptionForField("isbn")).isEqualTo("Must be a well-formed ISBN");
+	}
+
+	@Test
+	void defaultMessageNormalized() {
+		assertThat(constraintDescriptionForField("normalized"))
+			.isEqualTo("Must be normalized using Unicode normalization form NFKC");
+	}
+
+	@Test
+	void defaultMessageUniqueElements() {
+		assertThat(constraintDescriptionForField("uniqueElements")).isEqualTo("Must only contain unique elements");
+	}
+
+	@Test
+	void defaultMessageUuid() {
+		assertThat(constraintDescriptionForField("uuid")).isEqualTo("Must be a well-formed UUID");
+	}
+
+	@Test
 	void customMessage() {
 		Thread.currentThread().setContextClassLoader(new ClassLoader() {
 
@@ -440,6 +472,21 @@ class ResourceBundleConstraintDescriptionResolverTests {
 
 		@org.hibernate.validator.constraints.URL
 		private @Nullable String url;
+
+		@BitcoinAddress
+		private @Nullable String bitcoinAddress;
+
+		@ISBN
+		private @Nullable String isbn;
+
+		@Normalized(form = Normalizer.Form.NFKC)
+		private @Nullable String normalized;
+
+		@UniqueElements
+		private @Nullable List<String> uniqueElements;
+
+		@UUID
+		private @Nullable String uuid;
 
 	}
 
