@@ -77,6 +77,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -393,9 +394,9 @@ class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	private Set<String> loadDescribedConstraints() throws IOException {
-		try (InputStream input = getClass().getResource("DefaultConstraintDescriptions.properties")
-			.openConnection()
-			.getInputStream()) {
+		URL resource = getClass().getResource("DefaultConstraintDescriptions.properties");
+		Assert.notNull(resource, "DefaultConstraintDescriptions.properties not found");
+		try (InputStream input = resource.openConnection().getInputStream()) {
 			Properties properties = new Properties();
 			properties.load(input);
 			return properties.stringPropertyNames()
