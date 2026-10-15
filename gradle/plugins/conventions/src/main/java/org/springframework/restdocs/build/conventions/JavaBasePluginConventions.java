@@ -16,6 +16,7 @@
 
 package org.springframework.restdocs.build.conventions;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ import org.gradle.api.plugins.quality.CheckstyleExtension;
 import org.gradle.api.plugins.quality.CheckstylePlugin;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
+import org.gradle.api.tasks.TaskProvider;
+import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.compile.CompileOptions;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.testing.Test;
@@ -59,6 +62,7 @@ class JavaBasePluginConventions extends Conventions<JavaBasePlugin> {
 		configureJavaCompileTasks();
 		configureTestTasks();
 		configureDependencyManagement();
+		configureJarTasks();
 	}
 
 	private void configureNullability() {
@@ -136,6 +140,19 @@ class JavaBasePluginConventions extends Conventions<JavaBasePlugin> {
 
 	private void configureJavaFormat() {
 		getProject().getPlugins().apply(SpringJavaFormatPlugin.class);
+	}
+
+	private void configureJarTasks() {
+		TaskProvider<ExtractResources> extractLegalResources = getProject().getTasks()
+			.register("extractLegalResources", ExtractResources.class, (task) -> {
+				task.getPackageName().set("org.springframework.restdocs.build.legal");
+				task.getDestinationDirectory().set(getProject().getLayout().getBuildDirectory().dir("legal"));
+				task.getResourceNames().set(Arrays.asList("LICENSE.txt", "NOTICE.txt"));
+				task.getProperties().put("version", getProject().getVersion().toString());
+			});
+		getProject().getTasks()
+			.withType(Jar.class)
+			.configureEach((jar) -> jar.metaInf((metaInf) -> metaInf.from(extractLegalResources)));
 	}
 
 }
