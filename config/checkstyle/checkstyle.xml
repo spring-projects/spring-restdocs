@@ -9,9 +9,7 @@
 				org.springframework.restdocs.cli.CliDocumentation.*,
 				org.springframework.restdocs.cookies.CookieDocumentation.*,
 				org.springframework.restdocs.resttestclient.RestTestClientRestDocumentation.*"/>
-	</module>
-	<module name="io.spring.javaformat.checkstyle.check.SpringHeaderCheck">
-		<property name="headerCopyrightPattern" value="2014-present" />
+		<property name="headerFile" value="${config_loc}/checkstyle-header.txt"/>
 	</module>
 	<module name="com.puppycrawl.tools.checkstyle.TreeWalker">
 		<module name="com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck">
