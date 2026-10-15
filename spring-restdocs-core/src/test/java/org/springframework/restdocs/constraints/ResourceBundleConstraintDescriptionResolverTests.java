@@ -16,6 +16,8 @@
 
 package org.springframework.restdocs.constraints;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -28,8 +30,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListResourceBundle;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.money.MonetaryAmount;
 
@@ -55,6 +60,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.Incubating;
 import org.hibernate.validator.constraints.BitcoinAddress;
 import org.hibernate.validator.constraints.CodePointLength;
 import org.hibernate.validator.constraints.CreditCardNumber;
@@ -66,12 +72,19 @@ import org.hibernate.validator.constraints.LuhnCheck;
 import org.hibernate.validator.constraints.Mod10Check;
 import org.hibernate.validator.constraints.Mod11Check;
 import org.hibernate.validator.constraints.Normalized;
+import org.hibernate.validator.constraints.ParameterScriptAssert;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.ScriptAssert;
 import org.hibernate.validator.constraints.UUID;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.asm.AnnotationVisitor;
+import org.springframework.asm.ClassReader;
+import org.springframework.asm.ClassVisitor;
+import org.springframework.asm.Opcodes;
+import org.springframework.asm.Type;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -262,11 +275,6 @@ class ResourceBundleConstraintDescriptionResolverTests {
 	}
 
 	@Test
-	void defaultMessageBitcoinAddress() {
-		assertThat(constraintDescriptionForField("bitcoinAddress")).isEqualTo("Must be a well-formed Bitcoin address");
-	}
-
-	@Test
 	void defaultMessageIsbn() {
 		assertThat(constraintDescriptionForField("isbn")).isEqualTo("Must be a well-formed ISBN");
 	}
@@ -349,6 +357,64 @@ class ResourceBundleConstraintDescriptionResolverTests {
 			}
 		});
 		assertThat(beanValidationConstraints).isEmpty();
+	}
+
+	@Test
+	void allConstraintsAreDescribed() throws IOException {
+		Set<String> expectedConstraints = loadExpectedConstraints();
+		Set<String> describedConstraints = loadDescribedConstraints();
+		assertThat(describedConstraints).containsExactlyElementsOf(expectedConstraints);
+	}
+
+	private Set<String> loadExpectedConstraints() throws IOException {
+		Set<String> constraints = findConstraints("jakarta/validation/**/*.class");
+		constraints.addAll(findConstraints("org/hibernate/validator/**/*.class"));
+		constraints.removeIf((constraint) -> constraint.startsWith("org.hibernate.validator.constraints.br."));
+		constraints.removeIf((constraint) -> constraint.startsWith("org.hibernate.validator.constraints.pl."));
+		constraints.removeIf((constraint) -> constraint.startsWith("org.hibernate.validator.constraints.ru."));
+		constraints.remove(ParameterScriptAssert.class.getName());
+		constraints.remove(ScriptAssert.class.getName());
+		return constraints;
+	}
+
+	private Set<String> findConstraints(String pattern) throws IOException {
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource[] resources = resolver.getResources(pattern);
+		Set<String> constraints = new TreeSet<>();
+		for (Resource resource : resources) {
+			String className = ClassUtils.convertResourcePathToClassName(((ClassPathResource) resource).getPath());
+			if (!"package-info.class".equals(className)) {
+				Set<String> annotations = new HashSet<>();
+				ClassReader classReader = new ClassReader(resource.getInputStream());
+				classReader.accept(new ClassVisitor(Opcodes.ASM9) {
+
+					@Override
+					public @Nullable AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+						annotations.add(Type.getType(descriptor).getClassName());
+						return null;
+					}
+
+				}, ClassReader.SKIP_CODE);
+				if (annotations.contains(jakarta.validation.Constraint.class.getName())
+						&& !annotations.contains(Incubating.class.getName())) {
+					constraints.add(className.substring(0, className.length() - ".class".length()));
+				}
+			}
+		}
+		return constraints;
+	}
+
+	private Set<String> loadDescribedConstraints() throws IOException {
+		try (InputStream input = getClass().getResource("DefaultConstraintDescriptions.properties")
+			.openConnection()
+			.getInputStream()) {
+			Properties properties = new Properties();
+			properties.load(input);
+			return properties.stringPropertyNames()
+				.stream()
+				.map((name) -> name.substring(0, name.length() - ".description".length()))
+				.collect(Collectors.toCollection(TreeSet::new));
+		}
 	}
 
 	private String constraintDescriptionForField(String name) {

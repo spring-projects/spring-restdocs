@@ -55,23 +55,17 @@ Default descriptions are provided for all of Bean Validation 3.1's constraints:
 Default descriptions are also provided for the following constraints from Hibernate
 Validator:
 
-* `BitcoinAddress`
 * `CodePointLength`
 * `CreditCardNumber`
 * `Currency`
 * `EAN`
-* `Email`
 * `ISBN`
 * `Length`
 * `LuhnCheck`
 * `Mod10Check`
 * `Mod11Check`
 * `Normalized`
-* `NotBlank`
-* `NotEmpty`
-* `Currency`
 * `Range`
-* `SafeHtml`
 * `UniqueElements`
 * `URL`
 * `UUID`
