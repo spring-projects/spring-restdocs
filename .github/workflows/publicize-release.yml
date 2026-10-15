@@ -2,7 +2,8 @@ name: Publicize Release
 on:
   push:
     tags:
-      - v4.0.[0-9]+
+      - v4.1.0-M[1-9]
+      - v4.1.0-RC[1-9]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 jobs:
