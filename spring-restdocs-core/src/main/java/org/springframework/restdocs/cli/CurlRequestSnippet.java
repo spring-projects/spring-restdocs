@@ -138,7 +138,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 			StringBuilder oneLine = new StringBuilder();
 			oneLine.append(String.format("-F '%s=", part.getName()));
 			if (!StringUtils.hasText(part.getSubmittedFileName())) {
-				oneLine.append(escapeSingleQuotes(part.getContentAsString()));
+				oneLine.append(escapeSingleQuotes(quoteFormValueIfNecessary(part.getContentAsString())));
 			}
 			else {
 				oneLine.append(String.format("@%s", escapeSingleQuotes(part.getSubmittedFileName())));
@@ -157,6 +157,14 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		if (StringUtils.hasText(content)) {
 			lines.add(String.format("-d '%s'", escapeSingleQuotes(content)));
 		}
+	}
+
+	private static String quoteFormValueIfNecessary(String value) {
+		if (value.startsWith("@") || value.startsWith("<") || value.startsWith("(") || value.startsWith("\"")
+				|| value.contains(";")) {
+			return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+		}
+		return value;
 	}
 
 	private static String escapeSingleQuotes(String input) {
