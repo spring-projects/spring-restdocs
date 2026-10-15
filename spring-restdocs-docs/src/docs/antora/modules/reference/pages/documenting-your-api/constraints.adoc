@@ -59,17 +59,16 @@ Validator:
 * `CreditCardNumber`
 * `Currency`
 * `EAN`
-* `Email`
+* `ISBN`
 * `Length`
 * `LuhnCheck`
 * `Mod10Check`
 * `Mod11Check`
-* `NotBlank`
-* `NotEmpty`
-* `Currency`
+* `Normalized`
 * `Range`
-* `SafeHtml`
+* `UniqueElements`
 * `URL`
+* `UUID`
 
 To override the default descriptions or to provide a new description, you can create a resource bundle with a base name of `org.springframework.restdocs.constraints.ConstraintDescriptions`.
 The Spring HATEOAS-based sample contains {samples}/restful-notes-spring-hateoas/src/test/resources/org/springframework/restdocs/constraints/ConstraintDescriptions.properties[an example of such a resource bundle].
