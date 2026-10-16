@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests for {@link QueryParameters}.
  *
- * @author chuuminggg
+ * @author Minju Kim
  */
 class QueryParametersTests {
 

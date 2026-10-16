@@ -14,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
  * A request's query parameters, derived from its URI's query string.
  *
  * @author Andy Wilkinson
+ * @author Minju Kim
  * @since 3.0.0
  */
 public final class QueryParameters extends LinkedMultiValueMap<String, String> {

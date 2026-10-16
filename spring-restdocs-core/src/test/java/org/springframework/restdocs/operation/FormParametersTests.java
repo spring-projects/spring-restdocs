@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests for {@link FormParameters}.
  *
- * @author chuuminggg
+ * @author Minju Kim
  */
 class FormParametersTests {
 

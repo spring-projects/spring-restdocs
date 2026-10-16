@@ -14,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
  * A request's form parameters, derived from its form URL encoded body content.
  *
  * @author Andy Wilkinson
+ * @author Minju Kim
  * @since 3.0.0
  */
 public final class FormParameters extends LinkedMultiValueMap<String, String> {

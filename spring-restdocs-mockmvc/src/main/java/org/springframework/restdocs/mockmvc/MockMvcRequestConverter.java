@@ -45,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author Andy Wilkinson
  * @author Clyde Stubbs
+ * @author Minju Kim
  */
 class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest> {
 
