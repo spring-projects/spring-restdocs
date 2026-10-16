@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jspecify.annotations.Nullable;
 import reactor.core.publisher.Flux;
@@ -89,12 +90,18 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 			return Collections.emptyList();
 		}
 		headers.remove(HttpHeaders.COOKIE);
-		return cookieHeaders.stream().map(this::createRequestCookie).collect(Collectors.toList());
+		return cookieHeaders.stream()
+			.flatMap((header) -> Stream.of(header.split("; ")))
+			.map(this::createRequestCookie)
+			.collect(Collectors.toList());
 	}
 
-	private RequestCookie createRequestCookie(String header) {
-		int separator = header.indexOf('=');
-		return new RequestCookie(header.substring(0, separator), header.substring(separator + 1));
+	private RequestCookie createRequestCookie(String cookie) {
+		int separator = cookie.indexOf('=');
+		if (separator == -1) {
+			return new RequestCookie(cookie, "");
+		}
+		return new RequestCookie(cookie.substring(0, separator), cookie.substring(separator + 1));
 	}
 
 	private final class ExchangeResultReactiveHttpInputMessage implements ReactiveHttpInputMessage {
