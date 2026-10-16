@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -254,20 +253,12 @@ class MockMvcRequestConverter implements RequestConverter<MockHttpServletRequest
 	}
 
 	private static void processParameter(String parameter, MultiValueMap<String, String> parameters) {
-		String[] components = parameter.split("=");
-		if (components.length > 0 && components.length < 3) {
-			if (components.length == 2) {
-				String name = components[0];
-				String value = components[1];
-				parameters.add(decode(name), decode(value));
-			}
-			else {
-				List<String> values = parameters.computeIfAbsent(components[0], (p) -> new LinkedList<>());
-				values.add("");
-			}
+		int separator = parameter.indexOf('=');
+		if (separator != -1) {
+			parameters.add(decode(parameter.substring(0, separator)), decode(parameter.substring(separator + 1)));
 		}
 		else {
-			throw new IllegalArgumentException("The parameter '" + parameter + "' is malformed");
+			parameters.add(decode(parameter), "");
 		}
 	}
 
