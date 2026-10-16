@@ -350,4 +350,43 @@ class WebTestClientRequestConverterTests {
 		assertThat(request.getCookies()).extracting("value").containsExactly("YWJjZGVm==");
 	}
 
+	@Test
+	void requestWithCookieHeaderContainingMultipleCookies() {
+		ExchangeResult result = WebTestClient
+			.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.ok().build()))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.header(HttpHeaders.COOKIE, "cookieName1=cookieVal1; cookieName2=cookieVal2")
+			.exchange()
+			.expectBody()
+			.returnResult();
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getCookies()).hasSize(2);
+		assertThat(request.getHeaders().get(HttpHeaders.COOKIE)).isNull();
+		assertThat(request.getCookies()).extracting("name").containsExactly("cookieName1", "cookieName2");
+		assertThat(request.getCookies()).extracting("value").containsExactly("cookieVal1", "cookieVal2");
+	}
+
+	@Test
+	void requestWithCookieHeaderWithoutEqualsSign() {
+		ExchangeResult result = WebTestClient
+			.bindToRouterFunction(RouterFunctions.route(GET("/foo"), (req) -> ServerResponse.ok().build()))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.get()
+			.uri("/foo")
+			.header(HttpHeaders.COOKIE, "cookieName")
+			.exchange()
+			.expectBody()
+			.returnResult();
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getCookies()).hasSize(1);
+		assertThat(request.getCookies()).extracting("name").containsExactly("cookieName");
+		assertThat(request.getCookies()).extracting("value").containsExactly("");
+	}
+
 }
