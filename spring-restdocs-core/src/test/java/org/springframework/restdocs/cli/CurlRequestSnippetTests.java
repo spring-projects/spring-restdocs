@@ -254,6 +254,91 @@ class CurlRequestSnippetTests {
 	}
 
 	@RenderedSnippetTest
+	void multipartPostWithNoSubmittedFileNameAndContentContainingSemicolon(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
+			.method("POST")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+			.part("metadata", "{\"description\": \"foo; bar\"}".getBytes())
+			.build());
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F " + "'metadata=\"{\\\"description\\\": \\\"foo; bar\\\"}\"'";
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content(expectedContent));
+	}
+
+	@RenderedSnippetTest
+	void multipartPostWithNoSubmittedFileNameAndContentStartingWithAt(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
+			.method("POST")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+			.part("mention", "@alice".getBytes())
+			.build());
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F " + "'mention=\"@alice\"'";
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content(expectedContent));
+	}
+
+	@RenderedSnippetTest
+	void multipartPostWithNoSubmittedFileNameAndContentStartingWithLessThan(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
+			.method("POST")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+			.part("note", "<b>bold</b>".getBytes())
+			.build());
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F " + "'note=\"<b>bold</b>\"'";
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content(expectedContent));
+	}
+
+	@RenderedSnippetTest
+	void multipartPostWithNoSubmittedFileNameAndContentStartingWithParenthesisAndContentType(
+			OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
+			.method("POST")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+			.part("note", "(optional)".getBytes())
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
+			.build());
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F " + "'note=\"(optional)\";type=text/plain'";
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content(expectedContent));
+	}
+
+	@RenderedSnippetTest
+	void multipartPostWithNoSubmittedFileNameAndQuotedContentContainingBackslash(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
+			.method("POST")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+			.part("path", "C:\\temp;D:\\temp".getBytes())
+			.build());
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F " + "'path=\"C:\\\\temp;D:\\\\temp\"'";
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content(expectedContent));
+	}
+
+	@RenderedSnippetTest
+	void multipartPostWithNoSubmittedFileNameAndContentThatDoesNotNeedQuoting(OperationBuilder operationBuilder,
+			AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
+			.method("POST")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+			.part("note", "say \"hi\" \\o/".getBytes())
+			.build());
+		String expectedContent = "$ curl 'http://localhost/upload' -i -X POST -H "
+				+ "'Content-Type: multipart/form-data' -F " + "'note=say \"hi\" \\o/'";
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content(expectedContent));
+	}
+
+	@RenderedSnippetTest
 	void multipartPostWithContentType(OperationBuilder operationBuilder, AssertableSnippets snippets)
 			throws IOException {
 		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/upload")
