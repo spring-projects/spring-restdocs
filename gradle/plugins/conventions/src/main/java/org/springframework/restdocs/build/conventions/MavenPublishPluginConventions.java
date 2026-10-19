@@ -72,8 +72,7 @@ class MavenPublishPluginConventions extends Conventions<MavenPublishPlugin> {
 				options.encoding("UTF-8");
 				options.source("17");
 				options.links(
-						"https://docs.spring.io/spring-framework/docs/"
-								+ getProject().property("springFrameworkVersion") + "/javadoc-api/",
+						"https://docs.spring.io/spring-framework/docs/7.1.x/javadoc-api/",
 						"https://docs.hibernate.org/validator/9.0/api/",
 						"https://jakarta.ee/specifications/bean-validation/3.1/apidocs/");
 			});
