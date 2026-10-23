@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
@@ -31,7 +32,9 @@ import org.springframework.restdocs.payload.JsonFieldProcessor.ExtractedField;
 public class FieldPathPayloadSubsectionExtractor
 		implements PayloadSubsectionExtractor<FieldPathPayloadSubsectionExtractor> {
 
-	private static final ObjectMapper objectMapper = new ObjectMapper();
+	private static final ObjectMapper objectMapper = JsonMapper.builder()
+		.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+		.build();
 
 	private static final ObjectMapper prettyPrintingOjectMapper = JsonMapper.builder()
 		.enable(SerializationFeature.INDENT_OUTPUT)
