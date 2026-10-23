@@ -19,6 +19,7 @@ import org.springframework.restdocs.payload.JsonFieldPath.PathType;
  * extracted and removed.
  *
  * @author Andy Wilkinson
+ * @author Sharang Gupta
  *
  */
 final class JsonFieldProcessor {
@@ -60,6 +61,11 @@ final class JsonFieldProcessor {
 				match.remove();
 			}
 
+			@Override
+			public void foundEmptyCollection(Match match) {
+				match.remove();
+			}
+
 		});
 	}
 
@@ -68,6 +74,11 @@ final class JsonFieldProcessor {
 
 			@Override
 			public void foundMatch(Match match) {
+				match.removeSubsection();
+			}
+
+			@Override
+			public void foundEmptyCollection(Match match) {
 				match.removeSubsection();
 			}
 
@@ -94,6 +105,9 @@ final class JsonFieldProcessor {
 			ProcessingContext context) {
 		if (context.isLeaf()) {
 			matchCallback.foundMatch(new LeafCollectionMatch(collection, context.getParentMatch()));
+		}
+		else if (collection.isEmpty()) {
+			matchCallback.foundEmptyCollection(new LeafCollectionMatch(collection, context.getParentMatch()));
 		}
 		else {
 			Iterator<?> items = collection.iterator();
@@ -355,6 +369,14 @@ final class JsonFieldProcessor {
 		void foundMatch(Match match);
 
 		default void absent() {
+		}
+
+		/**
+		 * Called when the path descends into a collection that has no entries. The
+		 * collection is covered by the path but contains nothing that can be matched.
+		 * @param match a match for the empty collection
+		 */
+		default void foundEmptyCollection(Match match) {
 		}
 
 	}
