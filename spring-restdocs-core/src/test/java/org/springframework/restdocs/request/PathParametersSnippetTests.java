@@ -171,6 +171,19 @@ class PathParametersSnippetTests {
 	}
 
 	@RenderedSnippetTest
+	void pathParametersWithCaptureVariable(OperationBuilder operationBuilder, AssertableSnippets snippets,
+			TemplateFormat templateFormat) throws IOException {
+		new PathParametersSnippet(
+				Arrays.asList(parameterWithName("a").description("one"), parameterWithName("b").description("two")))
+			.document(operationBuilder.attribute(RestDocumentationGenerator.ATTRIBUTE_NAME_URL_TEMPLATE, "/{a}/{*b}")
+				.build());
+		assertThat(snippets.pathParameters()).isTable(
+				(table) -> table.withTitleAndHeader(getTitle(templateFormat, "/{a}/{*b}"), "Parameter", "Description")
+					.row("`a`", "one")
+					.row("`b`", "two"));
+	}
+
+	@RenderedSnippetTest
 	void pathParametersWithEscapedContent(OperationBuilder operationBuilder, AssertableSnippets snippets,
 			TemplateFormat templateFormat) throws IOException {
 		RequestDocumentation.pathParameters(parameterWithName("Foo|Bar").description("one|two"))
