@@ -160,6 +160,24 @@ class MockMvcRequestConverterTests {
 	}
 
 	@Test
+	void postRequestWithQueryStringParameterWithValueContainingEquals() {
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.post(URI.create("/foo?filter=name==bob")));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?filter=name==bob"));
+		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+		assertThat(request.getContentAsString()).isEmpty();
+	}
+
+	@Test
+	void postRequestWithQueryStringParameterWithValueEndingWithEqualsDoesNotDuplicateItInContent() {
+		OperationRequest request = createOperationRequest(
+				MockMvcRequestBuilders.post(URI.create("/foo?cursor=YWJj==")));
+		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo?cursor=YWJj=="));
+		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+		assertThat(request.getContentAsString()).isEmpty();
+	}
+
+	@Test
 	void mockMultipartFileUpload() {
 		OperationRequest request = createOperationRequest(MockMvcRequestBuilders.multipart("/foo")
 			.file(new MockMultipartFile("file", new byte[] { 1, 2, 3, 4 })));
