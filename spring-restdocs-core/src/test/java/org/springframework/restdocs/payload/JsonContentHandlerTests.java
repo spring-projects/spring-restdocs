@@ -213,4 +213,13 @@ class JsonContentHandlerTests {
 		assertThat(missingFields.size()).isEqualTo(0);
 	}
 
+	@Test
+	void describedFieldBeneathArrayThatIsSometimesEmptyDoesNotLeaveUndocumentedContent() {
+		List<FieldDescriptor> descriptors = Arrays.asList(new FieldDescriptor("count"),
+				new FieldDescriptor("items[].k1"), new FieldDescriptor("items[].k2[].name"));
+		String content = "{\"count\": 2, \"items\": [{\"k1\": \"v1\", \"k2\": []}, "
+				+ "{\"k1\": \"v2\", \"k2\": [{\"name\": \"joe\"}, {\"name\": \"alice\"}]}]}";
+		assertThat(new JsonContentHandler(content.getBytes(), descriptors).getUndocumentedContent()).isNull();
+	}
+
 }
