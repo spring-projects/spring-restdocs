@@ -103,9 +103,12 @@ class RestTestClientRequestConverter implements RequestConverter<ExchangeResult>
 			.collect(Collectors.toList());
 	}
 
-	private RequestCookie createRequestCookie(String header) {
-		int separator = header.indexOf('=');
-		return new RequestCookie(header.substring(0, separator), header.substring(separator + 1));
+	private RequestCookie createRequestCookie(String cookie) {
+		int separator = cookie.indexOf('=');
+		if (separator == -1) {
+			return new RequestCookie(cookie, "");
+		}
+		return new RequestCookie(cookie.substring(0, separator), cookie.substring(separator + 1));
 	}
 
 }
