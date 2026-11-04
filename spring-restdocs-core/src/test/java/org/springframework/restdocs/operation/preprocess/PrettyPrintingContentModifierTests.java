@@ -32,6 +32,14 @@ class PrettyPrintingContentModifierTests {
 	}
 
 	@Test
+	void prettyPrintJsonPreservesNumbers() {
+		String content = "{\"a\":10.50,\"b\":0.1000000000000000055511151231257827,\"c\":12345678901234567890.123}";
+		assertThat(new String(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null)))
+			.isEqualTo(String.format("{%n  \"a\" : 10.50,%n  \"b\" : 0.1000000000000000055511151231257827,%n"
+					+ "  \"c\" : 12345678901234567890.123%n}"));
+	}
+
+	@Test
 	void prettyPrintXml() {
 		assertThat(new PrettyPrintingContentModifier()
 			.modifyContent("<one a=\"alpha\"><two b=\"bravo\"/></one>".getBytes(), null))
