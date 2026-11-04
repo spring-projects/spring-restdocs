@@ -29,6 +29,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
@@ -139,6 +140,7 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 		private final ObjectMapper objectMapper = JsonMapper.builder()
 			.enable(SerializationFeature.INDENT_OUTPUT)
+			.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
 			.build();
 
 		@Override

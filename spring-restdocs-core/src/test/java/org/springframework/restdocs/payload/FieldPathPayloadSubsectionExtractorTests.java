@@ -149,6 +149,16 @@ class FieldPathPayloadSubsectionExtractorTests {
 	}
 
 	@Test
+	void extractedSubsectionPreservesNumbers() {
+		byte[] extractedSubsection = new FieldPathPayloadSubsectionExtractor("a").extractSubsection(
+				"{\"a\":{\"b\":10.50,\"c\":0.1000000000000000055511151231257827,\"d\":12345678901234567890.123}}"
+					.getBytes(),
+				MediaType.APPLICATION_JSON);
+		assertThat(new String(extractedSubsection))
+			.isEqualTo("{\"b\":10.50,\"c\":0.1000000000000000055511151231257827,\"d\":12345678901234567890.123}");
+	}
+
+	@Test
 	void extractNonExistentSubsection() {
 		assertThatThrownBy(() -> new FieldPathPayloadSubsectionExtractor("a.c")
 			.extractSubsection("{\"a\":{\"b\":{\"c\":5}}}".getBytes(), MediaType.APPLICATION_JSON))
