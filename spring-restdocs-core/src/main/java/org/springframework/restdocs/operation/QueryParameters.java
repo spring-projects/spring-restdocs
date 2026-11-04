@@ -6,8 +6,6 @@ package org.springframework.restdocs.operation;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
  * A request's query parameters, derived from its URI's query string.
  *
  * @author Andy Wilkinson
+ * @author Minju Kim
  * @since 3.0.0
  */
 public final class QueryParameters extends LinkedMultiValueMap<String, String> {
@@ -54,20 +53,12 @@ public final class QueryParameters extends LinkedMultiValueMap<String, String> {
 	}
 
 	private static void processParameter(String parameter, QueryParameters parameters) {
-		String[] components = parameter.split("=");
-		if (components.length > 0 && components.length < 3) {
-			if (components.length == 2) {
-				String name = components[0];
-				String value = components[1];
-				parameters.add(decode(name), decode(value));
-			}
-			else {
-				List<String> values = parameters.computeIfAbsent(components[0], (p) -> new LinkedList<>());
-				values.add("");
-			}
+		int separator = parameter.indexOf('=');
+		if (separator != -1) {
+			parameters.add(decode(parameter.substring(0, separator)), decode(parameter.substring(separator + 1)));
 		}
 		else {
-			throw new IllegalArgumentException("The parameter '" + parameter + "' is malformed");
+			parameters.add(decode(parameter), "");
 		}
 	}
 
