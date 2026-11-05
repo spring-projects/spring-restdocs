@@ -41,6 +41,30 @@ class PatternReplacingContentModifierTests {
 	}
 
 	@Test
+	void whenPatternHasAGroupOnlyTheFirstGroupIsReplaced() {
+		Pattern pattern = Pattern.compile("\"id\":\"([^\"]+)\"");
+		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(pattern, "<<id>>");
+		assertThat(contentModifier.modifyContent("{\"id\":\"abc\",\"name\":\"alpha\"}".getBytes(), null))
+			.isEqualTo("{\"id\":\"<<id>>\",\"name\":\"alpha\"}".getBytes());
+	}
+
+	@Test
+	void matchInWhichTheFirstGroupDoesNotParticipateIsUnchanged() {
+		Pattern pattern = Pattern.compile("\"id\":\"([^\"]+)\"|\"created\":\"[^\"]+\"");
+		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(pattern, "<<masked>>");
+		assertThat(contentModifier.modifyContent("{\"created\":\"2026-10-16\",\"id\":\"abc\"}".getBytes(), null))
+			.isEqualTo("{\"created\":\"2026-10-16\",\"id\":\"<<masked>>\"}".getBytes());
+	}
+
+	@Test
+	void matchInWhichAnOptionalFirstGroupIsAbsentIsUnchanged() {
+		Pattern pattern = Pattern.compile("[0-9]+(-SNAPSHOT)?");
+		PatternReplacingContentModifier contentModifier = new PatternReplacingContentModifier(pattern, "-RELEASE");
+		assertThat(contentModifier.modifyContent("1.0 2.0-SNAPSHOT".getBytes(), null))
+			.isEqualTo("1.0 2.0-RELEASE".getBytes());
+	}
+
+	@Test
 	void encodingIsPreservedUsingCharsetFromContentType() {
 		String japaneseContent = "\u30b3\u30f3\u30c6\u30f3\u30c4";
 		Pattern pattern = Pattern.compile("[0-9]+");
