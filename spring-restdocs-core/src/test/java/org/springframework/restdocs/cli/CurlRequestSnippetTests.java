@@ -46,6 +46,26 @@ class CurlRequestSnippetTests {
 	}
 
 	@RenderedSnippetTest
+	void headRequest(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new CurlRequestSnippet(this.commandFormatter)
+			.document(operationBuilder.request("http://localhost/foo").method("HEAD").build());
+		assertThat(snippets.curlRequest())
+			.isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash").content("$ curl 'http://localhost/foo' -I"));
+	}
+
+	@RenderedSnippetTest
+	void headRequestWithHeadersAndBasicAuth(OperationBuilder operationBuilder, AssertableSnippets snippets)
+			throws IOException {
+		new CurlRequestSnippet(this.commandFormatter).document(operationBuilder.request("http://localhost/foo")
+			.method("HEAD")
+			.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+			.header(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString("user:secret".getBytes()))
+			.build());
+		assertThat(snippets.curlRequest()).isCodeBlock((codeBlock) -> codeBlock.withLanguage("bash")
+			.content("$ curl 'http://localhost/foo' -I -u 'user:secret' -H 'Accept: application/json'"));
+	}
+
+	@RenderedSnippetTest
 	void requestWithContent(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
 		new CurlRequestSnippet(this.commandFormatter)
 			.document(operationBuilder.request("http://localhost/foo").content("content").build());
