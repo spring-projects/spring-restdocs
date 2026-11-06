@@ -144,7 +144,7 @@ public class HeadersModifyingOperationPreprocessor implements OperationPreproces
 
 		@Override
 		public void applyTo(HttpHeaders headers) {
-			headers.put(this.name, this.values);
+			headers.put(this.name, new ArrayList<>(this.values));
 		}
 
 	}

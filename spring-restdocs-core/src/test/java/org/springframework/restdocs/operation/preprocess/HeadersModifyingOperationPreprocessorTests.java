@@ -74,6 +74,24 @@ class HeadersModifyingOperationPreprocessorTests {
 	}
 
 	@Test
+	void addValueToHeaderThatWasSet() {
+		this.preprocessor.set("a", "alpha").add("a", "avocado");
+		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().headerSet())
+			.contains(entry("a", Arrays.asList("alpha", "avocado")));
+		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders().headerSet())
+			.contains(entry("a", Arrays.asList("alpha", "avocado")));
+	}
+
+	@Test
+	void removeValueFromHeaderThatWasSet() {
+		this.preprocessor.set("a", "alpha", "avocado").remove("a", "alpha");
+		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().headerSet())
+			.contains(entry("a", Arrays.asList("avocado")));
+		assertThat(this.preprocessor.preprocess(createResponse()).getHeaders().headerSet())
+			.contains(entry("a", Arrays.asList("avocado")));
+	}
+
+	@Test
 	void removeNonExistentHeader() {
 		this.preprocessor.remove("a");
 		assertThat(this.preprocessor.preprocess(createRequest()).getHeaders().headerNames()).doesNotContain("a");
