@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import org.jspecify.annotations.Nullable;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.operation.Operation;
 import org.springframework.restdocs.operation.OperationRequest;
@@ -76,7 +77,7 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 
 	private String getOptions(Operation operation) {
 		StringBuilder builder = new StringBuilder();
-		writeIncludeHeadersInOutputOption(builder);
+		writeIncludeHeadersInOutputOption(operation.getRequest(), builder);
 
 		CliOperationRequest request = new CliOperationRequest(operation.getRequest());
 		writeUserOptionIfNecessary(request, builder);
@@ -106,8 +107,8 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 		}
 	}
 
-	private void writeIncludeHeadersInOutputOption(StringBuilder builder) {
-		builder.append("-i");
+	private void writeIncludeHeadersInOutputOption(OperationRequest request, StringBuilder builder) {
+		builder.append(isHeadRequest(request) ? "-I" : "-i");
 	}
 
 	private void writeUserOptionIfNecessary(CliOperationRequest request, StringBuilder builder) {
@@ -118,7 +119,13 @@ public class CurlRequestSnippet extends TemplatedSnippet {
 	}
 
 	private void writeHttpMethod(OperationRequest request, StringBuilder builder) {
-		builder.append(String.format(" -X %s", request.getMethod()));
+		if (!isHeadRequest(request)) {
+			builder.append(String.format(" -X %s", request.getMethod()));
+		}
+	}
+
+	private boolean isHeadRequest(OperationRequest request) {
+		return HttpMethod.HEAD.equals(request.getMethod());
 	}
 
 	private void writeHeaders(CliOperationRequest request, List<String> lines) {
