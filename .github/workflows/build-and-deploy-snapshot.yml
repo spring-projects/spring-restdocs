@@ -23,7 +23,7 @@ jobs:
           gradle-cache-read-only: false
           publish: true
       - name: Deploy
-        uses: spring-io/artifactory-deploy-action@e7d40377cd74c3f06554144006ccfd64a548b351 # v0.0.3
+        uses: spring-io/artifactory-deploy-action@f748bc404f1edfeb2eba3f9f9b1047a7d691b36c
         with:
           artifact-properties: |
             /**/spring-restdocs-*.zip::zip.type=docs,zip.deployed=false
