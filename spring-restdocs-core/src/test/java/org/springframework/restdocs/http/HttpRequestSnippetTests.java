@@ -21,6 +21,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
  * Tests for {@link HttpRequestSnippet}.
  *
  * @author Andy Wilkinson
+ * @author Abinesh (AbineshDev01)
  * @author Jonathan Pearlin
  */
 class HttpRequestSnippetTests {
@@ -148,6 +149,20 @@ class HttpRequestSnippetTests {
 		String expectedContent = createPart(
 				String.format("Content-Disposition: " + "form-data; " + "name=image%n%n<< data >>"));
 		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.post("/upload")
+			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
+			.header(HttpHeaders.HOST, "localhost")
+			.content(expectedContent));
+	}
+
+	@RenderedSnippetTest
+	void multipartDelete(OperationBuilder operationBuilder, AssertableSnippets snippets) throws IOException {
+		new HttpRequestSnippet().document(operationBuilder.request("http://localhost/upload")
+			.method("DELETE")
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+			.part("image", "<< data >>".getBytes())
+			.build());
+		String expectedContent = createPart(String.format("Content-Disposition: form-data; name=image%n%n<< data >>"));
+		assertThat(snippets.httpRequest()).isHttpRequest((request) -> request.delete("/upload")
 			.header("Content-Type", "multipart/form-data; boundary=" + BOUNDARY)
 			.header(HttpHeaders.HOST, "localhost")
 			.content(expectedContent));

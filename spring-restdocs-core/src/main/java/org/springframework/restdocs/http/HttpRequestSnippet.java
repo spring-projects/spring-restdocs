@@ -29,6 +29,7 @@ import org.springframework.util.StringUtils;
  * A {@link Snippet} that documents an HTTP request.
  *
  * @author Andy Wilkinson
+ * @author Abinesh (AbineshDev01)
  * @see HttpDocumentation#httpRequest()
  * @see HttpDocumentation#httpRequest(Map)
  */
@@ -114,10 +115,8 @@ public class HttpRequestSnippet extends TemplatedSnippet {
 		if (StringUtils.hasText(content)) {
 			writer.printf("%n%s", content);
 		}
-		else if (isPutPostOrPatch(request)) {
-			if (!request.getParts().isEmpty()) {
-				writeParts(request, writer);
-			}
+		else if (!request.getParts().isEmpty()) {
+			writeParts(request, writer);
 		}
 		return httpRequest.toString();
 	}

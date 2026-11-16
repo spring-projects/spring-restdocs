@@ -7,7 +7,9 @@ package org.springframework.restdocs.webtestclient;
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,6 +22,7 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ReactiveHttpInputMessage;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.multipart.DefaultPartHttpMessageReader;
@@ -34,6 +37,7 @@ import org.springframework.restdocs.operation.RequestConverter;
 import org.springframework.restdocs.operation.RequestCookie;
 import org.springframework.test.web.reactive.server.ExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 
 /**
@@ -41,14 +45,26 @@ import org.springframework.util.LinkedMultiValueMap;
  * {@link ExchangeResult}.
  *
  * @author Andy Wilkinson
+ * @author Abinesh (AbineshDev01)
  */
 class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> {
 
 	@Override
 	public OperationRequest convert(ExchangeResult result) {
 		HttpHeaders headers = extractRequestHeaders(result);
-		return new OperationRequestFactory().create(result.getUrl(), result.getMethod(), result.getRequestBodyContent(),
-				headers, extractRequestParts(result), extractCookies(headers));
+		List<OperationRequestPart> parts = extractRequestParts(result);
+		byte[] content = result.getRequestBodyContent();
+		if (!CollectionUtils.isEmpty(parts)) {
+			content = new byte[0];
+			MediaType contentType = headers.getContentType();
+			if (contentType != null) {
+				Map<String, String> parameters = new LinkedHashMap<>(contentType.getParameters());
+				parameters.keySet().removeIf("boundary"::equalsIgnoreCase);
+				headers.setContentType(new MediaType(contentType, parameters));
+			}
+		}
+		return new OperationRequestFactory().create(result.getUrl(), result.getMethod(), content, headers, parts,
+				extractCookies(headers));
 	}
 
 	private HttpHeaders extractRequestHeaders(ExchangeResult result) {
@@ -80,7 +96,7 @@ class WebTestClientRequestConverter implements RequestConverter<ExchangeResult> 
 
 	private ByteArrayOutputStream readPartBodyContent(Part part) {
 		ByteArrayOutputStream contentStream = new ByteArrayOutputStream();
-		DataBufferUtils.write(part.content(), contentStream).blockFirst();
+		DataBufferUtils.write(part.content(), contentStream).doOnNext(DataBufferUtils.releaseConsumer()).blockLast();
 		return contentStream;
 	}
 

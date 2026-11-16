@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
@@ -35,6 +37,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
  * Tests for {@link WebTestClientRequestConverter}.
  *
  * @author Andy Wilkinson
+ * @author Abinesh (AbineshDev01)
  */
 class WebTestClientRequestConverterTests {
 
@@ -257,6 +260,11 @@ class WebTestClientRequestConverterTests {
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+		assertThat(request.getContent()).isEmpty();
+		assertThat(request.getHeaders().getContentType()).isEqualTo(MediaType.MULTIPART_FORM_DATA);
+		assertThat(request.getHeaders().getContentLength()).isEqualTo(-1);
+		assertThat(result.getRequestHeaders().getContentType()).isNotNull()
+			.satisfies((contentType) -> assertThat(contentType.getParameter("boundary")).isNotEmpty());
 		assertThat(request.getParts()).hasSize(1);
 		OperationRequestPart part = request.getParts().iterator().next();
 		assertThat(part.getName()).isEqualTo("file");
@@ -267,10 +275,15 @@ class WebTestClientRequestConverterTests {
 		assertThat(part.getContent()).containsExactly(1, 2, 3, 4);
 	}
 
-	@Test
-	void multipartUploadFromResource() {
+	@ParameterizedTest
+	@ValueSource(ints = { 4, 300_000 })
+	void multipartUploadFromResource(int contentLength) {
+		byte[] content = new byte[contentLength];
+		for (int i = 0; i < content.length; i++) {
+			content[i] = (byte) (i % 127);
+		}
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
-		multipartData.add("file", new ByteArrayResource(new byte[] { 1, 2, 3, 4 }) {
+		multipartData.add("file", new ByteArrayResource(content) {
 
 			@Override
 			public String getFilename() {
@@ -294,17 +307,72 @@ class WebTestClientRequestConverterTests {
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+		assertThat(request.getContent()).isEmpty();
+		assertThat(request.getHeaders().getContentType()).isEqualTo(MediaType.MULTIPART_FORM_DATA);
+		assertThat(request.getHeaders().getContentLength()).isEqualTo(-1);
+		assertThat(result.getRequestHeaders().getContentType()).isNotNull()
+			.satisfies((contentType) -> assertThat(contentType.getParameter("boundary")).isNotEmpty());
 		assertThat(request.getParts()).hasSize(1);
 		OperationRequestPart part = request.getParts().iterator().next();
 		assertThat(part.getName()).isEqualTo("file");
 		assertThat(part.getSubmittedFileName()).isEqualTo("image.png");
 		assertThat(part.getHeaders().size()).isEqualTo(3);
-		assertThat(part.getHeaders().getContentLength()).isEqualTo(4);
+		assertThat(part.getHeaders().getContentLength()).isEqualTo(contentLength);
 		ContentDisposition contentDisposition = part.getHeaders().getContentDisposition();
 		assertThat(contentDisposition.getName()).isEqualTo("file");
 		assertThat(contentDisposition.getFilename()).isEqualTo("image.png");
 		assertThat(part.getHeaders().getContentType()).isEqualTo(MediaType.IMAGE_PNG);
-		assertThat(part.getContent()).containsExactly(1, 2, 3, 4);
+		assertThat(part.getContent()).isEqualTo(content);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "text/plain", "multipart/form-data;boundary=missing" })
+	void requestWithoutParsedPartsRetainsContent(String contentType) {
+		ExchangeResult result = WebTestClient
+			.bindToRouterFunction(RouterFunctions.route(POST("/foo"),
+					(req) -> req.bodyToMono(String.class).flatMap((body) -> ServerResponse.ok().build())))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.post()
+			.uri("/foo")
+			.contentType(MediaType.parseMediaType(contentType))
+			.bodyValue("raw content")
+			.exchange()
+			.expectBody()
+			.returnResult();
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getParts()).isEmpty();
+		assertThat(request.getContentAsString()).isEqualTo("raw content");
+		assertThat(request.getHeaders().getContentType()).isEqualTo(MediaType.parseMediaType(contentType));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "boundary", "BOUNDARY" })
+	void multipartUploadRetainsContentTypeParametersAndRepeatedParts(String boundaryParameter) {
+		String content = "--boundary\r\nContent-Disposition: form-data; name=\"a\"\r\n\r\nalpha\r\n"
+				+ "--boundary\r\nContent-Disposition: form-data; name=\"a\"\r\n\r\n\r\n--boundary--\r\n";
+		ExchangeResult result = WebTestClient
+			.bindToRouterFunction(RouterFunctions.route(POST("/foo"),
+					(req) -> req.bodyToMono(String.class).flatMap((body) -> ServerResponse.ok().build())))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.post()
+			.uri("/foo")
+			.contentType(
+					MediaType.parseMediaType("multipart/form-data;" + boundaryParameter + "=boundary;charset=UTF-8"))
+			.bodyValue(content)
+			.exchange()
+			.expectBody()
+			.returnResult();
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getContent()).isEmpty();
+		assertThat(request.getHeaders().getContentType())
+			.isEqualTo(MediaType.parseMediaType("multipart/form-data;charset=UTF-8"));
+		assertThat(request.getParts()).extracting(OperationRequestPart::getName).containsExactly("a", "a");
+		assertThat(request.getParts()).extracting(OperationRequestPart::getContentAsString)
+			.containsExactly("alpha", "");
 	}
 
 	@Test

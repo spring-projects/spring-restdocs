@@ -21,8 +21,11 @@ import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -63,6 +66,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromValue;
  * Integration tests for using Spring REST Docs with Spring Framework's WebTestClient.
  *
  * @author Andy Wilkinson
+ * @author Abinesh (AbineshDev01)
  */
 @ExtendWith(RestDocumentationExtension.class)
 public class WebTestClientRestDocumentationIntegrationTests {
@@ -76,7 +80,7 @@ public class WebTestClientRestDocumentationIntegrationTests {
 					(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
 			.andRoute(RequestPredicates.GET("/{foo}/{bar}"),
 					(request) -> ServerResponse.status(HttpStatus.OK).body(fromValue(new Person("Jane", "Doe"))))
-			.andRoute(RequestPredicates.POST("/upload"),
+			.andRoute(RequestPredicates.path("/upload"),
 					(request) -> request.body(BodyExtractors.toMultipartData())
 						.flatMap((parts) -> ServerResponse.status(HttpStatus.OK).build()))
 			.andRoute(RequestPredicates.GET("/set-cookie"),
@@ -139,14 +143,15 @@ public class WebTestClientRestDocumentationIntegrationTests {
 				.row("`b`", "Bravo description")));
 	}
 
-	@Test
-	void multipart() {
+	@ParameterizedTest
+	@ValueSource(strings = { "POST", "PUT", "PATCH", "DELETE" })
+	void multipart(String method) {
 		MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
 		multipartData.add("a", "alpha");
 		multipartData.add("b", "bravo");
 		Consumer<EntityExchangeResult<byte[]>> documentation = document("multipart",
 				requestParts(partWithName("a").description("Part a"), partWithName("b").description("Part b")));
-		this.webTestClient.post()
+		this.webTestClient.method(HttpMethod.valueOf(method))
 			.uri("/upload")
 			.body(BodyInserters.fromMultipartData(multipartData))
 			.exchange()
@@ -157,6 +162,16 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		assertThat(new File("build/generated-snippets/multipart/request-parts.adoc"))
 			.has(content(tableWithHeader(TemplateFormats.asciidoctor(), "Part", "Description").row("`a`", "Part a")
 				.row("`b`", "Part b")));
+		assertThat(new File("build/generated-snippets/multipart/curl-request.adoc")).content()
+			.contains("-F 'a=alpha;type=text/plain;charset=UTF-8'", "-F 'b=bravo;type=text/plain;charset=UTF-8'")
+			.doesNotContain("-d '", "boundary=");
+		assertThat(new File("build/generated-snippets/multipart/httpie-request.adoc")).content()
+			.contains("$ http --multipart " + method, "'a'='alpha'", "'b'='bravo'")
+			.doesNotContain("echo ", "boundary=");
+		assertThat(new File("build/generated-snippets/multipart/http-request.adoc")).content()
+			.containsOnlyOnce("boundary=")
+			.contains("Content-Type: multipart/form-data; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm",
+					"--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm", "name=a", "name=b", "alpha", "bravo");
 	}
 
 	@Test
