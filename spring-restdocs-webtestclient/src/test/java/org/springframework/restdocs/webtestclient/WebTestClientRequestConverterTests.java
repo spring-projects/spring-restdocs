@@ -257,6 +257,8 @@ class WebTestClientRequestConverterTests {
 		OperationRequest request = this.converter.convert(result);
 		assertThat(request.getUri()).isEqualTo(URI.create("http://localhost/foo"));
 		assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+		assertThat(request.getContent()).isEmpty();
+		assertThat(request.getHeaders().getContentType()).isEqualTo(MediaType.MULTIPART_FORM_DATA);
 		assertThat(request.getParts()).hasSize(1);
 		OperationRequestPart part = request.getParts().iterator().next();
 		assertThat(part.getName()).isEqualTo("file");
@@ -305,6 +307,27 @@ class WebTestClientRequestConverterTests {
 		assertThat(contentDisposition.getFilename()).isEqualTo("image.png");
 		assertThat(part.getHeaders().getContentType()).isEqualTo(MediaType.IMAGE_PNG);
 		assertThat(part.getContent()).containsExactly(1, 2, 3, 4);
+	}
+
+	@Test
+	void multipartContentTypeWithBodyThatCannotBeParsedIsUnchanged() {
+		ExchangeResult result = WebTestClient
+			.bindToRouterFunction(RouterFunctions.route(POST("/foo"), (req) -> ServerResponse.ok().build()))
+			.configureClient()
+			.baseUrl("http://localhost")
+			.build()
+			.post()
+			.uri("/foo")
+			.contentType(MediaType.parseMediaType("multipart/form-data;boundary=example"))
+			.bodyValue("not multipart")
+			.exchange()
+			.expectBody()
+			.returnResult();
+		OperationRequest request = this.converter.convert(result);
+		assertThat(request.getParts()).isEmpty();
+		assertThat(request.getContentAsString()).isEqualTo("not multipart");
+		assertThat(request.getHeaders().getContentType())
+			.isEqualTo(MediaType.parseMediaType("multipart/form-data;boundary=example"));
 	}
 
 	@Test

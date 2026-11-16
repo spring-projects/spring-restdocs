@@ -32,6 +32,7 @@ import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.testfixtures.SnippetConditions;
 import org.springframework.restdocs.testfixtures.SnippetConditions.CodeBlockCondition;
+import org.springframework.restdocs.testfixtures.SnippetConditions.HttpRequestCondition;
 import org.springframework.restdocs.testfixtures.SnippetConditions.HttpResponseCondition;
 import org.springframework.restdocs.testfixtures.SnippetConditions.TableCondition;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
@@ -40,6 +41,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RequestPredicates;
@@ -157,6 +159,25 @@ public class WebTestClientRestDocumentationIntegrationTests {
 		assertThat(new File("build/generated-snippets/multipart/request-parts.adoc"))
 			.has(content(tableWithHeader(TemplateFormats.asciidoctor(), "Part", "Description").row("`a`", "Part a")
 				.row("`b`", "Part b")));
+		assertThat(new File("build/generated-snippets/multipart/curl-request.adoc"))
+			.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+				.withContent(String.format("$ curl 'https://api.example.com/upload' -i -X POST \\%n"
+						+ "    -H 'Content-Type: multipart/form-data' \\%n"
+						+ "    -F 'a=alpha;type=text/plain;charset=UTF-8' \\%n"
+						+ "    -F 'b=bravo;type=text/plain;charset=UTF-8'"))));
+		assertThat(new File("build/generated-snippets/multipart/httpie-request.adoc"))
+			.has(content(codeBlock(TemplateFormats.asciidoctor(), "bash")
+				.withContent(String.format("$ http --multipart POST 'https://api.example.com/upload' \\%n"
+						+ "    'a'='alpha' \\%n" + "    'b'='bravo'"))));
+		String boundary = "6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm";
+		assertThat(new File("build/generated-snippets/multipart/http-request.adoc"))
+			.has(content(httpRequest(TemplateFormats.asciidoctor(), RequestMethod.POST, "/upload")
+				.header("Content-Type", "multipart/form-data; boundary=" + boundary)
+				.header("Host", "api.example.com")
+				.content(String.format("--%1$s%nContent-Disposition: form-data; name=a%n"
+						+ "Content-Type: text/plain;charset=UTF-8%n%nalpha%n"
+						+ "--%1$s%nContent-Disposition: form-data; name=b%n"
+						+ "Content-Type: text/plain;charset=UTF-8%n%nbravo%n--%1$s--", boundary))));
 	}
 
 	@Test
@@ -264,6 +285,10 @@ public class WebTestClientRestDocumentationIntegrationTests {
 
 	private CodeBlockCondition<?> codeBlock(TemplateFormat format, String language) {
 		return SnippetConditions.codeBlock(format, language);
+	}
+
+	private HttpRequestCondition httpRequest(TemplateFormat format, RequestMethod requestMethod, String uri) {
+		return SnippetConditions.httpRequest(format, requestMethod, uri);
 	}
 
 	private HttpResponseCondition httpResponse(TemplateFormat format, HttpStatus status) {
