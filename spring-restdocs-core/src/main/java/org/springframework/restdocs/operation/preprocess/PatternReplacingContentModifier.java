@@ -65,6 +65,9 @@ class PatternReplacingContentModifier implements ContentModifier {
 		while (matcher.find()) {
 			String prefix;
 			if (matcher.groupCount() > 0) {
+				if (matcher.start(1) == -1) {
+					continue;
+				}
 				prefix = original.substring(previous, matcher.start(1));
 				previous = matcher.end(1);
 			}
